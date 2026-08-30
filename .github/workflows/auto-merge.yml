@@ -31,48 +31,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          MARKER="PROTECTED ZONE ENDS HERE"
-          REASON=""
-
-          # Paths a PR adds/modifies/deletes/renames (renames include the old path too)
-          changed_paths() {
-            gh pr view "$1" --json files --jq '.files[] | (.path, (.previous_filename // empty))'
-          }
-
-          # Everything in a README blob up to and including the marker line
-          protected_section() {
-            git show "$1" | awk -v m="$MARKER" '{print} index($0,m){exit}'
-          }
-
-          # Fetches the PR head into FETCH_HEAD; sets REASON and returns 0 if protected
-          touches_protected() {
-            local pr=$1
-            git fetch -q origin "pull/$pr/head" 2>/dev/null || {
-              REASON="head could not be fetched (conservative skip)"
-              return 0
-            }
-            if grep -qE '^\.github(/|$)' < <(changed_paths "$pr"); then
-              REASON="touches the protected \`.github/\` directory"
-              return 0
-            fi
-            if grep -qx 'README.md' < <(changed_paths "$pr"); then
-              if ! git cat-file -e "FETCH_HEAD:README.md" 2>/dev/null; then
-                REASON="deletes \`README.md\`"
-                return 0
-              fi
-              if ! grep -qF "$MARKER" <(git show "FETCH_HEAD:README.md"); then
-                REASON="removes the protection marker from \`README.md\`"
-                return 0
-              fi
-              if ! diff <(protected_section "origin/main:README.md") \
-                        <(protected_section "FETCH_HEAD:README.md") >/dev/null; then
-                REASON="modifies the protected section of \`README.md\` (everything above the marker)"
-                return 0
-              fi
-            fi
-            return 1
-          }
-
           gh label create protected --color B60205 \
             --description "Touches protected paths; auto-closed" >/dev/null 2>&1 || true
           gh label create conflict --color FBCA04 \
@@ -89,14 +47,8 @@ jobs:
 
           for pr in $PRS; do
             echo "=== PR #$pr ==="
-            if touches_protected "$pr"; then
-              echo "🚫 Skipping: $REASON"
-              if ! grep -qx protected <(gh pr view "$pr" --json labels --jq '.labels[].name'); then
-                printf '%s\n' "🚫 **Auto-merge skipped: this PR $REASON.**" "" "The \`.github/\` directory and the protected section of \`README.md\` (everything above the \`PROTECTED ZONE ENDS HERE\` marker) are off-limits and cannot be changed via pull requests. Everything below the marker is fair game - fix the PR and it will merge automatically." > /tmp/comment.md
-                gh pr comment "$pr" --body-file /tmp/comment.md >/dev/null || echo "  (comment failed)"
-                gh pr edit "$pr" --add-label protected >/dev/null || true
-                gh pr close "$pr" >/dev/null || true
-              fi
+            if ! git fetch -q origin "pull/$pr/head" 2>/dev/null; then
+              echo "⚠️ PR #$pr head could not be fetched - retried next cycle if still open"
               continue
             fi
             HEAD_SHA=$(git rev-parse FETCH_HEAD^{commit})
