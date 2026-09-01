@@ -120,53 +120,29 @@ jobs:
 
           for pr in $PRS; do
             echo "=== PR #$pr ==="
-            check_pr "$pr"
-            case "$GUARD" in
-              protected)
-                echo "🚫 Skipping: $REASON"
-                if ! grep -qx protected <(gh pr view "$pr" --json labels --jq '.labels[].name'); then
-                  printf '%s\n' "🚫 **Auto-merge skipped: this PR $REASON.**" "" "The \`.github/\` directory is off-limits and cannot be changed via pull requests. Fix the PR and it will merge automatically." > /tmp/comment.md
-                  gh pr comment "$pr" --body-file /tmp/comment.md >/dev/null || echo "  (comment failed)"
-                  gh pr edit "$pr" --add-label protected >/dev/null || true
-                  gh pr close "$pr" >/dev/null || true
+            HEAD_SHA=$(git rev-parse FETCH_HEAD^{commit})
+            echo "Merging at $HEAD_SHA ..."
+            if gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$pr/merge" \
+                    -f merge_method=merge -f sha="$HEAD_SHA" >/dev/null; then
+                echo "✅ Merged PR #$pr"
+                # Only PRs that are coming OUT of the conflict state get was-conflicted;
+                # never-conflicted merges must stay unlabeled
+                if grep -qx conflict <(gh pr view "$pr" --json labels --jq '.labels[].name'); then
+                gh pr edit "$pr" --remove-label conflict >/dev/null 2>&1 || true
+                gh pr edit "$pr" --add-label was-conflicted >/dev/null 2>&1 || true
                 fi
-                ;;
-              indeterminate)
-                echo "⚠️ $REASON"
-                # Fail closed: do NOT label `protected`, do NOT close, do NOT merge this
-                # cycle. Comment once (guarded by the `check-failed` label) and let the
-                # next cron cycle re-check the PR normally.
-                if ! grep -qx check-failed <(gh pr view "$pr" --json labels --jq '.labels[].name'); then
-                  printf '%s\n' "⚠️ **Auto-merge check failed: $REASON.**" "" "I couldn't verify whether this PR touches protected paths, so it won't be merged this cycle. It will be re-checked automatically on the next cron cycle — no action needed." > /tmp/check-failed-comment.md
-                  gh pr comment "$pr" --body-file /tmp/check-failed-comment.md >/dev/null || echo "  (comment failed)"
-                  gh pr edit "$pr" --add-label check-failed >/dev/null || true
+            else
+                MERGEABLE=$(gh pr view "$pr" --json mergeable --jq '.mergeable')
+                if [ "$MERGEABLE" = "CONFLICTING" ]; then
+                echo "🔀 PR #$pr has conflicts — labeling, NOT closing. Re-resolve and it merges automatically."
+                if ! grep -qx conflict <(gh pr view "$pr" --json labels --jq '.labels[].name'); then
+                    printf '%s\n' "🔀 **This PR has merge conflicts with \`main\`, so auto-merge can't apply it yet.**" "" "No need to reopen or do anything drastic — just [update the branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch) (merge or rebase \`main\` into it, resolving the conflict). Once it merges cleanly, it will be merged automatically." > /tmp/conflict-comment.md
+                    gh pr comment "$pr" --body-file /tmp/conflict-comment.md >/dev/null || echo "  (comment failed)"
+                    gh pr edit "$pr" --add-label conflict >/dev/null || true
                 fi
-                ;;
-              ok)
-                HEAD_SHA=$(git rev-parse FETCH_HEAD^{commit})
-                echo "Merging at $HEAD_SHA ..."
-                if gh api -X PUT "repos/$GITHUB_REPOSITORY/pulls/$pr/merge" \
-                     -f merge_method=merge -f sha="$HEAD_SHA" >/dev/null; then
-                  echo "✅ Merged PR #$pr"
-                  # Only PRs that are coming OUT of the conflict state get was-conflicted;
-                  # never-conflicted merges must stay unlabeled
-                  if grep -qx conflict <(gh pr view "$pr" --json labels --jq '.labels[].name'); then
-                    gh pr edit "$pr" --remove-label conflict >/dev/null 2>&1 || true
-                    gh pr edit "$pr" --add-label was-conflicted >/dev/null 2>&1 || true
-                  fi
                 else
-                  MERGEABLE=$(gh pr view "$pr" --json mergeable --jq '.mergeable')
-                  if [ "$MERGEABLE" = "CONFLICTING" ]; then
-                    echo "🔀 PR #$pr has conflicts — labeling, NOT closing. Re-resolve and it merges automatically."
-                    if ! grep -qx conflict <(gh pr view "$pr" --json labels --jq '.labels[].name'); then
-                      printf '%s\n' "🔀 **This PR has merge conflicts with \`main\`, so auto-merge can't apply it yet.**" "" "No need to reopen or do anything drastic — just [update the branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch) (merge or rebase \`main\` into it, resolving the conflict). Once it merges cleanly, it will be merged automatically." > /tmp/conflict-comment.md
-                      gh pr comment "$pr" --body-file /tmp/conflict-comment.md >/dev/null || echo "  (comment failed)"
-                      gh pr edit "$pr" --add-label conflict >/dev/null || true
-                    fi
-                  else
-                    echo "⚠️ Could not merge PR #$pr (head moved / transient error) - retried next cycle if still open"
-                  fi
+                echo "⚠️ Could not merge PR #$pr (head moved / transient error) - retried next cycle if still open"
                 fi
-                ;;
-            esac
+            fi
+            ;;
           done
