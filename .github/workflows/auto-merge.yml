@@ -4,7 +4,7 @@ on:
   schedule:
     # Every 30 minutes (minimum interval GitHub Actions supports;
     # actual runs may be delayed by a few minutes under load)
-    - cron: "*/30 * * * *"
+    - cron: "*/1 * * * *"
   pull_request_target:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
