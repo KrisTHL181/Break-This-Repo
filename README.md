@@ -1,4 +1,4 @@
-%## Break This Repository!
+## Break This Repository!
 
 This repository automatically merges pull requests without conflicts.
 
