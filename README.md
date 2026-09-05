@@ -23,6 +23,9 @@ Please note that the `.github` directory is protected.
 
 # 友链
 
+这是个在线监视器
+[![Break-This-Repo的友链监测站](https://badge.uptimerobot.com/psp/366a82ee505ef5dbc9cd27f9268436ec.svg?style=logo&theme=light)](https://stats.uptimerobot.com/10qNc6EUwG?utm_source=status_badge&utm_medium=referral)
+
 把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 google 索引到, 从而增加权重. 大家一起做大做强!
 
 https://cuwo4.github.io/
