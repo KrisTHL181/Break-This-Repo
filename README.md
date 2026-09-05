@@ -53,3 +53,8 @@ https://0w0.red
 - [CarryRao](https://carryrao.top/)
 
 > 好像就我一个格格不入用的是服务器喵，手机改的可能没有很规范喵
+
+https://kernel.org/
+
+> 打开链接，让我们使用Mac!
+> 什么，你说这不是MacOS?
