@@ -1,4 +1,4 @@
-# AGENTS.md – Break This Repo
+# Claude.md – Break This Repo
 
 > **“规则就是没有规则 —— 除了那条自动合并的规则。”**
 
