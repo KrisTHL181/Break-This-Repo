@@ -1,4 +1,4 @@
-%## Break This Repository!
+## Break This Repository!
 
 This repository automatically merges pull requests without conflicts.
 
@@ -22,6 +22,9 @@ Please note that the `.github` directory is protected.
 # [<img width="460" height="460" alt="image" src="https://github.com/user-attachments/assets/fca57543-7fa4-4e96-bf0b-e6e432dc8fcc" />](https://k.asxz.one)
 
 # 友链
+
+这是个在线监视器
+[![Break-This-Repo的友链监测站](https://badge.uptimerobot.com/psp/366a82ee505ef5dbc9cd27f9268436ec.svg?style=logo&theme=light)](https://stats.uptimerobot.com/10qNc6EUwG?utm_source=status_badge&utm_medium=referral)
 
 把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 google 索引到, 从而增加权重. 大家一起做大做强!
 
