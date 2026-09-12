@@ -97,3 +97,7 @@ https://gavin-blog.pages.dev/
 
 
 > 别怕，我也是 cf pages！
+
+https://ricky-zhang.com
+
+> 请输入文本
