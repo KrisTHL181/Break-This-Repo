@@ -1,4 +1,3 @@
-
 ## Break This Repository!
 
 
@@ -73,6 +72,10 @@ https://alhsk.top
 
 https://0w0.red
 
+https://ftz.is-a.dev/
+
+> ftz.is-a.dev 站长表示：你见过三个免费域名两个SaaS自带域名分别部署在netlify vercel cfpages的吗
+
 想用 Linux？为什么不打开看看 https://tux.red or https://tux.ne0w0r1d.top ？
 
 凑个热闹（好长啊 https://lililbot.fentropy.dpdns.org
@@ -91,5 +94,6 @@ https://kernel.org/
 > 什么，你说这不是MacOS?
 
 https://gavin-blog.pages.dev/
+
 
 > 别怕，我也是 cf pages！
