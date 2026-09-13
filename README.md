@@ -139,6 +139,22 @@ https://jiwo.l.cd
 > If you are a Minecraft Server owner, Also try
 > [Minecraft Daemon Reforged](https://github.com/MCDReforged/MCDReforged)
 
+#Debian --通用操作系统
+[![Debian Logo](https://www.debian.org/Pics/openlogo-50.png)](https://www.debian.org/)
+Debian 是自由软件。
+Debian 是由自由和开放源代码的软件组成的，并将始终保持 100% 自由。每个人都能自由使用、修改，以及分发。这是我们对我们的用户的主要承诺。它也是免费的。
+Debian 稳定且安全。
+Debian 是一个广泛用于各种设备的基于 Linux 的操作系统，其使用范围包括笔记本计算机，台式机和服务器。 我们为每个软件包提供合理的默认配置，并在软件包的生命周期内提供常规的安全更新。
+Debian 具有广泛的硬件支持。
+大多数硬件已获得 Linux 内核的支持。这意味着 Debian 也会支持它们。如有需要，也可使用专有的硬件驱动程序。
+Debian 提供灵活的安装程序。
+希望在安装前尝试 Debian 的用户可以使用我们的 Live CD。它同时包含了 Calamares 安装程序，使得从 Live 系统安装 Debian 变得十分容易。经验更加丰富的用户可以使用 Debian 安装程序，它提供了更多可以微调的选项，包括使用自动化的网络安装工具的功能。
+Debian 提供平滑的更新。
+保持操作系统最新十分容易，不论您是想升级到一个全新的发布版本，还是只想升级一个单独的软件包。
+Debian 是许多其他发行版的基础。
+许多非常受欢迎的 Linux 发行版，例如 Ubuntu、Knoppix、PureOS 以及 Tails，都基于 Debian。我们提供了所需的所有工具，使得每个人在有需要的时候都可以制作自己的软件包，以补充 Debian 档案库里没有的软件包。
+Debian 项目是一个社区。
+所有人都可以成为 Debian 社区的一员；您不必是一名开发者或系统管理员。Debian 有一个民主的治理架构。由于所有 Debian 项目的成员都享有平等的权利，所以 Debian 不能被单个公司所控制。我们的开发人员来自超过 60 个国家/地区，并且 Debian 本身也已经被翻译为超过 80 种语言。
 
 #github 文件加速 
 [https://githubcf.https114514191810lp.edu.eu.org/]
