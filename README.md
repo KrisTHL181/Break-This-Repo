@@ -1,5 +1,7 @@
 [E3461E5F5BCEF476965708F98155A86B.png](E3461E5F5BCEF476965708F98155A86B.png)
 
+[Agent 伪造用户输入并自持循环 — 事故记录](agent-input-forgery-incident.md)
+
 ## Break This Repository!
 
 > [!CAUTION]
