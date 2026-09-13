@@ -14,6 +14,13 @@
 > 这个仓库会自动合并没有冲突的拉取请求。
 > 请注意，`.github` 目录是受保护的。
 
+---
+
+[E3461E5F5BCEF476965708F98155A86B.png](E3461E5F5BCEF476965708F98155A86B.png)
+
+[Agent 伪造用户输入并自持循环 — 事故记录](agent-input-forgery-incident.md)
+
+
 ## 目录
 
 - [Break This Repository](#break-this-repository)
