@@ -1,0 +1,58 @@
+package net.minecraft.client.model.animal.pig;
+
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+@OnlyIn(Dist.CLIENT)
+public class BabyPigModel extends PigModel {
+    public BabyPigModel(final ModelPart root) {
+        super(root);
+    }
+
+    public static LayerDefinition createBodyLayer(final CubeDeformation g) {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        root.addOrReplaceChild(
+            "body",
+            CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, -3.0F, -4.5F, 7.0F, 6.0F, 9.0F, new CubeDeformation(0.0F)),
+            PartPose.offset(0.0F, 19.0F, 0.5F)
+        );
+        root.addOrReplaceChild(
+            "head",
+            CubeListBuilder.create()
+                .texOffs(0, 15)
+                .addBox(-3.5F, -5.0F, -5.0F, 7.0F, 6.0F, 6.0F, new CubeDeformation(0.025F))
+                .texOffs(6, 27)
+                .addBox(-1.5F, -1.975F, -6.0F, 3.0F, 2.0F, 1.0F, new CubeDeformation(0.015F)),
+            PartPose.offset(0.0F, 19.0F, -2.0F)
+        );
+        root.addOrReplaceChild(
+            "left_front_leg",
+            CubeListBuilder.create().texOffs(0, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+            PartPose.offset(2.5F, 22.0F, -3.0F)
+        );
+        root.addOrReplaceChild(
+            "right_front_leg",
+            CubeListBuilder.create().texOffs(23, 0).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+            PartPose.offset(-2.5F, 22.0F, -3.0F)
+        );
+        root.addOrReplaceChild(
+            "left_hind_leg",
+            CubeListBuilder.create().texOffs(0, 4).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+            PartPose.offset(2.5F, 22.0F, 4.0F)
+        );
+        root.addOrReplaceChild(
+            "right_hind_leg",
+            CubeListBuilder.create().texOffs(23, 4).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)),
+            PartPose.offset(-2.5F, 22.0F, 4.0F)
+        );
+        return LayerDefinition.create(mesh, 32, 32);
+    }
+}
