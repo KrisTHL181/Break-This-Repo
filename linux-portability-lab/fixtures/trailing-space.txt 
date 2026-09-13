@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "trailing-space.txt "
+The space after the extension belongs to the filename.
