@@ -1,3 +1,0 @@
-Linux filename fixture. Plain text, not executable.
-Name (JSON escaped): "[ab].txt"
-Square brackets resemble a glob character class.

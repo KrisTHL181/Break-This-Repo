@@ -1,8 +1,0 @@
-{
-  "animation": {
-    "frametime": 2
-  },
-  "texture": {
-    "alpha_cutoff_bias": 0.1
-  }
-}
