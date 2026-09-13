@@ -1,0 +1,6 @@
+请按顺序上传以下 .txt 文件内容（每个文件单独发送）：
+- source_part_aa.txt
+- source_part_ab.txt
+- source_part_ac.txt（如果有）
+
+我会在收到后自动合并并分析。

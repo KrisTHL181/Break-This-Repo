@@ -1,0 +1,14 @@
+{
+    "values": [
+        "minecraft:normal",
+        "minecraft:so_high_overworld",
+        "minecraft:flat",
+        "minecraft:flat_all_dimensions",
+        "minecraft:large_biomes",
+        "minecraft:amplified",
+        "minecraft:single_biome_surface",
+        "minecraft:caves",
+        "minecraft:floating_islands",
+        "minecraft:1_18_1_overworld"
+    ]
+}
