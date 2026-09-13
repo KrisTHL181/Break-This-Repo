@@ -1,16 +1,16 @@
 ## Break This Repository!
 
+> [!CAUTION]
+> This repository automatically merges pull requests without conflicts.
+> Please note that the `.github` directory is protected.
 
+---
 
+## 破坏这个仓库！
 
-hehe am gay
-
-
-
-
-This repository automatically merges pull requests without conflicts.
-
-Please note that the `.github` directory is protected.
+> [!CAUTION]
+> 这个仓库会自动合并没有冲突的拉取请求。
+> 请注意，`.github` 目录是受保护的。
 
 ---
 
@@ -56,7 +56,7 @@ Please note that the `.github` directory is protected.
 这是个在线监视器
 [![Break-This-Repo的友链监测站](https://badge.uptimerobot.com/psp/366a82ee505ef5dbc9cd27f9268436ec.svg?style=logo&theme=light)](https://stats.uptimerobot.com/10qNc6EUwG?utm_source=status_badge&utm_medium=referral)
 
-把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 google 索引到, 从而增加权重. 大家一起做大做强!
+把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 ~~google~~ 搜索引擎 索引到, 从而增加权重. 大家一起做大做强!
 
 https://cuwo4.github.io/
 
@@ -104,3 +104,9 @@ https://ricky-zhang.com
 
 https://imjerrychu.com/
 >见过没有内容的网站吗？-JerryC
+
+https://Enchantment-Niko.github.io/
+> [Enchantment-Niko](https://github.com/Enchantment-Niko) 到此一游
+
+> [!important]
+> Also try Minecraft and Terraria
