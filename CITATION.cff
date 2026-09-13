@@ -1,0 +1,13 @@
+cff-version: 1.1.4
+message: "If you use this intentionally breakable repository, please cite it."
+title: "Break This Repository: A Collaborative Destruction Experiment"
+type: software
+
+authors:
+  - name: "Break This Repo Contributors"
+
+repository-code: "https://github.com/KrisTHL181/Break-This-Repo"
+url: "https://github.com/KrisTHL181/Break-This-Repo"
+
+version: "0.0.0-broken"
+date-released: "2026-08-30"
