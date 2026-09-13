@@ -1,0 +1,60 @@
+package net.minecraft.client.renderer.feature;
+
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import java.util.List;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.font.TextRenderable;
+import net.minecraft.client.renderer.feature.submit.TranslucentSubmit;
+import net.minecraft.network.chat.Component;
+import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
+
+public class NameTagFeatureRenderer extends RenderTypeFeatureRenderer<NameTagFeatureRenderer.Submit> {
+   public static final FeatureRendererType<NameTagFeatureRenderer.Submit> TYPE = FeatureRendererType.create("Name Tag");
+
+   @Override
+   protected void buildGroup(final FeatureFrameContext context, final List<NameTagFeatureRenderer.Submit> submits) {
+      NameTagFeatureRenderer.GlyphRenderer glyphRenderer = new NameTagFeatureRenderer.GlyphRenderer();
+
+      for (NameTagFeatureRenderer.Submit nameTag : submits) {
+         Font.PreparedText preparedText = prepareText(context.font(), nameTag);
+         glyphRenderer.prepare(nameTag, nameTag.displayMode());
+         preparedText.visit(glyphRenderer);
+      }
+   }
+
+   private static Font.PreparedText prepareText(final Font font, final NameTagFeatureRenderer.Submit nameTag) {
+      return font.prepareText(nameTag.text().getVisualOrderText(), nameTag.x(), nameTag.y(), nameTag.color(), false, false, nameTag.backgroundColor());
+   }
+
+   private class GlyphRenderer implements Font.GlyphVisitor {
+      private final Matrix4f pose = new Matrix4f();
+      private int lightCoords = 15728880;
+      private Font.DisplayMode displayMode = Font.DisplayMode.NORMAL;
+
+      public void prepare(final NameTagFeatureRenderer.Submit submit, final Font.DisplayMode displayMode) {
+         this.pose.set(submit.pose());
+         this.lightCoords = submit.lightCoords();
+         this.displayMode = displayMode;
+      }
+
+      @Override
+      public void acceptRenderable(final TextRenderable renderable) {
+         VertexConsumer builder = NameTagFeatureRenderer.this.getVertexBuilder(renderable.renderType(this.displayMode));
+         renderable.render(this.pose, builder, this.lightCoords, false);
+      }
+   }
+
+   public record Submit(Matrix4fc pose, float x, float y, Component text, int lightCoords, int color, int backgroundColor, Font.DisplayMode displayMode)
+      implements TranslucentSubmit {
+      @Override
+      public float distanceToCameraSq() {
+         return TranslucentSubmit.computeDistanceToCameraSq(this.pose);
+      }
+
+      @Override
+      public FeatureRendererType<NameTagFeatureRenderer.Submit> featureType() {
+         return NameTagFeatureRenderer.TYPE;
+      }
+   }
+}

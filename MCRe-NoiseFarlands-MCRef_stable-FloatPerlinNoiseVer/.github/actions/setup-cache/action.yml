@@ -1,0 +1,27 @@
+name: Setup cache
+description: Sets up sccache, CPM cache, etc.
+
+inputs:
+  host:
+    description: 'Host platform: win or linux'
+    required: true
+  target:
+    description: 'Target platform: win, linux'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+  - name: Setup sccache
+    uses: hendrikmuhs/ccache-action@v1.2.13
+    with:
+      variant: sccache
+      key: ${{ inputs.target }}-v1
+
+  - name: Setup CPM Cache
+    uses: actions/cache@v4
+    with:
+      path: cpm-cache
+      key: cpm-${{ inputs.target }}-v1-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+      restore-keys: |
+        cpm-${{ inputs.target }}-v1-
