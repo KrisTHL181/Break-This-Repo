@@ -108,5 +108,9 @@ https://imjerrychu.com/
 https://Enchantment-Niko.github.io/
 > [Enchantment-Niko](https://github.com/Enchantment-Niko) 到此一游
 
+https://caiyan12.github.io/
+
+> 感谢大哥提供的免费贡献一条
+
 > [!important]
 > Also try Minecraft and Terraria
