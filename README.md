@@ -22,6 +22,11 @@
 	- [C++ with Meson](#c-with-meson)
 	- [Python and Rust with maturin](#python-and-rust-with-maturin)
 	- [TypeScript with Hereby](#typescript-with-hereby)
+- [Linux distribution packages](#linux-distribution-packages)
+	- [Debian and Ubuntu](#debian-and-ubuntu)
+	- [Arch Linux](#arch-linux)
+	- [Fedora](#fedora)
+	- [Gentoo](#gentoo)
 - [相关文件](#相关文件)
 - [友链](#友链)
 
@@ -123,6 +128,65 @@ npm run build:compiler
 ## 重要补充
 
 编译时请准备至少114GB的内存和不少于514GB的存储空间，需要使用1919810核的CPU在10GHz下运行
+
+## Linux distribution packages
+
+发行版打包模板位于 `debian/` 和 `packaging/`。这些包安装 C++ 命令行程序 `fozu` 和 `what`；Python/Rust 扩展仍请使用上面的 maturin 流程。仓库目前没有声明统一的开源许可证，正式发布前请先确认并替换各打包文件中的许可证字段。
+
+### Debian and Ubuntu
+
+需要 `dpkg-buildpackage`、Debhelper、CMake 和 GCC：
+
+```bash
+sudo apt update
+sudo apt install build-essential cmake debhelper devscripts
+dpkg-buildpackage -us -uc
+sudo apt install ../break-this-repo_0.0.0_$(dpkg --print-architecture).deb
+```
+
+也可以直接安装已构建的 `.deb` 文件：
+
+```bash
+sudo apt install ./break-this-repo_*.deb
+```
+
+### Arch Linux
+
+需要 `base-devel`、CMake 和 GCC。先从源码生成与 `PKGBUILD` 版本匹配的归档文件：
+
+```bash
+sudo pacman -S --needed base-devel cmake gcc
+git archive --format=tar.gz --prefix=break-this-repo-0.0.0/ \
+	-o packaging/archlinux/break-this-repo-0.0.0.tar.gz HEAD
+cd packaging/archlinux
+makepkg -si
+```
+
+### Fedora
+
+需要 RPM 构建工具、CMake 和 GCC：
+
+```bash
+sudo dnf install @development-tools cmake rpmdevtools
+rpmdev-setuptree
+git archive --format=tar.gz --prefix=break-this-repo-0.0.0/ \
+	-o ~/rpmbuild/SOURCES/break-this-repo-0.0.0.tar.gz HEAD
+rpmbuild -ba packaging/fedora/break-this-repo.spec
+sudo dnf install ~/rpmbuild/RPMS/$(uname -m)/break-this-repo-0.0.0-1.*.rpm
+```
+
+### Gentoo
+
+将 ebuild 复制到本地 overlay，然后让 Portage 生成 Manifest 并安装：
+
+```bash
+sudo mkdir -p /var/db/repos/local/app-misc/break-this-repo
+sudo cp packaging/gentoo/app-misc/break-this-repo/* \
+	/var/db/repos/local/app-misc/break-this-repo/
+cd /var/db/repos/local/app-misc/break-this-repo
+sudo ebuild break-this-repo-0.0.0.ebuild manifest
+sudo emerge --ask app-misc/break-this-repo
+```
 
 ## 相关文件
 

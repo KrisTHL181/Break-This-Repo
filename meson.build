@@ -5,9 +5,9 @@ project(
   default_options: ['cpp_std=c++11'],
 )
 
-executable('fozu', 'fozu.cpp')
-executable('what', 'what.cpp')
+executable('fozu', 'fozu.cpp', install: true)
+executable('what', 'what.cpp', install: true)
 
 if host_machine.system() == 'windows'
-  executable('beep_win', 'beep_win.cpp', win_subsystem: 'windows')
+  executable('beep_win', 'beep_win.cpp', win_subsystem: 'windows', install: true)
 endif
