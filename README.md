@@ -134,6 +134,9 @@ https://jiwo.l.cd
 
 https://airoj.cn
 
+> zhiyuHD
+https://zhiyuhub.top
+
 > AirOJ | 开放、和谐（？）、抽象、土豆、卡顿的 Online Judge 系统
 > 感谢 KrisTHL181 大哥提供的免费贡献 6 条
 
