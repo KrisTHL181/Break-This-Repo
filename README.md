@@ -379,3 +379,6 @@ Debian 是一个广泛用于各种设备的基于 Linux 的操作系统，其使
 
 # github 文件加速 
 [https://githubcf.https114514191810lp.edu.eu.org/]
+
+# 真正的 github 文件加速 
+[https://gh-proxy.com/]
