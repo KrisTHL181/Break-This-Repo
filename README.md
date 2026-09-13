@@ -382,3 +382,6 @@ Debian 是一个广泛用于各种设备的基于 Linux 的操作系统，其使
 
 # 真正的 github 文件加速 
 [https://gh-proxy.com/]
+
+# 冷知识
+按一下"."可以进入网页版微软大战代码(VS Code)
