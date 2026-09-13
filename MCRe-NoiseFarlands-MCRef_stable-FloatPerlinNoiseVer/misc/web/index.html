@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MCPE 0.6.1</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+
+    #canvas {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<script>
+  var Module = {
+    canvas: document.getElementById('canvas'),
+    onRuntimeInitialized: function () { resizeCanvas() }
+  };
+
+  function resizeCanvas() {
+    const canvas = Module.canvas;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('onunload', () => {
+    FS.syncfs(true, function (err) { console.log('Sync FS failed: ' + err) });
+  })
+</script>
+
+<script src="MinecraftPE.js"></script>
+</body>
+</html>

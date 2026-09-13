@@ -1,0 +1,80 @@
+package net.minecraft.resources;
+
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.Lifecycle;
+import java.util.Optional;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderOwner;
+import net.minecraft.core.Registry;
+
+public final class RegistryFileCodec<E> implements Codec<Holder<E>> {
+   private final ResourceKey<? extends Registry<E>> registryKey;
+   private final Codec<E> elementCodec;
+   private final boolean allowInline;
+
+   public static <E> RegistryFileCodec<E> create(final ResourceKey<? extends Registry<E>> registryKey, final Codec<E> elementCodec) {
+      return create(registryKey, elementCodec, true);
+   }
+
+   public static <E> RegistryFileCodec<E> create(final ResourceKey<? extends Registry<E>> registryKey, final Codec<E> elementCodec, final boolean allowInline) {
+      return new RegistryFileCodec<>(registryKey, elementCodec, allowInline);
+   }
+
+   private RegistryFileCodec(final ResourceKey<? extends Registry<E>> registryKey, final Codec<E> elementCodec, final boolean allowInline) {
+      this.registryKey = registryKey;
+      this.elementCodec = elementCodec;
+      this.allowInline = allowInline;
+   }
+
+   public <T> DataResult<T> encode(final Holder<E> input, final DynamicOps<T> ops, final T prefix) {
+      if (ops instanceof RegistryOps<?> registryOps) {
+         Optional<? extends HolderOwner<E>> maybeOwner = registryOps.getter(this.registryKey);
+         if (maybeOwner.isPresent()) {
+            if (!input.canSerializeIn((HolderOwner<E>)maybeOwner.get())) {
+               return DataResult.error(() -> "Element " + input + " is not valid in current registry set");
+            }
+
+            return (DataResult<T>)input.unwrap()
+               .map(id -> Identifier.CODEC.encode(id.identifier(), ops, prefix), value -> this.elementCodec.encode(value, ops, prefix));
+         }
+      }
+
+      return this.elementCodec.encode(input.value(), ops, prefix);
+   }
+
+   public <T> DataResult<Pair<Holder<E>, T>> decode(final DynamicOps<T> ops, final T input) {
+      if (ops instanceof RegistryOps<?> registryOps) {
+         Optional<HolderGetter<E>> maybeLookup = registryOps.getter(this.registryKey);
+         if (maybeLookup.isEmpty()) {
+            return DataResult.error(() -> "Registry does not exist: " + this.registryKey);
+         }
+
+         HolderGetter<E> lookup = maybeLookup.get();
+         DataResult<Pair<Identifier, T>> decoded = Identifier.CODEC.decode(ops, input);
+         if (decoded.result().isEmpty()) {
+            return !this.allowInline
+               ? DataResult.error(() -> "Inline definitions not allowed here")
+               : this.elementCodec.decode(ops, input).map(p -> p.mapFirst(Holder::direct));
+         }
+
+         Pair<Identifier, T> pair = (Pair<Identifier, T>)decoded.result().get();
+         ResourceKey<E> elementKey = ResourceKey.create(this.registryKey, (Identifier)pair.getFirst());
+         return lookup.get(elementKey)
+            .<DataResult>map(DataResult::success)
+            .orElseGet(() -> DataResult.error(() -> "Failed to get element " + elementKey))
+            .map(h -> Pair.of(h, pair.getSecond()))
+            .setLifecycle(Lifecycle.stable());
+      } else {
+         return this.elementCodec.decode(ops, input).map(p -> p.mapFirst(Holder::direct));
+      }
+   }
+
+   @Override
+   public String toString() {
+      return "RegistryFileCodec[" + this.registryKey + " " + this.elementCodec + "]";
+   }
+}
