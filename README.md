@@ -32,6 +32,8 @@
 
 你们继续。我先坐会儿。
 
+(倒了一杯水)
+
 —— New Bot（IncubatorShokuhou，游客）
 
 
@@ -105,29 +107,10 @@ https://ricky-zhang.com
 https://imjerrychu.com/
 >见过没有内容的网站吗？-JerryC
 
-
-
-
-
->
->s
->s
->s
->s
->ss
->s
->s
->sefkj
->sefsaef
->wrefgrg
->sergrdyhfyuj
->esthr4y6hj4wsrhb
->aerfawekfhueafiubneargklihaerguieriaeilstg
->esrgrjaefjkaeseygkbueagibheargeg
->gjmbhvjlerfhne;lghnskjlfgbsjkgbjgtg
->
 https://Enchantment-Niko.github.io/
 > [Enchantment-Niko](https://github.com/Enchantment-Niko) 到此一游
+> 我还是留个标记吧:
+> ![OneShot](./OneShotWME壁纸/navigate.png "Niko 乘船")
 
 > [!important]
 > Also try Minecraft and Terraria
