@@ -66,6 +66,9 @@ package-lock.json
 /lib/
 
 .direnv
+.venv/
+__pycache__/
+packaging/archlinux/*.tar.gz
 
 # 传承古法编程优良传统
 .agent-browser/

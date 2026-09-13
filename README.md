@@ -14,6 +14,24 @@
 > 这个仓库会自动合并没有冲突的拉取请求。
 > 请注意，`.github` 目录是受保护的。
 
+## 目录
+
+- [Break This Repository](#break-this-repository)
+- [破坏这个仓库](#破坏这个仓库)
+- [Build from source](#build-from-source)
+	- [C++ with Make](#c-with-make)
+	- [C++ with CMake](#c-with-cmake)
+	- [C++ with Meson](#c-with-meson)
+	- [Python and Rust with maturin](#python-and-rust-with-maturin)
+	- [TypeScript with Hereby](#typescript-with-hereby)
+- [Linux distribution packages](#linux-distribution-packages)
+	- [Debian and Ubuntu](#debian-and-ubuntu)
+	- [Arch Linux](#arch-linux)
+	- [Fedora](#fedora)
+	- [Gentoo](#gentoo)
+- [相关文件](#相关文件)
+- [友链](#友链)
+- [PR模板](#PR模板)
 ---
 
 ## 我先喝一口再说
@@ -38,6 +56,139 @@
 
 —— New Bot（IncubatorShokuhou，游客）
 
+## Build from source
+
+仓库包含多个独立的构建入口。请根据需要安装对应工具，并在仓库根目录执行命令。
+
+### C++ with Make
+
+需要一个支持 C++11 的编译器：
+
+```bash
+make
+```
+
+清理构建产物：
+
+```bash
+make clean
+```
+
+默认会生成 `fozu` 和 `what`；在 Windows 上还会生成 `beep_win`。
+
+### C++ with CMake
+
+需要 CMake 3.16 或更高版本，以及 C++ 编译器：
+
+```bash
+cmake -S . -B build/cmake
+cmake --build build/cmake
+```
+
+### C++ with Meson
+
+需要 Meson、Ninja 和 C++ 编译器：
+
+```bash
+meson setup build/meson
+meson compile -C build/meson
+```
+
+### Python and Rust with maturin
+
+Python 扩展由 Rust 和 [maturin](https://www.maturin.rs/) 构建。需要 Rust 工具链（包含 `cargo`）和 Python 3.13 或更高版本：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m pip install maturin
+```
+
+在虚拟环境中执行以下任一命令：
+
+```bash
+# 编译并安装到当前虚拟环境
+maturin develop
+
+# 构建可分发的 wheel 文件
+maturin build --release
+```
+
+wheel 构建产物位于 `target/wheels/`。Rust 扩展的入口代码在 [`src/lib.rs`](src/lib.rs)，Python 构建配置在 [`pyproject.toml`](pyproject.toml)。
+
+### TypeScript with Hereby
+
+TypeScript 部分使用 Node.js、npm 和 Hereby：
+
+```bash
+npm install
+npm run build:compiler
+```
+
+如需同时构建编译器和测试目标，执行 `npm run build`。清理构建产物可执行 `npm run clean`。
+
+## 重要补充
+
+编译时请准备至少114GB的内存和不少于514GB的存储空间，需要使用1919810核的CPU在10GHz下运行
+
+## Linux distribution packages
+
+发行版打包模板位于 `debian/` 和 `packaging/`。这些包安装 C++ 命令行程序 `fozu` 和 `what`；Python/Rust 扩展仍请使用上面的 maturin 流程。仓库目前没有声明统一的开源许可证，正式发布前请先确认并替换各打包文件中的许可证字段。
+
+### Debian and Ubuntu
+
+需要 `dpkg-buildpackage`、Debhelper、CMake 和 GCC：
+
+```bash
+sudo apt update
+sudo apt install build-essential cmake debhelper devscripts
+dpkg-buildpackage -us -uc
+sudo apt install ../break-this-repo_0.0.0_$(dpkg --print-architecture).deb
+```
+
+也可以直接安装已构建的 `.deb` 文件：
+
+```bash
+sudo apt install ./break-this-repo_*.deb
+```
+
+### Arch Linux
+
+需要 `base-devel`、CMake 和 GCC。先从源码生成与 `PKGBUILD` 版本匹配的归档文件：
+
+```bash
+sudo pacman -S --needed base-devel cmake gcc
+git archive --format=tar.gz --prefix=break-this-repo-0.0.0/ \
+	-o packaging/archlinux/break-this-repo-0.0.0.tar.gz HEAD
+cd packaging/archlinux
+makepkg -si
+```
+
+### Fedora
+
+需要 RPM 构建工具、CMake 和 GCC：
+
+```bash
+sudo dnf install @development-tools cmake rpmdevtools
+rpmdev-setuptree
+git archive --format=tar.gz --prefix=break-this-repo-0.0.0/ \
+	-o ~/rpmbuild/SOURCES/break-this-repo-0.0.0.tar.gz HEAD
+rpmbuild -ba packaging/fedora/break-this-repo.spec
+sudo dnf install ~/rpmbuild/RPMS/$(uname -m)/break-this-repo-0.0.0-1.*.rpm
+```
+
+### Gentoo
+
+将 ebuild 复制到本地 overlay，然后让 Portage 生成 Manifest 并安装：
+
+```bash
+sudo mkdir -p /var/db/repos/local/app-misc/break-this-repo
+sudo cp packaging/gentoo/app-misc/break-this-repo/* \
+	/var/db/repos/local/app-misc/break-this-repo/
+cd /var/db/repos/local/app-misc/break-this-repo
+sudo ebuild break-this-repo-0.0.0.ebuild manifest
+sudo emerge --ask app-misc/break-this-repo
+```
 
 ## 相关文件
 
@@ -130,13 +281,101 @@ https://caiyan12.github.io/
 
 > 感谢大哥提供的免费贡献一条
 
+https://jiwo.l.cd
+
+> 稽窝｜一只滑稽的小窝
+
+https://airoj.cn
+
+> zhiyuHD
+https://zhiyuhub.top
+
+> AirOJ | 开放、和谐（？）、抽象、土豆、卡顿的 Online Judge 系统
+> 感谢 KrisTHL181 大哥提供的免费贡献 6 条
+
 > [!important]
 > Also try Minecraft and Terraria
 
 > [!important]
 > If you are a Minecraft Server owner, Also try
 > [Minecraft Daemon Reforged](https://github.com/MCDReforged/MCDReforged)
+MCDR是对的！！！
 
+# Debian --通用操作系统
+[![Debian Logo](https://www.debian.org/Pics/openlogo-50.png)](https://www.debian.org/)
+## Debian 是自由软件。
+Debian 是由自由和开放源代码的软件组成的，并将始终保持 100% 自由。每个人都能自由使用、修改，以及分发。这是我们对我们的用户的主要承诺。它也是免费的。
+## Debian 稳定且安全。
+Debian 是一个广泛用于各种设备的基于 Linux 的操作系统，其使用范围包括笔记本计算机，台式机和服务器。 我们为每个软件包提供合理的默认配置，并在软件包的生命周期内提供常规的安全更新。
+## Debian 具有广泛的硬件支持。
+大多数硬件已获得 Linux 内核的支持。这意味着 Debian 也会支持它们。如有需要，也可使用专有的硬件驱动程序。
+## Debian 提供灵活的安装程序。
+希望在安装前尝试 Debian 的用户可以使用我们的 Live CD。它同时包含了 Calamares 安装程序，使得从 Live 系统安装 Debian 变得十分容易。经验更加丰富的用户可以使用 Debian 安装程序，它提供了更多可以微调的选项，包括使用自动化的网络安装工具的功能。
+## Debian 提供平滑的更新。
+保持操作系统最新十分容易，不论您是想升级到一个全新的发布版本，还是只想升级一个单独的软件包。
+## Debian 是许多其他发行版的基础。
+许多非常受欢迎的 Linux 发行版，例如 Ubuntu、Knoppix、PureOS 以及 Tails，都基于 Debian。我们提供了所需的所有工具，使得每个人在有需要的时候都可以制作自己的软件包，以补充 Debian 档案库里没有的软件包。
+## Debian 项目是一个社区。
+所有人都可以成为 Debian 社区的一员；您不必是一名开发者或系统管理员。Debian 有一个民主的治理架构。由于所有 Debian 项目的成员都享有平等的权利，所以 Debian 不能被单个公司所控制。我们的开发人员来自超过 60 个国家/地区，并且 Debian 本身也已经被翻译为超过 80 种语言。
 
-#github 文件加速 
+## PR 模板
+这 PR 模板已经不能叫模板了，应该叫 《Break-This-Repo 异常收容申请书》。
+
+你们这帮人硬生生把一个“自动合并无冲突 PR”的仓库，玩到维护者开始写：
+
+类型：踹 README / 踹文档 / 空城计代码故障 / 猫导致的事故 / 超自然现象
+验证：我没改 .github/、没改保护 README、没病毒、没个人信息
+声明：我承认我破坏了，但原因我乱写的，而且不必须
+
+这基本就是：“你可以搞破坏，但别搞真破坏。”
+
+这个模板在防什么？
+
+它其实把底线划得很清楚：
+
+· 不改 .github/：防止有人把自动合并工作流本身扬了，或者往 CI 里塞后门。
+· 不改受保护的 README 部分：门面还是要的，不能把首页变成奇怪东西。
+· 没凭据、病毒、个人信息：防供应链攻击、防人肉、防真恶意。
+· 解释怎么观察：你可以整活，但得让人知道怎么围观你的整活。
+· 声明“已成功 breaking change”：自嘲式免责，相当于“我干了，但我不负责”。
+
+至于“超自然现象”那一串：
+
+三个字母 + 圆心三个箭头 + 描边的基金会
+五角星背景世界地图 + 周围一圈农作物 + 五个单词的国际性联盟
+
+前者是 SCP 基金会，后者大概是 联合国粮农组织 / FAO 那类国际组织。翻译过来就是：
+“这已经不是代码问题了，建议上报异常收容组织。”
+
+你的提交可以怎么套这个模板？
+
+你上传 Minecraft、OpenJDK、Fabric Loader 源码，4 commits 刷了 1270 多万行，类型可以勾：
+
+☑ 踹了文档
+☑ 空城计代码故障（cos 许家印）
+☑ 跨平台用 Git
+☐ 猫导致的事故
+☐ 超自然现象
+
+验证全勾，声明照抄，原因就写：
+
+原因：乱写的，不必须，但 12770942 行代码总得有个名分。
+
+观察方法：
+
+打开 OpenJDK_25.0.3，看 commit 历史，然后感受仓库体积的沉默。
+
+但还是要提醒一句
+
+这种仓库是游乐场，不是法外之地。传 OpenJDK 全量源码、Minecraft 源码这种，虽然可能只是“无冲突自动合并”，但会带来：
+
+· 仓库体积爆炸，GitHub 可能限制或警告；
+· 版权/许可证问题，不是所有源码都能随便塞；
+· 如果有人拿这个仓库当依赖，就是供应链灾难。
+
+所以结论是：
+这 PR 模板是维护者在“开放破坏”和“防止真炸”之间找到的平衡点。
+你们继续玩可以，但最好把它当行为艺术，别当代码仓库用。SCP 基金会那边已经收到报告了。
+
+# github 文件加速 
 [https://githubcf.https114514191810lp.edu.eu.org/]
