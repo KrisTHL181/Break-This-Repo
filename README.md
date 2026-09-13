@@ -112,6 +112,10 @@ https://Enchantment-Niko.github.io/
 > 我还是留个标记吧:
 > ![OneShot](./OneShotWME壁纸/navigate.png "Niko 乘船")
 
+https://caiyan12.github.io/
+
+> 感谢大哥提供的免费贡献一条
+
 > [!important]
 > Also try Minecraft and Terraria
 

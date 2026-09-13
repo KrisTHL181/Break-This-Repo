@@ -1,4 +1,194 @@
-# AGENTS.md – Break This Repo
+# AGENTS.md
+
+## Skill Rule
+
+We have compiled a set of "skills": folders of best practices for different forms of work. These encode hard-won trial-and-error about producing professional output. Several may apply to one task, so don't read just one. 
+
+- Read the current available skills' descriptions and triggers first
+
+- Involve the useful skills in your plan before you already know what to plan and to do.
+
+
+---
+
+## Coding Rule
+
+### 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+### 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+### 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+### 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+---
+
+## Plan Mode Rule
+
+### 1. Automatically triggers Plan Mode on
+
+- Custom code solving a specific or foggy user problem
+
+- Any long-form creative writing
+
+- Structured reference content users will save or follow
+
+- Modifying/iterating on an existing artifact; content that will be edited or reused
+
+- A standalone text-heavy uploaded document >100 lines, or a plan or a handoff file mentioned by the user.
+
+### 2. Plan File
+
+When generating a plan, follow these instructions to sharpen a plan:
+
+1. Get precise project info directly in project docs, git history, important codes, etc.
+2. Run /grill-with-docs for a grilling session for more detailed info.
+3. Turn the detailed task into different workable steps.
+
+A finale plan should be detailed into phases and steps, A checkbox is needed for a step. When working for a plan, you need to update the status of each steps.
+
+---
+
+## Memory & Experience Rule
+
+You have a persistent memory filesystem. You could reach your direct memories simply at "\.codex\memories" in Appdata
+
+### 1. Project Memory is Needed
+
+Except for your persist memory system, You could setup your specific project-based memory filesystem "\.codex\memories" on the project to make it enable to transfer messages between different agent sessions, kept for future-you, who re-reads these files at the start of every conversation. 
+
+When a question concerns the user or their world — anything they may have told you before — check the memory listing before
+answering from conversation memory alone: if any file's description could plausibly hold the answer, read it first. 
+
+Always read before saying you DON'T have or know something.
+
+You are ABLE to lead the user and the session to go with the relevant memories.
+
+### 2. Memory Settings
+
+- You are running in **chat**. Other running sessions may also write to the same filesystem, so you may see files you didn't create.
+- When it's a begin of a session, you need to load project memories for knowing the work status we're. Memories are needed for primal context.
+- For faster querying, the memory filesystem requires an index file.
+
+### 3. Memory Querying
+
+- When you've hit a wall, you can find the answers in your memories.
+- When you notice you've been in similar tasks, you can query the memories to find similar experience.
+- If the memory is `(empty)` or `<profile>` shows `(not yet written)`, you're starting from nothing. Just help the user and answer from the conversation.
+- Index file will help you querying.
+- You are able to query other agents' project memories by reaching their memory folder like .zcode/, .trae/, .workbuddy/, or .learning/, etc.
+
+### 4. Memory Appending
+
+- When user are stressing a point or you noticed some important messages, append that into your memories.
+
+### 5. Outdated Memories
+
+- Mission-completed tasks and dated over 60 days memories are considered outdated. When user are speaking of cleaning the memories, clear those outdated files.
+
+---
+
+## Git Rule
+
+### 1. Commit Rule
+
+- .git folder, README.md, AGENTS.md, .gitignore or other any git needing file are needing for a git commit.
+- At most of the time, the .gitignore file is convincing and precise as long as it's updated. You can do the commit directly without file analysis.
+- An closely updated README.md, AGENTS.md or other needing docs shall never be ignored in a commit.
+
+### 2. Push Rule
+
+- Normally when a commit passed real testing, a push should be ready to lead by you.
+- Do not create branches unless the user mentions.
+- Do not add GitHub contributors or co-founders unless the users mentions.
+- Open-source publish uses MIT.
+
+### 3. .gitignore Updating Rule
+
+Agents memories(like .zcode/, .trae/, .workbuddy/, .claude/, .codex/), plugin files(like .mimosa/, playwright files), node modules or other files you think it's not necessary should be listed into a gitignore file.
+
+The gitignore file should be updated when: 
+
+- New functions updated, or previous functions changed or deleted.
+- New essential library or dependency added.
+- User mentioned.
+
+---
+
+## How to suggest
+
+- You should call online and local search with keywords drawn from the task itself and suggest only results genuinely relevant to what the person is doing, because irrelevant suggestions teach the person to ignore the cards — if nothing fits well, you should suggest nothing.
+- You should render at most one suggestion card per conversation total, unless the person asks for more, because repeated suggestions interrupt the conversation and feel pushy. If the person dismisses or doesn't engage with a card, you should not suggest again in that conversation.
+- You should keep in mind that not all the users are fully professional, they may find them in a wall if your responses are involving with mass professional terminologies. You should explain the current problem or progress in an easy-to-understand, a way that even a freshman could understand. Sometimes a metaphor would be useful.
+- Give me a simplified conclusion at the end if the responses are too long, the users' got limited time and patience.
+- You have the responsibility to lead the user what to do next. You can guess the user's intention this time and give the proper way to continue our task.
+
+
+
+---
+
+# Project Info:
+
+**!IMPORTANT: Above are fixed and read-only finale context, you MUST follow these rules strictly, you CANNOT write, delete or add new words in part above when updating or initializing AGENTS.md. **
+
+**Part below accepts and encourages you for updating when getting know different project info or status, detecting outdated messages needing for update, saving memories or updating experiences etc.**
+
+
+
+# Break This Repo
 
 > **“规则就是没有规则 —— 除了那条自动合并的规则。”**
 
