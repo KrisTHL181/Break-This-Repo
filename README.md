@@ -1,4 +1,3 @@
-
 ## Break This Repository!
 
 > [!CAUTION]
@@ -22,22 +21,51 @@
 
 ## 目录
 
-- [Break This Repository](#break-this-repository)
-- [破坏这个仓库](#破坏这个仓库)
-- [Build from source](#build-from-source)
-	- [C++ with Make](#c-with-make)
-	- [C++ with CMake](#c-with-cmake)
-	- [C++ with Meson](#c-with-meson)
-	- [Python and Rust with maturin](#python-and-rust-with-maturin)
-	- [TypeScript with Hereby](#typescript-with-hereby)
-- [Linux distribution packages](#linux-distribution-packages)
-	- [Debian and Ubuntu](#debian-and-ubuntu)
-	- [Arch Linux](#arch-linux)
-	- [Fedora](#fedora)
-	- [Gentoo](#gentoo)
-- [相关文件](#相关文件)
+<!--toc:start-->
+  - [Break This Repository!](#break-this-repository)
+  - [破坏这个仓库！](#破坏这个仓库)
+  - [目录](#目录)
+- [想到什么说什么](#想到什么说什么)
+  - [嘿嘿嘿哈](#嘿嘿嘿哈)
+    - [[dream away](https://www.bilibili.com/video/BV1nC41137aW)真好听吧](#dream-awayhttpswwwbilibilicomvideobv1nc41137aw真好听吧)
+  - [hyw](#hyw)
+  - [我先喝一口再说](#我先喝一口再说)
+  - [Build from source](#build-from-source)
+    - [C++ with Make](#c-with-make)
+    - [C++ with CMake](#c-with-cmake)
+    - [C++ with Meson](#c-with-meson)
+    - [Python and Rust with maturin](#python-and-rust-with-maturin)
+    - [TypeScript with Hereby](#typescript-with-hereby)
+  - [重要补充](#重要补充)
+  - [Linux distribution packages](#linux-distribution-packages)
+    - [Debian and Ubuntu](#debian-and-ubuntu)
+    - [Arch Linux](#arch-linux)
+    - [Fedora](#fedora)
+    - [Gentoo](#gentoo)
+  - [相关文件](#相关文件)
+- [show you my cat](#show-you-my-cat)
+- [Hello, Mayx](#hello-mayx)
+  - [Follow Me On [Mabbs](https://github.com/Mabbs)](#follow-me-on-mabbshttpsgithubcommabbs)
+- [BREAKING:Deepseek V4.5 Flash Preview just released!](#breakingdeepseek-v45-flash-preview-just-released)
+- [[<img width="460" height="460" alt="image" src="https://github.com/user-attachments/assets/fca57543-7fa4-4e96-bf0b-e6e432dc8fcc" />](https://k.asxz.one)](#img-width460-height460-altimage-srchttpsgithubcomuser-attachmentsassetsfca57543-7fa4-4e96-bf0b-e6e432dc8fcc-httpskasxzone)
+- [BREAKING:Deepsuck R2 Flash Preview just released!](#breakingdeepsuck-r2-flash-preview-just-released)
+- [[<img width="460" height="460" alt="image" src="https://github.com/user-attachments/assets/fca57543-7fa4-4e96-bf0b-e6e432dc8fcc" />](https://k.asxz.one)](#img-width460-height460-altimage-srchttpsgithubcomuser-attachmentsassetsfca57543-7fa4-4e96-bf0b-e6e432dc8fcc-httpskasxzone-1)
 - [友链](#友链)
-- [PR模板](#PR模板)
+- [Debian --通用操作系统](#debian-通用操作系统)
+  - [Debian 是自由软件。](#debian-是自由软件)
+  - [Debian 稳定且安全。](#debian-稳定且安全)
+  - [Debian 具有广泛的硬件支持。](#debian-具有广泛的硬件支持)
+  - [Debian 提供灵活的安装程序。](#debian-提供灵活的安装程序)
+  - [Debian 提供平滑的更新。](#debian-提供平滑的更新)
+  - [Debian 是许多其他发行版的基础。](#debian-是许多其他发行版的基础)
+  - [Debian 项目是一个社区。](#debian-项目是一个社区)
+  - [PR 模板](#pr-模板)
+- [github 文件加速](#github-文件加速)
+- [真正的 github 文件加速](#真正的-github-文件加速)
+- [冷知识](#冷知识)
+  - [现场基础设施考古档案](#现场基础设施考古档案)
+<!--toc:end-->
+
 ---
 
 
