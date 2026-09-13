@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>陆离 · 前端炼金术士 — HD-2D 个人主页</title>
+<meta name="description" content="一个前端开发者的 HD-2D 立体透视模型风格个人主页：像素地景、移轴景深、日夜更替，以及他做过的项目。">
+<meta name="theme-color" content="#05070f">
+<meta name="color-scheme" content="dark">
+
+<meta property="og:type" content="profile">
+<meta property="og:title" content="陆离 · 前端炼金术士">
+<meta property="og:description" content="把手写的每一行代码，锻造成会呼吸的界面。">
+
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2305070f'/%3E%3Cpath d='M8 2l4 4-4 8-4-8z' fill='%236ff0e0'/%3E%3C/svg%3E">
+</head>
+
+<body class="is-booting">
+
+<!-- ══════════ 立体透视模型舞台 ══════════ -->
+<div class="stage" aria-hidden="true">
+  <canvas id="scene"></canvas>
+  <div class="stage__bloom"></div>
+  <div class="stage__grade"></div>
+  <div class="stage__dof"></div>
+  <div class="stage__grain"></div>
+  <div class="stage__vignette"></div>
+</div>
+
+<!-- ══════════ 载入画面 ══════════ -->
+<div class="boot" id="boot" role="status" aria-live="polite">
+  <canvas class="boot__crest" id="bootCrest" width="18" height="18" aria-hidden="true"></canvas>
+  <div class="boot__title">星见之丘</div>
+  <div class="boot__bar"><i id="bootBar"></i></div>
+  <p class="boot__hint" id="bootHint">NOW LOADING…</p>
+</div>
+
+<!-- ══════════ HUD ══════════ -->
+<header class="hud" id="hud">
+  <div class="hud__card">
+    <canvas class="hud__portrait" id="hudPortrait" width="20" height="20" aria-hidden="true"></canvas>
+    <div class="hud__meta">
+      <div class="hud__name">
+        <span id="hudName">陆离</span>
+        <em id="hudHandle">@luli.dev</em>
+        <span class="hud__lvl">Lv.<b id="hudLevel">99</b></span>
+      </div>
+      <div class="hud__vitals" id="hudVitals"></div>
+    </div>
+  </div>
+
+  <div class="hud__right">
+    <button class="pxbtn" id="btnNight" type="button" aria-pressed="false" title="切换昼 / 夜">
+      <canvas class="pxbtn__icon" id="icoNight" width="12" height="12" aria-hidden="true"></canvas>
+      <span id="nightLabel">入夜</span>
+    </button>
+    <button class="pxbtn" id="btnAudio" type="button" aria-pressed="false" title="环境音">
+      <canvas class="pxbtn__icon" id="icoAudio" width="12" height="12" aria-hidden="true"></canvas>
+      <span id="audioLabel">环境音</span>
+    </button>
+  </div>
+</header>
+
+<!-- ══════════ 底部导航 ══════════ -->
+<nav class="dock" id="dock" aria-label="章节导航"></nav>
+
+<noscript>
+  <div class="noscript">
+    <b>陆离</b> · 前端炼金术士<br>
+    这个页面用 Canvas 逐像素绘制地景，需要开启 JavaScript 才能看到。
+    联系方式：<a href="mailto:hi@luli.dev">hi@luli.dev</a>
+  </div>
+</noscript>
+
+<main class="scroll" id="scroll">
+
+  <!-- ────────── 第一章 · 首屏 ────────── -->
+  <section class="sec sec--hero" id="hero" data-chapter="hero">
+    <div class="hero">
+      <div class="hero__eyebrow" id="heroEyebrow">第一章 · 出发的清晨</div>
+      <h1 class="hero__name" id="heroName">陆离</h1>
+      <p class="hero__role" id="heroRole">FRONTEND ALCHEMIST</p>
+      <p class="hero__tagline" id="heroTagline"></p>
+      <div class="hero__meta" id="heroMeta"></div>
+    </div>
+    <div class="hero__scroll">
+      <span>向下滚动</span>
+      <i class="hero__arrow"></i>
+    </div>
+  </section>
+
+  <!-- ────────── 第二章 · 冒险者手册 ────────── -->
+  <section class="sec" id="status" data-chapter="status">
+    <div class="wrap">
+      <div class="chapter reveal"><span class="chapter__tag">第二章 · 冒险者手册</span></div>
+      <div class="panel reveal" data-d="1">
+        <h2 class="sec__title">角色状态</h2>
+        <p class="sec__sub">STATUS — 一个把界面当成手工艺品来做的人</p>
+
+        <div class="sheet">
+          <div class="card-portrait">
+            <canvas id="sheetPortrait" width="66" height="66" aria-hidden="true"></canvas>
+            <div class="card-portrait__name" id="sheetName">陆离</div>
+            <div class="card-portrait__job" id="sheetJob">前端炼金术士</div>
+          </div>
+
+          <div>
+            <div class="fields" id="sheetFields"></div>
+            <div class="stats" id="sheetStats"></div>
+          </div>
+        </div>
+
+        <div class="equip-title">— 装 备 栏 —</div>
+        <div class="equip" id="sheetEquip"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── 第三章 · 技能 ────────── -->
+  <section class="sec" id="skills" data-chapter="skills">
+    <div class="wrap">
+      <div class="chapter reveal"><span class="chapter__tag">第三章 · 已习得的魔法</span></div>
+      <div class="panel reveal" data-d="1">
+        <h2 class="sec__title">技能树</h2>
+        <p class="sec__sub">SKILLS — 熟练度以实心方块计，满级为五格</p>
+        <div class="skills" id="skillGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── 第四章 · 任务板 ────────── -->
+  <section class="sec" id="quests" data-chapter="quests">
+    <div class="wrap">
+      <div class="chapter reveal"><span class="chapter__tag">第四章 · 悬赏任务板</span></div>
+      <div class="panel reveal" data-d="1">
+        <h2 class="sec__title">已接下的任务</h2>
+        <p class="sec__sub">QUESTS — 每一个都真的上线过</p>
+        <div class="quests" id="questList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── 第五章 · 日志 ────────── -->
+  <section class="sec" id="journey" data-chapter="journey">
+    <div class="wrap">
+      <div class="chapter reveal"><span class="chapter__tag">第五章 · 走过的路</span></div>
+      <div class="panel reveal" data-d="1">
+        <h2 class="sec__title">冒险日志</h2>
+        <p class="sec__sub">JOURNEY — 从出租屋到独立开发</p>
+        <div class="log" id="logList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────── 终章 · 存档点 ────────── -->
+  <section class="sec" id="save" data-chapter="save">
+    <div class="wrap">
+      <div class="chapter reveal"><span class="chapter__tag">终章 · 在存档点等你</span></div>
+      <div class="panel reveal" data-d="1">
+        <h2 class="sec__title">存档点</h2>
+        <p class="sec__sub">SAVE POINT — 想聊聊的话，随便挑一个存档位</p>
+        <div class="saves" id="saveList"></div>
+        <div class="save-actions">
+          <button class="pxbtn" id="btnSave" type="button">
+            <canvas class="pxbtn__icon" id="icoSave" width="12" height="12" aria-hidden="true"></canvas>
+            <span>保存进度</span>
+          </button>
+          <button class="pxbtn" id="btnTop" type="button">
+            <canvas class="pxbtn__icon" id="icoTop" width="12" height="12" aria-hidden="true"></canvas>
+            <span>回到起点</span>
+          </button>
+        </div>
+        <p class="prose" style="margin-top:22px;color:var(--muted);font-size:14px">
+          这个页面没有用任何图片资源：地景、角色、光晕全部由 Canvas 逐像素绘制，
+          文字用的是 12px 点阵字体，色带用 4×4 有序抖动生成。
+        </p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <b>星见之丘</b> · 用 Canvas 与 CSS 手工搭建 · <span id="footYear">2025</span>
+</footer>
+
+<!-- ══════════ 对话框 ══════════ -->
+<div class="dialogue is-hidden" id="dialogue" role="status" aria-live="polite">
+  <span class="dialogue__who" id="dlgWho">旅人</span>
+  <p class="dialogue__text" id="dlgText"></p>
+  <i class="dialogue__next" aria-hidden="true"></i>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/config.js"></script>
+<script src="js/scene.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
