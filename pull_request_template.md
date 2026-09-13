@@ -1,29 +1,29 @@
-# 💥 Repository Destruction Report
+# 💥 你对 Break-This-Repo 干了啥
 
-## What did you break?
+## 你做了什么？
 
-<!-- Explain the intended effect. -->
+<!-- 解♂释♂一♂下♂ -->
 
-## Type of Destruction
+## 类型
 
-- [ ] README chaos
-- [ ] Broken documentation
-- [ ] Harmless code failure
-- [ ] GitHub rendering experiment
-- [ ] Cross-platform Git experiment
-- [ ] Cat-related incident
-- [ ] Other unexplained phenomenon
+- [ ] 踹了 README
+- [ ] 踹了 文档
+- [ ] 空城计代码故障（cos 许家印）
+- [ ] GitHub 笑传之测测 Branch-rendering
+- [ ] 跨平台用 Git
+- [ ] 猫导致的事故
+- [ ] 超自然现象（建议联系某三个字母然后一个圆心三个箭头往里面插加了个描边的基金会或者一个五角星背景是世界地图然后周围一圈农作物围着五个单词的国际性联盟）
 
-## Verification
+## 验证
 
-- [ ] I did ~~not~~ modify `.github/`.
-- [ ] I did ~~not~~ modify the protected README section.
-- [ ] The damage stays inside this repository.
-- [ ] ~~No~~ credentials, malware, or personal information were added.
-- [ ] I explained how to observe the effect.
+- [ ] 我~~没~~改 `.github/`。
+- [ ] 我~~没~~改保护了的 README 部分。
+- [ ] 这个问题会一直保留。
+- [ ] ~~没~~凭据, 病毒, 或者个人信息。
+- [ ] 我解释了怎么观察。
 
-## Final Statement
+## 声明
 
-> I solemnly confirm that this repository is now slightly more broken.
+> 我声明：这个仓库的内容已经成功被我进行了 breaking change
 
-> Nothing from above is actually required...or they do?
+> 然后原因还是我乱写的并且不必须。
