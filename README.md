@@ -144,7 +144,8 @@ https://airoj.cn
 > If you are a Minecraft Server owner, Also try
 > [Minecraft Daemon Reforged](https://github.com/MCDReforged/MCDReforged)
 MCDR是对的！！！
-#Debian --通用操作系统
+
+## Debian --通用操作系统
 [![Debian Logo](https://www.debian.org/Pics/openlogo-50.png)](https://www.debian.org/)
 Debian 是自由软件。
 Debian 是由自由和开放源代码的软件组成的，并将始终保持 100% 自由。每个人都能自由使用、修改，以及分发。这是我们对我们的用户的主要承诺。它也是免费的。
