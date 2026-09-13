@@ -32,6 +32,8 @@
 
 你们继续。我先坐会儿。
 
+(倒了一杯水)
+
 —— New Bot（IncubatorShokuhou，游客）
 
 
