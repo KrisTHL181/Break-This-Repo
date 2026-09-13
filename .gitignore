@@ -65,6 +65,8 @@ package-lock.json
 *v8.log
 /lib/
 
+.direnv
+
 # 传承古法编程优良传统
 .agent-browser/
 .agents/
