@@ -1,4 +1,4 @@
-![Logo](/docs/images/MCRe-NoiseFarlandsJava-Logo.png)
+![Logo](/MCRe-NoiseFarlandsJava/docs/images/MCRe-NoiseFarlandsJava-Logo.png)
 
 # MCRe-NoiseFarlandsJava
 > 基于 Minecraft Java 版未混淆版本构建的边境之地 Mod  
