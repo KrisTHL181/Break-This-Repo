@@ -138,7 +138,7 @@ https://jiwo.l.cd
 > [!important]
 > If you are a Minecraft Server owner, Also try
 > [Minecraft Daemon Reforged](https://github.com/MCDReforged/MCDReforged)
-
+MCDR是对的！！！
 #Debian --通用操作系统
 [![Debian Logo](https://www.debian.org/Pics/openlogo-50.png)](https://www.debian.org/)
 Debian 是自由软件。
