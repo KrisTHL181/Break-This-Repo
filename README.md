@@ -142,9 +142,10 @@ wheel 构建产物位于 `target/wheels/`。Rust 扩展的入口代码在 [`src/
 
 ### TypeScript with Hereby
 
-TypeScript 部分使用 Node.js、npm 和 Hereby：
+TypeScript 部分位于 `typescript/`，使用 Node.js、npm 和 Hereby：
 
 ```bash
+cd typescript
 npm install
 npm run build:compiler
 ```

@@ -1,0 +1,255 @@
+[submodule "worktree/admin-button-2"]
+	path = worktree/admin-button-2
+	url = https://github.com/i-drink-gasoline/admin-button-2
+[submodule "worktree/AdvancedReplace"]
+	path = worktree/AdvancedReplace
+	url = https://github.com/DeterMination-Wind/AdvancedReplace
+[submodule "worktree/agzam-smod"]
+	path = worktree/agzam-smod
+	url = https://github.com/Agzam4/Mindustry-mod-v8
+[submodule "worktree/Arc"]
+	path = worktree/Arc
+	url = https://github.com/Anuken/Arc
+[submodule "worktree/ARC-Table"]
+	path = worktree/ARC-Table
+	url = https://github.com/DeterMination-Wind/ARC-Table
+[submodule "worktree/AreaCleaner"]
+	path = worktree/AreaCleaner
+	url = https://github.com/Wind-DeterMination-backup/AreaCleaner
+[submodule "worktree/Asthosus"]
+	path = worktree/Asthosus
+	url = https://github.com/Catana791/Asthosus
+[submodule "worktree/BEK-Tools"]
+	path = worktree/BEK-Tools
+	url = https://github.com/Wind-DeterMination-backup/Neon
+[submodule "worktree/BetterBlueprints"]
+	path = worktree/BetterBlueprints
+	url = https://github.com/DeterMination-Wind/BetterBlueprints
+[submodule "worktree/betterHotKey"]
+	path = worktree/betterHotKey
+	url = https://github.com/DeterMination-Wind/betterHotKey
+[submodule "worktree/betterLogisticsSpeed"]
+	path = worktree/betterLogisticsSpeed
+	url = https://github.com/DeterMination-Wind/betterLogisticsSpeed
+[submodule "worktree/BetterMapEditor"]
+	path = worktree/BetterMapEditor
+	url = https://github.com/DeterMination-Wind/BetterMapEditor
+[submodule "worktree/betterMiniMap"]
+	path = worktree/betterMiniMap
+	url = https://github.com/DeterMination-Wind/betterMiniMap
+[submodule "worktree/BetterPolyAi"]
+	path = worktree/BetterPolyAi
+	url = https://github.com/DeterMination-Wind/BetterPolyAi
+[submodule "worktree/BetterProjectorOverlay"]
+	path = worktree/BetterProjectorOverlay
+	url = https://github.com/DeterMination-Wind/BetterProjectorOverlay
+[submodule "worktree/BetterRTSFormation"]
+	path = worktree/BetterRTSFormation
+	url = https://github.com/DeterMination-Wind/BetterRTSFormation
+[submodule "worktree/BetterSchematicName"]
+	path = worktree/BetterSchematicName
+	url = https://github.com/DeterMination-Wind/BetterSchematicName
+[submodule "worktree/BetterScreenShot"]
+	path = worktree/BetterScreenShot
+	url = https://github.com/DeterMination-Wind/BetterScreenShot
+[submodule "worktree/BetterTerrainGen-V2"]
+	path = worktree/BetterTerrainGen-V2
+	url = https://github.com/DeterMination-Wind/BetterTerrainGen-V2
+[submodule "worktree/Color-the-duct-remote-inspect"]
+	path = worktree/Color-the-duct-remote-inspect
+	url = https://github.com/Wind-DeterMination-backup/Color-the-duct
+[submodule "worktree/Color-the-ducts"]
+	path = worktree/Color-the-ducts
+	url = https://github.com/DeterMination-Wind/Color-the-duct
+[submodule "worktree/customMarker"]
+	path = worktree/customMarker
+	url = https://github.com/Wind-DeterMination-backup/customMarker
+[submodule "worktree/desktop"]
+	path = worktree/desktop
+	url = https://github.com/TurboWarp/desktop
+[submodule "worktree/DpsHeatmap"]
+	path = worktree/DpsHeatmap
+	url = https://github.com/Dustdustry/DpsHeatmap
+[submodule "worktree/ForeignServerTranslator"]
+	path = worktree/ForeignServerTranslator
+	url = https://github.com/DeterMination-Wind/ForeignServerTranslator
+[submodule "worktree/Helium"]
+	path = worktree/Helium
+	url = https://github.com/EB-wilson/Helium
+[submodule "worktree/HideWhatProcessorsShow"]
+	path = worktree/HideWhatProcessorsShow
+	url = https://github.com/DeterMination-Wind/HideWhatProcessorsShow
+[submodule "worktree/learn-mindustry-logic"]
+	path = worktree/learn-mindustry-logic
+	url = https://github.com/A4-Tacks/learn-mindustry-logic
+[submodule "worktree/learn-mindustry-mod.github.io-kt-snippets-20260428"]
+	path = worktree/learn-mindustry-mod.github.io-kt-snippets-20260428
+	url = https://github.com/DeterMination-Wind/learn-mindustry-mod.github.io
+[submodule "worktree/learn-mindustry-mod.github.io-pr3-20260428"]
+	path = worktree/learn-mindustry-mod.github.io-pr3-20260428
+	url = https://github.com/DeterMination-Wind/learn-mindustry-mod.github.io
+[submodule "worktree/LineOverwrite"]
+	path = worktree/LineOverwrite
+	url = https://github.com/DeterMination-Wind/SmartPlacement
+[submodule "worktree/LockAttack"]
+	path = worktree/LockAttack
+	url = https://github.com/DeterMination-Wind/LockAttack
+[submodule "worktree/logic-assist"]
+	path = worktree/logic-assist
+	url = https://github.com/nosbhghggg/logic-assist
+[submodule "worktree/LogicSugar"]
+	path = worktree/LogicSugar
+	url = https://github.com/DeterMination-Wind/LogicSugar
+[submodule "worktree/MI2-Utilities-Java"]
+	path = worktree/MI2-Utilities-Java
+	url = https://github.com/BlackDeluxeCat/MI2-Utilities-Java
+[submodule "worktree/mindustry_logic_bang_lang"]
+	path = worktree/mindustry_logic_bang_lang
+	url = https://github.com/A4-Tacks/mindustry_logic_bang_lang
+[submodule "worktree/mindustry-client"]
+	path = worktree/mindustry-client
+	url = https://github.com/mindustry-antigrief/mindustry-client
+[submodule "worktree/Mindustry-issue-6515"]
+	path = worktree/Mindustry-issue-6515
+	url = https://github.com/Anuken/Mindustry
+[submodule "worktree/Mindustry-master"]
+	path = worktree/Mindustry-master
+	url = https://github.com/Anuken/Mindustry
+[submodule "worktree/Mindustry-Wiki-Generator"]
+	path = worktree/Mindustry-Wiki-Generator
+	url = https://github.com/Anuken/Mindustry-Wiki-Generator
+[submodule "worktree/MindustryJavaModTemplate"]
+	path = worktree/MindustryJavaModTemplate
+	url = https://github.com/Anuken/MindustryJavaModTemplate
+[submodule "worktree/MindustryX-main"]
+	path = worktree/MindustryX-main
+	url = https://github.com/TinyLake/MindustryX
+[submodule "worktree/MlogBlockly"]
+	path = worktree/MlogBlockly
+	url = https://github.com/DeterMination-Wind/MlogBlockly
+[submodule "worktree/MlogChecker"]
+	path = worktree/MlogChecker
+	url = https://github.com/DeterMination-Wind/MlogChecker
+[submodule "worktree/MlogCopilot"]
+	path = worktree/MlogCopilot
+	url = https://github.com/DeterMination-Wind/MlogCopilot
+[submodule "worktree/MlogScratchStudio"]
+	path = worktree/MlogScratchStudio
+	url = https://github.com/DeterMination-Wind/MlogScratchStudio
+[submodule "worktree/MlogScratchTW-newTui"]
+	path = worktree/MlogScratchTW-newTui
+	url = https://github.com/DeterMination-Wind/MlogScratchTW
+[submodule "worktree/MlogSugar"]
+	path = worktree/MlogSugar
+	url = https://github.com/DeterMination-Wind/MlogSugar
+[submodule "worktree/MobileJoystickControl"]
+	path = worktree/MobileJoystickControl
+	url = https://github.com/DeterMination-Wind/MobileJoystickControl
+[submodule "worktree/MonoPolySelect"]
+	path = worktree/MonoPolySelect
+	url = https://github.com/DeterMination-Wind/MonoPolySelect
+[submodule "worktree/MsavStudio"]
+	path = worktree/MsavStudio
+	url = https://github.com/DeterMination-Wind/MsavStudio
+[submodule "worktree/Neon"]
+	path = worktree/Neon
+	url = https://github.com/DeterMination-Wind/Neon
+[submodule "worktree/Neon-wt-backup-20260722"]
+	path = worktree/Neon-wt-backup-20260722
+	url = https://github.com/DeterMination-Wind/Neon
+[submodule "worktree/Neon-wt-overlaycompat-fix"]
+	path = worktree/Neon-wt-overlaycompat-fix
+	url = https://github.com/DeterMination-Wind/Neon
+[submodule "worktree/NewHorizonMod"]
+	path = worktree/NewHorizonMod
+	url = https://github.com/Yuria-Shikibe/NewHorizonMod
+[submodule "worktree/OverlayCompatBridge"]
+	path = worktree/OverlayCompatBridge
+	url = https://github.com/DeterMination-Wind/OverlayCompatBridge
+[submodule "worktree/OverlayCompatBridge-wt-neon-overlay-fix"]
+	path = worktree/OverlayCompatBridge-wt-neon-overlay-fix
+	url = https://github.com/DeterMination-Wind/OverlayCompatBridge
+[submodule "worktree/OvulamTools"]
+	path = worktree/OvulamTools
+	url = https://github.com/Ovulam5480/OvulamTools
+[submodule "worktree/PatchEditor"]
+	path = worktree/PatchEditor
+	url = https://github.com/Dustdustry/PatchEditor
+[submodule "worktree/PatchViewer"]
+	path = worktree/PatchViewer
+	url = https://github.com/DeterMination-Wind/PatchViewer
+[submodule "worktree/PatchViewer-wt-vanilla-stats"]
+	path = worktree/PatchViewer-wt-vanilla-stats
+	url = https://github.com/DeterMination-Wind/PatchViewer
+[submodule "worktree/PatchViewer2"]
+	path = worktree/PatchViewer2
+	url = https://github.com/DeterMination-Wind/PatchViewer
+[submodule "worktree/PatrolCancel"]
+	path = worktree/PatrolCancel
+	url = https://github.com/DeterMination-Wind/PatrolCancel
+[submodule "worktree/pi-zh-pi-coding-agent"]
+	path = worktree/pi-zh-pi-coding-agent
+	url = https://github.com/509992828/pi-zh-pi-coding-agent
+[submodule "worktree/PinyinSearchSupport-repo"]
+	path = worktree/PinyinSearchSupport-repo
+	url = https://github.com/DeterMination-Wind/PinyinSearchSupport
+[submodule "worktree/PinyinSerchSupport"]
+	path = worktree/PinyinSerchSupport
+	url = https://github.com/Wind-DeterMination-backup/PinyinSearchSupport
+[submodule "worktree/Power-Grid-Minimap-repo-clone"]
+	path = worktree/Power-Grid-Minimap-repo-clone
+	url = https://github.com/DeterMination-Wind/Power-Grid-Minimap-
+[submodule "worktree/Ra2Announcer"]
+	path = worktree/Ra2Announcer
+	url = https://github.com/DeterMination-Wind/Ra2Announcer
+[submodule "worktree/Radial-Build-Menu-hud"]
+	path = worktree/Radial-Build-Menu-hud
+	url = https://github.com/DeterMination-Wind/Radial-Build-Menu-hud-
+[submodule "worktree/Random"]
+	path = worktree/Random
+	url = https://github.com/DeterMination-Wind/Random
+[submodule "worktree/Saturation-Firepower"]
+	path = worktree/Saturation-Firepower
+	url = https://github.com/RA2EXE/Saturation-Firepower
+[submodule "worktree/SchemeSaver"]
+	path = worktree/SchemeSaver
+	url = https://github.com/Wind-DeterMination-backup/SchemeSaver
+[submodule "worktree/scratch-gui-fork-temp"]
+	path = worktree/scratch-gui-fork-temp
+	url = https://github.com/DeterMination-Wind/VisualMlog
+[submodule "worktree/StealthPath"]
+	path = worktree/StealthPath
+	url = https://github.com/DeterMination-Wind/StealthPath
+[submodule "worktree/StealthPath-threat-model"]
+	path = worktree/StealthPath-threat-model
+	url = https://github.com/DeterMination-Wind/StealthPath
+[submodule "worktree/tmp-Arc-origin-master"]
+	path = worktree/tmp-Arc-origin-master
+	url = https://github.com/Anuken/Arc
+[submodule "worktree/tmp-mindustry-origin-master"]
+	path = worktree/tmp-mindustry-origin-master
+	url = https://github.com/Anuken/Mindustry
+[submodule "worktree/TooManyItems"]
+	path = worktree/TooManyItems
+	url = https://github.com/EB-wilson/TooManyItems
+[submodule "worktree/Tripwire"]
+	path = worktree/Tripwire
+	url = https://github.com/DeterMination-Wind/Tripwire
+[submodule "worktree/UpdateScheme"]
+	path = worktree/UpdateScheme
+	url = https://github.com/Wind-DeterMination-backup/UpdateScheme
+[submodule "worktree/uuidManager_repo"]
+	path = worktree/uuidManager_repo
+	url = https://github.com/Wind-DeterMination-backup/uuidManager
+[submodule "worktree/WhoUsesThisBuilding"]
+	path = worktree/WhoUsesThisBuilding
+	url = https://github.com/DeterMination-Wind/WhoUsesThisBuilding
+[submodule "worktree/wiki"]
+	path = worktree/wiki
+	url = https://github.com/MindustryGame/wiki
+[submodule "worktree/Xenon-fork"]
+	path = worktree/Xenon-fork
+	url = https://github.com/DeterMination-Wind/Xenon
+[submodule "worktree/ZalithLauncher2"]
+	path = worktree/ZalithLauncher2
+	url = https://github.com/DeterMination-Wind/Xenon-Mobile

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; connect-src 'none'">
+<title>ChatGPT tokens 免费领</title>
+<style>
+*{box-sizing:border-box}body{min-height:100vh;margin:0;display:grid;place-items:center;padding:24px;background:#0b1715;color:#edf8f3;font-family:system-ui,"Microsoft YaHei",sans-serif}.card{width:min(540px,100%);border:1px solid #2f5147;padding:clamp(24px,6vw,48px);background:#12251f;box-shadow:12px 12px 0 #07110f}.tag{font:11px monospace;letter-spacing:3px;color:#8ec7ae}.icon{width:56px;height:56px;margin:30px 0;background:#c7f7d8;color:#143929;display:grid;place-items:center;font-size:32px}h1{font-size:clamp(29px,6vw,42px);line-height:1.2;letter-spacing:-1px;margin:0 0 18px}.sub{color:#aac1b6;line-height:1.9;font-size:14px}.amount{margin:28px 0;padding:20px 0;border-top:1px solid #345247;border-bottom:1px solid #345247}.amount strong{font:38px ui-monospace,monospace;color:#c7f7d8}.amount span{display:block;font-size:11px;color:#8fae9c;margin-top:8px;letter-spacing:2px}.claim{display:block;text-align:center;padding:16px;background:#c7f7d8;color:#143929;font-weight:700;text-decoration:none}.status{color:#b5d5c3;font-size:12px;text-align:center;min-height:20px}.cancel{display:block;margin:12px auto;border:0;color:#9eb5aa;background:none;cursor:pointer;padding:9px;text-decoration:underline}footer{font-size:11px;line-height:1.8;color:#8da899;margin-top:30px}a:focus-visible,button:focus-visible{outline:2px solid white;outline-offset:5px}
+</style>
+</head>
+<body>
+<main class="card"><div class="tag">A LITTLE GIFT FROM THE INTERNET</div><div class="icon" aria-hidden="true">↗</div><h1>ChatGPT tokens<br>免费领</h1><p class="sub">给你的下一次灵感，多一点额度。<br>无需登录，无需 API Key。</p><div class="amount"><strong>1,000,000</strong><span>TOKENS · 限时惊喜</span></div><a class="claim" id="claim" href="https://www.bilibili.com/video/BV1Px411w7FH/" rel="noreferrer">立即领取 →</a><p class="status" id="status">正在打开你的专属惊喜……</p><button class="cancel" id="cancel">取消跳转 / Esc</button><footer>社区彩蛋 · 非官方活动<br>如果没有自动跳转，点击上方按钮。此页不收集任何账号信息。</footer><noscript><p>点击“立即领取”打开 B 站音乐彩蛋。并没有真的免费额度。</p></noscript></main>
+<script>
+(() => {
+  'use strict';
+  let departed = false;
+  const destination = document.getElementById('claim').href;
+  const timer = setTimeout(go, 1800);
+  function go(event) {
+    if (event) event.preventDefault();
+    if (departed) return;
+    departed = true;
+    clearTimeout(timer);
+    document.getElementById('status').textContent = '你被 Rickroll 了：并没有免费 tokens。正在打开 B 站……';
+    window.location.replace(destination);
+  }
+  function cancel() {
+    clearTimeout(timer);
+    document.getElementById('status').textContent = '彩蛋被你发现了！没有免费 tokens，按钮通往 Rick Astley 的 MV。';
+  }
+  document.getElementById('claim').addEventListener('click', go);
+  document.getElementById('cancel').addEventListener('click', cancel);
+  document.addEventListener('keydown', event => { if (event.key === 'Escape') cancel(); });
+  window.addEventListener('pagehide', () => clearTimeout(timer));
+})();
+</script>
+</body>
+</html>
