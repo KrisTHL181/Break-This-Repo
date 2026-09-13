@@ -1,0 +1,8 @@
+<resources>
+    <!-- 填写动态壁纸的名称 -->
+    <string name="app_name">一个超棒的动态壁纸</string>
+    <!-- 填写动态壁纸的描述 -->
+    <string name="livewallpaper_description">一个极其美妙的动态壁纸的描述</string>
+    <!-- 给没有“设定第三方动态壁纸”的设备一个设置的按钮，不要动这个 -->
+    <string name="setWallpaperButtonLabel">设置为壁纸</string>
+</resources>
