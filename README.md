@@ -132,6 +132,11 @@ https://jiwo.l.cd
 
 > 稽窝｜一只滑稽的小窝
 
+https://airoj.cn
+
+> AirOJ | 开放、和谐（？）、抽象、土豆、卡顿的 Online Judge 系统
+> 感谢 KrisTHL181 大哥提供的免费贡献 6 条
+
 > [!important]
 > Also try Minecraft and Terraria
 
