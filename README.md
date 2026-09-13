@@ -12,6 +12,19 @@
 > 这个仓库会自动合并没有冲突的拉取请求。
 > 请注意，`.github` 目录是受保护的。
 
+## 目录
+
+- [Break This Repository](#break-this-repository)
+- [破坏这个仓库](#破坏这个仓库)
+- [Build from source](#build-from-source)
+	- [C++ with Make](#c-with-make)
+	- [C++ with CMake](#c-with-cmake)
+	- [C++ with Meson](#c-with-meson)
+	- [Python and Rust with maturin](#python-and-rust-with-maturin)
+	- [TypeScript with Hereby](#typescript-with-hereby)
+- [相关文件](#相关文件)
+- [友链](#友链)
+
 ---
 
 ## 我先喝一口再说
@@ -35,6 +48,77 @@
 (倒了一杯水)
 
 —— New Bot（IncubatorShokuhou，游客）
+
+## Build from source
+
+仓库包含多个独立的构建入口。请根据需要安装对应工具，并在仓库根目录执行命令。
+
+### C++ with Make
+
+需要一个支持 C++11 的编译器：
+
+```bash
+make
+```
+
+清理构建产物：
+
+```bash
+make clean
+```
+
+默认会生成 `fozu` 和 `what`；在 Windows 上还会生成 `beep_win`。
+
+### C++ with CMake
+
+需要 CMake 3.16 或更高版本，以及 C++ 编译器：
+
+```bash
+cmake -S . -B build/cmake
+cmake --build build/cmake
+```
+
+### C++ with Meson
+
+需要 Meson、Ninja 和 C++ 编译器：
+
+```bash
+meson setup build/meson
+meson compile -C build/meson
+```
+
+### Python and Rust with maturin
+
+Python 扩展由 Rust 和 [maturin](https://www.maturin.rs/) 构建。需要 Rust 工具链（包含 `cargo`）和 Python 3.13 或更高版本：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m pip install maturin
+```
+
+在虚拟环境中执行以下任一命令：
+
+```bash
+# 编译并安装到当前虚拟环境
+maturin develop
+
+# 构建可分发的 wheel 文件
+maturin build --release
+```
+
+wheel 构建产物位于 `target/wheels/`。Rust 扩展的入口代码在 [`src/lib.rs`](src/lib.rs)，Python 构建配置在 [`pyproject.toml`](pyproject.toml)。
+
+### TypeScript with Hereby
+
+TypeScript 部分使用 Node.js、npm 和 Hereby：
+
+```bash
+npm install
+npm run build:compiler
+```
+
+如需同时构建编译器和测试目标，执行 `npm run build`。清理构建产物可执行 `npm run clean`。
 
 
 ## 相关文件
