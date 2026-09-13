@@ -1,0 +1,72 @@
+{
+  "project": {
+    "name": "Emergency Generator Interface Elevation Module",
+    "name_zh": "运营商油机接口箱抢修增高块",
+    "repository_target": "Break-This-Repo",
+    "project_type": "static-memorial-page",
+    "version": "R1",
+    "fictional_notice": "This is a humorous creative project, not a real product specification or safety document."
+  },
+  "device": {
+    "model": "EGIEM-R1",
+    "model_expansion": "Rock Revision 1",
+    "category": "passive emergency infrastructure support module",
+    "category_zh": "被动式应急基础设施承载模块",
+    "material": "natural silicate composite (rock)",
+    "material_zh": "天然硅酸盐复合材料（石头）",
+    "operating_system": "Rock OS",
+    "status": "PRODUCTION",
+    "status_zh": "生产运行中"
+  },
+  "performance": {
+    "rated_power_w": 0,
+    "standby_power_w": 0,
+    "cooling": "natural cooling",
+    "cooling_zh": "自然散热",
+    "network_interfaces": 0,
+    "network_attack_surface": 0,
+    "network_attack_surface_note": "The module has no network interface; this is not a security rating for any surrounding system.",
+    "firmware": "not applicable",
+    "maintenance_mode": "physical placement only"
+  },
+  "dependencies": {
+    "upstream": {
+      "name": "Carrier emergency generator interface box",
+      "name_zh": "运营商油机接口箱",
+      "role": "object receiving height compensation"
+    },
+    "downstream": {
+      "name": "Earth",
+      "name_zh": "地球",
+      "role": "load-bearing surface"
+    }
+  },
+  "operations": {
+    "telemetry": "local-demo-only",
+    "telemetry_note": "The dashboard values in index.html are simulated in the browser and are not collected from a real device.",
+    "expected_lifecycle": "geological timescale",
+    "expected_lifecycle_note": "Humorous phrasing; not a warranty or service-life claim.",
+    "critical_alerts": 0,
+    "alert_note": "Creative page state only; not a real monitoring or alarm system."
+  },
+  "safety_and_claims": {
+    "certifications": [],
+    "security_levels": [],
+    "compliance_claims": [],
+    "notice": "No real certification, safety level, compliance status, load rating, or engineering approval is claimed by this project."
+  },
+  "files": {
+    "readme": "README.md",
+    "page": "index.html",
+    "structured_specs": "specs.json",
+    "asset_guidance": "assets/README.md",
+    "field_photo": "assets/rock-field-photo.png"
+  },
+  "field_photo": {
+    "filename": "rock-field-photo.png",
+    "source": "user-supplied original photo",
+    "processing": "filename normalization only; original pixels preserved",
+    "processing_zh": "仅规范文件名；保留原始像素，未裁切、未重绘",
+    "role": "primary visual asset for the memorial page"
+  }
+}

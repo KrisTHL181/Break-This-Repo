@@ -1,0 +1,1504 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071014">
+  <meta name="description" content="运营商油机接口箱抢修增高块：一个极其严肃的被动式基础设施设备纪念页。">
+  <title>EGIEM-R1 · 运营商油机接口箱抢修增高块</title>
+  <style>
+    :root {
+      --bg: #071014;
+      --bg-deep: #04090b;
+      --panel: rgba(13, 27, 32, 0.9);
+      --panel-strong: #10252b;
+      --line: rgba(157, 190, 187, 0.18);
+      --line-strong: rgba(157, 190, 187, 0.38);
+      --ink: #edf6f3;
+      --muted: #9ab0ad;
+      --faint: #66807d;
+      --green: #73e3b5;
+      --green-soft: rgba(115, 227, 181, 0.12);
+      --amber: #f0bd72;
+      --amber-soft: rgba(240, 189, 114, 0.12);
+      --red: #ff8d7c;
+      --display: "Bahnschrift", "DIN Alternate", "Arial Narrow", sans-serif;
+      --body: "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+      --mono: "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 84% 8%, rgba(70, 143, 126, 0.16), transparent 24rem),
+        radial-gradient(circle at 8% 45%, rgba(50, 82, 91, 0.16), transparent 28rem),
+        var(--bg);
+      font-family: var(--body);
+      line-height: 1.6;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      content: "";
+      opacity: 0.2;
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+    }
+
+    a { color: inherit; }
+
+    .shell {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 26px 0 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      color: var(--bg-deep);
+      background: var(--green);
+      clip-path: polygon(50% 0, 93% 24%, 83% 78%, 45% 100%, 7% 70%, 12% 22%);
+      font-family: var(--display);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+    }
+
+    .brand-copy { display: grid; gap: 0; }
+
+    .brand-copy strong {
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .brand-copy span {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+    }
+
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .status-pill,
+    .eyebrow,
+    .section-kicker,
+    .chip,
+    .demo-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border: 1px solid rgba(115, 227, 181, 0.35);
+      border-radius: 999px;
+      color: var(--green);
+      background: var(--green-soft);
+      white-space: nowrap;
+    }
+
+    .status-pill::before,
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(115, 227, 181, 0.1), 0 0 18px rgba(115, 227, 181, 0.8);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.06fr) minmax(390px, 0.94fr);
+      gap: clamp(38px, 7vw, 92px);
+      align-items: center;
+      padding: clamp(66px, 10vw, 120px) 0 78px;
+    }
+
+    .eyebrow,
+    .section-kicker {
+      color: var(--green);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow::before {
+      width: 28px;
+      height: 1px;
+      background: var(--green);
+      content: "";
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin-top: 0; }
+
+    h1 {
+      max-width: 720px;
+      margin-bottom: 20px;
+      font-family: var(--display);
+      font-size: clamp(48px, 7vw, 88px);
+      font-weight: 800;
+      line-height: 0.98;
+      letter-spacing: -0.065em;
+    }
+
+    h1 span {
+      color: var(--green);
+      text-shadow: 0 0 36px rgba(115, 227, 181, 0.16);
+    }
+
+    .hero-subtitle {
+      margin-bottom: 24px;
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-lead {
+      max-width: 600px;
+      margin-bottom: 30px;
+      color: var(--muted);
+      font-size: clamp(16px, 1.7vw, 19px);
+    }
+
+    .hero-lead em { color: var(--ink); font-style: normal; }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 0 17px;
+      border: 1px solid var(--line-strong);
+      border-radius: 3px;
+      color: var(--ink);
+      background: rgba(255,255,255,0.02);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      border-color: var(--green);
+      background: var(--green-soft);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .button.primary {
+      border-color: var(--green);
+      color: var(--bg-deep);
+      background: var(--green);
+      font-weight: 800;
+    }
+
+    .button.primary:hover,
+    .button.primary:focus-visible { color: var(--bg-deep); background: #91f0c7; }
+
+    .micro-note {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-console {
+      position: relative;
+      min-height: 418px;
+      overflow: hidden;
+      padding: 26px;
+      border: 1px solid var(--line-strong);
+      background:
+        linear-gradient(145deg, rgba(27, 55, 60, 0.9), rgba(6, 16, 20, 0.96)),
+        var(--panel);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero-console::before,
+    .hero-console::after {
+      position: absolute;
+      width: 52px;
+      height: 52px;
+      border-color: var(--green);
+      border-style: solid;
+      content: "";
+      opacity: 0.75;
+    }
+
+    .hero-console::before {
+      top: 12px;
+      left: 12px;
+      border-width: 1px 0 0 1px;
+    }
+
+    .hero-console::after {
+      right: 12px;
+      bottom: 12px;
+      border-width: 0 1px 1px 0;
+    }
+
+    .console-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 30px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .console-top strong { color: var(--amber); font-weight: 500; }
+
+    .module-seal {
+      display: grid;
+      width: 188px;
+      height: 188px;
+      margin: 0 auto 34px;
+      place-items: center;
+      border: 1px solid rgba(115, 227, 181, 0.6);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 0 45%, rgba(115, 227, 181, 0.1) 45.5% 46%, transparent 46.5%),
+        repeating-conic-gradient(from 0deg, rgba(115, 227, 181, 0.5) 0deg 1deg, transparent 1deg 15deg);
+      box-shadow: inset 0 0 0 10px rgba(115, 227, 181, 0.03), 0 0 60px rgba(115, 227, 181, 0.08);
+    }
+
+    .module-seal-inner {
+      display: grid;
+      width: 126px;
+      height: 126px;
+      place-items: center;
+      border: 1px dashed rgba(115, 227, 181, 0.55);
+      border-radius: 50%;
+      text-align: center;
+    }
+
+    .module-seal-inner strong {
+      display: block;
+      color: var(--green);
+      font-family: var(--display);
+      font-size: 36px;
+      line-height: 1;
+      letter-spacing: -0.08em;
+    }
+
+    .module-seal-inner span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+    }
+
+    .console-readout {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .console-readout div {
+      min-height: 72px;
+      padding: 13px;
+      background: rgba(7, 16, 20, 0.7);
+    }
+
+    .console-readout small,
+    .metric-label,
+    .spec-label {
+      display: block;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .console-readout strong {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 19px;
+      letter-spacing: -0.03em;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      margin-bottom: 118px;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .metric {
+      min-height: 144px;
+      padding: 24px 22px;
+      background: rgba(10, 23, 27, 0.86);
+    }
+
+    .metric-value {
+      display: block;
+      margin: 20px 0 4px;
+      color: var(--green);
+      font-family: var(--display);
+      font-size: clamp(27px, 3vw, 39px);
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .metric-detail { color: var(--muted); font-size: 12px; }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0;
+      font-family: var(--display);
+      font-size: clamp(31px, 4vw, 48px);
+      line-height: 1;
+      letter-spacing: -0.06em;
+    }
+
+    .section-heading p {
+      max-width: 430px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .content-grid,
+    .monitor-grid {
+      display: grid;
+      grid-template-columns: 1.02fr 0.98fr;
+      gap: 18px;
+    }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 25px 26px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-header h3 {
+      margin: 7px 0 0;
+      font-family: var(--display);
+      font-size: 25px;
+      letter-spacing: -0.04em;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 9px;
+      border: 1px solid var(--line-strong);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .chip.green { border-color: rgba(115, 227, 181, 0.35); color: var(--green); }
+
+    .status-table { padding: 8px 26px 19px; }
+
+    .status-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: baseline;
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(157, 190, 187, 0.1);
+    }
+
+    .status-row:last-child { border-bottom: 0; }
+
+    .status-row span { color: var(--muted); font-size: 13px; }
+
+    .status-row strong {
+      color: var(--ink);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .status-row strong.ok { color: var(--green); }
+    .status-row strong.warn { color: var(--amber); }
+
+    .manifesto {
+      display: flex;
+      min-height: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 32px;
+      background:
+        linear-gradient(135deg, rgba(115, 227, 181, 0.12), transparent 48%),
+        var(--panel-strong);
+    }
+
+    .manifesto blockquote {
+      margin: 20px 0 28px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: clamp(28px, 4vw, 43px);
+      font-weight: 700;
+      line-height: 1.04;
+      letter-spacing: -0.055em;
+    }
+
+    .manifesto blockquote span { color: var(--green); }
+
+    .manifesto-copy {
+      max-width: 470px;
+      margin-bottom: 26px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .manifesto-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .section-block { margin-bottom: 118px; }
+
+    .field-record-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .field-image-card {
+      overflow: hidden;
+      background: var(--panel-strong);
+    }
+
+    .field-image-wrap {
+      position: relative;
+      background: #0b171b;
+    }
+
+    .field-image-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .photo-stamp {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      padding: 7px 9px;
+      border: 1px solid rgba(115, 227, 181, 0.6);
+      color: var(--green);
+      background: rgba(4, 9, 11, 0.82);
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .field-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 21px 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .field-caption strong {
+      display: block;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 17px;
+      letter-spacing: -0.03em;
+    }
+
+    .field-caption span {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .field-notes {
+      padding: clamp(24px, 4vw, 38px);
+      background: linear-gradient(145deg, rgba(240, 189, 114, 0.1), var(--panel) 46%);
+    }
+
+    .field-notes h3 {
+      margin: 8px 0 17px;
+      font-family: var(--display);
+      font-size: clamp(29px, 4vw, 43px);
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .field-notes > p {
+      max-width: 500px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .field-note-list {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .field-note-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 18px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(157, 190, 187, 0.1);
+    }
+
+    .field-note-row span {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .field-note-row strong {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .architecture {
+      padding: clamp(22px, 4vw, 44px);
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(17, 40, 45, 0.76), rgba(8, 17, 21, 0.92)),
+        var(--panel);
+    }
+
+    .dependency-grid {
+      display: grid;
+      grid-template-columns: 1fr 92px 1.18fr 92px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .dependency-node {
+      min-height: 174px;
+      padding: 22px;
+      border: 1px solid var(--line-strong);
+      background: rgba(7, 16, 20, 0.72);
+    }
+
+    .dependency-node.primary {
+      border-color: var(--green);
+      background: linear-gradient(145deg, rgba(115, 227, 181, 0.18), rgba(7, 16, 20, 0.76));
+      box-shadow: 0 0 50px rgba(115, 227, 181, 0.08);
+    }
+
+    .node-index {
+      display: block;
+      margin-bottom: 36px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+    }
+
+    .dependency-node h3 {
+      margin: 0 0 5px;
+      color: var(--ink);
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+    }
+
+    .dependency-node p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dependency-node.primary h3 { color: var(--green); }
+
+    .connector {
+      position: relative;
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: 9px;
+      line-height: 1.4;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .connector::before {
+      display: block;
+      height: 1px;
+      margin-bottom: 9px;
+      background: var(--amber);
+      box-shadow: 0 0 12px rgba(240, 189, 114, 0.5);
+      content: "";
+    }
+
+    .connector::after {
+      position: absolute;
+      top: -3px;
+      right: -1px;
+      width: 7px;
+      height: 7px;
+      border-top: 1px solid var(--amber);
+      border-right: 1px solid var(--amber);
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    .architecture-caption {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .monitor-grid { align-items: stretch; }
+
+    .monitor-card,
+    .log-card { padding: 28px; }
+
+    .monitor-card { background: linear-gradient(150deg, rgba(115, 227, 181, 0.1), var(--panel) 42%); }
+
+    .monitor-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 32px;
+    }
+
+    .monitor-head h3 {
+      margin: 6px 0 0;
+      font-family: var(--display);
+      font-size: 26px;
+      letter-spacing: -0.05em;
+    }
+
+    .demo-label {
+      padding: 7px 9px;
+      border: 1px solid rgba(240, 189, 114, 0.34);
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .telemetry-main {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 29px;
+    }
+
+    .telemetry-main small {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .telemetry-main strong {
+      color: var(--green);
+      font-family: var(--display);
+      font-size: clamp(48px, 7vw, 74px);
+      letter-spacing: -0.08em;
+      line-height: 0.86;
+    }
+
+    .telemetry-main span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .meter-list { display: grid; gap: 18px; }
+
+    .meter-row { display: grid; gap: 8px; }
+
+    .meter-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .meter-label strong { color: var(--ink); font-weight: 500; }
+
+    .meter-track {
+      height: 6px;
+      overflow: hidden;
+      background: rgba(154, 176, 173, 0.13);
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: var(--green);
+      box-shadow: 0 0 13px rgba(115, 227, 181, 0.6);
+      transition: width 550ms ease;
+    }
+
+    .meter-fill.amber { background: var(--amber); box-shadow: 0 0 13px rgba(240, 189, 114, 0.5); }
+
+    .monitor-note {
+      margin: 27px 0 0;
+      padding-top: 17px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-size: 12px;
+    }
+
+    .log-card { display: flex; flex-direction: column; }
+
+    .log-card h3 {
+      margin: 5px 0 24px;
+      font-family: var(--display);
+      font-size: 26px;
+      letter-spacing: -0.05em;
+    }
+
+    .log-list {
+      display: grid;
+      gap: 0;
+      margin-bottom: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .log-entry {
+      display: grid;
+      grid-template-columns: 70px 1fr auto;
+      gap: 14px;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid rgba(157, 190, 187, 0.1);
+      font-family: var(--mono);
+      font-size: 10px;
+    }
+
+    .log-entry time { color: var(--faint); }
+    .log-entry span { color: var(--muted); }
+    .log-entry strong { color: var(--green); font-weight: 500; }
+
+    .log-card .monitor-note { margin-top: auto; }
+
+    .specs-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .specs-table {
+      width: 100%;
+      min-width: 670px;
+      border-collapse: collapse;
+    }
+
+    .specs-table th,
+    .specs-table td {
+      padding: 17px 22px;
+      border-bottom: 1px solid rgba(157, 190, 187, 0.1);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .specs-table tr:last-child th,
+    .specs-table tr:last-child td { border-bottom: 0; }
+
+    .specs-table th {
+      width: 28%;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .specs-table td { color: var(--ink); font-size: 13px; }
+
+    .spec-value {
+      display: block;
+      color: var(--green);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .spec-note {
+      display: block;
+      margin-top: 3px;
+      color: var(--faint);
+      font-size: 11px;
+    }
+
+    .notice {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 18px;
+      align-items: start;
+      padding: 22px 25px;
+      border: 1px solid rgba(240, 189, 114, 0.35);
+      background: var(--amber-soft);
+    }
+
+    .notice-mark {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 1px solid var(--amber);
+      border-radius: 50%;
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .notice strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--amber);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .notice p { margin-bottom: 0; color: var(--muted); font-size: 13px; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 28px 0 42px;
+      border-top: 1px solid var(--line);
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    footer strong { color: var(--green); font-weight: 500; }
+
+    /* Quiet visual treatment: a flatter, clearer industrial record page. */
+    :root {
+      --bg: #f5f7f6;
+      --bg-deep: #17352e;
+      --panel: #ffffff;
+      --panel-strong: #eef3f1;
+      --line: #d7e1dd;
+      --line-strong: #b8cbc4;
+      --ink: #18302b;
+      --muted: #58706a;
+      --faint: #738781;
+      --green: #24745d;
+      --green-soft: #edf7f2;
+      --amber: #97621c;
+      --amber-soft: #fff5df;
+      --red: #a44d3c;
+    }
+
+    body {
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    body::before { display: none; }
+
+    .topbar {
+      padding: 20px 0 17px;
+      border-bottom-color: var(--line);
+    }
+
+    .brand-mark {
+      border-radius: 4px;
+      background: var(--green);
+      clip-path: none;
+    }
+
+    .brand-copy strong { color: var(--ink); }
+    .status-pill { box-shadow: none; }
+
+    .status-pill::before,
+    .status-dot {
+      box-shadow: none;
+    }
+
+    .hero {
+      gap: clamp(38px, 6vw, 68px);
+      padding: clamp(56px, 8vw, 84px) 0 64px;
+    }
+
+    h1 {
+      max-width: 650px;
+      font-size: clamp(44px, 6vw, 70px);
+      letter-spacing: -0.055em;
+    }
+
+    h1 span {
+      color: var(--green);
+      text-shadow: none;
+    }
+
+    .hero-lead { max-width: 560px; }
+
+    .button {
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: none;
+    }
+
+    .button.primary {
+      color: #ffffff;
+      background: var(--green);
+    }
+
+    .button.primary:hover,
+    .button.primary:focus-visible {
+      color: #ffffff;
+      background: #1b614e;
+    }
+
+    .hero-console {
+      min-height: 382px;
+      border-color: var(--line-strong);
+      background: var(--panel);
+      box-shadow: none;
+    }
+
+    .hero-console::before,
+    .hero-console::after { display: none; }
+
+    .module-seal {
+      background: var(--panel-strong);
+      box-shadow: none;
+    }
+
+    .module-seal-inner { background: var(--panel); }
+
+    .console-readout,
+    .metrics-grid { background: var(--line); }
+
+    .console-readout div,
+    .metric { background: var(--panel); }
+
+    .metrics-grid {
+      margin-bottom: 84px;
+      border-color: var(--line);
+    }
+
+    .metric { min-height: 132px; }
+
+    .metric-value { color: var(--green); }
+
+    .section-block { margin-bottom: 84px; }
+
+    .section-heading h2 {
+      font-size: clamp(30px, 3.5vw, 41px);
+      letter-spacing: -0.05em;
+    }
+
+    .panel,
+    .architecture,
+    .specs-wrap {
+      border-color: var(--line);
+      box-shadow: none;
+    }
+
+    .manifesto,
+    .architecture,
+    .monitor-card,
+    .field-notes {
+      background: var(--panel);
+    }
+
+    .manifesto blockquote {
+      font-size: clamp(27px, 3.5vw, 38px);
+    }
+
+    .dependency-node { background: var(--panel); }
+
+    .dependency-node.primary {
+      background: var(--green-soft);
+      box-shadow: none;
+    }
+
+    .meter-fill { box-shadow: none; }
+    .meter-fill.amber { box-shadow: none; }
+
+    .field-image-card { background: var(--panel); }
+
+    .photo-stamp {
+      color: var(--green);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .notice { box-shadow: none; }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-console { max-width: 640px; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .field-record-grid { grid-template-columns: 1fr; }
+      .dependency-grid { grid-template-columns: 1fr; gap: 12px; }
+      .dependency-node { min-height: auto; }
+      .node-index { margin-bottom: 18px; }
+      .connector { display: grid; grid-template-columns: 1fr; justify-items: center; }
+      .connector::before { width: 1px; height: 30px; margin-bottom: 8px; }
+      .connector::after { top: 25px; right: auto; transform: rotate(135deg); }
+      .connector span { max-width: 180px; }
+    }
+
+    @media (max-width: 680px) {
+      .shell { width: min(100% - 28px, 1180px); }
+      .topbar { align-items: start; }
+      .top-meta { flex-direction: column; align-items: end; gap: 9px; }
+      .hero { padding: 58px 0 64px; }
+      h1 { font-size: clamp(43px, 14vw, 72px); }
+      .hero-console { min-height: 380px; padding: 21px; }
+      .module-seal { width: 156px; height: 156px; margin-bottom: 28px; }
+      .module-seal-inner { width: 106px; height: 106px; }
+      .module-seal-inner strong { font-size: 31px; }
+      .console-readout div { min-height: 66px; padding: 10px; }
+      .console-readout strong { font-size: 15px; }
+      .metrics-grid { margin-bottom: 80px; }
+      .metric { min-height: 124px; padding: 18px 16px; }
+      .content-grid, .monitor-grid { grid-template-columns: 1fr; }
+      .section-block { margin-bottom: 80px; }
+      .section-heading { display: block; }
+      .section-heading h2 { margin-bottom: 14px; }
+      .panel-header { padding: 21px 19px 17px; }
+      .status-table { padding: 6px 19px 13px; }
+      .manifesto { padding: 25px 21px; }
+      .architecture { padding: 18px; }
+      .field-notes { padding: 25px 21px; }
+      .field-note-row { grid-template-columns: 125px 1fr; gap: 12px; }
+      .architecture-caption { display: block; }
+      .architecture-caption span { display: block; margin-top: 7px; }
+      .monitor-card, .log-card { padding: 21px; }
+      .log-entry { grid-template-columns: 58px 1fr; gap: 8px; }
+      .log-entry strong { grid-column: 2; }
+      .notice { padding: 18px; }
+      footer { display: block; line-height: 2; }
+      footer span { display: block; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="返回页面顶部">
+        <span class="brand-mark" aria-hidden="true">R1</span>
+        <span class="brand-copy">
+          <strong>Infrastructure Memorial</strong>
+          <span>EGIEM-R1 / ROCK OS</span>
+        </span>
+      </a>
+      <div class="top-meta">
+        <span>STATIC FIELD RECORD</span>
+        <span class="status-pill">PRODUCTION / 生产运行中</span>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <div class="eyebrow">Passive Infrastructure / 被动式基础设施</div>
+          <h1 id="page-title">运营商油机接口箱<br><span>抢修增高块</span></h1>
+          <p class="hero-subtitle">Emergency Generator Interface Elevation Module · EGIEM-R1</p>
+          <p class="hero-lead">一种通过纯物理方式完成高度补偿的现场原型。<em>不联网，不升级，不抱怨。</em></p>
+          <div class="action-row">
+            <a class="button primary" href="#specifications">查看规格 / SPEC</a>
+            <a class="button" href="#architecture">读取架构 / MAP</a>
+          </div>
+          <div class="micro-note">FIELD MEMORIAL · NO EXTERNAL DEPENDENCIES · NO CERTIFICATION CLAIMS</div>
+        </div>
+
+        <div class="hero-console" aria-label="设备主视觉面板">
+          <div class="console-top">
+            <span>MODULE IDENTIFICATION</span>
+            <strong>R1 / NOMINAL</strong>
+          </div>
+          <div class="module-seal" aria-hidden="true">
+            <div class="module-seal-inner">
+              <div>
+                <strong>ROCK</strong>
+                <span>OS // ONLINE</span>
+              </div>
+            </div>
+          </div>
+          <div class="console-readout">
+            <div><small>POWER DRAW</small><strong>0 W</strong></div>
+            <div><small>NETWORK I/O</small><strong>NONE</strong></div>
+            <div><small>COOLING</small><strong>NATURAL</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics-grid" aria-label="核心指标">
+        <article class="metric">
+          <span class="metric-label">Rated power / 额定功耗</span>
+          <strong class="metric-value">0 W</strong>
+          <span class="metric-detail">不接电 · 不充电 · 不待机</span>
+        </article>
+        <article class="metric">
+          <span class="metric-label">Network surface / 网络攻击面</span>
+          <strong class="metric-value">0</strong>
+          <span class="metric-detail">无网络接口，不等于安全评级</span>
+        </article>
+        <article class="metric">
+          <span class="metric-label">Firmware / 固件</span>
+          <strong class="metric-value">ROCK OS</strong>
+          <span class="metric-detail">自寒武纪以来未更新</span>
+        </article>
+        <article class="metric">
+          <span class="metric-label">Downstream / 下游依赖</span>
+          <strong class="metric-value">EARTH</strong>
+          <span class="metric-detail">地球，稳定承载至今</span>
+        </article>
+      </section>
+
+      <section class="section-block" id="status" aria-labelledby="status-title">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">01 / Operations</div>
+            <h2 id="status-title">设备状态</h2>
+          </div>
+          <p>一套不需要登录权限的运维面板。所有状态均服务于本纪念页的创意表达。</p>
+        </div>
+        <div class="content-grid">
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="section-kicker">Live posture</div>
+                <h3>运行姿态</h3>
+              </div>
+              <span class="chip green"><span class="status-dot" aria-hidden="true"></span>NOMINAL</span>
+            </div>
+            <div class="status-table">
+              <div class="status-row"><span>系统状态 / System state</span><strong class="ok">PRODUCTION</strong></div>
+              <div class="status-row"><span>操作系统 / Operating system</span><strong>Rock OS</strong></div>
+              <div class="status-row"><span>额定功耗 / Rated power</span><strong class="ok">0 W</strong></div>
+              <div class="status-row"><span>散热方式 / Cooling</span><strong>自然散热</strong></div>
+              <div class="status-row"><span>网络接口 / Network ports</span><strong>0 / NONE</strong></div>
+              <div class="status-row"><span>维护窗口 / Maintenance window</span><strong class="warn">不适用</strong></div>
+            </div>
+          </article>
+
+          <article class="panel manifesto">
+            <div>
+              <div class="section-kicker">Design principle</div>
+              <blockquote>零配置。<br><span>零维护。零漏洞。</span></blockquote>
+              <p class="manifesto-copy">本设备不需要电源、网络、云服务或第三方 API。它只需要一个明确的位置，以及一块愿意承担责任的地面。</p>
+            </div>
+            <div class="manifesto-footer"><span>MTBF: GEOLOGICAL SCALE</span><span>EOL: NOT SCHEDULED</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" id="field-record" aria-labelledby="field-record-title">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">02 / Field record</div>
+            <h2 id="field-record-title">现场档案</h2>
+          </div>
+          <p>唯一未经渲染的硬件证据：一张真实现场照片，以及一块认真承担任务的石头。</p>
+        </div>
+        <div class="field-record-grid">
+          <figure class="panel field-image-card">
+            <div class="field-image-wrap">
+              <img src="assets/rock-field-photo.png" alt="真实现场照片：一块带有黄色标签的石头位于墙角地面上">
+              <span class="photo-stamp">ACTUAL FIELD PHOTO / 真实现场</span>
+            </div>
+            <figcaption class="field-caption">
+              <strong>EGIEM-R1 · 原型实物</strong>
+              <span>Source: supplied photo<br>Pixel treatment: none</span>
+            </figcaption>
+          </figure>
+
+          <article class="panel field-notes">
+            <div class="section-kicker">Evidence note / 素材说明</div>
+            <h3>这不是渲染图。</h3>
+            <p>照片中可见一块不规则石块置于墙角的黑边砖地面上，石块表面带有黄色标签。本页面直接使用原始图片，仅将文件名规范为便于项目引用的名称。</p>
+            <div class="field-note-list">
+              <div class="field-note-row"><span>Asset name</span><strong>rock-field-photo.png</strong></div>
+              <div class="field-note-row"><span>Processing</span><strong>原始像素保留；未裁切、未重绘</strong></div>
+              <div class="field-note-row"><span>Role</span><strong>现场纪念页主视觉素材</strong></div>
+              <div class="field-note-row"><span>Telemetry</span><strong>照片不连接监控系统，也不承载设备测量数据</strong></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" id="architecture" aria-labelledby="architecture-title">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">03 / System architecture</div>
+            <h2 id="architecture-title">架构示意</h2>
+          </div>
+          <p>上游负责被支撑，下游负责承载，中间模块负责保持沉默。</p>
+        </div>
+        <div class="architecture">
+          <div class="dependency-grid">
+            <article class="dependency-node">
+              <span class="node-index">UPSTREAM / 01</span>
+              <h3>运营商油机接口箱</h3>
+              <p>需要高度补偿的上游设备</p>
+            </article>
+            <div class="connector"><span>physical support<br>纯物理承载</span></div>
+            <article class="dependency-node primary">
+              <span class="node-index">MODULE / EGIEM-R1</span>
+              <h3>抢修增高块</h3>
+              <p>Rock OS · 0 W · 无联网</p>
+            </article>
+            <div class="connector"><span>load transfer<br>载荷传递</span></div>
+            <article class="dependency-node">
+              <span class="node-index">DOWNSTREAM / 02</span>
+              <h3>地球</h3>
+              <p>负责提供承载面的终极平台</p>
+            </article>
+          </div>
+          <div class="architecture-caption"><span>Dependency chain / 依赖链路</span><span>Interface count: 0 · Human intervention: placement only</span></div>
+        </div>
+      </section>
+
+      <section class="section-block" id="monitoring" aria-labelledby="monitoring-title">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">04 / Local telemetry</div>
+            <h2 id="monitoring-title">状态监控</h2>
+          </div>
+          <p>页面内置一段本地演示遥测。它不连接设备，也不上传任何数据。</p>
+        </div>
+        <div class="monitor-grid">
+          <article class="panel monitor-card">
+            <div class="monitor-head">
+              <div>
+                <div class="section-kicker">Ambient conditions</div>
+                <h3>环境温度</h3>
+              </div>
+              <span class="demo-label">SIMULATED / 演示</span>
+            </div>
+            <div class="telemetry-main">
+              <div>
+                <small>Browser-local sample</small>
+                <strong id="telemetry-temp">24.0</strong>
+              </div>
+              <span>°C</span>
+            </div>
+            <div class="meter-list">
+              <div class="meter-row">
+                <div class="meter-label"><span>Power draw / 功耗</span><strong id="telemetry-power">0 W</strong></div>
+                <div class="meter-track"><div class="meter-fill" style="width: 0%"></div></div>
+              </div>
+              <div class="meter-row">
+                <div class="meter-label"><span>Network traffic / 网络流量</span><strong>0 kbps</strong></div>
+                <div class="meter-track"><div class="meter-fill" style="width: 0%"></div></div>
+              </div>
+              <div class="meter-row">
+                <div class="meter-label"><span>Operational calm / 运行平静度</span><strong id="telemetry-calm">100%</strong></div>
+                <div class="meter-track"><div id="telemetry-calm-bar" class="meter-fill amber" style="width: 100%"></div></div>
+              </div>
+            </div>
+            <p class="monitor-note">Last local refresh / 最近本地刷新：<span id="telemetry-time">--:--:--</span></p>
+          </article>
+
+          <article class="panel log-card">
+            <div class="section-kicker">Event buffer</div>
+            <h3>事件记录</h3>
+            <div class="log-list">
+              <div class="log-entry"><time>00:00:00</time><span>BOOT SEQUENCE</span><strong>PASS</strong></div>
+              <div class="log-entry"><time>00:00:01</time><span>NETWORK DISCOVERY</span><strong>NONE FOUND</strong></div>
+              <div class="log-entry"><time>00:00:02</time><span>FIRMWARE UPDATE</span><strong>NOT REQUIRED</strong></div>
+              <div class="log-entry"><time>00:00:03</time><span>CRITICAL ALERTS</span><strong>0</strong></div>
+            </div>
+            <p class="monitor-note">状态通道保持安静。若现场一切正常，请勿移动模块。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block" id="specifications" aria-labelledby="specifications-title">
+        <div class="section-heading">
+          <div>
+            <div class="section-kicker">05 / Technical record</div>
+            <h2 id="specifications-title">规格档案</h2>
+          </div>
+          <p>将传统设备资料页里的严肃字段，完整交给一块不需要说明书的石头。</p>
+        </div>
+        <div class="specs-wrap">
+          <table class="specs-table">
+            <tbody>
+              <tr><th scope="row">设备类型 / Category</th><td><span class="spec-value">PASSIVE INFRASTRUCTURE SUPPORT MODULE</span><span class="spec-note">被动式应急基础设施承载模块</span></td></tr>
+              <tr><th scope="row">主体材料 / Material</th><td><span class="spec-value">NATURAL SILICATE COMPOSITE</span><span class="spec-note">天然硅酸盐复合材料（石头）</span></td></tr>
+              <tr><th scope="row">额定功耗 / Rated power</th><td><span class="spec-value">0 W</span><span class="spec-note">供电需求：0 W · 待机功耗：0 W</span></td></tr>
+              <tr><th scope="row">散热方式 / Cooling</th><td><span class="spec-value">NATURAL COOLING</span><span class="spec-note">没有风扇、冷媒、泵或风道</span></td></tr>
+              <tr><th scope="row">网络能力 / Network</th><td><span class="spec-value">NO INTERFACES · 0 ATTACK SURFACE</span><span class="spec-note">没有网络接口；不构成任何周边系统的安全结论</span></td></tr>
+              <tr><th scope="row">上游依赖 / Upstream</th><td><span class="spec-value">运营商油机接口箱</span><span class="spec-note">需要被支撑的对象</span></td></tr>
+              <tr><th scope="row">下游依赖 / Downstream</th><td><span class="spec-value">地球 / EARTH</span><span class="spec-note">负责提供承载面的终极平台</span></td></tr>
+              <tr><th scope="row">生命周期 / Lifecycle</th><td><span class="spec-value">GEOLOGICAL TIMESCALE</span><span class="spec-note">地质年代尺度：幽默表达，不是质保或服务寿命承诺</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="notice" aria-label="创意项目说明">
+        <div class="notice-mark" aria-hidden="true">!</div>
+        <div>
+          <strong>Creative project notice / 创意项目说明</strong>
+          <p>本页面是静态纪念页。页面中的型号、状态、功耗、攻击面、生命周期及架构关系均为克制幽默的创意表达，不代表真实认证、安全等级、工程验收、承载能力或任何现场操作建议。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>EGIEM-R1 · <strong>ROCK OS</strong> · STATIC MEMORIAL</span>
+      <span>If it works, don't move the rock.</span>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const temperature = document.getElementById('telemetry-temp');
+      const calm = document.getElementById('telemetry-calm');
+      const calmBar = document.getElementById('telemetry-calm-bar');
+      const time = document.getElementById('telemetry-time');
+
+      function renderTelemetry() {
+        const now = new Date();
+        const sample = 24 + Math.sin(now.getTime() / 12000) * 0.35;
+        const calmValue = Math.round(98 + Math.sin(now.getTime() / 17000) * 2);
+        temperature.textContent = sample.toFixed(1);
+        calm.textContent = `${calmValue}%`;
+        calmBar.style.width = `${calmValue}%`;
+        time.textContent = now.toLocaleTimeString('zh-CN', { hour12: false });
+      }
+
+      renderTelemetry();
+      window.setInterval(renderTelemetry, 2400);
+    })();
+  </script>
+</body>
+</html>
