@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "carriage\rreturn.txt"
+Carriage return can make raw terminal listings misleading; use escaped output.

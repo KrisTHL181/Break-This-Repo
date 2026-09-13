@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "line\nbreak.txt"
+One filename spans two terminal lines.
