@@ -1,0 +1,561 @@
+warning: variable does not need to be mutable
+   --> src\gui\app.rs:273:33
+    |
+273 | ...                   let mut bus = self.bus.lock();
+    |                           ----^^^
+    |                           |
+    |                           help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `base`
+   --> src\gui\app.rs:635:29
+    |
+635 |                         let base = 0x8000_0000u32;
+    |                             ^^^^ help: if this is intentional, prefix it with an underscore: `_base`
+    |
+    = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `setup_title_off`
+   --> src\firmware\mod.rs:298:9
+    |
+298 |     let setup_title_off = fw.len() - strings_start;
+    |         ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_setup_title_off`
+
+warning: unused variable: `setup_menu_off`
+   --> src\firmware\mod.rs:301:9
+    |
+301 |     let setup_menu_off = fw.len() - strings_start;
+    |         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_setup_menu_off`
+
+warning: fields `rd` and `rs1` are never read
+   --> src\cpu\rv32imac.rs:952:13
+    |
+952 |     Fence { rd: u8, rs1: u8 },
+    |     -----   ^^      ^^^
+    |     |
+    |     fields in this variant
+    |
+    = note: `Instruction` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `aq` and `rl` are never read
+   --> src\cpu\rv32imac.rs:963:37
+    |
+963 |     ScW { rd: u8, rs1: u8, rs2: u8, aq: bool, rl: bool },
+    |     --- fields in this variant      ^^        ^^
+    |
+    = note: `Instruction` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: constant `MCAUSE_INTERRUPT` is never used
+  --> src\cpu\csr.rs:39:7
+   |
+39 | const MCAUSE_INTERRUPT: u32 = 0x8000_0000;
+   |       ^^^^^^^^^^^^^^^^
+
+warning: constant `MCAUSE_MACHINE_TIMER` is never used
+  --> src\cpu\csr.rs:40:7
+   |
+40 | const MCAUSE_MACHINE_TIMER: u32 = MCAUSE_INTERRUPT | 7;
+   |       ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `MCAUSE_MACHINE_EXTERNAL` is never used
+  --> src\cpu\csr.rs:41:7
+   |
+41 | const MCAUSE_MACHINE_EXTERNAL: u32 = MCAUSE_INTERRUPT | 11;
+   |       ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `set_timer_interrupt`, `clear_timer_interrupt`, `set_external_interrupt`, and `clear_external_interrupt` are never used
+   --> src\cpu\csr.rs:183:12
+    |
+ 68 | impl CsrFile {
+    | ------------ methods in this implementation
+...
+183 |     pub fn set_timer_interrupt(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^
+...
+187 |     pub fn clear_timer_interrupt(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^^^
+...
+191 |     pub fn set_external_interrupt(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^^^^
+...
+195 |     pub fn clear_external_interrupt(&mut self) {
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `vga_mut` is never used
+   --> src\bus\mmio.rs:303:12
+    |
+ 34 | impl Bus {
+    | -------- method in this implementation
+...
+303 |     pub fn vga_mut(&mut self) -> &mut VgaController {
+    |            ^^^^^^^
+
+warning: constant `BOOT_STATUS_OFFSET` is never used
+   --> src\bus\mmio.rs:227:15
+    |
+227 |         const BOOT_STATUS_OFFSET: u32 = 0x0000_0F04;
+    |               ^^^^^^^^^^^^^^^^^^
+
+warning: field `rbr` is never read
+  --> src\devices\uart16550.rs:26:9
+   |
+25 | pub struct Uart16550 {
+   |            --------- field in this struct
+26 |     pub rbr: u8,
+   |         ^^^
+
+warning: method `can_send` is never used
+   --> src\devices\uart16550.rs:131:12
+    |
+ 45 | impl Uart16550 {
+    | -------------- method in this implementation
+...
+131 |     pub fn can_send(&self) -> bool {
+    |            ^^^^^^^^
+
+warning: constant `ES1371_REG_UART_DATA` is never used
+ --> src\devices\es1371.rs:3:7
+  |
+3 | const ES1371_REG_UART_DATA: usize = 0x08;
+  |       ^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `ES1371_REG_UART_STATUS` is never used
+ --> src\devices\es1371.rs:4:7
+  |
+4 | const ES1371_REG_UART_STATUS: usize = 0x09;
+  |       ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `ES1371_CTRL_ADC_EN` is never used
+  --> src\devices\es1371.rs:23:7
+   |
+23 | const ES1371_CTRL_ADC_EN: u32 = 1 << 2;
+   |       ^^^^^^^^^^^^^^^^^^
+
+warning: field `adc_buffer` is never read
+  --> src\devices\es1371.rs:41:9
+   |
+25 | pub struct Es1371 {
+   |            ------ field in this struct
+...
+41 |     pub adc_buffer: Vec<u16>,
+   |         ^^^^^^^^^^
+
+warning: methods `vsync` and `clear_vsync` are never used
+   --> src\devices\vga.rs:315:12
+    |
+ 36 | impl VgaController {
+    | ------------------ methods in this implementation
+...
+315 |     pub fn vsync(&mut self) {
+    |            ^^^^^
+...
+319 |     pub fn clear_vsync(&mut self) {
+    |            ^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_CBSR` is never used
+  --> src\devices\ohci.rs:27:7
+   |
+27 | const OHCI_CTRL_CBSR: u32 = 0x0000_0003;
+   |       ^^^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_PLE` is never used
+  --> src\devices\ohci.rs:28:7
+   |
+28 | const OHCI_CTRL_PLE: u32 = 0x0000_0004;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_IE` is never used
+  --> src\devices\ohci.rs:29:7
+   |
+29 | const OHCI_CTRL_IE: u32 = 0x0000_0008;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_CLE` is never used
+  --> src\devices\ohci.rs:30:7
+   |
+30 | const OHCI_CTRL_CLE: u32 = 0x0000_0010;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_BLE` is never used
+  --> src\devices\ohci.rs:31:7
+   |
+31 | const OHCI_CTRL_BLE: u32 = 0x0000_0020;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_HCFS_RESUME` is never used
+  --> src\devices\ohci.rs:34:7
+   |
+34 | const OHCI_CTRL_HCFS_RESUME: u32 = 0x0000_0040;
+   |       ^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_HCFS_SUSPEND` is never used
+  --> src\devices\ohci.rs:36:7
+   |
+36 | const OHCI_CTRL_HCFS_SUSPEND: u32 = 0x0000_00C0;
+   |       ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_IR` is never used
+  --> src\devices\ohci.rs:37:7
+   |
+37 | const OHCI_CTRL_IR: u32 = 0x0000_0100;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_RWC` is never used
+  --> src\devices\ohci.rs:38:7
+   |
+38 | const OHCI_CTRL_RWC: u32 = 0x0000_0200;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `OHCI_CTRL_RWE` is never used
+  --> src\devices\ohci.rs:39:7
+   |
+39 | const OHCI_CTRL_RWE: u32 = 0x0000_0400;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `OHCI_CMD_CLF` is never used
+  --> src\devices\ohci.rs:42:7
+   |
+42 | const OHCI_CMD_CLF: u32 = 0x0000_0002;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_CMD_BLF` is never used
+  --> src\devices\ohci.rs:43:7
+   |
+43 | const OHCI_CMD_BLF: u32 = 0x0000_0004;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_CMD_OCR` is never used
+  --> src\devices\ohci.rs:44:7
+   |
+44 | const OHCI_CMD_OCR: u32 = 0x0000_0008;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_INT_WDH` is never used
+  --> src\devices\ohci.rs:47:7
+   |
+47 | const OHCI_INT_WDH: u32 = 0x0000_0002;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_INT_RD` is never used
+  --> src\devices\ohci.rs:49:7
+   |
+49 | const OHCI_INT_RD: u32 = 0x0000_0008;
+   |       ^^^^^^^^^^^
+
+warning: constant `OHCI_INT_UE` is never used
+  --> src\devices\ohci.rs:50:7
+   |
+50 | const OHCI_INT_UE: u32 = 0x0000_0010;
+   |       ^^^^^^^^^^^
+
+warning: constant `OHCI_INT_FNO` is never used
+  --> src\devices\ohci.rs:51:7
+   |
+51 | const OHCI_INT_FNO: u32 = 0x0000_0020;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_INT_RHSC` is never used
+  --> src\devices\ohci.rs:52:7
+   |
+52 | const OHCI_INT_RHSC: u32 = 0x0000_0040;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `OHCI_INT_OC` is never used
+  --> src\devices\ohci.rs:53:7
+   |
+53 | const OHCI_INT_OC: u32 = 0x4000_0000;
+   |       ^^^^^^^^^^^
+
+warning: constant `OHCI_INT_MIE` is never used
+  --> src\devices\ohci.rs:54:7
+   |
+54 | const OHCI_INT_MIE: u32 = 0x8000_0000;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_RH_PSM` is never used
+  --> src\devices\ohci.rs:57:7
+   |
+57 | const OHCI_RH_PSM: u32 = 0x0000_0100;
+   |       ^^^^^^^^^^^
+
+warning: constant `OHCI_RH_DT` is never used
+  --> src\devices\ohci.rs:59:7
+   |
+59 | const OHCI_RH_DT: u32 = 0x0000_0400;
+   |       ^^^^^^^^^^
+
+warning: constant `OHCI_RH_OCPM` is never used
+  --> src\devices\ohci.rs:60:7
+   |
+60 | const OHCI_RH_OCPM: u32 = 0x0000_0800;
+   |       ^^^^^^^^^^^^
+
+warning: constant `OHCI_RH_POTPGT_MASK` is never used
+  --> src\devices\ohci.rs:62:7
+   |
+62 | const OHCI_RH_POTPGT_MASK: u32 = 0xFF00_0000;
+   |       ^^^^^^^^^^^^^^^^^^^
+
+warning: constant `OHCI_PORT_LSDA` is never used
+  --> src\devices\ohci.rs:70:7
+   |
+70 | const OHCI_PORT_LSDA: u32 = 0x0000_0200;
+   |       ^^^^^^^^^^^^^^
+
+warning: constant `PLIC_SOURCE_BASE` is never used
+ --> src\devices\plic.rs:1:7
+  |
+1 | const PLIC_SOURCE_BASE: u32 = 0x0000;
+  |       ^^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SCNTL0` is never used
+ --> src\devices\scsi53c895a.rs:1:7
+  |
+1 | const SCSI_REG_SCNTL0: usize = 0x00;
+  |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SCNTL1` is never used
+ --> src\devices\scsi53c895a.rs:2:7
+  |
+2 | const SCSI_REG_SCNTL1: usize = 0x01;
+  |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SCNTL2` is never used
+ --> src\devices\scsi53c895a.rs:3:7
+  |
+3 | const SCSI_REG_SCNTL2: usize = 0x02;
+  |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SCNTL3` is never used
+ --> src\devices\scsi53c895a.rs:4:7
+  |
+4 | const SCSI_REG_SCNTL3: usize = 0x03;
+  |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SDID` is never used
+ --> src\devices\scsi53c895a.rs:7:7
+  |
+7 | const SCSI_REG_SDID: usize = 0x06;
+  |       ^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_GPREG` is never used
+ --> src\devices\scsi53c895a.rs:8:7
+  |
+8 | const SCSI_REG_GPREG: usize = 0x07;
+  |       ^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SFBR` is never used
+ --> src\devices\scsi53c895a.rs:9:7
+  |
+9 | const SCSI_REG_SFBR: usize = 0x08;
+  |       ^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SOCL` is never used
+  --> src\devices\scsi53c895a.rs:10:7
+   |
+10 | const SCSI_REG_SOCL: usize = 0x09;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SSID` is never used
+  --> src\devices\scsi53c895a.rs:11:7
+   |
+11 | const SCSI_REG_SSID: usize = 0x0A;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SBCL` is never used
+  --> src\devices\scsi53c895a.rs:12:7
+   |
+12 | const SCSI_REG_SBCL: usize = 0x0B;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SSTAT0` is never used
+  --> src\devices\scsi53c895a.rs:14:7
+   |
+14 | const SCSI_REG_SSTAT0: usize = 0x0D;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SSTAT1` is never used
+  --> src\devices\scsi53c895a.rs:15:7
+   |
+15 | const SCSI_REG_SSTAT1: usize = 0x0E;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SSTAT2` is never used
+  --> src\devices\scsi53c895a.rs:16:7
+   |
+16 | const SCSI_REG_SSTAT2: usize = 0x0F;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_DSA` is never used
+  --> src\devices\scsi53c895a.rs:17:7
+   |
+17 | const SCSI_REG_DSA: usize = 0x10;
+   |       ^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_CTEST0` is never used
+  --> src\devices\scsi53c895a.rs:19:7
+   |
+19 | const SCSI_REG_CTEST0: usize = 0x18;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_CTEST1` is never used
+  --> src\devices\scsi53c895a.rs:20:7
+   |
+20 | const SCSI_REG_CTEST1: usize = 0x19;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_CTEST2` is never used
+  --> src\devices\scsi53c895a.rs:21:7
+   |
+21 | const SCSI_REG_CTEST2: usize = 0x1A;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_CTEST3` is never used
+  --> src\devices\scsi53c895a.rs:22:7
+   |
+22 | const SCSI_REG_CTEST3: usize = 0x1B;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_TEMP` is never used
+  --> src\devices\scsi53c895a.rs:23:7
+   |
+23 | const SCSI_REG_TEMP: usize = 0x1C;
+   |       ^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_DFIFO` is never used
+  --> src\devices\scsi53c895a.rs:24:7
+   |
+24 | const SCSI_REG_DFIFO: usize = 0x20;
+   |       ^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_CTEST6` is never used
+  --> src\devices\scsi53c895a.rs:27:7
+   |
+27 | const SCSI_REG_CTEST6: usize = 0x23;
+   |       ^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SCRATCHA` is never used
+  --> src\devices\scsi53c895a.rs:33:7
+   |
+33 | const SCSI_REG_SCRATCHA: usize = 0x34;
+   |       ^^^^^^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_DWT` is never used
+  --> src\devices\scsi53c895a.rs:36:7
+   |
+36 | const SCSI_REG_DWT: usize = 0x3A;
+   |       ^^^^^^^^^^^^
+
+warning: constant `SCSI_REG_SCRATCHB` is never used
+  --> src\devices\scsi53c895a.rs:38:7
+   |
+38 | const SCSI_REG_SCRATCHB: usize = 0x5C;
+   |       ^^^^^^^^^^^^^^^^^
+
+warning: constant `ISTAT_DIP` is never used
+  --> src\devices\scsi53c895a.rs:42:7
+   |
+42 | const ISTAT_DIP: u8 = 0x04;
+   |       ^^^^^^^^^
+
+warning: constant `ISTAT_CON` is never used
+  --> src\devices\scsi53c895a.rs:44:7
+   |
+44 | const ISTAT_CON: u8 = 0x10;
+   |       ^^^^^^^^^
+
+warning: constant `DSTAT_SSI` is never used
+  --> src\devices\scsi53c895a.rs:51:7
+   |
+51 | const DSTAT_SSI: u8 = 0x08;
+   |       ^^^^^^^^^
+
+warning: constant `DSTAT_SIR` is never used
+  --> src\devices\scsi53c895a.rs:52:7
+   |
+52 | const DSTAT_SIR: u8 = 0x04;
+   |       ^^^^^^^^^
+
+warning: constant `DSTAT_IID` is never used
+  --> src\devices\scsi53c895a.rs:53:7
+   |
+53 | const DSTAT_IID: u8 = 0x01;
+   |       ^^^^^^^^^
+
+warning: constant `DCNTL_STD` is never used
+  --> src\devices\scsi53c895a.rs:56:7
+   |
+56 | const DCNTL_STD: u8 = 0x10;
+   |       ^^^^^^^^^
+
+warning: constant `DCNTL_IRQD` is never used
+  --> src\devices\scsi53c895a.rs:57:7
+   |
+57 | const DCNTL_IRQD: u8 = 0x08;
+   |       ^^^^^^^^^^
+
+warning: constant `DCNTL_COM` is never used
+  --> src\devices\scsi53c895a.rs:58:7
+   |
+58 | const DCNTL_COM: u8 = 0x04;
+   |       ^^^^^^^^^
+
+warning: constant `PXCMD_SUD` is never used
+  --> src\devices\sata.rs:40:7
+   |
+40 | const PXCMD_SUD: u32 = 1 << 1;
+   |       ^^^^^^^^^
+
+warning: constant `PXCMD_POD` is never used
+  --> src\devices\sata.rs:41:7
+   |
+41 | const PXCMD_POD: u32 = 1 << 2;
+   |       ^^^^^^^^^
+
+warning: constant `PXIS_PSS` is never used
+  --> src\devices\sata.rs:52:7
+   |
+52 | const PXIS_PSS: u32 = 1 << 1;
+   |       ^^^^^^^^
+
+warning: constant `PXIS_DSS` is never used
+  --> src\devices\sata.rs:53:7
+   |
+53 | const PXIS_DSS: u32 = 1 << 2;
+   |       ^^^^^^^^
+
+warning: constant `PXIS_SDBS` is never used
+  --> src\devices\sata.rs:54:7
+   |
+54 | const PXIS_SDBS: u32 = 1 << 3;
+   |       ^^^^^^^^^
+
+warning: constant `PXIS_UFS` is never used
+  --> src\devices\sata.rs:55:7
+   |
+55 | const PXIS_UFS: u32 = 1 << 4;
+   |       ^^^^^^^^
+
+warning: constant `PXTFD_STS_ERR` is never used
+  --> src\devices\sata.rs:60:7
+   |
+60 | const PXTFD_STS_ERR: u8 = 0x01;
+   |       ^^^^^^^^^^^^^
+
+warning: function `lw` is never used
+  --> src\firmware\mod.rs:45:8
+   |
+45 |     fn lw(fw: &mut Vec<u8>, rd: u8, rs1: u8, imm12: i32) {
+   |        ^^
+
+warning: `rv32-machine` (bin "rv32-machine" test) generated 85 warnings (run `cargo fix --bin "rv32-machine" -p rv32-machine --tests` to apply 4 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.41s
+     Running unittests src\main.rs (target\debug\deps\rv32_machine-f1d54d0de2d7b415.exe)
+
+running 1 test
+test firmware::tests::firmware_branch_and_jump_offsets_stay_in_range ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
