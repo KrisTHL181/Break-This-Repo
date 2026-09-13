@@ -1,40 +1,39 @@
-# Security Policy
+<!-- BEGIN MICROSOFT SECURITY.MD V0.0.9 BLOCK -->
 
-## Repository Status
+## Security
 
-This repository is intentionally unstable and may contain broken,
-misleading, incomplete, or experimental content.
+Microsoft takes the security of our software products and services seriously, which includes all source code repositories managed through our GitHub organizations.
 
-Do not trust or execute code from this repository without reviewing it first.
+If you believe you have found a security vulnerability in any Microsoft-owned repository that meets [Microsoft's definition of a security vulnerability](https://aka.ms/security.md/definition), please report it to us as described below.
 
-## Supported Versions
+## Reporting Security Issues
 
-| Branch | Status |
-| --- | --- |
-| `main` | Intentionally unstable |
-| Other branches | Unsupported |
+**Please do not report security vulnerabilities through public GitHub issues.**
 
-## Reporting a Security Problem
+Instead, please report them to the Microsoft Security Response Center (MSRC) at [https://msrc.microsoft.com/create-report](https://aka.ms/security.md/msrc/create-report).
 
-If you find a genuine security problem, please open a GitHub issue and
-clearly explain:
+You should receive a response within 24 hours. If for some reason you do not, please follow up using the messaging functionality found at the bottom of the Activity tab on your vulnerability report on [https://msrc.microsoft.com/report/vulnerability](https://msrc.microsoft.com/report/vulnerability/) or via email as described in the instructions at the bottom of [https://msrc.microsoft.com/create-report](https://aka.ms/security.md/msrc/create-report). Additional information can be found at [microsoft.com/msrc](https://www.microsoft.com/msrc) or on MSRC's [FAQ page for reporting an issue](https://www.microsoft.com/en-us/msrc/faqs-report-an-issue).
 
-1. Which file is affected.
-2. What the problem is.
-3. Whether running the code is required to reproduce it.
-4. How the problem can be safely fixed.
+Please include the requested information listed below (as much as you can provide) to help us better understand the nature and scope of the possible issue:
 
-Do not publish passwords, API keys, tokens, private information, or other
-people's personal data.
+  * Type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.)
+  * Full paths of source file(s) related to the manifestation of the issue
+  * The location of the affected source code (tag/branch/commit or direct URL)
+  * Any special configuration required to reproduce the issue
+  * Step-by-step instructions to reproduce the issue
+  * Proof-of-concept or exploit code (if possible)
+  * Impact of the issue, including how an attacker might exploit the issue
 
-## Scope of the Experiment
+This information will help us triage your report more quickly.
 
-Contributors may experiment with repository content, but should not:
+If you are reporting for a bug bounty, more complete reports can contribute to a higher bounty award. Please visit our [Microsoft Bug Bounty Program](https://aka.ms/security.md/msrc/bounty) page for more details about our active programs.
 
-- Modify the protected `.github` directory.
-- Modify the protected portion of `README.md`.
-- Steal credentials or personal files.
-- Add malware, cryptominers, or destructive installation scripts.
-- Attack GitHub, contributors, or third-party services.
+## Preferred Languages
 
-Breaking the repository does not mean breaking somebody else's computer.
+We prefer all communications to be in English.
+
+## Policy
+
+Microsoft follows the principle of [Coordinated Vulnerability Disclosure](https://aka.ms/security.md/cvd).
+
+<!-- END MICROSOFT SECURITY.MD BLOCK -->

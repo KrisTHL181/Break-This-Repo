@@ -1,0 +1,17 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>perf</title>
+<style>html,body{margin:0;background:#000}#scene{position:fixed;image-rendering:pixelated}</style></head>
+<body><canvas id="scene"></canvas>
+<script src="../js/scene.js"></script>
+<script>
+HD2D.init(document.getElementById('scene'));
+window.__perf = new Promise(function(res){
+  var n=0, worst=0, last=performance.now(), t0=last;
+  function tick(){
+    var now=performance.now(), d=now-last; last=now; n++;
+    if(d>worst) worst=d;
+    if(now-t0 < 2500){ requestAnimationFrame(tick); }
+    else { var avg=(now-t0)/n; res({frames:n, avgMs:+avg.toFixed(2), worstMs:+worst.toFixed(1), fps:+(1000/avg).toFixed(1)}); }
+  }
+  requestAnimationFrame(tick);
+});
+</script></body></html>
