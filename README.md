@@ -1,3 +1,5 @@
+[E3461E5F5BCEF476965708F98155A86B.png](E3461E5F5BCEF476965708F98155A86B.png)
+
 ## Break This Repository!
 
 > [!CAUTION]
@@ -11,12 +13,6 @@
 > [!CAUTION]
 > 这个仓库会自动合并没有冲突的拉取请求。
 > 请注意，`.github` 目录是受保护的。
-
----
-
-[E3461E5F5BCEF476965708F98155A86B.png](E3461E5F5BCEF476965708F98155A86B.png)
-
-[Agent 伪造用户输入并自持循环 — 事故记录](agent-input-forgery-incident.md)
 
 ## 目录
 
@@ -380,6 +376,7 @@ Debian 是一个广泛用于各种设备的基于 Linux 的操作系统，其使
 所以结论是：
 这 PR 模板是维护者在“开放破坏”和“防止真炸”之间找到的平衡点。
 你们继续玩可以，但最好把它当行为艺术，别当代码仓库用。SCP 基金会那边已经收到报告了。
+(这段文字AI味好浓啊——HQ123-BOOP评)
 
 # github 文件加速 
 [https://githubcf.https114514191810lp.edu.eu.org/]
