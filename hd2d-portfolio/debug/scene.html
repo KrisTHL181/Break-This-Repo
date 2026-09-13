@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>scene check</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#000}
+  #scene{position:fixed;image-rendering:pixelated;image-rendering:crisp-edges}
+  #err{position:fixed;left:0;top:0;z-index:9;color:#f66;font:12px monospace;white-space:pre-wrap;background:#000c;padding:6px}
+</style>
+</head>
+<body>
+<canvas id="scene"></canvas>
+<div id="err"></div>
+<script>
+  window.__errs = [];
+  window.onerror = function (m, s, l, c) { window.__errs.push(m + ' @' + l + ':' + c); };
+  var ce = console.error; console.error = function () { window.__errs.push([].join.call(arguments, ' ')); ce.apply(console, arguments); };
+</script>
+<script src="../js/scene.js"></script>
+<script>
+  var q = new URLSearchParams(location.search);
+  HD2D.init(document.getElementById('scene'));
+  HD2D.setNight(q.get('night') === '1');
+  HD2D.setProgress(parseFloat(q.get('p') || '0'));
+  HD2D.snap();
+  setTimeout(function () {
+    var e = document.getElementById('err');
+    e.textContent = window.__errs.length ? ('ERRORS:\n' + window.__errs.join('\n')) : '';
+    document.title = window.__errs.length ? 'BAD:' + window.__errs.length : 'OK';
+  }, 600);
+</script>
+</body>
+</html>
