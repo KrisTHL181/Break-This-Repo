@@ -1,5 +1,0 @@
-# see `man quadlet`
-[mappings]
-"INI" = [
-    "**/containers/systemd/**/*.{container,volume,network,kube,image,build,pod,artifact}",
-]

@@ -1,9 +1,0 @@
-[package]
-name = "jcode-compaction-core"
-version = "0.1.0"
-edition = "2024"
-publish = false
-
-[dependencies]
-jcode-message-types = { path = "../jcode-message-types" }
-serde_json = "1"

@@ -1,7 +1,0 @@
-[package]
-name = "stdarch-gen-common"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-tempfile = "3"

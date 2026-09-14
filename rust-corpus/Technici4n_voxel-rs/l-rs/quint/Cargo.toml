@@ -1,8 +1,0 @@
-[package]
-name = "quint"
-version = "0.1.0"
-authors = ["Technici4n"]
-edition = "2018"
-
-[dependencies]
-stretch = "0.3"

@@ -1,9 +1,0 @@
-[package]
-name = "basic"
-edition = "2024.beta"
-
-[addresses]
-basic = "0x0"
-
-[dependencies]
-MoveStdlib = { local = "../../../../move-stdlib" }

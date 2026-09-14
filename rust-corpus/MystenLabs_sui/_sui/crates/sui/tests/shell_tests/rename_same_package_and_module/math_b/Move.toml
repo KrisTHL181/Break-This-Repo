@@ -1,7 +1,0 @@
-[package]
-name = "math"
-edition = "2024"
-implicit-dependencies = false
-
-[dependencies]
-std = { local = "../move-stdlib"}

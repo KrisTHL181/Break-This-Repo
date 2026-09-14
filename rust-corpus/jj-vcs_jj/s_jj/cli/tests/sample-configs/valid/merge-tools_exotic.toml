@@ -1,4 +1,0 @@
-#:schema ../../../src/config-schema.json
-[merge-tools.'rainbowdiff']
-diff-expected-exit-codes = [0, 2]
-diff-invocation-mode = "file-by-file"

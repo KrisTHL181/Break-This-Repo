@@ -1,3 +1,0 @@
-# Xonsh shell (https://xon.sh/)
-[mappings]
-"Python" = ["*.xsh", "*.xonshrc"]

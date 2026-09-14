@@ -1,9 +1,0 @@
-[package]
-name = "gen-structures"
-version = { workspace = true }
-edition = "2024"
-
-[dependencies]
-temper-macros = { workspace = true }
-temper-core = { workspace = true }
-bevy_math = { workspace = true }

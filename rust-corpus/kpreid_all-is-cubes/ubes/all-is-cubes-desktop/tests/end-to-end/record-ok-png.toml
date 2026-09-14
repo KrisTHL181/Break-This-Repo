@@ -1,2 +1,0 @@
-bin.name = "all-is-cubes"
-args = "--no-config-files -Sgraphics/lighting=false --template light-bench --graphics record -o test-record-light-bench.png --display-size 120x90"

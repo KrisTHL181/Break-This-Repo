@@ -1,4 +1,0 @@
-#:schema ../../../src/config-schema.json
-[operation]
-username = "björn"
-hostname = "Bjorn-s.box.2"

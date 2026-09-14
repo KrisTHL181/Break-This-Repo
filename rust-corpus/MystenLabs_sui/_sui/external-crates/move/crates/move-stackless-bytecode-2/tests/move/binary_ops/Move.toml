@@ -1,6 +1,0 @@
-[package]
-name = "Binary Operations"
-edition = "2024.beta"
-
-[addresses]
-bin_ops = "0x0"

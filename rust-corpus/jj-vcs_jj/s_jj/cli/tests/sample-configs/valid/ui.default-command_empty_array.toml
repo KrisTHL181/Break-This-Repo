@@ -1,5 +1,0 @@
-#:schema ../../../src/config-schema.json
-# Unlike most other array-valued command options, `default-command` is actually
-# allowed to be empty. In this case, it will simply print usage info.
-[ui]
-default-command = []

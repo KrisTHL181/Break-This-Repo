@@ -1,3 +1,0 @@
-# see `man wg-quick`
-[mappings]
-"INI" = ["/etc/wireguard/*.conf"]

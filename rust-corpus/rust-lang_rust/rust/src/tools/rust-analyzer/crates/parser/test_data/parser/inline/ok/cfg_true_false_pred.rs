@@ -1,2 +1,0 @@
-#![cfg(true)]
-#![cfg(false)]

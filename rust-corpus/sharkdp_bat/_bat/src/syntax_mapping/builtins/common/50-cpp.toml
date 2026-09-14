@@ -1,6 +1,0 @@
-[mappings]
-"C++" = [
-    # probably better than the default Objective C mapping #877
-    "*.h",
-]
-"YAML" = [".clang-format"]

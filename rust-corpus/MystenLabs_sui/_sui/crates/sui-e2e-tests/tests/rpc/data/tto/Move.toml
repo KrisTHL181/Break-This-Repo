@@ -1,9 +1,0 @@
-[package]
-name = "tto"
-edition = "2024.beta"
-
-[dependencies]
-Sui = { local = "../../../../../sui-framework/packages/sui-framework" }
-
-[addresses]
-tto = "0x0"

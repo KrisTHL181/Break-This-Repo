@@ -1,8 +1,0 @@
-[workspace]
-resolver = "2"
-members = ["check_copyright_header"]
-
-[workspace.dependencies]
-thiserror = "1.0.38"
-
-check_copyright_header = { path = "./check_copyright_header" }

@@ -1,2 +1,0 @@
-[mappings]
-"SSH Config" = ["**/.ssh/**/config"]

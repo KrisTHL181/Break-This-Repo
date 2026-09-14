@@ -1,9 +1,0 @@
-[meta]
-min_sst_retention_time_sec = 5
-vacuum_interval_sec = 10
-
-[system]
-backup_storage_directory = "backup"
-
-[server]
-metrics_level = "Disabled"

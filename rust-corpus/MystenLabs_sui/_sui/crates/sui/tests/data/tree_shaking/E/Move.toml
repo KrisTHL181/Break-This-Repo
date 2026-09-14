@@ -1,8 +1,0 @@
-[package]
-name = "e"
-edition = "2024"
-implicit-dependencies = false
-
-[dependencies]
-a = { local = "../A_v1", override = true }
-b = { local = "../B_A" }

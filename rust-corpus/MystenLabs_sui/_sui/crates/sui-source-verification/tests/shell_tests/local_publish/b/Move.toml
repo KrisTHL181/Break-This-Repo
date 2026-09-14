@@ -1,5 +1,0 @@
-[package]
-name = "b"
-edition = "2024"
-implicit-dependencies = false
-

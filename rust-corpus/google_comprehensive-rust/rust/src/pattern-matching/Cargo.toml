@@ -1,9 +1,0 @@
-[package]
-name = "pattern-matching"
-version = "0.1.0"
-edition = "2024"
-publish = false
-
-[lib]
-name = "eval"
-path = "exercise.rs"

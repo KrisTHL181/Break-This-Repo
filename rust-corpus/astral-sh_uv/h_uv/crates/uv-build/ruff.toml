@@ -1,2 +1,0 @@
-# It is important retain compatibility with old versions in the build backend
-target-version = "py37"

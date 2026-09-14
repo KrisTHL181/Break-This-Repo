@@ -1,9 +1,0 @@
-
-[tasks.compaction-test]
-category = "RiseDev - Test"
-description = "Run hummock compaction e2e deterministic test"
-script = """
-#!/usr/bin/env bash
-set -e
-cargo run --bin compaction-test --profile "${RISINGWAVE_BUILD_PROFILE}" -- "$@"
-"""

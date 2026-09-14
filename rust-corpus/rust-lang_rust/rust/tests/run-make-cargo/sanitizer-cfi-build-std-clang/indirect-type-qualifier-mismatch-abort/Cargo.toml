@@ -1,4 +1,0 @@
-[package]
-name = "indirect-type-qualifier-mismatch-abort"
-version = "0.1.0"
-edition = "2021"

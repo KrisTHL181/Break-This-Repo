@@ -1,2 +1,0 @@
-[dependency-groups]
-dev = ["iniconfig>=2,<3"]

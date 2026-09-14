@@ -1,7 +1,0 @@
-[package]
-name = "h"
-edition = "2024"
-implicit-dependencies = false
-
-[dependencies]
-g = { local = "../G" }

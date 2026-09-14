@@ -1,2 +1,0 @@
-[mappings]
-"Makefile" = ["justfile", "Justfile", ".justfile", "*.justfile"]

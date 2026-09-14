@@ -1,6 +1,0 @@
-[package]
-name = "Basics"
-edition = "2024.beta"
-
-[addresses]
-basics = "0x0"

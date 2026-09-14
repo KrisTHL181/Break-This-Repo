@@ -1,9 +1,0 @@
-# advisory-db has unsolved false positive problem.
-# See https://github.com/rustsec/advisory-db/issues/288#issuecomment-1229186835
-# So we ignore known false positives here.
-[advisories]
-ignore = [
-    # https://github.com/risingwavelabs/risingwave/issues/13703
-    # It's impossible to get rid of OpenSSL (or more accurately, the `rsa` crate), and no patch is yet available.
-    "RUSTSEC-2023-0071",
-]

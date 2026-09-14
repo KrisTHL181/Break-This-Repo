@@ -1,8 +1,0 @@
-//@compile-flags: -Zmiri-recursive-validation
-
-fn main() {
-    let mut x = 3u8;
-    let xref = &mut x;
-    let xref_wrong_type: Box<bool> = unsafe { std::mem::transmute(xref) }; //~ERROR: encountered 0x03, but expected a boolean
-    let _val = *xref_wrong_type;
-}

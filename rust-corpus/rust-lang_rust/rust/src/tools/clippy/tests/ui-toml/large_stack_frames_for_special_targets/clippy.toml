@@ -1,2 +1,0 @@
-stack-size-threshold = 0
-allow-large-stack-frames-in-tests = false

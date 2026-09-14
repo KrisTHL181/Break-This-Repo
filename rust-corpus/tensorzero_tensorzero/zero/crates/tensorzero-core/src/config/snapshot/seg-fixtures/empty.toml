@@ -1,2 +1,0 @@
-# Empty config — exercises the baseline that an empty StoredConfig
-# round-trips through TOML and JSON without surprises.

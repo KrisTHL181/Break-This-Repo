@@ -1,1 +1,0 @@
-allow-unwrap-types = ["std::sync::LockResult"]

@@ -1,2 +1,0 @@
-[mappings]
-"Email" = ["/var/spool/mail/*", "/var/mail/*"]

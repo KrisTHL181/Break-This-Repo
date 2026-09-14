@@ -1,3 +1,0 @@
-#:schema ../../../src/config-schema.json
-[user]
-email = "@.com"

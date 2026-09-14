@@ -1,3 +1,0 @@
-# SARIF is a format for reporting static analysis results #2695
-[mappings]
-"JSON" = ["*.sarif"]

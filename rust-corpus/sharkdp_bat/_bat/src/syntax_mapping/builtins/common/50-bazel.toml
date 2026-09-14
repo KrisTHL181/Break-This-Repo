@@ -1,2 +1,0 @@
-[mappings]
-"Python" = [{ glob = "BUILD", case_sensitive = true }]

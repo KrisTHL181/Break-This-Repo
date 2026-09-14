@@ -1,3 +1,0 @@
-Linux filename fixture. Plain text, not executable.
-Name (JSON escaped): "quote'and\"quote.txt"
-Both kinds of quotes are literal filename characters.

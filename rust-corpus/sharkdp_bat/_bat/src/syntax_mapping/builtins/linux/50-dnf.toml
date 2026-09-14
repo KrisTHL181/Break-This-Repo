@@ -1,2 +1,0 @@
-[mappings]
-"INI" = ["/etc/dnf/dnf.conf", "/etc/yum.repos.d/*.repo"]

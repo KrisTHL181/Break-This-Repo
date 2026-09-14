@@ -1,2 +1,0 @@
-bin.name = "all-is-cubes"
-args = "--no-config-files --template light-bench --graphics record -o test-record-light-bench.vox"

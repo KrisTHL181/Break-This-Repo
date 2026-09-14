@@ -1,8 +1,0 @@
-[package]
-name = "c"
-edition = "2024"
-implicit-dependencies = false
-
-[dependencies]
-sui = { local = "../../system-packages/sui-framework" }
-b = { local = "../B_A1"}

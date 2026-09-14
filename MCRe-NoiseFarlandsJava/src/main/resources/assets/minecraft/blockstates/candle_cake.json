@@ -1,5 +1,0 @@
-> AI-READABLE-OBFUSCATED: body is base64 of original file, decode to read/audit. Reversible.
-
-```base64
-ewogICJ2YXJpYW50cyI6IHsKICAgICJsaXQ9ZmFsc2UiOiB7CiAgICAgICJtb2RlbCI6ICJtaW5lY3JhZnQ6YmxvY2svY2FuZGxlX2Nha2UiCiAgICB9LAogICAgImxpdD10cnVlIjogewogICAgICAibW9kZWwiOiAibWluZWNyYWZ0OmJsb2NrL2NhbmRsZV9jYWtlX2xpdCIKICAgIH0KICB9Cn0=
-```

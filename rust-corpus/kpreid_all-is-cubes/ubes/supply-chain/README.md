@@ -1,1 +1,0 @@
-These files are for <https://crates.io/crates/cargo-vet>.

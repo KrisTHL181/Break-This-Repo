@@ -1,9 +1,0 @@
-[package]
-name = "jcode-batch-types"
-version = "0.1.0"
-edition = "2024"
-publish = false
-
-[dependencies]
-jcode-message-types = { path = "../jcode-message-types" }
-serde = { version = "1", features = ["derive"] }

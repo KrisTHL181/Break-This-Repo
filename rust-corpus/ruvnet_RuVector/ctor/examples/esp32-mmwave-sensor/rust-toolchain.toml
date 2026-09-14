@@ -1,4 +1,0 @@
-# Pin to the Xtensa-aware nightly espressif fork. `espup install` provides
-# the `esp` toolchain; we just ask cargo to use it for this directory.
-[toolchain]
-channel = "esp"

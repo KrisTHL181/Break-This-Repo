@@ -1,6 +1,0 @@
-mod bool_argument_type_test;
-mod double_argument_type_test;
-mod float_argument_type_test;
-mod integer_argument_type_test;
-mod long_argument_type_test;
-mod string_argument_type_test;

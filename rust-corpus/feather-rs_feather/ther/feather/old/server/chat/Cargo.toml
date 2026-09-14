@@ -1,7 +1,0 @@
-[package]
-name = "feather-server-chat"
-version = "0.6.0"
-authors = ["caelunshun <caelunshun@gmail.com>"]
-edition = "2018"
-
-[dependencies]

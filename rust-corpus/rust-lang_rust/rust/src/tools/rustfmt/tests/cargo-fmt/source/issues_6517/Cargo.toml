@@ -1,2 +1,0 @@
-[workspace]
-members = ["inner_bin", "inner_lib"]

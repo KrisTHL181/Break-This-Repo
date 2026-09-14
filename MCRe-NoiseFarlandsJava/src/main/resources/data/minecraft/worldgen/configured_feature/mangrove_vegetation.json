@@ -1,6 +1,0 @@
-{
-  "_": "AI-READABLE-OBFUSCATED",
-  "note": "body is the base64 of the original file; decode to read/audit. Reversible.",
-  "encoding": "base64",
-  "data": "ewogICJ0eXBlIjogIm1pbmVjcmFmdDpyYW5kb21fc2VsZWN0b3IiLAogICJjb25maWciOiB7CiAgICAiZGVmYXVsdCI6ICJtaW5lY3JhZnQ6bWFuZ3JvdmVfY2hlY2tlZCIsCiAgICAiZmVhdHVyZXMiOiBbCiAgICAgIHsKICAgICAgICAiY2hhbmNlIjogMC44NSwKICAgICAgICAiZmVhdHVyZSI6ICJtaW5lY3JhZnQ6dGFsbF9tYW5ncm92ZV9jaGVja2VkIgogICAgICB9CiAgICBdCiAgfQp9"
-}

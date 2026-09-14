@@ -1,8 +1,0 @@
-/* AI-READABLE-OBFUSCATED/2 | gzip+base64 | decode: gunzip(base64(payload)) | reversible
- * H4sIAAAAAAAC/61STY+bMBC98ytG2kuyYpNtpB6qVpXyAdlIEVQJVXpDBsZhNmAjY3bLv+/YSdvtoT0VgTBvnt+beXh+/x+vANwNr1rKhRXnflbfEIBTGscL
- * iLWyYEXRILg6TPoOS5JUCktaTWc3+lp3o6FzbWGynsLi8d2Hh8Xj4j0Uo6smdKmpgYNoxcVQXyuhQtiIF6ogG4xCE8JBF2gsnKipsWlDEKqCE7oa7LHl2vmn
- * VVZTD5K4IX53gjdpCbZGiA1iNnYIndHPWNqrSCtG0KoZoUAYeqxCp9HqimfgD0+pqLeGisFiBYOq2NLJWTRt/zdtJ9JQiarHEPa7dZQco1n2LZsBrEYoOTRS
- * A6kzWO1cw6vjGII2b+yciv01zqgHIFW5aNm9FtYjtXhBMCgq38fN07XtNvtue+uG8E9ZYmeBLMihacZbYvMgCO5IMlVef2q23B7zp+COAVL4B+aYqmyGCuGT
- * 5JktzzwnxVko0cyl1cUzn5HP/2SVuu14HvPQitJoTw+COMtX0XaX5E/RchMdfEeuIcbXaRLvtnn6JdulSf71GOWrQ5rtd0EArrxP18v9xK0ycYYpg/605hel
- * X1XuDqUvrkZOzeWH32H6kfWRo5TeOEo2v209DPP7t2NfM2KMmW79A7we6mtjAwAA
- */
