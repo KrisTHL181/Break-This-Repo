@@ -1,0 +1,153 @@
+// Copyright 2023 The RocketMQ Rust Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+mod copy_acl_sub_command;
+mod copy_users_sub_command;
+mod create_acl_sub_command;
+mod create_user_sub_command;
+mod delete_acl_sub_command;
+mod delete_user_sub_command;
+mod get_acl_sub_command;
+mod get_user_sub_command;
+mod list_acl_sub_command;
+mod list_users_sub_command;
+mod update_acl_sub_command;
+mod update_user_sub_command;
+
+use crate::commands::CommandExecute;
+use crate::commands::auth::copy_acl_sub_command::CopyAclSubCommand;
+use crate::commands::auth::copy_users_sub_command::CopyUsersSubCommand;
+use crate::commands::auth::create_acl_sub_command::CreateAclSubCommand;
+use crate::commands::auth::create_user_sub_command::CreateUserSubCommand;
+use crate::commands::auth::delete_acl_sub_command::DeleteAclSubCommand;
+use crate::commands::auth::delete_user_sub_command::DeleteUserSubCommand;
+use crate::commands::auth::get_acl_sub_command::GetAclSubCommand;
+use crate::commands::auth::get_user_sub_command::GetUserSubCommand;
+use crate::commands::auth::list_acl_sub_command::ListAclSubCommand;
+use crate::commands::auth::list_users_sub_command::ListUsersSubCommand;
+use crate::commands::auth::update_acl_sub_command::UpdateAclSubCommand;
+use crate::commands::auth::update_user_sub_command::UpdateUserSubCommand;
+use clap::Subcommand;
+use rocketmq_error::Result as CanonicalResult;
+
+#[derive(Subcommand)]
+pub enum AuthCommands {
+    #[command(
+        name = "copyAcl",
+        about = "Copy acl to cluster",
+        long_about = None,
+    )]
+    CopyAcl(CopyAclSubCommand),
+
+    #[command(
+        name = "copyUser",
+        about = "Copy user to cluster",
+        long_about = None,
+    )]
+    CopyUsers(CopyUsersSubCommand),
+
+    #[command(
+        name = "createAcl",
+        about = "Create acl to cluster",
+        long_about = None,
+    )]
+    CreateAcl(CreateAclSubCommand),
+
+    #[command(
+        name = "createUser",
+        about = "Create user to cluster.",
+        long_about = None,
+    )]
+    CreateUser(CreateUserSubCommand),
+
+    #[command(
+        name = "deleteAcl",
+        about = "Delete acl from cluster.",
+        long_about = None,
+    )]
+    DeleteAcl(DeleteAclSubCommand),
+
+    #[command(
+        name = "deleteUser",
+        about = "Delete user from cluster.",
+        long_about = None,
+    )]
+    DeleteUser(DeleteUserSubCommand),
+
+    #[command(
+        name = "getAcl",
+        about = "Get acl from cluster.",
+        long_about = None,
+    )]
+    GetAcl(GetAclSubCommand),
+
+    #[command(
+        name = "getUser",
+        about = "Get user from cluster.",
+        long_about = None,
+    )]
+    GetUser(GetUserSubCommand),
+
+    #[command(
+        name = "listAcl",
+        about = "List acl from cluster",
+        long_about = None,
+    )]
+    ListAcl(ListAclSubCommand),
+
+    #[command(
+        name = "listUser",
+        visible_alias = "listUsers",
+        about = "List users from cluster.",
+        long_about = None,
+    )]
+    ListUsers(ListUsersSubCommand),
+
+    #[command(
+        name = "updateAcl",
+        about = "Update Access Control List (ACL)",
+        long_about = None,
+    )]
+    UpdateAcl(UpdateAclSubCommand),
+
+    #[command(
+        name = "updateUser",
+        about = "Update user to cluster.",
+        long_about = None,
+    )]
+    UpdateUser(UpdateUserSubCommand),
+}
+
+impl CommandExecute for AuthCommands {
+    async fn execute(
+        &self,
+        credentials: Option<rocketmq_admin_core::core::security::AdminCredentials>,
+        client_runtime: std::sync::Arc<rocketmq_admin_core::client_adapter::ClientRuntime>,
+    ) -> CanonicalResult<()> {
+        match self {
+            AuthCommands::CopyAcl(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::CopyUsers(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::CreateAcl(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::CreateUser(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::DeleteAcl(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::DeleteUser(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::GetAcl(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::GetUser(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::ListAcl(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::ListUsers(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::UpdateAcl(value) => value.execute(credentials, client_runtime.clone()).await,
+            AuthCommands::UpdateUser(value) => value.execute(credentials, client_runtime.clone()).await,
+        }
+    }
+}

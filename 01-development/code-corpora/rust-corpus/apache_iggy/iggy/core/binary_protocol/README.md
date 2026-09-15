@@ -1,0 +1,25 @@
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/apache/iggy/refs/heads/master/assets/logo/SVG/iggy-apache-color-darkbg.svg">
+    <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/apache/iggy/refs/heads/master/assets/logo/SVG/iggy-apache-color-lightbg.svg">
+    <img alt="Apache Iggy" src="https://raw.githubusercontent.com/apache/iggy/refs/heads/master/assets/logo/SVG/iggy-apache-color-lightbg.svg" width="320">
+  </picture>
+</div>
+
+# iggy_binary_protocol
+
+[![Crate](https://img.shields.io/crates/v/iggy_binary_protocol?logo=rust&style=flat-square)](https://crates.io/crates/iggy_binary_protocol)
+
+Wire protocol types and codec for the [Apache Iggy](https://iggy.apache.org) binary protocol, shared between server and SDK. This crate is an internal building block. Most users should depend on the [`iggy`](https://crates.io/crates/iggy) SDK crate instead.
+
+The language-neutral wire spec for the login protocol-version handshake (packed version layout, `ClientVersionInfo` prefix, gate semantics, rejection frame offsets) lives in the [`version` module docs](src/version.rs).
+
+## Links
+
+- [Project website](https://iggy.apache.org)
+- [GitHub repository](https://github.com/apache/iggy)
+- [Iggy SDK on crates.io](https://crates.io/crates/iggy)
+
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](https://github.com/apache/iggy/blob/master/LICENSE).

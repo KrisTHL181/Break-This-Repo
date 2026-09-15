@@ -1,0 +1,66 @@
+//! # arcbox-docker
+//!
+//! Docker REST API compatibility layer for `ArcBox`.
+//!
+//! This crate provides a Docker-compatible API server that allows existing
+//! Docker CLI tools to work with `ArcBox` seamlessly.
+//!
+//! ## Compatibility
+//!
+//! Host routing accepts **any** `/v{major}.{minor}` path prefix (plus
+//! unversioned endpoints): [`api::strip_api_version_prefix`] removes the
+//! prefix before route matching and stashes the original URI so proxy
+//! handlers forward it verbatim, which leaves version negotiation to guest
+//! `dockerd`. There is no supported-range check here, so no list to keep in
+//! step with the Docker version in `assets.lock` — the CLI bundled today
+//! speaks `v1.52`. Request handling is split between local `ArcBox` handlers
+//! and pass-through proxying to guest `dockerd`.
+//!
+//! Supported operation groups include:
+//!
+//! - Container operations (create, start, stop, remove, logs, exec)
+//! - Image operations (pull, push, list, remove)
+//! - Volume operations
+//! - Network operations (basic)
+//!
+//! `/version` and related system metadata responses are sourced from guest
+//! `dockerd`.
+//!
+//! ## Architecture
+//!
+//! ```text
+//! docker CLI ──► Unix Socket ──► arcbox-docker ──► arcbox-core
+//!                                     │
+//!                                     ▼
+//!                              HTTP REST API
+//!                             (Axum server)
+//! ```
+//!
+//! ## Usage
+//!
+//! The server listens on a Unix socket that can be configured as the
+//! Docker context, allowing transparent use of Docker CLI:
+//!
+//! ```bash
+//! docker context create arcbox --docker "host=unix:///home/you/.arcbox/docker.sock"
+//! docker context use arcbox
+//! docker ps  # Now uses ArcBox!
+//! ```
+pub mod api;
+pub mod context;
+pub mod error;
+pub mod guest_query;
+pub mod handlers;
+pub(crate) mod host_path;
+mod host_reconciler;
+pub mod port_bindings;
+pub mod proxy;
+pub mod routing;
+pub mod server;
+mod system_disk_usage;
+pub mod trace;
+
+pub use context::{ContextStatus, DockerContextManager};
+pub use error::{DockerError, Result};
+pub use server::{DockerApiServer, ServerConfig};
+pub use system_disk_usage::{DockerReclaimableSpace, query_reclaimable_space};

@@ -1,0 +1,212 @@
+//! Simulate the Minecraft world, currently only used for tests.
+
+use std::sync::Arc;
+
+use azalea_client::{
+    ClientMovementState, interact::BlockStatePredictionHandler, local_player::PreviousGameMode,
+    mining::MineBundle,
+};
+use azalea_core::{
+    entity_id::MinecraftEntityId, game_type::GameMode, position::Vec3, tick::GameTick,
+};
+use azalea_entity::{
+    Attributes, LookDirection, Physics, Position, dimensions::EntityDimensions,
+    inventory::Inventory,
+};
+use azalea_registry::builtin::EntityKind;
+use azalea_world::{ChunkStorage, PartialWorld, World, WorldName, Worlds};
+use bevy_app::App;
+use bevy_ecs::{prelude::*, schedule::SingleThreadedExecutor};
+use parking_lot::RwLock;
+use uuid::Uuid;
+
+#[derive(Bundle, Clone)]
+pub struct SimulatedPlayerBundle {
+    pub position: Position,
+    pub physics: Physics,
+    pub physics_state: ClientMovementState,
+    pub look_direction: LookDirection,
+    pub attributes: Attributes,
+    pub inventory: Inventory,
+}
+
+impl SimulatedPlayerBundle {
+    pub fn new(position: Vec3) -> Self {
+        let dimensions = EntityDimensions::from(EntityKind::Player);
+
+        SimulatedPlayerBundle {
+            position: Position::new(position),
+            physics: Physics::new(&dimensions, position),
+            physics_state: ClientMovementState::default(),
+            look_direction: LookDirection::default(),
+            attributes: Attributes::new(EntityKind::Player),
+            inventory: Inventory::default(),
+        }
+    }
+}
+
+fn simulation_world_name() -> WorldName {
+    WorldName::new("azalea:simulation")
+}
+
+fn create_simulation_world(chunks: ChunkStorage) -> (App, Arc<RwLock<World>>) {
+    let world_name = simulation_world_name();
+
+    let world = Arc::new(RwLock::new(World {
+        chunks,
+        ..Default::default()
+    }));
+
+    let mut app = App::new();
+    // we don't use all the default azalea plugins because we don't need all of them
+    app.add_plugins((
+        azalea_physics::PhysicsPlugin,
+        azalea_entity::EntityPlugin,
+        azalea_client::movement::MovementPlugin,
+        super::PathfinderPlugin,
+        crate::bot::BotPlugin,
+        azalea_client::task_pool::TaskPoolPlugin::default(),
+        // for mining
+        azalea_client::inventory::InventoryPlugin,
+        azalea_client::mining::MiningPlugin,
+        azalea_client::interact::InteractPlugin,
+        azalea_client::loading::PlayerLoadedPlugin,
+    ))
+    .insert_resource(Worlds {
+        map: [(world_name.clone(), Arc::downgrade(&world.clone()))]
+            .iter()
+            .cloned()
+            .collect(),
+    });
+
+    app.edit_schedule(bevy_app::Main, |schedule| {
+        schedule.set_executor(SingleThreadedExecutor::new());
+    });
+
+    app.finish();
+
+    (app, world)
+}
+
+fn create_simulation_player_complete_bundle(
+    world: Arc<RwLock<World>>,
+    player: &SimulatedPlayerBundle,
+) -> impl Bundle {
+    let world_name = simulation_world_name();
+
+    (
+        MinecraftEntityId(0),
+        azalea_entity::LocalEntity,
+        azalea_entity::metadata::PlayerMetadataBundle::default(),
+        azalea_entity::EntityBundle::new(
+            Uuid::nil(),
+            *player.position,
+            EntityKind::Player,
+            world_name,
+        ),
+        azalea_client::local_player::WorldHolder {
+            // the partial world is never actually used by the pathfinder, so we can leave it empty
+            partial: Arc::new(RwLock::new(PartialWorld::default())),
+            shared: world.clone(),
+        },
+        Inventory::default(),
+        GameMode::Survival,
+        PreviousGameMode(None),
+        MineBundle::default(),
+        BlockStatePredictionHandler::default(),
+        azalea_client::local_player::PermissionLevel::default(),
+        azalea_entity::PlayerAbilities::default(),
+    )
+}
+
+pub fn create_simulation_player(
+    ecs: &mut bevy_ecs::world::World,
+    world: Arc<RwLock<World>>,
+    player: SimulatedPlayerBundle,
+) -> Entity {
+    let mut entity = ecs.spawn(create_simulation_player_complete_bundle(world, &player));
+    entity.insert(player);
+    entity.id()
+}
+
+/// Simulate the Minecraft world to see if certain movements would be possible.
+pub struct Simulation {
+    pub app: App,
+    pub entity: Entity,
+    pub world: Arc<RwLock<World>>,
+}
+
+impl Simulation {
+    pub fn new(chunks: ChunkStorage, player: SimulatedPlayerBundle) -> Self {
+        let (mut app, world) = create_simulation_world(chunks);
+        let entity = create_simulation_player(app.world_mut(), world.clone(), player);
+        Self { app, entity, world }
+    }
+
+    /// Despawn the old simulated player and create a new one.
+    ///
+    /// This is cheaper than creating a new [`Simulation`] from scratch.
+    pub fn reset(&mut self, player: SimulatedPlayerBundle) {
+        self.app.world_mut().despawn(self.entity);
+        let entity = create_simulation_player(self.app.world_mut(), self.world.clone(), player);
+        self.entity = entity;
+    }
+
+    pub fn tick(&mut self) {
+        self.run_update_schedule();
+        self.run_gametick_schedule();
+    }
+
+    pub fn run_update_schedule(&mut self) {
+        self.app.update();
+    }
+    pub fn run_gametick_schedule(&mut self) {
+        self.app.world_mut().run_schedule(GameTick);
+    }
+
+    pub fn component<T: Component + Clone>(&self) -> T {
+        self.app.world().get::<T>(self.entity).unwrap().clone()
+    }
+    pub fn get_component<T: Component + Clone>(&self) -> Option<T> {
+        self.app.world().get::<T>(self.entity).cloned()
+    }
+    pub fn position(&self) -> Vec3 {
+        *self.component::<Position>()
+    }
+    pub fn physics(&self) -> Physics {
+        self.component::<Physics>().clone()
+    }
+    pub fn is_mining(&self) -> bool {
+        // return true if the component is present and Some
+        self.get_component::<azalea_client::mining::MineBlockPos>()
+            .and_then(|c| *c)
+            .is_some()
+    }
+}
+
+/// A set of simulations, useful for efficiently doing multiple simulations.
+pub struct SimulationSet {
+    pub app: App,
+    world: Arc<RwLock<World>>,
+}
+impl SimulationSet {
+    pub fn new(chunks: ChunkStorage) -> Self {
+        let (app, world) = create_simulation_world(chunks);
+        Self { app, world }
+    }
+    pub fn tick(&mut self) {
+        self.app.update();
+        self.app.world_mut().run_schedule(GameTick);
+    }
+
+    pub fn spawn(&mut self, player: SimulatedPlayerBundle) -> Entity {
+        create_simulation_player(self.app.world_mut(), self.world.clone(), player)
+    }
+    pub fn despawn(&mut self, entity: Entity) {
+        self.app.world_mut().despawn(entity);
+    }
+
+    pub fn position(&self, entity: Entity) -> Vec3 {
+        **self.app.world().get::<Position>(entity).unwrap()
+    }
+}

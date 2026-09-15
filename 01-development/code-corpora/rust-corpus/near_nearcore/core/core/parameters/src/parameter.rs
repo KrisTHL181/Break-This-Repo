@@ -1,0 +1,481 @@
+use crate::cost::ActionCosts;
+use std::slice;
+
+/// Protocol configuration parameter which may change between protocol versions.
+#[derive(
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Debug,
+    strum::Display,
+    strum::EnumString,
+    strum::IntoStaticStr,
+)]
+#[strum(serialize_all = "snake_case")]
+pub enum Parameter {
+    // Gas economics config
+    BurntGasReward,
+    PessimisticGasPriceInflation,
+    /// Ratio of refunded gas that gets taxed.
+    GasRefundPenalty,
+    /// Minimum gas refund tax.
+    MinGasRefundPenalty,
+    /// Minimum price at which the gas attached to a receipt is purchased. The price at which it is
+    /// burned might be lower, in which case the difference is refunded after execution.
+    MinGasPurchasePrice,
+    /// How much creating an account should cost in NEAR. Taken into account when burning gas for
+    /// account creation.
+    AccountCreationCharge,
+
+    /// Stateless validation config
+    /// Size limit for storage proof generated while executing receipts in a chunk.
+    /// After this limit is reached we defer execution of any new receipts.
+    MainStorageProofSizeSoftLimit,
+    /// Hard limit on the size of storage proof generated while executing a single receipt.
+    PerReceiptStorageProofSizeLimit,
+    /// Soft size limit of storage proof used to validate new transactions in ChunkStateWitness.
+    NewTransactionsValidationStateSizeSoftLimit,
+    /// Maximum size of transactions contained inside ChunkStateWitness.
+    /// A witness contains transactions from both the previous chunk and the current one.
+    /// This parameter limits the sum of sizes of transactions from both of those chunks.
+    CombinedTransactionsSizeLimit,
+    /// The standard size limit for outgoing receipts aimed at a single shard.
+    /// This limit is pretty small to keep the size of source_receipt_proofs under control.
+    /// It limits the total sum of outgoing receipts, not individual receipts.
+    OutgoingReceiptsUsualSizeLimit,
+    /// Large size limit for outgoing receipts to a shard, used when it's safe
+    /// to send a lot of receipts without making the state witness too large.
+    /// It limits the total sum of outgoing receipts, not individual receipts.
+    OutgoingReceiptsBigSizeLimit,
+
+    // Account creation config
+    MinAllowedTopLevelAccountLength,
+    RegistrarAccountId,
+
+    // Storage usage config
+    StorageAmountPerByte,
+    StorageNumBytesAccount,
+    StorageNumExtraBytesRecord,
+
+    // Static action costs
+    // send_sir / send_not_sir is burned when creating a receipt on the signer shard.
+    // (SIR = signer is receiver, which guarantees the receipt is local.)
+    // Execution is burned when applying receipt on receiver shard.
+    ActionReceiptCreation,
+    DataReceiptCreationBase,
+    DataReceiptCreationPerByte,
+    ActionCreateAccount,
+    ActionDeleteAccount,
+    ActionDeployContract,
+    ActionDeployContractPerByte,
+    ActionFunctionCall,
+    ActionFunctionCallPerByte,
+    ActionTransfer,
+    ActionStake,
+    ActionAddFullAccessKey,
+    ActionAddFunctionCallKey,
+    ActionAddFunctionCallKeyPerByte,
+    ActionDeleteKey,
+    ActionDelegate,
+    ActionDeterministicStateInit,
+    ActionDeterministicStateInitPerEntry,
+    ActionDeterministicStateInitPerByte,
+    ActionUniversalStateInit,
+    ActionUniversalStateInitPerEntry,
+    ActionUniversalStateInitPerByte,
+    ActionGasKeyTransfer,
+    ActionGasKeyByte,
+    ActionGasKeyNonceWriteBase,
+
+    // Smart contract dynamic gas costs
+    WasmRegularOpCost,
+    WasmLinearOpBaseCost,
+    WasmLinearOpUnitCost,
+    WasmGrowMemCost,
+    /// Base cost for a host function
+    WasmBase,
+    WasmContractLoadingBase,
+    WasmContractLoadingBytes,
+    WasmReadMemoryBase,
+    WasmReadMemoryByte,
+    WasmWriteMemoryBase,
+    WasmWriteMemoryByte,
+    WasmReadRegisterBase,
+    WasmReadRegisterByte,
+    WasmWriteRegisterBase,
+    WasmWriteRegisterByte,
+    WasmUtf8DecodingBase,
+    WasmUtf8DecodingByte,
+    WasmUtf16DecodingBase,
+    WasmUtf16DecodingByte,
+    WasmSha256Base,
+    WasmSha256Byte,
+    WasmKeccak256Base,
+    WasmKeccak256Byte,
+    WasmKeccak512Base,
+    WasmKeccak512Byte,
+    #[strum(serialize = "wasm_sha3_256_base")]
+    WasmSha3256Base,
+    #[strum(serialize = "wasm_sha3_256_byte")]
+    WasmSha3256Byte,
+    #[strum(serialize = "wasm_sha3_384_base")]
+    WasmSha3384Base,
+    #[strum(serialize = "wasm_sha3_384_byte")]
+    WasmSha3384Byte,
+    #[strum(serialize = "wasm_sha3_512_base")]
+    WasmSha3512Base,
+    #[strum(serialize = "wasm_sha3_512_byte")]
+    WasmSha3512Byte,
+    WasmRipemd160Base,
+    WasmRipemd160Block,
+    WasmEcrecoverBase,
+    WasmEd25519VerifyBase,
+    WasmEd25519VerifyByte,
+    WasmP256VerifyBase,
+    WasmP256VerifyByte,
+    WasmMlDsaVerifyBase,
+    WasmMlDsaVerifyByte,
+    WasmUniversalStateInitToAccountIdBase,
+    WasmUniversalStateInitToAccountIdByte,
+    WasmLogBase,
+    WasmLogByte,
+    WasmStorageWriteBase,
+    WasmStorageWriteKeyByte,
+    WasmStorageWriteValueByte,
+    WasmStorageWriteEvictedByte,
+    WasmStorageReadBase,
+    WasmStorageReadKeyByte,
+    WasmStorageReadValueByte,
+    WasmStorageLargeReadOverheadBase,
+    WasmStorageLargeReadOverheadByte,
+    WasmStorageRemoveBase,
+    WasmStorageRemoveKeyByte,
+    WasmStorageRemoveRetValueByte,
+    WasmStorageHasKeyBase,
+    WasmStorageHasKeyByte,
+    WasmStorageIterCreatePrefixBase,
+    WasmStorageIterCreatePrefixByte,
+    WasmStorageIterCreateRangeBase,
+    WasmStorageIterCreateFromByte,
+    WasmStorageIterCreateToByte,
+    WasmStorageIterNextBase,
+    WasmStorageIterNextKeyByte,
+    WasmStorageIterNextValueByte,
+    WasmTouchingTrieNode,
+    WasmReadCachedTrieNode,
+    WasmPromiseAndBase,
+    WasmPromiseAndPerPromise,
+    WasmPromiseReturn,
+    WasmValidatorStakeBase,
+    WasmValidatorTotalStakeBase,
+    WasmAltBn128G1MultiexpBase,
+    WasmAltBn128G1MultiexpElement,
+    WasmAltBn128PairingCheckBase,
+    WasmAltBn128PairingCheckElement,
+    WasmAltBn128G1SumBase,
+    WasmAltBn128G1SumElement,
+    WasmYieldCreateBase,
+    WasmYieldCreateByte,
+    WasmYieldCreateWithIdBase,
+    WasmYieldResumeBase,
+    WasmYieldResumeByte,
+    WasmBls12381P1SumBase,
+    WasmBls12381P1SumElement,
+    WasmBls12381P2SumBase,
+    WasmBls12381P2SumElement,
+    WasmBls12381G1MultiexpBase,
+    WasmBls12381G1MultiexpElement,
+    WasmBls12381G2MultiexpBase,
+    WasmBls12381G2MultiexpElement,
+    WasmBls12381MapFpToG1Base,
+    WasmBls12381MapFpToG1Element,
+    WasmBls12381MapFp2ToG2Base,
+    WasmBls12381MapFp2ToG2Element,
+    WasmBls12381PairingBase,
+    WasmBls12381PairingElement,
+    WasmBls12381P1DecompressBase,
+    WasmBls12381P1DecompressElement,
+    WasmBls12381P2DecompressBase,
+    WasmBls12381P2DecompressElement,
+
+    // Smart contract limits
+    MaxGasBurnt,
+    MaxGasBurntView,
+    MaxStackHeight,
+    InitialMemoryPages,
+    MaxMemoryPages,
+    RegistersMemoryLimit,
+    MaxRegisterSize,
+    MaxNumberRegisters,
+    MaxNumberLogs,
+    MaxTotalLogLength,
+    MaxTotalPrepaidGas,
+    MaxActionsPerReceipt,
+    MaxDeployActionsPerReceipt,
+    MaxNumberBytesMethodNames,
+    MaxLengthMethodName,
+    MaxArgumentsLength,
+    MaxLengthReturnedData,
+    MaxContractSize,
+    MaxTransactionSize,
+    MaxReceiptSize,
+    MaxLengthStorageKey,
+    MaxLengthStorageValue,
+    MaxPromisesPerFunctionCallAction,
+    MaxNumberInputDataDependencies,
+    MaxReceiptTotalInputSize,
+    /// Max number of access keys a `UniversalStateInit` action may commit to.
+    MaxUniversalStateInitKeys,
+    /// Max number of storage entries a state-init action may carry.
+    MaxStateInitEntries,
+    MaxFunctionsNumberPerContract,
+    MaxLocalsPerContract,
+    MinContractSizePerLocal,
+    AccountIdValidityRulesVersion,
+    YieldTimeoutLengthInBlocks,
+    MaxYieldPayloadSize,
+    MaxTablesPerContract,
+    MaxElementsPerContractTable,
+    MaxFunctionBodySize,
+    MaxInstrumentedCodeSize,
+    MaxBlocksPerFunction,
+    MaxBlocksPerContract,
+    MaxTypesPerContract,
+    MaxParamsPerFunction,
+    MaxParamsPerContract,
+    MaxOperandStackBytesPerFunction,
+    MaxGlobalsPerContract,
+
+    // Contract runtime features
+    FlatStorageReads,
+    FixContractLoadingCost,
+    FixContractLoadingError,
+    VmKind,
+    // TODO(eth-implicit): delete this. MIN_SUPPORTED_PROTOCOL_VERSION is past
+    // protocol version 70, where the feature is enabled.
+    EthImplicitAccounts,
+    // TODO(universal-accounts): delete this once MIN_SUPPORTED_PROTOCOL_VERSION is
+    // past protocol version 87, where the feature is enabled.
+    UniversalAccounts,
+    FixMlDsaCostCharging,
+    DiscardCustomSections,
+    ReftypesBulkMemory,
+
+    // Congestion Control
+    MaxCongestionIncomingGas,
+    MaxCongestionOutgoingGas,
+    MaxCongestionMemoryConsumption,
+    MaxCongestionMissedChunks,
+
+    MaxOutgoingGas,
+    MinOutgoingGas,
+    AllowedShardOutgoingGas,
+    MaxTxGas,
+    MinTxGas,
+    RejectTxCongestionThreshold,
+
+    // Use the StateStoredReceipt structure when storing receipts in State.
+    UseStateStoredReceipt,
+
+    // Bandwidth scheduler
+    MaxShardBandwidth,
+    MaxSingleGrant,
+    MaxAllowance,
+    MaxBaseBandwidth,
+
+    // Global contracts
+    ActionDeployGlobalContract,
+    ActionDeployGlobalContractPerByte,
+    GlobalContractStorageAmountPerByte,
+    /// Compute cost charged when applying a `GlobalContractDistribution`
+    /// receipt on the receiver shard (covers precompilation overhead).
+    DeployGlobalContractExecutionBase,
+    /// Per-byte compute cost charged when applying a
+    /// `GlobalContractDistribution` receipt, scaled by deployed code size.
+    DeployGlobalContractExecutionPerByte,
+    /// Gas charged at transaction conversion for each ML-DSA-65 signature the
+    /// transaction triggers verification of: its own signature (if signed with
+    /// an ML-DSA-65 key) plus each `Delegate` action carrying an ML-DSA-65
+    /// inner signer. ML-DSA-65 verification is materially slower than the
+    /// classical schemes, so this charges its extra cost; the signer pays for
+    /// that work as part of buying the transaction. Accepts the
+    /// `{gas: ..., compute: ...}` form to set the compute cost independently
+    /// of the gas cost. 0 before `PostQuantumSignatures`.
+    #[strum(serialize = "ml_dsa_65_verification_cost")]
+    MlDsa65VerificationCost,
+
+    ActionUseGlobalContract,
+    ActionUseGlobalContractPerIdentifierByte,
+    GlobalContractHostFns,
+
+    // Flag to enable gas key host functions
+    GasKeyHostFns,
+
+    // Flag to allow 1 yoctoNEAR on promise function calls without balance
+    OneYoctoOnPromise,
+
+    // Flag to enable the P-256 verification host function
+    P256VerifyHostFn,
+
+    // Flag to enable the ML-DSA-65 verification host function
+    MlDsaVerifyHostFn,
+
+    // Flag to enable the sha3_256, sha3_384 and sha3_512 host functions
+    #[strum(serialize = "sha3_host_fns")]
+    Sha3HostFns,
+
+    // Flag to enable yield_create_with_id and yield_resume_with_id host functions
+    YieldWithIdHostFns,
+
+    // Flag to enable chain_id host function (NEP-638)
+    ChainIdHostFn,
+
+    // Fix the (0, ±2) corner case in BLS12-381 sum and decompress host
+    // functions (NEP-488). These points lie on the curve but outside the G1/G2
+    // subgroup; previously the host function returned an error for them, now
+    // they are handled correctly. All other inputs were already handled
+    // correctly.
+    Bls12381NotInGroupFix,
+}
+
+#[derive(
+    Clone,
+    Copy,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    Debug,
+    strum::Display,
+    strum::EnumString,
+    strum::IntoStaticStr,
+)]
+#[strum(serialize_all = "snake_case")]
+pub enum FeeParameter {
+    ActionReceiptCreation,
+    DataReceiptCreationBase,
+    DataReceiptCreationPerByte,
+    ActionCreateAccount,
+    ActionDeleteAccount,
+    ActionDeployContract,
+    ActionDeployContractPerByte,
+    ActionFunctionCall,
+    ActionFunctionCallPerByte,
+    ActionTransfer,
+    ActionStake,
+    ActionAddFullAccessKey,
+    ActionAddFunctionCallKey,
+    ActionAddFunctionCallKeyPerByte,
+    ActionDeleteKey,
+    ActionDelegate,
+    ActionDeployGlobalContract,
+    ActionDeployGlobalContractPerByte,
+    ActionUseGlobalContract,
+    ActionUseGlobalContractPerIdentifierByte,
+    ActionDeterministicStateInit,
+    ActionDeterministicStateInitPerByte,
+    ActionDeterministicStateInitPerEntry,
+    ActionUniversalStateInit,
+    ActionUniversalStateInitPerByte,
+    ActionUniversalStateInitPerEntry,
+    ActionGasKeyTransfer,
+    ActionGasKeyByte,
+    ActionGasKeyNonceWriteBase,
+}
+
+impl Parameter {
+    /// Iterate through all parameters that define numerical limits for
+    /// contracts that are executed in the WASM VM.
+    pub fn vm_limits() -> slice::Iter<'static, Parameter> {
+        [
+            Parameter::MaxGasBurnt,
+            Parameter::MaxStackHeight,
+            Parameter::InitialMemoryPages,
+            Parameter::MaxMemoryPages,
+            Parameter::RegistersMemoryLimit,
+            Parameter::MaxRegisterSize,
+            Parameter::MaxNumberRegisters,
+            Parameter::MaxNumberLogs,
+            Parameter::MaxTotalLogLength,
+            Parameter::MaxTotalPrepaidGas,
+            Parameter::MaxActionsPerReceipt,
+            Parameter::MaxDeployActionsPerReceipt,
+            Parameter::MaxNumberBytesMethodNames,
+            Parameter::MaxLengthMethodName,
+            Parameter::MaxArgumentsLength,
+            Parameter::MaxLengthReturnedData,
+            Parameter::MaxContractSize,
+            Parameter::MaxTransactionSize,
+            Parameter::MaxReceiptSize,
+            Parameter::MaxLengthStorageKey,
+            Parameter::MaxLengthStorageValue,
+            Parameter::MaxPromisesPerFunctionCallAction,
+            Parameter::MaxNumberInputDataDependencies,
+            Parameter::MaxReceiptTotalInputSize,
+            Parameter::MaxUniversalStateInitKeys,
+            Parameter::MaxStateInitEntries,
+            Parameter::MaxFunctionsNumberPerContract,
+            Parameter::MaxLocalsPerContract,
+            Parameter::MinContractSizePerLocal,
+            Parameter::AccountIdValidityRulesVersion,
+            Parameter::YieldTimeoutLengthInBlocks,
+            Parameter::MaxYieldPayloadSize,
+            Parameter::PerReceiptStorageProofSizeLimit,
+            Parameter::MaxTablesPerContract,
+            Parameter::MaxElementsPerContractTable,
+            Parameter::MaxFunctionBodySize,
+            Parameter::MaxInstrumentedCodeSize,
+            Parameter::MaxBlocksPerFunction,
+            Parameter::MaxBlocksPerContract,
+            Parameter::MaxTypesPerContract,
+            Parameter::MaxParamsPerFunction,
+            Parameter::MaxParamsPerContract,
+            Parameter::MaxOperandStackBytesPerFunction,
+            Parameter::MaxGlobalsPerContract,
+        ]
+        .iter()
+    }
+}
+
+// TODO: consider renaming parameters to "action_{ActionCosts}" and deleting
+// `FeeParameter` all together.
+impl From<ActionCosts> for FeeParameter {
+    fn from(other: ActionCosts) -> Self {
+        match other {
+            ActionCosts::create_account => Self::ActionCreateAccount,
+            ActionCosts::delete_account => Self::ActionDeleteAccount,
+            ActionCosts::delegate => Self::ActionDelegate,
+            ActionCosts::deploy_contract_base => Self::ActionDeployContract,
+            ActionCosts::deploy_contract_byte => Self::ActionDeployContractPerByte,
+            ActionCosts::function_call_base => Self::ActionFunctionCall,
+            ActionCosts::function_call_byte => Self::ActionFunctionCallPerByte,
+            ActionCosts::transfer => Self::ActionTransfer,
+            ActionCosts::stake => Self::ActionStake,
+            ActionCosts::add_full_access_key => Self::ActionAddFullAccessKey,
+            ActionCosts::add_function_call_key_base => Self::ActionAddFunctionCallKey,
+            ActionCosts::add_function_call_key_byte => Self::ActionAddFunctionCallKeyPerByte,
+            ActionCosts::delete_key => Self::ActionDeleteKey,
+            ActionCosts::new_action_receipt => Self::ActionReceiptCreation,
+            ActionCosts::new_data_receipt_base => Self::DataReceiptCreationBase,
+            ActionCosts::new_data_receipt_byte => Self::DataReceiptCreationPerByte,
+            ActionCosts::deploy_global_contract_base => Self::ActionDeployGlobalContract,
+            ActionCosts::deploy_global_contract_byte => Self::ActionDeployGlobalContractPerByte,
+            ActionCosts::use_global_contract_base => Self::ActionUseGlobalContract,
+            ActionCosts::use_global_contract_byte => Self::ActionUseGlobalContractPerIdentifierByte,
+            ActionCosts::deterministic_state_init_base => Self::ActionDeterministicStateInit,
+            ActionCosts::deterministic_state_init_byte => Self::ActionDeterministicStateInitPerByte,
+            ActionCosts::deterministic_state_init_entry => {
+                Self::ActionDeterministicStateInitPerEntry
+            }
+            ActionCosts::universal_state_init_base => Self::ActionUniversalStateInit,
+            ActionCosts::universal_state_init_byte => Self::ActionUniversalStateInitPerByte,
+            ActionCosts::universal_state_init_entry => Self::ActionUniversalStateInitPerEntry,
+            ActionCosts::gas_key_transfer_base => Self::ActionGasKeyTransfer,
+            ActionCosts::gas_key_byte => Self::ActionGasKeyByte,
+            ActionCosts::gas_key_nonce_write_base => Self::ActionGasKeyNonceWriteBase,
+        }
+    }
+}

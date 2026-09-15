@@ -1,0 +1,16 @@
+[package]
+name = "codex-product-info"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[lib]
+name = "codex_product_info"
+path = "src/lib.rs"
+doctest = false
+
+[lints]
+workspace = true
+
+[dev-dependencies]
+tempfile = { workspace = true }

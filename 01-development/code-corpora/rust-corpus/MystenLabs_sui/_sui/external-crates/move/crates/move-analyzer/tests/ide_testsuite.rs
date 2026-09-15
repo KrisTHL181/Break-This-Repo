@@ -1,0 +1,1303 @@
+// Copyright (c) The Move Contributors
+// SPDX-License-Identifier: Apache-2.0
+
+use std::{
+    collections::BTreeMap,
+    fs::File,
+    io::{self, BufWriter},
+    path::{Path, PathBuf},
+    sync::{Arc, Mutex},
+};
+
+use json_comments::StripComments;
+use lsp_types::{DiagnosticSeverity, InlayHintKind, InlayHintLabel, InlayHintTooltip, Position};
+use move_analyzer::{
+    code_action::access_chain_autofix_actions_for_error,
+    completions::compute_completions_with_symbols,
+    inlay_hints::inlay_hints_internal,
+    symbols::{
+        Symbols,
+        compilation::{CachedPackages, CompiledPkgInfo, SymbolsComputationData, get_compiled_pkg},
+        compute_symbols, compute_symbols_parsed_program, compute_symbols_pre_process,
+        requests::{def_info_doc_string, maybe_convert_for_guard},
+        use_def::UseDefMap,
+    },
+    utils::canonicalize_path,
+};
+use move_command_line_common::testing::insta_assert;
+use move_compiler::{editions::Flavor, linters::LintLevel};
+use move_package_alt::{MoveFlavor, Vanilla};
+use serde::{Deserialize, Serialize};
+use url::Url;
+use vfs::{MemoryFS, VfsPath};
+
+//**************************************************************************************************
+// Test Suites
+//**************************************************************************************************
+
+#[derive(Serialize, Deserialize)]
+enum TestSuite {
+    UseDef {
+        project: String,
+        file_tests: BTreeMap<String, Vec<UseDefTest>>,
+    },
+    AutoCompletion {
+        project: String,
+        file_tests: BTreeMap<String, Vec<AutoCompletionTest>>,
+    },
+    AutoImport {
+        project: String,
+        file_tests: BTreeMap<String, Vec<AutoImportTest>>,
+    },
+    Cursor {
+        project: String,
+        file_tests: BTreeMap<String, Vec<CursorTest>>,
+    },
+    Hint {
+        project: String,
+        file_tests: BTreeMap<String, Vec<HintTest>>,
+    },
+    AccessChainQuickFixTest {
+        project: String,
+        file_tests: BTreeMap<String, Vec<AccessChainQuickFixTest>>,
+    },
+    References {
+        project: String,
+        file_tests: BTreeMap<String, Vec<ReferencesTest>>,
+    },
+    Rename {
+        project: String,
+        file_tests: BTreeMap<String, Vec<RenameTest>>,
+    },
+    /// Snapshots the compiler diagnostics of every file in the project; an empty listing
+    /// asserts the project compiles cleanly
+    Diagnostics { project: String },
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(untagged)]
+enum TestSuites {
+    Single(TestSuite),
+    Many(Vec<TestSuite>),
+}
+
+#[derive(Serialize, Deserialize)]
+struct UseDefTest {
+    use_line: u32,
+    use_ndx: usize,
+}
+
+#[derive(Serialize, Deserialize)]
+struct AutoCompletionTest {
+    use_line: u32,
+    use_col: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+struct AutoImportTest {
+    use_line: u32,
+    use_col: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+struct CursorTest {
+    line: u32,
+    character: u32,
+    description: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct HintTest {
+    use_line: u32,
+    use_col: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+struct AccessChainQuickFixTest {
+    err_line: u32,
+    err_col: u32,
+}
+
+#[derive(Serialize, Deserialize)]
+struct ReferencesTest {
+    use_line: u32,
+    use_ndx: usize,
+}
+
+#[derive(Serialize, Deserialize)]
+struct RenameTest {
+    use_line: u32,
+    use_ndx: usize,
+    new_name: String,
+}
+
+//**************************************************************************************************
+// Test Impls
+//**************************************************************************************************
+// These do the actual testing work.
+
+impl UseDefTest {
+    fn test(
+        &self,
+        test_idx: usize,
+        mod_symbols: &UseDefMap,
+        symbols: &Symbols,
+        output: &mut dyn std::io::Write,
+        use_file: &str,
+        use_file_path: &Path,
+    ) -> anyhow::Result<()> {
+        let def_info = &symbols.def_info;
+        let UseDefTest { use_ndx, use_line } = self;
+        writeln!(output, "-- test {test_idx} -------------------")?;
+        writeln!(output, "use line: {use_line}, use_ndx: {use_ndx}")?;
+        let lsp_use_line = use_line - 1; // 0th-based
+        let Some(uses) = mod_symbols.get(lsp_use_line) else {
+            writeln!(
+                output,
+                "ERROR: No use_line {use_line} in mod_symbols {mod_symbols:#?} for file {use_file}"
+            )?;
+            return Ok(());
+        };
+        let Some(use_def) = uses.iter().nth(*use_ndx) else {
+            writeln!(
+                output,
+                "ERROR: No symbol at index {use_ndx} in line {use_line} uses {uses:#?} for file {use_file}"
+            )?;
+            return Ok(());
+        };
+
+        let Some(use_file_hash) = symbols.files.file_hash(&use_file_path.to_path_buf()) else {
+            writeln!(output, "ERROR: No file hash for file at {use_file_path:?}")?;
+            return Ok(());
+        };
+        let Some((_, use_file_content)) = symbols.files.get(&use_file_hash) else {
+            writeln!(
+                output,
+                "ERROR: No use file content for file at {use_file_path:?}"
+            )?;
+            return Ok(());
+        };
+        let Some((_, def_file_content)) = symbols.files.get(&use_def.def_loc().file_hash()) else {
+            writeln!(output, "ERROR: No def file content")?;
+            return Ok(());
+        };
+        use_def.render(
+            output,
+            &symbols.files,
+            lsp_use_line,
+            &use_file_content,
+            &def_file_content,
+        )?;
+        let Some(def) = def_info.get(&use_def.def_loc()) else {
+            writeln!(output, "ERROR: No def loc found")?;
+            return Ok(());
+        };
+
+        if let Some(guard_def) = maybe_convert_for_guard(
+            def,
+            use_file_path,
+            &Position::new(lsp_use_line, use_def.col_start()),
+            symbols,
+        ) {
+            writeln!(
+                output,
+                "On Hover:\n{}",
+                if let Some(s) = def_info_doc_string(&guard_def) {
+                    format!("{}\n\n{}", guard_def, s)
+                } else {
+                    format!("{}", guard_def)
+                }
+            )?;
+        } else {
+            writeln!(
+                output,
+                "On Hover:\n{}",
+                if let Some(s) = def_info_doc_string(def) {
+                    format!("{}\n\n{}", def, s)
+                } else {
+                    format!("{}", def)
+                }
+            )?;
+        };
+        Ok(())
+    }
+}
+
+impl AutoCompletionTest {
+    fn test<F: MoveFlavor + Default>(
+        &self,
+        test_idx: usize,
+        packages_info: Arc<Mutex<CachedPackages>>,
+        ide_files_root: VfsPath,
+        project_path: &Path,
+        output: &mut dyn std::io::Write,
+        use_file_path: &Path,
+    ) -> anyhow::Result<()> {
+        completion_test::<F>(
+            self.use_line,
+            self.use_col,
+            test_idx,
+            packages_info,
+            ide_files_root,
+            project_path,
+            output,
+            use_file_path,
+            false, // not for auto-import
+        )
+    }
+}
+
+impl AutoImportTest {
+    fn test<F: MoveFlavor + Default>(
+        &self,
+        test_idx: usize,
+        packages_info: Arc<Mutex<CachedPackages>>,
+        ide_files_root: VfsPath,
+        project_path: &Path,
+        output: &mut dyn std::io::Write,
+        use_file_path: &Path,
+    ) -> anyhow::Result<()> {
+        completion_test::<F>(
+            self.use_line,
+            self.use_col,
+            test_idx,
+            packages_info,
+            ide_files_root,
+            project_path,
+            output,
+            use_file_path,
+            true, // for auto-import
+        )
+    }
+}
+
+impl CursorTest {
+    fn test(
+        &self,
+        test_ndx: usize,
+        mut compiled_pkg_info: CompiledPkgInfo,
+        symbols: &mut Symbols,
+        output: &mut dyn std::io::Write,
+        path: &Path,
+    ) -> anyhow::Result<()> {
+        let CursorTest {
+            line,
+            character,
+            description,
+        } = self;
+        let line = line - 1; // 0th-based
+        let character = character - 1; // 0th-based
+
+        // symbols do not change for each test, so we can reuse the same symbols
+        // but we need to recompute the cursor each time
+        let cursor_path = path.to_path_buf();
+        let cursor_info = Some((&cursor_path, Position { line, character }));
+        let mut symbols_computation_data = SymbolsComputationData::new();
+        let mut cursor_context = compute_symbols_pre_process(
+            &mut symbols_computation_data,
+            &mut compiled_pkg_info,
+            cursor_info,
+        );
+        cursor_context = compute_symbols_parsed_program(
+            &mut symbols_computation_data,
+            &compiled_pkg_info,
+            cursor_context,
+        );
+        symbols.cursor_context = cursor_context.clone();
+
+        writeln!(
+            output,
+            "-- test {test_ndx} @ {line}:{character} ------------"
+        )?;
+        writeln!(output, "expected: {description}")?;
+        writeln!(output, "{}", cursor_context.unwrap())?;
+        Ok(())
+    }
+}
+
+impl HintTest {
+    fn test(
+        &self,
+        test_idx: usize,
+        symbols: &Symbols,
+        output: &mut dyn std::io::Write,
+        use_file_path: &Path,
+    ) -> anyhow::Result<()> {
+        let inlay_hints = inlay_hints_internal(
+            symbols,
+            use_file_path.to_path_buf(),
+            /* type_hints */ true,
+            /* param_hints */ true,
+        )
+        .unwrap();
+        let lsp_line = self.use_line - 1; // 0th-based
+        let lsp_col = self.use_col - 1; // 0th-based
+
+        writeln!(output, "-- test {test_idx} -------------------")?;
+        let Some((hint, label_parts)) = inlay_hints.iter().find_map(|h| {
+            if h.position.line == lsp_line
+                && h.position.character == lsp_col
+                && let InlayHintLabel::LabelParts(parts) = &h.label
+            {
+                return Some((h, parts));
+            }
+            None
+        }) else {
+            writeln!(output, "NO INLAY HINT FOUND")?;
+            return Ok(());
+        };
+
+        let tooltip = hint.tooltip.as_ref().map(|tip| match tip {
+            InlayHintTooltip::String(s) => s.clone(),
+            InlayHintTooltip::MarkupContent(m) => m.value.clone(),
+        });
+
+        match hint.kind {
+            Some(InlayHintKind::TYPE) => {
+                writeln!(output, "INLAY TYPE HINT : {}", label_parts[1].value)?
+            }
+            Some(InlayHintKind::PARAMETER) => {
+                writeln!(output, "INLAY PARAM HINT: {}", label_parts[0].value)?
+            }
+            _ => writeln!(output, "INLAY HINT OF UNKNOWN TYPE")?,
+        }
+        if let Some(tip) = tooltip {
+            writeln!(output, "ON HOVER:\n{}", tip)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl AccessChainQuickFixTest {
+    fn test(
+        &self,
+        test_idx: usize,
+        compiled_pkg_info: &mut CompiledPkgInfo,
+        symbols: &mut Symbols,
+        output: &mut dyn std::io::Write,
+        use_file_path: &Path,
+    ) -> anyhow::Result<()> {
+        let err_line = self.err_line - 1; // 0th-based
+        let err_col = self.err_col - 1; // 0th-based
+        let err_pos = Position {
+            line: err_line,
+            character: err_col,
+        };
+        writeln!(output, "-- test {test_idx} -------------------")?;
+        let mut code_actions = vec![];
+        // Just like in the real usage scenario, use compiler-produced diagnostics
+        // (collect and offer them to the quick-fix handler)
+        let diagnostics = compiled_pkg_info
+            .lsp_diags
+            .get(use_file_path)
+            .into_iter()
+            .flatten()
+            .filter(|diag| diag.range.start == err_pos)
+            .cloned()
+            .collect::<Vec<_>>();
+        for diagnostic in diagnostics {
+            access_chain_autofix_actions_for_error(
+                symbols,
+                compiled_pkg_info,
+                Url::from_file_path(use_file_path).unwrap(),
+                diagnostic.range.start,
+                diagnostic.message.clone(),
+                Some(diagnostic),
+                &mut code_actions,
+            );
+        }
+        for action in code_actions {
+            writeln!(output, "CODE ACTION: {}", action.title)?;
+            if let Some(edit) = action.edit
+                && let Some(changes) = edit.changes
+            {
+                for text_edits in changes.values() {
+                    for text_edit in text_edits {
+                        writeln!(output, "    EDIT: '{}'", text_edit.new_text)?;
+                    }
+                }
+            }
+        }
+
+        Ok(())
+    }
+}
+
+impl ReferencesTest {
+    fn test(
+        &self,
+        test_idx: usize,
+        mod_symbols: &UseDefMap,
+        symbols: &Symbols,
+        output: &mut dyn std::io::Write,
+        use_file: &str,
+    ) -> anyhow::Result<()> {
+        let ReferencesTest { use_ndx, use_line } = self;
+        writeln!(output, "-- test {test_idx} -------------------")?;
+        writeln!(output, "use line: {use_line}, use_ndx: {use_ndx}")?;
+        let lsp_use_line = use_line - 1; // 0th-based
+        let Some(uses) = mod_symbols.get(lsp_use_line) else {
+            writeln!(
+                output,
+                "ERROR: No use_line {use_line} in mod_symbols for file {use_file}"
+            )?;
+            return Ok(());
+        };
+        let Some(use_def) = uses.iter().nth(*use_ndx) else {
+            writeln!(
+                output,
+                "ERROR: No symbol at index {use_ndx} in line {use_line} for file {use_file}"
+            )?;
+            return Ok(());
+        };
+        let Some(ref_locs) = symbols.references.get(&use_def.def_loc()) else {
+            writeln!(output, "No references found")?;
+            return Ok(());
+        };
+        writeln!(output, "References:")?;
+        for ref_loc in ref_locs {
+            let file_path = symbols.files.file_path(&ref_loc.fhash);
+            let file_name = file_path
+                .file_name()
+                .map(|n| n.to_string_lossy().to_string())
+                .unwrap_or_else(|| "UNKNOWN".to_string());
+            // 1-based line and column for readability
+            let line = ref_loc.start.line + 1;
+            let col = ref_loc.start.character + 1;
+            // Extract identifier text from source content
+            let ident = if let Some((_, content)) = symbols.files.get(&ref_loc.fhash) {
+                if let Some(src_line) = content.lines().nth(ref_loc.start.line as usize)
+                    && let Some((start, _)) = src_line
+                        .char_indices()
+                        .nth(ref_loc.start.character as usize)
+                    && let Some((end, _)) = src_line.char_indices().nth(ref_loc.col_end as usize)
+                {
+                    src_line[start..end].to_string()
+                } else {
+                    "INVALID IDENT".to_string()
+                }
+            } else {
+                "UNKNOWN FILE CONTENT".to_string()
+            };
+            writeln!(output, "  '{ident}' at {file_name}:{line}:{col}")?;
+        }
+        Ok(())
+    }
+}
+
+impl RenameTest {
+    fn test(
+        &self,
+        test_idx: usize,
+        mod_symbols: &UseDefMap,
+        symbols: &Symbols,
+        output: &mut dyn std::io::Write,
+        use_file: &str,
+        use_file_path: &Path,
+    ) -> anyhow::Result<()> {
+        let RenameTest {
+            use_ndx,
+            use_line,
+            new_name,
+        } = self;
+        writeln!(output, "-- test {test_idx} -------------------")?;
+        writeln!(
+            output,
+            "use line: {use_line}, use_ndx: {use_ndx}, new_name: \"{new_name}\""
+        )?;
+        let lsp_use_line = use_line - 1; // 0th-based
+        let Some(uses) = mod_symbols.get(lsp_use_line) else {
+            writeln!(
+                output,
+                "ERROR: No use_line {use_line} in mod_symbols for file {use_file}"
+            )?;
+            return Ok(());
+        };
+        let Some(use_def) = uses.iter().nth(*use_ndx) else {
+            writeln!(
+                output,
+                "ERROR: No symbol at index {use_ndx} in line {use_line} for file {use_file}"
+            )?;
+            return Ok(());
+        };
+        let Some(ref_locs) = symbols.references.get(&use_def.def_loc()) else {
+            writeln!(output, "No references found")?;
+            return Ok(());
+        };
+
+        // Get the identifier at cursor from source text
+        let cursor_ident = {
+            let fhash = symbols
+                .file_hash(use_file_path)
+                .expect("file hash not found");
+            let (_, content) = symbols.files.get(&fhash).expect("file content not found");
+            let src_line = content.lines().nth(lsp_use_line as usize).unwrap();
+            let (start, _) = src_line
+                .char_indices()
+                .nth(use_def.col_start() as usize)
+                .unwrap();
+            let (end, _) = src_line
+                .char_indices()
+                .nth(use_def.col_end() as usize)
+                .unwrap();
+            src_line[start..end].to_string()
+        };
+
+        writeln!(output, "Rename '{cursor_ident}' to '{new_name}':")?;
+
+        for ref_loc in ref_locs {
+            // Extract identifier text from source content
+            let ident = if let Some((_, content)) = symbols.files.get(&ref_loc.fhash) {
+                if let Some(src_line) = content.lines().nth(ref_loc.start.line as usize)
+                    && let Some((start, _)) = src_line
+                        .char_indices()
+                        .nth(ref_loc.start.character as usize)
+                {
+                    // col_end is one-past-the-last-character; when the identifier
+                    // ends at the end of a line there is no character at that index,
+                    // so fall back to the byte length of the line.
+                    let end = src_line
+                        .char_indices()
+                        .nth(ref_loc.col_end as usize)
+                        .map(|(i, _)| i)
+                        .unwrap_or(src_line.len());
+                    src_line[start..end].to_string()
+                } else {
+                    "INVALID IDENT".to_string()
+                }
+            } else {
+                "UNKNOWN FILE CONTENT".to_string()
+            };
+
+            // Only include references whose source text matches the cursor identifier
+            if ident != cursor_ident {
+                continue;
+            }
+
+            let file_path = symbols.files.file_path(&ref_loc.fhash);
+            let file_name = file_path
+                .file_name()
+                .map(|n| n.to_string_lossy().to_string())
+                .unwrap_or_else(|| "UNKNOWN".to_string());
+            let line = ref_loc.start.line + 1;
+            let col = ref_loc.start.character + 1;
+            writeln!(
+                output,
+                "  '{ident}' at {file_name}:{line}:{col} -> '{new_name}'"
+            )?;
+        }
+        Ok(())
+    }
+}
+
+fn completion_test<F: MoveFlavor + Default>(
+    use_line: u32,
+    use_col: u32,
+    test_idx: usize,
+    packages_info: Arc<Mutex<CachedPackages>>,
+    ide_files_root: VfsPath,
+    project_path: &Path,
+    output: &mut dyn std::io::Write,
+    use_file_path: &Path,
+    auto_import: bool,
+) -> anyhow::Result<()> {
+    let lsp_use_line = use_line - 1; // 0th-based
+    let lsp_use_col = use_col - 1; // 0th-based
+    let use_pos = Position {
+        line: lsp_use_line,
+        character: lsp_use_col,
+    };
+
+    // Generate fresh symbols with cursor position using shared cache
+    let cursor_path = use_file_path.to_path_buf();
+    let (_, symbols) = test_symbols_with_cursor::<F>(
+        packages_info,
+        ide_files_root,
+        project_path.to_path_buf(),
+        &cursor_path,
+        Some(use_pos),
+    )?;
+
+    let items = compute_completions_with_symbols(&symbols, &cursor_path, use_pos, auto_import);
+    writeln!(output, "-- test {test_idx} -------------------")?;
+    writeln!(output, "use line: {}, use_col: {}", use_line, use_col)?;
+    for i in items {
+        writeln!(output, "{:?} '{}'", i.kind.unwrap(), i.label)?;
+        if let Some(insert_text) = i.insert_text {
+            writeln!(output, "    INSERT TEXT: '{}'", insert_text)?;
+        }
+        if let Some(label_details) = i.label_details {
+            if let Some(detail) = label_details.detail {
+                writeln!(output, "    TARGET     : '{}'", detail.trim())?;
+            }
+            if let Some(description) = label_details.description {
+                writeln!(output, "    TYPE       : '{description}'")?;
+            }
+        }
+        if let Some(additional_edit) = i.additional_text_edits {
+            writeln!(
+                output,
+                "    ADDITIONAL EDIT: '{}'",
+                additional_edit[0].new_text
+            )?;
+        }
+    }
+    writeln!(output)?;
+    Ok(())
+}
+
+//**************************************************************************************************
+// Test Suite Runner Code
+//**************************************************************************************************
+
+/// Compute symbols with optional file modifications to trigger incremental compilation.
+///
+/// When `file_modifications` is None, performs full compilation.
+/// When `file_modifications` is Some, writes modified content to VFS overlay,
+/// which triggers incremental compilation by causing file hash mismatches.
+///
+/// Returns both CompiledPkgInfo and Symbols for test suites that need both.
+fn test_symbols_with_optional_modifications<F: MoveFlavor + Default>(
+    packages_info: Arc<Mutex<CachedPackages>>,
+    ide_files_root: VfsPath,
+    project_path: PathBuf,
+    file_modifications: Option<BTreeMap<PathBuf, String>>,
+) -> anyhow::Result<(CompiledPkgInfo, Symbols)> {
+    let move_flavor = Arc::new(F::default());
+    // Apply file modifications to VFS overlay if provided
+    if let Some(modifications) = file_modifications {
+        for (file_path, content) in modifications {
+            let vfs_path = ide_files_root
+                .join(file_path.to_string_lossy())
+                .map_err(|e| anyhow::anyhow!("Failed to create VFS path: {}", e))?;
+
+            // Create parent directories
+            let parent = vfs_path.parent();
+            parent
+                .create_dir_all()
+                .map_err(|e| anyhow::anyhow!("Failed to create directories: {}", e))?;
+
+            // Write modified content
+            let mut vfs_file = vfs_path
+                .create_file()
+                .map_err(|e| anyhow::anyhow!("Failed to create VFS file: {}", e))?;
+            vfs_file
+                .write_all(content.as_bytes())
+                .map_err(|e| anyhow::anyhow!("Failed to write file content: {}", e))?;
+        }
+    }
+
+    // Compile with modifications in overlay (or without if None)
+    let (compiled_pkg_info_opt, _) = get_compiled_pkg::<F>(
+        packages_info.clone(),
+        ide_files_root,
+        project_path.as_path(),
+        LintLevel::None,
+        move_flavor,
+        Some(Flavor::Sui),
+        None, // No cursor file
+    )?;
+
+    let compiled_pkg_info =
+        compiled_pkg_info_opt.ok_or_else(|| anyhow::anyhow!("PACKAGE COMPILATION FAILED"))?;
+
+    // Compute symbols without cursor position
+    let symbols = compute_symbols(packages_info, compiled_pkg_info.clone(), None);
+
+    Ok((compiled_pkg_info, symbols))
+}
+
+/// Compute symbols for a specific cursor position needed by tests that use autocomplete
+/// information for the target file. This generates fresh CompilerAutocompleteInfo for
+/// the cursor position while leveraging cached CompilerAnalysisInfo and dependencies.
+fn test_symbols_with_cursor<F: MoveFlavor + Default>(
+    packages_info: Arc<Mutex<CachedPackages>>,
+    ide_files_root: VfsPath,
+    project_path: PathBuf,
+    cursor_path: &PathBuf,
+    cursor_pos: Option<Position>,
+) -> anyhow::Result<(CompiledPkgInfo, Symbols)> {
+    let move_flavor = Arc::new(F::default());
+    // Single compilation with cursor position (no retry loop)
+    let (compiled_pkg_info_opt, _) = get_compiled_pkg::<F>(
+        packages_info.clone(),
+        ide_files_root,
+        project_path.as_path(),
+        LintLevel::None,
+        move_flavor,
+        Some(Flavor::Sui),
+        Some(cursor_path),
+    )?;
+
+    let compiled_pkg_info =
+        compiled_pkg_info_opt.ok_or_else(|| anyhow::anyhow!("PACKAGE COMPILATION FAILED"))?;
+    let symbols = compute_symbols(
+        packages_info,
+        compiled_pkg_info.clone(),
+        cursor_pos.map(|pos| (cursor_path, pos)),
+    );
+
+    Ok((compiled_pkg_info, symbols))
+}
+
+fn use_def_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<UseDefTest>>,
+) -> datatest_stable::Result<String> {
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    // Initial full compilation to populate cache
+    test_symbols_with_optional_modifications::<F>(
+        packages_info.clone(),
+        ide_files_root.clone(),
+        project_path.clone(),
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    let mut symbols_opt = None;
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+
+        if symbols_opt.is_none() {
+            // We do incremental compilation only for the first file in the test suite.
+            // The results for remaining files should still be correct due to all symbols
+            // being computed during the initial full compilation at suite level, and
+            // due to merging of symbols from modified and unmodified files
+            // (which is what it is being tested here).
+
+            let original = std::fs::read_to_string(&cpath)?;
+            let modified = format!("{}// Test 0\n", original);
+            let mut modifications = BTreeMap::new();
+            modifications.insert(cpath.clone(), modified);
+
+            let (_, incremental_symbols) = test_symbols_with_optional_modifications::<F>(
+                packages_info.clone(),
+                ide_files_root.clone(),
+                project_path.clone(),
+                Some(modifications),
+            )?;
+            symbols_opt = Some(incremental_symbols);
+        }
+        let symbols = symbols_opt.as_ref().unwrap();
+        let mod_symbols = symbols
+            .file_use_defs
+            .get(&cpath)
+            .ok_or(format!("NO SYMBOLS FOR {}", cpath.to_str().unwrap()))?;
+
+        for (idx, test) in tests.iter().enumerate() {
+            test.test(idx, mod_symbols, symbols, writer, &file, &cpath)?;
+            writeln!(writer)?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn auto_completion_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<AutoCompletionTest>>,
+) -> datatest_stable::Result<String> {
+    // Create shared cache structure for all tests
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    // Get project path
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    // Initial full compilation to populate cache
+    test_symbols_with_optional_modifications::<F>(
+        packages_info.clone(),
+        ide_files_root.clone(),
+        project_path.clone(),
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+
+        for (idx, test) in tests.iter().enumerate() {
+            // Each test gets fresh symbols via explicit cache and cursor position
+            test.test::<F>(
+                idx,
+                packages_info.clone(),
+                ide_files_root.clone(),
+                &project_path,
+                writer,
+                &cpath,
+            )?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn auto_import_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<AutoImportTest>>,
+) -> datatest_stable::Result<String> {
+    // Create shared cache structure for all tests
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    // Get project path
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    // Initial full compilation to populate cache
+    test_symbols_with_optional_modifications::<F>(
+        packages_info.clone(),
+        ide_files_root.clone(),
+        project_path.clone(),
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+
+        for (idx, test) in tests.iter().enumerate() {
+            // Each test gets fresh symbols via explicit cache and cursor position
+            test.test::<F>(
+                idx,
+                packages_info.clone(),
+                ide_files_root.clone(),
+                &project_path,
+                writer,
+                &cpath,
+            )?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn cursor_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<CursorTest>>,
+) -> datatest_stable::Result<String> {
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    let (compiled_pkg_info, mut symbols) = test_symbols_with_optional_modifications::<F>(
+        packages_info.clone(),
+        ide_files_root,
+        project_path.clone(),
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+        for (idx, test) in tests.iter().enumerate() {
+            test.test(idx, compiled_pkg_info.clone(), &mut symbols, writer, &cpath)?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn hint_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<HintTest>>,
+) -> datatest_stable::Result<String> {
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    // Full compilation once at suite level - reused for all tests
+    let (_, symbols) = test_symbols_with_optional_modifications::<F>(
+        packages_info.clone(),
+        ide_files_root.clone(),
+        project_path.clone(),
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+
+        for (idx, test) in tests.iter().enumerate() {
+            test.test(idx, &symbols, writer, &cpath)?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn access_chain_quick_fix_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<AccessChainQuickFixTest>>,
+) -> datatest_stable::Result<String> {
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+
+        // Compile per file to get autocomplete/alias info for that file. The exact cursor position
+        // is computed later for each diagnostic triggering a quick fix action, so it does not
+        // need to happen per test.
+        let (mut compiled_pkg_info, mut symbols) = test_symbols_with_cursor::<F>(
+            packages_info.clone(),
+            ide_files_root.clone(),
+            project_path.clone(),
+            &cpath,
+            None,
+        )?;
+
+        for (idx, test) in tests.iter().enumerate() {
+            test.test(idx, &mut compiled_pkg_info, &mut symbols, writer, &cpath)?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn references_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<ReferencesTest>>,
+) -> datatest_stable::Result<String> {
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    let (_, symbols) = test_symbols_with_optional_modifications::<F>(
+        packages_info.clone(),
+        ide_files_root.clone(),
+        project_path.clone(),
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+
+        let mod_symbols = symbols
+            .file_use_defs
+            .get(&cpath)
+            .ok_or(format!("NO SYMBOLS FOR {}", cpath.to_str().unwrap()))?;
+
+        for (idx, test) in tests.iter().enumerate() {
+            test.test(idx, mod_symbols, &symbols, writer, &file)?;
+            writeln!(writer)?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn rename_test_suite<F: MoveFlavor + Default>(
+    project: String,
+    file_tests: BTreeMap<String, Vec<RenameTest>>,
+) -> datatest_stable::Result<String> {
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    let (_, symbols) = test_symbols_with_optional_modifications::<F>(
+        packages_info.clone(),
+        ide_files_root.clone(),
+        project_path.clone(),
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+
+    for (file, tests) in file_tests {
+        writeln!(
+            writer,
+            "== {file} ========================================================"
+        )?;
+
+        let mut fpath = project_path.clone();
+        fpath.push(format!("sources/{file}"));
+        let cpath = canonicalize_path(fpath.clone());
+
+        let mod_symbols = symbols
+            .file_use_defs
+            .get(&cpath)
+            .ok_or(format!("NO SYMBOLS FOR {}", cpath.to_str().unwrap()))?;
+
+        for (idx, test) in tests.iter().enumerate() {
+            test.test(idx, mod_symbols, &symbols, writer, &file, &cpath)?;
+            writeln!(writer)?;
+        }
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+/// Prints the compiler diagnostics of every file in the project, paths relative to the project
+/// root (external files are reduced to their file name to keep the snapshot machine-independent)
+fn diagnostics_test_suite<F: MoveFlavor + Default>(
+    project: String,
+) -> datatest_stable::Result<String> {
+    let base_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let mut project_path = base_path.clone();
+    project_path.push(project);
+    let canonical_project_path = canonicalize_path(project_path.clone());
+
+    let packages_info = Arc::new(Mutex::new(CachedPackages::new()));
+    let ide_files_root: VfsPath = MemoryFS::new().into();
+
+    let (compiled_pkg_info, _symbols) = test_symbols_with_optional_modifications::<F>(
+        packages_info,
+        ide_files_root,
+        project_path,
+        None,
+    )?;
+
+    let mut output: BufWriter<_> = BufWriter::new(Vec::new());
+    let writer: &mut dyn io::Write = output.get_mut();
+    writeln!(
+        writer,
+        "== diagnostics ========================================================"
+    )?;
+    let mut clean = true;
+    for (fpath, diags) in compiled_pkg_info.lsp_diags.iter() {
+        if diags.is_empty() {
+            continue;
+        }
+        clean = false;
+        let fname = match fpath.strip_prefix(&canonical_project_path) {
+            Ok(relative) => relative.display().to_string(),
+            Err(_) => format!(
+                "<external>/{}",
+                fpath.file_name().unwrap_or_default().display()
+            ),
+        };
+        for diag in diags {
+            let severity = match diag.severity {
+                Some(DiagnosticSeverity::ERROR) => "error",
+                Some(DiagnosticSeverity::WARNING) => "warning",
+                _ => "other",
+            };
+            writeln!(
+                writer,
+                "{fname}:{}:{}: {severity}: {}",
+                diag.range.start.line, diag.range.start.character, diag.message
+            )?;
+        }
+    }
+    if clean {
+        writeln!(writer, "no diagnostics in the project")?;
+    }
+
+    let result: String = String::from_utf8(output.into_inner().unwrap()).unwrap();
+    Ok(result)
+}
+
+fn move_ide_testsuite<F: MoveFlavor + Default>(test_path: &Path) -> datatest_stable::Result<()> {
+    let suite_file = io::BufReader::new(File::open(test_path)?);
+    let stripped = StripComments::new(suite_file);
+    let suites: TestSuites = serde_json::from_reader(stripped)?;
+
+    let run_suite = |suite| match suite {
+        TestSuite::UseDef {
+            project,
+            file_tests,
+        } => use_def_test_suite::<F>(project, file_tests),
+        TestSuite::AutoCompletion {
+            project,
+            file_tests,
+        } => auto_completion_test_suite::<F>(project, file_tests),
+        TestSuite::AutoImport {
+            project,
+            file_tests,
+        } => auto_import_test_suite::<F>(project, file_tests),
+        TestSuite::Cursor {
+            project,
+            file_tests,
+        } => cursor_test_suite::<F>(project, file_tests),
+        TestSuite::Hint {
+            project,
+            file_tests,
+        } => hint_test_suite::<F>(project, file_tests),
+        TestSuite::AccessChainQuickFixTest {
+            project,
+            file_tests,
+        } => access_chain_quick_fix_test_suite::<F>(project, file_tests),
+        TestSuite::References {
+            project,
+            file_tests,
+        } => references_test_suite::<F>(project, file_tests),
+        TestSuite::Rename {
+            project,
+            file_tests,
+        } => rename_test_suite::<F>(project, file_tests),
+        TestSuite::Diagnostics { project } => diagnostics_test_suite::<F>(project),
+    };
+
+    let output = match suites {
+        TestSuites::Single(suite) => run_suite(suite)?,
+        TestSuites::Many(suites) => {
+            let mut output = String::new();
+            for suite in suites {
+                output.push_str(&run_suite(suite)?);
+            }
+            output
+        }
+    };
+
+    insta_assert! {
+        input_path: test_path,
+        contents: output,
+    };
+    Ok(())
+}
+
+datatest_stable::harness!(move_ide_testsuite::<Vanilla>, "tests/", r".*\.ide$");
+
+/// Generates cursor tests as json -- useful for making a new batch of tests. Update this list,
+/// set `harness = true` for this file in `Cargo.toml`,
+/// and run `cargo nextest run generate_cursor_tests`.
+#[allow(unused)]
+#[test]
+fn generate_cursor_test() {
+    let posn_pairs = vec![
+        (5, 23, "at a struct definition name"),
+        (6, 13, "at a struct field name"),
+        (6, 19, "in a struct definition at nowhere in particular"),
+        (6, 20, "at a struct field type"),
+        (6, 21, "at a struct field type"),
+        (6, 22, "at a struct field type"),
+        (6, 23, "in a struct definition at nowhere in particular"),
+        (17, 45, "at a function return type"),
+        (28, 14, "at a function definition at nowhere in particular"),
+        (28, 14, "at a function definition name"),
+        (28, 15, "at a function definition name"),
+        (28, 16, "at a function definition name"),
+        (28, 17, "at a function definition name"),
+        (28, 18, "at a function definition at nowhere in particular"),
+        (28, 19, "at a function definition at nowhere in particular"),
+        (31, 5, "inside a function body -- unknown"),
+        (31, 9, "let binding"),
+        (31, 19, "binding in the lhs of a let-binding"),
+        (31, 50, "name in module access"),
+        (33, 29, "name in a dot call"),
+        (33, 34, "equal sign in a binop"),
+    ];
+
+    let tests = posn_pairs
+        .into_iter()
+        .map(|(line, character, description)| CursorTest {
+            line,
+            character,
+            description: description.to_string(),
+        })
+        .collect::<Vec<_>>();
+    let test = TestSuite::Cursor {
+        project: "tests/move-2024".to_string(),
+        file_tests: BTreeMap::from([("dot_call.move".to_string(), tests)]),
+    };
+
+    let string = format!("{}\n", serde_json::to_string_pretty(&test).unwrap());
+    let _ = fs::write("cursor_dot_call_tests.ide", string);
+}

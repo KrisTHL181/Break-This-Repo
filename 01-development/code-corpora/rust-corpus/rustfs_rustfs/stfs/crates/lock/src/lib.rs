@@ -1,0 +1,291 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+// ============================================================================
+// Core Module Declarations
+// ============================================================================
+
+// Application Layer Modules
+pub mod distributed_lock;
+pub mod local_lock;
+pub mod namespace;
+
+// Abstraction Layer Modules
+pub mod client;
+
+// Fast Lock System (New High-Performance Implementation)
+pub mod fast_lock;
+
+// Core Modules
+pub mod error;
+pub mod types;
+
+// ============================================================================
+// Public API Exports
+// ============================================================================
+
+// Re-export main types for easy access
+pub use crate::{
+    // Client interfaces
+    client::{LockClient, local::LocalClient},
+    distributed_lock::DistributedLockGuard,
+    // Error types
+    error::{LockError, Result},
+    // Fast Lock System exports
+    fast_lock::{
+        BatchLockRequest, BatchLockResult, DisabledLockManager, FastLockGuard, FastObjectLockManager, LockManager, LockMode,
+        LockResult, ObjectKey, ObjectLockInfo, ObjectLockRequest, metrics::AggregatedMetrics,
+    },
+    // Main components
+    namespace::{NamespaceLock, NamespaceLockGuard, NamespaceLockWrapper},
+    // Core types
+    types::{
+        HealthInfo, HealthStatus, LockId, LockInfo, LockLeaseInfo, LockMetadata, LockPriority, LockRequest, LockResponse,
+        LockStats, LockStatus, LockType,
+    },
+};
+
+// ============================================================================
+// Version Information
+// ============================================================================
+
+/// Current version of the lock crate
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+/// Build timestamp
+pub const BUILD_TIMESTAMP: &str = "unknown";
+
+/// Maximum number of items in delete list
+pub const MAX_DELETE_LIST: usize = 1000;
+
+/// Default setting for lock enablement.
+/// Canonical variable: RUSTFS_LOCK_ENABLED
+/// Deprecated compatibility alias: RUSTFS_ENABLE_LOCKS
+const DEFAULT_RUSTFS_LOCKS_ENABLED: bool = true;
+const ENV_LOCK_ENABLED: &str = "RUSTFS_LOCK_ENABLED";
+const ENV_LOCK_ENABLED_DEPRECATED: &str = "RUSTFS_ENABLE_LOCKS";
+
+// ============================================================================
+// Global FastLock Manager
+// ============================================================================
+
+// Global singleton FastLock manager shared across all lock implementations
+use crate::fast_lock::{DEFAULT_RUSTFS_ACQUIRE_TIMEOUT, DEFAULT_RUSTFS_MAX_ACQUIRE_TIMEOUT};
+use std::sync::Arc;
+use std::sync::OnceLock;
+
+/// Enum wrapper for different lock manager implementations
+#[derive(Debug)]
+pub enum GlobalLockManager {
+    Enabled(Arc<FastObjectLockManager>),
+    Disabled(DisabledLockManager),
+}
+
+impl Default for GlobalLockManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl GlobalLockManager {
+    /// Create a lock manager based on environment variable configuration
+    pub fn new() -> Self {
+        // Check lock enablement env vars with deprecated compatibility support.
+        let locks_enabled = rustfs_utils::get_env_bool_with_aliases(
+            ENV_LOCK_ENABLED,
+            &[ENV_LOCK_ENABLED_DEPRECATED],
+            DEFAULT_RUSTFS_LOCKS_ENABLED,
+        );
+        if !locks_enabled {
+            let disabled_by = if std::env::var(ENV_LOCK_ENABLED).is_ok() {
+                ENV_LOCK_ENABLED
+            } else if std::env::var(ENV_LOCK_ENABLED_DEPRECATED).is_ok() {
+                ENV_LOCK_ENABLED_DEPRECATED
+            } else {
+                "default setting"
+            };
+
+            if disabled_by == "default setting" {
+                tracing::info!("Lock system disabled via default setting");
+            } else {
+                tracing::info!("Lock system disabled via {} environment variable", disabled_by);
+            }
+            return Self::Disabled(DisabledLockManager::new());
+        }
+        tracing::info!("Lock system enabled");
+
+        // Read lock acquire timeout from environment variable
+        let mut acquire_secs = rustfs_utils::get_env_u64("RUSTFS_LOCK_ACQUIRE_TIMEOUT", DEFAULT_RUSTFS_ACQUIRE_TIMEOUT);
+
+        // Enforce minimum of 1 second
+        if acquire_secs == 0 {
+            tracing::warn!("Requested lock acquire timeout {}s is below minimum 1s, using minimum", acquire_secs);
+            acquire_secs = 1;
+        }
+
+        if acquire_secs > DEFAULT_RUSTFS_MAX_ACQUIRE_TIMEOUT {
+            tracing::warn!(
+                "Requested lock acquire timeout {}s exceeds maximum {}, using maximum",
+                acquire_secs,
+                DEFAULT_RUSTFS_MAX_ACQUIRE_TIMEOUT
+            );
+            acquire_secs = DEFAULT_RUSTFS_MAX_ACQUIRE_TIMEOUT;
+        }
+        let acquire_timeout = std::time::Duration::from_secs(acquire_secs);
+        tracing::info!("Lock system enabled with acquire timeout: {}s", acquire_timeout.as_secs());
+
+        // Create lock manager with custom configuration
+        let config = fast_lock::LockConfig {
+            default_acquire_timeout: acquire_timeout,
+            ..Default::default()
+        };
+
+        Self::Enabled(Arc::new(FastObjectLockManager::with_config(config)))
+    }
+
+    /// Check if the lock manager is disabled
+    pub fn is_disabled(&self) -> bool {
+        matches!(self, Self::Disabled(_))
+    }
+
+    /// Get the FastObjectLockManager if enabled, otherwise returns None
+    pub fn as_fast_lock_manager(&self) -> Option<Arc<FastObjectLockManager>> {
+        match self {
+            Self::Enabled(manager) => Some(manager.clone()),
+            Self::Disabled(_) => None,
+        }
+    }
+}
+
+#[async_trait::async_trait]
+impl LockManager for GlobalLockManager {
+    async fn acquire_lock(&self, request: ObjectLockRequest) -> std::result::Result<FastLockGuard, LockResult> {
+        match self {
+            Self::Enabled(manager) => manager.acquire_lock(request).await,
+            Self::Disabled(manager) => manager.acquire_lock(request).await,
+        }
+    }
+
+    async fn acquire_read_lock(
+        &self,
+        key: ObjectKey,
+        owner: impl Into<Arc<str>> + Send,
+    ) -> std::result::Result<FastLockGuard, LockResult> {
+        match self {
+            Self::Enabled(manager) => manager.acquire_read_lock(key, owner).await,
+            Self::Disabled(manager) => manager.acquire_read_lock(key, owner).await,
+        }
+    }
+
+    async fn acquire_write_lock(
+        &self,
+        key: ObjectKey,
+        owner: impl Into<Arc<str>> + Send,
+    ) -> std::result::Result<FastLockGuard, LockResult> {
+        match self {
+            Self::Enabled(manager) => manager.acquire_write_lock(key, owner).await,
+            Self::Disabled(manager) => manager.acquire_write_lock(key, owner).await,
+        }
+    }
+
+    async fn acquire_locks_batch(&self, batch_request: BatchLockRequest) -> BatchLockResult {
+        match self {
+            Self::Enabled(manager) => manager.acquire_locks_batch(batch_request).await,
+            Self::Disabled(manager) => manager.acquire_locks_batch(batch_request).await,
+        }
+    }
+
+    fn get_lock_info(&self, key: &ObjectKey) -> Option<ObjectLockInfo> {
+        match self {
+            Self::Enabled(manager) => manager.get_lock_info(key),
+            Self::Disabled(manager) => manager.get_lock_info(key),
+        }
+    }
+
+    fn get_metrics(&self) -> AggregatedMetrics {
+        match self {
+            Self::Enabled(manager) => manager.get_metrics(),
+            Self::Disabled(manager) => manager.get_metrics(),
+        }
+    }
+
+    fn total_lock_count(&self) -> usize {
+        match self {
+            Self::Enabled(manager) => manager.total_lock_count(),
+            Self::Disabled(manager) => manager.total_lock_count(),
+        }
+    }
+
+    fn get_pool_stats(&self) -> Vec<(u64, u64, u64, usize)> {
+        match self {
+            Self::Enabled(manager) => manager.get_pool_stats(),
+            Self::Disabled(manager) => manager.get_pool_stats(),
+        }
+    }
+
+    async fn cleanup_expired(&self) -> usize {
+        match self {
+            Self::Enabled(manager) => manager.cleanup_expired().await,
+            Self::Disabled(manager) => manager.cleanup_expired().await,
+        }
+    }
+
+    async fn cleanup_expired_traditional(&self) -> usize {
+        match self {
+            Self::Enabled(manager) => manager.cleanup_expired_traditional().await,
+            Self::Disabled(manager) => manager.cleanup_expired_traditional().await,
+        }
+    }
+
+    async fn shutdown(&self) {
+        match self {
+            Self::Enabled(manager) => manager.shutdown().await,
+            Self::Disabled(manager) => manager.shutdown().await,
+        }
+    }
+
+    fn is_disabled(&self) -> bool {
+        match self {
+            Self::Enabled(manager) => manager.is_disabled(),
+            Self::Disabled(manager) => manager.is_disabled(),
+        }
+    }
+}
+
+static GLOBAL_LOCK_MANAGER: OnceLock<Arc<GlobalLockManager>> = OnceLock::new();
+
+/// Get the global shared lock manager instance
+///
+/// Returns either FastObjectLockManager or DisabledLockManager based on
+/// the RUSTFS_LOCK_ENABLED environment variable.
+pub fn get_global_lock_manager() -> Arc<GlobalLockManager> {
+    GLOBAL_LOCK_MANAGER.get_or_init(|| Arc::new(GlobalLockManager::new())).clone()
+}
+
+/// Return the global lock manager only when it is already initialized.
+pub fn get_initialized_global_lock_manager() -> Option<Arc<GlobalLockManager>> {
+    GLOBAL_LOCK_MANAGER.get().cloned()
+}
+
+/// Get the global shared FastLock manager instance (legacy)
+///
+/// This function is deprecated. Use get_global_lock_manager() instead.
+/// Returns FastObjectLockManager when locks are enabled, or panics when disabled.
+#[deprecated(note = "Use get_global_lock_manager() instead")]
+pub fn get_global_fast_lock_manager() -> Arc<FastObjectLockManager> {
+    let manager = get_global_lock_manager();
+    manager.as_fast_lock_manager().unwrap_or_else(|| {
+        panic!("Cannot get FastObjectLockManager when locks are disabled. Use get_global_lock_manager() instead.");
+    })
+}

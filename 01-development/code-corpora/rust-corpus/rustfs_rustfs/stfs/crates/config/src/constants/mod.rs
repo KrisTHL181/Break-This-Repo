@@ -1,0 +1,37 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+pub(crate) mod api;
+pub(crate) mod app;
+pub(crate) mod body_limits;
+pub(crate) mod capacity;
+pub(crate) mod compress;
+pub(crate) mod console;
+pub(crate) mod drive;
+pub(crate) mod env;
+pub(crate) mod heal;
+pub(crate) mod health;
+pub(crate) mod internode;
+pub(crate) mod object;
+pub(crate) mod oidc;
+pub(crate) mod profiler;
+pub(crate) mod protocols;
+pub(crate) mod proxy;
+pub(crate) mod quota;
+pub(crate) mod runtime;
+pub(crate) mod scanner;
+pub(crate) mod targets;
+pub(crate) mod tls;
+pub(crate) mod workload;
+pub(crate) mod zero_copy;

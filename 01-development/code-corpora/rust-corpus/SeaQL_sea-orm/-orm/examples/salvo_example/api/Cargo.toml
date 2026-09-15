@@ -1,0 +1,26 @@
+[package]
+edition      = "2024"
+name         = "salvo-example-api"
+rust-version = "1.92"
+version      = "0.1.0"
+
+[dependencies]
+dotenvy            = "0.15"
+entity             = { path = "../entity" }
+migration          = { path = "../migration" }
+salvo              = { version = "0.93", features = ["affix-state", "serve-static"] }
+serde              = { version = "1", features = ["derive"] }
+tera               = "1.19.0"
+tokio              = { version = "1.29.0", features = ["macros", "rt-multi-thread"] }
+tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
+
+[dependencies.sea-orm]
+features = [
+    "debug-print",
+    "runtime-tokio-native-tls",
+    # "sqlx-mysql",
+    # "sqlx-postgres",
+    "sqlx-sqlite",
+]
+path = "../../../" # remove this line in your own project
+version = "~2.0.3" # sea-orm version

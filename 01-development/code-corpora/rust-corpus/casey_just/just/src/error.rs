@@ -1,0 +1,1156 @@
+use super::*;
+
+#[derive(Debug)]
+pub(crate) enum Error<'src> {
+  AliasDisabled {
+    alias: Modulepath,
+    modules: BTreeSet<Modulepath>,
+  },
+  AmbiguousModuleFile {
+    module: Name<'src>,
+    found: Vec<PathBuf>,
+  },
+  ArgumentPatternMismatch {
+    argument: String,
+    parameter: &'src str,
+    pattern: Box<Pattern>,
+    recipe: &'src str,
+  },
+  ArgumentTooFewValues {
+    recipe: &'src str,
+    parameter: &'src str,
+    found: usize,
+    min: u64,
+  },
+  ArgumentTooManyValues {
+    recipe: &'src str,
+    parameter: &'src str,
+    found: usize,
+    max: u64,
+  },
+  Assert {
+    message: String,
+    name: Name<'src>,
+  },
+  Backtick {
+    token: Token<'src>,
+    output_error: OutputError,
+  },
+  CacheEntryRead {
+    path: PathBuf,
+    source: serde_json::Error,
+  },
+  CacheEntryWrite {
+    path: PathBuf,
+    source: serde_json::Error,
+  },
+  CacheInputDirectory {
+    path: PathBuf,
+  },
+  CacheInputMissing {
+    path: PathBuf,
+  },
+  CacheKeySerialize {
+    source: serde_json::Error,
+  },
+  CacheOutputMissing {
+    recipe: &'src str,
+    output: String,
+  },
+  ChooserInvoke {
+    shell_binary: String,
+    shell_arguments: String,
+    chooser: OsString,
+    io_error: io::Error,
+  },
+  ChooserRead {
+    chooser: OsString,
+    io_error: io::Error,
+  },
+  ChooserStatus {
+    chooser: OsString,
+    status: ExitStatus,
+  },
+  ChooserWrite {
+    chooser: OsString,
+    io_error: io::Error,
+  },
+  CircularImport {
+    current: PathBuf,
+    import: PathBuf,
+  },
+  Code {
+    recipe: &'src str,
+    line_number: Option<usize>,
+    code: i32,
+    print_message: bool,
+  },
+  CommandInvoke {
+    binary: OsString,
+    arguments: Vec<OsString>,
+    io_error: io::Error,
+  },
+  CommandStatus {
+    binary: OsString,
+    arguments: Vec<OsString>,
+    status: ExitStatus,
+  },
+  Compile {
+    compile_error: CompileError<'src>,
+  },
+  Config {
+    config_error: ConfigError,
+  },
+  Const {
+    const_error: ConstError<'src>,
+  },
+  CurrentDirectory {
+    source: io::Error,
+  },
+  Cygpath {
+    recipe: &'src str,
+    output_error: OutputError,
+  },
+  DatetimeFormat(DatetimeFormatError),
+  DefaultRecipeRequiresArguments {
+    recipe: &'src str,
+    min_arguments: usize,
+  },
+  Dotenv {
+    dotenv_error: dotenvy::Error,
+    path: PathBuf,
+  },
+  DotenvArgumentsRequireLists,
+  DotenvCommand {
+    command: String,
+    output_error: OutputError,
+  },
+  DotenvRequired,
+  DumpJson {
+    source: serde_json::Error,
+  },
+  DuplicateOption {
+    recipe: &'src str,
+    switch: Switch,
+  },
+  EditorInvoke {
+    editor: OsString,
+    io_error: io::Error,
+  },
+  EditorStatus {
+    editor: OsString,
+    status: ExitStatus,
+  },
+  EmptyListArgument {
+    parameter: &'src str,
+    recipe: &'src str,
+  },
+  EnvVarUnicode {
+    name: String,
+    value: OsString,
+  },
+  EvalUnknownSubmodule {
+    component: String,
+    suggestion: Option<Suggestion<'src>>,
+  },
+  EvalUnknownSubmoduleOrVariable {
+    component: String,
+    suggestion: Option<Suggestion<'src>>,
+  },
+  ExcessInvocations {
+    invocations: usize,
+  },
+  ExpectedSubmoduleButFoundRecipe {
+    path: String,
+  },
+  FilesystemIo {
+    source: io::Error,
+    path: PathBuf,
+  },
+  FlagWithValue {
+    recipe: &'src str,
+    switch: Switch,
+  },
+  FormatCheckFoundDiff,
+  FunctionCall {
+    function: Name<'src>,
+    message: String,
+  },
+  GetConfirmation {
+    io_error: io::Error,
+  },
+  GuardCode {
+    recipe: &'src str,
+    line_number: usize,
+    code: i32,
+  },
+  Homedir,
+  InitExists {
+    justfile: PathBuf,
+  },
+  Internal {
+    message: String,
+  },
+  Interrupted {
+    signal: Signal,
+  },
+  InvalidOption {
+    argument: String,
+  },
+  InvalidShebang {
+    recipe: Name<'src>,
+    shebang: String,
+  },
+  ListInStringContext {
+    context: StringContext<'src>,
+    value: Value,
+  },
+  ListOperation {
+    lhs: Value,
+    operator: ListOperator,
+    rhs: Value,
+    token: Box<Token<'src>>,
+  },
+  Load {
+    path: PathBuf,
+    io_error: io::Error,
+  },
+  MissingImportFile {
+    path: Token<'src>,
+  },
+  MissingModuleFile {
+    module: Name<'src>,
+  },
+  MissingOption {
+    recipe: &'src str,
+    switch: Switch,
+  },
+  ModuleAbsent {
+    module: Modulepath,
+  },
+  NoChoosableRecipes,
+  NoDefaultRecipe,
+  NoRecipes,
+  NonFinalOptionWithValue {
+    recipe: &'src str,
+    switch: Switch,
+  },
+  NotConfirmed {
+    recipe: &'src str,
+  },
+  OptionMissingValue {
+    recipe: &'src str,
+    switch: Switch,
+  },
+  PositionalArgumentCountMismatch {
+    recipe: Box<Recipe<'src>>,
+    found: usize,
+    min: usize,
+    max: usize,
+  },
+  RecipeDisabled {
+    recipe: Modulepath,
+    modules: BTreeSet<Modulepath>,
+  },
+  RecipeRequired {
+    subcommand: &'static str,
+  },
+  RecursionLimit {
+    last: Name<'src>,
+  },
+  RegexCompile {
+    source: regex::Error,
+    token: Token<'src>,
+  },
+  RuntimeDirIo {
+    io_error: io::Error,
+    path: PathBuf,
+  },
+  Script {
+    command: String,
+    io_error: io::Error,
+    recipe: &'src str,
+  },
+  Search {
+    search_error: SearchError,
+  },
+  Shebang {
+    argument: Option<String>,
+    command: String,
+    io_error: io::Error,
+    recipe: &'src str,
+  },
+  ShellIo {
+    io_error: io::Error,
+    recipe: &'src str,
+    shell: String,
+  },
+  Signal {
+    line_number: Option<usize>,
+    print_message: bool,
+    recipe: &'src str,
+    signal: i32,
+  },
+  #[cfg(windows)]
+  SignalHandlerInstall {
+    source: ctrlc::Error,
+  },
+  #[cfg(unix)]
+  SignalHandlerPipeCloexec {
+    io_error: io::Error,
+  },
+  #[cfg(unix)]
+  SignalHandlerPipeOpen {
+    io_error: io::Error,
+  },
+  #[cfg(unix)]
+  SignalHandlerSigaction {
+    signal: Signal,
+    io_error: io::Error,
+  },
+  #[cfg(unix)]
+  SignalHandlerSpawnThread {
+    io_error: io::Error,
+  },
+  StdoutIo {
+    io_error: io::Error,
+  },
+  TempdirIo {
+    recipe: &'src str,
+    io_error: io::Error,
+  },
+  Unknown {
+    line_number: Option<usize>,
+    print_message: bool,
+    recipe: &'src str,
+  },
+  UnknownGroup {
+    group: String,
+  },
+  UnknownOption {
+    recipe: &'src str,
+    switch: Switch,
+  },
+  UnknownOverrides {
+    overrides: Vec<String>,
+  },
+  UnknownRecipe {
+    recipe: String,
+    suggestion: Option<Suggestion<'src>>,
+  },
+  UnknownSubmodule {
+    path: String,
+    suggestion: Option<Suggestion<'src>>,
+  },
+  UnstableFeature {
+    unstable_feature: UnstableFeature,
+  },
+  WriteJustfile {
+    justfile: PathBuf,
+    io_error: io::Error,
+  },
+}
+
+impl<'src> Error<'src> {
+  pub(crate) fn code(&self) -> Option<i32> {
+    match self {
+      Self::Backtick {
+        output_error: OutputError::Code(code),
+        ..
+      }
+      | Self::DotenvCommand {
+        output_error: OutputError::Code(code),
+        ..
+      }
+      | Self::Code { code, .. } => Some(*code),
+
+      Self::ChooserStatus { status, .. }
+      | Self::CommandStatus { status, .. }
+      | Self::EditorStatus { status, .. } => status
+        .code()
+        .or_else(|| Platform::signal_from_exit_status(*status).and_then(signal_exit_code)),
+      Self::Backtick {
+        output_error: OutputError::Signal(signal),
+        ..
+      }
+      | Self::DotenvCommand {
+        output_error: OutputError::Signal(signal),
+        ..
+      }
+      | Self::Signal { signal, .. } => signal_exit_code(*signal),
+      Self::Backtick {
+        output_error: OutputError::Interrupted(signal),
+        ..
+      }
+      | Self::Interrupted { signal } => Some(signal.code()),
+      _ => None,
+    }
+  }
+
+  fn context(&self) -> Option<Token<'src>> {
+    match self {
+      Self::AmbiguousModuleFile { module, .. } | Self::MissingModuleFile { module, .. } => {
+        Some(module.token)
+      }
+      Self::Assert { name, .. } => Some(**name),
+      Self::Backtick { token, .. } | Self::RegexCompile { token, .. } => Some(*token),
+      Self::Compile { compile_error } => Some(compile_error.context()),
+      Self::Const { const_error } => Some(const_error.context()),
+      Self::FunctionCall { function, .. } => Some(function.token),
+      Self::ListInStringContext { context, .. } => Some(context.token()),
+      Self::ListOperation { token, .. } => Some(**token),
+      Self::MissingImportFile { path } => Some(*path),
+      _ => None,
+    }
+  }
+
+  /// `Self::Signal` if process was terminated by a signal otherwise
+  /// `Self::UnknownFailure`.
+  pub(crate) fn from_signal(
+    exit_status: ExitStatus,
+    line_number: Option<usize>,
+    print_message: bool,
+    recipe: &'src str,
+  ) -> Self {
+    match Platform::signal_from_exit_status(exit_status) {
+      Some(signal) => Self::Signal {
+        line_number,
+        print_message,
+        recipe,
+        signal,
+      },
+      None => Self::Unknown {
+        line_number,
+        print_message,
+        recipe,
+      },
+    }
+  }
+
+  pub(crate) fn internal(message: impl Into<String>) -> Self {
+    Self::Internal {
+      message: message.into(),
+    }
+  }
+
+  pub(crate) fn print_message(&self) -> bool {
+    match self {
+      Self::Code { print_message, .. }
+      | Self::Signal { print_message, .. }
+      | Self::Unknown { print_message, .. } => *print_message,
+      _ => true,
+    }
+  }
+
+  fn source(&self) -> Option<&dyn std::error::Error> {
+    match self {
+      Self::Compile { compile_error } => compile_error.source(),
+      _ => None,
+    }
+  }
+
+  fn suggestion(&self) -> Option<&Suggestion> {
+    match self {
+      Self::EvalUnknownSubmodule { suggestion, .. }
+      | Self::EvalUnknownSubmoduleOrVariable { suggestion, .. }
+      | Self::UnknownRecipe { suggestion, .. }
+      | Self::UnknownSubmodule { suggestion, .. } => suggestion.as_ref(),
+      _ => None,
+    }
+  }
+
+  pub(crate) fn unwrap_const(self) -> ConstEvalError<'src> {
+    match self {
+      Self::Assert { message, name } => ConstEvalError::Assert { message, name },
+      Self::Const { const_error } => ConstEvalError::Const(const_error),
+      Self::ListInStringContext { context, value } => {
+        ConstEvalError::ListInStringContext { context, value }
+      }
+      Self::ListOperation {
+        lhs,
+        operator,
+        rhs,
+        token,
+      } => ConstEvalError::ListOperation {
+        lhs,
+        operator,
+        rhs,
+        token: *token,
+      },
+      Self::RegexCompile { source, token } => ConstEvalError::RegexCompile { source, token },
+      error => unreachable!(
+        "non-const error in const evaluation: {}",
+        error.color_display(Color::never()),
+      ),
+    }
+  }
+}
+
+impl<'src> From<CompileError<'src>> for Error<'src> {
+  fn from(compile_error: CompileError<'src>) -> Self {
+    Self::Compile { compile_error }
+  }
+}
+
+impl From<ConfigError> for Error<'_> {
+  fn from(config_error: ConfigError) -> Self {
+    Self::Config { config_error }
+  }
+}
+
+impl<'src> From<ConstError<'src>> for Error<'src> {
+  fn from(const_error: ConstError<'src>) -> Self {
+    Self::Const { const_error }
+  }
+}
+
+impl From<SearchError> for Error<'_> {
+  fn from(search_error: SearchError) -> Self {
+    Self::Search { search_error }
+  }
+}
+
+impl ColorDisplay for Error<'_> {
+  fn fmt(&self, f: &mut Formatter, color: Color) -> fmt::Result {
+    use Error::*;
+
+    let error = color.error().paint("error");
+    let message = color.message().prefix();
+    write!(f, "{error}: {message}")?;
+
+    match self {
+      AliasDisabled { alias, modules } => {
+        write!(
+          f,
+          "alias `{alias}` depends on absent {} {}",
+          Count::unnumbered("module", modules.len()),
+          List::and_ticked(modules)
+        )?;
+      }
+      AmbiguousModuleFile { module, found } => write!(
+        f,
+        "found multiple source files for module `{module}`: {}",
+        List::and_ticked(found.iter().map(|path| path.display())),
+      )?,
+      ArgumentPatternMismatch {
+        argument,
+        parameter,
+        pattern,
+        recipe,
+      } => {
+        write!(
+          f,
+          "argument `{argument}` passed to recipe `{recipe}` parameter `{parameter}` does not match pattern {}",
+          List::or_ticked(pattern.originals()),
+        )?;
+      }
+      ArgumentTooFewValues {
+        recipe,
+        parameter,
+        found,
+        min,
+      } => {
+        write!(
+          f,
+          "recipe `{recipe}` parameter `{parameter}` got {} but takes at least {min}",
+          Count::numbered("value", found),
+        )?;
+      }
+      ArgumentTooManyValues {
+        recipe,
+        parameter,
+        found,
+        max,
+      } => {
+        write!(
+          f,
+          "recipe `{recipe}` parameter `{parameter}` got {} but takes at most {max}",
+          Count::numbered("value", found),
+        )?;
+      }
+      Assert { message, .. } => {
+        write!(f, "assert failed: {message}")?;
+      }
+      Backtick { output_error, .. } => match output_error {
+        OutputError::Code(code) => write!(f, "backtick failed with exit code {code}")?,
+        OutputError::Signal(signal) => write!(f, "backtick was terminated by signal {signal}")?,
+        OutputError::Unknown => write!(f, "backtick failed for an unknown reason")?,
+        OutputError::Interrupted(signal) => write!(
+          f,
+          "backtick succeeded but `just` was interrupted by signal {signal}",
+        )?,
+        OutputError::Io(io_error) => match io_error.kind() {
+          io::ErrorKind::NotFound => write!(
+            f,
+            "backtick could not be run because just could not find the shell:\n{io_error}",
+          ),
+          io::ErrorKind::PermissionDenied => write!(
+            f,
+            "backtick could not be run because just could not run the shell:\n{io_error}",
+          ),
+          _ => write!(
+            f,
+            "backtick could not be run because of an IO error while launching the shell:\n{io_error}",
+          ),
+        }?,
+        OutputError::Utf8(utf8_error) => write!(
+          f,
+          "backtick succeeded but stdout was not utf8: {utf8_error}",
+        )?,
+      },
+      CacheEntryRead { path, source } => write!(
+        f,
+        "failed to read cache entry at `{}`: {source}",
+        path.display(),
+      )?,
+      CacheEntryWrite { path, source } => write!(
+        f,
+        "failed to write cache entry at `{}`: {source}",
+        path.display(),
+      )?,
+      CacheInputDirectory { path } => {
+        write!(f, "cache input is directory: `{}`", path.display())?;
+      }
+      CacheInputMissing { path } => {
+        write!(f, "cache input does not exist: `{}`", path.display())?;
+      }
+      CacheKeySerialize { source } => write!(f, "failed to serialize cache key: {source}")?,
+      CacheOutputMissing { recipe, output } => {
+        write!(
+          f,
+          "recipe `{recipe}` failed to create cache output `{output}`",
+        )?;
+      }
+      ChooserInvoke {
+        shell_binary,
+        shell_arguments,
+        chooser,
+        io_error,
+      } => {
+        let chooser = chooser.to_string_lossy();
+        write!(
+          f,
+          "chooser `{shell_binary} {shell_arguments} {chooser}` invocation failed: {io_error}",
+        )?;
+      }
+      ChooserRead { chooser, io_error } => {
+        let chooser = chooser.to_string_lossy();
+        write!(
+          f,
+          "failed to read output from chooser `{chooser}`: {io_error}",
+        )?;
+      }
+      ChooserStatus { chooser, status } => {
+        let chooser = chooser.to_string_lossy();
+        write!(f, "chooser `{chooser}` failed: {status}")?;
+      }
+      ChooserWrite { chooser, io_error } => {
+        let chooser = chooser.to_string_lossy();
+        write!(f, "failed to write to chooser `{chooser}`: {io_error}")?;
+      }
+      CircularImport { current, import } => {
+        let import = import.display();
+        let current = current.display();
+        write!(f, "import `{import}` in `{current}` is circular")?;
+      }
+      Code {
+        recipe,
+        line_number,
+        code,
+        ..
+      } => {
+        if let Some(n) = line_number {
+          write!(
+            f,
+            "recipe `{recipe}` failed on line {n} with exit code {code}",
+          )?;
+        } else {
+          write!(f, "recipe `{recipe}` failed with exit code {code}")?;
+        }
+      }
+      CommandInvoke {
+        binary,
+        arguments,
+        io_error,
+      } => {
+        let cmd = format_cmd(binary, arguments);
+        write!(f, "failed to invoke {cmd}: {io_error}")?;
+      }
+      CommandStatus {
+        binary,
+        arguments,
+        status,
+      } => {
+        let cmd = format_cmd(binary, arguments);
+        write!(f, "command {cmd} failed: {status}")?;
+      }
+      Compile { compile_error } => Display::fmt(compile_error, f)?,
+      Config { config_error } => Display::fmt(config_error, f)?,
+      Const { const_error } => write!(f, "{const_error}")?,
+      CurrentDirectory { source } => write!(f, "failed to get current directory: {source}")?,
+      Cygpath {
+        recipe,
+        output_error,
+      } => match output_error {
+        OutputError::Code(code) => write!(
+          f,
+          "cygpath failed with exit code {code} while translating recipe `{recipe}` shebang interpreter path",
+        )?,
+        OutputError::Signal(signal) => write!(
+          f,
+          "cygpath terminated by signal {signal} while translating recipe `{recipe}` shebang interpreter path",
+        )?,
+        OutputError::Unknown => write!(
+          f,
+          "cygpath experienced an unknown failure while translating recipe `{recipe}` shebang interpreter path",
+        )?,
+        OutputError::Interrupted(signal) => write!(
+          f,
+          "cygpath succeeded but `just` was interrupted by {signal}",
+        )?,
+        OutputError::Io(io_error) => {
+          match io_error.kind() {
+            io::ErrorKind::NotFound => write!(
+              f,
+              "could not find `cygpath` executable to translate recipe `{recipe}` shebang interpreter path:\n{io_error}",
+            ),
+            io::ErrorKind::PermissionDenied => write!(
+              f,
+              "could not run `cygpath` executable to translate recipe `{recipe}` shebang interpreter path:\n{io_error}",
+            ),
+            _ => write!(f, "could not run `cygpath` executable:\n{io_error}"),
+          }?;
+        }
+        OutputError::Utf8(utf8_error) => write!(
+          f,
+          "cygpath successfully translated recipe `{recipe}` shebang interpreter path, but output was not utf8: {utf8_error}",
+        )?,
+      },
+      DatetimeFormat(source) => write!(f, "{source}")?,
+      DefaultRecipeRequiresArguments {
+        recipe,
+        min_arguments,
+      } => {
+        write!(
+          f,
+          "recipe `{recipe}` cannot be used as default recipe since it requires at least {}",
+          Count::numbered("argument", min_arguments),
+        )?;
+      }
+      Dotenv { dotenv_error, path } => {
+        write!(
+          f,
+          "failed to load environment file from `{}`: {dotenv_error}",
+          path.display(),
+        )?;
+      }
+      DotenvArgumentsRequireLists => {
+        write!(
+          f,
+          "multiple `--dotenv-filename` or `--dotenv-path` arguments require `set lists`"
+        )?;
+      }
+      DotenvCommand {
+        command,
+        output_error,
+      } => {
+        write!(f, "dotenv command `{command}` failed: {output_error}")?;
+      }
+      DotenvRequired => {
+        write!(f, "dotenv file not found")?;
+      }
+      DumpJson { source } => {
+        write!(f, "failed to dump JSON to stdout: {source}")?;
+      }
+      DuplicateOption { recipe, switch } => {
+        write!(
+          f,
+          "recipe `{recipe}` option `{switch}` cannot be passed more than once",
+        )?;
+      }
+      EditorInvoke { editor, io_error } => {
+        let editor = editor.to_string_lossy();
+        write!(f, "editor `{editor}` invocation failed: {io_error}")?;
+      }
+      EditorStatus { editor, status } => {
+        let editor = editor.to_string_lossy();
+        write!(f, "editor `{editor}` failed: {status}")?;
+      }
+      EnvVarUnicode { name, value } => {
+        write!(
+          f,
+          "environment variable `{name}` not unicode: `{}`",
+          value.to_string_lossy(),
+        )?;
+      }
+      EmptyListArgument { parameter, recipe } => {
+        write!(
+          f,
+          "recipe `{recipe}` parameter `{parameter}` requires at least one element but received empty list"
+        )?;
+      }
+      EvalUnknownSubmodule { component, .. } => {
+        write!(f, "justfile does not contain submodule `{component}`")?;
+      }
+      EvalUnknownSubmoduleOrVariable { component, .. } => {
+        write!(
+          f,
+          "justfile does not contain variable or submodule `{component}`"
+        )?;
+      }
+      ExcessInvocations { invocations } => {
+        write!(
+          f,
+          "expected 1 command-line recipe invocation but found {invocations}",
+        )?;
+      }
+      ExpectedSubmoduleButFoundRecipe { path } => {
+        write!(f, "expected submodule at `{path}` but found recipe")?;
+      }
+      FilesystemIo { source, path } => {
+        write!(f, "I/O error at `{}`: {source}", path.display())?;
+      }
+      FlagWithValue { recipe, switch } => {
+        write!(f, "recipe `{recipe}` flag `{switch}` does not take value")?;
+      }
+      FormatCheckFoundDiff => {
+        write!(f, "formatted justfile differs from original")?;
+      }
+      FunctionCall { message, .. } => {
+        write!(f, "{message}")?;
+      }
+      GetConfirmation { io_error } => {
+        write!(f, "failed to read confirmation from stdin: {io_error}")?;
+      }
+      GuardCode {
+        recipe,
+        line_number,
+        code,
+      } => {
+        write!(
+          f,
+          "guard line in recipe `{recipe}` on line {line_number} returned reserved exit code {code}",
+        )?;
+      }
+      Homedir => {
+        write!(f, "failed to get homedir")?;
+      }
+      InitExists { justfile } => {
+        write!(f, "justfile `{}` already exists", justfile.display())?;
+      }
+      Internal { message } => {
+        write!(
+          f,
+          "internal runtime error, this may indicate a bug in just: {message}\n\
+          consider filing an issue: https://github.com/casey/just/issues/new",
+        )?;
+      }
+      Interrupted { signal } => {
+        write!(f, "interrupted by {signal}")?;
+      }
+      InvalidOption { argument } => {
+        write!(f, "argument `{argument}` is not a valid option")?;
+      }
+      InvalidShebang { recipe, shebang } => {
+        write!(f, "recipe `{recipe}` has invalid shebang `{shebang}`")?;
+      }
+      ListInStringContext { context, value, .. } => {
+        write!(f, "list value {} {context}", value.color_display(color))?;
+
+        if matches!(context, StringContext::Function { .. }) {
+          write!(
+            f,
+            "\nthe behavior of lists with many built-in functions is undecided\n\
+            see https://github.com/casey/just#lists",
+          )?;
+        }
+      }
+      ListOperation {
+        operator, lhs, rhs, ..
+      } => {
+        if lhs.is_empty() || rhs.is_empty() {
+          write!(f, "operator `{operator}` cannot be applied to empty lists")?;
+        } else {
+          write!(
+            f,
+            "operator `{operator}` cannot be applied to lists of different lengths: {} {operator} {}",
+            lhs.color_display(color),
+            rhs.color_display(color),
+          )?;
+        }
+      }
+      ShellIo {
+        recipe,
+        io_error,
+        shell,
+      } => {
+        match io_error.kind() {
+          io::ErrorKind::NotFound => write!(
+            f,
+            "recipe `{recipe}` could not be run because just could not find the shell `{shell}`: \
+            {io_error}",
+          ),
+          io::ErrorKind::PermissionDenied => write!(
+            f,
+            "recipe `{recipe}` could not be run because just could not run the shell `{shell}`: \
+            {io_error}",
+          ),
+          _ => write!(
+            f,
+            "recipe `{recipe}` could not be run because of an IO error while launching the shell \
+            `{shell}`: {io_error}",
+          ),
+        }?;
+      }
+      Load { io_error, path } => {
+        write!(
+          f,
+          "failed to read justfile at `{}`: {io_error}",
+          path.display()
+        )?;
+      }
+      NonFinalOptionWithValue { recipe, switch } => {
+        write!(
+          f,
+          "recipe `{recipe}` option `{switch}` takes a value and so must be last when combined with other options"
+        )?;
+      }
+      MissingImportFile { .. } => write!(f, "could not find source file for import")?,
+      MissingModuleFile { module } => {
+        write!(f, "could not find source file for module `{module}`")?;
+      }
+      MissingOption { recipe, switch } => {
+        write!(f, "recipe `{recipe}` requires option `{switch}`")?;
+      }
+      ModuleAbsent { module } => {
+        write!(f, "optional module `{module}` is absent")?;
+      }
+      NoChoosableRecipes => write!(f, "justfile contains no choosable recipes")?,
+      NoDefaultRecipe => write!(f, "justfile contains no default recipe")?,
+      NoRecipes => write!(f, "justfile contains no recipes")?,
+      NotConfirmed { recipe } => {
+        write!(f, "recipe `{recipe}` was not confirmed")?;
+      }
+      OptionMissingValue { recipe, switch } => {
+        write!(f, "recipe `{recipe}` option `{switch}` missing value")?;
+      }
+      PositionalArgumentCountMismatch {
+        recipe,
+        found,
+        min,
+        max,
+        ..
+      } => {
+        let arguments = Count::numbered("positional argument", found);
+        if min == max {
+          let expected = min;
+          let only = if expected < found { "only " } else { "" };
+          write!(
+            f,
+            "recipe `{}` got {arguments} but {only}takes {expected}",
+            recipe.name(),
+          )?;
+        } else if found < min {
+          write!(
+            f,
+            "recipe `{}` got {arguments} but takes at least {min}",
+            recipe.name(),
+          )?;
+        } else if found > max {
+          write!(
+            f,
+            "recipe `{}` got {arguments} but takes at most {max}",
+            recipe.name(),
+          )?;
+        }
+      }
+      RecipeDisabled { recipe, modules } => {
+        write!(
+          f,
+          "recipe `{recipe}` depends on absent {} {}",
+          Count::unnumbered("module", modules.len()),
+          List::and_ticked(modules)
+        )?;
+      }
+      RecipeRequired { subcommand } => {
+        write!(f, "`--{subcommand}` requires recipe")?;
+      }
+      RecursionLimit { last } => write!(
+        f,
+        "maximum recursion depth of {RECURSION_LIMIT} exceeded while calling function {last}"
+      )?,
+      RegexCompile { source, .. } => write!(f, "{source}")?,
+      RuntimeDirIo { io_error, path } => {
+        write!(
+          f,
+          "I/O error in runtime dir `{}`: {io_error}",
+          path.display(),
+        )?;
+      }
+      Script {
+        command,
+        io_error,
+        recipe,
+      } => {
+        write!(
+          f,
+          "recipe `{recipe}` with command `{command}` execution error: {io_error}",
+        )?;
+      }
+      Search { search_error } => Display::fmt(search_error, f)?,
+      Shebang {
+        recipe,
+        command,
+        argument,
+        io_error,
+      } => {
+        if let Some(argument) = argument {
+          write!(
+            f,
+            "recipe `{recipe}` with shebang `#!{command} {argument}` execution error: {io_error}",
+          )?;
+        } else {
+          write!(
+            f,
+            "recipe `{recipe}` with shebang `#!{command}` execution error: {io_error}",
+          )?;
+        }
+      }
+      Signal {
+        recipe,
+        line_number,
+        signal,
+        ..
+      } => {
+        if let Some(n) = line_number {
+          write!(
+            f,
+            "recipe `{recipe}` was terminated on line {n} by signal {signal}",
+          )?;
+        } else {
+          write!(f, "recipe `{recipe}` was terminated by signal {signal}")?;
+        }
+      }
+      #[cfg(windows)]
+      SignalHandlerInstall { source } => {
+        write!(f, "could not install signal handler: {source}")?;
+      }
+      #[cfg(unix)]
+      SignalHandlerPipeCloexec { io_error } => {
+        write!(
+          f,
+          "I/O error setting O_CLOEXEC on signal handler pipe: {io_error}",
+        )?;
+      }
+      #[cfg(unix)]
+      SignalHandlerPipeOpen { io_error } => {
+        write!(f, "I/O error opening signal handler pipe: {io_error}")?;
+      }
+      #[cfg(unix)]
+      SignalHandlerSigaction { io_error, signal } => {
+        write!(f, "I/O error setting sigaction for {signal}: {io_error}")?;
+      }
+      #[cfg(unix)]
+      SignalHandlerSpawnThread { io_error } => {
+        write!(
+          f,
+          "I/O error spawning thread for signal handler: {io_error}",
+        )?;
+      }
+      StdoutIo { io_error } => {
+        write!(f, "I/O error writing to stdout: {io_error}")?;
+      }
+      TempdirIo { recipe, io_error } => {
+        write!(
+          f,
+          "recipe `{recipe}` could not be run because of an IO error while trying to create a temporary \
+          directory or write a file to that directory: {io_error}",
+        )?;
+      }
+      Unknown {
+        recipe,
+        line_number,
+        ..
+      } => {
+        if let Some(n) = line_number {
+          write!(
+            f,
+            "recipe `{recipe}` failed on line {n} for an unknown reason",
+          )?;
+        } else {
+          write!(f, "recipe `{recipe}` failed for an unknown reason")?;
+        }
+      }
+      UnknownOption { recipe, switch } => {
+        write!(f, "recipe `{recipe}` does not have option `{switch}`")?;
+      }
+      UnknownOverrides { overrides } => {
+        write!(
+          f,
+          "{} {} overridden on the command line but not present in justfile",
+          Count::unnumbered("variable", overrides.len()),
+          List::and_ticked(overrides),
+        )?;
+      }
+      UnknownGroup { group } => {
+        write!(f, "justfile does not contain group `{group}`")?;
+      }
+      UnknownRecipe { recipe, .. } => {
+        write!(f, "justfile does not contain recipe `{recipe}`")?;
+      }
+      UnknownSubmodule { path, .. } => {
+        write!(f, "justfile does not contain submodule `{path}`")?;
+      }
+      UnstableFeature { unstable_feature } => {
+        write!(
+          f,
+          "{unstable_feature}, invoke `just` with `--unstable`, set the `JUST_UNSTABLE` environment variable, or add `set unstable` to your `justfile` to enable unstable features",
+        )?;
+      }
+      WriteJustfile { justfile, io_error } => {
+        let justfile = justfile.display();
+        write!(f, "failed to write justfile to `{justfile}`: {io_error}")?;
+      }
+    }
+
+    if let Some(suggestion) = self.suggestion() {
+      write!(f, "\n{suggestion}")?;
+    }
+
+    write!(f, "{}", color.message().suffix())?;
+
+    if let PositionalArgumentCountMismatch { recipe, .. } = self {
+      writeln!(f)?;
+      write!(
+        f,
+        "{}",
+        Usage {
+          long: false,
+          path: recipe.recipe_path(),
+          recipe,
+        }
+        .color_display(color)
+      )?;
+    }
+
+    if let Some(token) = self.context() {
+      writeln!(f)?;
+      write!(f, "{}", token.color_display(color.error()))?;
+    }
+
+    if let Some(source) = self.source() {
+      writeln!(f)?;
+      write!(f, "caused by: {source}")?;
+    }
+
+    Ok(())
+  }
+}
+
+fn format_cmd(binary: &OsString, arguments: &Vec<OsString>) -> String {
+  iter::once(binary)
+    .chain(arguments)
+    .map(|value| Enclosure::tick(value.to_string_lossy()).to_string())
+    .collect::<Vec<String>>()
+    .join(" ")
+}

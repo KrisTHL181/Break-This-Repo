@@ -1,0 +1,122 @@
+[package]
+name = "nautilus-network"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Network communication machinery for the Nautilus trading engine"
+categories.workspace = true
+keywords.workspace = true
+documentation.workspace = true
+repository.workspace = true
+homepage.workspace = true
+
+[lints]
+workspace = true
+
+[lib]
+name = "nautilus_network"
+crate-type = ["rlib"]
+
+[features]
+default = ["transport-sockudo"]
+extension-module = ["python", "pyo3/extension-module"]
+python = ["pyo3", "pyo3-stub-gen"]
+simulation = ["dep:madsim", "nautilus-core/simulation"]
+turmoil = ["dep:turmoil"]
+# Backend selection for the WebSocket transport abstraction.
+# `tokio-tungstenite` is always compiled; `transport-sockudo` (enabled by
+# default) adds the `sockudo-ws` backend, selectable at runtime via
+# `WebSocketConfig.backend`. Disable via `default-features = false` to drop
+# the sockudo dependency.
+transport-sockudo = ["dep:sockudo-ws"]
+
+[package.metadata.docs.rs]
+# Python docs depend on the local pyo3-stub-gen patch for now, which published crates do not carry
+features = ["simulation", "transport-sockudo", "turmoil"]
+rustdoc-args = ["--cfg", "docsrs"]
+
+[dependencies]
+nautilus-core = { workspace = true }
+nautilus-cryptography = { workspace = true }
+
+ahash = { workspace = true }
+anyhow = { workspace = true }
+base64 = { workspace = true }
+bon = { workspace = true }
+bytes = { workspace = true }
+dashmap = { workspace = true }
+futures-util = { workspace = true }
+h2 = { workspace = true }
+http = { workspace = true }
+http-body = { workspace = true }
+http-body-util = { workspace = true }
+hyper = { workspace = true, features = ["http2"] }
+hyper-rustls = { workspace = true }
+hyper-util = { workspace = true, features = [
+  "client-legacy",
+  "client-proxy",
+  "http1",
+  "http2",
+] }
+log = { workspace = true }
+parking_lot = { workspace = true }
+percent-encoding = { workspace = true }
+rand = { workspace = true }
+rustls = { workspace = true }
+rustls-platform-verifier = { workspace = true }
+serde = { workspace = true }
+serde_urlencoded = { workspace = true }
+socket2 = { workspace = true }
+strum = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true }
+tokio-rustls = { workspace = true }
+tokio-tungstenite = { workspace = true }
+tokio-util = { workspace = true }
+tower-http = { workspace = true }
+tower-service = { workspace = true }
+url = { workspace = true }
+ustr = { workspace = true }
+webpki-roots = { workspace = true }
+
+madsim = { workspace = true, optional = true }
+pyo3 = { workspace = true, optional = true }
+pyo3-stub-gen = { workspace = true, optional = true }
+sockudo-ws = { workspace = true, optional = true }
+turmoil = { workspace = true, optional = true }
+
+[dev-dependencies]
+nautilus-common = { workspace = true, features = ["live"] }
+
+axum = { workspace = true }
+criterion = { workspace = true }
+proptest = { workspace = true }
+rcgen = { workspace = true }
+rstest = { workspace = true }
+serde_json = { workspace = true }
+tempfile = { workspace = true }
+turmoil = { workspace = true }
+
+[[bench]]
+name = "ratelimiter"
+path = "benches/ratelimiter.rs"
+harness = false
+
+[[bench]]
+name = "http_response"
+path = "benches/http_response.rs"
+harness = false
+
+[[bench]]
+name = "websocket_transport"
+path = "benches/websocket_transport.rs"
+harness = false
+required-features = ["transport-sockudo"]
+
+[[bench]]
+name = "websocket_latency"
+path = "benches/websocket_latency.rs"
+harness = false
+required-features = ["transport-sockudo"]

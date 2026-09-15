@@ -1,0 +1,633 @@
+// Copyright (c) The Diem Core Contributors
+// Copyright (c) The Move Contributors
+// SPDX-License-Identifier: Apache-2.0
+
+use crate::{
+    TraceType, format_module_id,
+    test_reporter::{
+        FailureReason, MoveError, TestFailure, TestResults, TestRunInfo, TestStatistics,
+    },
+    vm_test_setup::VMTestSetup,
+};
+use anyhow::Result;
+use colored::*;
+
+use move_binary_format::{
+    errors::{Location, VMResult},
+    file_format::CompiledModule,
+};
+use move_command_line_common::error_bitset::ErrorBitset;
+use move_compiler::{
+    compiled_unit::NamedCompiledModule,
+    unit_test::{ExpectedFailure, ModuleTestPlan, MoveErrorType, TestArgument, TestCase, TestPlan},
+};
+use move_core_types::{
+    account_address::AccountAddress,
+    identifier::IdentStr,
+    language_storage::{ModuleId, TypeTag},
+    runtime_value::{MoveValue, serialize_values},
+    u256::U256,
+    vm_status::StatusCode,
+};
+use move_trace_format::tracers::instruction_only::InstructionOnlyTracer;
+use move_trace_format::{
+    format::{MoveTraceBuilder, TRACE_FILE_EXTENSION},
+    tracers::function_only::FunctionOnlyTracer,
+};
+use move_vm_runtime::{
+    dev_utils::storage::StoredPackage,
+    shared::{gas::GasMeter, linkage_context},
+};
+use move_vm_runtime::{
+    dev_utils::{
+        in_memory_test_adapter::InMemoryTestAdapter, storage::InMemoryStorage,
+        vm_arguments::ValueFrame, vm_test_adapter::VMTestAdapter,
+    },
+    natives::functions::NativeFunctions,
+    runtime::MoveRuntime,
+};
+use rand::{Rng, SeedableRng, rngs::StdRng};
+use rayon::prelude::*;
+use regex::Regex;
+use std::{
+    cell::RefCell,
+    collections::BTreeMap,
+    io::Write,
+    marker::Send,
+    rc::Rc,
+    sync::{Arc, Mutex},
+    time::Instant,
+};
+
+use parking_lot::RwLock;
+
+/// Test state common to all tests
+pub struct SharedTestingConfig<V: VMTestSetup> {
+    report_stacktrace_on_abort: bool,
+    execution_bound: u64,
+    vm_test_setup: V,
+    vm_test_adapter: Arc<RwLock<dyn VMTestAdapter<InMemoryStorage> + Sync + Send>>,
+    prng_seed: Option<u64>,
+    num_iters: u64,
+    deterministic_generation: bool,
+    trace_location: Option<(TraceType, String)>,
+}
+
+pub struct TestRunner<V: VMTestSetup> {
+    num_threads: usize,
+    testing_config: SharedTestingConfig<V>,
+    tests: TestPlan,
+}
+
+/// Insert the provided modules into the provided test store so that they can be loaded by the
+/// vm during test execution.
+fn setup_test_storage<'a>(
+    adapter: &mut InMemoryTestAdapter,
+    modules: impl Iterator<Item = &'a CompiledModule>,
+    bytecode_deps_modules: impl Iterator<Item = &'a CompiledModule>,
+) -> Result<()> {
+    let mut packages = BTreeMap::new();
+    for module in modules.chain(bytecode_deps_modules) {
+        let entry = packages
+            .entry(*module.self_id().address())
+            .or_insert_with(Vec::new);
+        entry.push(module.clone());
+    }
+
+    let linkage_table = packages.keys().copied().map(|addr| (addr, addr)).collect();
+    let linkage_context = linkage_context::LinkageContext::new(linkage_table).unwrap();
+
+    for (addr, modules) in packages {
+        let package = StoredPackage::from_module_for_testing_with_linkage(
+            addr,
+            linkage_context.clone(),
+            modules,
+        )
+        .unwrap();
+        adapter.insert_package_into_storage(package);
+    }
+    Ok(())
+}
+
+fn convert_clever_move_abort_error(
+    abort_code: u64,
+    location: &Location,
+    test_info: &BTreeMap<ModuleId, NamedCompiledModule>,
+) -> Option<MoveErrorType> {
+    let Some(bitset) = ErrorBitset::from_u64(abort_code) else {
+        return Some(MoveErrorType::Code(abort_code));
+    };
+
+    // Otherwise it should be a tagged error
+    match location {
+        Location::Undefined | Location::Package(_) => None,
+        Location::Module(module_id) => {
+            let module = test_info.get(module_id)?;
+            let name_constant_index = bitset.identifier_index()?;
+            let name_string = std::str::from_utf8(
+                &bcs::from_bytes::<Vec<u8>>(
+                    &module.module.constant_pool[name_constant_index as usize].data,
+                )
+                .expect("Invalid UTF-8 constant name -- this is impossible"),
+            )
+            .expect("Invalid UTF-8 constant name -- this is impossible")
+            .to_string();
+            Some(MoveErrorType::ConstantName(name_string))
+        }
+    }
+}
+
+impl<V: VMTestSetup + Sync> TestRunner<V> {
+    pub fn new(
+        execution_bound: u64,
+        arena_size: Option<u64>,
+        num_threads: usize,
+        report_stacktrace_on_abort: bool,
+        prng_seed: Option<u64>,
+        num_iters: u64,
+        deterministic_generation: bool,
+        trace_location: Option<(TraceType, String)>,
+        tests: TestPlan,
+        vm_test_setup: V,
+    ) -> Result<Self> {
+        // If we want to trace the execution, check that the tracing compilation feature is
+        // enabled, otherwise we won't generate a trace.
+        move_vm_config::tracing_feature_disabled! {
+            if trace_location.is_some() {
+                return Err(anyhow::anyhow!(
+                    "Tracing is enabled but the binary was not compiled with the `tracing` \
+                     feature flag set. Rebuild binary with `--features tracing`"
+                ));
+            }
+        };
+
+        let native_functions = NativeFunctions::new(vm_test_setup.native_function_table())?;
+        let vm_config = move_vm_config::runtime::VMConfig::new_for_test(
+            /* allow_unpublishable_code_execution */ true, arena_size,
+        );
+        let runtime = MoveRuntime::new(native_functions, vm_config);
+
+        let mut vm_test_adapter = InMemoryTestAdapter::new_with_runtime(runtime);
+
+        let modules = tests.module_info.values().map(|info| &info.module);
+        setup_test_storage(
+            &mut vm_test_adapter,
+            modules,
+            tests.bytecode_deps_modules.iter(),
+        )?;
+
+        Ok(Self {
+            testing_config: SharedTestingConfig {
+                report_stacktrace_on_abort,
+                execution_bound,
+                vm_test_adapter: Arc::new(RwLock::new(vm_test_adapter)),
+                vm_test_setup,
+                prng_seed,
+                num_iters,
+                deterministic_generation,
+                trace_location,
+            },
+            num_threads,
+            tests,
+        })
+    }
+
+    pub fn run<W: Write + Send>(self, writer: &Mutex<W>) -> Result<TestResults> {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(self.num_threads)
+            .build()
+            .unwrap()
+            .install(|| {
+                let final_statistics = self
+                    .tests
+                    .module_tests
+                    .par_iter()
+                    .map(|(_, test_plan)| {
+                        self.testing_config.exec_module_tests(
+                            test_plan,
+                            &self.tests.module_info,
+                            writer,
+                        )
+                    })
+                    .reduce(TestStatistics::new, |acc, stats| acc.combine(stats));
+
+                Ok(TestResults::new(final_statistics, self.tests))
+            })
+    }
+
+    pub fn filter(&mut self, test_name_slice: &str) -> Result<()> {
+        let regex = Regex::new(test_name_slice)?;
+        for (module_id, module_test) in self.tests.module_tests.iter_mut() {
+            if module_id.name().as_str().contains(test_name_slice) {
+                continue;
+            } else {
+                let tests = std::mem::take(&mut module_test.tests);
+                module_test.tests = tests
+                    .into_iter()
+                    .filter(|(test_name, _)| {
+                        let full_name = format!(
+                            "{}::{}",
+                            format_module_id(&self.tests.module_info, module_id),
+                            test_name.as_str()
+                        );
+                        regex.is_match(&full_name)
+                    })
+                    .collect();
+            }
+        }
+        Ok(())
+    }
+}
+
+// TODO: do not expose this to backend implementations
+struct TestOutput<'a, 'b, W> {
+    test_plan: &'a ModuleTestPlan,
+    writer: &'b Mutex<W>,
+    test_info: &'a BTreeMap<ModuleId, NamedCompiledModule>,
+}
+
+impl<W: Write> TestOutput<'_, '_, W> {
+    fn pass(&self, fn_name: &str) {
+        writeln!(
+            self.writer.lock().unwrap(),
+            "[ {}    ] {}::{}",
+            "PASS".bold().bright_green(),
+            format_module_id(self.test_info, &self.test_plan.module_id),
+            fn_name
+        )
+        .unwrap()
+    }
+
+    fn fail(&self, fn_name: &str) {
+        writeln!(
+            self.writer.lock().unwrap(),
+            "[ {}    ] {}::{}",
+            "FAIL".bold().bright_red(),
+            format_module_id(self.test_info, &self.test_plan.module_id),
+            fn_name,
+        )
+        .unwrap()
+    }
+
+    fn timeout(&self, fn_name: &str) {
+        writeln!(
+            self.writer.lock().unwrap(),
+            "[ {} ] {}::{}",
+            "TIMEOUT".bold().bright_yellow(),
+            format_module_id(self.test_info, &self.test_plan.module_id),
+            fn_name,
+        )
+        .unwrap();
+    }
+}
+
+impl<V: VMTestSetup> SharedTestingConfig<V> {
+    fn execute_via_move_vm(
+        &self,
+        test_plan: &ModuleTestPlan,
+        function_name: &str,
+        arguments: Vec<MoveValue>,
+    ) -> (VMResult<ValueFrame>, TestRunInfo) {
+        // A nicety since Rust doesn't have `try { .. }` yet
+        fn do_call<V: VMTestSetup>(
+            test_config: &SharedTestingConfig<V>,
+            gas_meter: &mut impl GasMeter,
+            tracer: Option<&mut MoveTraceBuilder>,
+            module_id: ModuleId,
+            function_name: &str,
+            arguments: Vec<MoveValue>,
+        ) -> VMResult<ValueFrame> {
+            let link_context = test_config
+                .vm_test_adapter
+                .read()
+                .get_linkage_context(*module_id.address())?;
+            let extensions_builder = test_config.vm_test_setup.new_extensions_builder();
+            let native_context_extensions = test_config
+                .vm_test_setup
+                .new_native_context_extensions(&extensions_builder);
+            let adapter = test_config.vm_test_adapter.read();
+            let mut vm_instance = adapter.make_vm_with_native_extensions(
+                link_context,
+                Rc::new(RefCell::new(native_context_extensions)),
+            )?;
+
+            let function_name = IdentStr::new(function_name).unwrap();
+
+            ValueFrame::serialized_call(
+                &mut vm_instance,
+                &module_id,
+                function_name,
+                vec![],
+                serialize_values(arguments.iter()),
+                gas_meter,
+                tracer,
+                true, /* bypass declared entry check */
+            )
+        }
+
+        let mut move_tracer =
+            self.trace_location
+                .as_ref()
+                .map(|(trace_type, _)| match trace_type {
+                    TraceType::InstructionOnly => {
+                        MoveTraceBuilder::new_with_tracer(Box::new(InstructionOnlyTracer))
+                    }
+                    TraceType::FunctionOnly => {
+                        MoveTraceBuilder::new_with_tracer(Box::new(FunctionOnlyTracer))
+                    }
+                    TraceType::Full => MoveTraceBuilder::new(),
+                });
+        let tracer = move_tracer.as_mut();
+
+        let mut gas_meter = self.vm_test_setup.new_meter(Some(self.execution_bound));
+        // TODO: collect VM logs if the verbose flag (i.e, `self.verbose`) is set
+        let now = Instant::now();
+        let module_id = test_plan.module_id.clone();
+
+        let mut return_result = do_call(
+            self,
+            &mut gas_meter,
+            tracer,
+            module_id,
+            function_name,
+            arguments,
+        );
+
+        if !self.report_stacktrace_on_abort
+            && let Err(err) = &mut return_result
+        {
+            err.remove_exec_state();
+        }
+
+        let trace = move_tracer.map(|t| t.into_trace());
+        let test_run_info = TestRunInfo::new(
+            now.elapsed(),
+            self.vm_test_setup.used_gas(self.execution_bound, gas_meter),
+            trace,
+        );
+        (return_result, test_run_info)
+    }
+
+    fn exec_module_tests_with_move_vm(
+        &self,
+        test_plan: &ModuleTestPlan,
+        global_test_context: &BTreeMap<ModuleId, NamedCompiledModule>,
+        output: &TestOutput<impl Write>,
+    ) -> TestStatistics {
+        let mut stats = TestStatistics::new();
+
+        for (function_name, test_info) in &test_plan.tests {
+            let arguments = if test_info
+                .arguments
+                .iter()
+                .all(|arg| matches!(arg, TestArgument::Value(_)))
+            {
+                let test_arguments = test_info
+                    .arguments
+                    .iter()
+                    .map(|arg| match arg {
+                        TestArgument::Value(v) => v.clone(),
+                        _ => unreachable!(),
+                    })
+                    .collect::<Vec<_>>();
+                vec![(None, test_arguments)]
+            } else {
+                let mut args = vec![];
+                for i in 0..self.num_iters {
+                    let mut iter_args = vec![];
+                    let prng_seed = self.prng_seed.unwrap_or_else(|| {
+                        if self.deterministic_generation {
+                            i
+                        } else {
+                            rand::random::<u64>()
+                        }
+                    });
+                    let mut rng = StdRng::seed_from_u64(prng_seed);
+                    for arg in test_info.arguments.iter() {
+                        match arg {
+                            TestArgument::Value(v) => iter_args.push(v.clone()),
+                            TestArgument::Generate { generated_type } => {
+                                iter_args.push(Self::generate_value_for_typetag(
+                                    &mut rng,
+                                    generated_type,
+                                ));
+                            }
+                        }
+                    }
+                    args.push((Some(prng_seed), iter_args));
+                }
+                args
+            };
+            let len = arguments.len();
+            for (i, (prng_seed, args)) in arguments.into_iter().enumerate() {
+                if !self.exec_test_once(
+                    test_plan,
+                    global_test_context,
+                    output,
+                    function_name,
+                    test_info,
+                    args,
+                    &mut stats,
+                    prng_seed,
+                    i == len - 1,
+                ) {
+                    break;
+                }
+            }
+        }
+
+        stats
+    }
+
+    fn generate_value_for_typetag(rng: &mut StdRng, ty: &TypeTag) -> MoveValue {
+        match ty {
+            TypeTag::Address => {
+                MoveValue::Address(AccountAddress::from_bytes(rng.r#gen::<[u8; 32]>()).unwrap())
+            }
+            TypeTag::U8 => MoveValue::U8(rng.r#gen::<u8>()),
+            TypeTag::U16 => MoveValue::U16(rng.r#gen::<u16>()),
+            TypeTag::U32 => MoveValue::U32(rng.r#gen::<u32>()),
+            TypeTag::U64 => MoveValue::U64(rng.r#gen::<u64>()),
+            TypeTag::U128 => MoveValue::U128(rng.r#gen::<u128>()),
+            TypeTag::U256 => MoveValue::U256(rng.r#gen::<U256>()),
+            TypeTag::Vector(ty) => {
+                let len = rng.gen_range(0..1024);
+                let values = (0..len)
+                    .map(|_| Self::generate_value_for_typetag(rng, ty))
+                    .collect();
+                MoveValue::Vector(values)
+            }
+            TypeTag::Bool => MoveValue::Bool(rng.r#gen::<bool>()),
+            TypeTag::Struct(_) => {
+                unreachable!(
+                    "Structs are not supported as generated values \
+                     in unit tests and cannot get to this point"
+                )
+            }
+            TypeTag::Signer => unreachable!("Signer arguments not allowed"),
+        }
+    }
+
+    fn exec_test_once(
+        &self,
+        test_plan: &ModuleTestPlan,
+        global_test_context: &BTreeMap<ModuleId, NamedCompiledModule>,
+        output: &TestOutput<impl Write>,
+        function_name: &str,
+        test_info: &TestCase,
+        arguments: Vec<MoveValue>,
+        stats: &mut TestStatistics,
+        prng_seed: Option<u64>,
+        is_last_execution_of_test: bool,
+    ) -> bool {
+        let (exec_result, test_run_info) =
+            self.execute_via_move_vm(test_plan, function_name, arguments);
+
+        // Save the trace -- one per test -- for each test that we have traced (and if tracing is
+        // enabled).
+        if let Some(location) = &self.trace_location {
+            let trace_file_location = format!(
+                "{}/{}__{}{}.{}",
+                location.1,
+                format_module_id(output.test_info, &output.test_plan.module_id).replace("::", "__"),
+                function_name,
+                if let Some(seed) = prng_seed {
+                    format!("_seed_{}", seed)
+                } else {
+                    "".to_string()
+                },
+                TRACE_FILE_EXTENSION,
+            );
+            if let Err(e) = test_run_info.save_trace(&trace_file_location) {
+                eprintln!("Unable to save trace to {trace_file_location} -- {:?}", e);
+            }
+        }
+
+        match exec_result {
+            Err(err) => {
+                let sub_status = err.sub_status().and_then(|status| {
+                    convert_clever_move_abort_error(status, err.location(), global_test_context)
+                });
+                let actual_err = MoveError(err.major_status(), sub_status, err.location().clone());
+                assert!(err.major_status() != StatusCode::EXECUTED);
+                match test_info.expected_failure.as_ref() {
+                    Some(ExpectedFailure::Expected) => {
+                        if is_last_execution_of_test {
+                            output.pass(function_name);
+                        }
+                        stats.test_success(function_name.to_string(), test_run_info, test_plan)
+                    }
+                    Some(ExpectedFailure::ExpectedWithError(expected_err))
+                        if expected_err == &actual_err =>
+                    {
+                        if is_last_execution_of_test {
+                            output.pass(function_name);
+                        }
+                        stats.test_success(function_name.to_string(), test_run_info, test_plan)
+                    }
+                    Some(ExpectedFailure::ExpectedWithCodeDEPRECATED(code))
+                        if actual_err.0 == StatusCode::ABORTED
+                            && actual_err.1.is_some()
+                            && actual_err.1.as_ref().unwrap() == code =>
+                    {
+                        if is_last_execution_of_test {
+                            output.pass(function_name);
+                        }
+                        stats.test_success(function_name.to_string(), test_run_info, test_plan)
+                    }
+                    // incorrect cases
+                    Some(ExpectedFailure::ExpectedWithError(expected_err)) => {
+                        output.fail(function_name);
+                        stats.test_failure(
+                            function_name.to_string(),
+                            TestFailure::new(
+                                FailureReason::wrong_error(expected_err.clone(), actual_err),
+                                test_run_info,
+                                Some(err),
+                                prng_seed,
+                            ),
+                            test_plan,
+                        )
+                    }
+                    Some(ExpectedFailure::ExpectedWithCodeDEPRECATED(expected_code)) => {
+                        output.fail(function_name);
+                        stats.test_failure(
+                            function_name.to_string(),
+                            TestFailure::new(
+                                FailureReason::wrong_abort_deprecated(
+                                    expected_code.clone(),
+                                    actual_err,
+                                ),
+                                test_run_info,
+                                Some(err),
+                                prng_seed,
+                            ),
+                            test_plan,
+                        )
+                    }
+                    None if err.major_status() == StatusCode::OUT_OF_GAS => {
+                        // Ran out of ticks, report a test timeout and log a test failure
+                        output.timeout(function_name);
+                        stats.test_failure(
+                            function_name.to_string(),
+                            TestFailure::new(
+                                FailureReason::timeout(),
+                                test_run_info,
+                                Some(err),
+                                prng_seed,
+                            ),
+                            test_plan,
+                        )
+                    }
+                    None => {
+                        output.fail(function_name);
+                        stats.test_failure(
+                            function_name.to_string(),
+                            TestFailure::new(
+                                FailureReason::unexpected_error(actual_err),
+                                test_run_info,
+                                Some(err),
+                                prng_seed,
+                            ),
+                            test_plan,
+                        )
+                    }
+                }
+            }
+            Ok(_) => {
+                // Expected the test to fail, but it executed
+                if test_info.expected_failure.is_some() {
+                    output.fail(function_name);
+                    stats.test_failure(
+                        function_name.to_string(),
+                        TestFailure::new(FailureReason::no_error(), test_run_info, None, prng_seed),
+                        test_plan,
+                    )
+                } else {
+                    // Expected the test to execute fully and it did
+                    if is_last_execution_of_test {
+                        output.pass(function_name);
+                    }
+                    stats.test_success(function_name.to_string(), test_run_info, test_plan)
+                }
+            }
+        }
+    }
+
+    // TODO: comparison of results via different backends
+
+    fn exec_module_tests(
+        &self,
+        test_plan: &ModuleTestPlan,
+        test_info: &BTreeMap<ModuleId, NamedCompiledModule>,
+        writer: &Mutex<impl Write>,
+    ) -> TestStatistics {
+        let output = TestOutput {
+            test_plan,
+            writer,
+            test_info,
+        };
+
+        self.exec_module_tests_with_move_vm(test_plan, test_info, &output)
+    }
+}

@@ -1,1 +1,0 @@
-<img src="./visualization.svg">

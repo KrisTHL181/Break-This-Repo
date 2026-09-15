@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "id": "cond1",
+      "title": "修复跃迁引擎并抵达新殖民地",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond2",
+      "title": "揭开飞船事故真相并平息AI叛变危机",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond3",
+      "title": "找到其他幸存者小队并建立漂流者联盟",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond4",
+      "title": "发现隐藏的外星资源点并借此联系上地球",
+      "achieved": false,
+      "achieved_chapter": null
+    }
+  ]
+}

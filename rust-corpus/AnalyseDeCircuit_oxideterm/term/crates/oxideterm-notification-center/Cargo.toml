@@ -1,7 +1,0 @@
-[package]
-name = "oxideterm-notification-center"
-edition.workspace = true
-license.workspace = true
-version.workspace = true
-
-[dependencies]

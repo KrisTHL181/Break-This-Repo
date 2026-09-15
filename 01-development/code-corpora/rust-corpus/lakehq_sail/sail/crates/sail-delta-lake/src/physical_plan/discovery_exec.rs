@@ -1,0 +1,211 @@
+use std::fmt;
+use std::sync::Arc;
+
+use async_trait::async_trait;
+use datafusion::arrow::array::BooleanArray;
+use datafusion::arrow::datatypes::{DataType, Field, Schema, SchemaRef};
+use datafusion::arrow::record_batch::RecordBatch;
+use datafusion::execution::context::TaskContext;
+use datafusion::physical_plan::execution_plan::{Boundedness, EmissionType};
+use datafusion::physical_plan::stream::RecordBatchStreamAdapter;
+use datafusion::physical_plan::{
+    ChildrenPropertiesMode, DisplayAs, DisplayFormatType, ExecutionPlan, ExecutionPlanProperties,
+    Partitioning, PlanProperties, ReplaceChildrenOptions, SendableRecordBatchStream,
+};
+use datafusion_common::tree_node::TreeNodeRecursion;
+use datafusion_common::{DataFusionError, Result, internal_err};
+use datafusion_physical_expr::{Distribution, EquivalenceProperties, PhysicalExpr};
+use futures::TryStreamExt;
+use url::Url;
+
+#[derive(Debug)]
+pub struct DeltaDiscoveryExec {
+    table_url: Url,
+    version: i64,
+    input: Arc<dyn ExecutionPlan>,
+    input_partition_columns: Vec<String>,
+    input_partition_scan: bool,
+    cache: Arc<PlanProperties>,
+}
+
+impl DeltaDiscoveryExec {
+    pub fn new(
+        input: Arc<dyn ExecutionPlan>,
+        table_url: Url,
+        version: i64,
+        partition_columns: Vec<String>,
+        partition_scan: bool,
+    ) -> Result<Self> {
+        let mut fields = input.schema().fields().to_vec();
+        fields.push(Arc::new(Field::new(
+            "partition_scan",
+            DataType::Boolean,
+            false,
+        )));
+        let schema = Arc::new(Schema::new(fields));
+        let output_partitions = input.output_partitioning().partition_count().max(1);
+        let cache = Self::compute_properties(schema, output_partitions);
+        Ok(Self {
+            table_url,
+            version,
+            input,
+            input_partition_columns: partition_columns,
+            input_partition_scan: partition_scan,
+            cache,
+        })
+    }
+
+    fn compute_properties(schema: SchemaRef, output_partitions: usize) -> Arc<PlanProperties> {
+        Arc::new(PlanProperties::new(
+            EquivalenceProperties::new(schema),
+            Partitioning::UnknownPartitioning(output_partitions.max(1)),
+            EmissionType::Final,
+            Boundedness::Bounded,
+        ))
+    }
+
+    /// Get the table URL
+    pub fn table_url(&self) -> &Url {
+        &self.table_url
+    }
+
+    /// Get the table version
+    pub fn version(&self) -> i64 {
+        self.version
+    }
+
+    /// Get the upstream metadata input plan.
+    pub fn input(&self) -> Arc<dyn ExecutionPlan> {
+        Arc::clone(&self.input)
+    }
+
+    /// Get partition columns carried by the upstream metadata plan.
+    pub fn input_partition_columns(&self) -> &[String] {
+        &self.input_partition_columns
+    }
+
+    /// Whether the upstream metadata plan is already a partition-only scan.
+    pub fn input_partition_scan(&self) -> bool {
+        self.input_partition_scan
+    }
+}
+
+#[async_trait]
+impl ExecutionPlan for DeltaDiscoveryExec {
+    fn name(&self) -> &'static str {
+        "DeltaDiscoveryExec"
+    }
+
+    fn properties(&self) -> &Arc<PlanProperties> {
+        &self.cache
+    }
+
+    fn required_input_distribution(&self) -> Vec<Distribution> {
+        vec![Distribution::UnspecifiedDistribution]
+    }
+
+    fn children(&self) -> Vec<&Arc<dyn ExecutionPlan>> {
+        vec![&self.input]
+    }
+
+    fn apply_expressions(
+        &self,
+        _f: &mut dyn FnMut(&Arc<dyn PhysicalExpr>) -> Result<TreeNodeRecursion>,
+    ) -> Result<TreeNodeRecursion> {
+        Ok(TreeNodeRecursion::Continue)
+    }
+
+    fn replace_children(
+        self: Arc<Self>,
+        children: Vec<Arc<dyn ExecutionPlan>>,
+        options: ReplaceChildrenOptions,
+    ) -> Result<Arc<dyn ExecutionPlan>> {
+        if children.len() != 1 {
+            return internal_err!(
+                "DeltaDiscoveryExec requires exactly one child when used as a unary node"
+            );
+        }
+        let input = Arc::clone(&children[0]);
+        match options.children_properties {
+            ChildrenPropertiesMode::Keep => {
+                let mut cloned = (*self).clone();
+                cloned.input = input;
+                Ok(Arc::new(cloned))
+            }
+            ChildrenPropertiesMode::Recompute => Ok(Arc::new(Self::new(
+                input,
+                self.table_url.clone(),
+                self.version,
+                self.input_partition_columns.clone(),
+                self.input_partition_scan,
+            )?)),
+        }
+    }
+
+    fn with_new_children(
+        self: Arc<Self>,
+        children: Vec<Arc<dyn ExecutionPlan>>,
+    ) -> Result<Arc<dyn ExecutionPlan>> {
+        self.replace_children(
+            children,
+            ReplaceChildrenOptions::new(ChildrenPropertiesMode::Recompute),
+        )
+    }
+
+    fn execute(
+        &self,
+        partition: usize,
+        context: Arc<TaskContext>,
+    ) -> Result<SendableRecordBatchStream> {
+        let schema = self.schema();
+        let input_stream = self.input.execute(partition, context)?;
+        let schema_for_stream = schema.clone();
+        let partition_scan = self.input_partition_scan;
+
+        let s = input_stream.try_filter_map(move |batch| {
+            let schema = schema_for_stream.clone();
+            async move {
+                if batch.num_rows() == 0 {
+                    return Ok(None);
+                }
+
+                let scan_array =
+                    Arc::new(BooleanArray::from(vec![partition_scan; batch.num_rows()]));
+                let mut cols = batch.columns().to_vec();
+                cols.push(scan_array);
+                let out = RecordBatch::try_new(schema, cols)
+                    .map_err(|e| DataFusionError::ArrowError(Box::new(e), None))?;
+                Ok(Some(out))
+            }
+        });
+
+        Ok(Box::pin(RecordBatchStreamAdapter::new(schema, s)))
+    }
+}
+
+impl DisplayAs for DeltaDiscoveryExec {
+    fn fmt_as(&self, t: DisplayFormatType, f: &mut fmt::Formatter) -> fmt::Result {
+        match t {
+            DisplayFormatType::Default | DisplayFormatType::Verbose => {
+                write!(f, "DeltaDiscoveryExec(table_path={})", self.table_url)
+            }
+            DisplayFormatType::TreeRender => {
+                writeln!(f, "format: delta")?;
+                write!(f, "table_path={}", self.table_url)
+            }
+        }
+    }
+}
+
+impl Clone for DeltaDiscoveryExec {
+    fn clone(&self) -> Self {
+        Self {
+            table_url: self.table_url.clone(),
+            version: self.version,
+            input: Arc::clone(&self.input),
+            input_partition_columns: self.input_partition_columns.clone(),
+            input_partition_scan: self.input_partition_scan,
+            cache: self.cache.clone(),
+        }
+    }
+}

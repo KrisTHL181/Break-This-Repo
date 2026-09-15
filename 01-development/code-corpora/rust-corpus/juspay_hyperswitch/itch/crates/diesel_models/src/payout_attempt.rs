@@ -1,0 +1,286 @@
+use common_utils::{
+    payout_method_utils, pii,
+    types::{UnifiedCode, UnifiedMessage},
+};
+use diesel::{AsChangeset, Identifiable, Insertable, Queryable, Selectable};
+use serde::{self, Deserialize, Serialize};
+use time::PrimitiveDateTime;
+
+use crate::{enums as storage_enums, schema::payout_attempt};
+
+#[derive(
+    Clone, Debug, Eq, PartialEq, Identifiable, Queryable, Selectable, Serialize, Deserialize,
+)]
+#[diesel(table_name = payout_attempt, primary_key(payout_attempt_id), check_for_backend(diesel::pg::Pg))]
+pub struct PayoutAttempt {
+    pub payout_attempt_id: String,
+    pub payout_id: common_utils::id_type::PayoutId,
+    pub customer_id: Option<common_utils::id_type::CustomerId>,
+    pub merchant_id: common_utils::id_type::MerchantId,
+    pub address_id: Option<String>,
+    pub connector: Option<String>,
+    pub connector_payout_id: Option<String>,
+    pub payout_token: Option<String>,
+    pub status: storage_enums::PayoutStatus,
+    pub is_eligible: Option<bool>,
+    pub error_message: Option<String>,
+    pub error_code: Option<String>,
+    pub business_country: Option<storage_enums::CountryAlpha2>,
+    pub business_label: Option<String>,
+    #[serde(with = "common_utils::custom_serde::iso8601")]
+    pub created_at: PrimitiveDateTime,
+    #[serde(with = "common_utils::custom_serde::iso8601")]
+    pub last_modified_at: PrimitiveDateTime,
+    pub profile_id: common_utils::id_type::ProfileId,
+    pub merchant_connector_id: Option<common_utils::id_type::MerchantConnectorAccountId>,
+    pub routing_info: Option<serde_json::Value>,
+    pub unified_code: Option<UnifiedCode>,
+    pub unified_message: Option<UnifiedMessage>,
+    pub additional_payout_method_data: Option<payout_method_utils::AdditionalPayoutMethodData>,
+    pub merchant_order_reference_id: Option<String>,
+    pub payout_connector_metadata: Option<pii::SecretSerdeValue>,
+    pub processor_merchant_id: Option<common_utils::id_type::MerchantId>,
+    pub created_by: Option<String>,
+    pub source_bank_data_token: Option<String>,
+    pub additional_source_bank_data: Option<payout_method_utils::BankAdditionalData>,
+    pub connector_eligibility_reference_id: Option<String>,
+    pub connector_request_reference_id: Option<String>,
+}
+
+#[derive(
+    Clone,
+    Debug,
+    Eq,
+    PartialEq,
+    Insertable,
+    serde::Serialize,
+    serde::Deserialize,
+    router_derive::DebugAsDisplay,
+    router_derive::Setter,
+)]
+#[diesel(table_name = payout_attempt)]
+pub struct PayoutAttemptNew {
+    pub payout_attempt_id: String,
+    pub payout_id: common_utils::id_type::PayoutId,
+    pub customer_id: Option<common_utils::id_type::CustomerId>,
+    pub merchant_id: common_utils::id_type::MerchantId,
+    pub address_id: Option<String>,
+    pub connector: Option<String>,
+    pub connector_payout_id: Option<String>,
+    pub payout_token: Option<String>,
+    pub status: storage_enums::PayoutStatus,
+    pub is_eligible: Option<bool>,
+    pub error_message: Option<String>,
+    pub error_code: Option<String>,
+    pub business_country: Option<storage_enums::CountryAlpha2>,
+    pub business_label: Option<String>,
+    #[serde(with = "common_utils::custom_serde::iso8601")]
+    pub created_at: PrimitiveDateTime,
+    #[serde(with = "common_utils::custom_serde::iso8601")]
+    pub last_modified_at: PrimitiveDateTime,
+    pub profile_id: common_utils::id_type::ProfileId,
+    pub merchant_connector_id: Option<common_utils::id_type::MerchantConnectorAccountId>,
+    pub routing_info: Option<serde_json::Value>,
+    pub unified_code: Option<UnifiedCode>,
+    pub unified_message: Option<UnifiedMessage>,
+    pub additional_payout_method_data: Option<payout_method_utils::AdditionalPayoutMethodData>,
+    pub merchant_order_reference_id: Option<String>,
+    pub payout_connector_metadata: Option<pii::SecretSerdeValue>,
+    pub processor_merchant_id: Option<common_utils::id_type::MerchantId>,
+    pub created_by: Option<String>,
+    pub source_bank_data_token: Option<String>,
+    pub additional_source_bank_data: Option<payout_method_utils::BankAdditionalData>,
+    pub connector_eligibility_reference_id: Option<String>,
+    pub connector_request_reference_id: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum PayoutAttemptUpdate {
+    StatusUpdate {
+        connector_payout_id: Option<String>,
+        status: storage_enums::PayoutStatus,
+        error_message: Option<String>,
+        error_code: Option<String>,
+        is_eligible: Option<bool>,
+        unified_code: Option<UnifiedCode>,
+        unified_message: Option<UnifiedMessage>,
+        payout_connector_metadata: Option<pii::SecretSerdeValue>,
+        connector_eligibility_reference_id: Option<String>,
+    },
+    PayoutTokenUpdate {
+        payout_token: String,
+    },
+    BusinessUpdate {
+        business_country: Option<storage_enums::CountryAlpha2>,
+        business_label: Option<String>,
+        address_id: Option<String>,
+        customer_id: Option<common_utils::id_type::CustomerId>,
+    },
+    UpdateRouting {
+        connector: String,
+        routing_info: Option<serde_json::Value>,
+        merchant_connector_id: Option<common_utils::id_type::MerchantConnectorAccountId>,
+        connector_request_reference_id: String,
+    },
+    AdditionalPayoutDataUpdate {
+        additional_payout_method_data: Option<payout_method_utils::AdditionalPayoutMethodData>,
+        additional_source_bank_data: Option<payout_method_utils::BankAdditionalData>,
+        source_bank_data_token: Option<String>,
+    },
+    ManualUpdate {
+        status: Option<storage_enums::PayoutStatus>,
+        error_code: Option<String>,
+        error_message: Option<String>,
+        unified_code: Option<UnifiedCode>,
+        unified_message: Option<UnifiedMessage>,
+        connector_payout_id: Option<String>,
+    },
+}
+
+#[derive(Clone, Debug, AsChangeset, router_derive::DebugAsDisplay)]
+#[diesel(table_name = payout_attempt)]
+#[router_derive::apply_changeset(target = PayoutAttempt)]
+pub struct PayoutAttemptUpdateInternal {
+    pub payout_token: Option<String>,
+    pub connector_payout_id: Option<String>,
+    pub status: Option<storage_enums::PayoutStatus>,
+    pub error_message: Option<String>,
+    pub error_code: Option<String>,
+    pub is_eligible: Option<bool>,
+    pub business_country: Option<storage_enums::CountryAlpha2>,
+    pub business_label: Option<String>,
+    pub connector: Option<String>,
+    pub routing_info: Option<serde_json::Value>,
+    pub last_modified_at: PrimitiveDateTime,
+    pub address_id: Option<String>,
+    pub customer_id: Option<common_utils::id_type::CustomerId>,
+    pub merchant_connector_id: Option<common_utils::id_type::MerchantConnectorAccountId>,
+    pub unified_code: Option<UnifiedCode>,
+    pub unified_message: Option<UnifiedMessage>,
+    pub additional_payout_method_data: Option<payout_method_utils::AdditionalPayoutMethodData>,
+    pub merchant_order_reference_id: Option<String>,
+    pub payout_connector_metadata: Option<pii::SecretSerdeValue>,
+    pub source_bank_data_token: Option<String>,
+    pub additional_source_bank_data: Option<payout_method_utils::BankAdditionalData>,
+    pub connector_eligibility_reference_id: Option<String>,
+    pub connector_request_reference_id: Option<String>,
+}
+
+impl Default for PayoutAttemptUpdateInternal {
+    fn default() -> Self {
+        Self {
+            payout_token: None,
+            connector_payout_id: None,
+            status: None,
+            error_message: None,
+            error_code: None,
+            is_eligible: None,
+            business_country: None,
+            business_label: None,
+            connector: None,
+            routing_info: None,
+            merchant_connector_id: None,
+            last_modified_at: common_utils::date_time::now(),
+            address_id: None,
+            customer_id: None,
+            unified_code: None,
+            unified_message: None,
+            additional_payout_method_data: None,
+            merchant_order_reference_id: None,
+            payout_connector_metadata: None,
+            source_bank_data_token: None,
+            additional_source_bank_data: None,
+            connector_eligibility_reference_id: None,
+            connector_request_reference_id: None,
+        }
+    }
+}
+
+impl From<PayoutAttemptUpdate> for PayoutAttemptUpdateInternal {
+    fn from(payout_update: PayoutAttemptUpdate) -> Self {
+        match payout_update {
+            PayoutAttemptUpdate::PayoutTokenUpdate { payout_token } => Self {
+                payout_token: Some(payout_token),
+                ..Default::default()
+            },
+            PayoutAttemptUpdate::StatusUpdate {
+                connector_payout_id,
+                status,
+                error_message,
+                error_code,
+                is_eligible,
+                unified_code,
+                unified_message,
+                payout_connector_metadata,
+                connector_eligibility_reference_id,
+            } => Self {
+                connector_payout_id,
+                status: Some(status),
+                error_message,
+                error_code,
+                is_eligible,
+                unified_code,
+                unified_message,
+                payout_connector_metadata,
+                connector_eligibility_reference_id,
+                ..Default::default()
+            },
+            PayoutAttemptUpdate::BusinessUpdate {
+                business_country,
+                business_label,
+                address_id,
+                customer_id,
+            } => Self {
+                business_country,
+                business_label,
+                address_id,
+                customer_id,
+                ..Default::default()
+            },
+            PayoutAttemptUpdate::UpdateRouting {
+                connector,
+                routing_info,
+                merchant_connector_id,
+                connector_request_reference_id,
+            } => Self {
+                connector: Some(connector),
+                routing_info,
+                merchant_connector_id,
+                connector_request_reference_id: Some(connector_request_reference_id),
+                ..Default::default()
+            },
+            PayoutAttemptUpdate::AdditionalPayoutDataUpdate {
+                additional_payout_method_data,
+                additional_source_bank_data,
+                source_bank_data_token,
+            } => Self {
+                additional_payout_method_data,
+                additional_source_bank_data,
+                source_bank_data_token,
+                ..Default::default()
+            },
+            PayoutAttemptUpdate::ManualUpdate {
+                status,
+                error_code,
+                error_message,
+                unified_code,
+                unified_message,
+                connector_payout_id,
+            } => Self {
+                status,
+                error_code,
+                error_message,
+                unified_code,
+                unified_message,
+                connector_payout_id,
+                ..Default::default()
+            },
+        }
+    }
+}
+
+impl PayoutAttemptUpdate {
+    pub fn apply_changeset(self, source: PayoutAttempt) -> PayoutAttempt {
+        PayoutAttemptUpdateInternal::from(self).apply_changeset(source)
+    }
+}

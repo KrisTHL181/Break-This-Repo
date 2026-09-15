@@ -1,0 +1,2670 @@
+//! Candidate validation pipeline.
+//!
+//! A [`CandidateFilter`] rejects [`CandidateAction`]s that cannot legally be
+//! performed in the current [`GameState`]. Filters are ordered cheapest-first:
+//! trivial structural checks (zone legality, choice-index bounds) run before
+//! the expensive catch-all that simulates the action via
+//! `apply_as_current` and clones the full state.
+//!
+//! # Invariant — `cheap ⊆ simulate`
+//!
+//! Every cheap filter MUST be a subset of what [`SimulationFilter`] rejects:
+//!
+//! ```text
+//! cheap.accept(state, candidate) == false
+//!   ⇒
+//! SimulationFilter.accept(state, candidate) == false
+//! ```
+//!
+//! Without this property, a cheap filter could silently drop a candidate that
+//! the simulation would accept — a correctness bug that surfaces as the AI
+//! refusing to take legal actions. The property is enforced by the proptest
+//! in the tests module.
+//!
+//! # Scope guardrail
+//!
+//! `CandidateFilter` validates candidate **actions** — it does not validate
+//! target legality (that belongs in `game::targeting`) or replacement-effect
+//! selection (that belongs in `game::replacement`). Adding game-rule verbs
+//! ("resolve_trigger", "apply_damage") here is out of scope; this is a
+//! structural legality pipeline, not a rules engine.
+
+use std::collections::{HashMap, HashSet};
+use std::hash::{Hash, Hasher};
+use std::sync::Arc;
+
+use crate::game::combat::AttackTarget;
+use crate::game::engine::SimulationProbeGuard;
+use crate::game::functioning_abilities::game_functioning_statics;
+use crate::game::{casting, casting_costs, keywords, turn_control};
+use crate::types::ability::{
+    AbilityCost, AbilityDefinition, AbilityKind, ActivationRestriction, Effect, FilterProp,
+    ParitySource, ParsedCondition, QuantityExpr, ReplacementDefinition, ResolvedAbility,
+    StaticDefinition, TargetFilter, TargetRef, TriggerDefinition,
+};
+use crate::types::actions::GameAction;
+use crate::types::card_type::CardType;
+use crate::types::counter::CounterType;
+use crate::types::definitions::Definitions;
+use crate::types::game_state::{
+    CastPaymentMode, CastingPermissionIndex, GameState, PendingCast, WaitingFor,
+};
+use crate::types::identifiers::ObjectId;
+use crate::types::keywords::Keyword;
+use crate::types::mana::{ManaColor, ManaCost};
+use crate::types::player::PlayerId;
+use crate::types::statics::StaticMode;
+use crate::types::zones::Zone;
+
+use crate::game::game_object::{PhaseStatus, RoomUnlockState};
+
+use super::CandidateAction;
+
+/// A filter's approximate computational cost. The pipeline runs filters in
+/// ascending cost order so the cheapest rejection wins.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub enum FilterCost {
+    /// Constant-time structural check (e.g., object-id existence, index bounds).
+    Trivial,
+    /// Bounded lookup (e.g., iterate known-small lists).
+    Cheap,
+    /// Requires cloning `GameState` and running `apply_as_current`.
+    Expensive,
+}
+
+/// Rejects candidates that can't legally be performed in the current state.
+pub trait CandidateFilter {
+    /// Human-readable filter name for tracing/instrumentation.
+    fn name(&self) -> &'static str;
+
+    /// Approximate cost. Used to order the pipeline; cheaper first.
+    fn cost(&self) -> FilterCost;
+
+    /// Return `true` to accept the candidate, `false` to reject.
+    fn accept(&self, state: &GameState, candidate: &CandidateAction) -> bool;
+
+    fn accept_with_probe(
+        &self,
+        state: &GameState,
+        candidate: &CandidateAction,
+        _probe: Option<&casting::PriorityCastProbe>,
+    ) -> bool {
+        self.accept(state, candidate)
+    }
+}
+
+/// Structural legality check wrapping [`super::cheap_reject_candidate`].
+///
+/// Covers:
+/// - CR 117.1: priority ownership (only the player with priority may act).
+/// - CR 400: zone presence (the acting object/card must still exist in its
+///   expected zone; a permanent removed mid-resolution cannot be activated).
+/// - CR 601.2: casting/activation announcement steps (mode count, phyrexian
+///   shard choices, modal bounds, target-set bounds).
+/// - CR 508/509: combat declarations (attackers/blockers must be valid).
+///
+/// This is the current workhorse. A future follow-up should decompose it into
+/// the four named sub-filters originally planned: `ManaAvailabilityFilter`,
+/// `ZoneLegalityFilter`, `TargetCountFilter`, `RestrictionFilter`. The
+/// `cheap ⊆ sim` invariant guards the decomposition — any split that
+/// over-rejects a candidate the simulation accepts will fail the proptest.
+pub struct BasicLegalityFilter;
+
+impl CandidateFilter for BasicLegalityFilter {
+    fn name(&self) -> &'static str {
+        "BasicLegality"
+    }
+
+    fn cost(&self) -> FilterCost {
+        FilterCost::Cheap
+    }
+
+    fn accept(&self, state: &GameState, candidate: &CandidateAction) -> bool {
+        !super::cheap_reject_candidate(state, &candidate.action)
+    }
+}
+
+/// Catch-all fallback: clones the state and runs the action with its retained
+/// semantic owner and authorized submitter, accepting candidates that produce
+/// no error. This is the authoritative oracle — every
+/// cheap filter must be a subset of what this rejects. Only reached when all
+/// cheap filters accept.
+pub struct SimulationFilter;
+
+impl CandidateFilter for SimulationFilter {
+    fn name(&self) -> &'static str {
+        "Simulation"
+    }
+
+    fn cost(&self) -> FilterCost {
+        FilterCost::Expensive
+    }
+
+    fn accept(&self, state: &GameState, candidate: &CandidateAction) -> bool {
+        if structurally_valid_pass_priority(state, candidate) {
+            return true;
+        }
+        if super::structurally_valid_search_selection(state, &candidate.action) {
+            return true;
+        }
+        if super::structurally_valid_tap_for_convoke_payment(state, &candidate.action) {
+            return true;
+        }
+        if structurally_valid_priority_activation(state, &candidate.action) {
+            return true;
+        }
+        if structurally_valid_priority_cast(state, &candidate.action) {
+            return true;
+        }
+        self.fallback_simulation(state, candidate)
+    }
+
+    fn accept_with_probe(
+        &self,
+        state: &GameState,
+        candidate: &CandidateAction,
+        probe: Option<&casting::PriorityCastProbe>,
+    ) -> bool {
+        if structurally_valid_pass_priority(state, candidate) {
+            return true;
+        }
+        if super::structurally_valid_search_selection(state, &candidate.action) {
+            return true;
+        }
+        if super::structurally_valid_tap_for_convoke_payment(state, &candidate.action) {
+            return true;
+        }
+        if structurally_valid_priority_activation(state, &candidate.action) {
+            return true;
+        }
+        if structurally_valid_priority_cast_with_probe(state, &candidate.action, probe) {
+            return true;
+        }
+        self.fallback_simulation(state, candidate)
+    }
+}
+
+impl SimulationFilter {
+    fn fallback_simulation(&self, state: &GameState, candidate: &CandidateAction) -> bool {
+        let _phase = crate::game::perf_counters::LegalityClonePhaseGuard::enter(
+            crate::game::perf_counters::LegalityClonePhase::RawValidation,
+        );
+        crate::game::perf_counters::record_state_clone_for_legality();
+        crate::game::perf_counters::record_phase_owned_state_clone();
+        let before = pending_spell_root_provenance(state);
+        let mut sim = state.clone();
+        // PR-3 Defect-2: mark the entire nested clone-and-apply as a legality probe so
+        // the top-level-only loop-shortcut detection (`reconcile_terminal_result` §3)
+        // and ring accumulation (`pass_priority_once_with_pipeline` §2) are suppressed
+        // inside it. The guard restores the previous flag on drop (panic-safe, nesting-
+        // correct), terminating the §3→§9→legal_actions→SimulationFilter recursion.
+        let _probe = SimulationProbeGuard::enter();
+        // Legality-only probe (#4479): `sim` is discarded, so skip display derivation
+        // (the O(N^2) mana-availability board sweep on go-wide token boards).
+        // Candidate generation already maps the semantic owner to the exact
+        // authorized submitter for this decision. In particular, search
+        // authority may be latched independently of live turn control; mapping
+        // that actor a second time can incorrectly hand the probe to a newer,
+        // unrelated turn controller.
+        let actor = candidate
+            .metadata
+            .actor
+            .or_else(|| turn_control::authorized_submitters(state).first().copied());
+        actor.is_some_and(|actor| {
+            let semantic_owner = candidate.metadata.semantic_owner.unwrap_or(actor);
+            if crate::game::engine::apply_interaction_for_simulation(
+                &mut sim,
+                actor,
+                semantic_owner,
+                candidate.action.clone(),
+            )
+            .is_err()
+            {
+                return false;
+            }
+
+            // CR 118.9a: This action entered through a named permission whose
+            // casting pipeline has already replaced the mana cost. Its successful
+            // simulation is the legality authority; the ordinary post-origin
+            // auto-payment probe below applies only to paid cast surfaces.
+            if matches!(candidate.action, GameAction::CastSpellForFree { .. }) {
+                return true;
+            }
+
+            // A payable alternative cost makes the ordinary CastSpell announcement
+            // legal even when target selection precedes the eventual OptionalCostChoice.
+            // The shared cost authority evaluates both the parsed condition and payment
+            // feasibility, so do not infer this from the action or pending cost.
+            if let GameAction::CastSpell { object_id, .. } = &candidate.action {
+                if casting_costs::payable_spell_alternative_cost(state, semantic_owner, *object_id)
+                    .is_some()
+                {
+                    return true;
+                }
+            }
+
+            let Some((after, pending)) = pending_spell_root(&sim) else {
+                return true;
+            };
+            // CR 601.2b: An optional alternative-cost choice is part of the
+            // casting process. The announced spell is legal when it reaches
+            // this decision, even when paying its printed cost would not be.
+            // The selected free branch will replace that cost before payment.
+            if matches!(sim.waiting_for, WaitingFor::OptionalCostChoice { .. }) {
+                return true;
+            }
+            // CR 118.6a: A selected free-cast permission is represented by the
+            // prepared spell's `NoCost`, including silent unlimited permissions
+            // that arrive through the ordinary `CastSpell` action. The prepared
+            // cost, rather than the action variant, is authoritative here.
+            if matches!(pending.cost, ManaCost::NoCost) {
+                return true;
+            }
+            if before == Some(after) {
+                return true;
+            }
+            !matches!(
+                crate::game::casting_costs::post_origin_auto_payment_verdict(&mut sim, &pending,),
+                Some(false)
+            )
+        })
+    }
+}
+
+type SpellRootProvenance = (ObjectId, Option<CastingPermissionIndex>);
+
+fn pending_spell_root_provenance(state: &GameState) -> Option<SpellRootProvenance> {
+    state
+        .waiting_for
+        .pending_cast_ref()
+        .or(state.pending_cast.as_deref())
+        .filter(|pending| pending.activation_ability_index.is_none())
+        .map(|pending| (pending.object_id, pending.casting_permission_index))
+}
+
+fn pending_spell_root(state: &GameState) -> Option<(SpellRootProvenance, PendingCast)> {
+    state
+        .waiting_for
+        .pending_cast_ref()
+        .or(state.pending_cast.as_deref())
+        .filter(|pending| pending.activation_ability_index.is_none())
+        .map(|pending| {
+            (
+                (pending.object_id, pending.casting_permission_index),
+                pending.clone(),
+            )
+        })
+}
+
+/// CR 117.3d: the holder of a live priority window may always decline to act.
+/// The engine's `(Priority, PassPriority)` reducer arm rejects a pass on exactly
+/// two conditions (CR 723.5 submitter mismatch, CR 732.2c divergence obligation),
+/// both owned by `game::priority::pass_priority_legality`. This delegates to
+/// `game::priority::pass_priority_structurally_legal`, which is that authority
+/// plus the parked-continuation refusal — the same single predicate the
+/// `phase-ai` projection fast path calls, so neither can drift.
+///
+/// Skipping the clone-and-apply here is load-bearing: `PassPriority` is enumerated
+/// at every priority window (`candidates::priority_actions_with_probe`) and is never
+/// memoized (`legality_equivalence_key`'s catch-all), so before this hatch it paid a
+/// full `GameState` clone *per priority window* — plus the nested `boundary_snapshot`
+/// clone inside `apply_action_boundary_core` — to re-derive an O(1) answer.
+///
+/// Conservative by design, mirroring `structurally_valid_search_selection`: this
+/// returns `false` — costing one simulation, never a wrong verdict — for every
+/// shape it does not fully model. CR 117.4 is what puts a boundary here at all:
+/// an all-pass succession resolves the top of the stack, or ends the phase or
+/// step when the stack is empty. What that boundary then runs is deliberately
+/// NOT modelled — the CR 608.2 resolution steps, the continuation drains hanging
+/// off them, and CR 603.3d target selection for any ability that triggers. Only
+/// the first of those is CR 117.4's own subject; the rest are consequences of
+/// the resolution it starts. That is the same boundary the four sibling hatches
+/// already draw.
+fn structurally_valid_pass_priority(state: &GameState, candidate: &CandidateAction) -> bool {
+    let (WaitingFor::Priority { player }, GameAction::PassPriority) =
+        (&state.waiting_for, &candidate.action)
+    else {
+        return false;
+    };
+
+    // CR 723.5: the simulation submits under `candidate.metadata.actor` when set.
+    // `PassPriority` carries no payload, so submitter identity IS half of its
+    // legality — accept only the actor the engine's own candidate stamping would
+    // produce (`candidates::authorize_candidate_actors`), and the `None` case that
+    // `fallback_simulation` resolves to that same value.
+    if candidate
+        .metadata
+        .actor
+        .is_some_and(|actor| actor != turn_control::authorized_submitter_for_player(state, *player))
+    {
+        return false;
+    }
+
+    crate::game::priority::pass_priority_structurally_legal(state, *player)
+}
+
+fn structurally_valid_priority_activation(state: &GameState, action: &GameAction) -> bool {
+    let (
+        WaitingFor::Priority { player },
+        GameAction::ActivateAbility {
+            source_id,
+            ability_index,
+        },
+    ) = (&state.waiting_for, action)
+    else {
+        return false;
+    };
+
+    // CR 602.2 + CR 602.5: `can_activate_ability_now` is the engine's
+    // structural authority for beginning an activation. Avoid re-simulating the
+    // same priority activation just to enter target selection and discard the
+    // clone.
+    crate::game::casting::can_activate_ability_now(state, *player, *source_id, *ability_index)
+}
+
+// CR 117.1a + CR 601.2: a player may cast a spell when they have priority;
+// `can_cast_object_now` / `effective_spell_cost` below are the engine's
+// structural authorities for the cast — this fast path only avoids
+// re-simulating the full cast to discard the clone.
+fn structurally_valid_priority_cast(state: &GameState, action: &GameAction) -> bool {
+    structurally_valid_priority_cast_with_probe(state, action, None)
+}
+
+fn structurally_valid_priority_cast_with_probe(
+    state: &GameState,
+    action: &GameAction,
+    probe: Option<&casting::PriorityCastProbe>,
+) -> bool {
+    let _phase = crate::game::perf_counters::LegalityClonePhaseGuard::enter(
+        crate::game::perf_counters::LegalityClonePhase::StrictFastPath,
+    );
+    let (
+        WaitingFor::Priority { player },
+        GameAction::CastSpell {
+            object_id,
+            card_id,
+            targets,
+            payment_mode: CastPaymentMode::Auto,
+        },
+    ) = (&state.waiting_for, action)
+    else {
+        return false;
+    };
+
+    if !targets.is_empty()
+        || state.priority_player != turn_control::authorized_submitter_for_player(state, *player)
+    {
+        return false;
+    }
+
+    // CR 702.61a: While a spell with split second is on the stack, players
+    // can't cast spells. Keep this explicit so the fast path cannot bypass the
+    // reducer's split-second rejection.
+    if keywords::stack_has_split_second(state) {
+        return false;
+    }
+
+    let Some(obj) = state.objects.get(object_id) else {
+        return false;
+    };
+    if obj.card_id != *card_id
+        || !casting::can_cast_object_now_with_probe(state, *player, *object_id, probe)
+    {
+        return false;
+    }
+
+    casting::effective_spell_cost(state, *player, *object_id).is_some_and(|cost| {
+        casting::can_pay_cost_after_auto_tap_with_probe(state, *player, *object_id, &cost, probe)
+    })
+}
+
+/// A pipeline of filters run in the order they're registered. Candidates pass
+/// only if every filter in the pipeline accepts them; first rejection wins.
+///
+/// The default pipeline is the right choice for all current callers. Custom
+/// pipelines are a future extension point (e.g., MCTS rollouts that want to
+/// skip `SimulationFilter` and accept optimistic candidates).
+pub struct FilterPipeline {
+    filters: Vec<Box<dyn CandidateFilter + Send + Sync>>,
+}
+
+impl FilterPipeline {
+    pub fn new(filters: Vec<Box<dyn CandidateFilter + Send + Sync>>) -> Self {
+        Self { filters }
+    }
+
+    /// Default pipeline: `BasicLegalityFilter` → `SimulationFilter`.
+    pub fn default_pipeline() -> Self {
+        Self::new(vec![
+            Box::new(BasicLegalityFilter),
+            Box::new(SimulationFilter),
+        ])
+    }
+
+    pub fn accepts(&self, state: &GameState, candidate: &CandidateAction) -> bool {
+        self.filters.iter().all(|f| f.accept(state, candidate))
+    }
+
+    pub fn accepts_with_probe(
+        &self,
+        state: &GameState,
+        candidate: &CandidateAction,
+        probe: Option<&casting::PriorityCastProbe>,
+    ) -> bool {
+        self.filters
+            .iter()
+            .all(|f| f.accept_with_probe(state, candidate, probe))
+    }
+
+    /// Apply the pipeline to an iterator of candidates.
+    ///
+    /// Equivalence-class legality memoization: the cheap filters run unchanged
+    /// per candidate, but the [`FilterCost::Expensive`] verdict (the
+    /// state-cloning [`SimulationFilter`]) is memoized by a content-equivalence
+    /// key ([`LegalityKey`]). Content-identical candidates that map to the same
+    /// key (e.g. one of ~700 identical Squirrel tokens declaring one attack)
+    /// share a single clone-and-apply instead of cloning ~10MB of `GameState`
+    /// per candidate. Candidates whose legality is not provably fp-determined
+    /// (`legality_equivalence_key` returns `None`, or a conservative poison gate
+    /// fires) fall back to the fresh per-candidate path — identical to today's
+    /// behavior. The memoized verdict is the AND of every expensive filter, so
+    /// `accepts()` semantics are preserved exactly.
+    pub fn apply<I>(&self, state: &GameState, candidates: I) -> Vec<CandidateAction>
+    where
+        I: IntoIterator<Item = CandidateAction>,
+    {
+        self.apply_with_probe(state, candidates, None)
+    }
+
+    pub fn apply_with_probe<I>(
+        &self,
+        state: &GameState,
+        candidates: I,
+        probe: Option<&casting::PriorityCastProbe>,
+    ) -> Vec<CandidateAction>
+    where
+        I: IntoIterator<Item = CandidateAction>,
+    {
+        let poison = LegalityPoisonGates::compute(state);
+        let mut memo: HashMap<LegalityKey, bool> = HashMap::new();
+        let mut interner = FingerprintInterner::default();
+        candidates
+            .into_iter()
+            .filter(|c| {
+                if !self.cheap_filters_accept_with_probe(state, c, probe) {
+                    return false;
+                }
+                match legality_equivalence_key(state, &c.action, &poison, &mut interner) {
+                    Some(key) => *memo
+                        .entry(key)
+                        .or_insert_with(|| self.expensive_verdict_with_probe(state, c, probe)),
+                    None => self.expensive_verdict_with_probe(state, c, probe),
+                }
+            })
+            .collect()
+    }
+
+    /// Run every non-`Expensive` filter (the cheap, per-candidate checks).
+    /// First rejection wins, mirroring `accepts()`.
+    fn cheap_filters_accept_with_probe(
+        &self,
+        state: &GameState,
+        candidate: &CandidateAction,
+        probe: Option<&casting::PriorityCastProbe>,
+    ) -> bool {
+        self.filters
+            .iter()
+            .filter(|f| f.cost() != FilterCost::Expensive)
+            .all(|f| f.accept_with_probe(state, candidate, probe))
+    }
+
+    /// The memoizable verdict: the AND of every `Expensive` filter. For the
+    /// default pipeline this is exactly `SimulationFilter::accept`.
+    fn expensive_verdict_with_probe(
+        &self,
+        state: &GameState,
+        candidate: &CandidateAction,
+        probe: Option<&casting::PriorityCastProbe>,
+    ) -> bool {
+        self.filters
+            .iter()
+            .filter(|f| f.cost() == FilterCost::Expensive)
+            .all(|f| f.accept_with_probe(state, candidate, probe))
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Equivalence-class legality memoization
+// ---------------------------------------------------------------------------
+
+/// Content fingerprint of a single `GameObject`, used as the memo key's object
+/// identity. Two objects with equal fingerprints are interchangeable for the
+/// purpose of the expensive legality simulation: every field the conservative
+/// SAFE classifiers read is captured here, while pure identity/ordering fields
+/// (`id`, `incarnation`, `timestamp`) and display-derived fields (recomputed
+/// under `PublicFinalizeMode::DeferredDisplay`, which the legality probe's
+/// `apply_as_current_for_simulation` uses) are excluded.
+///
+/// CR 400.7: object identity (`id`/`incarnation`) is intentionally NOT part of
+/// the fingerprint — the whole point is to collapse distinct-id, content-identical
+/// objects into one equivalence class.
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ObjectFingerprint {
+    controller: PlayerId,
+    owner: PlayerId,
+    is_token: bool,
+    tapped: bool,
+    keywords: Vec<Keyword>,
+    color: Vec<ManaColor>,
+    card_types: CardType,
+    mana_cost: ManaCost,
+    cost_x_paid: Option<u32>,
+    zone: Zone,
+    counters: HashMap<CounterType, u32>,
+    power: Option<i32>,
+    toughness: Option<i32>,
+    base_power: Option<i32>,
+    base_toughness: Option<i32>,
+    name: String,
+    foretold: bool,
+    is_saddled: bool,
+    is_suspected: bool,
+    is_renowned: bool,
+    is_commander: bool,
+    loyalty: Option<u32>,
+    loyalty_activations_this_turn: u32,
+    abilities: Arc<Vec<AbilityDefinition>>,
+    trigger_definitions: Definitions<TriggerDefinition>,
+    replacement_definitions: Definitions<ReplacementDefinition>,
+    static_definitions: Definitions<StaticDefinition>,
+    played_from_zone: Option<Zone>,
+    cast_from_zone: Option<Zone>,
+    goaded_by: HashSet<PlayerId>,
+    detained_by: HashSet<PlayerId>,
+    damage_marked: u32,
+    dealt_deathtouch_damage: bool,
+    summoning_sick: bool,
+    entered_battlefield_turn: Option<u32>,
+    phase_status: PhaseStatus,
+    face_down: bool,
+    flipped: bool,
+    transformed: bool,
+    defense: Option<u32>,
+    class_level: Option<u8>,
+    room_unlocks: Option<RoomUnlockState>,
+    /// CR 719.3c: `CaseState` derives neither `PartialEq` nor `Hash`, and the
+    /// ONLY `case_state` read on a covered legality path is the
+    /// `ActivationRestriction::IsSolved` arm (`game::restrictions`
+    /// `check_activation_restrictions`, which reads `cs.is_solved` alone). That
+    /// is a faithful projection FOR LEGALITY (not for general equality), so the
+    /// fingerprint captures just the `is_solved` bool rather than the whole
+    /// struct. The other `case_state` reader, `TriggerCondition::SolveConditionMet`
+    /// (`game::triggers`), is a resolution-time TRIGGER condition — it does not
+    /// gate the `apply().is_ok()` legality verdict, and `solve_condition` is
+    /// card-identical across same-fingerprint objects regardless. If a future
+    /// edit makes `solve_condition` gate activation/target/combat legality, this
+    /// proxy becomes unsound and must capture the full state.
+    case_solved: Option<bool>,
+    harnessed: bool,
+    monstrous: bool,
+    echo_due: bool,
+}
+
+/// XOR-fold per-element hashes so an unordered collection hashes
+/// order-independently (and consistently with `PartialEq`).
+fn fold_unordered<T: Hash>(items: impl Iterator<Item = T>) -> u64 {
+    let mut acc = 0u64;
+    for item in items {
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        item.hash(&mut h);
+        acc ^= h.finish();
+    }
+    acc
+}
+
+impl Hash for ObjectFingerprint {
+    fn hash<H: Hasher>(&self, h: &mut H) {
+        // Provable SUBSET of Eq: every hashed value is part of `PartialEq`, so
+        // equal fingerprints necessarily agree on all of them. Unordered
+        // collections are XOR-folded; definition lists hash by length only
+        // (their element types are Eq but not Hash). Hash collisions are sound —
+        // `Eq` is the final arbiter on a memo bucket.
+        self.controller.hash(h);
+        self.owner.hash(h);
+        self.is_token.hash(h);
+        self.tapped.hash(h);
+        self.zone.hash(h);
+        self.name.hash(h);
+        self.power.hash(h);
+        self.toughness.hash(h);
+        self.base_power.hash(h);
+        self.base_toughness.hash(h);
+        self.mana_cost.mana_value().hash(h);
+        self.cost_x_paid.hash(h);
+        self.damage_marked.hash(h);
+        self.loyalty.hash(h);
+        self.phase_status.hash(h);
+        h.write_u64(fold_unordered(self.counters.iter()));
+        h.write_u64(fold_unordered(self.goaded_by.iter()));
+        h.write_u64(fold_unordered(self.detained_by.iter()));
+        self.abilities.len().hash(h);
+        self.trigger_definitions.len().hash(h);
+        self.replacement_definitions.len().hash(h);
+        self.static_definitions.len().hash(h);
+    }
+}
+
+/// Compute the content fingerprint of an object, or `None` when the object
+/// carries any per-object relational state the fingerprint cannot represent —
+/// in which case the object must never be memoized (FORCES-None).
+fn object_fingerprint(state: &GameState, id: ObjectId) -> Option<ObjectFingerprint> {
+    let obj = state.objects.get(&id)?;
+    // FORCES-None: relational / merge / attachment / cast-link state whose
+    // legality depends on a SPECIFIC other object or pairing. None of these is
+    // captured by the fingerprint, so any non-default value disqualifies memo.
+    if obj.attached_to.is_some()
+        || !obj.attachments.is_empty()
+        || obj.paired_with.is_some()
+        || obj.pair_controller.is_some()
+        || !obj.convoked_creatures.is_empty()
+        || !obj.merged_components.is_empty()
+        || obj.merge_kind.is_some()
+        || obj.merge_layer_effect_id.is_some()
+        || obj.split_from_merge_survivor.is_some()
+        || obj.pre_merge_is_token.is_some()
+        || !obj.saddled_by.is_empty()
+        || obj.entered_via_ability_source.is_some()
+        || obj.exile_from_stack_linked_source.is_some()
+        || obj.cast_cost_paid_object.is_some()
+        || obj.signature_spell.is_some()
+        || obj.emblem_source.is_some()
+    {
+        return None;
+    }
+    Some(ObjectFingerprint {
+        controller: obj.controller,
+        owner: obj.owner,
+        is_token: obj.is_token,
+        tapped: obj.tapped,
+        keywords: obj.keywords.clone(),
+        color: obj.color.clone(),
+        card_types: obj.card_types.clone(),
+        mana_cost: obj.mana_cost.clone(),
+        cost_x_paid: obj.cost_x_paid,
+        zone: obj.zone,
+        counters: obj.counters.clone(),
+        power: obj.power,
+        toughness: obj.toughness,
+        base_power: obj.layer_base_power.or(obj.base_power),
+        base_toughness: obj.layer_base_toughness.or(obj.base_toughness),
+        name: obj.name.clone(),
+        foretold: obj.foretold,
+        is_saddled: obj.is_saddled,
+        is_suspected: obj.is_suspected,
+        is_renowned: obj.is_renowned,
+        is_commander: obj.is_commander,
+        loyalty: obj.loyalty,
+        loyalty_activations_this_turn: obj.loyalty_activations_this_turn,
+        abilities: obj.abilities.clone(),
+        trigger_definitions: obj
+            .trigger_definitions
+            .iter_all()
+            .map(|entry| entry.definition.clone())
+            .collect::<Vec<_>>()
+            .into(),
+        replacement_definitions: obj.replacement_definitions.clone(),
+        static_definitions: obj.static_definitions.clone(),
+        played_from_zone: obj.played_from_zone,
+        cast_from_zone: obj.cast_from_zone,
+        goaded_by: obj.goaded_by.clone(),
+        detained_by: obj.detained_by.clone(),
+        damage_marked: obj.damage_marked,
+        dealt_deathtouch_damage: obj.dealt_deathtouch_damage,
+        summoning_sick: obj.summoning_sick,
+        entered_battlefield_turn: obj.entered_battlefield_turn,
+        phase_status: obj.phase_status,
+        face_down: obj.face_down,
+        flipped: obj.flipped,
+        transformed: obj.transformed,
+        defense: obj.defense,
+        class_level: obj.class_level,
+        room_unlocks: obj.room_unlocks,
+        case_solved: obj.case_state.as_ref().map(|c| c.is_solved),
+        harnessed: obj.harnessed,
+        monstrous: obj.monstrous,
+        echo_due: obj.echo_due,
+    })
+}
+
+/// The legality "verb" a memo key belongs to. Keeps verdicts from two different
+/// action classes that happen to share a fingerprint from colliding.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+enum LegalityClass {
+    DeclareAttacker,
+    DeclareBlocker,
+    ActivateAbility,
+    ManaTap,
+    ChooseTarget,
+}
+
+/// Per-[`FilterPipeline::apply`] fingerprint interner. Each distinct object is
+/// fingerprinted at most once; the memo key then hashes a small dense `u32`
+/// class id instead of re-constructing and re-hashing a heavy
+/// [`ObjectFingerprint`] per candidate. This is a PURE PERFORMANCE transform:
+/// equal fingerprints map to equal ids (the `classes` map keys on
+/// `ObjectFingerprint`'s `Eq`/`Hash`), so the set of equivalence classes — and
+/// thus every memo verdict — is identical to fingerprinting per candidate.
+#[derive(Default)]
+struct FingerprintInterner {
+    /// Object id → interned class id (`None` = FORCES-None / not memoizable).
+    by_id: HashMap<ObjectId, Option<u32>>,
+    /// Canonical fingerprint → dense class id (next id assigned on miss).
+    classes: HashMap<ObjectFingerprint, u32>,
+}
+
+impl FingerprintInterner {
+    /// Intern an object's fingerprint to a dense class id, computing the
+    /// fingerprint at most once per object id. A `None` result propagates the
+    /// FORCES-None disqualification exactly as a `None` fingerprint did before.
+    fn intern(&mut self, state: &GameState, id: ObjectId) -> Option<u32> {
+        if let Some(&cached) = self.by_id.get(&id) {
+            return cached;
+        }
+        let class = object_fingerprint(state, id).map(|fp| {
+            let next = self.classes.len() as u32;
+            *self.classes.entry(fp).or_insert(next)
+        });
+        self.by_id.insert(id, class);
+        class
+    }
+}
+
+/// Owned (no borrows) equivalence key for one candidate's expensive verdict.
+///
+/// `fp`/`counterpart` hold interned class ids (see [`FingerprintInterner`]), not
+/// the heavy [`ObjectFingerprint`]s themselves — so `Hash`/`Eq` are over cheap
+/// scalar fields while preserving the exact equivalence classes.
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+struct LegalityKey {
+    class: LegalityClass,
+    fp: u32,
+    ability_index: Option<usize>,
+    activations_this_turn: u32,
+    activations_this_game: u32,
+    source_attacked_this_turn: bool,
+    /// SORTED mode indices chosen this turn for this source (CR 700.2).
+    chosen_modes_turn: Vec<usize>,
+    /// SORTED mode indices chosen this game for this source (CR 700.2).
+    chosen_modes_game: Vec<usize>,
+    is_attacking: bool,
+    is_blocking: bool,
+    is_blocked: bool,
+    /// The declared `AttackTarget` for a single-attacker declaration; `None`
+    /// for non-attack classes.
+    attack_target: Option<AttackTarget>,
+    /// DeclareBlocker only: the blocked attacker's interned fingerprint id plus
+    /// its ring-bearer designation (CR 701.54c/e). `None` for other classes.
+    counterpart: Option<(u32, bool)>,
+}
+
+impl LegalityKey {
+    fn new(class: LegalityClass, fp: u32) -> Self {
+        Self {
+            class,
+            fp,
+            ability_index: None,
+            activations_this_turn: 0,
+            activations_this_game: 0,
+            source_attacked_this_turn: false,
+            chosen_modes_turn: Vec::new(),
+            chosen_modes_game: Vec::new(),
+            is_attacking: false,
+            is_blocking: false,
+            is_blocked: false,
+            attack_target: None,
+            counterpart: None,
+        }
+    }
+}
+
+/// SORTED mode indices recorded for `id` in a `(ObjectId, mode_index)` set.
+fn sorted_modes(set: &HashSet<(ObjectId, usize)>, id: ObjectId) -> Vec<usize> {
+    let mut v: Vec<usize> = set
+        .iter()
+        .filter(|(oid, _)| *oid == id)
+        .map(|(_, m)| *m)
+        .collect();
+    v.sort_unstable();
+    v
+}
+
+/// CR 107: A `QuantityExpr` reads only memo-safe state (fingerprint source
+/// fields / apply()-constant state) when it never resolves a dynamic
+/// `QuantityRef`. Exhaustive over all 11 variants — NO wildcard — so a new
+/// arithmetic combinator forces a classification decision (E0004).
+fn quantity_reads_only_memo_safe_state(q: &QuantityExpr) -> bool {
+    match q {
+        // A dynamic game-state lookup. Presence-of-`Ref` is the conservative
+        // gate; we do not enumerate the ~80 `QuantityRef` variants.
+        QuantityExpr::Ref { .. } => false,
+        QuantityExpr::Fixed { .. } => true,
+        QuantityExpr::DivideRounded { inner, .. }
+        | QuantityExpr::Offset { inner, .. }
+        | QuantityExpr::ClampMin { inner, .. }
+        | QuantityExpr::Multiply { inner, .. } => quantity_reads_only_memo_safe_state(inner),
+        QuantityExpr::UpTo { max } => quantity_reads_only_memo_safe_state(max),
+        QuantityExpr::Sum { exprs } | QuantityExpr::Max { exprs } => {
+            exprs.iter().all(quantity_reads_only_memo_safe_state)
+        }
+        // CR 107.3: base is an `i32` literal; only the exponent can be dynamic.
+        QuantityExpr::Power { exponent, .. } => quantity_reads_only_memo_safe_state(exponent),
+        QuantityExpr::Difference { left, right } => {
+            quantity_reads_only_memo_safe_state(left) && quantity_reads_only_memo_safe_state(right)
+        }
+    }
+}
+
+/// SAFE-allowlist classifier (default POISON) over all 83 `FilterProp`
+/// variants — NO wildcard, so a new prop forces a classification decision
+/// (E0004). SAFE = reads only the candidate object's own fingerprint fields or
+/// apply()-constant state. POISON = reads another object by id, an
+/// object-id-keyed side-table, board-global continuous-effect resolution with
+/// no FORCES-None backstop, or is identity/combat/history-relative.
+fn filterprop_reads_only_candidate_fp(p: &FilterProp) -> bool {
+    match p {
+        // SAFE — read only candidate fingerprint fields.
+        FilterProp::Token
+        | FilterProp::NonToken
+        | FilterProp::RepresentedByCard
+        | FilterProp::WasPlayed
+        | FilterProp::Tapped
+        | FilterProp::Untapped
+        | FilterProp::IsSaddled
+        | FilterProp::WithKeyword { .. }
+        | FilterProp::WithoutKeyword { .. }
+        | FilterProp::ManaCostIn { .. }
+        | FilterProp::InZone { .. }
+        | FilterProp::InAnyZone { .. }
+        | FilterProp::Owned { .. }
+        | FilterProp::Foretold
+        | FilterProp::HasColor { .. }
+        | FilterProp::NotColor { .. }
+        | FilterProp::ColorCount { .. }
+        | FilterProp::ManaSymbolCount { .. }
+        | FilterProp::HasSupertype { .. }
+        | FilterProp::NotSupertype { .. }
+        | FilterProp::ToughnessGTPower
+        | FilterProp::PowerExceedsBase
+        | FilterProp::Suspected
+        | FilterProp::Renowned
+        // CR 701.15b/c: reads only the candidate's own `goaded_by` fingerprint field.
+        | FilterProp::Goaded
+        | FilterProp::Modified
+        | FilterProp::Historic
+        | FilterProp::NotHistoric
+        | FilterProp::FaceDown
+        | FilterProp::Transformed
+        | FilterProp::HasXInManaCost
+        | FilterProp::HasManaAbility
+        | FilterProp::HasNoAbilities
+        | FilterProp::Named { .. }
+        // CR 700.2: modality reads `obj.modal`, an apply()-constant printed-card
+        // field on the candidate — safe to memoize.
+        | FilterProp::Modal
+        | FilterProp::IsCommander => true,
+
+        // SAFE only when the embedded `QuantityExpr` is memo-safe.
+        FilterProp::Counters { count, .. } => quantity_reads_only_memo_safe_state(count),
+        FilterProp::Cmc { value, .. } => quantity_reads_only_memo_safe_state(value),
+        FilterProp::PtComparison { value, .. } => quantity_reads_only_memo_safe_state(value),
+
+        // SAFE only for a fixed parity; `LastNamedChoice` reads a resolution choice.
+        FilterProp::ManaValueParity { parity } => matches!(parity, ParitySource::Fixed(_)),
+
+        // Combinators: SAFE iff ALL children SAFE.
+        FilterProp::AnyOf { props } => props.iter().all(filterprop_reads_only_candidate_fp),
+        FilterProp::Not { prop } => filterprop_reads_only_candidate_fp(prop),
+
+        // POISON — read another object / side-table / combat / history / identity.
+        // ControllerChoseLabel reads the controller's per-player anchor state.
+        // ControllerMatches reads live per-turn history (damage ledger, life
+        // tallies) via the controller's inner PlayerFilter predicate.
+        FilterProp::ControllerChoseLabel { .. }
+        | FilterProp::ControllerMatches { .. }
+        | FilterProp::Attacking { .. }
+        | FilterProp::Blocking
+        | FilterProp::BlockingSource
+        | FilterProp::CombatRelation { .. }
+        | FilterProp::Unblocked
+        | FilterProp::AttackingAlone
+        | FilterProp::BlockingAlone
+        | FilterProp::WasDealtDamageThisTurn
+        | FilterProp::DealtDamageThisTurn { .. }
+        | FilterProp::EnteredThisTurn
+        // CR 302.6: per-turn control-continuity marker — a turn/history-relative
+        // predicate like the siblings here (POISON for memoization).
+        | FilterProp::ControlledContinuouslySinceTurnBegan
+        | FilterProp::ZoneChangedThisTurn { .. }
+        | FilterProp::AttackedThisTurn { .. }
+        | FilterProp::BlockedThisTurn
+        | FilterProp::AttackedOrBlockedThisTurn
+        | FilterProp::CountersPutOnThisTurn { .. }
+        | FilterProp::Another
+        | FilterProp::OtherThanTriggerObject
+        | FilterProp::SaddledSource
+        | FilterProp::ConvokedSource
+        | FilterProp::PowerGTSource
+        | FilterProp::EnchantedBy
+        | FilterProp::EquippedBy
+        | FilterProp::AttachedToSource
+        | FilterProp::AttachedToRecipient
+        | FilterProp::AttachedToPlayer { .. }
+        | FilterProp::HasAttachment { .. }
+        | FilterProp::HasAnyAttachmentOf { .. }
+        | FilterProp::HasKeywordKind { .. }
+        | FilterProp::WithoutKeywordKind { .. }
+        | FilterProp::Targets { .. }
+        | FilterProp::TargetsOnly { .. }
+        | FilterProp::HasSingleTarget
+        | FilterProp::HasXInActivationCost
+        | FilterProp::WasKicked
+        // CR 715.2: Adventure identity reads the stored alternate face, which
+        // is not part of the candidate fingerprint; memoizing it is unsound.
+        | FilterProp::HasAdventure
+        | FilterProp::SameName
+        | FilterProp::SameNameAsParentTarget
+        | FilterProp::SameNameAsExiledBySource
+        | FilterProp::NameMatchesAnyPermanent { .. }
+        | FilterProp::DifferentNameFrom { .. }
+        | FilterProp::DistinctFrom { .. }
+        | FilterProp::SharesQuality { .. }
+        | FilterProp::CanEnchant { .. }
+        | FilterProp::IsChosenCreatureType
+        | FilterProp::IsChosenColor
+        | FilterProp::IsChosenCardType
+        | FilterProp::MatchesLastChosenCardPredicate
+        | FilterProp::MostPrevalentCreatureTypeIn { .. }
+        | FilterProp::ProtectorMatches { .. }
+        | FilterProp::HasHasteOrControlledSinceTurnBegan
+        | FilterProp::Unpaired
+        // CR 205.3m + CR 903.3: POISON, and deliberately NOT grouped with
+        // `IsCommander` above. `IsCommander` reads `obj.is_commander` — a field ON
+        // the candidate. This one reads the CONTROLLER'S COMMANDER (the deck-pool
+        // registration, falling back to an is_commander object scan) and compares it
+        // against the candidate, so its answer depends on state outside the
+        // candidate's fingerprint entirely. Memoizing on the candidate alone would
+        // cache a verdict that a commander change invalidates.
+        | FilterProp::SharesCreatureTypeWithCommander
+        // CR 608.2c: Reads the resolution-chain tracked-set side-table
+        // (`tracked_object_sets` / `chain_tracked_set_id`), not the candidate's
+        // own fingerprint — POISON for memoization.
+        | FilterProp::InTrackedSet { .. }
+        | FilterProp::CouldBeTargetedByTriggeringSpell
+        | FilterProp::Other { .. } => false,
+    }
+}
+
+/// CR 601.3 / CR 602.5: A `ParsedCondition` reads only memo-safe state.
+/// Exhaustive over all ~65 variants — NO wildcard. SAFE = reads only the
+/// source object's fingerprint fields (or fields folded into the key, e.g.
+/// SourceIsAttacking / SourceAttackedThisTurn), controller-scoped, or global
+/// apply()-constant state. UNSAFE = reaches `resolve_quantity_scoped(source_id)`
+/// into combat / damage history / pending-cast (`QuantityComparison`,
+/// `QuantityVsEachOpponent`, `SpellTargetsFilter`).
+fn condition_reads_only_memo_safe_state(c: &ParsedCondition) -> bool {
+    match c {
+        ParsedCondition::QuantityComparison { .. }
+        | ParsedCondition::QuantityVsEachOpponent { .. }
+        | ParsedCondition::SpellTargetsFilter { .. } => false,
+
+        // Combinators read the union of their children: SAFE iff all children SAFE.
+        ParsedCondition::And { conditions } | ParsedCondition::Or { conditions } => {
+            conditions.iter().all(condition_reads_only_memo_safe_state)
+        }
+        ParsedCondition::Not { condition } => condition_reads_only_memo_safe_state(condition),
+
+        // SAFE: source-field reads (in fp, or attached_to ⇒ FORCES-None),
+        // key-folded combat/attack facts, controller-scoped, and global state.
+        ParsedCondition::SourceInZone { .. }
+        | ParsedCondition::SourceIsAttacking
+        | ParsedCondition::SourceIsAttackingOrBlocking
+        | ParsedCondition::SourceIsBlocked
+        | ParsedCondition::SourcePowerAtLeast { .. }
+        | ParsedCondition::SourceHasCounterAtLeast { .. }
+        | ParsedCondition::SourceHasNoCounter { .. }
+        | ParsedCondition::SourceEnteredThisTurn
+        | ParsedCondition::SourceAttackedThisTurn
+        | ParsedCondition::SourceIsCreature
+        | ParsedCondition::SourceAttachedTo { .. }
+        | ParsedCondition::SourceUntappedAttachedTo { .. }
+        | ParsedCondition::SourceLacksKeyword { .. }
+        | ParsedCondition::SourceIsColor { .. }
+        | ParsedCondition::FirstSpellThisGame
+        | ParsedCondition::OpponentSearchedLibraryThisTurn
+        | ParsedCondition::BeenAttackedThisStep
+        | ParsedCondition::ZoneCardCountAtLeast { .. }
+        | ParsedCondition::ZoneCardTypeCountAtLeast { .. }
+        | ParsedCondition::ZoneCoreTypeCardCountAtLeast { .. }
+        | ParsedCondition::ZoneSubtypeCardCountAtLeast { .. }
+        | ParsedCondition::OpponentPoisonAtLeast { .. }
+        | ParsedCondition::HandSizeExact { .. }
+        | ParsedCondition::HandSizeOneOf { .. }
+        | ParsedCondition::CreaturesYouControlTotalPowerAtLeast { .. }
+        | ParsedCondition::YouControlLandSubtypeAny { .. }
+        | ParsedCondition::YouControlSubtypeCountAtLeast { .. }
+        | ParsedCondition::YouControlCoreTypeCountAtLeast { .. }
+        | ParsedCondition::YouControlColorPermanentCountAtLeast { .. }
+        | ParsedCondition::YouControlSubtypeOrGraveyardCardSubtype { .. }
+        | ParsedCondition::YouControlLegendaryCreature
+        | ParsedCondition::YouControlNamedPlaneswalker { .. }
+        | ParsedCondition::ControlsCreatureWithKeyword { .. }
+        | ParsedCondition::YouControlCreatureWithPowerAtLeast { .. }
+        | ParsedCondition::YouControlCreatureWithPt { .. }
+        | ParsedCondition::YouControlAnotherColorlessCreature
+        | ParsedCondition::YouControlSnowPermanentCountAtLeast { .. }
+        | ParsedCondition::YouControlDifferentPowerCreatureCountAtLeast { .. }
+        | ParsedCondition::YouControlLandsWithSameNameAtLeast { .. }
+        | ParsedCondition::YouControlNoCreatures
+        | ParsedCondition::YouAttackedThisTurn
+        | ParsedCondition::YouAttackedSourceControllerThisTurn
+        | ParsedCondition::YouAttackedWithAtLeast { .. }
+        | ParsedCondition::YouPlayedLandThisTurn
+        | ParsedCondition::YouCastSpellThisTurn { .. }
+        | ParsedCondition::YouCastNoncreatureSpellThisTurn
+        | ParsedCondition::YouCastSpellCountAtLeast { .. }
+        | ParsedCondition::YouGainedLifeThisTurn
+        | ParsedCondition::YouCreatedTokenThisTurn
+        | ParsedCondition::YouDiscardedCardThisTurn
+        | ParsedCondition::YouSacrificedArtifactThisTurn
+        | ParsedCondition::CreatureDiedThisTurn
+        | ParsedCondition::YouHadCreatureEnterThisTurn
+        | ParsedCondition::YouHadAngelOrBerserkerEnterThisTurn
+        | ParsedCondition::YouHadArtifactEnterThisTurn
+        | ParsedCondition::BattlefieldEntriesThisTurn { .. }
+        | ParsedCondition::CardsLeftYourGraveyardThisTurnAtLeast { .. }
+        | ParsedCondition::PlayerCountAtLeast { .. }
+        | ParsedCondition::HasCityBlessing
+        | ParsedCondition::HasEnduringStory
+        // CR 309.7: reads `state.dungeon_progress` for the scoped player (via
+        // `game::dungeon`) — a per-player completion set that only a dungeon
+        // card's removal from the game mutates. apply()-constant and
+        // controller-scoped, exactly like the two designation predicates above.
+        | ParsedCondition::CompletedDungeon { .. }
+        // CR 702.179e: reads the controller's `speed` plus a controller-scoped
+        // battlefield scan for the CR 101.1 cap-raising static (via
+        // `game::speed`) — the same two apply()-constant sources as the
+        // designation predicates above and `ControlsCommander` below. No combat,
+        // damage, or pending-cast history.
+        | ParsedCondition::HasMaxSpeed
+        // CR 903.3 / CR 903.3d: a controller-scoped battlefield scan for a commander
+        // (via `game::commander`), like the other `YouControl*` predicates — reads no
+        // combat/damage/pending-cast history, so it is memo-safe.
+        | ParsedCondition::ControlsCommander { .. }
+        // CR 503.1: reads only `state.phase`, apply()-constant global state.
+        | ParsedCondition::IsDuringUpkeep
+        // CR 102.2 / CR 102.3: reads `state.active_player` plus team topology,
+        // both apply()-constant like `IsYourTurn`.
+        | ParsedCondition::IsOpponentsTurn
+        | ParsedCondition::IsYourTurn => true,
+    }
+}
+
+/// CR 118: descend `Composite`/`OneOf` and report whether any leaf cost has a
+/// dynamic (non-memo-safe) amount. A dynamic life/discard/energy/speed cost can
+/// make two same-fingerprint sources differ in affordability across candidates.
+fn cost_has_dynamic_amount(cost: &AbilityCost) -> bool {
+    match cost {
+        AbilityCost::PayLife { amount }
+        | AbilityCost::PayEnergy { amount }
+        | AbilityCost::PaySpeed { amount } => !quantity_reads_only_memo_safe_state(amount),
+        AbilityCost::Discard { count, .. } => !quantity_reads_only_memo_safe_state(count),
+        AbilityCost::Composite { costs } | AbilityCost::OneOf { costs } => {
+            costs.iter().any(cost_has_dynamic_amount)
+        }
+        _ => false,
+    }
+}
+
+/// Whether every `FilterProp` reachable through a `TargetFilter` is SAFE.
+/// Conservatively POISON for any filter shape that is not a plain typed/boolean
+/// composition (e.g. `SpecificObject`, tracked-set, exile-link references).
+fn target_filter_all_props_safe(filter: &TargetFilter) -> bool {
+    match filter {
+        TargetFilter::Typed(tf) => tf.properties.iter().all(filterprop_reads_only_candidate_fp),
+        TargetFilter::And { filters } | TargetFilter::Or { filters } => {
+            filters.iter().all(target_filter_all_props_safe)
+        }
+        TargetFilter::Not { filter } => target_filter_all_props_safe(filter),
+        // Type/zone-only and player filters carry no candidate-fp-relative props.
+        TargetFilter::None | TargetFilter::Any | TargetFilter::Player => true,
+        // Everything else (SpecificObject, StackAbility, tracked sets, exile
+        // links, anaphoric refs, …) is identity-relative or unhandled: POISON.
+        _ => false,
+    }
+}
+
+/// Whether the active pending target-selection filter contains any POISON
+/// `FilterProp` (so `ChooseTarget { Object(_) }` candidates must NOT be
+/// memoized). Conservatively POISON for every waiting state other than a
+/// spell/ability `TargetSelection` whose filters are provably all-SAFE.
+fn pending_target_filter_is_poison(state: &GameState) -> bool {
+    match &state.waiting_for {
+        WaitingFor::TargetSelection { pending_cast, .. } => {
+            !resolved_ability_target_filters_safe(&pending_cast.ability)
+        }
+        _ => true,
+    }
+}
+
+/// Walk a resolved ability's effect chain, returning `false` if any effect's
+/// target filter contains a POISON `FilterProp`.
+fn resolved_ability_target_filters_safe(ability: &ResolvedAbility) -> bool {
+    if let Some(f) = ability.effect.target_filter() {
+        if !target_filter_all_props_safe(f) {
+            return false;
+        }
+    }
+    // CR 601.2c: A mana effect declares role-scoped target filters;
+    // `target_filter()` returns only the first. Scan them ALL here, or a POISON
+    // FilterProp in a non-first mana role filter would be silently treated as
+    // SAFE and its ChooseTarget candidates wrongly memoized. Memoization
+    // soundness is a conservative gate — over-scanning only costs a memo,
+    // under-scanning is a bug. `declared_filters()` (not `surfaced_filters()`):
+    // context-ref filters are conservatively POISON under
+    // `target_filter_all_props_safe`, the correct conservative direction here.
+    if let Effect::Mana {
+        target: Some(role), ..
+    } = &ability.effect
+    {
+        if !role
+            .declared_filters()
+            .all(|(_, f)| target_filter_all_props_safe(f))
+        {
+            return false;
+        }
+    }
+    if let Some(sub) = &ability.sub_ability {
+        if !resolved_ability_target_filters_safe(sub) {
+            return false;
+        }
+    }
+    if let Some(els) = &ability.else_ability {
+        if !resolved_ability_target_filters_safe(els) {
+            return false;
+        }
+    }
+    true
+}
+
+/// Conservative per-`FilterPipeline::apply` poison gates, computed ONCE via a
+/// single `game_functioning_statics` sweep plus a single battlefield scan. When
+/// a gate is set, every candidate of that class falls back to the fresh
+/// per-candidate simulation (no memoization) — sound by construction.
+struct LegalityPoisonGates {
+    has_declare_attacker: bool,
+    has_declare_blocker: bool,
+    has_activation: bool,
+    has_choose_target: bool,
+}
+
+impl LegalityPoisonGates {
+    fn compute(state: &GameState) -> Self {
+        let mut g = LegalityPoisonGates {
+            has_declare_attacker: false,
+            has_declare_blocker: false,
+            has_activation: false,
+            has_choose_target: false,
+        };
+
+        for (_, def) in game_functioning_statics(state) {
+            // SpecificObject is the only ObjectId-bearing TargetFilter variant;
+            // a functioning static affecting one specific object can make
+            // otherwise-identical objects legally distinct — poison all classes.
+            if matches!(def.affected, Some(TargetFilter::SpecificObject { .. })) {
+                g.has_declare_attacker = true;
+                g.has_declare_blocker = true;
+                g.has_activation = true;
+                g.has_choose_target = true;
+            }
+            // CR 508.1d: declare-attacker restrictions / requirements + remote
+            // id-discrimination (Goaded).
+            if matches!(
+                def.mode,
+                StaticMode::CantAttack
+                    | StaticMode::CantAttackOrBlock
+                    | StaticMode::MustAttack
+                    | StaticMode::MustAttackDefender { .. }
+                    | StaticMode::Goaded
+                    | StaticMode::MustAttackAwayFromSource
+                    | StaticMode::CanAttackWithDefender
+                    | StaticMode::MaxAttackersEachCombat { .. }
+                    | StaticMode::CombatAlone { .. }
+            ) {
+                g.has_declare_attacker = true;
+            }
+            // CR 509.1: declare-blocker restrictions / requirements.
+            if matches!(
+                def.mode,
+                StaticMode::CantBlock
+                    | StaticMode::CantAttackOrBlock
+                    | StaticMode::CantBeBlocked
+                    | StaticMode::CantBeBlockedBy { .. }
+                    | StaticMode::CantBeBlockedExceptBy { .. }
+                    | StaticMode::CantBeBlockedByMoreThan { .. }
+                    | StaticMode::BlockRestriction { .. }
+                    | StaticMode::MustBlock
+                    | StaticMode::MustBlockAttacker { .. }
+                    | StaticMode::MustBeBlocked { .. }
+                    | StaticMode::MustBeBlockedByAll { .. }
+                    | StaticMode::MaxBlockersEachCombat { .. }
+                    | StaticMode::ExtraBlockers { .. }
+                    | StaticMode::CanBlockShadow
+                    | StaticMode::IgnoreLandwalkForBlocking { .. }
+                    | StaticMode::Menace
+            ) {
+                g.has_declare_blocker = true;
+            }
+            // CR 602.5 / CR 117.1b: activation prohibitions and per-turn limit
+            // modifiers (the latter make the folded activation count insufficient).
+            if matches!(
+                def.mode,
+                StaticMode::CantBeActivated { .. }
+                    | StaticMode::CantActivateDuring { .. }
+                    | StaticMode::CantTap
+                    | StaticMode::CantUntap
+                    | StaticMode::CantPayCost { .. }
+                    | StaticMode::ModifyActivationLimit { .. }
+            ) {
+                g.has_activation = true;
+            }
+        }
+
+        // One battlefield scan: goaded creatures (CR 508.1d remote
+        // discrimination) and activatable abilities whose condition / cost reads
+        // non-memo-safe per-object state.
+        for &id in &state.battlefield {
+            let Some(obj) = state.objects.get(&id) else {
+                continue;
+            };
+            if !obj.goaded_by.is_empty() {
+                g.has_declare_attacker = true;
+            }
+            for ability in obj.abilities.iter() {
+                if ability.kind != AbilityKind::Activated {
+                    continue;
+                }
+                for restriction in &ability.activation_restrictions {
+                    if let ActivationRestriction::RequiresCondition {
+                        condition: Some(cond),
+                    } = restriction
+                    {
+                        if !condition_reads_only_memo_safe_state(cond) {
+                            g.has_activation = true;
+                        }
+                    }
+                }
+                if let Some(cost) = &ability.cost {
+                    if cost_has_dynamic_amount(cost) {
+                        g.has_activation = true;
+                    }
+                }
+            }
+        }
+
+        if !g.has_choose_target {
+            g.has_choose_target = pending_target_filter_is_poison(state);
+        }
+
+        g
+    }
+}
+
+/// Build the equivalence key for a candidate action, or `None` to fall back to
+/// the fresh per-candidate simulation (uncovered shapes, fingerprint FORCES-None,
+/// or a fired poison gate). Activation/mode counters are folded at the
+/// candidate's own `(source_id, ability_index)` — never the id alone.
+///
+/// MEMO-AUDIT — hand-coded-validator maintenance contract (§9.10):
+/// the soundness of this memoization depends on the legality verdict for the
+/// covered classes being a pure function of `(LegalityClass, ObjectFingerprint,
+/// folded key fields, poison gates)`. That holds only because the hand-coded
+/// validators that decide those verdicts read no per-object identity / combat /
+/// history / object-id-keyed side-table state that the key does not already
+/// capture. The load-bearing validators are:
+///   - `game::combat::can_block_pair` / `can_block_pair_with_precomputed`
+///     (DeclareBlocker legality),
+///   - `game::combat::validate_attackers` (DeclareAttacker legality),
+///   - `game::targeting::can_target` (ChooseTarget legality).
+///
+/// Any future edit that makes one of these read a NEW per-object identity,
+/// combat-role, turn-history, or object-id-keyed side-table value MUST be
+/// re-classified against this module's contract: add it to `ObjectFingerprint`,
+/// fold it into `LegalityKey`, or poison the corresponding class in
+/// `LegalityPoisonGates`. Skipping that step silently collapses content-distinct
+/// candidates onto one shared (wrong) verdict.
+fn legality_equivalence_key(
+    state: &GameState,
+    action: &GameAction,
+    poison: &LegalityPoisonGates,
+    interner: &mut FingerprintInterner,
+) -> Option<LegalityKey> {
+    match action {
+        GameAction::DeclareAttackers { attacks, bands } => {
+            if poison.has_declare_attacker || attacks.len() != 1 || !bands.is_empty() {
+                return None;
+            }
+            let (attacker_id, attack_target) = &attacks[0];
+            let fp = interner.intern(state, *attacker_id)?;
+            let mut key = LegalityKey::new(LegalityClass::DeclareAttacker, fp);
+            key.attack_target = Some(*attack_target);
+            Some(key)
+        }
+        GameAction::DeclareBlockers { assignments } => {
+            if poison.has_declare_blocker || assignments.len() != 1 {
+                return None;
+            }
+            let (blocker_id, attacker_id) = assignments[0];
+            let fp = interner.intern(state, blocker_id)?;
+            let attacker_fp = interner.intern(state, attacker_id)?;
+            let attacker_controller = state.objects.get(&attacker_id)?.controller;
+            // CR 701.54c/e: a blocked Ring-bearer carries combat-relevant
+            // designation the blocker's legality may depend on.
+            let ring_bearer = crate::game::effects::ring::is_current_ring_bearer(
+                state,
+                attacker_controller,
+                attacker_id,
+            );
+            let mut key = LegalityKey::new(LegalityClass::DeclareBlocker, fp);
+            key.counterpart = Some((attacker_fp, ring_bearer));
+            Some(key)
+        }
+        GameAction::ActivateAbility {
+            source_id,
+            ability_index,
+        } => {
+            if poison.has_activation {
+                return None;
+            }
+            let fp = interner.intern(state, *source_id)?;
+            let mut key = LegalityKey::new(LegalityClass::ActivateAbility, fp);
+            key.ability_index = Some(*ability_index);
+            key.activations_this_turn = state
+                .activated_abilities_this_turn
+                .get(&(*source_id, *ability_index))
+                .copied()
+                .unwrap_or(0);
+            key.activations_this_game = state
+                .activated_abilities_this_game
+                .get(&(*source_id, *ability_index))
+                .copied()
+                .unwrap_or(0);
+            key.source_attacked_this_turn = state.creatures_attacked_this_turn.contains(source_id);
+            key.chosen_modes_turn = sorted_modes(&state.modal_modes_chosen_this_turn, *source_id);
+            key.chosen_modes_game = sorted_modes(&state.modal_modes_chosen_this_game, *source_id);
+            key.is_attacking = crate::game::restrictions::is_source_attacking(state, *source_id);
+            key.is_blocking = crate::game::restrictions::is_source_blocking(state, *source_id);
+            key.is_blocked = crate::game::restrictions::is_source_blocked(state, *source_id);
+            Some(key)
+        }
+        GameAction::TapLandForMana { selection } | GameAction::ActivateManaSource { selection } => {
+            if poison.has_activation {
+                return None;
+            }
+            let object_id = selection.source.object_id;
+            state.objects.get(&object_id)?;
+            let fp = interner.intern(state, object_id)?;
+            let mut key = LegalityKey::new(LegalityClass::ManaTap, fp);
+            let ability_index = selection.ability_index;
+            key.ability_index = ability_index;
+            let lookup_index = ability_index.unwrap_or(0);
+            key.activations_this_turn = state
+                .activated_abilities_this_turn
+                .get(&(object_id, lookup_index))
+                .copied()
+                .unwrap_or(0);
+            key.activations_this_game = state
+                .activated_abilities_this_game
+                .get(&(object_id, lookup_index))
+                .copied()
+                .unwrap_or(0);
+            key.source_attacked_this_turn = state.creatures_attacked_this_turn.contains(&object_id);
+            key.is_attacking = crate::game::restrictions::is_source_attacking(state, object_id);
+            key.is_blocking = crate::game::restrictions::is_source_blocking(state, object_id);
+            key.is_blocked = crate::game::restrictions::is_source_blocked(state, object_id);
+            Some(key)
+        }
+        GameAction::UntapLandForMana { object_id } => {
+            if poison.has_activation {
+                return None;
+            }
+            let fp = interner.intern(state, *object_id)?;
+            let mut key = LegalityKey::new(LegalityClass::ManaTap, fp);
+            key.ability_index = None;
+            Some(key)
+        }
+        GameAction::ChooseTarget {
+            target: Some(TargetRef::Object(id)),
+        } => {
+            if poison.has_choose_target {
+                return None;
+            }
+            let fp = interner.intern(state, *id)?;
+            Some(LegalityKey::new(LegalityClass::ChooseTarget, fp))
+        }
+        // Everything else (empty/multi/banded DeclareAttackers, CastSpell,
+        // PassPriority [short-circuited in SimulationFilter],
+        // TapForConvoke [short-circuited in SimulationFilter],
+        // non-object ChooseTarget): fresh per-candidate simulation.
+        _ => None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::ai_support::candidate_actions;
+
+    /// Matrix rows 9a + 9b — the mana-role POISON scan is a PURE EXTENSION.
+    ///
+    /// `resolved_ability_target_filters_safe` reads `Effect::target_filter()`,
+    /// which returns only the FIRST declared role filter. For a `Both` role the
+    /// second filter would go unscanned and a POISON `FilterProp` inside it
+    /// would be wrongly treated as SAFE, wrongly memoizing `ChooseTarget`
+    /// candidates. Memoization soundness is a conservative gate: over-scanning
+    /// costs a memo, under-scanning is a bug.
+    ///
+    /// 9b is the paired over-application negative — no SINGLE-role verdict may
+    /// change. Fails if the arm is written with `any()`, with
+    /// `surfaced_filters()`, or so that it SHADOWS rather than supplements the
+    /// generic scan.
+    #[test]
+    fn mana_role_poison_scan_extends_without_tightening() {
+        use crate::types::ability::{
+            ManaProduction, ManaTargetRole, QuantityExpr, TargetFilter, TypedFilter,
+        };
+        use crate::types::identifiers::ObjectId;
+        use crate::types::player::PlayerId;
+
+        let poison = TargetFilter::Typed(
+            TypedFilter::default().properties(vec![FilterProp::AttackedOrBlockedThisTurn]),
+        );
+        let safe = TargetFilter::Player;
+        // Reach guard for the fixture itself: these must actually differ under
+        // the predicate, or every assertion below is vacuous.
+        assert!(!target_filter_all_props_safe(&poison));
+        assert!(target_filter_all_props_safe(&safe));
+
+        let ability = |role: Option<ManaTargetRole>| {
+            ResolvedAbility::new(
+                Effect::Mana {
+                    produced: ManaProduction::Colorless {
+                        count: QuantityExpr::Fixed { value: 1 },
+                    },
+                    restrictions: vec![],
+                    grants: vec![],
+                    expiry: None,
+                    target: role,
+                },
+                vec![],
+                ObjectId(1),
+                PlayerId(0),
+            )
+        };
+
+        // 9a: POISON hiding in the NON-FIRST role is still caught.
+        assert!(
+            !resolved_ability_target_filters_safe(&ability(Some(ManaTargetRole::Both {
+                recipient: safe.clone(),
+                count_source: poison.clone(),
+            }))),
+            "a POISON filter in the second mana role must not be memoized as SAFE"
+        );
+
+        // 9b: single-role verdicts are untouched in BOTH directions.
+        assert!(resolved_ability_target_filters_safe(&ability(Some(
+            ManaTargetRole::Recipient {
+                recipient: safe.clone()
+            }
+        ))));
+        assert!(resolved_ability_target_filters_safe(&ability(Some(
+            ManaTargetRole::CountSource {
+                count_source: safe.clone()
+            }
+        ))));
+        assert!(!resolved_ability_target_filters_safe(&ability(Some(
+            ManaTargetRole::Recipient {
+                recipient: poison.clone()
+            }
+        ))));
+        assert!(resolved_ability_target_filters_safe(&ability(None)));
+    }
+
+    use crate::game::engine::apply_as_current_for_simulation;
+    use crate::types::game_state::{
+        ActiveSearchDecisionAuthority, ActiveSearchDecisionControl, CastPaymentMode,
+        CastingVariant, GameState, StackEntryKind,
+    };
+
+    #[test]
+    fn default_pipeline_registered_filters_ordered_by_cost() {
+        let pipeline = FilterPipeline::default_pipeline();
+        let costs: Vec<FilterCost> = pipeline.filters.iter().map(|f| f.cost()).collect();
+        // Pipeline must be monotonically non-decreasing in cost so cheap
+        // rejections dominate and SimulationFilter is the last resort.
+        for window in costs.windows(2) {
+            assert!(
+                window[0] <= window[1],
+                "filters must be ordered cheapest-first: {:?}",
+                costs
+            );
+        }
+    }
+
+    #[test]
+    fn simulation_filter_accepts_pass_priority_at_opening_state() {
+        // A fresh two-player state has Priority on player 0; PassPriority must
+        // be accepted by the oracle. This is the baseline sanity check for the
+        // `cheap ⊆ sim` invariant: if SimulationFilter rejected this,
+        // BasicLegalityFilter would too.
+        let state = GameState::new_two_player(42);
+        let candidates = candidate_actions(&state);
+        let pass = candidates
+            .into_iter()
+            .find(|c| matches!(c.action, crate::types::actions::GameAction::PassPriority))
+            .expect("PassPriority should be a candidate in the opening state");
+        assert!(SimulationFilter.accept(&state, &pass));
+        assert!(BasicLegalityFilter.accept(&state, &pass));
+    }
+
+    // ------------------------------------------------------------------
+    // `structurally_valid_pass_priority` — the fifth structural hatch.
+    //
+    // Soundness condition (the converse of the module's `cheap ⊆ simulate`
+    // invariant, because a hatch lives INSIDE the oracle rather than before it):
+    //
+    //   structurally_valid_pass_priority(state, candidate) == true
+    //     ⇒ fallback_simulation(state, candidate) == true
+    //
+    // `pass_oracle_accepts` below is `fallback_simulation`'s body without the
+    // counter, so the implication is asserted against the real boundary.
+    // ------------------------------------------------------------------
+
+    /// A bare two-player `Priority` window on P0.
+    ///
+    /// The default phase of a fresh `GameState` is `Phase::Untap`, not a main
+    /// phase, and both hands are empty — so no `PlayLand` candidate can be
+    /// enumerated here. That matters only for the tests below that call
+    /// `legal_actions`; the ones that call the hatch directly never enumerate.
+    fn pass_priority_state() -> GameState {
+        let mut state = GameState::new_two_player(42);
+        state.active_player = PlayerId(0);
+        state.priority_player = PlayerId(0);
+        state.waiting_for = WaitingFor::Priority {
+            player: PlayerId(0),
+        };
+        state
+    }
+
+    /// A `Priority` window under CR 723.5 turn control: P1 holds the seat, P0 is
+    /// the authorized submitter. Mirrors the shipped
+    /// `turn_control_priority_softlock` integration setup.
+    fn turn_controlled_pass_priority_state() -> GameState {
+        let mut state = GameState::new_two_player(42);
+        state.active_player = PlayerId(1);
+        state.turn_decision_controller = Some(PlayerId(0));
+        state.priority_passes.clear();
+        crate::game::public_state::sync_waiting_for(
+            &mut state,
+            &WaitingFor::Priority {
+                player: PlayerId(1),
+            },
+        );
+        state
+    }
+
+    /// A `PassPriority` candidate stamped exactly as
+    /// `candidates::authorize_candidate_actors` would stamp it for `seat`.
+    fn authorized_pass_candidate(state: &GameState, seat: PlayerId) -> CandidateAction {
+        CandidateAction {
+            action: GameAction::PassPriority,
+            metadata: crate::ai_support::ActionMetadata::for_actor(
+                Some(turn_control::authorized_submitter_for_player(state, seat)),
+                crate::ai_support::TacticalClass::Pass,
+            ),
+        }
+    }
+
+    /// The authoritative oracle: `SimulationFilter::fallback_simulation`'s body,
+    /// with the same actor / semantic-owner resolution and the same
+    /// `SimulationProbeGuard` window, minus the perf counter.
+    ///
+    /// The guard is load-bearing, not ceremony. It suppresses top-level loop
+    /// reconciliation (`reconcile_terminal_result` §3) and ring accumulation
+    /// (`pass_priority_once_with_pipeline` §2) for the duration of the probe, so
+    /// an oracle that omits it can return a verdict production legality
+    /// filtering never produces. Every soundness assertion below is a comparison
+    /// against this function; if it stops being `fallback_simulation`, those
+    /// assertions stop constraining the hatch, and they do so silently.
+    fn pass_oracle_accepts(state: &GameState, candidate: &CandidateAction) -> bool {
+        let mut sim = state.clone();
+        let _probe = SimulationProbeGuard::enter();
+        let actor = candidate
+            .metadata
+            .actor
+            .or_else(|| turn_control::authorized_submitters(state).first().copied());
+        actor.is_some_and(|actor| {
+            let semantic_owner = candidate.metadata.semantic_owner.unwrap_or(actor);
+            crate::game::engine::apply_interaction_for_simulation(
+                &mut sim,
+                actor,
+                semantic_owner,
+                candidate.action.clone(),
+            )
+            .is_ok()
+        })
+    }
+
+    /// T3. The hatch must be wired into BOTH `accept` and `accept_with_probe`.
+    ///
+    /// The two `assert!` calls on the verdict pass either way (the fallback
+    /// simulation also accepts this state) — they are reach-guards. The exact
+    /// zero counters, asserted separately per method, are the evidence: if a
+    /// future edit adds a hatch to only one of the two bodies, the other
+    /// method's counter regresses to non-zero here.
+    ///
+    /// No fixture pin is needed: this calls `SimulationFilter` directly on a
+    /// hand-built candidate, so nothing is enumerated and no `PlayLand`
+    /// candidate can exist.
+    #[test]
+    fn pass_priority_hatch_is_wired_into_both_simulation_filter_methods() {
+        let state = pass_priority_state();
+        let pass = authorized_pass_candidate(&state, PlayerId(0));
+
+        crate::game::perf_counters::reset();
+        assert!(SimulationFilter.accept(&state, &pass));
+        assert_eq!(
+            crate::game::perf_counters::snapshot().state_clone_for_legality,
+            0,
+            "`accept` must answer a bare pass without cloning the state"
+        );
+
+        crate::game::perf_counters::reset();
+        assert!(SimulationFilter.accept_with_probe(&state, &pass, None));
+        assert_eq!(
+            crate::game::perf_counters::snapshot().state_clone_for_legality,
+            0,
+            "`accept_with_probe` must answer a bare pass without cloning the state"
+        );
+    }
+
+    /// T4. The soundness property, executable, over pre-boundary shapes.
+    ///
+    /// Every fixture here perturbs only PRE-state fields; none makes the
+    /// accepted pass an all-players-passed pass, so this cannot say anything
+    /// about the CR 117.4 resolution seam. The seam-crossing companion is
+    /// `pass_priority_hatch_stays_sound_across_the_resolution_seam` in
+    /// `tests/integration/pass_priority_structural_legality.rs`.
+    ///
+    /// The accepted/rejected tallies are the non-vacuity guard: a predicate
+    /// stuck at `false` satisfies the implication trivially and must not report
+    /// green.
+    #[test]
+    fn pass_priority_hatch_accepts_only_what_the_simulation_accepts() {
+        use crate::types::game_state::{
+            DeferredLifeCostResume, ManaAbilityResume, PendingCostMoveResume,
+        };
+
+        let mut fixtures: Vec<(&'static str, GameState, PlayerId)> = Vec::new();
+
+        fixtures.push(("plain priority", pass_priority_state(), PlayerId(0)));
+        fixtures.push((
+            "turn-controlled priority",
+            turn_controlled_pass_priority_state(),
+            PlayerId(1),
+        ));
+
+        let mut latched_holder = pass_priority_state();
+        latched_holder.precast_shortcut_runtime.must_diverge = Some(PlayerId(0));
+        fixtures.push(("must_diverge on the holder", latched_holder, PlayerId(0)));
+
+        let mut latched_other = pass_priority_state();
+        latched_other.precast_shortcut_runtime.must_diverge = Some(PlayerId(1));
+        fixtures.push(("must_diverge on another player", latched_other, PlayerId(0)));
+
+        let mut desynced = pass_priority_state();
+        desynced.priority_player = PlayerId(1);
+        fixtures.push(("priority_player desynced", desynced, PlayerId(0)));
+
+        let mut parked_cost_move = pass_priority_state();
+        parked_cost_move.pending_cost_move_resume = Some(PendingCostMoveResume::Foretell {
+            player: PlayerId(0),
+            object_id: ObjectId(1),
+            cost: ManaCost::NoCost,
+            turn_foretold: 1,
+        });
+        fixtures.push(("parked cost-move root", parked_cost_move, PlayerId(0)));
+
+        let mut parked_deferred_life = pass_priority_state();
+        parked_deferred_life.pending_deferred_life_cost_resume =
+            Some(DeferredLifeCostResume::ManaRoot {
+                player: PlayerId(0),
+                resume: Box::new(ManaAbilityResume::Priority),
+                remaining_life_payments: vec![],
+                resume_at_resolution_depth: 0,
+            });
+        fixtures.push((
+            "parked deferred-life root",
+            parked_deferred_life,
+            PlayerId(0),
+        ));
+
+        let mut accepted = 0usize;
+        let mut rejected = 0usize;
+        for (label, state, seat) in &fixtures {
+            let candidate = authorized_pass_candidate(state, *seat);
+            if structurally_valid_pass_priority(state, &candidate) {
+                accepted += 1;
+                assert!(
+                    pass_oracle_accepts(state, &candidate),
+                    "[{label}] the hatch accepted a pass the authoritative simulation rejects"
+                );
+            } else {
+                rejected += 1;
+            }
+        }
+
+        assert!(
+            accepted > 0,
+            "non-vacuity: a predicate stuck at `false` must not report green"
+        );
+        assert!(
+            rejected > 0,
+            "non-vacuity: a predicate stuck at `true` must not report green"
+        );
+    }
+
+    /// T6. CR 732.2c: the divergence latch blocks only its own owner.
+    ///
+    /// The `Some(P0)` half is the load-bearing negative — a predicate that
+    /// omitted the latch entirely would over-accept and violate the soundness
+    /// condition. The `Some(P1)` half is its non-vacuity partner and catches the
+    /// opposite mistake, a predicate written as `must_diverge.is_some()`.
+    #[test]
+    fn pass_priority_hatch_honors_the_divergence_latch_owner() {
+        let mut blocked = pass_priority_state();
+        blocked.precast_shortcut_runtime.must_diverge = Some(PlayerId(0));
+        let blocked_candidate = authorized_pass_candidate(&blocked, PlayerId(0));
+        assert!(!structurally_valid_pass_priority(
+            &blocked,
+            &blocked_candidate
+        ));
+        assert!(
+            !pass_oracle_accepts(&blocked, &blocked_candidate),
+            "reach-guard: the reducer must actually reject this pass"
+        );
+
+        let mut unblocked = pass_priority_state();
+        unblocked.precast_shortcut_runtime.must_diverge = Some(PlayerId(1));
+        let unblocked_candidate = authorized_pass_candidate(&unblocked, PlayerId(0));
+        assert!(structurally_valid_pass_priority(
+            &unblocked,
+            &unblocked_candidate
+        ));
+        assert!(pass_oracle_accepts(&unblocked, &unblocked_candidate));
+    }
+
+    /// T6b. The over-accept direction, at the public `legal_actions` boundary.
+    ///
+    /// This passes on the unfixed tree — today the expensive clone is what
+    /// removes the pass — so it is a no-drift guard, and the most important one
+    /// in the set: it is what goes red if the hatch is written without gate
+    /// (d)'s `blocks_pass` component. That omission is invisible to every
+    /// latch-free fixture, and it would be a live over-accept: `legal_actions`
+    /// would start offering an action the reducer rejects.
+    ///
+    /// `must_diverge` is `pub(crate)`, so this cannot live in
+    /// `tests/integration/` and stays here beside T6.
+    #[test]
+    fn legal_actions_excludes_a_pass_blocked_by_the_divergence_latch() {
+        use crate::game::scenario::{GameScenario, P0};
+        use crate::types::phase::Phase;
+
+        let mut runner = {
+            let mut scenario = GameScenario::new();
+            scenario.at_phase(Phase::PreCombatMain);
+            scenario.build()
+        };
+        runner.state_mut().precast_shortcut_runtime.must_diverge = Some(P0);
+
+        assert!(
+            !crate::ai_support::legal_actions(runner.state()).contains(&GameAction::PassPriority),
+            "a pass the reducer rejects must never appear in legal_actions"
+        );
+        assert!(
+            matches!(
+                crate::game::engine::apply_as_current(runner.state_mut(), GameAction::PassPriority),
+                Err(crate::game::engine::EngineError::ActionNotAllowed(_))
+            ),
+            "reach-guard: the enumeration verdict and the reducer must agree"
+        );
+    }
+
+    /// T7. Gate (b) at the hatch: a parked payment root defers to the
+    /// simulation, because the pass boundary would then run a fallible
+    /// continuation drain this predicate does not model.
+    ///
+    /// The gate is `Option::is_some` on the two fields, so the variants below
+    /// are the cheapest constructible representatives rather than the specific
+    /// fallible roots. The both-`None` sibling is the reach-guard proving the
+    /// refusals came from the field gate.
+    #[test]
+    fn pass_priority_hatch_defers_when_a_payment_root_is_parked() {
+        use crate::types::game_state::{
+            DeferredLifeCostResume, ManaAbilityResume, PendingCostMoveResume,
+        };
+
+        let clean = pass_priority_state();
+        let clean_candidate = authorized_pass_candidate(&clean, PlayerId(0));
+        assert!(structurally_valid_pass_priority(&clean, &clean_candidate));
+
+        let mut parked_cost_move = pass_priority_state();
+        parked_cost_move.pending_cost_move_resume = Some(PendingCostMoveResume::Foretell {
+            player: PlayerId(0),
+            object_id: ObjectId(1),
+            cost: ManaCost::NoCost,
+            turn_foretold: 1,
+        });
+        assert!(!structurally_valid_pass_priority(
+            &parked_cost_move,
+            &authorized_pass_candidate(&parked_cost_move, PlayerId(0))
+        ));
+
+        let mut parked_deferred_life = pass_priority_state();
+        parked_deferred_life.pending_deferred_life_cost_resume =
+            Some(DeferredLifeCostResume::ManaRoot {
+                player: PlayerId(0),
+                resume: Box::new(ManaAbilityResume::Priority),
+                remaining_life_payments: vec![],
+                resume_at_resolution_depth: 0,
+            });
+        assert!(!structurally_valid_pass_priority(
+            &parked_deferred_life,
+            &authorized_pass_candidate(&parked_deferred_life, PlayerId(0))
+        ));
+    }
+
+    /// T8. Gate (c): candidate-actor identity. `PassPriority` carries no
+    /// payload, so submitter identity IS half of its legality.
+    ///
+    /// The `None` sibling is the reach-guard for `fallback_simulation`'s own
+    /// `.or_else(authorized_submitters(state).first())` resolution — the hatch
+    /// must accept exactly the case that resolves to the same actor the
+    /// authority derives.
+    #[test]
+    fn pass_priority_hatch_rejects_a_mismatched_candidate_actor() {
+        let state = pass_priority_state();
+
+        let mismatched = CandidateAction {
+            action: GameAction::PassPriority,
+            metadata: crate::ai_support::ActionMetadata::for_actor(
+                Some(PlayerId(1)),
+                crate::ai_support::TacticalClass::Pass,
+            ),
+        };
+        assert!(!structurally_valid_pass_priority(&state, &mismatched));
+        assert!(
+            matches!(
+                crate::game::engine::apply_interaction_for_simulation(
+                    &mut state.clone(),
+                    PlayerId(1),
+                    PlayerId(1),
+                    GameAction::PassPriority,
+                ),
+                Err(crate::game::engine::EngineError::WrongPlayer)
+            ),
+            "reach-guard: the hatch's refusal must match the oracle's rejection"
+        );
+
+        let unstamped = CandidateAction {
+            action: GameAction::PassPriority,
+            metadata: crate::ai_support::ActionMetadata::for_actor(
+                None,
+                crate::ai_support::TacticalClass::Pass,
+            ),
+        };
+        assert!(structurally_valid_pass_priority(&state, &unstamped));
+        assert!(pass_oracle_accepts(&state, &unstamped));
+    }
+
+    fn empty_search_state() -> GameState {
+        let mut state = GameState::new(crate::types::format::FormatConfig::free_for_all(), 3, 42);
+        state.waiting_for = WaitingFor::SearchChoice {
+            player: PlayerId(0),
+            library_owner: Some(PlayerId(0)),
+            cards: Vec::new(),
+            count: 0,
+            reveal: false,
+            up_to: true,
+            allows_partial_find: true,
+            constraint: crate::types::ability::SearchSelectionConstraint::None,
+            ordering_hint: Default::default(),
+            split: None,
+        };
+        state
+    }
+
+    fn empty_search_candidate(state: &GameState) -> CandidateAction {
+        candidate_actions(state)
+            .into_iter()
+            .find(|candidate| {
+                matches!(
+                    candidate.action,
+                    GameAction::SelectCards { ref cards } if cards.is_empty()
+                )
+            })
+            .expect("an up-to-zero search has an empty selection candidate")
+    }
+
+    #[test]
+    fn simulation_uses_ordinary_search_actor_without_remapping() {
+        let state = empty_search_state();
+        let candidate = empty_search_candidate(&state);
+        assert_eq!(candidate.metadata.semantic_owner, Some(PlayerId(0)));
+        assert_eq!(candidate.metadata.actor, Some(PlayerId(0)));
+        assert!(SimulationFilter.accept(&state, &candidate));
+    }
+
+    #[test]
+    fn simulation_uses_live_turn_controller_already_latched_in_candidate_metadata() {
+        let mut state = empty_search_state();
+        state.active_player = PlayerId(0);
+        state.turn_decision_controller = Some(PlayerId(1));
+        let candidate = empty_search_candidate(&state);
+        assert_eq!(candidate.metadata.semantic_owner, Some(PlayerId(0)));
+        assert_eq!(candidate.metadata.actor, Some(PlayerId(1)));
+        assert!(SimulationFilter.accept(&state, &candidate));
+    }
+
+    #[test]
+    fn simulation_does_not_remap_latched_search_controller_through_live_turn_control() {
+        let mut state = empty_search_state();
+        state.active_player = PlayerId(1);
+        state.turn_decision_controller = Some(PlayerId(2));
+        state
+            .active_search_decision_controls
+            .insert(ActiveSearchDecisionControl {
+                searcher: PlayerId(0),
+                searched_zone_owner: PlayerId(0),
+                authority: ActiveSearchDecisionAuthority::LatchedController {
+                    controller: PlayerId(1),
+                },
+            });
+        let candidate = empty_search_candidate(&state);
+        assert_eq!(candidate.metadata.semantic_owner, Some(PlayerId(0)));
+        assert_eq!(candidate.metadata.actor, Some(PlayerId(1)));
+        assert!(SimulationFilter.accept(&state, &candidate));
+    }
+
+    /// The `cheap ⊆ sim` invariant: for every candidate generated by
+    /// `candidate_actions` in a representative game state, if
+    /// `BasicLegalityFilter` rejects the candidate, `SimulationFilter` must
+    /// reject it too. Enforced over the full candidate set of a fresh
+    /// two-player state to keep the test hermetic and fast — adding proptest
+    /// state generation is a follow-up when deeper coverage is needed.
+    #[test]
+    fn basic_legality_is_subset_of_simulation() {
+        let state = GameState::new_two_player(42);
+        let candidates = candidate_actions(&state);
+        for candidate in candidates {
+            let cheap_accepts = BasicLegalityFilter.accept(&state, &candidate);
+            let sim_accepts = SimulationFilter.accept(&state, &candidate);
+            if !cheap_accepts {
+                assert!(
+                    !sim_accepts,
+                    "cheap⊆sim violated: BasicLegalityFilter rejected `{}` \
+                     but SimulationFilter accepted — candidate would be \
+                     silently dropped. Action: {:?}",
+                    candidate.action.variant_name(),
+                    candidate.action
+                );
+            }
+        }
+    }
+
+    // -- Equivalence-class legality memoization --
+
+    use crate::ai_support::{ActionMetadata, TacticalClass};
+    use crate::game::combat::{AttackTarget, CombatState};
+    use crate::game::zones::create_object;
+    use crate::types::ability::{
+        AbilityCost, AbilityDefinition, AbilityKind, Comparator, Effect, FilterProp, ParitySource,
+        ParsedCondition, QuantityExpr, QuantityRef, TargetFilter, TargetRef, TypedFilter,
+    };
+    use crate::types::card_type::CoreType;
+    use crate::types::counter::CounterMatch;
+    use crate::types::identifiers::{CardId, ObjectId};
+    use crate::types::keywords::Keyword;
+    use crate::types::mana::ManaCost;
+    use crate::types::phase::Phase;
+    use crate::types::player::PlayerId;
+    use crate::types::zones::Zone;
+
+    fn make_object(state: &mut GameState, card_id: u64, owner: u8, name: &str) -> ObjectId {
+        create_object(
+            state,
+            CardId(card_id),
+            PlayerId(owner),
+            name.to_string(),
+            Zone::Battlefield,
+        )
+    }
+
+    fn cand(action: GameAction) -> CandidateAction {
+        CandidateAction {
+            action,
+            metadata: ActionMetadata::for_actor(Some(PlayerId(0)), TacticalClass::Pass),
+        }
+    }
+
+    fn cand_with_actor(action: GameAction, actor: PlayerId) -> CandidateAction {
+        CandidateAction {
+            action,
+            metadata: ActionMetadata::for_actor(Some(actor), TacticalClass::Spell),
+        }
+    }
+
+    fn zero_cost_sorcery_priority_state() -> (GameState, ObjectId, CardId) {
+        let mut state = GameState::new_two_player(42);
+        state.phase = Phase::PreCombatMain;
+        state.active_player = PlayerId(0);
+        state.priority_player = PlayerId(0);
+        state.waiting_for = WaitingFor::Priority {
+            player: PlayerId(0),
+        };
+        let card_id = CardId(100);
+        let spell = create_object(
+            &mut state,
+            card_id,
+            PlayerId(0),
+            "Shortcut Sorcery".to_string(),
+            Zone::Hand,
+        );
+        let obj = state.objects.get_mut(&spell).unwrap();
+        obj.card_types.core_types.push(CoreType::Sorcery);
+        obj.base_card_types = obj.card_types.clone();
+        obj.mana_cost = ManaCost::zero();
+        obj.base_mana_cost = obj.mana_cost.clone();
+        (state, spell, card_id)
+    }
+
+    fn dynamic_ref() -> QuantityExpr {
+        QuantityExpr::Ref {
+            qty: QuantityRef::LifeAboveStarting,
+        }
+    }
+
+    /// Priority Auto CastSpell with no targets is accepted structurally and
+    /// avoids the clone-and-apply fallback. Revert the shortcut call or helper
+    /// acceptance ⇒ `state_clone_for_legality == 1`.
+    #[test]
+    fn structurally_valid_priority_cast_short_circuits_auto_targetless_spell() {
+        let (state, object_id, card_id) = zero_cost_sorcery_priority_state();
+        let action = GameAction::CastSpell {
+            object_id,
+            card_id,
+            targets: Vec::new(),
+            payment_mode: CastPaymentMode::Auto,
+        };
+        assert!(structurally_valid_priority_cast(&state, &action));
+
+        let mut oracle = state.clone();
+        assert!(
+            apply_as_current_for_simulation(&mut oracle, action.clone()).is_ok(),
+            "the structural shortcut must stay within the clone/apply oracle"
+        );
+
+        crate::game::perf_counters::reset();
+        assert!(SimulationFilter.accept(&state, &cand_with_actor(action, PlayerId(1))));
+        let clones = crate::game::perf_counters::snapshot().state_clone_for_legality;
+        assert_eq!(
+            clones, 0,
+            "structural CastSpell fast path must avoid legality clones; got {clones}"
+        );
+    }
+
+    /// CR 702.61a hostile fixture: a split-second spell on the stack blocks the
+    /// structural cast shortcut, then the clone/apply oracle rejects the cast.
+    /// Revert the explicit split-second guard ⇒ helper accepts and clones stay 0.
+    #[test]
+    fn structurally_valid_priority_cast_rejects_split_second_and_falls_back() {
+        let (mut state, object_id, card_id) = zero_cost_sorcery_priority_state();
+        let action = GameAction::CastSpell {
+            object_id,
+            card_id,
+            targets: Vec::new(),
+            payment_mode: CastPaymentMode::Auto,
+        };
+        assert!(
+            structurally_valid_priority_cast(&state, &action),
+            "fixture must reach the positive shortcut before split second is added"
+        );
+
+        let split_second_id = create_object(
+            &mut state,
+            CardId(101),
+            PlayerId(1),
+            "Krosan Grip".to_string(),
+            Zone::Stack,
+        );
+        state
+            .objects
+            .get_mut(&split_second_id)
+            .unwrap()
+            .keywords
+            .push(Keyword::SplitSecond);
+        state.stack.push_back(crate::types::game_state::StackEntry {
+            id: split_second_id,
+            source_id: split_second_id,
+            controller: PlayerId(1),
+            kind: StackEntryKind::Spell {
+                card_id: CardId(101),
+                ability: None,
+                casting_variant: CastingVariant::Normal,
+                actual_mana_spent: 3,
+            },
+        });
+
+        assert!(!structurally_valid_priority_cast(&state, &action));
+        let mut oracle = state.clone();
+        assert!(
+            apply_as_current_for_simulation(&mut oracle, action.clone()).is_err(),
+            "clone/apply oracle must also reject casting under split second"
+        );
+
+        crate::game::perf_counters::reset();
+        assert!(!SimulationFilter.accept(&state, &cand(action)));
+        let clones = crate::game::perf_counters::snapshot().state_clone_for_legality;
+        assert_eq!(
+            clones, 1,
+            "split-second rejection must fall through to exactly one legality clone; got {clones}"
+        );
+    }
+
+    /// Manual payment mode is outside the conservative shortcut subset. Revert
+    /// the payment-mode guard ⇒ helper accepts and clone count drops to 0.
+    #[test]
+    fn structurally_valid_priority_cast_manual_payment_uses_fallback() {
+        let (state, object_id, card_id) = zero_cost_sorcery_priority_state();
+        let action = GameAction::CastSpell {
+            object_id,
+            card_id,
+            targets: Vec::new(),
+            payment_mode: CastPaymentMode::Manual,
+        };
+
+        assert!(!structurally_valid_priority_cast(&state, &action));
+        let mut oracle = state.clone();
+        assert!(
+            apply_as_current_for_simulation(&mut oracle, action.clone()).is_ok(),
+            "manual payment is unsupported by the shortcut, not illegal"
+        );
+
+        crate::game::perf_counters::reset();
+        assert!(SimulationFilter.accept(&state, &cand(action)));
+        let clones = crate::game::perf_counters::snapshot().state_clone_for_legality;
+        assert_eq!(
+            clones, 1,
+            "manual CastSpell must use the clone/apply fallback; got {clones}"
+        );
+    }
+
+    /// #1: two content-identical sources share ONE legality clone (memo hit).
+    /// Revert (drop the memo) ⇒ 2 clones, failing the assertion.
+    #[test]
+    fn memo_dedups_identical_activate_ability_to_one_clone() {
+        let mut state = GameState::new_two_player(42);
+        state.waiting_for = WaitingFor::Priority {
+            player: PlayerId(0),
+        };
+        let a = make_object(&mut state, 100, 0, "Squirrel");
+        let b = make_object(&mut state, 100, 0, "Squirrel");
+        assert_eq!(
+            object_fingerprint(&state, a),
+            object_fingerprint(&state, b),
+            "identical objects must share a fingerprint"
+        );
+        let pipeline = FilterPipeline::default_pipeline();
+        let candidates = vec![
+            cand(GameAction::ActivateAbility {
+                source_id: a,
+                ability_index: 0,
+            }),
+            cand(GameAction::ActivateAbility {
+                source_id: b,
+                ability_index: 0,
+            }),
+        ];
+        crate::game::perf_counters::reset();
+        let _ = pipeline.apply(&state, candidates);
+        let clones = crate::game::perf_counters::snapshot().state_clone_for_legality;
+        assert_eq!(
+            clones, 1,
+            "identical ActivateAbility candidates must reuse one legality clone; got {clones}"
+        );
+    }
+
+    /// #17/#12-style: a dynamic activation cost poisons the activation gate, so
+    /// each candidate runs a fresh clone. Revert the gate ⇒ memo ⇒ 1 clone.
+    #[test]
+    fn dynamic_activation_cost_poisons_activation_memo() {
+        let mut state = GameState::new_two_player(42);
+        state.waiting_for = WaitingFor::Priority {
+            player: PlayerId(0),
+        };
+        let a = make_object(&mut state, 100, 0, "Squirrel");
+        let b = make_object(&mut state, 100, 0, "Squirrel");
+        let ability = AbilityDefinition::new(
+            AbilityKind::Activated,
+            Effect::GainLife {
+                amount: QuantityExpr::Fixed { value: 1 },
+                player: TargetFilter::Player,
+            },
+        )
+        .cost(AbilityCost::PayLife {
+            amount: dynamic_ref(),
+        });
+        for id in [a, b] {
+            let obj = state.objects.get_mut(&id).unwrap();
+            Arc::make_mut(&mut obj.abilities).push(ability.clone());
+        }
+        let poison = LegalityPoisonGates::compute(&state);
+        assert!(
+            poison.has_activation,
+            "dynamic PayLife cost must poison the activation gate"
+        );
+        let pipeline = FilterPipeline::default_pipeline();
+        let candidates = vec![
+            cand(GameAction::ActivateAbility {
+                source_id: a,
+                ability_index: 0,
+            }),
+            cand(GameAction::ActivateAbility {
+                source_id: b,
+                ability_index: 0,
+            }),
+        ];
+        crate::game::perf_counters::reset();
+        let _ = pipeline.apply(&state, candidates);
+        let clones = crate::game::perf_counters::snapshot().state_clone_for_legality;
+        assert_eq!(
+            clones, 2,
+            "poisoned activation must clone per candidate (no memo); got {clones}"
+        );
+    }
+
+    /// #19: controller is part of the fingerprint.
+    #[test]
+    fn controller_is_part_of_fingerprint() {
+        let mut state = GameState::new_two_player(42);
+        let a = make_object(&mut state, 100, 0, "Squirrel");
+        let b = make_object(&mut state, 100, 0, "Squirrel");
+        state.objects.get_mut(&b).unwrap().controller = PlayerId(1);
+        assert_ne!(
+            object_fingerprint(&state, a),
+            object_fingerprint(&state, b),
+            "controller must be part of the fingerprint"
+        );
+    }
+
+    /// #22: the fingerprint-membership contract — name, owner, and mana cost
+    /// each independently distinguish fingerprints. Pins the contract so a
+    /// future fp refactor cannot silently drop one of these fields.
+    #[test]
+    fn fingerprint_membership_guards_name_owner_manacost() {
+        // name
+        let mut s = GameState::new_two_player(1);
+        let a = make_object(&mut s, 100, 0, "Squirrel");
+        let b = make_object(&mut s, 100, 0, "Acorn");
+        assert_ne!(
+            object_fingerprint(&s, a),
+            object_fingerprint(&s, b),
+            "name must be in the fingerprint"
+        );
+        // owner (isolated from controller)
+        let mut s = GameState::new_two_player(2);
+        let a = make_object(&mut s, 100, 0, "Squirrel");
+        let b = make_object(&mut s, 100, 0, "Squirrel");
+        s.objects.get_mut(&b).unwrap().owner = PlayerId(1);
+        assert_ne!(
+            object_fingerprint(&s, a),
+            object_fingerprint(&s, b),
+            "owner must be in the fingerprint"
+        );
+        // mana cost
+        let mut s = GameState::new_two_player(3);
+        let a = make_object(&mut s, 100, 0, "Squirrel");
+        let b = make_object(&mut s, 100, 0, "Squirrel");
+        s.objects.get_mut(&b).unwrap().mana_cost = ManaCost::Cost {
+            shards: Vec::new(),
+            generic: 3,
+        };
+        assert_ne!(
+            object_fingerprint(&s, a),
+            object_fingerprint(&s, b),
+            "mana cost must be in the fingerprint"
+        );
+    }
+
+    /// #9: per-(source, ability) activation count is folded into the key.
+    #[test]
+    fn activation_count_is_folded_into_key() {
+        let mut state = GameState::new_two_player(42);
+        state.waiting_for = WaitingFor::Priority {
+            player: PlayerId(0),
+        };
+        let a = make_object(&mut state, 100, 0, "Squirrel");
+        let b = make_object(&mut state, 100, 0, "Squirrel");
+        state.activated_abilities_this_turn.insert((a, 0), 1);
+        let poison = LegalityPoisonGates::compute(&state);
+        // Shared interner: a and b have identical fingerprints, so they intern
+        // to the SAME class id — the keys must still differ purely on the folded
+        // activation count.
+        let mut interner = FingerprintInterner::default();
+        let ka = legality_equivalence_key(
+            &state,
+            &GameAction::ActivateAbility {
+                source_id: a,
+                ability_index: 0,
+            },
+            &poison,
+            &mut interner,
+        );
+        let kb = legality_equivalence_key(
+            &state,
+            &GameAction::ActivateAbility {
+                source_id: b,
+                ability_index: 0,
+            },
+            &poison,
+            &mut interner,
+        );
+        assert!(ka.is_some() && kb.is_some());
+        assert_ne!(
+            ka, kb,
+            "activation count must be folded per (source, ability) into the key"
+        );
+    }
+
+    /// #11: a source's live combat role is folded into the key.
+    #[test]
+    fn combat_role_is_folded_into_key() {
+        let mut state = GameState::new_two_player(42);
+        state.waiting_for = WaitingFor::Priority {
+            player: PlayerId(0),
+        };
+        let a = make_object(&mut state, 100, 0, "Squirrel");
+        let b = make_object(&mut state, 100, 0, "Squirrel");
+        let mut combat = CombatState::default();
+        combat.blocker_to_attacker.insert(a, vec![b]);
+        state.combat = Some(combat);
+        let poison = LegalityPoisonGates::compute(&state);
+        // Shared interner: a and b intern to the same class id; only the folded
+        // live combat role (a is blocking, b is not) may distinguish the keys.
+        let mut interner = FingerprintInterner::default();
+        let ka = legality_equivalence_key(
+            &state,
+            &GameAction::ActivateAbility {
+                source_id: a,
+                ability_index: 0,
+            },
+            &poison,
+            &mut interner,
+        );
+        let kb = legality_equivalence_key(
+            &state,
+            &GameAction::ActivateAbility {
+                source_id: b,
+                ability_index: 0,
+            },
+            &poison,
+            &mut interner,
+        );
+        assert_ne!(
+            ka, kb,
+            "is_blocking combat role must be folded into the key"
+        );
+    }
+
+    /// #2: single-attacker declarations memoize; multi/empty/banded do not.
+    #[test]
+    fn declare_attacker_single_keys_multi_and_banded_none() {
+        let mut state = GameState::new_two_player(42);
+        let a = make_object(&mut state, 100, 0, "Squirrel");
+        let b = make_object(&mut state, 100, 0, "Squirrel");
+        let poison = LegalityPoisonGates::compute(&state);
+        let target = AttackTarget::Player(PlayerId(1));
+        let single_a = GameAction::DeclareAttackers {
+            attacks: vec![(a, target)],
+            bands: vec![],
+        };
+        let single_b = GameAction::DeclareAttackers {
+            attacks: vec![(b, target)],
+            bands: vec![],
+        };
+        let mut interner = FingerprintInterner::default();
+        assert!(legality_equivalence_key(&state, &single_a, &poison, &mut interner).is_some());
+        assert_eq!(
+            legality_equivalence_key(&state, &single_a, &poison, &mut interner),
+            legality_equivalence_key(&state, &single_b, &poison, &mut interner),
+            "identical single-attacker declarations must share a key"
+        );
+        let multi = GameAction::DeclareAttackers {
+            attacks: vec![(a, target), (b, target)],
+            bands: vec![],
+        };
+        assert!(legality_equivalence_key(&state, &multi, &poison, &mut interner).is_none());
+        let empty = GameAction::DeclareAttackers {
+            attacks: vec![],
+            bands: vec![],
+        };
+        assert!(legality_equivalence_key(&state, &empty, &poison, &mut interner).is_none());
+        let banded = GameAction::DeclareAttackers {
+            attacks: vec![(a, target)],
+            bands: vec![vec![a]],
+        };
+        assert!(legality_equivalence_key(&state, &banded, &poison, &mut interner).is_none());
+    }
+
+    /// #3 + #16: single-blocker declarations memoize; multi does not; the
+    /// blocked attacker's ring-bearer designation distinguishes the key.
+    #[test]
+    fn declare_blocker_single_keys_and_ringbearer_distinguishes() {
+        let mut state = GameState::new_two_player(42);
+        let blocker = make_object(&mut state, 100, 0, "Squirrel");
+        let atk1 = make_object(&mut state, 200, 1, "Bear");
+        let atk2 = make_object(&mut state, 200, 1, "Bear");
+        for id in [atk1, atk2] {
+            state
+                .objects
+                .get_mut(&id)
+                .unwrap()
+                .card_types
+                .core_types
+                .push(CoreType::Creature);
+        }
+        let poison = LegalityPoisonGates::compute(&state);
+        let single1 = GameAction::DeclareBlockers {
+            assignments: vec![(blocker, atk1)],
+        };
+        let single2 = GameAction::DeclareBlockers {
+            assignments: vec![(blocker, atk2)],
+        };
+        // Shared interner: atk1 and atk2 intern to the same class id, so the
+        // keys agree until the ring-bearer bool (folded into `counterpart`)
+        // diverges — interning leaves the fingerprint identity untouched.
+        let mut interner = FingerprintInterner::default();
+        assert!(legality_equivalence_key(&state, &single1, &poison, &mut interner).is_some());
+        assert_eq!(
+            legality_equivalence_key(&state, &single1, &poison, &mut interner),
+            legality_equivalence_key(&state, &single2, &poison, &mut interner),
+            "blocking identical attackers must share a key"
+        );
+        let multi = GameAction::DeclareBlockers {
+            assignments: vec![(blocker, atk1), (blocker, atk2)],
+        };
+        assert!(legality_equivalence_key(&state, &multi, &poison, &mut interner).is_none());
+        // CR 701.54e: make atk2 the ring-bearer ⇒ counterpart differs ⇒ keys differ.
+        state.ring_bearer.insert(PlayerId(1), Some(atk2));
+        assert_ne!(
+            legality_equivalence_key(&state, &single1, &poison, &mut interner),
+            legality_equivalence_key(&state, &single2, &poison, &mut interner),
+            "blocked ring-bearer designation must distinguish the key"
+        );
+    }
+
+    /// #20: any attachment forces the fingerprint to `None` (never memoized).
+    #[test]
+    fn attachment_forces_none_fingerprint() {
+        let mut state = GameState::new_two_player(42);
+        let a = make_object(&mut state, 100, 0, "Squirrel");
+        state
+            .objects
+            .get_mut(&a)
+            .unwrap()
+            .attachments
+            .push(ObjectId(9999));
+        assert!(
+            object_fingerprint(&state, a).is_none(),
+            "attachment-bearing object must FORCES-None"
+        );
+    }
+
+    /// #21: QuantityExpr classifier — Fixed-only safe, any Ref poisons,
+    /// arithmetic combinators propagate.
+    #[test]
+    fn quantity_classifier_fixed_vs_ref() {
+        assert!(quantity_reads_only_memo_safe_state(&QuantityExpr::Fixed {
+            value: 3
+        }));
+        assert!(!quantity_reads_only_memo_safe_state(&dynamic_ref()));
+        assert!(quantity_reads_only_memo_safe_state(&QuantityExpr::Max {
+            exprs: vec![
+                QuantityExpr::Fixed { value: 2 },
+                QuantityExpr::Fixed { value: 5 }
+            ]
+        }));
+        assert!(!quantity_reads_only_memo_safe_state(&QuantityExpr::Max {
+            exprs: vec![QuantityExpr::Fixed { value: 2 }, dynamic_ref()]
+        }));
+        assert!(!quantity_reads_only_memo_safe_state(
+            &QuantityExpr::Difference {
+                left: Box::new(QuantityExpr::Fixed { value: 1 }),
+                right: Box::new(dynamic_ref()),
+            }
+        ));
+        assert!(!quantity_reads_only_memo_safe_state(&QuantityExpr::Power {
+            base: 2,
+            exponent: Box::new(dynamic_ref()),
+        }));
+    }
+
+    /// #5/#6/#14: FilterProp SAFE/POISON partition and combinator propagation.
+    #[test]
+    fn filterprop_classifier_partition() {
+        assert!(filterprop_reads_only_candidate_fp(&FilterProp::Tapped));
+        assert!(filterprop_reads_only_candidate_fp(&FilterProp::Named {
+            name: "Squirrel".to_string()
+        }));
+        assert!(filterprop_reads_only_candidate_fp(
+            &FilterProp::ManaValueParity {
+                parity: ParitySource::Fixed(crate::types::ability::Parity::Even),
+            }
+        ));
+        assert!(!filterprop_reads_only_candidate_fp(
+            &FilterProp::AttackedThisTurn { defender: None }
+        ));
+        assert!(!filterprop_reads_only_candidate_fp(&FilterProp::WasKicked));
+        assert!(!filterprop_reads_only_candidate_fp(
+            &FilterProp::HasXInActivationCost
+        ));
+        assert!(filterprop_reads_only_candidate_fp(&FilterProp::Not {
+            prop: Box::new(FilterProp::Tapped)
+        }));
+        assert!(!filterprop_reads_only_candidate_fp(&FilterProp::Not {
+            prop: Box::new(FilterProp::AttackedThisTurn { defender: None })
+        }));
+        assert!(!filterprop_reads_only_candidate_fp(&FilterProp::AnyOf {
+            props: vec![
+                FilterProp::Tapped,
+                FilterProp::AttackedThisTurn { defender: None }
+            ]
+        }));
+        // Counters with a dynamic count ⇒ POISON; with a Fixed count ⇒ SAFE.
+        assert!(!filterprop_reads_only_candidate_fp(&FilterProp::Counters {
+            counters: CounterMatch::Any,
+            comparator: Comparator::GE,
+            count: dynamic_ref(),
+        }));
+        assert!(filterprop_reads_only_candidate_fp(&FilterProp::Counters {
+            counters: CounterMatch::Any,
+            comparator: Comparator::GE,
+            count: QuantityExpr::Fixed { value: 1 },
+        }));
+    }
+
+    /// #15: ParsedCondition classifier — source/global safe, dynamic unsafe.
+    #[test]
+    fn condition_classifier_dynamic_unsafe() {
+        assert!(condition_reads_only_memo_safe_state(
+            &ParsedCondition::SourceIsAttacking
+        ));
+        assert!(condition_reads_only_memo_safe_state(
+            &ParsedCondition::HandSizeExact { count: 3 }
+        ));
+        let dynamic = ParsedCondition::QuantityComparison {
+            lhs: dynamic_ref(),
+            comparator: Comparator::GE,
+            rhs: QuantityExpr::Fixed { value: 1 },
+        };
+        assert!(!condition_reads_only_memo_safe_state(&dynamic));
+        assert!(!condition_reads_only_memo_safe_state(
+            &ParsedCondition::And {
+                conditions: vec![ParsedCondition::SourceIsAttacking, dynamic],
+            }
+        ));
+    }
+
+    /// #5/#6 at the gate level: a SAFE target filter passes the choose-target
+    /// gate; a POISON filter fails it.
+    #[test]
+    fn choose_target_filter_safety_gate() {
+        let safe =
+            TargetFilter::Typed(TypedFilter::creature().properties(vec![FilterProp::Tapped]));
+        assert!(target_filter_all_props_safe(&safe));
+        let poison = TargetFilter::Typed(
+            TypedFilter::creature()
+                .properties(vec![FilterProp::AttackedThisTurn { defender: None }]),
+        );
+        assert!(!target_filter_all_props_safe(&poison));
+
+        // An object ChooseTarget gets a memo key only when the gate is clear.
+        let mut state = GameState::new_two_player(42);
+        let target = make_object(&mut state, 100, 0, "Squirrel");
+        let action = GameAction::ChooseTarget {
+            target: Some(TargetRef::Object(target)),
+        };
+        let clear = LegalityPoisonGates {
+            has_declare_attacker: false,
+            has_declare_blocker: false,
+            has_activation: false,
+            has_choose_target: false,
+        };
+        let mut interner = FingerprintInterner::default();
+        assert!(legality_equivalence_key(&state, &action, &clear, &mut interner).is_some());
+        let gated = LegalityPoisonGates {
+            has_choose_target: true,
+            ..clear
+        };
+        assert!(legality_equivalence_key(&state, &action, &gated, &mut interner).is_none());
+    }
+}
