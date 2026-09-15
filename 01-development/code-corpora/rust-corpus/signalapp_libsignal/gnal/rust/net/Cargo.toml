@@ -1,0 +1,106 @@
+[package]
+name = "libsignal-net"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+authors.workspace = true
+license.workspace = true
+
+[features]
+test-util = ["libsignal-net-infra/test-util"]
+tower-service = ["libsignal-net-infra/tower-service"]
+
+[lints]
+workspace = true
+
+[dependencies]
+libsignal-net-infra = { path = "infra" }
+
+attest = { workspace = true }
+libsignal-account-keys = { workspace = true }
+libsignal-core = { workspace = true }
+libsignal-keytrans = { workspace = true }
+libsignal-protocol = { workspace = true }
+libsignal-svrb = { workspace = true }
+signal-crypto = { workspace = true }
+
+assert_matches = { workspace = true }
+async-trait = { workspace = true }
+base64 = { workspace = true }
+boring-signal = { workspace = true }
+bytes = { workspace = true }
+const-str = { workspace = true }
+derive-where = { workspace = true }
+derive_more = { workspace = true, features = ["debug", "from", "try_from"] }
+displaydoc = { workspace = true }
+either = { workspace = true }
+futures = { workspace = true }
+futures-util = { workspace = true }
+hex = { workspace = true }
+hkdf = { workspace = true }
+hmac = { workspace = true }
+http = { workspace = true }
+http-body-util = { workspace = true }
+hyper = { workspace = true, features = ["server"] } # for FakeChatRemote
+hyper-util = { workspace = true }
+itertools = { workspace = true }
+log = { workspace = true }
+nonzero_ext = { workspace = true }
+pin-project = { workspace = true }
+prost = { workspace = true }
+protobuf = { workspace = true }
+rand = { workspace = true }
+rand_core = { workspace = true }
+rustls = { workspace = true, features = ["ring", "std", "tls12"] }
+rustls-platform-verifier = { workspace = true }
+scopeguard = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+static_assertions = { workspace = true }
+strum = { workspace = true, features = ["derive"] }
+subtle = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["rt", "time", "macros"] }
+tokio-boring-signal = { workspace = true }
+tokio-stream = { workspace = true, features = ["sync"] }
+tokio-tungstenite = { workspace = true }
+tonic = { workspace = true, default-features = false }
+tungstenite = { workspace = true }
+uuid = { workspace = true, features = ["serde"] }
+visibility = { workspace = true }
+zerocopy = { workspace = true }
+
+[build-dependencies]
+prost-build = { workspace = true }
+
+[dev-dependencies]
+attest = { workspace = true, features = ["test-util"] }
+libsignal-net = { path = ".", features = ["test-util"] }
+
+clap = { workspace = true, features = ["derive", "env"] }
+either = { workspace = true }
+env_logger = { workspace = true }
+proptest = { workspace = true }
+rand_chacha = { workspace = true }
+test-case = { workspace = true }
+test-log = { workspace = true }
+tokio = { workspace = true, features = ["test-util", "io-std", "rt-multi-thread"] }
+url = { workspace = true }
+warp = { workspace = true, features = ["server", "websocket"] }
+
+[[example]]
+name = "chat_smoke_test"
+required-features = ["test-util"]
+
+[[example]]
+name = "svrb_test"
+required-features = ["test-util"]
+
+[[example]]
+name = "attest_test_regenerate"
+required-features = ["test-util"]
+
+[[test]]
+name = "chat_connect_timing"
+required-features = ["test-util"]

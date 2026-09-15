@@ -1,0 +1,191 @@
+// Copyright 2026 The RocketMQ Rust Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use std::any::Any;
+use std::sync::atomic::AtomicU64;
+use std::sync::atomic::Ordering;
+use std::sync::Arc;
+
+use rocketmq_client_rust::ClientRuntime;
+use rocketmq_client_rust::DefaultMQProducer;
+use rocketmq_client_rust::LocalTransactionState;
+use rocketmq_client_rust::SendResult;
+use rocketmq_client_rust::TransactionListener;
+use rocketmq_client_rust::TransactionMQProducer;
+use rocketmq_client_rust::TransactionSendResult;
+use rocketmq_error::Error as CanonicalError;
+use rocketmq_model::common::message::message_ext::MessageExt;
+use rocketmq_model::common::message::message_single::Message;
+use rocketmq_model::common::message::MessageTrait;
+use rocketmq_protocol::code::response_code::ResponseCode;
+
+use crate::core::topic::TopicSendRequest;
+use crate::core::topic::TopicSendResult;
+use crate::core::AdminError;
+
+pub(crate) const SEND_TIMEOUT_MILLIS: u64 = 5_000;
+
+static PRODUCER_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+
+struct CommitTransactionListener;
+
+impl TransactionListener for CommitTransactionListener {
+    fn execute_local_transaction(
+        &self,
+        _message: &dyn MessageTrait,
+        _argument: Option<&(dyn Any + Send + Sync)>,
+    ) -> LocalTransactionState {
+        LocalTransactionState::CommitMessage
+    }
+
+    fn check_local_transaction(&self, _message: &MessageExt) -> LocalTransactionState {
+        LocalTransactionState::CommitMessage
+    }
+}
+
+pub(crate) fn is_consumer_not_online_error(error: &CanonicalError) -> bool {
+    crate::canonical_broker_response_code(error)
+        .is_some_and(|code| ResponseCode::from(code) == ResponseCode::ConsumerNotOnline)
+}
+
+pub(crate) fn unique_producer_group(now_millis: u64, transactional: bool) -> String {
+    let sequence = PRODUCER_SEQUENCE.fetch_add(1, Ordering::Relaxed);
+    let kind = if transactional { "tx-sender" } else { "sender" };
+    format!("dashboard-topic-{kind}-{now_millis}-{sequence}")
+}
+
+pub(crate) fn build_send_message(request: &TopicSendRequest) -> Message {
+    let mut builder = Message::builder()
+        .topic(request.topic.clone())
+        .body_slice(request.message_body.as_bytes())
+        .trace_switch(request.trace_enabled);
+    if !request.tag.trim().is_empty() {
+        builder = builder.tags(request.tag.clone());
+    }
+    if !request.key.trim().is_empty() {
+        builder = builder.key(request.key.clone());
+    }
+    builder.build_unchecked()
+}
+
+pub(crate) async fn send_normal_message(
+    client_runtime: Arc<ClientRuntime>,
+    mut client_config: rocketmq_client_rust::ClientConfig,
+    producer_group: String,
+    request: &TopicSendRequest,
+    signing_hook: Option<Arc<dyn rocketmq_transport::api::RPCHook>>,
+) -> Result<TopicSendResult, AdminError> {
+    client_config.set_instance_name(producer_group.clone().into());
+    let mut builder = DefaultMQProducer::builder(client_runtime)
+        .producer_group(producer_group)
+        .client_config(client_config)
+        .retry_times_when_send_failed(0)
+        .retry_times_when_send_async_failed(0)
+        .retry_another_broker_when_not_store_ok(false);
+    if let Some(hook) = signing_hook {
+        builder = builder.rpc_hook(hook);
+    }
+    let mut producer = builder.build();
+    producer
+        .start()
+        .await
+        .map_err(|error| backend_error("start_topic_test_producer", error))?;
+    let send_result = producer
+        .send_with_timeout(build_send_message(request), SEND_TIMEOUT_MILLIS)
+        .await;
+    producer.shutdown().await;
+    let send_result = send_result
+        .map_err(|error| backend_error("send_topic_test_message", error))?
+        .ok_or_else(|| {
+            AdminError::backend(
+                "send_topic_test_message",
+                "broker acknowledged send without returning a result",
+            )
+        })?;
+    Ok(map_send_result(request.topic.clone(), send_result))
+}
+
+pub(crate) async fn send_transaction_message(
+    client_runtime: Arc<ClientRuntime>,
+    mut client_config: rocketmq_client_rust::ClientConfig,
+    producer_group: String,
+    request: &TopicSendRequest,
+    signing_hook: Option<Arc<dyn rocketmq_transport::api::RPCHook>>,
+) -> Result<TopicSendResult, AdminError> {
+    client_config.set_instance_name(producer_group.clone().into());
+    let mut builder = TransactionMQProducer::builder(client_runtime)
+        .producer_group(producer_group)
+        .client_config(client_config)
+        .transaction_listener(CommitTransactionListener)
+        .retry_times_when_send_failed(0)
+        .retry_times_when_send_async_failed(0)
+        .retry_another_broker_when_not_store_ok(false);
+    if let Some(hook) = signing_hook {
+        builder = builder.rpc_hook(hook);
+    }
+    let mut producer = builder.build();
+    producer
+        .start()
+        .await
+        .map_err(|error| backend_error("start_topic_transaction_test_producer", error))?;
+    let send_result = producer
+        .send_message_in_transaction::<(), _>(build_send_message(request), None)
+        .await;
+    producer.shutdown().await;
+    map_transaction_send_result(
+        request.topic.clone(),
+        send_result.map_err(|error| backend_error("send_topic_transaction_test_message", error))?,
+    )
+}
+
+pub(crate) fn map_send_result(topic: String, send_result: SendResult) -> TopicSendResult {
+    TopicSendResult {
+        topic,
+        send_status: format!("{:?}", send_result.send_status),
+        message_id: send_result.msg_id.map(|message_id| message_id.to_string()),
+        broker_name: send_result
+            .message_queue
+            .as_ref()
+            .map(|queue| queue.broker_name().to_string()),
+        queue_id: send_result.message_queue.as_ref().map(|queue| queue.queue_id()),
+        queue_offset: send_result.queue_offset,
+        transaction_id: send_result.transaction_id,
+        region_id: send_result.region_id,
+        local_transaction_state: None,
+    }
+}
+
+pub(crate) fn map_transaction_send_result(
+    topic: String,
+    transaction_result: TransactionSendResult,
+) -> Result<TopicSendResult, AdminError> {
+    let send_result = transaction_result.send_result.ok_or_else(|| {
+        AdminError::backend(
+            "send_topic_transaction_test_message",
+            "transaction producer completed without returning a send result",
+        )
+    })?;
+    let mut result = map_send_result(topic, send_result);
+    result.local_transaction_state = transaction_result
+        .local_transaction_state
+        .map(|state| state.to_string());
+    if let Some(local_state) = result.local_transaction_state.as_deref() {
+        result.send_status = format!("{} ({local_state})", result.send_status);
+    }
+    Ok(result)
+}
+
+fn backend_error(operation: &'static str, error: impl crate::IntoCanonicalError) -> AdminError {
+    AdminError::from_error(operation, error.into_canonical_error())
+}

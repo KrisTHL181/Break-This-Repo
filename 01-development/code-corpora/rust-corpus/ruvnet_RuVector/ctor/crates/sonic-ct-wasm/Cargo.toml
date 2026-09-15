@@ -1,0 +1,30 @@
+# sonic-ct-wasm — raw C-ABI WebAssembly wrapper around the `sonic_ct` core.
+#
+# Deliberately avoids wasm-bindgen: it exports a small, stable set of
+# `extern "C"` functions and lets the JS loader read flat buffers directly from
+# linear memory. This keeps the build to a single `cargo build --target
+# wasm32-unknown-unknown` with no extra toolchain (no wasm-pack / wasm-bindgen
+# version coupling).
+[package]
+name = "sonic-ct-wasm"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.74"
+description = "WebAssembly (raw C-ABI) wrapper for the sonic_ct USCT simulator."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/ruvnet/ruvector"
+
+[workspace]
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+sonic_ct = { path = "../sonic-ct" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

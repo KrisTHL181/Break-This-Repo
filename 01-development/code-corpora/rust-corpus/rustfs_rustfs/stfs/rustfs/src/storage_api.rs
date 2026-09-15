@@ -1,0 +1,468 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//! Root-local domain boundaries for storage owner APIs used by RustFS outer
+//! runtime modules.
+
+use rustfs_storage_api as storage_contracts;
+
+pub(crate) mod capacity {
+    pub(crate) use crate::storage::storage_api::ecstore_capacity::is_pool_activation_fleet_proof_error;
+
+    pub(crate) mod service {
+        pub(crate) use crate::storage::storage_api::{all_local_disk, disk_drive_path, disk_endpoint};
+    }
+}
+
+/// Offline bucket-metadata inspection (`rustfs inspect bucket-meta`,
+/// backlog#1733): read-only shard verification and reconstruction without a
+/// running store.
+pub(crate) mod inspect {
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata as bucket_metadata;
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::utils::check_valid_bucket_name_strict;
+    pub(crate) use crate::storage::storage_api::ecstore_erasure::{BitrotReader, Erasure};
+    pub(crate) use crate::storage::storage_api::ecstore_set_disk::file_info_quorum_hash;
+}
+
+pub(crate) mod cluster {
+    pub(crate) mod network_probe {
+        pub(crate) use crate::storage::storage_api::ecstore_rpc::{NetworkPeerProbeClient, NetworkPeerProbeError};
+    }
+
+    pub(crate) mod contract {
+        pub(crate) mod capability {
+            #[cfg(test)]
+            pub(crate) use super::super::super::storage_contracts::CapabilityState;
+            pub(crate) use super::super::super::storage_contracts::{
+                CapabilitySnapshotError, CapabilityStatus, MemorySamplingState, PlatformSupport, UserspaceProfilingCapability,
+            };
+        }
+
+        pub(crate) mod observability {
+            pub(crate) use super::super::super::storage_contracts::{ObservabilitySnapshot, ObservabilitySnapshotProvider};
+        }
+
+        pub(crate) mod topology {
+            pub(crate) use super::super::super::storage_contracts::{
+                DiskCapabilities, TopologyCapabilities, TopologySnapshot, TopologySnapshotProvider,
+            };
+        }
+    }
+
+    pub(crate) use crate::storage::storage_api::{EndpointServerPools, topology_snapshot_from_endpoint_pools_with_capabilities};
+
+    #[cfg(test)]
+    pub(crate) use crate::storage::storage_api::{Endpoint, Endpoints, PoolEndpoints};
+
+    pub(crate) mod control_plane {
+        pub(crate) use crate::storage::storage_api::ecstore_cluster::{
+            ClusterControlPlane, ClusterControlPlaneSnapshot, ClusterLocalNodeStorageSnapshot, ClusterMembershipSnapshot,
+            ClusterPeerHealthSnapshot, ClusterPoolStateSnapshot, ClusterRpcBoundarySnapshot,
+        };
+    }
+}
+
+#[cfg(test)]
+pub(crate) mod config_test {
+    pub(crate) use crate::storage::storage_api::DisksLayout;
+}
+
+pub(crate) mod error {
+    pub(crate) mod contract {
+        pub(crate) use super::super::storage_contracts::error::StorageErrorCode;
+
+        pub(crate) mod range {
+            pub(crate) use super::super::super::storage_contracts::HTTPRangeError;
+        }
+    }
+
+    #[cfg(test)]
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata::UnreadableBucketConfig;
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata::{
+        is_unreadable_config_error, unreadable_config_refusal,
+    };
+    pub(crate) use crate::storage::storage_api::ecstore_error::PoolMetadataError;
+    #[cfg(test)]
+    pub(crate) use crate::storage::storage_api::ecstore_error::PoolMetadataFailure;
+    pub(crate) use crate::storage::storage_api::{QuotaError, StorageError};
+}
+
+pub(crate) mod kms {
+    pub(crate) mod contract {
+        pub(crate) mod bucket {
+            pub(crate) use super::super::super::storage_contracts::{BucketOperations, BucketOptions};
+        }
+
+        pub(crate) mod list {
+            pub(crate) use super::super::super::storage_contracts::ListOperations;
+        }
+
+        pub(crate) mod object {
+            pub(crate) use super::super::super::storage_contracts::ObjectOperations;
+        }
+    }
+
+    pub(crate) use crate::storage::storage_api::{ECStore, StorageError};
+    pub(crate) type StorageObjectOptions = crate::storage::storage_api::StorageObjectOptions;
+    pub(crate) use crate::storage::storage_api::{ObjectDekRewrapOutcome, rewrap_object_encryption_metadata};
+
+    /// Bucket SSE configuration for the KMS deletion reference gate;
+    /// `Err(StorageError::ConfigNotFound)` when the bucket has none.
+    pub(crate) async fn get_bucket_sse_config(bucket: &str) -> Result<s3s::dto::ServerSideEncryptionConfiguration, StorageError> {
+        crate::storage::storage_api::ecstore_bucket::metadata_sys::get_sse_config(bucket)
+            .await
+            .map(|(config, _)| config)
+    }
+}
+
+pub(crate) mod protocols {
+    pub(crate) mod client {
+        pub(crate) use crate::storage::storage_api::access_consumer::ReqInfo;
+        pub(crate) type FS = crate::storage::storage_api::FS;
+        pub(crate) use crate::storage::storage_api::request_context_consumer::RequestContext;
+    }
+}
+
+pub(crate) mod server {
+    pub(crate) mod event {
+        pub(crate) mod contract {
+            #[cfg(test)]
+            pub(crate) mod lifecycle {
+                pub(crate) use super::super::super::super::storage_contracts::TransitionedObject;
+            }
+        }
+
+        pub(crate) use crate::storage::storage_api::{
+            EventArgs, StorageObjectInfo, read_existing_server_config_no_lock, register_event_dispatch_hook,
+            with_server_config_read_lock,
+        };
+    }
+
+    pub(crate) mod http {
+        pub(crate) use crate::storage::storage_api::{
+            ServerContextSlot, TONIC_RPC_PREFIX, normalize_tonic_rpc_audience, tonic_boot_epoch_challenge,
+            tonic_boot_epoch_response_headers, tonic_rpc_auth_failure_reason, verify_tonic_rpc_signature_with_bootstrap,
+        };
+
+        pub(crate) fn try_current_local_node_name() -> Option<String> {
+            crate::storage::storage_api::try_current_local_node_name()
+        }
+
+        #[cfg(test)]
+        pub(crate) use crate::storage::storage_api::{
+            Endpoint, EndpointServerPools, Endpoints, PeerRestClient, PoolEndpoints, ScannerScopedDirtyUsageAckEntry,
+            gen_signature_headers, gen_tonic_signature_headers,
+        };
+
+        pub(crate) mod ecfs {
+            pub(crate) type FS = crate::storage::storage_api::FS;
+        }
+
+        pub(crate) mod metadata_route {
+            pub(crate) fn with_metadata_route<A>(admin: A, host: Option<s3s::host::MultiDomain>) -> impl s3s::route::S3Route
+            where
+                A: s3s::route::S3Route,
+            {
+                crate::app::metadata_route::with_metadata_route(admin, host)
+            }
+        }
+
+        pub(crate) mod request_context {
+            pub(crate) use crate::storage::storage_api::request_context_consumer::RequestContext;
+        }
+
+        pub(crate) mod rpc {
+            pub(crate) use crate::storage::storage_api::rpc_consumer::InternodeRpcService;
+        }
+
+        pub(crate) mod tonic_service {
+            #[cfg(test)]
+            pub(crate) use crate::storage::storage_api::tonic_service_consumer::make_server;
+            #[cfg(test)]
+            pub(crate) use crate::storage::storage_api::tonic_service_consumer::{
+                heal_topology_fingerprint, make_heal_control_server_for_source,
+            };
+            pub(crate) use crate::storage::storage_api::tonic_service_consumer::{
+                make_heal_control_server_with_cache, make_scanner_control_server, make_server_for_slot,
+                make_tier_mutation_control_server,
+            };
+        }
+    }
+
+    pub(crate) mod layer {
+        pub(crate) use crate::storage::storage_api::apply_cors_headers;
+
+        pub(crate) mod request_context {
+            pub(crate) use crate::storage::storage_api::request_context_consumer::{
+                RequestContext, extract_request_id_from_headers, spawn_traced,
+            };
+        }
+    }
+
+    pub(crate) mod module_switch {
+        pub(crate) use crate::storage::storage_api::{
+            Error, read_config, read_config_no_lock, save_config_no_lock, with_config_object_read_lock,
+            with_config_object_write_lock,
+        };
+    }
+
+    pub(crate) mod readiness {
+        pub(crate) mod contract {
+            pub(crate) mod admin {
+                pub(crate) use super::super::super::super::storage_contracts::{DiskSetSelector, StorageAdminApi};
+            }
+        }
+
+        pub(crate) use crate::storage::storage_api::ecstore_disk::DiskStore;
+        pub(crate) use crate::storage::storage_api::{Endpoint, EndpointServerPools, is_dist_erasure};
+
+        pub(crate) fn disk_endpoint_snapshot(disk: &DiskStore) -> Endpoint {
+            crate::storage::storage_api::ecstore_disk::DiskAPI::endpoint(disk.as_ref())
+        }
+
+        #[cfg(test)]
+        pub(crate) use crate::storage::storage_api::ecstore_disk::{DiskOption, new_disk};
+        #[cfg(test)]
+        pub(crate) use crate::storage::storage_api::{Endpoints, PoolEndpoints};
+    }
+
+    pub(crate) mod runtime_sources {
+        pub(crate) use crate::storage::storage_api::{ECStore, EndpointServerPools};
+    }
+}
+
+/// Storage surface of the site-replication service module
+/// (`crate::site_replication`, backlog#1840): bucket metadata, bucket
+/// targets, replication-config primitives, and the config-object lock
+/// helpers its state transaction runs on.
+pub(crate) mod site_replication {
+    pub(crate) use super::storage_contracts::{BucketOperations, BucketOptions};
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::bucket_target_sys::BucketTargetSys;
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata::{
+        BUCKET_REPLICATION_CONFIG, BUCKET_TARGETS_FILE, BUCKET_VERSIONING_CONFIG, BucketMetadata,
+    };
+
+    #[cfg(test)]
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::replication::merge_incoming_replication_config;
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::replication::{
+        OperatorRuleContract, assign_site_replication_rule_priorities, is_site_replication_role,
+        replication_target_arn_deployment_id, site_replication_rule_deployment_id,
+    };
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::target::{
+        ARN, BucketTarget, BucketTargetType, BucketTargets, Credentials,
+    };
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::utils::{deserialize, serialize};
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::versioning::VersioningApi;
+    #[cfg(test)]
+    pub(crate) use crate::storage::storage_api::ecstore_config::com::save_config;
+    #[cfg(test)]
+    pub(crate) use crate::storage::storage_api::{Endpoint, Endpoints, PoolEndpoints};
+
+    pub(crate) use crate::storage::storage_api::{
+        ECStore, EndpointServerPools, StorageError, delete_config_no_lock, is_err_bucket_not_found, lock_bucket_targets_metadata,
+        read_config, read_config_no_lock, save_config_no_lock, with_config_object_read_lock, with_config_object_write_lock,
+    };
+
+    pub(crate) mod metadata_sys {
+        pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata_sys::{
+            capture_bucket_metadata_incarnation, get, get_replication_config, get_versioning_config, list_bucket_targets,
+            update_if_incarnation,
+        };
+    }
+
+    /// S3 wire types for the service module, funneled here so the module
+    /// itself stays off the direct s3s surface (s3s footprint ratchet).
+    pub(crate) mod s3 {
+        pub(crate) use s3s::dto::{
+            BucketLifecycleConfiguration, BucketVersioningStatus, DeleteMarkerReplication, DeleteMarkerReplicationStatus,
+            DeleteReplication, DeleteReplicationStatus, Destination, ExistingObjectReplication, ExistingObjectReplicationStatus,
+            LifecycleRule, ReplicaModifications, ReplicaModificationsStatus, ReplicationConfiguration, ReplicationRule,
+            ReplicationRuleStatus, SourceSelectionCriteria, VersioningConfiguration,
+        };
+        #[cfg(test)]
+        pub(crate) use s3s::dto::{ExpirationStatus, LifecycleExpiration, Timestamp, Transition, TransitionStorageClass};
+        pub(crate) use s3s::{Body, S3Error, S3ErrorCode, S3Response, S3Result, s3_error};
+    }
+}
+
+pub(crate) mod startup {
+    pub(crate) mod heal_control {
+        #[cfg(test)]
+        pub(crate) use crate::storage::storage_api::heal_control_startup_consumer::heal_topology_fingerprint;
+        pub(crate) use crate::storage::storage_api::heal_control_startup_consumer::initialize_heal_topology_fingerprint;
+    }
+
+    pub(crate) mod background {
+        pub(crate) use crate::storage::storage_api::{
+            BitrotSelfTestError, ECStore, bitrot_self_test, set_workload_admission_snapshot_provider,
+        };
+    }
+
+    pub(crate) mod bucket_metadata {
+        pub(crate) mod contract {
+            pub(crate) mod bucket {
+                pub(crate) use super::super::super::super::storage_contracts::{BucketOperations, BucketOptions};
+            }
+        }
+
+        pub(crate) use crate::storage::storage_api::{
+            ECStore, Error, Result, get_global_replication_pool, init_bucket_metadata_sys,
+            reconcile_bucket_resync_target_intents, try_migrate_bucket_metadata, try_migrate_iam_config,
+        };
+    }
+
+    pub(crate) mod deadlock {
+        pub(crate) use crate::storage::storage_api::deadlock_detector_consumer::get_deadlock_detector;
+    }
+
+    pub(crate) mod fs_guard {
+        pub(crate) use crate::storage::storage_api::EndpointServerPools;
+    }
+
+    pub(crate) mod iam {
+        pub(crate) use crate::storage::storage_api::ECStore;
+    }
+
+    pub(crate) mod init {
+        pub(crate) use crate::storage::storage_api::ecstore_bucket::config_parse_mode::validate_bucket_config_parse_mode_env;
+        pub(crate) use crate::storage::storage_api::{
+            get_bucket_notification_config, process_lambda_configurations, process_queue_configurations,
+            process_topic_configurations,
+        };
+
+        pub(crate) mod concurrency {
+            pub(crate) use crate::storage::storage_api::concurrency_consumer::get_concurrency_manager;
+        }
+
+        pub(crate) mod ecfs {
+            pub(crate) type FS = crate::storage::storage_api::FS;
+        }
+    }
+
+    pub(crate) mod lifecycle {
+        pub(crate) use crate::storage::storage_api::ECStore;
+    }
+
+    pub(crate) mod sse {
+        pub(crate) use crate::storage::storage_api::sse_consumer::log_sse_kms_key_policy_mode;
+    }
+
+    pub(crate) mod notification {
+        pub(crate) use crate::storage::storage_api::{EndpointServerPools, Result, new_global_notification_sys};
+
+        #[cfg(test)]
+        pub(crate) use crate::storage::storage_api::Error;
+    }
+
+    pub(crate) mod runtime_sources {
+        pub(crate) use crate::storage::storage_api::{InstanceContext, set_global_rustfs_port};
+    }
+
+    pub(crate) mod services {
+        pub(crate) use super::super::storage_contracts::StorageAdminApi;
+        pub(crate) use crate::storage::storage_api::{ECStore, EndpointServerPools, ServerContextSlot};
+    }
+
+    pub(crate) mod shutdown {
+        pub(crate) use crate::storage::storage_api::{
+            mark_get_metadata_read_version_coalescing_service_ready, shutdown_background_monitors, shutdown_background_services,
+            store_compression_total_in_backend,
+        };
+    }
+
+    pub(crate) mod storage {
+        #[cfg(test)]
+        pub(crate) use crate::storage::storage_api::ecstore_config::storageclass::{
+            INLINE_BLOCK_ENV, OPTIMIZE_ENV, RRS_ENV, STANDARD_ENV,
+        };
+        pub(crate) use crate::storage::storage_api::{
+            ECStore, EndpointServerPools, InstanceContext, bootstrap_instance_ctx, global_config_init_error_is_deterministic,
+            init_background_replication, init_compression_total_memory_from_backend, init_ecstore_config, init_global_config_sys,
+            init_local_disks_with_instance_ctx, init_lock_clients, new_instance_ctx, prewarm_local_disk_id_map_with_instance_ctx,
+            try_migrate_server_config,
+        };
+    }
+}
+
+pub(crate) mod workload {
+    pub(crate) mod admission {
+        pub(crate) use crate::storage::storage_api::{bucket_metadata_runtime_initialized, replication_queue_current_count};
+    }
+
+    pub(crate) mod concurrency {
+        pub(crate) use crate::storage::storage_api::concurrency_consumer::get_concurrency_manager;
+    }
+}
+
+pub(crate) mod table {
+    pub(crate) mod contract {
+        pub(crate) mod http {
+            pub(crate) use super::super::super::storage_contracts::HTTPPreconditions;
+        }
+
+        pub(crate) mod list {
+            pub(crate) use super::super::super::storage_contracts::{
+                ListObjectVersionsInfo, ListObjectsV2Info, ListOperations, ObjectInfoOrErr, WalkOptions,
+            };
+        }
+
+        pub(crate) mod namespace {
+            pub(crate) use super::super::super::storage_contracts::NamespaceLocking;
+        }
+
+        pub(crate) mod object {
+            pub(crate) use super::super::super::storage_contracts::{ObjectIO, ObjectOperations};
+        }
+
+        pub(crate) mod range {
+            pub(crate) use super::super::super::storage_contracts::HTTPRangeSpec;
+        }
+    }
+
+    pub(crate) use crate::storage::storage_api::{
+        BUCKET_TABLE_CATALOG_META_PREFIX, BUCKET_TABLE_CATALOG_TABLE_BUCKETS_PREFIX, BUCKET_TABLE_CONFIG,
+        BUCKET_TABLE_RESERVED_PREFIX, Error, RUSTFS_META_BUCKET, StorageDeletedObject, StorageError, StorageGetObjectReader,
+        StorageObjectInfo, StorageObjectOptions, StorageObjectToDelete, StoragePutObjReader, get_bucket_metadata,
+        get_lock_acquire_timeout, table_catalog_path_hash,
+    };
+}
+
+pub(crate) mod on_demand_migration {
+    pub(crate) use crate::storage::storage_api::ECStore;
+    pub(crate) use crate::storage::storage_api::StorageObjectOptions as ObjectOptions;
+    pub(crate) use crate::storage::storage_api::contract::{
+        namespace::NamespaceLocking, object::HTTPPreconditions, object::ObjectOperations, range::HTTPRangeSpec,
+    };
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata::BUCKET_ON_DEMAND_MIGRATION_CONFIG;
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata_sys::{
+        BUCKET_CONFIG_PUBLISH_HOOK, get_on_demand_migration_config, get_on_demand_migration_config_in,
+    };
+    pub(crate) use crate::storage::storage_api::ecstore_bucket::remote_s3_client;
+    pub(crate) use crate::storage::storage_api::ecstore_config::com::{read_config_with_metadata, save_config_with_opts};
+    pub(crate) use crate::storage::storage_api::ecstore_disk::{BUCKET_META_PREFIX, RUSTFS_META_BUCKET};
+    pub(crate) use crate::storage::storage_api::ecstore_error::Error as StorageError;
+    pub(crate) use crate::storage::storage_api::ecstore_object::WriteCompletion;
+    pub(crate) use crate::storage::storage_api::ecstore_set_disk::get_lock_acquire_timeout;
+
+    #[cfg(test)]
+    pub(crate) mod test_support {
+        pub(crate) use crate::storage::storage_api::contract::bucket::{BUCKET_LIFECYCLE_LOCK_OBJECT, BucketOperations};
+        pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata::{
+            BUCKET_ON_DEMAND_MIGRATION_CONFIG, BucketMetadata,
+        };
+        pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata_sys::test_support::isolated_store_over_temp_disks;
+        pub(crate) use crate::storage::storage_api::ecstore_bucket::metadata_sys::{BucketMetadataSys, init_bucket_metadata_sys};
+        pub(crate) use crate::storage::storage_api::ecstore_set_disk::{PutObjectCommitBarrier, PutObjectCommitPause};
+    }
+}

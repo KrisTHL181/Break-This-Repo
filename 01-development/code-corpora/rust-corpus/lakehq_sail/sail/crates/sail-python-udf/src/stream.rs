@@ -1,0 +1,222 @@
+use std::pin::Pin;
+use std::sync::Arc;
+use std::task::{Context, Poll};
+
+use arrow_pyarrow::FromPyArrow;
+use datafusion::arrow::array::RecordBatch;
+use datafusion::arrow::datatypes::SchemaRef;
+use datafusion::execution::{RecordBatchStream, SendableRecordBatchStream};
+use datafusion::physical_plan::stream::RecordBatchStreamAdapter;
+use datafusion_common::{DataFusionError, Result, exec_err};
+use futures::{Stream, StreamExt};
+use pyo3::exceptions::{PyRuntimeError, PyStopIteration};
+use pyo3::prelude::PyAnyMethods;
+use pyo3::{IntoPyObject, Py, PyAny, PyRef, PyRefMut, PyResult, Python, pyclass, pymethods};
+use sail_common_datafusion::array::record_batch::cast_record_batch_positionally;
+use tokio::runtime::Handle;
+use tokio::select;
+use tokio::sync::{mpsc, oneshot};
+use tokio_stream::wrappers::ReceiverStream;
+
+use crate::conversion::TryToPy;
+use crate::error::PyUdfResult;
+
+struct PyInputStreamState {
+    input: SendableRecordBatchStream,
+    signal: oneshot::Receiver<()>,
+}
+
+impl PyInputStreamState {
+    async fn next(&mut self) -> Option<Result<RecordBatch>> {
+        select! {
+            x = self.input.next() => x,
+            _ = &mut self.signal => Some(exec_err!("stop signal received for the Python input stream")),
+        }
+    }
+}
+
+#[pyclass]
+struct PyInputStream {
+    state: Arc<tokio::sync::Mutex<PyInputStreamState>>,
+    handle: Handle,
+    large_var_types: bool,
+}
+
+impl PyInputStream {
+    pub fn new(
+        input: SendableRecordBatchStream,
+        signal: oneshot::Receiver<()>,
+        handle: Handle,
+        large_var_types: bool,
+    ) -> Self {
+        Self {
+            state: Arc::new(tokio::sync::Mutex::new(PyInputStreamState {
+                input,
+                signal,
+            })),
+            handle,
+            large_var_types,
+        }
+    }
+}
+
+#[pymethods]
+impl PyInputStream {
+    fn __iter__(self_: PyRef<Self>) -> PyRef<Self> {
+        self_
+    }
+
+    fn __next__(self_: PyRefMut<'_, Self>) -> PyResult<Py<PyAny>> {
+        let state = Arc::clone(&self_.state);
+        let handle = self_.handle.clone();
+        let large_var_types = self_.large_var_types;
+        let py = self_.py();
+        py.detach(|| {
+            handle.block_on(async {
+                state
+                    .lock()
+                    .await
+                    .next()
+                    .await
+                    .map(|x| x.map_err(|e| PyRuntimeError::new_err(e.to_string())))
+            })
+        })
+        .map(|x| x.and_then(|x| x.try_to_py(py, large_var_types).map(|batch| batch.unbind())))
+        .unwrap_or(Err(PyStopIteration::new_err("")))
+    }
+}
+
+enum PyMapStreamState {
+    Running {
+        signal: oneshot::Sender<()>,
+        python_task: std::thread::JoinHandle<()>,
+    },
+    Stopped,
+}
+
+pub struct PyMapStream {
+    inner: SendableRecordBatchStream,
+    state: PyMapStreamState,
+}
+
+impl PyMapStream {
+    const OUTPUT_CHANNEL_BUFFER: usize = 16;
+
+    pub fn new(
+        input: SendableRecordBatchStream,
+        function: Py<PyAny>,
+        output_schema: SchemaRef,
+        large_var_types: bool,
+    ) -> Self {
+        let (output_tx, output_rx) = mpsc::channel(Self::OUTPUT_CHANNEL_BUFFER);
+        let (signal_tx, signal_rx) = oneshot::channel();
+        let handle = Handle::current();
+        let python_output_schema = output_schema.clone();
+        // We have to spawn a thread instead of spawning a tokio task
+        // due to the blocking operation inside the input iterator.
+        let python_task = std::thread::spawn(move || {
+            match Python::attach(|py| {
+                Self::run_python_task(
+                    py,
+                    function,
+                    input,
+                    python_output_schema,
+                    signal_rx,
+                    output_tx.clone(),
+                    handle,
+                    large_var_types,
+                )
+            }) {
+                Ok(()) => {}
+                Err(e) => {
+                    let _ = output_tx.blocking_send(Err(e.into()));
+                }
+            }
+        });
+        Self {
+            inner: Box::pin(RecordBatchStreamAdapter::new(
+                output_schema,
+                ReceiverStream::new(output_rx),
+            )),
+            state: PyMapStreamState::Running {
+                signal: signal_tx,
+                python_task,
+            },
+        }
+    }
+
+    fn run_python_task(
+        py: Python,
+        function: Py<PyAny>,
+        input: SendableRecordBatchStream,
+        output_schema: SchemaRef,
+        signal: oneshot::Receiver<()>,
+        sender: mpsc::Sender<Result<RecordBatch>>,
+        handle: Handle,
+        large_var_types: bool,
+    ) -> PyUdfResult<()> {
+        // Create a Python iterator from the input record batch stream and call the function.
+        // We could have wrap each record batch in a single-element list and call the function
+        // for each record batch, but that does not work if the user wants to maintain state
+        // across record batches.
+        let input = PyInputStream::new(input, signal, handle, large_var_types);
+        let input = input.into_pyobject(py)?;
+        let output = function.call1(py, (input,))?.into_bound(py);
+        for batch in output.try_iter()? {
+            // Ignore empty record batches since the PySpark unit tests expect them to be ignored
+            // even if they have incompatible schemas.
+            if batch.as_ref().is_ok_and(|x| x.is_empty().unwrap_or(false)) {
+                continue;
+            }
+            let batch = batch.and_then(|x| RecordBatch::from_pyarrow_bound(&x));
+            if py
+                .detach(|| {
+                    let batch = batch
+                        .map_err(|e| DataFusionError::External(e.into()))
+                        .and_then(|x| {
+                            cast_record_batch_positionally(x, Arc::clone(&output_schema))
+                        });
+                    sender.blocking_send(batch)
+                })
+                .is_err()
+            {
+                break;
+            }
+        }
+        Ok(())
+    }
+}
+
+impl Drop for PyMapStream {
+    fn drop(&mut self) {
+        let state = std::mem::replace(&mut self.state, PyMapStreamState::Stopped);
+        match state {
+            PyMapStreamState::Running {
+                signal,
+                python_task,
+            } => {
+                let _ = signal.send(());
+                // This may block indefinitely waiting for the Python function
+                // to finish processing all input batches received before the stop signal.
+                // Unfortunately, there is no reliable way to abort the thread cleanly,
+                // so we have to wait for it to finish.
+                let _ = python_task.join();
+            }
+            PyMapStreamState::Stopped => {}
+        }
+    }
+}
+
+impl Stream for PyMapStream {
+    type Item = Result<RecordBatch>;
+
+    fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
+        self.inner.as_mut().poll_next(cx)
+    }
+}
+
+impl RecordBatchStream for PyMapStream {
+    fn schema(&self) -> SchemaRef {
+        self.inner.schema()
+    }
+}

@@ -1,0 +1,198 @@
+use super::Text;
+use std::borrow::Borrow;
+use std::ops::RangeBounds;
+
+#[derive(Debug, Default, Clone)]
+pub struct NestedListItem {
+    indentation_level: usize,
+    content: Text,
+}
+
+impl NestedListItem {
+    pub fn new<S: AsRef<str>>(text: S) -> Self
+    where
+        S: ToString,
+    {
+        NestedListItem {
+            content: Text::new(text),
+            ..Default::default()
+        }
+    }
+    pub fn indent(mut self, indentation_level: usize) -> Self {
+        self.indentation_level = indentation_level;
+        self
+    }
+    pub fn selected(mut self) -> Self {
+        self.content = self.content.selected();
+        self
+    }
+    pub fn opaque(mut self) -> Self {
+        self.content = self.content.opaque();
+        self
+    }
+    pub fn color_indices(mut self, index_level: usize, indices: Vec<usize>) -> Self {
+        self.content = self.content.color_indices(index_level, indices);
+        self
+    }
+    pub fn color_range<R: RangeBounds<usize>>(mut self, index_level: usize, indices: R) -> Self {
+        self.content = self.content.color_range(index_level, indices);
+        self
+    }
+    pub fn color_substring<S: AsRef<str>>(mut self, index_level: usize, substr: S) -> Self {
+        self.content = self.content.color_substring(index_level, substr);
+        self
+    }
+    pub fn color_nth_substring<S: AsRef<str>>(
+        mut self,
+        index_level: usize,
+        substr: S,
+        occurrence_index: usize,
+    ) -> Self {
+        self.content = self
+            .content
+            .color_nth_substring(index_level, substr, occurrence_index);
+        self
+    }
+    pub fn color_last_substring<S: AsRef<str>>(mut self, index_level: usize, substr: S) -> Self {
+        self.content = self.content.color_last_substring(index_level, substr);
+        self
+    }
+    pub fn color_all(mut self, index_level: usize) -> Self {
+        self.content = self.content.color_all(index_level);
+        self
+    }
+    pub fn error_color_indices(mut self, indices: Vec<usize>) -> Self {
+        self.content = self.content.error_color_indices(indices);
+        self
+    }
+    pub fn error_color_range<R: RangeBounds<usize>>(mut self, indices: R) -> Self {
+        self.content = self.content.error_color_range(indices);
+        self
+    }
+    pub fn error_color_substring<S: AsRef<str>>(mut self, substr: S) -> Self {
+        self.content = self.content.error_color_substring(substr);
+        self
+    }
+    pub fn error_color_nth_substring<S: AsRef<str>>(
+        mut self,
+        substr: S,
+        occurrence_index: usize,
+    ) -> Self {
+        self.content = self
+            .content
+            .error_color_nth_substring(substr, occurrence_index);
+        self
+    }
+    pub fn error_color_last_substring<S: AsRef<str>>(mut self, substr: S) -> Self {
+        self.content = self.content.error_color_last_substring(substr);
+        self
+    }
+    pub fn error_color_all(mut self) -> Self {
+        self.content = self.content.error_color_all();
+        self
+    }
+    pub fn success_color_indices(mut self, indices: Vec<usize>) -> Self {
+        self.content = self.content.success_color_indices(indices);
+        self
+    }
+    pub fn success_color_range<R: RangeBounds<usize>>(mut self, indices: R) -> Self {
+        self.content = self.content.success_color_range(indices);
+        self
+    }
+    pub fn success_color_substring<S: AsRef<str>>(mut self, substr: S) -> Self {
+        self.content = self.content.success_color_substring(substr);
+        self
+    }
+    pub fn success_color_nth_substring<S: AsRef<str>>(
+        mut self,
+        substr: S,
+        occurrence_index: usize,
+    ) -> Self {
+        self.content = self
+            .content
+            .success_color_nth_substring(substr, occurrence_index);
+        self
+    }
+    pub fn success_color_last_substring<S: AsRef<str>>(mut self, substr: S) -> Self {
+        self.content = self.content.success_color_last_substring(substr);
+        self
+    }
+    pub fn success_color_all(mut self) -> Self {
+        self.content = self.content.success_color_all();
+        self
+    }
+    pub fn serialize(&self) -> String {
+        let mut serialized = String::new();
+        for _ in 0..self.indentation_level {
+            serialized.push('|');
+        }
+        format!("{}{}", serialized, self.content.serialize())
+    }
+}
+
+/// render a nested list with arbitrary data
+pub fn print_nested_list(items: Vec<NestedListItem>) {
+    let items = items
+        .into_iter()
+        .map(|i| i.serialize())
+        .collect::<Vec<_>>()
+        .join(";");
+    print!("\u{1b}Pznested_list;{}\u{1b}\\", items)
+}
+
+pub fn print_nested_list_with_coordinates(
+    items: Vec<NestedListItem>,
+    x: usize,
+    y: usize,
+    width: Option<usize>,
+    height: Option<usize>,
+) {
+    let width = width.map(|w| w.to_string()).unwrap_or_default();
+    let height = height.map(|h| h.to_string()).unwrap_or_default();
+    let items = items
+        .into_iter()
+        .map(|i| i.serialize())
+        .collect::<Vec<_>>()
+        .join(";");
+    print!(
+        "\u{1b}Pznested_list;{}/{}/{}/{};{}\u{1b}\\",
+        x, y, width, height, items
+    )
+}
+
+pub fn serialize_nested_list<I>(items: I) -> String
+where
+    I: IntoIterator,
+    I::Item: Borrow<NestedListItem>,
+{
+    let items = items
+        .into_iter()
+        .map(|i| i.borrow().serialize())
+        .collect::<Vec<_>>()
+        .join(";");
+    format!("\u{1b}Pznested_list;{}\u{1b}\\", items)
+}
+
+pub fn serialize_nested_list_with_coordinates<I>(
+    items: I,
+    x: usize,
+    y: usize,
+    width: Option<usize>,
+    height: Option<usize>,
+) -> String
+where
+    I: IntoIterator,
+    I::Item: Borrow<NestedListItem>,
+{
+    let width = width.map(|w| w.to_string()).unwrap_or_default();
+    let height = height.map(|h| h.to_string()).unwrap_or_default();
+    let items = items
+        .into_iter()
+        .map(|i| i.borrow().serialize())
+        .collect::<Vec<_>>()
+        .join(";");
+    format!(
+        "\u{1b}Pznested_list;{}/{}/{}/{};{}\u{1b}\\",
+        x, y, width, height, items
+    )
+}

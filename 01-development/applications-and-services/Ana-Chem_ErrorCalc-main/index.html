@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<title>分析化学计算器</title>
+
+<head>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+    <script>
+        var RSDArray = new Array();
+        var total = 0;
+        var average = 0;
+        var totalSD = 0;
+        var totalAD = 0;
+        var SD = 0;
+        var RSD = 0;
+        var AD = 0;
+        var RAD = 0;
+    </script>
+    <link
+        href="https://cdn.bootcdn.net/ajax/libs/material-components-web/8.0.0-canary.4e9343929.0/material-components-web.min.css"
+        rel="stylesheet">
+    <script
+        src="https://cdn.bootcdn.net/ajax/libs/material-components-web/8.0.0-canary.4e9343929.0/material-components-web.min.js"></script>
+</head>
+
+<body>
+    <H2>误差计算<H2>
+    <p id="arraystring"></p>
+    <label class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+        <input type="number" id="num" class="mdc-text-field__input" aria-labelledby="my-label-id">
+        <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+                <span class="mdc-floating-label" id="my-label-id">数值</span>
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
+        </span>
+    </label>
+    <button onclick="addVar();" class="mdc-button foo-button1">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">添加值</span>
+    </button>
+    <button onclick="calc();" class="mdc-button foo-button2">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">计算</span>
+    </button>
+    <button onclick="clearArray();" class="mdc-button foo-button3">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">清空</span>
+    </button>
+    <p id="length"></p>
+    <p id="average"></p>
+    <p id="SDv"></p>
+    <p id="RSDv"></p>
+    <p id="ADv"></p>
+    <p id="RADv"></p>
+    <p id="Qmax"></p>
+    <br>
+        <H2>透光率吸光度互转<H2>
+            <label class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+        <input type="number" id="trans" class="mdc-text-field__input" aria-labelledby="my-label-id">
+        <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+                <span class="mdc-floating-label" id="my-label-id">透光率%T</span>
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
+        </span>
+    </label>
+    <label class="mdc-text-field mdc-text-field--outlined" data-mdc-auto-init="MDCTextField">
+        <input type="number" id="absor" class="mdc-text-field__input" aria-labelledby="my-label-id">
+        <span class="mdc-notched-outline">
+            <span class="mdc-notched-outline__leading"></span>
+            <span class="mdc-notched-outline__notch">
+                <span class="mdc-floating-label" id="my-label-id">吸光度A</span>
+            </span>
+            <span class="mdc-notched-outline__trailing"></span>
+        </span>
+    </label>
+    <button onclick="TtoA();" class="mdc-button foo-button5">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">%T转A</span>
+    </button>
+    <button onclick="AtoT();" class="mdc-button foo-button6">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">A转%T</span>
+    <script>
+        var addVar = function () {
+            if (document.getElementById('num').value) {
+                RSDArray[RSDArray.length] = document.getElementById('num').value;
+                document.getElementById('arraystring').innerText = RSDArray.toString();
+                document.getElementById('num').value = "";
+            }
+            else {
+                window.alert("别拿空值调戏人家啦,人家要被玩坏了!")
+            }
+            document.getElementById('num').focus();
+        }
+        var calc = function () {
+            total = 0;
+            average = 0;
+            totalSD = 0;
+            SD = 0;
+            RSD = 0;
+            totalAD = 0;
+            AD = 0;
+            RAD = 0;
+            RSDArray.sort(function (a, b) {
+                return a - b;
+            });
+            document.getElementById('arraystring').innerText = RSDArray.toString();
+            if (RSDArray.length <= 0) {
+                window.alert("你啥也没有输,你让人家怎么算嘛...");
+            }
+            else {
+                document.getElementById('length').innerText = "数组项数:" + RSDArray.length;
+                for (var i = 0; RSDArray[i]; i++) {
+                    total = Number(total) + Number(RSDArray[i]);
+                }
+                average = Number(total) / RSDArray.length;
+                document.getElementById('average').innerText = "平均值:" + average;
+
+                if (RSDArray.length <= 1) {
+                    window.alert("你这就一个数,人家也很为难啊...");
+                }
+                else {
+                    for (var i = 0; RSDArray[i]; i++) {
+                        var abs = Math.abs(Number(RSDArray[i]) - Number(average));
+                        var absq = Number(abs) * Number(abs);
+                        totalSD = Number(totalSD) + Number(absq);
+                    }
+
+                    SD = strip(Math.sqrt(Number(totalSD) / (Number(RSDArray.length) - 1)));
+                    document.getElementById('SDv').innerText = "SD:" + SD;
+                    document.getElementById('RSDv').innerText = "RSD:" + Number(SD) / Number(average) * 100 + "%";
+                    var Q0 = new Array();
+                    Q0[0] = Math.abs(Number(RSDArray[1]) - Number(RSDArray[0]));
+                    Q0[1] = Math.abs(Number(RSDArray[RSDArray.length - 1]) - Number(RSDArray[RSDArray.length - 2]));
+                    Q0.sort(function (a, b) {
+                        return a - b;
+                    });
+                    document.getElementById('Qmax').innerText = "最大的Q:" + strip(Number(Q0[1]) / (Number(RSDArray[RSDArray.length - 1]) - Number(RSDArray[0])));
+
+
+                }
+                for (var i = 0; RSDArray[i]; i++) {
+                    var abs = Math.abs(Number(RSDArray[i]) - Number(average));;
+                    totalAD = Number(totalAD) + Number(abs);
+                }
+                AD = strip(Number(totalAD) / Number(RSDArray.length));
+                document.getElementById('ADv').innerText = "AD:" + AD;
+                document.getElementById('RADv').innerText = "RAD:" + Number(AD) / Number(average) * 100 + "%";
+            }
+        }
+        var clearArray = function () {
+            if (RSDArray.length) {
+                RSDArray = [];
+                document.getElementById('arraystring').innerText = RSDArray.toString();
+                document.getElementById('length').innerText = "";
+                document.getElementById('average').innerText = "";
+                document.getElementById('SDv').innerText = "";
+                document.getElementById('RSDv').innerText = "";
+                document.getElementById('ADv').innerText = "";
+                document.getElementById('RADv').innerText = "";
+                document.getElementById('Qmax').innerText = "";
+            }
+            else {
+                window.alert("人家已经被榨干了,快停下!");
+            }
+        }
+                function TtoA() {
+            document.getElementById("absor").value = 0 - Math.log10(document.getElementById("trans").value / 100);
+        }
+        function AtoT() {
+            document.getElementById("trans").value = Math.pow(10, 0 - document.getElementById("absor").value) * 100;
+        }
+    </script>
+    <script>
+        window.mdc.autoInit();
+        mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button1'));
+        mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button2'));
+        mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button3'));
+        mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button5'));
+        mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button6'));
+        var getRandomColor = function () {
+            return '#' + (function (color) {
+                return (color += 'abcdef'[Math.floor(Math.random() * 6)])
+                    && (color.length == 6) ? color : arguments.callee(color);
+            })('');
+        }
+        function strip(num, precision = 10) {
+            return +parseFloat(num.toPrecision(precision));
+        }
+    </script>
+</body>
+
+</html>

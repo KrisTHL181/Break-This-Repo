@@ -1,0 +1,19 @@
+semi = true
+tabWidth = 4
+trailingComma = "all"
+
+[[overrides]]
+files = ["*.yml", "*.yaml"]
+options = { tabWidth = 2 }
+
+[[overrides]]
+files = ["*.js", "*.mjs", "*.cjs", "*.ts", "*.d.ts"]
+options = { semi = true, tabWidth = 2 }
+
+[[overrides]]
+files = [".prettierrc", "*.json", "*.css", "*.html"]
+options = { tabWidth = 2 }
+
+[[overrides]]
+files = ["*.ts"]
+options = { parser = "typescript" }

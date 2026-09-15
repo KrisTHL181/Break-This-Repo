@@ -1,0 +1,10 @@
+name = "my-framework"
+enablers = ["my-framework"]
+entryPoints = ["src/routes/**/*.{ts,tsx}"]
+configPatterns = ["my-framework.config.{ts,js}"]
+alwaysUsed = ["src/setup.ts"]
+toolingDependencies = ["my-framework-cli"]
+
+[[usedExports]]
+pattern = "src/routes/**/*.{ts,tsx}"
+exports = ["default", "loader"]

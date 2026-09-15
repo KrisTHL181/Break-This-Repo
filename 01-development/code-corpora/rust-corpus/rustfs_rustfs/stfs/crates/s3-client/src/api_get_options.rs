@@ -1,0 +1,197 @@
+#![allow(clippy::map_entry)]
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+#![allow(unused_imports)]
+#![allow(unused_variables)]
+#![allow(unused_mut)]
+#![allow(unused_assignments)]
+#![allow(unused_must_use)]
+#![allow(clippy::all)]
+
+use http::{HeaderMap, HeaderName, HeaderValue};
+use rustfs_utils::http::headers::AMZ_CHECKSUM_MODE;
+use std::collections::HashMap;
+use time::OffsetDateTime;
+use tracing::warn;
+
+use crate::api_error_response::err_invalid_argument;
+
+#[derive(Default)]
+pub struct AdvancedGetOptions {
+    pub replication_delete_marker: bool,
+    pub is_replication_ready_for_delete_marker: bool,
+    pub replication_proxy_request: String,
+}
+
+pub struct GetObjectOptions {
+    pub headers: HashMap<String, String>,
+    pub req_params: HashMap<String, String>,
+    //pub server_side_encryption: encrypt.ServerSide,
+    pub version_id: String,
+    pub part_number: i64,
+    pub checksum: bool,
+    pub internal: AdvancedGetOptions,
+}
+
+pub type StatObjectOptions = GetObjectOptions;
+
+impl Default for GetObjectOptions {
+    fn default() -> Self {
+        Self {
+            headers: HashMap::new(),
+            req_params: HashMap::new(),
+            //server_side_encryption: encrypt.ServerSide::default(),
+            version_id: "".to_string(),
+            part_number: 0,
+            checksum: false,
+            internal: AdvancedGetOptions::default(),
+        }
+    }
+}
+
+impl GetObjectOptions {
+    pub fn header(&self) -> HeaderMap {
+        let mut headers: HeaderMap = HeaderMap::with_capacity(self.headers.len());
+        for (k, v) in &self.headers {
+            match (HeaderName::from_bytes(k.as_bytes()), HeaderValue::from_str(v)) {
+                (Ok(header_name), Ok(header_value)) => {
+                    headers.insert(header_name, header_value);
+                }
+                (Err(_), _) => {
+                    warn!("Invalid header name: {}", k);
+                }
+                (_, Err(_)) => {
+                    warn!("Invalid header value for {}: {:?}", k, v);
+                }
+            }
+        }
+        if self.checksum {
+            headers.insert(HeaderName::from_static(AMZ_CHECKSUM_MODE), HeaderValue::from_static("ENABLED"));
+        }
+        headers
+    }
+
+    pub fn set(&mut self, key: &str, value: &str) -> Result<(), std::io::Error> {
+        let header_name = HeaderName::from_bytes(key.as_bytes())
+            .map_err(|err| std::io::Error::other(err_invalid_argument(&format!("Invalid header name {key}: {err}"))))?;
+        HeaderValue::from_str(value)
+            .map_err(|err| std::io::Error::other(err_invalid_argument(&format!("Invalid header value for {key}: {err}"))))?;
+
+        self.headers.insert(header_name.as_str().to_string(), value.to_string());
+        Ok(())
+    }
+
+    pub fn set_req_param(&mut self, key: &str, value: &str) {
+        self.req_params.insert(key.to_string(), value.to_string());
+    }
+
+    pub fn add_req_param(&mut self, key: &str, value: &str) {
+        self.req_params.insert(key.to_string(), value.to_string());
+    }
+
+    pub fn set_match_etag(&mut self, etag: &str) -> Result<(), std::io::Error> {
+        self.set("If-Match", &format!("\"{etag}\""))?;
+        Ok(())
+    }
+
+    pub fn set_match_etag_except(&mut self, etag: &str) -> Result<(), std::io::Error> {
+        self.set("If-None-Match", &format!("\"{etag}\""))?;
+        Ok(())
+    }
+
+    pub fn set_unmodified(&mut self, mod_time: OffsetDateTime) -> Result<(), std::io::Error> {
+        if mod_time.unix_timestamp() == 0 {
+            return Err(std::io::Error::other(err_invalid_argument("Modified since cannot be empty.")));
+        }
+        self.set("If-Unmodified-Since", &mod_time.to_string())?;
+        Ok(())
+    }
+
+    pub fn set_modified(&mut self, mod_time: OffsetDateTime) -> Result<(), std::io::Error> {
+        if mod_time.unix_timestamp() == 0 {
+            return Err(std::io::Error::other(err_invalid_argument("Modified since cannot be empty.")));
+        }
+        self.set("If-Modified-Since", &mod_time.to_string())?;
+        Ok(())
+    }
+
+    pub fn set_range(&mut self, start: i64, end: i64) -> Result<(), std::io::Error> {
+        if start == 0 && end < 0 {
+            self.set("Range", &format!("bytes={}", end))?;
+        } else if 0 < start && end == 0 {
+            self.set("Range", &format!("bytes={}-", start))?;
+        } else if 0 <= start && start <= end {
+            self.set("Range", &format!("bytes={}-{}", start, end))?;
+        } else {
+            return Err(std::io::Error::other(err_invalid_argument(&format!(
+                "Invalid range specified: start={} end={}",
+                start, end
+            ))));
+        }
+        Ok(())
+    }
+
+    pub fn to_query_values(&self) -> HashMap<String, String> {
+        let mut url_values = HashMap::new();
+        if self.version_id != "" {
+            url_values.insert("versionId".to_string(), self.version_id.clone());
+        }
+        if self.part_number > 0 {
+            url_values.insert("partNumber".to_string(), self.part_number.to_string());
+        }
+
+        for (key, value) in self.req_params.iter() {
+            url_values.insert(key.to_string(), value.to_string());
+        }
+
+        url_values
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::GetObjectOptions;
+
+    #[test]
+    fn set_range_populates_range_header() {
+        let mut opts = GetObjectOptions::default();
+        opts.set_range(5, 9).expect("valid range should succeed");
+
+        let headers = opts.header();
+        let range = headers.get("range").expect("range header should be present");
+        assert_eq!(range.to_str().expect("range header must be valid ascii"), "bytes=5-9");
+    }
+
+    #[test]
+    fn set_rejects_invalid_header_value() {
+        let mut opts = GetObjectOptions::default();
+
+        let err = opts
+            .set("Range", "bytes=5-\n9")
+            .expect_err("invalid header value should fail");
+
+        assert!(err.to_string().contains("Invalid header value"));
+        assert!(opts.headers.is_empty(), "invalid headers must not be stored");
+    }
+
+    #[test]
+    fn header_skips_invalid_prepopulated_header_value() {
+        let mut opts = GetObjectOptions::default();
+        opts.headers.insert("Range".to_string(), "bytes=5-\n9".to_string());
+
+        let headers = opts.header();
+
+        assert!(headers.get("range").is_none(), "invalid stored header values should be ignored");
+    }
+}

@@ -1,0 +1,363 @@
+// Copyright (c) Mysten Labs, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+use std::convert::Infallible;
+use std::sync::Arc;
+
+use reader::StateReader;
+use subscription::SubscriptionServiceHandle;
+use sui_http::middleware::callback::CallbackLayer;
+use sui_types::storage::RpcStateReader;
+use sui_types::transaction_executor::ProposerSelector;
+use sui_types::transaction_executor::TransactionExecutor;
+use tap::Pipe;
+use tonic::server::NamedService;
+use tower::Service;
+
+pub mod client;
+mod config;
+mod error;
+pub mod grpc;
+pub mod ledger_history;
+mod metrics;
+pub mod read_mask_defaults;
+mod reader;
+mod response;
+mod service;
+pub mod subscription;
+
+pub use client::Client;
+pub use config::Config;
+pub use error::{
+    CheckpointNotFoundError, ErrorDetails, ErrorReason, ObjectNotFoundError, Result, RpcError,
+};
+pub use metrics::{
+    GrpcMethodAllowlist, RpcMetrics, RpcMetricsMakeCallbackHandler,
+    grpc_method_paths_from_file_descriptor_sets,
+};
+pub use reader::TransactionNotFoundError;
+pub use sui_rpc::proto;
+
+#[derive(Clone)]
+pub struct ServerVersion {
+    pub bin: &'static str,
+    pub version: &'static str,
+}
+
+impl ServerVersion {
+    pub fn new(bin: &'static str, version: &'static str) -> Self {
+        Self { bin, version }
+    }
+}
+
+impl std::fmt::Display for ServerVersion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.bin)?;
+        f.write_str("/")?;
+        f.write_str(self.version)
+    }
+}
+
+#[derive(Clone)]
+pub struct RpcService {
+    reader: StateReader,
+    executor: Option<Arc<dyn TransactionExecutor>>,
+    proposer_selector: Option<Arc<dyn ProposerSelector>>,
+    subscription_service_handle: Option<SubscriptionServiceHandle>,
+    chain_id: sui_types::digests::ChainIdentifier,
+    server_version: Option<ServerVersion>,
+    metrics: Option<Arc<RpcMetrics>>,
+    pub(crate) list_metrics: Option<Arc<metrics::ListApiMetrics>>,
+    config: Config,
+    extra_routes: axum::Router,
+    extra_service_names: Vec<&'static str>,
+    extra_file_descriptor_sets: Vec<&'static [u8]>,
+}
+
+impl RpcService {
+    pub fn new(reader: Arc<dyn RpcStateReader>) -> Self {
+        let chain_id = reader.get_chain_identifier().unwrap();
+        Self {
+            reader: StateReader::new(reader),
+            executor: None,
+            proposer_selector: None,
+            subscription_service_handle: None,
+            chain_id,
+            server_version: None,
+            metrics: None,
+            list_metrics: None,
+            config: Config::default(),
+            extra_routes: axum::Router::new(),
+            extra_service_names: Vec::new(),
+            extra_file_descriptor_sets: Vec::new(),
+        }
+    }
+
+    pub fn with_server_version(&mut self, server_version: ServerVersion) -> &mut Self {
+        self.server_version = Some(server_version);
+        self
+    }
+
+    pub fn with_config(&mut self, config: Config) {
+        self.config = config;
+    }
+
+    pub fn with_executor(&mut self, executor: Arc<dyn TransactionExecutor + Send + Sync>) {
+        self.executor = Some(executor);
+    }
+
+    pub fn with_proposer_selector(&mut self, proposer_selector: Arc<dyn ProposerSelector>) {
+        self.proposer_selector = Some(proposer_selector);
+    }
+
+    pub fn with_subscription_service(
+        &mut self,
+        subscription_service_handle: SubscriptionServiceHandle,
+    ) {
+        self.subscription_service_handle = Some(subscription_service_handle);
+    }
+
+    pub fn with_metrics(&mut self, registry: &prometheus::Registry) {
+        self.metrics = Some(Arc::new(RpcMetrics::new(registry)));
+        self.list_metrics = Some(Arc::new(metrics::ListApiMetrics::new(registry)));
+    }
+
+    pub fn with_custom_service<S>(&mut self, svc: S)
+    where
+        S: Service<
+                axum::extract::Request,
+                Response: axum::response::IntoResponse,
+                Error = Infallible,
+            > + NamedService
+            + Clone
+            + Send
+            + Sync
+            + 'static,
+        S::Future: Send + 'static,
+        S::Error: Into<grpc::BoxError> + Send,
+    {
+        self.extra_service_names.push(S::NAME);
+        self.extra_routes = std::mem::take(&mut self.extra_routes)
+            .route_service(&format!("/{}/{{*rest}}", S::NAME), svc);
+    }
+
+    pub fn with_file_descriptor_set(&mut self, encoded_fds: &'static [u8]) {
+        self.extra_file_descriptor_sets.push(encoded_fds);
+    }
+
+    pub fn chain_id(&self) -> sui_types::digests::ChainIdentifier {
+        self.chain_id
+    }
+
+    pub fn server_version(&self) -> Option<&ServerVersion> {
+        self.server_version.as_ref()
+    }
+
+    pub async fn into_router(mut self) -> axum::Router {
+        let metrics = self.metrics.clone();
+        let extra_routes = std::mem::take(&mut self.extra_routes);
+        let extra_service_names = std::mem::take(&mut self.extra_service_names);
+
+        // Single source of truth for every encoded FileDescriptorSet that
+        // backs a gRPC service mounted below. Consumed by the reflection
+        // services, the metrics allowlist, and the request-log layer so they
+        // cannot drift out of sync.
+        let built_in_file_descriptor_sets: [&[u8]; 5] = [
+            sui_rpc::proto::google::protobuf::FILE_DESCRIPTOR_SET,
+            sui_rpc::proto::google::rpc::FILE_DESCRIPTOR_SET,
+            sui_rpc::proto::sui::rpc::v2::FILE_DESCRIPTOR_SET,
+            sui_rpc::proto::sui::rpc::v2alpha::FILE_DESCRIPTOR_SET,
+            tonic_health::pb::FILE_DESCRIPTOR_SET,
+        ];
+        let file_descriptor_sets: Vec<&[u8]> = built_in_file_descriptor_sets
+            .into_iter()
+            .chain(std::mem::take(&mut self.extra_file_descriptor_sets))
+            .collect();
+
+        // Allowlist of `/Service/Method` paths used by the metrics middleware
+        // to bound prometheus label cardinality.
+        let grpc_method_allowlist = Arc::new(
+            metrics::grpc_method_paths_from_file_descriptor_sets(&file_descriptor_sets)
+                .expect("registered FileDescriptorSet bytes must be valid protobuf"),
+        );
+
+        let request_log =
+            mysten_network::request_log::GrpcRequestLogLayer::from_encoded_file_descriptor_sets(
+                file_descriptor_sets.iter().copied(),
+            )
+            .unwrap_or_else(|e| {
+                // Extra sets registered by embedders may not merge cleanly (e.g. missing
+                // imports). Reflection and metrics tolerate that, so don't fail startup —
+                // capture just won't decode those extra services.
+                tracing::warn!(
+                    "request-log descriptor pool falling back to built-in file descriptor sets: {e}"
+                );
+                mysten_network::request_log::GrpcRequestLogLayer::from_encoded_file_descriptor_sets(
+                    built_in_file_descriptor_sets,
+                )
+                .expect("built-in FileDescriptorSet bytes must be valid protobuf")
+            });
+
+        let router = {
+            let ledger_service =
+                sui_rpc::proto::sui::rpc::v2::ledger_service_server::LedgerServiceServer::new(
+                    self.clone(),
+                )
+                .send_compressed(tonic::codec::CompressionEncoding::Zstd);
+            let proof_service_v2alpha =
+                sui_rpc::proto::sui::rpc::v2alpha::proof_service_server::ProofServiceServer::new(
+                    self.clone(),
+                )
+                .send_compressed(tonic::codec::CompressionEncoding::Zstd);
+            let transaction_execution_service = sui_rpc::proto::sui::rpc::v2::transaction_execution_service_server::TransactionExecutionServiceServer::new(self.clone())
+                .send_compressed(tonic::codec::CompressionEncoding::Zstd);
+            let state_service =
+                sui_rpc::proto::sui::rpc::v2::state_service_server::StateServiceServer::new(
+                    self.clone(),
+                )
+                .send_compressed(tonic::codec::CompressionEncoding::Zstd);
+            let signature_verification_service = sui_rpc::proto::sui::rpc::v2::signature_verification_service_server::SignatureVerificationServiceServer::new(self.clone())
+                .send_compressed(tonic::codec::CompressionEncoding::Zstd);
+            let move_package_service = sui_rpc::proto::sui::rpc::v2::move_package_service_server::MovePackageServiceServer::new(self.clone())
+                .send_compressed(tonic::codec::CompressionEncoding::Zstd);
+            let name_service =
+                sui_rpc::proto::sui::rpc::v2::name_service_server::NameServiceServer::new(
+                    self.clone(),
+                )
+                .send_compressed(tonic::codec::CompressionEncoding::Zstd);
+
+            let (health_reporter, health_service) = tonic_health::server::health_reporter();
+
+            let mut reflection_v1_builder = tonic_reflection::server::Builder::configure();
+            let mut reflection_v1alpha_builder = tonic_reflection::server::Builder::configure();
+            for fds in &file_descriptor_sets {
+                reflection_v1_builder =
+                    reflection_v1_builder.register_encoded_file_descriptor_set(fds);
+                reflection_v1alpha_builder =
+                    reflection_v1alpha_builder.register_encoded_file_descriptor_set(fds);
+            }
+
+            let reflection_v1 = reflection_v1_builder.build_v1().unwrap();
+            let reflection_v1alpha = reflection_v1alpha_builder.build_v1alpha().unwrap();
+
+            fn service_name<S: tonic::server::NamedService>(_service: &S) -> &'static str {
+                S::NAME
+            }
+
+            for service_name in [
+                service_name(&ledger_service),
+                service_name(&transaction_execution_service),
+                service_name(&state_service),
+                service_name(&signature_verification_service),
+                service_name(&move_package_service),
+                service_name(&name_service),
+                service_name(&proof_service_v2alpha),
+                service_name(&reflection_v1),
+                service_name(&reflection_v1alpha),
+            ] {
+                health_reporter
+                    .set_service_status(service_name, tonic_health::ServingStatus::Serving)
+                    .await;
+            }
+
+            let mut services = grpc::Services::new()
+                .timeout(self.config.grpc_timeout())
+                // V2
+                .add_service(ledger_service)
+                .add_service(transaction_execution_service)
+                .add_service(state_service)
+                .add_service(signature_verification_service)
+                .add_service(move_package_service)
+                .add_service(name_service)
+                // V2alpha
+                .add_service(proof_service_v2alpha)
+                // Reflection
+                .add_service(reflection_v1)
+                .add_service(reflection_v1alpha);
+
+            if self.subscription_service_handle.is_some() {
+                let subscription_service =
+sui_rpc::proto::sui::rpc::v2::subscription_service_server::SubscriptionServiceServer::new(self.clone());
+                health_reporter
+                    .set_service_status(
+                        service_name(&subscription_service),
+                        tonic_health::ServingStatus::Serving,
+                    )
+                    .await;
+
+                services = services.add_service(subscription_service);
+            }
+
+            for name in &extra_service_names {
+                health_reporter
+                    .set_service_status(*name, tonic_health::ServingStatus::Serving)
+                    .await;
+            }
+
+            services
+                .merge_router(extra_routes)
+                .add_service(health_service)
+                .into_router(request_log)
+        };
+
+        let health_endpoint = axum::Router::new()
+            .route("/health", axum::routing::get(service::health::health))
+            .with_state(self.clone());
+
+        router
+            .merge(health_endpoint)
+            .layer(axum::middleware::map_response_with_state(
+                self,
+                response::append_info_headers,
+            ))
+            .pipe(|router| {
+                if let Some(metrics) = metrics {
+                    router.layer(CallbackLayer::new(
+                        metrics::RpcMetricsMakeCallbackHandler::with_grpc_method_allowlist(
+                            metrics,
+                            grpc_method_allowlist,
+                        ),
+                    ))
+                } else {
+                    router
+                }
+            })
+    }
+
+    pub async fn start_service(self, socket_address: std::net::SocketAddr) {
+        let listener = tokio::net::TcpListener::bind(socket_address).await.unwrap();
+        axum::serve(listener, self.into_router().await)
+            .await
+            .unwrap();
+    }
+}
+
+#[derive(Debug, Copy, Clone, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Direction {
+    Ascending,
+    Descending,
+}
+
+impl Direction {
+    pub fn is_descending(self) -> bool {
+        matches!(self, Self::Descending)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    /// The request-log layer's descriptor pool is built from these sets at server startup with an
+    /// `expect`, so they must always merge into one valid pool.
+    #[test]
+    fn request_log_pool_builds_from_registered_file_descriptor_sets() {
+        mysten_network::request_log::GrpcRequestLogLayer::from_encoded_file_descriptor_sets([
+            sui_rpc::proto::google::protobuf::FILE_DESCRIPTOR_SET,
+            sui_rpc::proto::google::rpc::FILE_DESCRIPTOR_SET,
+            sui_rpc::proto::sui::rpc::v2::FILE_DESCRIPTOR_SET,
+            sui_rpc::proto::sui::rpc::v2alpha::FILE_DESCRIPTOR_SET,
+            tonic_health::pb::FILE_DESCRIPTOR_SET,
+        ])
+        .unwrap();
+    }
+}

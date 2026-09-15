@@ -1,0 +1,52 @@
+[package]
+name = "rocket_http"
+version = "0.6.0-dev"
+authors = ["Sergio Benitez <sb@sergio.bz>"]
+description = """
+Types, traits, and parsers for HTTP requests, responses, and headers.
+"""
+documentation = "https://api.rocket.rs/master/rocket_http/"
+homepage = "https://rocket.rs"
+repository = "https://github.com/rwf2/Rocket"
+readme = "../../README.md"
+keywords = ["rocket", "web", "framework", "http"]
+license = "MIT OR Apache-2.0"
+categories = ["web-programming"]
+edition = "2021"
+rust-version = "1.75"
+
+[lints]
+workspace = true
+
+[features]
+default = []
+serde = ["dep:serde", "uncased/with-serde-alloc"]
+uuid = ["dep:uuid"]
+
+[dependencies]
+tinyvec = { version = "1.6", features = ["std", "rustc_1_57"] }
+percent-encoding = "2"
+time = { version = "0.3", features = ["formatting", "macros"] }
+indexmap = "2"
+ref-cast = "1.0"
+uncased = "0.9.10"
+either = "1"
+pear = "0.2.9"
+memchr = "2"
+stable-pattern = "0.1"
+cookie = { version = "0.18", features = ["percent-encode"] }
+state = "0.6"
+
+[dependencies.serde]
+version = "1.0"
+optional = true
+default-features = false
+features = ["std"]
+
+[dependencies.uuid]
+version = "1"
+optional = true
+default-features = false
+
+[dev-dependencies]
+rocket = { path = "../lib", features = ["mtls"] }

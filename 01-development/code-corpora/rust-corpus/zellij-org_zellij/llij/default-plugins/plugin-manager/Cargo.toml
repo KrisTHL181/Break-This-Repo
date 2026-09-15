@@ -1,0 +1,10 @@
+[package]
+name = "plugin-manager"
+version = "0.1.0"
+authors = ["Aram Drevekenin <aram@poor.dev>"]
+edition.workspace = true
+
+[dependencies]
+uuid = { workspace = true }
+fuzzy-matcher = { workspace = true }
+zellij-tile = { path = "../../zellij-tile" }

@@ -1,0 +1,429 @@
+use crate::setup::builder::TestLoopBuilder;
+use crate::utils::account::create_account_id;
+use crate::utils::node::TestLoopNode;
+use crate::utils::receipts::action_receipt_v1_to_latest;
+use assert_matches::assert_matches;
+use near_async::time::Duration;
+use near_chain::{ReceiptFilter, get_incoming_receipts_for_shard};
+use near_o11y::testonly::init_test_logger;
+use near_primitives::action::{Action, FunctionCallAction};
+use near_primitives::errors::{
+    ActionError, ActionErrorKind, FunctionCallError, InvalidTxError, ReceiptValidationError,
+    TxExecutionError,
+};
+use near_primitives::hash::CryptoHash;
+use near_primitives::receipt::{ActionReceipt, Receipt, ReceiptEnum, ReceiptV0};
+use near_primitives::test_utils::create_user_test_signer;
+use near_primitives::transaction::SignedTransaction;
+use near_primitives::types::{Balance, Gas};
+use near_primitives::version::ProtocolFeature;
+use near_primitives::views::FinalExecutionStatus;
+
+/// Generating receipts larger than the size limit should cause the transaction to fail.
+#[test]
+fn test_max_receipt_size() {
+    init_test_logger();
+
+    let account = create_account_id("account0");
+    let account_signer = create_user_test_signer(&account);
+    let mut env = TestLoopBuilder::new()
+        .enable_rpc()
+        .add_user_account(&account, Balance::from_near(10_000))
+        .build();
+
+    // We can't test receipt limit by submitting large transactions because we hit the transaction size limit
+    // before hitting the receipt size limit.
+    let large_tx = SignedTransaction::deploy_contract(
+        100,
+        &account,
+        vec![0u8; 2_000_000],
+        &account_signer,
+        env.rpc_node().head().last_block_hash,
+    );
+    let large_tx_exec_res = env.rpc_runner().execute_tx(large_tx, Duration::seconds(5));
+    assert_matches!(large_tx_exec_res, Err(InvalidTxError::TransactionSizeExceeded { .. }));
+
+    // Let's test it by running a contract that generates a large receipt.
+    let deploy_contract_tx = SignedTransaction::deploy_contract(
+        101,
+        &account,
+        near_test_contracts::rs_contract().into(),
+        &account_signer,
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(deploy_contract_tx, Duration::seconds(5));
+
+    // Calling generate_large_receipt({"account_id": "account0", "method_name": "noop", "total_args_size": 3000000})
+    // will generate a receipt that has ~3_000_000 bytes. It'll be a single receipt with multiple FunctionCall actions.
+    // 3MB is still under the limit, so this should succeed.
+    let large_receipt_tx = SignedTransaction::call(
+        102,
+        account.clone(),
+        account.clone(),
+        &account_signer,
+        Balance::ZERO,
+        "generate_large_receipt".into(),
+        r#"{"account_id": "account0", "method_name": "noop", "total_args_size": 3000000}"#.into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(large_receipt_tx, Duration::seconds(5));
+
+    // Generating a receipt that is 5 MB should fail, it's above the receipt size limit.
+    let too_large_receipt_tx = SignedTransaction::call(
+        103,
+        account.clone(),
+        account.clone(),
+        &account_signer,
+        Balance::ZERO,
+        "generate_large_receipt".into(),
+        r#"{"account_id": "account0", "method_name": "noop", "total_args_size": 5000000}"#.into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    let too_large_receipt_tx_exec_res =
+        env.rpc_runner().execute_tx(too_large_receipt_tx, Duration::seconds(5)).unwrap();
+
+    match too_large_receipt_tx_exec_res.status {
+        FinalExecutionStatus::Failure(TxExecutionError::ActionError(action_error)) => {
+            match action_error.kind {
+                ActionErrorKind::NewReceiptValidationError(
+                    ReceiptValidationError::ReceiptSizeExceeded { .. },
+                ) => {
+                    // Ok, got the expected error
+                }
+                _ => panic!("Expected ReceiptSizeExceeded error, got: {:?}", action_error),
+            }
+        }
+        _ => panic!(
+            "Expected FinalExecutionStatus::Failure, got: {:?}",
+            too_large_receipt_tx_exec_res
+        ),
+    };
+
+    // The runtime shouldn't die when it encounters a large receipt.
+    // Make sure that everything still works.
+
+    // Calling sum_n(5) should return 10.
+    // 1 + 2 + 3 + 4 = 10
+    let sum_4_tx = SignedTransaction::call(
+        104,
+        account.clone(),
+        account,
+        &account_signer,
+        Balance::ZERO,
+        "sum_n".into(),
+        5_u64.to_le_bytes().to_vec(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    let sum_4_res = env.rpc_runner().run_tx(sum_4_tx, Duration::seconds(5));
+    assert_eq!(sum_4_res, 10u64.to_le_bytes().to_vec());
+}
+
+// A function call will generate a new receipt. Size of this receipt will be equal to
+// `max_receipt_size`, it'll pass validation, but then `output_data_receivers` will be modified and
+// the receipt's size will go above max_receipt_size. The receipt should be rejected, but currently
+// isn't because of a bug (See https://github.com/near/nearcore/issues/12606)
+// Runtime shouldn't die when it encounters a receipt with size above `max_receipt_size`.
+#[test]
+fn test_max_receipt_size_promise_return() {
+    init_test_logger();
+
+    let account = create_account_id("account0");
+    let account_signer = create_user_test_signer(&account);
+    let mut env = TestLoopBuilder::new()
+        .enable_rpc()
+        .add_user_account(&account, Balance::from_near(10_000))
+        .build();
+
+    // Deploy the test contract
+    let deploy_contract_tx = SignedTransaction::deploy_contract(
+        101,
+        &account,
+        near_test_contracts::rs_contract().into(),
+        &account_signer,
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(deploy_contract_tx, Duration::seconds(5));
+
+    // User calls a contract method
+    // Contract method creates a DAG with two promises: [A -then-> B]
+    // When promise A is executed, it creates a third promise - `C` and does a `promise_return`.
+    // The DAG changes to: [C ->then-> B]
+    // The receipt for promise C is a maximum size receipt.
+    // Adding the `output_data_receivers` to C's receipt makes it go over the size limit.
+    let base_receipt_template = Receipt::V0(ReceiptV0 {
+        predecessor_id: account.clone(),
+        receiver_id: account.clone(),
+        receipt_id: CryptoHash::default(),
+        receipt: ReceiptEnum::Action(ActionReceipt {
+            signer_id: account.clone(),
+            signer_public_key: account_signer.public_key().into(),
+            gas_price: Balance::ZERO,
+            output_data_receivers: vec![],
+            input_data_ids: vec![],
+            actions: vec![Action::FunctionCall(Box::new(FunctionCallAction {
+                method_name: "noop".into(),
+                args: vec![],
+                gas: Gas::ZERO,
+                deposit: Balance::ZERO,
+            }))],
+        }),
+    });
+    let base_receipt_template = action_receipt_v1_to_latest(&base_receipt_template);
+    let base_receipt_size = borsh::object_length(&base_receipt_template).unwrap();
+    let max_receipt_size = 4_194_304;
+    let args_size = max_receipt_size - base_receipt_size;
+
+    // Call the contract
+    let large_receipt_tx = SignedTransaction::call(
+        102,
+        account.clone(),
+        account.clone(),
+        &account_signer,
+        Balance::ZERO,
+        "max_receipt_size_promise_return_method1".into(),
+        format!("{{\"args_size\": {}}}", args_size).into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(large_receipt_tx, Duration::seconds(5));
+
+    // Make sure that the last promise in the DAG was called
+    let assert_test_completed = SignedTransaction::call(
+        103,
+        account.clone(),
+        account,
+        &account_signer,
+        Balance::ZERO,
+        "assert_test_completed".into(),
+        "".into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(assert_test_completed, Duration::seconds(5));
+
+    assert_oversized_receipt_occurred(&env.validator());
+}
+
+/// Return a value that is as large as max_receipt_size. The value will be wrapped in a data receipt
+/// and the data receipt will be bigger than max_receipt_size. The receipt should be rejected, but
+/// currently isn't because of a bug (See https://github.com/near/nearcore/issues/12606)
+/// Creates the following promise DAG:
+/// A[self.return_large_value()] -then-> B[self.mark_test_completed()]
+#[test]
+fn test_max_receipt_size_value_return() {
+    init_test_logger();
+
+    let account = create_account_id("account0");
+    let account_signer = create_user_test_signer(&account);
+    let mut env = TestLoopBuilder::new()
+        .enable_rpc()
+        .add_user_account(&account, Balance::from_near(10_000))
+        .build();
+
+    // Deploy the test contract
+    let deploy_contract_tx = SignedTransaction::deploy_contract(
+        101,
+        &account,
+        near_test_contracts::rs_contract().into(),
+        &account_signer,
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(deploy_contract_tx, Duration::seconds(5));
+
+    let max_receipt_size = 4_194_304;
+
+    // Call the contract
+    let large_receipt_tx = SignedTransaction::call(
+        102,
+        account.clone(),
+        account.clone(),
+        &account_signer,
+        Balance::ZERO,
+        "max_receipt_size_value_return_method".into(),
+        format!("{{\"value_size\": {}}}", max_receipt_size).into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(large_receipt_tx, Duration::seconds(5));
+
+    // Make sure that the last promise in the DAG was called
+    let assert_test_completed = SignedTransaction::call(
+        103,
+        account.clone(),
+        account,
+        &account_signer,
+        Balance::ZERO,
+        "assert_test_completed".into(),
+        "".into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(assert_test_completed, Duration::seconds(5));
+
+    assert_oversized_receipt_occurred(&env.validator());
+}
+
+/// Yielding produces a new action receipt, resuming produces a new data receipt.
+/// Make sure that the size of receipts produced by yield/resume is limited to below `max_receipt_size`.
+#[test]
+fn test_max_receipt_size_yield_resume() {
+    init_test_logger();
+
+    let account = create_account_id("account0");
+    let account_signer = create_user_test_signer(&account);
+    let mut env = TestLoopBuilder::new()
+        .enable_rpc()
+        .add_user_account(&account, Balance::from_near(10_000))
+        .build();
+
+    // Deploy the test contract
+    let deploy_contract_tx = SignedTransaction::deploy_contract(
+        101,
+        &account,
+        near_test_contracts::rs_contract().into(),
+        &account_signer,
+        env.rpc_node().head().last_block_hash,
+    );
+    env.rpc_runner().run_tx(deploy_contract_tx, Duration::seconds(50));
+
+    let max_receipt_size = 4_194_304;
+
+    // Perform a yield which creates a receipt that is larger than the max_receipt_size.
+    // It should be rejected because of the receipt size limit.
+    let yield_receipt_tx = SignedTransaction::call(
+        102,
+        account.clone(),
+        account.clone(),
+        &account_signer,
+        Balance::ZERO,
+        "yield_with_large_args".into(),
+        format!("{{\"args_size\": {}}}", max_receipt_size).into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    let yield_receipt_res =
+        env.rpc_runner().execute_tx(yield_receipt_tx, Duration::seconds(10)).unwrap();
+
+    let expected_size = 4194504;
+    let expected_yield_status =
+        FinalExecutionStatus::Failure(TxExecutionError::ActionError(ActionError {
+            index: Some(0),
+            kind: ActionErrorKind::NewReceiptValidationError(
+                ReceiptValidationError::ReceiptSizeExceeded {
+                    size: expected_size,
+                    limit: max_receipt_size,
+                },
+            ),
+        }));
+    assert_eq!(yield_receipt_res.status, expected_yield_status);
+
+    // Perform a resume which would create a large data receipt.
+    // It fails because the max payload size is 1024.
+    // Definitely not exceeding max_receipt_size.
+    let resume_receipt_tx = SignedTransaction::call(
+        103,
+        account.clone(),
+        account,
+        &account_signer,
+        Balance::ZERO,
+        "resume_with_large_payload".into(),
+        format!("{{\"payload_size\": {}}}", 2000).into(),
+        Gas::from_teragas(300),
+        env.rpc_node().head().last_block_hash,
+    );
+    let resume_receipt_res =
+        env.rpc_runner().execute_tx(resume_receipt_tx, Duration::seconds(5)).unwrap();
+
+    let expected_resume_status =
+        FinalExecutionStatus::Failure(TxExecutionError::ActionError(ActionError {
+            index: Some(0),
+            kind: ActionErrorKind::FunctionCallError(FunctionCallError::ExecutionError(
+                "Yield resume payload is 2000 bytes which exceeds the 1024 byte limit".to_string(),
+            )),
+        }));
+    assert_eq!(resume_receipt_res.status, expected_resume_status);
+}
+
+/// Assert that there was an incoming receipt with size above max_receipt_size
+fn assert_oversized_receipt_occurred(node: &TestLoopNode<'_>) {
+    let client = node.client();
+    let chain = &client.chain;
+    let epoch_manager = &*client.epoch_manager;
+
+    let tip = chain.head().unwrap();
+    let epoch_id = epoch_manager.get_epoch_id(&tip.last_block_hash).unwrap();
+    let protocol_version = epoch_manager.get_epoch_protocol_version(&epoch_id).unwrap();
+    let runtime_config = client.runtime_adapter.get_runtime_config(protocol_version);
+    let max_receipt_size = runtime_config.wasm_config.limit_config.max_receipt_size;
+
+    let mut block = chain.get_block(&tip.last_block_hash).unwrap();
+
+    // Go over all blocks down to genesis looking for a receipt above max_receipt_size.
+    loop {
+        if block.header().is_genesis() {
+            panic!("Didn't find receipt with size above max_receipt_size!");
+        }
+        let prev_block = chain.get_block(block.header().prev_hash()).unwrap();
+
+        let shard_layout = epoch_manager
+            .get_shard_layout(&epoch_manager.get_epoch_id(block.hash()).unwrap())
+            .unwrap();
+
+        let oversized = if ProtocolFeature::Spice.enabled(protocol_version) {
+            // With spice chunks are executed asynchronously and their produced receipts are
+            // persisted as receipt proofs keyed by the block in which the chunk was applied,
+            // rather than as incoming receipts on the following block.
+            shard_layout.shard_ids().any(|shard_id| {
+                chain
+                    .chain_store()
+                    .iter_receipt_proofs_for_shard(block.hash(), shard_id)
+                    .iter()
+                    .flat_map(|proof| proof.0.iter())
+                    .any(|receipt| receipt_is_oversized(receipt, max_receipt_size))
+            })
+        } else {
+            block.chunks().iter_new().any(|new_chunk| {
+                let shard_id = new_chunk.shard_id();
+                let prev_shard_index = epoch_manager
+                    .get_prev_shard_id_from_prev_hash(block.header().prev_hash(), shard_id)
+                    .unwrap()
+                    .2;
+                let prev_height_included =
+                    prev_block.chunks().get(prev_shard_index).unwrap().height_included();
+                let incoming_receipts_proofs = get_incoming_receipts_for_shard(
+                    &chain.chain_store,
+                    epoch_manager,
+                    shard_id,
+                    &shard_layout,
+                    *block.hash(),
+                    prev_height_included,
+                    ReceiptFilter::TargetShard,
+                )
+                .unwrap();
+                incoming_receipts_proofs
+                    .iter()
+                    .flat_map(|response| response.1.iter())
+                    .flat_map(|proof| proof.0.iter())
+                    .any(|receipt| receipt_is_oversized(receipt, max_receipt_size))
+            })
+        };
+
+        if oversized {
+            return;
+        }
+
+        block = prev_block;
+    }
+}
+
+fn receipt_is_oversized(receipt: &Receipt, max_receipt_size: u64) -> bool {
+    let receipt_size: u64 = borsh::object_length(receipt).unwrap().try_into().unwrap();
+    if receipt_size > max_receipt_size {
+        tracing::info!(%receipt_size, %max_receipt_size, "found receipt above max size");
+        return true;
+    }
+    false
+}

@@ -1,0 +1,41 @@
+// Copyright 2023 The RocketMQ Rust Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//! Authorization strategy implementations.
+//!
+//! This module provides authorization strategy abstractions and implementations:
+//! - `AbstractAuthorizationStrategy`: Base implementation with common logic
+//! - `StatelessAuthorizationStrategy`: No caching, evaluates every request
+//! - `StatefulAuthorizationStrategy`: Caching support for connection-based requests
+
+pub mod abstract_authorization_strategy;
+pub mod stateful_authorization_strategy;
+pub mod stateless_authorization_strategy;
+
+use crate::authorization::context::default_authorization_context::DefaultAuthorizationContext;
+use rocketmq_security_api::AuthorizationDecision;
+
+use crate::AuthServiceResult;
+pub use abstract_authorization_strategy::AbstractAuthorizationStrategy;
+pub use abstract_authorization_strategy::AuthorizationFuture;
+pub use abstract_authorization_strategy::AuthorizationStrategy;
+pub use stateful_authorization_strategy::StatefulAuthorizationStrategy;
+pub use stateless_authorization_strategy::StatelessAuthorizationStrategy;
+
+pub(super) async fn evaluate_base_authorization(
+    base: &AbstractAuthorizationStrategy,
+    context: &DefaultAuthorizationContext,
+) -> AuthServiceResult<AuthorizationDecision> {
+    base.do_evaluate(context).await
+}

@@ -1,9 +1,0 @@
-[package]
-name = "oxideterm-editor-core"
-edition.workspace = true
-license.workspace = true
-version.workspace = true
-
-[dependencies]
-thiserror.workspace = true
-unicode-segmentation.workspace = true

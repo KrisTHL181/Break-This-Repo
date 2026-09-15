@@ -1,0 +1,530 @@
+use std::collections::HashMap;
+
+use dashmap::{DashMap, Entry};
+use sail_catalog::error::{CatalogError, CatalogObject, CatalogResult};
+use sail_catalog::provider::{
+    AlterTableOptions, CatalogProvider, CreateDatabaseOptions, CreateTableColumnOptions,
+    CreateTableMetadataRequirement, CreateTableMode, CreateTableOptions, CreateViewColumnOptions,
+    CreateViewOptions, DropDatabaseOptions, DropTableOptions, DropViewOptions, Namespace,
+    plain_lakehouse_create_table_metadata_requirement,
+};
+use sail_catalog::utils::quote_namespace_if_needed;
+use sail_common_datafusion::catalog::{
+    CatalogPartitionField, DatabaseStatus, TableColumnStatus, TableKind, TableStatus,
+    alter_column_default, alter_column_type,
+};
+
+use crate::managed_table;
+
+struct MemoryDatabase {
+    status: DatabaseStatus,
+    tables: HashMap<String, TableStatus>,
+    views: HashMap<String, TableStatus>,
+}
+
+/// An in-memory catalog provider.
+pub struct MemoryCatalogProvider {
+    name: String,
+    databases: DashMap<Namespace, MemoryDatabase>,
+}
+
+impl MemoryCatalogProvider {
+    pub fn new(
+        name: String,
+        initial_database: Namespace,
+        initial_database_comment: Option<String>,
+    ) -> Self {
+        let databases = DashMap::new();
+        databases.insert(
+            initial_database.clone(),
+            MemoryDatabase {
+                status: DatabaseStatus {
+                    catalog: name.clone(),
+                    database: initial_database.into(),
+                    comment: initial_database_comment,
+                    location: None,
+                    properties: vec![],
+                },
+                tables: HashMap::new(),
+                views: HashMap::new(),
+            },
+        );
+        Self { name, databases }
+    }
+}
+
+fn validate_create_table_options(
+    format: &str,
+    partition_by: &[CatalogPartitionField],
+) -> CatalogResult<()> {
+    if !format.eq_ignore_ascii_case("iceberg") && partition_by.iter().any(|f| f.transform.is_some())
+    {
+        return Err(CatalogError::NotSupported(
+            "partition transforms are not supported by memory catalog".to_string(),
+        ));
+    }
+    Ok(())
+}
+
+#[async_trait::async_trait]
+impl CatalogProvider for MemoryCatalogProvider {
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+
+    async fn create_database(
+        &self,
+        database: &Namespace,
+        options: CreateDatabaseOptions,
+    ) -> CatalogResult<DatabaseStatus> {
+        let CreateDatabaseOptions {
+            if_not_exists,
+            comment,
+            location,
+            properties,
+        } = options;
+        let entry = self.databases.entry(database.clone());
+        match entry {
+            Entry::Occupied(entry) => {
+                if if_not_exists {
+                    Ok(entry.get().status.clone())
+                } else {
+                    Err(CatalogError::AlreadyExists(
+                        CatalogObject::Database,
+                        quote_namespace_if_needed(database),
+                    ))
+                }
+            }
+            Entry::Vacant(entry) => {
+                let status = DatabaseStatus {
+                    catalog: self.name.clone(),
+                    database: database.clone().into(),
+                    comment,
+                    location,
+                    properties,
+                };
+                let db = MemoryDatabase {
+                    status: status.clone(),
+                    tables: HashMap::new(),
+                    views: HashMap::new(),
+                };
+                entry.insert(db);
+                Ok(status)
+            }
+        }
+    }
+
+    async fn get_database(&self, database: &Namespace) -> CatalogResult<DatabaseStatus> {
+        match self.databases.get(database) {
+            Some(db) => Ok(db.status.clone()),
+            _ => Err(CatalogError::NotFound(
+                CatalogObject::Database,
+                quote_namespace_if_needed(database),
+            )),
+        }
+    }
+
+    async fn list_databases(
+        &self,
+        prefix: Option<&Namespace>,
+    ) -> CatalogResult<Vec<DatabaseStatus>> {
+        Ok(self
+            .databases
+            .iter()
+            .filter(|item| {
+                if let Some(prefix) = prefix {
+                    prefix.is_parent_of(item.key())
+                } else {
+                    item.key().tail.is_empty()
+                }
+            })
+            .map(|item| item.value().status.clone())
+            .collect())
+    }
+
+    async fn drop_database(
+        &self,
+        database: &Namespace,
+        options: DropDatabaseOptions,
+    ) -> CatalogResult<()> {
+        let DropDatabaseOptions { if_exists, cascade } = options;
+        match self.databases.entry(database.clone()) {
+            Entry::Occupied(entry) => {
+                if !cascade && (!entry.get().tables.is_empty() || !entry.get().views.is_empty()) {
+                    return Err(CatalogError::InvalidArgument(format!(
+                        "Cannot drop non-empty database '{}', use CASCADE",
+                        quote_namespace_if_needed(database),
+                    )));
+                }
+                let _ = entry.remove_entry();
+                Ok(())
+            }
+            Entry::Vacant(_) => {
+                if if_exists {
+                    Ok(())
+                } else {
+                    Err(CatalogError::NotFound(
+                        CatalogObject::Database,
+                        quote_namespace_if_needed(database),
+                    ))
+                }
+            }
+        }
+    }
+
+    async fn create_table(
+        &self,
+        database: &Namespace,
+        table: &str,
+        options: CreateTableOptions,
+    ) -> CatalogResult<TableStatus> {
+        let CreateTableOptions {
+            columns,
+            comment,
+            constraints,
+            location,
+            format,
+            partition_by,
+            sort_by,
+            bucket_by,
+            mode,
+            properties,
+            is_external,
+            is_write_precondition: _,
+        } = options;
+        validate_create_table_options(&format, &partition_by)?;
+        let mut db = self.databases.get_mut(database).ok_or_else(|| {
+            CatalogError::NotFound(CatalogObject::Database, quote_namespace_if_needed(database))
+        })?;
+        if let Some(status) = db.tables.get(table) {
+            match mode {
+                CreateTableMode::CreateIfNotExists => return Ok(status.clone()),
+                CreateTableMode::CreateOrReplace | CreateTableMode::Replace => {
+                    db.tables.remove(table);
+                }
+                CreateTableMode::Create => {
+                    return Err(CatalogError::AlreadyExists(
+                        CatalogObject::Table,
+                        table.to_string(),
+                    ));
+                }
+            }
+        } else if mode.replace_requires_existing() {
+            return Err(CatalogError::NotFound(
+                CatalogObject::Table,
+                table.to_string(),
+            ));
+        }
+        let columns = columns
+            .into_iter()
+            .map(|x| {
+                let CreateTableColumnOptions {
+                    name,
+                    data_type,
+                    nullable,
+                    comment,
+                    default,
+                    generated_always_as,
+                    identity,
+                } = x;
+                let is_partition = partition_by
+                    .iter()
+                    .any(|x| x.column.eq_ignore_ascii_case(&name));
+                let is_bucket = bucket_by
+                    .as_ref()
+                    .is_some_and(|b| b.columns.iter().any(|x| x.eq_ignore_ascii_case(&name)));
+                TableColumnStatus {
+                    name,
+                    data_type,
+                    nullable,
+                    comment,
+                    default,
+                    generated_always_as,
+                    identity,
+                    is_partition,
+                    is_bucket,
+                    is_cluster: false,
+                }
+            })
+            .collect();
+        let status = TableStatus {
+            catalog: Some(self.name.clone()),
+            database: database.clone().into(),
+            name: table.to_string(),
+            kind: TableKind::Table {
+                columns,
+                comment,
+                constraints,
+                location,
+                format,
+                partition_by,
+                sort_by,
+                bucket_by,
+                properties,
+                is_external,
+            },
+        };
+        db.tables.insert(table.to_string(), status.clone());
+        Ok(status)
+    }
+
+    fn create_table_metadata_requirement(
+        &self,
+        options: &CreateTableOptions,
+    ) -> CatalogResult<CreateTableMetadataRequirement> {
+        validate_create_table_options(&options.format, &options.partition_by)?;
+        Ok(plain_lakehouse_create_table_metadata_requirement(options))
+    }
+
+    async fn get_table(&self, database: &Namespace, table: &str) -> CatalogResult<TableStatus> {
+        if let Some(db) = self.databases.get(database)
+            && let Some(status) = db.tables.get(table)
+        {
+            return Ok(status.clone());
+        }
+        Err(CatalogError::NotFound(
+            CatalogObject::Table,
+            table.to_string(),
+        ))
+    }
+
+    async fn list_tables(&self, database: &Namespace) -> CatalogResult<Vec<TableStatus>> {
+        match self.databases.get(database) {
+            Some(db) => Ok(db.tables.values().cloned().collect()),
+            _ => Err(CatalogError::NotFound(
+                CatalogObject::Database,
+                quote_namespace_if_needed(database),
+            )),
+        }
+    }
+
+    async fn drop_table(
+        &self,
+        database: &Namespace,
+        table: &str,
+        options: DropTableOptions,
+    ) -> CatalogResult<()> {
+        // In Spark, the `DROP TABLE ... PURGE` SQL statement deletes data if the table
+        // is managed by the Hive metastore. `PURGE` is ignored if the table is external.
+        // In Sail, all tables are external, so we ignore the `purge` option.
+        let DropTableOptions {
+            if_exists,
+            purge: _,
+        } = options;
+        match self.databases.get_mut(database) {
+            Some(mut db) => {
+                if db.tables.remove(table).is_some() || if_exists {
+                    Ok(())
+                } else {
+                    Err(CatalogError::NotFound(
+                        CatalogObject::Table,
+                        table.to_string(),
+                    ))
+                }
+            }
+            _ => {
+                if if_exists {
+                    Ok(())
+                } else {
+                    Err(CatalogError::NotFound(
+                        CatalogObject::Database,
+                        quote_namespace_if_needed(database),
+                    ))
+                }
+            }
+        }
+    }
+
+    async fn alter_table(
+        &self,
+        database: &Namespace,
+        table: &str,
+        options: AlterTableOptions,
+    ) -> CatalogResult<()> {
+        let mut db = self.databases.get_mut(database).ok_or_else(|| {
+            CatalogError::NotFound(CatalogObject::Database, quote_namespace_if_needed(database))
+        })?;
+        let status = db
+            .tables
+            .get_mut(table)
+            .ok_or_else(|| CatalogError::NotFound(CatalogObject::Table, table.to_string()))?;
+        match &mut status.kind {
+            TableKind::Table {
+                columns,
+                properties,
+                ..
+            } => match options {
+                AlterTableOptions::SetTableProperties {
+                    properties: new_props,
+                } => {
+                    managed_table::validate_metadata_location_precondition(
+                        table, properties, &new_props,
+                    )?;
+                    for (key, value) in new_props {
+                        if let Some(existing) = properties.iter_mut().find(|(k, _)| k == &key) {
+                            existing.1 = value;
+                        } else {
+                            properties.push((key, value));
+                        }
+                    }
+                    Ok(())
+                }
+                AlterTableOptions::UnsetTableProperties { keys, if_exists } => {
+                    for key in &keys {
+                        let found = properties.iter().any(|(k, _)| k == key);
+                        if !found && !if_exists {
+                            return Err(CatalogError::NotFound(
+                                CatalogObject::Table,
+                                format!("property '{key}' not found on table '{table}'"),
+                            ));
+                        }
+                        properties.retain(|(k, _)| k != key);
+                    }
+                    Ok(())
+                }
+                AlterTableOptions::AlterColumnType { name, data_type } => {
+                    alter_column_type(columns, &name, data_type).map_err(|e| {
+                        CatalogError::InvalidArgument(format!(
+                            "failed to alter column type for '{}': {e}",
+                            name.join(".")
+                        ))
+                    })
+                }
+                AlterTableOptions::AlterColumnDefault { name, default } => {
+                    alter_column_default(columns, &name, default).map_err(|e| {
+                        CatalogError::InvalidArgument(format!(
+                            "failed to alter column default for '{}': {e}",
+                            name.join(".")
+                        ))
+                    })
+                }
+                AlterTableOptions::AddCheckConstraint { .. } => Err(CatalogError::NotSupported(
+                    "CHECK constraints are handled by lake sources".to_string(),
+                )),
+            },
+            _ => Err(CatalogError::NotSupported(
+                "ALTER TABLE is not supported for views".to_string(),
+            )),
+        }
+    }
+
+    async fn create_view(
+        &self,
+        database: &Namespace,
+        view: &str,
+        options: CreateViewOptions,
+    ) -> CatalogResult<TableStatus> {
+        let CreateViewOptions {
+            columns,
+            definition,
+            if_not_exists,
+            replace,
+            comment,
+            properties,
+        } = options;
+        let mut db = self.databases.get_mut(database).ok_or_else(|| {
+            CatalogError::NotFound(CatalogObject::Database, quote_namespace_if_needed(database))
+        })?;
+        if let Some(status) = db.views.get(view) {
+            if if_not_exists {
+                return Ok(status.clone());
+            } else if replace {
+                db.views.remove(view);
+            } else {
+                return Err(CatalogError::AlreadyExists(
+                    CatalogObject::View,
+                    view.to_string(),
+                ));
+            }
+        }
+        let columns = columns
+            .into_iter()
+            .map(|x| {
+                let CreateViewColumnOptions {
+                    name,
+                    data_type,
+                    nullable,
+                    comment,
+                } = x;
+                TableColumnStatus {
+                    name,
+                    data_type,
+                    nullable,
+                    comment,
+                    default: None,
+                    generated_always_as: None,
+                    identity: None,
+                    is_partition: false,
+                    is_bucket: false,
+                    is_cluster: false,
+                }
+            })
+            .collect();
+        let status = TableStatus {
+            catalog: Some(self.name.clone()),
+            database: database.clone().into(),
+            name: view.to_string(),
+            kind: TableKind::View {
+                columns,
+                definition,
+                comment,
+                properties: properties.into_iter().collect(),
+            },
+        };
+        db.views.insert(view.to_string(), status.clone());
+        Ok(status)
+    }
+
+    async fn get_view(&self, database: &Namespace, view: &str) -> CatalogResult<TableStatus> {
+        if let Some(db) = self.databases.get(database)
+            && let Some(status) = db.views.get(view)
+        {
+            return Ok(status.clone());
+        }
+        Err(CatalogError::NotFound(
+            CatalogObject::View,
+            view.to_string(),
+        ))
+    }
+
+    async fn list_views(&self, database: &Namespace) -> CatalogResult<Vec<TableStatus>> {
+        match self.databases.get(database) {
+            Some(db) => Ok(db.views.values().cloned().collect()),
+            _ => Err(CatalogError::NotFound(
+                CatalogObject::Database,
+                quote_namespace_if_needed(database),
+            )),
+        }
+    }
+
+    async fn drop_view(
+        &self,
+        database: &Namespace,
+        view: &str,
+        options: DropViewOptions,
+    ) -> CatalogResult<()> {
+        let DropViewOptions { if_exists } = options;
+        match self.databases.get_mut(database) {
+            Some(mut db) => {
+                if db.views.remove(view).is_some() || if_exists {
+                    Ok(())
+                } else {
+                    Err(CatalogError::NotFound(
+                        CatalogObject::View,
+                        view.to_string(),
+                    ))
+                }
+            }
+            _ => {
+                if if_exists {
+                    Ok(())
+                } else {
+                    Err(CatalogError::NotFound(
+                        CatalogObject::Database,
+                        quote_namespace_if_needed(database),
+                    ))
+                }
+            }
+        }
+    }
+}

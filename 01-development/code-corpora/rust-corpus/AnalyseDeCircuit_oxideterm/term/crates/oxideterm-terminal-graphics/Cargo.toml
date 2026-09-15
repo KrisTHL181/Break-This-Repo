@@ -1,0 +1,23 @@
+[package]
+name = "oxideterm-terminal-graphics"
+edition.workspace = true
+license.workspace = true
+version.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+base64.workspace = true
+icy_sixel.workspace = true
+image.workspace = true
+memchr.workspace = true
+tempfile = "3.23"
+thiserror.workspace = true
+uuid.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+
+[[bench]]
+name = "graphics_ingress"
+harness = false

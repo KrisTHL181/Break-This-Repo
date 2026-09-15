@@ -1,3 +1,0 @@
-[mappings]
-"INI" = [".boto", "**/gcloud/configurations/config_*"]
-"Git Ignore" = [".gcloudignore"]

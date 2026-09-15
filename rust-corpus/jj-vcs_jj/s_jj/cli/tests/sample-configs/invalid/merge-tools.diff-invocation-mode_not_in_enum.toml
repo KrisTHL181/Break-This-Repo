@@ -1,3 +1,0 @@
-#:schema ../../../src/config-schema.json
-[merge-tools.'brokendiff']
-diff-invocation-mode = "incantation"
