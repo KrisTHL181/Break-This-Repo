@@ -1,0 +1,1 @@
+PiliBro 2.3.0 release assets mirrored from https://github.com/1-Reality/BiliVideo-Lab/releases/tag/2.3.0
