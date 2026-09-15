@@ -1,0 +1,21 @@
+│  1.txt
+│  国赛格式规范.doc
+│  论文模板.docx
+│
+├─A题
+│  │  A题.md
+│  │  A题.pdf
+│  │  
+│  └─附件
+│      │  附件1.xlsx
+│      │  附件2.xlsx
+│      │  
+│      └─附件3
+│              result1.xlsx
+│              result2.xlsx
+│              result3.xlsx
+│              result4.xlsx
+│
+├─code
+│  └─image
+└─log
