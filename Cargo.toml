@@ -1,0 +1,12 @@
+[package]
+name = "break-this-repo"
+version = "0.0.0"
+edition = "2021"
+description = "Rust extension for the Break This Repo Python package"
+
+[lib]
+name = "break_this_repo"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.23", features = ["extension-module"] }
