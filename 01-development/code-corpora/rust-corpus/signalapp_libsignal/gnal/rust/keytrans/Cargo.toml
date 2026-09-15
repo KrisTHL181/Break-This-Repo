@@ -1,0 +1,40 @@
+#
+# Copyright (C) 2024 Signal Messenger, LLC.
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+
+[package]
+name = "libsignal-keytrans"
+version = "0.0.1"
+authors.workspace = true
+license.workspace = true
+edition = "2024"
+
+[lints]
+workspace = true
+
+[dependencies]
+curve25519-dalek = { workspace = true }
+displaydoc = { workspace = true }
+ed25519-dalek = { workspace = true }
+hex = { workspace = true }
+hmac = { workspace = true }
+itertools = { workspace = true }
+prost = { workspace = true }
+sha2 = { workspace = true }
+zerocopy = { workspace = true, features = ["derive"] }
+
+[build-dependencies]
+prost-build = { workspace = true }
+
+[dev-dependencies]
+assert_matches = { workspace = true }
+const-str = { workspace = true }
+criterion = { workspace = true }
+proptest = { workspace = true }
+test-case = { workspace = true }
+uuid = { workspace = true }
+
+[[bench]]
+name = "verify"
+harness = false

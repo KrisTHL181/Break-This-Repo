@@ -1,0 +1,986 @@
+//! E2E tests for on-save actions (formatters, linters, etc.)
+//!
+//! These tests verify:
+//! - Formatters execute when format_on_save is enabled
+//! - On-save actions (linters) execute when files are saved
+//! - stdin mode passes buffer content to command stdin
+//! - $FILE placeholder substitution
+//! - Timeout handling
+//! - Action failure handling
+
+use crate::common::harness::EditorTestHarness;
+use crossterm::event::{KeyCode, KeyModifiers};
+use fresh::config::{Config, FormatterConfig, LanguageConfig, LineEndingOption, OnSaveAction};
+use tempfile::TempDir;
+
+/// Test format_on_save with formatter (replaces buffer content)
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_format_on_save() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("unsorted.txt");
+    std::fs::write(&file_path, "cherry\napple\nbanana\n").unwrap();
+
+    // Configure formatter: sort the file content (stdin -> stdout)
+    let formatter = FormatterConfig {
+        command: "sort".to_string(),
+        args: vec![],
+        stdin: true,
+        timeout_ms: 5000,
+    };
+
+    // Create config for "plaintext" language (matches .txt files)
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: Some(formatter),
+            format_on_save: true,
+            on_save: vec![],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Verify initial content
+    harness.assert_buffer_content("cherry\napple\nbanana\n");
+
+    // Save the file (triggers format_on_save)
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Buffer content should be sorted by the formatter
+    harness.assert_buffer_content("apple\nbanana\ncherry\n");
+
+    // Status should indicate save
+    harness.assert_screen_contains("Saved");
+}
+
+/// Test on-save action (linter-style, just runs the command)
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_on_save_linter_style() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.txt");
+    std::fs::write(&file_path, "original content\n").unwrap();
+
+    // Configure on-save action: just run true (succeeds without modifying)
+    let action = OnSaveAction {
+        command: "true".to_string(),
+        args: vec![],
+        working_dir: None,
+        stdin: false,
+        timeout_ms: 5000,
+        enabled: true,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: None,
+            format_on_save: false,
+            on_save: vec![action],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Verify initial content
+    harness.assert_buffer_content("original content\n");
+
+    // Save the file
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Content should be unchanged (linter doesn't modify)
+    harness.assert_buffer_content("original content\n");
+
+    // Save should succeed
+    harness.assert_screen_contains("Saved");
+}
+
+/// Test on-save action failure handling
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_on_save_action_failure() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.txt");
+    std::fs::write(&file_path, "content\n").unwrap();
+
+    // Configure on-save action that will fail
+    let action = OnSaveAction {
+        command: "false".to_string(), // Always exits with code 1
+        args: vec![],
+        working_dir: None,
+        stdin: false,
+        timeout_ms: 5000,
+        enabled: true,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: None,
+            format_on_save: false,
+            on_save: vec![action],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Add some content to make the buffer modified
+    harness.type_text("extra").unwrap();
+    harness.render().unwrap();
+
+    // Save the file (will fail due to on-save action)
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Status should show error (may be truncated on narrow terminals)
+    harness.assert_screen_contains("On-save action");
+
+    // But the file itself should still be saved (on-save failure doesn't prevent save)
+    let disk_content = std::fs::read_to_string(&file_path).unwrap();
+    assert!(
+        disk_content.contains("extra"),
+        "File should be saved despite on-save action failure"
+    );
+}
+
+/// Test on-save action with $FILE placeholder
+/// The $FILE placeholder is substituted by the on-save system before shell execution
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_on_save_file_placeholder() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.txt");
+    std::fs::write(&file_path, "original\n").unwrap();
+
+    // Create a marker file that the on-save action will create
+    let marker_path = project_dir.join("marker.txt");
+
+    // Configure on-save action that uses $FILE
+    let action = OnSaveAction {
+        command: "cp".to_string(),
+        args: vec!["$FILE".to_string(), marker_path.display().to_string()],
+        working_dir: None,
+        stdin: false,
+        timeout_ms: 5000,
+        enabled: true,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: None,
+            format_on_save: false,
+            on_save: vec![action],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Modify buffer to trigger save
+    harness.type_text("x").unwrap();
+    harness.render().unwrap();
+
+    // Save the file
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Check that marker file was created by copying the source file
+    assert!(marker_path.exists(), "Marker file should be created");
+    let marker_content = std::fs::read_to_string(&marker_path).unwrap();
+    // The marker should contain the modified content from the saved file
+    assert!(
+        marker_content.contains("original") || marker_content.contains("x"),
+        "Marker should contain content from the file: {}",
+        marker_content
+    );
+}
+
+/// Test formatter with stdin mode (passes buffer content as stdin)
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_formatter_stdin_mode() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("uppercase.txt");
+    std::fs::write(&file_path, "hello world\n").unwrap();
+
+    // Configure formatter: convert to uppercase via stdin
+    let formatter = FormatterConfig {
+        command: "tr".to_string(),
+        args: vec!["a-z".to_string(), "A-Z".to_string()],
+        stdin: true,
+        timeout_ms: 5000,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: Some(formatter),
+            format_on_save: true,
+            on_save: vec![],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Verify initial content
+    harness.assert_buffer_content("hello world\n");
+
+    // Save the file (triggers formatter)
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Buffer content should be uppercase
+    harness.assert_buffer_content("HELLO WORLD\n");
+}
+
+/// Test that on-save action failure stops subsequent actions
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_on_save_stops_on_failure() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.txt");
+    std::fs::write(&file_path, "hello\n").unwrap();
+
+    let marker_path = project_dir.join("should_not_exist.txt");
+
+    // Configure multiple on-save actions:
+    // 1. Fail
+    // 2. Create marker (should NOT run due to failure above)
+    let action1 = OnSaveAction {
+        command: "false".to_string(),
+        args: vec![],
+        working_dir: None,
+        stdin: false,
+        timeout_ms: 5000,
+        enabled: true,
+    };
+
+    let action2 = OnSaveAction {
+        command: "touch".to_string(),
+        args: vec![marker_path.display().to_string()],
+        working_dir: None,
+        stdin: false,
+        timeout_ms: 5000,
+        enabled: true,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: None,
+            format_on_save: false,
+            on_save: vec![action1, action2],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Modify buffer
+    harness.type_text("x").unwrap();
+
+    // Save the file
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // The second action should NOT have run (marker file should not exist)
+    assert!(
+        !marker_path.exists(),
+        "Marker file should NOT be created because first action failed"
+    );
+}
+
+/// Test with no actions configured (should just save normally)
+#[test]
+fn test_on_save_no_actions_configured() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.rs");
+    std::fs::write(&file_path, "fn main() {}\n").unwrap();
+
+    // Use default config (format_on_save is disabled by default)
+    let config = Config::default();
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Modify buffer
+    harness.type_text("// comment\n").unwrap();
+    harness.render().unwrap();
+
+    // Save the file
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Should save normally without any issues
+    harness.assert_screen_contains("Saved");
+}
+
+/// Test formatter not found shows helpful message
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_formatter_not_found_shows_message() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.txt");
+    std::fs::write(&file_path, "content\n").unwrap();
+
+    // Configure a formatter with a non-existent command
+    let formatter = FormatterConfig {
+        command: "nonexistent_formatter_xyz_12345".to_string(),
+        args: vec![],
+        stdin: true,
+        timeout_ms: 5000,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: Some(formatter),
+            format_on_save: true,
+            on_save: vec![],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Modify buffer
+    harness.type_text("x").unwrap();
+    harness.render().unwrap();
+
+    // Save the file - should show a message about missing formatter
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Content should be unchanged (formatter didn't run)
+    harness.assert_buffer_content("xcontent\n");
+
+    // Should show a message about missing formatter
+    harness.assert_screen_contains("Formatter");
+}
+
+/// Test trim_trailing_whitespace_on_save removes trailing spaces
+#[test]
+fn test_trim_trailing_whitespace_on_save() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.rs");
+    // File with trailing whitespace on multiple lines
+    std::fs::write(&file_path, "line 1   \nline 2\t\t\nline 3  \n").unwrap();
+
+    let mut config = Config::default();
+    config.editor.trim_trailing_whitespace_on_save = true;
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Save the file (triggers whitespace cleanup)
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Trailing whitespace should be removed
+    harness.assert_buffer_content("line 1\nline 2\nline 3\n");
+
+    // File on disk should also have no trailing whitespace
+    let disk_content = std::fs::read_to_string(&file_path).unwrap();
+    assert_eq!(disk_content, "line 1\nline 2\nline 3\n");
+}
+
+/// Test ensure_final_newline_on_save adds newline at end
+#[test]
+fn test_ensure_final_newline_on_save() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.rs");
+    // File without trailing newline
+    std::fs::write(&file_path, "line 1\nline 2").unwrap();
+
+    let mut config = Config::default();
+    config.editor.ensure_final_newline_on_save = true;
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Save the file (triggers final newline addition)
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Should have final newline
+    harness.assert_buffer_content("line 1\nline 2\n");
+
+    // File on disk should also have final newline
+    let disk_content = std::fs::read_to_string(&file_path).unwrap();
+    assert_eq!(disk_content, "line 1\nline 2\n");
+}
+
+/// Test both whitespace cleanup options together
+#[test]
+fn test_whitespace_cleanup_combined() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.rs");
+    // File with trailing whitespace AND no final newline
+    std::fs::write(&file_path, "line 1   \nline 2\t\nline 3").unwrap();
+
+    let mut config = Config::default();
+    config.editor.trim_trailing_whitespace_on_save = true;
+    config.editor.ensure_final_newline_on_save = true;
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Save the file
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Should have both cleanups applied
+    harness.assert_buffer_content("line 1\nline 2\nline 3\n");
+
+    // File on disk should also be cleaned up
+    let disk_content = std::fs::read_to_string(&file_path).unwrap();
+    assert_eq!(disk_content, "line 1\nline 2\nline 3\n");
+}
+
+/// Regression for #2706 (symptom 2) / #2711 (sub-case 3): after an on-save
+/// action rewrites and re-saves the file, the editor's recorded on-disk state
+/// (mtime) must be refreshed so a subsequent save does NOT false-positive a
+/// "File changed on disk" conflict.
+#[test]
+fn test_on_save_action_no_false_conflict_on_next_save() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.rs");
+    // Trailing whitespace guarantees the on-save trim actually rewrites and
+    // re-saves the file (advancing its mtime past the value recorded by the
+    // first write).
+    std::fs::write(&file_path, "line 1   \nline 2\t\nline 3\n").unwrap();
+
+    let mut config = Config::default();
+    config.editor.trim_trailing_whitespace_on_save = true;
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // First save triggers the on-save trim + re-save.
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+    harness.assert_buffer_content("line 1\nline 2\nline 3\n");
+
+    // The editor's own on-save re-write must NOT register as an external
+    // change. Before the fix, the recorded mtime was left at the first write's
+    // value while the on-save re-save advanced the on-disk mtime, so this
+    // returned Some(..).
+    assert!(
+        harness.editor().check_save_conflict().is_none(),
+        "on-save re-write must not be mistaken for an external modification"
+    );
+
+    // Rapid successive saves must not surface the conflict prompt.
+    for _ in 0..8 {
+        harness
+            .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+            .unwrap();
+        harness.render().unwrap();
+    }
+    harness.assert_screen_not_contains("File changed on disk");
+    assert!(
+        harness.editor().check_save_conflict().is_none(),
+        "repeated on-save writes must keep the recorded on-disk state in sync"
+    );
+}
+
+/// Regression for #2711 (sub-case 2): trimming trailing whitespace on save for
+/// a CRLF buffer must preserve CRLF line endings (not collapse to LF) and must
+/// not drop a trailing empty line, and the editor's own write must not trigger
+/// a spurious "Reverted to saved file" reload.
+#[test]
+fn test_trim_on_save_preserves_crlf_and_no_revert() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("crlf.txt");
+    // CRLF file ending in multiple trailing empty lines, with trailing
+    // whitespace on the first two content lines so the trim does real work.
+    std::fs::write(&file_path, b"hello  \r\nworld\t\r\n\r\n\r\n").unwrap();
+
+    let mut config = Config::default();
+    config.editor.trim_trailing_whitespace_on_save = true;
+    config.editor.default_line_ending = LineEndingOption::Crlf;
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+    // Line-ending indicator should show CRLF for a CRLF file.
+    harness.assert_screen_contains("CRLF");
+
+    // Save once: trailing whitespace trimmed, CRLF + blank lines preserved.
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Buffer keeps CRLF endings and all four line terminators.
+    assert_eq!(
+        harness.get_buffer_content().unwrap(),
+        "hello\r\nworld\r\n\r\n\r\n"
+    );
+
+    // On disk the bytes stay CRLF (0d 0a), whitespace trimmed, no line dropped.
+    let disk = std::fs::read(&file_path).unwrap();
+    assert_eq!(
+        disk,
+        b"hello\r\nworld\r\n\r\n\r\n",
+        "on-save write must preserve CRLF and trailing empty lines; got {:?}",
+        String::from_utf8_lossy(&disk)
+    );
+
+    // The line-ending indicator must still read CRLF (not flip to LF).
+    harness.assert_screen_contains("CRLF");
+    // No spurious revert should have fired from the editor's own write.
+    harness.assert_screen_not_contains("Reverted to saved file");
+    assert!(
+        harness.editor().check_save_conflict().is_none(),
+        "editor's own on-save write must not look like an external change"
+    );
+
+    // Drive the file-change poll: with the recorded mtime kept in sync, the
+    // poll must find no change and never revert (which would re-read the file
+    // as LF). Advance past the poll interval and pump async work a few times.
+    let interval =
+        std::time::Duration::from_millis(harness.config().editor.auto_revert_poll_interval_ms + 50);
+    for _ in 0..5 {
+        harness.advance_time(interval);
+        harness.process_async_and_render().unwrap();
+        harness.sleep(std::time::Duration::from_millis(20));
+    }
+    harness.process_async_and_render().unwrap();
+
+    harness.assert_screen_not_contains("Reverted to saved file");
+    harness.assert_screen_contains("CRLF");
+    let disk_after_poll = std::fs::read(&file_path).unwrap();
+    assert_eq!(
+        disk_after_poll, b"hello\r\nworld\r\n\r\n\r\n",
+        "poll must not revert/normalize the file"
+    );
+}
+
+/// Reproducer for #2777: when format-on-save rewrites the buffer, the
+/// cursor must be mapped through the content change and stay anchored to
+/// the same logical text — not restored as a raw byte offset into
+/// different content.
+///
+/// Repro from the issue: a formatter that deletes blank lines
+/// (`grep -v '^$'`), cursor at the end of line 5 (`MARKER xyz`,
+/// `Ln 5, Col 11`). After save, `MARKER xyz` becomes line 2 and the
+/// cursor must follow it to `Ln 2, Col 11`. Before the fix the raw
+/// offset landed inside `omega` (`Ln 3, Col 3`).
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_format_on_save_keeps_cursor_anchored_to_its_text() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("marker.txt");
+    std::fs::write(&file_path, "alpha\n\n\n\nMARKER xyz\nomega\n").unwrap();
+
+    // Formatter that deletes blank lines (stdin -> stdout).
+    let formatter = FormatterConfig {
+        command: "grep".to_string(),
+        args: vec!["-v".to_string(), "'^$'".to_string()],
+        stdin: true,
+        timeout_ms: 5000,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: Some(formatter),
+            format_on_save: true,
+            on_save: vec![],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Put the cursor at the end of line 5 ("MARKER xyz").
+    for _ in 0..4 {
+        harness.send_key(KeyCode::Down, KeyModifiers::NONE).unwrap();
+    }
+    harness.send_key(KeyCode::End, KeyModifiers::NONE).unwrap();
+    harness.render().unwrap();
+    harness.assert_screen_contains("Ln 5, Col 11");
+
+    // Save: the formatter removes the three blank lines.
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+    harness.assert_buffer_content("alpha\nMARKER xyz\nomega\n");
+
+    // The cursor must still sit at the end of "MARKER xyz", now line 2.
+    // Before the fix it read "Ln 3, Col 3" (inside "omega").
+    harness.assert_screen_contains("Ln 2, Col 11");
+}
+
+/// Companion to the #2777 reproducer: a cursor entirely before the
+/// formatted-away region must not move at all.
+#[test]
+#[cfg_attr(not(unix), ignore = "On-save actions require Unix-like environment")]
+fn test_format_on_save_cursor_before_edit_stays_put() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("marker.txt");
+    std::fs::write(&file_path, "alpha\n\n\n\nMARKER xyz\nomega\n").unwrap();
+
+    let formatter = FormatterConfig {
+        command: "grep".to_string(),
+        args: vec!["-v".to_string(), "'^$'".to_string()],
+        stdin: true,
+        timeout_ms: 5000,
+    };
+
+    let mut config = Config::default();
+    config.languages.insert(
+        "plaintext".to_string(),
+        LanguageConfig {
+            extensions: vec!["txt".to_string()],
+            filenames: vec![],
+            grammar: "plaintext".to_string(),
+            comment_prefix: None,
+            auto_indent: false,
+            auto_close: None,
+            auto_surround: None,
+            textmate_grammar: None,
+            show_whitespace_tabs: true,
+            line_wrap: None,
+            wrap_column: None,
+            page_view: None,
+            page_width: None,
+            use_tabs: None,
+            tab_size: None,
+            formatter: Some(formatter),
+            format_on_save: true,
+            on_save: vec![],
+            word_characters: None,
+            indentation_guide: None,
+            indent: None,
+        },
+    );
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // End of line 1 ("alpha"), before every removed blank line.
+    harness.send_key(KeyCode::End, KeyModifiers::NONE).unwrap();
+    harness.render().unwrap();
+    harness.assert_screen_contains("Ln 1, Col 6");
+
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+    harness.assert_buffer_content("alpha\nMARKER xyz\nomega\n");
+    harness.assert_screen_contains("Ln 1, Col 6");
+}
+
+/// Test whitespace cleanup does nothing when file is already clean
+#[test]
+fn test_whitespace_cleanup_no_change_needed() {
+    let temp_dir = TempDir::new().unwrap();
+    let project_dir = temp_dir.path().join("project");
+    std::fs::create_dir(&project_dir).unwrap();
+
+    let file_path = project_dir.join("test.rs");
+    // File already clean
+    std::fs::write(&file_path, "line 1\nline 2\n").unwrap();
+
+    let mut config = Config::default();
+    config.editor.trim_trailing_whitespace_on_save = true;
+    config.editor.ensure_final_newline_on_save = true;
+
+    let mut harness =
+        EditorTestHarness::with_config_and_working_dir(100, 24, config, project_dir).unwrap();
+
+    harness.open_file(&file_path).unwrap();
+    harness.render().unwrap();
+
+    // Modify buffer slightly to make it saveable
+    harness.type_text("x").unwrap();
+    harness
+        .send_key(KeyCode::Backspace, KeyModifiers::NONE)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Save the file
+    harness
+        .send_key(KeyCode::Char('s'), KeyModifiers::CONTROL)
+        .unwrap();
+    harness.render().unwrap();
+
+    // Content should remain the same
+    harness.assert_buffer_content("line 1\nline 2\n");
+}

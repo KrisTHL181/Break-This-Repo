@@ -1,0 +1,1356 @@
+use std::{
+    collections::{HashMap, VecDeque},
+    marker::PhantomData,
+    panic::AssertUnwindSafe,
+    sync::{Arc, Mutex, MutexGuard},
+};
+
+use async_trait::async_trait;
+use futures_util::FutureExt;
+
+use ironclaw_extension_registry::ExtensionPackage;
+use ironclaw_host_api::{
+    capability::CapabilityDescriptor,
+    dispatch::DispatchAuthRequirement,
+    ids::UserId,
+    invocation::InvocationOrigin,
+    mount::MountView,
+    resource::{ResourceEstimate, ResourceReservation},
+    runtime_policy::EffectiveRuntimePolicy,
+};
+use ironclaw_resources::GovernorRuntimeBudget;
+use serde_json::Value;
+
+use super::wasm_blocking::run_wasm_prepare_blocking;
+use super::wasm_execution::{ReservationGuard, execute_prepared_wasm};
+use super::{
+    CapabilityId, DenyWasmHostHttp, DispatchError, DispatchFailureKind, ExtensionRuntime,
+    FirstPartyCapabilityRegistry, FirstPartyCapabilityRequest, InvocationServicesResolutionRequest,
+    InvocationServicesResolver, McpError, McpExecutionRequest, McpExecutor, McpInvocation,
+    NetworkObligationPolicyStore, PlannerError, PreparedWitTool, ResourceGovernor,
+    ResourceReservationId, ResourceScope, RootFilesystem, RuntimeAdapterResult,
+    RuntimeDispatchErrorKind, RuntimeKind, RuntimeLane, ScriptError, ScriptExecutionRequest,
+    ScriptExecutor, ScriptInvocation, SharedRuntimeHttpEgress, WasmError,
+    WasmRuntimeCredentialProvider, WasmRuntimeHttpAdapter, WasmRuntimePolicyDiscarder, WitToolHost,
+    WitToolRuntime, WitToolRuntimeConfig, plan_capability, runtime_http_egress,
+};
+use crate::obligations::RuntimeSecretInjectionStore;
+use crate::{
+    FirstPartyCapabilityError,
+    latency::{
+        RuntimeLatencyFields, RuntimeLatencyMetrics, started_at as latency_started_at,
+        trace_runtime_error, trace_runtime_ok,
+    },
+    services::wasm_secrets::StagedWasmHostSecrets,
+};
+
+/// Builds a provider-rejection `DispatchError` for the first-party lane.
+/// `safe_summary` rides the typed diagnostic channel like other lanes'
+/// causes; `detail`, when the caller already has a structured
+/// [`ironclaw_host_api::dispatch::DispatchFailureDetail`], is carried
+/// through verbatim.
+fn first_party_dispatch_error(
+    kind: RuntimeDispatchErrorKind,
+    safe_summary: Option<String>,
+    detail: Option<ironclaw_host_api::dispatch::DispatchFailureDetail>,
+) -> DispatchError {
+    let (detail, cause) = match safe_summary {
+        Some(summary) => {
+            let (safe_summary, cause) =
+                match ironclaw_host_api::safe_summary::SafeSummary::new(summary.as_str()) {
+                    Ok(safe_summary) => (safe_summary, None),
+                    Err(_) => {
+                        tracing::warn!("first-party capability supplied an invalid safe summary");
+                        (
+                            ironclaw_host_api::safe_summary::SafeSummary::placeholder(),
+                            Some(summary),
+                        )
+                    }
+                };
+            (
+                Some(
+                    ironclaw_host_api::dispatch::DispatchFailureDetail::HostSummary {
+                        summary: safe_summary,
+                        detail: detail.map(Box::new),
+                    },
+                ),
+                cause,
+            )
+        }
+        None => (detail, None),
+    };
+    DispatchError::provider_rejected(
+        Some(RuntimeKind::FirstParty),
+        DispatchFailureKind::Runtime(kind),
+        cause,
+        detail,
+    )
+}
+
+/// Per-invocation execution request handed to a runtime lane.
+///
+/// Host-internal seam behind the prebound
+/// [`ironclaw_capabilities::BoundCapabilityAdapter`] bindings: the registry-lane
+/// resolver captures the static fields (package, descriptor, runtime policy,
+/// filesystem, governor) when it constructs a binding and materializes one of
+/// these per call. If `resource_reservation` is present, the lane must
+/// reconcile or release that prepared reservation instead of creating a
+/// second reservation.
+pub(crate) struct RuntimeLaneRequest<'a, F, G>
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    pub package: &'a ExtensionPackage,
+    pub descriptor: &'a CapabilityDescriptor,
+    pub filesystem: &'a F,
+    pub governor: &'a G,
+    pub runtime_policy: &'a EffectiveRuntimePolicy,
+    pub capability_id: &'a CapabilityId,
+    pub scope: ResourceScope,
+    /// The authenticated human actor who initiated this invocation, distinct
+    /// from the resource subject carried in `scope`. Threaded end-to-end
+    /// (`CapabilityDispatchRequest` → here → `FirstPartyCapabilityRequest`) so a
+    /// first-party handler can attribute the action to the acting user.
+    pub authenticated_actor_user_id: Option<UserId>,
+    /// Loop turn-run identity forwarded from the dispatch request. `None`
+    /// for non-loop callers.
+    pub run_id: Option<ironclaw_host_api::ids::RunId>,
+    /// Host-sealed origin used by capability-boundary policy.
+    pub origin: Option<InvocationOrigin>,
+    pub estimate: ResourceEstimate,
+    pub mounts: Option<MountView>,
+    pub resource_reservation: Option<ResourceReservation>,
+    pub input: Value,
+}
+
+/// One runtime execution lane (Script/MCP/first-party/WASM).
+///
+/// Implementations must not perform caller-facing authorization or approval
+/// resolution. They may reserve/reconcile resources through the provided
+/// governor and must surface only redacted [`DispatchError`] categories.
+#[async_trait]
+pub(crate) trait RuntimeAdapter<F, G>: Send + Sync
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    async fn dispatch_json(
+        &self,
+        request: RuntimeLaneRequest<'_, F, G>,
+    ) -> Result<RuntimeAdapterResult, DispatchError>;
+}
+
+type FirstPartyLatencyFields = RuntimeLatencyFields;
+
+fn first_party_latency_fields<F, G>(
+    request: &RuntimeLaneRequest<'_, F, G>,
+) -> Option<FirstPartyLatencyFields>
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    RuntimeLatencyFields::from_json_input(
+        request.capability_id,
+        &request.scope,
+        request.descriptor.runtime.as_str(),
+        &request.input,
+    )
+}
+
+fn trace_first_party_latency_ok(
+    operation: &'static str,
+    fields: Option<&FirstPartyLatencyFields>,
+    started_at: Option<std::time::Instant>,
+    output_bytes: u64,
+    used_prepared_reservation: bool,
+) {
+    trace_runtime_ok(
+        "first_party_runtime_adapter",
+        operation,
+        fields,
+        started_at,
+        RuntimeLatencyMetrics {
+            output_bytes,
+            used_prepared_reservation,
+            ..RuntimeLatencyMetrics::default()
+        },
+    );
+}
+
+fn trace_first_party_latency_error(
+    operation: &'static str,
+    fields: Option<&FirstPartyLatencyFields>,
+    started_at: Option<std::time::Instant>,
+    error_kind: &str,
+    used_prepared_reservation: bool,
+) {
+    trace_runtime_error(
+        "first_party_runtime_adapter",
+        operation,
+        fields,
+        started_at,
+        error_kind,
+        RuntimeLatencyMetrics {
+            used_prepared_reservation,
+            ..RuntimeLatencyMetrics::default()
+        },
+    );
+}
+
+fn trace_first_party_stage_and_dispatch_error(
+    stage: &'static str,
+    fields: Option<&FirstPartyLatencyFields>,
+    stage_started_at: Option<std::time::Instant>,
+    dispatch_started_at: Option<std::time::Instant>,
+    error_kind: &str,
+    used_prepared_reservation: bool,
+) {
+    trace_first_party_latency_error(
+        stage,
+        fields,
+        stage_started_at,
+        error_kind,
+        used_prepared_reservation,
+    );
+    trace_first_party_latency_error(
+        "dispatch",
+        fields,
+        dispatch_started_at,
+        error_kind,
+        used_prepared_reservation,
+    );
+}
+
+pub(super) struct ServiceResolvedRuntimeAdapter<T> {
+    inner: Arc<T>,
+    invocation_services: Arc<dyn InvocationServicesResolver>,
+}
+
+// arch-exempt: large_file, runtime adapter composition is still centralized
+// in HostRuntimeServices until the Reborn architecture decomposition tracked
+// by nearai/ironclaw#3231 splits runtime wiring into focused modules.
+impl<T> ServiceResolvedRuntimeAdapter<T> {
+    pub(super) fn new(
+        inner: Arc<T>,
+        invocation_services: Arc<dyn InvocationServicesResolver>,
+    ) -> Self {
+        Self {
+            inner,
+            invocation_services,
+        }
+    }
+}
+
+#[async_trait]
+impl<F, G, T> RuntimeAdapter<F, G> for ServiceResolvedRuntimeAdapter<T>
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+    T: RuntimeAdapter<F, G>,
+{
+    async fn dispatch_json(
+        &self,
+        request: RuntimeLaneRequest<'_, F, G>,
+    ) -> Result<RuntimeAdapterResult, DispatchError> {
+        let plan =
+            plan_capability(request.descriptor, request.runtime_policy).map_err(|error| {
+                release_adapter_reservation(
+                    request.governor,
+                    request
+                        .resource_reservation
+                        .as_ref()
+                        .map(|reservation| reservation.id),
+                );
+                dispatch_error_for_runtime(
+                    request.descriptor.runtime,
+                    planner_error_kind(&error),
+                    Some(error.to_string()),
+                )
+            })?;
+        self.invocation_services
+            .resolve(InvocationServicesResolutionRequest {
+                plan: &plan,
+                scope: &request.scope,
+                mounts: request.mounts.as_ref(),
+            })
+            .map_err(|error| {
+                release_adapter_reservation(
+                    request.governor,
+                    request
+                        .resource_reservation
+                        .as_ref()
+                        .map(|reservation| reservation.id),
+                );
+                dispatch_error_for_runtime(
+                    request.descriptor.runtime,
+                    error.kind(),
+                    Some(error.to_string()),
+                )
+            })?;
+
+        self.inner.dispatch_json(request).await
+    }
+}
+
+/// Closed host-runtime lane set. Capability bindings retain this one concrete
+/// executor and a [`RuntimeLane`] value instead of retaining a trait object
+/// selected from a `HashMap<RuntimeKind, dyn RuntimeAdapter>`.
+pub(super) struct RuntimeLaneExecutor<F, G>
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    first_party: Option<FirstPartyRuntimeAdapter>,
+    wasm: Option<ServiceResolvedRuntimeAdapter<WasmRuntimeAdapter>>,
+    mcp: Option<ServiceResolvedRuntimeAdapter<McpRuntimeAdapter>>,
+    process: Option<ServiceResolvedRuntimeAdapter<ScriptRuntimeAdapter>>,
+    #[cfg(test)]
+    test_adapters: HashMap<RuntimeLane, Arc<dyn RuntimeAdapter<F, G>>>,
+    marker: PhantomData<fn() -> (F, G)>,
+}
+
+impl<F, G> RuntimeLaneExecutor<F, G>
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    pub(super) fn new(
+        first_party: Option<FirstPartyRuntimeAdapter>,
+        wasm: Option<ServiceResolvedRuntimeAdapter<WasmRuntimeAdapter>>,
+        mcp: Option<ServiceResolvedRuntimeAdapter<McpRuntimeAdapter>>,
+        process: Option<ServiceResolvedRuntimeAdapter<ScriptRuntimeAdapter>>,
+    ) -> Self {
+        Self {
+            first_party,
+            wasm,
+            mcp,
+            process,
+            #[cfg(test)]
+            test_adapters: HashMap::new(),
+            marker: PhantomData,
+        }
+    }
+
+    #[cfg(test)]
+    pub(super) fn with_test_adapter(
+        mut self,
+        lane: RuntimeLane,
+        adapter: Arc<dyn RuntimeAdapter<F, G>>,
+    ) -> Self {
+        self.test_adapters.insert(lane, adapter);
+        self
+    }
+
+    pub(super) fn supports_lane(&self, lane: RuntimeLane) -> bool {
+        #[cfg(test)]
+        if self.test_adapters.contains_key(&lane) {
+            return true;
+        }
+        match lane {
+            RuntimeLane::FirstParty => self.first_party.is_some(),
+            RuntimeLane::Wasm => self.wasm.is_some(),
+            RuntimeLane::Mcp => self.mcp.is_some(),
+            RuntimeLane::Process => self.process.is_some(),
+        }
+    }
+
+    pub(super) async fn dispatch_json(
+        &self,
+        lane: RuntimeLane,
+        request: RuntimeLaneRequest<'_, F, G>,
+    ) -> Result<RuntimeAdapterResult, DispatchError> {
+        #[cfg(test)]
+        if let Some(adapter) = self.test_adapters.get(&lane) {
+            return adapter.dispatch_json(request).await;
+        }
+        match lane {
+            RuntimeLane::FirstParty => match self.first_party.as_ref() {
+                Some(adapter) => adapter.dispatch_json(request).await,
+                None => fail_unconfigured_lane(request),
+            },
+            RuntimeLane::Wasm => match self.wasm.as_ref() {
+                Some(adapter) => adapter.dispatch_json(request).await,
+                None => fail_unconfigured_lane(request),
+            },
+            RuntimeLane::Mcp => match self.mcp.as_ref() {
+                Some(adapter) => adapter.dispatch_json(request).await,
+                None => fail_unconfigured_lane(request),
+            },
+            RuntimeLane::Process => match self.process.as_ref() {
+                Some(adapter) => adapter.dispatch_json(request).await,
+                None => fail_unconfigured_lane(request),
+            },
+        }
+    }
+}
+
+fn fail_unconfigured_lane<F, G>(
+    request: RuntimeLaneRequest<'_, F, G>,
+) -> Result<RuntimeAdapterResult, DispatchError>
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    release_adapter_reservation(
+        request.governor,
+        request
+            .resource_reservation
+            .as_ref()
+            .map(|reservation| reservation.id),
+    );
+    Err(DispatchError::MissingRuntimeBackend {
+        runtime: request.descriptor.runtime,
+    })
+}
+
+#[derive(Clone)]
+pub(super) struct ScriptRuntimeAdapter {
+    executor: Arc<dyn ScriptExecutor>,
+}
+
+impl ScriptRuntimeAdapter {
+    pub(super) fn from_executor(executor: Arc<dyn ScriptExecutor>) -> Self {
+        Self { executor }
+    }
+}
+
+#[async_trait]
+impl<F, G> RuntimeAdapter<F, G> for ScriptRuntimeAdapter
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    async fn dispatch_json(
+        &self,
+        request: RuntimeLaneRequest<'_, F, G>,
+    ) -> Result<RuntimeAdapterResult, DispatchError> {
+        // The lane holds no budget authority: it is handed the narrow
+        // reserve/reconcile/release port, not the governor (#7067).
+        let budget = GovernorRuntimeBudget::new(request.governor);
+        let execution = self
+            .executor
+            .execute_extension_json(
+                &budget,
+                ScriptExecutionRequest {
+                    extension: &request.package.id,
+                    capabilities: &request.package.capabilities,
+                    runtime: &request.package.manifest.runtime,
+                    capability_id: request.capability_id,
+                    scope: request.scope,
+                    estimate: request.estimate,
+                    mounts: request.mounts,
+                    resource_reservation: request.resource_reservation,
+                    invocation: ScriptInvocation {
+                        input: request.input,
+                    },
+                },
+            )
+            .map_err(|error| {
+                dispatch_error_for_runtime(
+                    RuntimeKind::Script,
+                    script_error_kind(&error),
+                    Some(error.to_string()),
+                )
+            })?;
+
+        Ok(RuntimeAdapterResult {
+            output: execution.result.output,
+            display_preview: None,
+            usage: execution.result.usage,
+            receipt: execution.receipt,
+            output_bytes: execution.result.output_bytes,
+        })
+    }
+}
+
+#[derive(Clone)]
+pub(super) struct McpRuntimeAdapter {
+    executor: Arc<dyn McpExecutor>,
+}
+
+impl McpRuntimeAdapter {
+    pub(super) fn from_executor(executor: Arc<dyn McpExecutor>) -> Self {
+        Self { executor }
+    }
+}
+
+#[async_trait]
+impl<F, G> RuntimeAdapter<F, G> for McpRuntimeAdapter
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    async fn dispatch_json(
+        &self,
+        request: RuntimeLaneRequest<'_, F, G>,
+    ) -> Result<RuntimeAdapterResult, DispatchError> {
+        // The lane holds no budget authority: it is handed the narrow
+        // reserve/reconcile/release port, not the governor (#7067).
+        let budget = GovernorRuntimeBudget::new(request.governor);
+        let execution = self
+            .executor
+            .execute_extension_json(
+                &budget,
+                McpExecutionRequest {
+                    extension: &request.package.id,
+                    capabilities: &request.package.capabilities,
+                    runtime: &request.package.manifest.runtime,
+                    capability_id: request.capability_id,
+                    scope: request.scope,
+                    estimate: request.estimate,
+                    resource_reservation: request.resource_reservation,
+                    invocation: McpInvocation {
+                        input: request.input,
+                    },
+                },
+            )
+            .await
+            .map_err(|error| match error {
+                McpError::AuthRequired {
+                    required_secrets,
+                    credential_requirements,
+                } => DispatchError::AuthRequired {
+                    capability: request.capability_id.clone(),
+                    requirement: Box::new(DispatchAuthRequirement {
+                        required_secrets,
+                        credential_requirements,
+                        model_visible_cause: None,
+                    }),
+                },
+                McpError::ProviderRejected(rejection) => DispatchError::Rejected {
+                    runtime: Some(RuntimeKind::Mcp),
+                    kind: ironclaw_host_api::dispatch::DispatchFailureKind::Runtime(
+                        RuntimeDispatchErrorKind::Client,
+                    ),
+                    diagnostic: Some(Box::new(rejection.diagnostic)),
+                    detail: None,
+                },
+                error => dispatch_error_for_runtime(
+                    RuntimeKind::Mcp,
+                    mcp_error_kind(&error),
+                    Some(sanitize_mcp_client_error(&error)),
+                ),
+            })?;
+
+        Ok(RuntimeAdapterResult {
+            output: execution.result.output,
+            display_preview: None,
+            usage: execution.result.usage,
+            receipt: execution.receipt,
+            output_bytes: execution.result.output_bytes,
+        })
+    }
+}
+
+/// Upper bound on reservations awaiting a retried release.
+///
+/// A release fails only when the governor's backend is unavailable, which is
+/// also when reservations pile up fastest — the queue is bounded so a wedged
+/// backend cannot grow it without limit. Dropping the oldest entry costs one
+/// leaked hold, the same outcome as before the queue existed.
+const MAX_DEFERRED_RESERVATION_RELEASES: usize = 64;
+
+#[derive(Clone)]
+pub(super) struct FirstPartyRuntimeAdapter {
+    registry: Arc<FirstPartyCapabilityRegistry>,
+    invocation_services: Arc<dyn InvocationServicesResolver>,
+    /// Reservations whose release failed and must be retried.
+    ///
+    /// A failed release used to be logged and forgotten, leaking the hold
+    /// permanently — the durable `Reserve` delta replays as `Active` after
+    /// restart and nothing reclaims it (issue #7714). Retrying on the next
+    /// dispatch reuses the lifecycle seam this adapter already has instead of
+    /// adding a background task.
+    deferred_releases: Arc<Mutex<VecDeque<ResourceReservationId>>>,
+}
+
+impl FirstPartyRuntimeAdapter {
+    pub(crate) fn from_registry(
+        registry: Arc<FirstPartyCapabilityRegistry>,
+        invocation_services: Arc<dyn InvocationServicesResolver>,
+    ) -> Self {
+        Self {
+            registry,
+            invocation_services,
+            deferred_releases: Arc::new(Mutex::new(VecDeque::new())),
+        }
+    }
+
+    /// Queues a reservation whose release failed, dropping the oldest entry
+    /// when the queue is full.
+    fn defer_release(&self, reservation_id: ResourceReservationId) {
+        let Ok(mut deferred) = self.deferred_releases.lock() else {
+            tracing::debug!(
+                reservation_id = %reservation_id,
+                "deferred reservation release queue poisoned; reservation leaked"
+            );
+            return;
+        };
+        deferred.push_back(reservation_id);
+        while deferred.len() > MAX_DEFERRED_RESERVATION_RELEASES {
+            if let Some(dropped) = deferred.pop_front() {
+                tracing::debug!(
+                    reservation_id = %dropped,
+                    queue_capacity = MAX_DEFERRED_RESERVATION_RELEASES,
+                    "deferred reservation release queue full; oldest reservation dropped"
+                );
+            }
+        }
+    }
+
+    /// Releases a prepared reservation, queueing it for retry when the
+    /// release fails.
+    ///
+    /// Every cleanup path that abandons a prepared reservation must go through
+    /// here. Logging the failure and continuing leaves the reservation held
+    /// with nothing to reclaim it, which is the permanent capacity leak in
+    /// issue #7714.
+    fn release_or_defer<G>(&self, governor: &G, reservation_id: ResourceReservationId)
+    where
+        G: ResourceGovernor + ?Sized,
+    {
+        if let Err(error) = governor.release(reservation_id) {
+            tracing::warn!(
+                reservation_id = %reservation_id,
+                error = %error,
+                "failed to release prepared first-party reservation; deferring retry"
+            );
+            self.defer_release(reservation_id);
+        }
+    }
+
+    /// Retries every queued release once, re-queueing the ones that fail again.
+    fn retry_deferred_releases<G>(&self, governor: &G)
+    where
+        G: ResourceGovernor,
+    {
+        let pending = match self.deferred_releases.lock() {
+            Ok(mut deferred) => std::mem::take(&mut *deferred),
+            Err(_) => {
+                tracing::debug!("deferred reservation release queue poisoned; skipping retry");
+                return;
+            }
+        };
+        for reservation_id in pending {
+            match governor.release(reservation_id) {
+                Ok(_) => tracing::debug!(
+                    reservation_id = %reservation_id,
+                    "released deferred first-party resource reservation"
+                ),
+                Err(error) => {
+                    tracing::debug!(
+                        reservation_id = %reservation_id,
+                        error = %error,
+                        "deferred first-party resource reservation release failed again"
+                    );
+                    self.defer_release(reservation_id);
+                }
+            }
+        }
+    }
+}
+
+#[async_trait]
+impl<F, G> RuntimeAdapter<F, G> for FirstPartyRuntimeAdapter
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    #[tracing::instrument(
+        level = "debug",
+        skip(self, request),
+        fields(
+            capability_id = %request.capability_id,
+            scope = ?request.scope,
+        )
+    )]
+    async fn dispatch_json(
+        &self,
+        request: RuntimeLaneRequest<'_, F, G>,
+    ) -> Result<RuntimeAdapterResult, DispatchError> {
+        let latency_fields = first_party_latency_fields(&request);
+        let dispatch_started_at = latency_started_at();
+        let used_prepared_reservation = request.resource_reservation.is_some();
+        tracing::debug!("first-party runtime adapter dispatch started");
+        // Reservations whose release failed on an earlier dispatch get their
+        // retry here, on the same governor that holds them.
+        self.retry_deferred_releases(request.governor);
+        let lookup_started_at = latency_started_at();
+        let Some(handler) = self.registry.get(request.capability_id) else {
+            if let Some(reservation) = request.resource_reservation {
+                self.release_or_defer(request.governor, reservation.id);
+            }
+            tracing::debug!("first-party runtime adapter missing handler");
+            trace_first_party_stage_and_dispatch_error(
+                "lookup_handler",
+                latency_fields.as_ref(),
+                lookup_started_at,
+                dispatch_started_at,
+                RuntimeDispatchErrorKind::UndeclaredCapability.as_str(),
+                used_prepared_reservation,
+            );
+            return Err(first_party_dispatch_error(
+                RuntimeDispatchErrorKind::UndeclaredCapability,
+                None,
+                None,
+            ));
+        };
+        trace_first_party_latency_ok(
+            "lookup_handler",
+            latency_fields.as_ref(),
+            lookup_started_at,
+            0,
+            used_prepared_reservation,
+        );
+
+        let plan_started_at = latency_started_at();
+        let plan =
+            plan_capability(request.descriptor, request.runtime_policy).map_err(|error| {
+                let kind = planner_error_kind(&error);
+                tracing::debug!(
+                    error_kind = %kind,
+                    "first-party runtime adapter policy planning failed"
+                );
+                if let Some(reservation) = &request.resource_reservation {
+                    self.release_or_defer(request.governor, reservation.id);
+                }
+                trace_first_party_stage_and_dispatch_error(
+                    "plan_capability",
+                    latency_fields.as_ref(),
+                    plan_started_at,
+                    dispatch_started_at,
+                    kind.as_str(),
+                    used_prepared_reservation,
+                );
+                first_party_dispatch_error(kind, Some(error.to_string()), None)
+            })?;
+        trace_first_party_latency_ok(
+            "plan_capability",
+            latency_fields.as_ref(),
+            plan_started_at,
+            0,
+            used_prepared_reservation,
+        );
+        tracing::debug!(
+            filesystem_backend = ?plan.filesystem_backend,
+            process_backend = ?plan.process_backend,
+            network_mode = ?plan.network_mode,
+            secret_mode = ?plan.secret_mode,
+            "first-party runtime adapter policy plan resolved"
+        );
+        let resolve_started_at = latency_started_at();
+        let services = self
+            .invocation_services
+            .resolve(InvocationServicesResolutionRequest {
+                plan: &plan,
+                scope: &request.scope,
+                mounts: request.mounts.as_ref(),
+            })
+            .map_err(|error| {
+                tracing::debug!(
+                    error_kind = %error.kind(),
+                    "first-party runtime adapter service resolution failed"
+                );
+                if let Some(reservation) = &request.resource_reservation {
+                    self.release_or_defer(request.governor, reservation.id);
+                }
+                trace_first_party_stage_and_dispatch_error(
+                    "resolve_services",
+                    latency_fields.as_ref(),
+                    resolve_started_at,
+                    dispatch_started_at,
+                    error.kind().as_str(),
+                    used_prepared_reservation,
+                );
+                first_party_dispatch_error(error.kind(), Some(error.to_string()), None)
+            })?;
+        trace_first_party_latency_ok(
+            "resolve_services",
+            latency_fields.as_ref(),
+            resolve_started_at,
+            0,
+            used_prepared_reservation,
+        );
+        tracing::debug!("first-party runtime adapter services resolved");
+
+        let reserve_started_at = latency_started_at();
+        let reservation = match request.resource_reservation {
+            Some(reservation) => {
+                trace_first_party_latency_ok(
+                    "reserve_resources",
+                    latency_fields.as_ref(),
+                    reserve_started_at,
+                    0,
+                    used_prepared_reservation,
+                );
+                reservation
+            }
+            None => request
+                .governor
+                .reserve(request.scope.clone(), request.estimate.clone())
+                .inspect(|_| {
+                    trace_first_party_latency_ok(
+                        "reserve_resources",
+                        latency_fields.as_ref(),
+                        reserve_started_at,
+                        0,
+                        used_prepared_reservation,
+                    );
+                })
+                .map_err(|error| {
+                    tracing::debug!(
+                        %error,
+                        "first-party runtime adapter resource reservation failed"
+                    );
+                    trace_first_party_stage_and_dispatch_error(
+                        "reserve_resources",
+                        latency_fields.as_ref(),
+                        reserve_started_at,
+                        dispatch_started_at,
+                        RuntimeDispatchErrorKind::Resource.as_str(),
+                        used_prepared_reservation,
+                    );
+                    // Carry the cause: a bare `resource` category tells the
+                    // model nothing, so it retries the identical call and
+                    // trips the identical limit. The reason names the tripped
+                    // dimension, which is the one thing that lets the model
+                    // shrink its request (a smaller timeout, less output).
+                    // Same shape as `resolve_services` above; the summary is
+                    // strict-validated and the cause scrubbed downstream.
+                    first_party_dispatch_error(
+                        RuntimeDispatchErrorKind::Resource,
+                        Some(error.to_string()),
+                        None,
+                    )
+                })?,
+        };
+        tracing::debug!(
+            reservation_id = %reservation.id,
+            used_prepared_reservation,
+            "first-party runtime adapter resource reservation ready"
+        );
+        // From here the reservation lives in an RAII guard carried across the
+        // handler `catch_unwind().await` below. If the turn scheduler drops this
+        // future mid-await (cancel/lease-expiry/timeout), `Drop` releases the
+        // reservation instead of leaking it permanently. Every early `return`
+        // below drops the still-armed guard, which releases.
+        let reservation_id = reservation.id;
+        let guard = ReservationGuard::new(request.governor, reservation_id);
+        let first_party_resource_error =
+            || first_party_dispatch_error(RuntimeDispatchErrorKind::Resource, None, None);
+
+        tracing::debug!(
+            reservation_id = %reservation_id,
+            "first-party runtime adapter invoking handler"
+        );
+        let handler_started_at = latency_started_at();
+        let result = match AssertUnwindSafe(handler.dispatch(FirstPartyCapabilityRequest {
+            capability_id: request.capability_id.clone(),
+            scope: request.scope.clone(),
+            // The authenticated human actor (distinct from the resource subject
+            // in `scope`), threaded through so a first-party handler can
+            // attribute the action to the acting user.
+            authenticated_actor_user_id: request.authenticated_actor_user_id.clone(),
+            run_id: request.run_id,
+            origin: request.origin,
+            estimate: request.estimate,
+            mounts: request.mounts,
+            runtime_credentials: request.descriptor.runtime_credentials.clone(),
+            services,
+            input: request.input,
+        }))
+        .catch_unwind()
+        .await
+        {
+            Ok(Ok(result)) => {
+                trace_first_party_latency_ok(
+                    "handler_dispatch",
+                    latency_fields.as_ref(),
+                    handler_started_at,
+                    0,
+                    used_prepared_reservation,
+                );
+                result
+            }
+            Ok(Err(error)) => {
+                tracing::debug!(
+                    reservation_id = %reservation_id,
+                    is_auth_required = error.is_auth_required(),
+                    "first-party runtime adapter handler failed"
+                );
+                let error_kind = error
+                    .kind()
+                    .map(RuntimeDispatchErrorKind::as_str)
+                    .unwrap_or("auth_required");
+                trace_first_party_stage_and_dispatch_error(
+                    "handler_dispatch",
+                    latency_fields.as_ref(),
+                    handler_started_at,
+                    dispatch_started_at,
+                    error_kind,
+                    used_prepared_reservation,
+                );
+                if let Err(acct_err) =
+                    guard.account_failed(error.usage(), first_party_resource_error)
+                {
+                    tracing::warn!(
+                        reservation_id = %reservation_id,
+                        error = ?acct_err,
+                        "first-party resource accounting failed on handler error; \
+                         returning original handler error"
+                    );
+                }
+                return match error {
+                    FirstPartyCapabilityError::AuthRequired {
+                        required_secrets,
+                        credential_requirements,
+                        ..
+                    } => Err(DispatchError::AuthRequired {
+                        capability: request.capability_id.clone(),
+                        requirement: Box::new(DispatchAuthRequirement {
+                            required_secrets,
+                            credential_requirements,
+                            model_visible_cause: None,
+                        }),
+                    }),
+                    FirstPartyCapabilityError::Dispatch {
+                        kind,
+                        safe_summary,
+                        detail,
+                        ..
+                    } => Err(first_party_dispatch_error(
+                        kind,
+                        safe_summary,
+                        detail.map(|detail| *detail),
+                    )),
+                };
+            }
+            Err(_) => {
+                tracing::debug!(
+                    reservation_id = %reservation_id,
+                    "first-party runtime adapter handler panicked"
+                );
+                trace_first_party_stage_and_dispatch_error(
+                    "handler_dispatch",
+                    latency_fields.as_ref(),
+                    handler_started_at,
+                    dispatch_started_at,
+                    RuntimeDispatchErrorKind::Backend.as_str(),
+                    used_prepared_reservation,
+                );
+                // Dropping `guard` releases the reservation.
+                return Err(first_party_dispatch_error(
+                    RuntimeDispatchErrorKind::Backend,
+                    None,
+                    None,
+                ));
+            }
+        };
+
+        let serialize_started_at = latency_started_at();
+        let output_bytes = serde_json::to_vec(&result.output)
+            .map(|bytes| bytes.len() as u64)
+            .map_err(|_| {
+                tracing::debug!(
+                    reservation_id = %reservation_id,
+                    "first-party runtime adapter output serialization failed"
+                );
+                trace_first_party_stage_and_dispatch_error(
+                    "serialize_output",
+                    latency_fields.as_ref(),
+                    serialize_started_at,
+                    dispatch_started_at,
+                    RuntimeDispatchErrorKind::OutputDecode.as_str(),
+                    used_prepared_reservation,
+                );
+                // Dropping `guard` releases the reservation.
+                first_party_dispatch_error(RuntimeDispatchErrorKind::OutputDecode, None, None)
+            })?;
+        trace_first_party_latency_ok(
+            "serialize_output",
+            latency_fields.as_ref(),
+            serialize_started_at,
+            output_bytes,
+            used_prepared_reservation,
+        );
+        let mut usage = result.usage;
+        usage.output_bytes = usage.output_bytes.max(output_bytes);
+        // Happy path: reconcile inline so we preserve the existing
+        // warn-on-release-error-after-reconcile-failure diagnostic. `disarm`
+        // hands reservation ownership back from the guard; both reconcile
+        // outcomes settle the reservation below.
+        let reconcile_id = guard.disarm();
+        let reconcile_started_at = latency_started_at();
+        let receipt = match request.governor.reconcile(reconcile_id, usage.clone()) {
+            Ok(receipt) => {
+                trace_first_party_latency_ok(
+                    "reconcile_resources",
+                    latency_fields.as_ref(),
+                    reconcile_started_at,
+                    output_bytes,
+                    used_prepared_reservation,
+                );
+                receipt
+            }
+            Err(_) => {
+                tracing::debug!(
+                    reservation_id = %reconcile_id,
+                    "first-party runtime adapter resource reconcile failed"
+                );
+                if let Err(release_error) = request.governor.release(reconcile_id) {
+                    tracing::warn!(
+                        reservation_id = %reconcile_id,
+                        error = %release_error,
+                        "failed to release first-party resource reservation after reconcile failure"
+                    );
+                    self.defer_release(reconcile_id);
+                }
+                trace_first_party_stage_and_dispatch_error(
+                    "reconcile_resources",
+                    latency_fields.as_ref(),
+                    reconcile_started_at,
+                    dispatch_started_at,
+                    RuntimeDispatchErrorKind::Resource.as_str(),
+                    used_prepared_reservation,
+                );
+                return Err(first_party_dispatch_error(
+                    RuntimeDispatchErrorKind::Resource,
+                    None,
+                    None,
+                ));
+            }
+        };
+        tracing::debug!(
+            reservation_id = %reconcile_id,
+            output_bytes,
+            "first-party runtime adapter dispatch completed"
+        );
+        trace_first_party_latency_ok(
+            "dispatch",
+            latency_fields.as_ref(),
+            dispatch_started_at,
+            output_bytes,
+            used_prepared_reservation,
+        );
+
+        Ok(RuntimeAdapterResult {
+            output: result.output,
+            display_preview: result.display_preview,
+            usage,
+            receipt,
+            output_bytes,
+        })
+    }
+}
+
+pub(super) struct WasmRuntimeAdapter {
+    runtime: WitToolRuntime,
+    host: WitToolHost,
+    network_policy_store: Arc<NetworkObligationPolicyStore>,
+    runtime_http_egress: SharedRuntimeHttpEgress,
+    credential_provider: Option<Arc<dyn WasmRuntimeCredentialProvider>>,
+    secret_injections: Arc<RuntimeSecretInjectionStore>,
+    prepared: Mutex<HashMap<String, Arc<PreparedWitTool>>>,
+}
+
+impl WasmRuntimeAdapter {
+    pub(crate) fn new(
+        runtime: WitToolRuntime,
+        host: WitToolHost,
+        network_policy_store: Arc<NetworkObligationPolicyStore>,
+        runtime_http_egress: SharedRuntimeHttpEgress,
+        credential_provider: Option<Arc<dyn WasmRuntimeCredentialProvider>>,
+        secret_injections: Arc<RuntimeSecretInjectionStore>,
+    ) -> Self {
+        Self {
+            runtime,
+            host,
+            network_policy_store,
+            runtime_http_egress,
+            credential_provider,
+            secret_injections,
+            prepared: Mutex::new(HashMap::new()),
+        }
+    }
+
+    pub(crate) fn try_new(
+        config: WitToolRuntimeConfig,
+        host: WitToolHost,
+        network_policy_store: Arc<NetworkObligationPolicyStore>,
+        runtime_http_egress: SharedRuntimeHttpEgress,
+        credential_provider: Option<Arc<dyn WasmRuntimeCredentialProvider>>,
+        secret_injections: Arc<RuntimeSecretInjectionStore>,
+    ) -> Result<Self, WasmError> {
+        Ok(Self::new(
+            WitToolRuntime::new(config)?,
+            host,
+            network_policy_store,
+            runtime_http_egress,
+            credential_provider,
+            secret_injections,
+        ))
+    }
+
+    fn prepared_guard(
+        &self,
+    ) -> Result<MutexGuard<'_, HashMap<String, Arc<PreparedWitTool>>>, DispatchError> {
+        self.prepared.lock().map_err(|error| {
+            dispatch_error_for_runtime(
+                RuntimeKind::Wasm,
+                RuntimeDispatchErrorKind::Executor,
+                Some(error.to_string()),
+            )
+        })
+    }
+
+    fn host_for_scope(&self, scope: &ResourceScope, capability_id: &CapabilityId) -> WitToolHost {
+        // Per-invocation `secret-exists` backing: every host variant below
+        // (denied HTTP or policy-routed) must answer the credential probe from
+        // the staged injection store, or third-party guests that gate on it
+        // abort with an opaque failure before issuing any request.
+        let secrets = StagedWasmHostSecrets::new(
+            Arc::clone(&self.secret_injections),
+            scope.clone(),
+            capability_id.clone(),
+        );
+        let egress = runtime_http_egress(&self.runtime_http_egress);
+        let Some(policy) = self.network_policy_store.get(scope, capability_id) else {
+            return if egress.is_some() {
+                self.host
+                    .clone()
+                    .with_http(Arc::new(DenyWasmHostHttp))
+                    .with_secrets(Arc::new(secrets))
+            } else {
+                self.host.clone().with_secrets(Arc::new(secrets))
+            };
+        };
+        let Some(egress) = egress else {
+            return self
+                .host
+                .clone()
+                .with_http(Arc::new(DenyWasmHostHttp))
+                .with_secrets(Arc::new(secrets));
+        };
+        let mut adapter =
+            WasmRuntimeHttpAdapter::new(egress, scope.clone(), capability_id.clone(), policy)
+                .with_policy_discarder(Arc::new(NetworkPolicyDiscarder {
+                    store: Arc::clone(&self.network_policy_store),
+                }));
+        if let Some(provider) = &self.credential_provider {
+            adapter = adapter.with_credential_provider(Arc::clone(provider));
+        }
+        self.host
+            .clone()
+            .with_http(Arc::new(adapter))
+            .with_secrets(Arc::new(secrets))
+    }
+}
+
+#[async_trait]
+impl<F, G> RuntimeAdapter<F, G> for WasmRuntimeAdapter
+where
+    F: RootFilesystem,
+    G: ResourceGovernor,
+{
+    async fn dispatch_json(
+        &self,
+        request: RuntimeLaneRequest<'_, F, G>,
+    ) -> Result<RuntimeAdapterResult, DispatchError> {
+        let module_path = match &request.package.manifest.runtime {
+            ExtensionRuntime::Wasm { module } => ironclaw_extension_registry::resolve_asset_under(
+                module,
+                request.package.materialized_root().map_err(|error| {
+                    dispatch_error_for_runtime(
+                        RuntimeKind::Wasm,
+                        RuntimeDispatchErrorKind::Manifest,
+                        Some(error.to_string()),
+                    )
+                })?,
+            )
+            .map_err(|error| {
+                dispatch_error_for_runtime(
+                    RuntimeKind::Wasm,
+                    RuntimeDispatchErrorKind::Manifest,
+                    Some(error.to_string()),
+                )
+            })?,
+            other => {
+                return Err(dispatch_error_for_runtime(
+                    RuntimeKind::Wasm,
+                    if other.kind() == RuntimeKind::Wasm {
+                        RuntimeDispatchErrorKind::Manifest
+                    } else {
+                        RuntimeDispatchErrorKind::ExtensionRuntimeMismatch
+                    },
+                    None,
+                ));
+            }
+        };
+        let cache_key = module_path.as_str().to_string();
+        let prepared = self.prepared_guard()?.get(&cache_key).cloned();
+        if let Some(prepared) = prepared {
+            let host = self.host_for_scope(&request.scope, request.capability_id);
+            return execute_prepared_wasm(self.runtime.clone(), prepared, host, request).await;
+        }
+
+        let wasm_bytes = request
+            .filesystem
+            .read_file(&module_path)
+            .await
+            .map_err(|error| {
+                dispatch_error_for_runtime(
+                    RuntimeKind::Wasm,
+                    RuntimeDispatchErrorKind::FilesystemDenied,
+                    Some(error.to_string()),
+                )
+            })?;
+        let prepared = Arc::new(
+            run_wasm_prepare_blocking(
+                self.runtime.clone(),
+                request.package.id.as_str().to_string(),
+                wasm_bytes,
+            )
+            .await
+            .map_err(|error| {
+                dispatch_error_for_runtime(
+                    RuntimeKind::Wasm,
+                    error.kind(),
+                    Some(error.source().to_string()),
+                )
+            })?,
+        );
+        let prepared = {
+            let mut prepared_cache = self.prepared_guard()?;
+            if let Some(existing) = prepared_cache.get(&cache_key).cloned() {
+                existing
+            } else {
+                prepared_cache.insert(cache_key, Arc::clone(&prepared));
+                prepared
+            }
+        };
+        let host = self.host_for_scope(&request.scope, request.capability_id);
+        execute_prepared_wasm(self.runtime.clone(), prepared, host, request).await
+    }
+}
+
+#[derive(Debug, Clone)]
+struct NetworkPolicyDiscarder {
+    store: Arc<NetworkObligationPolicyStore>,
+}
+
+impl WasmRuntimePolicyDiscarder for NetworkPolicyDiscarder {
+    fn discard(&self, scope: &ResourceScope, capability_id: &CapabilityId) {
+        self.store.discard_for_capability(scope, capability_id);
+    }
+}
+
+fn release_adapter_reservation<G>(governor: &G, reservation_id: Option<ResourceReservationId>)
+where
+    G: ResourceGovernor + ?Sized,
+{
+    let Some(reservation_id) = reservation_id else {
+        return;
+    };
+    if let Err(error) = governor.release(reservation_id) {
+        tracing::warn!(
+            reservation_id = %reservation_id,
+            error = %error,
+            "failed to release prepared resource reservation after runtime policy rejection"
+        );
+    }
+}
+
+/// Builds a provider-rejection `DispatchError` for a given runtime lane.
+/// `cause` rides the typed diagnostic channel (#5965): raw-or-better cause
+/// text, scrubbed downstream at the model-visible Diagnostic seam.
+pub(super) fn dispatch_error_for_runtime(
+    runtime: RuntimeKind,
+    kind: RuntimeDispatchErrorKind,
+    cause: Option<String>,
+) -> DispatchError {
+    DispatchError::provider_rejected(
+        Some(runtime),
+        DispatchFailureKind::Runtime(kind),
+        cause,
+        None,
+    )
+}
+
+fn planner_error_kind(error: &PlannerError) -> RuntimeDispatchErrorKind {
+    match error {
+        PlannerError::ProcessEffectsRequiredButProcessBackendIsNone { .. } => {
+            RuntimeDispatchErrorKind::UnsupportedRunner
+        }
+        PlannerError::NetworkRequiredButNetworkModeIsDeny { .. } => {
+            RuntimeDispatchErrorKind::NetworkDenied
+        }
+        PlannerError::SecretAccessRequiredButSecretModeIsDeny { .. } => {
+            RuntimeDispatchErrorKind::SecretDenied
+        }
+    }
+}
+
+fn script_error_kind(error: &ScriptError) -> RuntimeDispatchErrorKind {
+    match error {
+        ScriptError::Resource(_) => RuntimeDispatchErrorKind::Resource,
+        ScriptError::Backend { .. } => RuntimeDispatchErrorKind::Backend,
+        ScriptError::UnsupportedRunner { .. } => RuntimeDispatchErrorKind::UnsupportedRunner,
+        ScriptError::ExtensionRuntimeMismatch { .. } => {
+            RuntimeDispatchErrorKind::ExtensionRuntimeMismatch
+        }
+        ScriptError::CapabilityNotDeclared { .. } => RuntimeDispatchErrorKind::UndeclaredCapability,
+        ScriptError::DescriptorMismatch { .. } => RuntimeDispatchErrorKind::Manifest,
+        ScriptError::InvalidInvocation { .. } => RuntimeDispatchErrorKind::InputEncode,
+        ScriptError::ExitFailure { .. } => RuntimeDispatchErrorKind::ExitFailure,
+        ScriptError::OutputLimitExceeded { .. } => RuntimeDispatchErrorKind::OutputTooLarge,
+        // A script timeout does not encode whether the request, runtime, or
+        // backend caused the deadline to elapse. Keep it in the executor lane
+        // until the runtime can provide typed timeout provenance; otherwise a
+        // transient host slowdown would be mislabeled as a deterministic
+        // model-visible operation failure and lose its retry path.
+        ScriptError::Timeout { .. } => RuntimeDispatchErrorKind::Executor,
+        ScriptError::InvalidOutput { .. } => RuntimeDispatchErrorKind::OutputDecode,
+    }
+}
+
+fn mcp_error_kind(error: &McpError) -> RuntimeDispatchErrorKind {
+    match error {
+        McpError::Resource(_) => RuntimeDispatchErrorKind::Resource,
+        McpError::Client { .. } => RuntimeDispatchErrorKind::Client,
+        McpError::ProviderRejected(_) => RuntimeDispatchErrorKind::Client,
+        McpError::InvalidToolCatalog { .. } => RuntimeDispatchErrorKind::OutputDecode,
+        McpError::InvalidToolResult(_) => RuntimeDispatchErrorKind::OutputDecode,
+        McpError::AuthRequired { .. } => RuntimeDispatchErrorKind::Client,
+        McpError::UnsupportedTransport { .. } => RuntimeDispatchErrorKind::UnsupportedRunner,
+        McpError::HostHttpEgressRequired { .. } => RuntimeDispatchErrorKind::NetworkDenied,
+        McpError::ExternalStdioTransportUnsupported => RuntimeDispatchErrorKind::UnsupportedRunner,
+        McpError::ExtensionRuntimeMismatch { .. } => {
+            RuntimeDispatchErrorKind::ExtensionRuntimeMismatch
+        }
+        McpError::CapabilityNotDeclared { .. } => RuntimeDispatchErrorKind::UndeclaredCapability,
+        McpError::DescriptorMismatch { .. } => RuntimeDispatchErrorKind::Manifest,
+        McpError::InvalidInvocation { .. } => RuntimeDispatchErrorKind::InputEncode,
+        McpError::OutputLimitExceeded { .. } => RuntimeDispatchErrorKind::OutputTooLarge,
+    }
+}
+
+pub(super) fn wasm_error_kind(error: &WasmError) -> RuntimeDispatchErrorKind {
+    match error {
+        WasmError::EngineCreationFailed(_) => RuntimeDispatchErrorKind::Executor,
+        WasmError::CompilationFailed(_) => RuntimeDispatchErrorKind::Manifest,
+        WasmError::StoreConfiguration(_) => RuntimeDispatchErrorKind::Executor,
+        WasmError::LinkerConfiguration(_) => RuntimeDispatchErrorKind::Executor,
+        WasmError::InstantiationFailed(_) => RuntimeDispatchErrorKind::MethodMissing,
+        WasmError::UnsupportedContract(_) => RuntimeDispatchErrorKind::Manifest,
+        WasmError::ExecutionFailed { .. } => RuntimeDispatchErrorKind::Guest,
+        WasmError::InvalidSchema(_) => RuntimeDispatchErrorKind::Manifest,
+    }
+}
+
+fn sanitize_mcp_client_error(error: &McpError) -> String {
+    let raw = error.to_string();
+    let sanitized = ironclaw_safety::sanitize_display_text(&raw);
+    tracing::debug!(reason = %sanitized, "MCP client failure sanitized for provider diagnostic");
+    sanitized
+}

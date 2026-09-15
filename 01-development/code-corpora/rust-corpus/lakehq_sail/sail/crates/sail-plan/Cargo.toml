@@ -1,0 +1,56 @@
+[package]
+name = "sail-plan"
+version = { workspace = true }
+edition = { workspace = true }
+
+[lints]
+workspace = true
+
+[dependencies]
+sail-common = { path = "../sail-common" }
+sail-common-datafusion = { path = "../sail-common-datafusion" }
+sail-python-udf = { path = "../sail-python-udf" }
+sail-sql-analyzer = { path = "../sail-sql-analyzer" }
+sail-catalog = { path = "../sail-catalog" }
+sail-catalog-memory = { path = "../sail-catalog-memory" }
+sail-function = { path = "../sail-function" }
+sail-logical-plan = { path = "../sail-logical-plan" }
+sail-physical-plan = { path = "../sail-physical-plan" }
+sail-data-source = { path = "../sail-data-source" }
+sail-cache = { path = "../sail-cache" }
+
+datafusion = { workspace = true }
+datafusion-common = { workspace = true }
+datafusion-expr = { workspace = true }
+datafusion-expr-common = { workspace = true }
+datafusion-functions = { workspace = true }
+datafusion-functions-nested = { workspace = true }
+datafusion-spark = { workspace = true }
+educe = { workspace = true }
+thiserror = { workspace = true }
+tonic = { workspace = true }
+chrono = { workspace = true }
+chumsky = { workspace = true }
+async-trait = { workspace = true }
+async-recursion = { workspace = true }
+lazy_static = { workspace = true }
+ryu = { workspace = true }
+either = { workspace = true }
+tokio = { workspace = true }
+rand = { workspace = true }
+uuid = { workspace = true }
+object_store = { workspace = true }
+half = { workspace = true }
+arrow = { workspace = true }
+arrow-schema = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+indexmap = { workspace = true }
+log = { workspace = true }
+regex = { workspace = true }
+regex-syntax = { workspace = true }
+parquet-variant-compute = { workspace = true }
+
+[build-dependencies]
+serde = { workspace = true }
+serde_yaml = { workspace = true }

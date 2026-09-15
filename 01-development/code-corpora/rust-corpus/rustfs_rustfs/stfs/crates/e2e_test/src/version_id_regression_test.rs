@@ -1,0 +1,673 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//! Regression test for Issue #1066: Veeam VBR - S3 returned empty versionId
+//!
+//! This test verifies that:
+//! 1. PutObject returns version_id when versioning is enabled
+//! 2. CopyObject returns version_id when versioning is enabled
+//! 3. CompleteMultipartUpload returns version_id when versioning is enabled
+//! 4. Basic S3 operations still work correctly (no regression)
+//! 5. Operations on non-versioned buckets work as expected
+
+#[cfg(test)]
+mod tests {
+    use crate::common::{RustFSTestEnvironment, init_logging};
+    use aws_sdk_s3::Client;
+    use aws_sdk_s3::error::ProvideErrorMetadata;
+    use aws_sdk_s3::primitives::ByteStream;
+    use aws_sdk_s3::types::{BucketVersioningStatus, CompletedMultipartUpload, CompletedPart, VersioningConfiguration};
+    use tracing::info;
+
+    fn create_s3_client(env: &RustFSTestEnvironment) -> Client {
+        env.create_s3_client()
+    }
+
+    async fn create_bucket(client: &Client, bucket: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        match client.create_bucket().bucket(bucket).send().await {
+            Ok(_) => {
+                info!("✅ Bucket {} created successfully", bucket);
+                Ok(())
+            }
+            Err(e) => {
+                if e.to_string().contains("BucketAlreadyOwnedByYou") || e.to_string().contains("BucketAlreadyExists") {
+                    info!("ℹ️  Bucket {} already exists", bucket);
+                    Ok(())
+                } else {
+                    Err(Box::new(e))
+                }
+            }
+        }
+    }
+
+    async fn enable_versioning(client: &Client, bucket: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let versioning_config = VersioningConfiguration::builder()
+            .status(BucketVersioningStatus::Enabled)
+            .build();
+
+        client
+            .put_bucket_versioning()
+            .bucket(bucket)
+            .versioning_configuration(versioning_config)
+            .send()
+            .await?;
+
+        info!("✅ Versioning enabled for bucket {}", bucket);
+        Ok(())
+    }
+
+    async fn suspend_versioning(client: &Client, bucket: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        let versioning_config = VersioningConfiguration::builder()
+            .status(BucketVersioningStatus::Suspended)
+            .build();
+
+        client
+            .put_bucket_versioning()
+            .bucket(bucket)
+            .versioning_configuration(versioning_config)
+            .send()
+            .await?;
+
+        info!("✅ Versioning suspended for bucket {}", bucket);
+        Ok(())
+    }
+
+    /// Test 1: PutObject should return version_id when versioning is enabled
+    /// This directly addresses the Veeam issue from #1066
+    #[tokio::test]
+    async fn test_put_object_returns_version_id_with_versioning() {
+        init_logging();
+        info!("🧪 TEST: PutObject returns version_id with versioning enabled");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-put-version-id";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        enable_versioning(&client, bucket).await.expect("Failed to enable versioning");
+
+        let key = "test-file.txt";
+        let content = b"Test content for version ID test";
+
+        info!("📤 Uploading object with key: {}", key);
+        let result = client
+            .put_object()
+            .bucket(bucket)
+            .key(key)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await;
+
+        assert!(result.is_ok(), "PutObject failed: {:?}", result.err());
+        let output = result.unwrap();
+
+        info!("📥 PutObject response - version_id: {:?}", output.version_id);
+        assert!(
+            output.version_id.is_some(),
+            "❌ FAILED: version_id should be present when versioning is enabled"
+        );
+        assert!(
+            !output.version_id.as_ref().unwrap().is_empty(),
+            "❌ FAILED: version_id should not be empty"
+        );
+
+        info!("✅ PASSED: PutObject correctly returns version_id");
+    }
+
+    /// Test 2: CopyObject should return version_id when versioning is enabled
+    #[tokio::test]
+    async fn test_copy_object_returns_version_id_with_versioning() {
+        init_logging();
+        info!("🧪 TEST: CopyObject returns version_id with versioning enabled");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-copy-version-id";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        enable_versioning(&client, bucket).await.expect("Failed to enable versioning");
+
+        let source_key = "source-file.txt";
+        let dest_key = "dest-file.txt";
+        let content = b"Content to copy";
+
+        // First, create source object
+        client
+            .put_object()
+            .bucket(bucket)
+            .key(source_key)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await
+            .expect("Failed to create source object");
+
+        info!("📤 Copying object from {} to {}", source_key, dest_key);
+        let copy_result = client
+            .copy_object()
+            .bucket(bucket)
+            .key(dest_key)
+            .copy_source(format!("{}/{}", bucket, source_key))
+            .send()
+            .await;
+
+        assert!(copy_result.is_ok(), "CopyObject failed: {:?}", copy_result.err());
+        let output = copy_result.unwrap();
+
+        info!("📥 CopyObject response - version_id: {:?}", output.version_id);
+        assert!(
+            output.version_id.is_some(),
+            "❌ FAILED: version_id should be present when versioning is enabled"
+        );
+        assert!(
+            !output.version_id.as_ref().unwrap().is_empty(),
+            "❌ FAILED: version_id should not be empty"
+        );
+
+        info!("✅ PASSED: CopyObject correctly returns version_id");
+    }
+
+    /// Test 3: CompleteMultipartUpload should return version_id when versioning is enabled
+    #[tokio::test]
+    async fn test_multipart_upload_returns_version_id_with_versioning() {
+        init_logging();
+        info!("🧪 TEST: CompleteMultipartUpload returns version_id with versioning enabled");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-multipart-version-id";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        enable_versioning(&client, bucket).await.expect("Failed to enable versioning");
+
+        let key = "multipart-file.txt";
+        let content = b"Part 1 content for multipart upload test";
+
+        info!("📤 Creating multipart upload for key: {}", key);
+        let create_result = client
+            .create_multipart_upload()
+            .bucket(bucket)
+            .key(key)
+            .send()
+            .await
+            .expect("Failed to create multipart upload");
+
+        let upload_id = create_result.upload_id().expect("No upload_id returned");
+
+        info!("📤 Uploading part 1");
+        let upload_part_result = client
+            .upload_part()
+            .bucket(bucket)
+            .key(key)
+            .upload_id(upload_id)
+            .part_number(1)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await
+            .expect("Failed to upload part");
+
+        let etag = upload_part_result.e_tag().expect("No etag returned").to_string();
+
+        let completed_part = CompletedPart::builder().part_number(1).e_tag(etag).build();
+
+        let completed_upload = CompletedMultipartUpload::builder().parts(completed_part).build();
+
+        info!("📤 Completing multipart upload");
+        let complete_result = client
+            .complete_multipart_upload()
+            .bucket(bucket)
+            .key(key)
+            .upload_id(upload_id)
+            .multipart_upload(completed_upload)
+            .send()
+            .await;
+
+        assert!(complete_result.is_ok(), "CompleteMultipartUpload failed: {:?}", complete_result.err());
+        let output = complete_result.unwrap();
+
+        info!("📥 CompleteMultipartUpload response - version_id: {:?}", output.version_id);
+        assert!(
+            output.version_id.is_some(),
+            "❌ FAILED: version_id should be present when versioning is enabled"
+        );
+        assert!(
+            !output.version_id.as_ref().unwrap().is_empty(),
+            "❌ FAILED: version_id should not be empty"
+        );
+
+        info!("✅ PASSED: CompleteMultipartUpload correctly returns version_id");
+    }
+
+    /// Test 4: PutObject should NOT return version_id when versioning is NOT enabled
+    /// This ensures we didn't break non-versioned buckets
+    #[tokio::test]
+    async fn test_put_object_without_versioning() {
+        init_logging();
+        info!("🧪 TEST: PutObject behavior without versioning (no regression)");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-no-versioning";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        // Note: NOT enabling versioning here
+
+        let key = "test-file.txt";
+        let content = b"Test content without versioning";
+
+        info!("📤 Uploading object to non-versioned bucket");
+        let result = client
+            .put_object()
+            .bucket(bucket)
+            .key(key)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await;
+
+        assert!(result.is_ok(), "PutObject failed: {:?}", result.err());
+        let output = result.unwrap();
+
+        info!("📥 PutObject response - version_id: {:?}", output.version_id);
+        assert!(
+            output.version_id().is_none() || output.version_id() == Some("null"),
+            "non-versioned PUT must omit version ID or return the S3 null version"
+        );
+        info!("✅ PASSED: PutObject works correctly without versioning");
+    }
+
+    /// Test 5: Basic S3 operations still work correctly (no regression)
+    #[tokio::test]
+    async fn test_basic_s3_operations_no_regression() {
+        init_logging();
+        info!("🧪 TEST: Basic S3 operations work correctly (no regression)");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-basic-operations";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        enable_versioning(&client, bucket).await.expect("Failed to enable versioning");
+
+        let key = "test-basic-file.txt";
+        let content = b"Basic operations test content";
+
+        // Test PUT
+        info!("📤 Testing PUT operation");
+        let put_result = client
+            .put_object()
+            .bucket(bucket)
+            .key(key)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await;
+        assert!(put_result.is_ok(), "PUT operation failed");
+        let version_id = put_result
+            .unwrap()
+            .version_id()
+            .expect("versioned PUT should return a version ID")
+            .to_string();
+
+        // Test GET
+        info!("📥 Testing GET operation");
+        let get_result = client.get_object().bucket(bucket).key(key).send().await;
+        assert!(get_result.is_ok(), "GET operation failed");
+        let body = get_result.unwrap().body.collect().await.unwrap().to_vec();
+        assert_eq!(body, content, "Content mismatch after GET");
+
+        // Test HEAD
+        info!("📋 Testing HEAD operation");
+        let head_result = client.head_object().bucket(bucket).key(key).send().await;
+        assert!(head_result.is_ok(), "HEAD operation failed");
+
+        // Test LIST
+        info!("📝 Testing LIST operation");
+        let list_result = client.list_objects_v2().bucket(bucket).send().await;
+        assert!(list_result.is_ok(), "LIST operation failed");
+        let list_output = list_result.unwrap();
+        let objects = list_output.contents();
+        assert!(objects.iter().any(|obj| obj.key() == Some(key)), "Object not found in LIST");
+
+        // Test DELETE
+        info!("🗑️  Testing DELETE operation");
+        let delete_result = client
+            .delete_object()
+            .bucket(bucket)
+            .key(key)
+            .send()
+            .await
+            .expect("DELETE operation failed");
+        assert_eq!(delete_result.delete_marker(), Some(true));
+        let delete_marker_version_id = delete_result
+            .version_id()
+            .expect("versioned DELETE should return a delete marker version ID")
+            .to_string();
+
+        let get_after_delete = client
+            .get_object()
+            .bucket(bucket)
+            .key(key)
+            .send()
+            .await
+            .expect_err("the current delete marker must hide the object");
+        assert_eq!(get_after_delete.raw_response().map(|response| response.status().as_u16()), Some(404));
+        assert_eq!(
+            get_after_delete.as_service_error().and_then(ProvideErrorMetadata::code),
+            Some("NoSuchKey")
+        );
+
+        let versions = client
+            .list_object_versions()
+            .bucket(bucket)
+            .prefix(key)
+            .send()
+            .await
+            .expect("ListObjectVersions failed after DELETE");
+        assert_eq!(versions.versions().len(), 1);
+        assert_eq!(versions.versions()[0].version_id(), Some(version_id.as_str()));
+        assert_eq!(versions.versions()[0].is_latest(), Some(false));
+        assert_eq!(versions.delete_markers().len(), 1);
+        assert_eq!(versions.delete_markers()[0].version_id(), Some(delete_marker_version_id.as_str()));
+        assert_eq!(versions.delete_markers()[0].is_latest(), Some(true));
+
+        info!("✅ PASSED: All basic S3 operations work correctly");
+    }
+
+    /// Test 6: Veeam-specific scenario simulation
+    /// Simulates the exact workflow that Veeam uses when backing up data
+    #[tokio::test]
+    async fn test_veeam_backup_workflow_simulation() {
+        init_logging();
+        info!("🧪 TEST: Veeam VBR backup workflow simulation (Issue #1066)");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "veeam-backup-test";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        enable_versioning(&client, bucket).await.expect("Failed to enable versioning");
+
+        // Veeam typically creates multiple objects in a backup session
+        let test_paths = vec![
+            "Veeam/Backup/Clients/test-client-id/test-backup-id/CloudStg/Meta/Blocks/History/CheckpointHistory.dat",
+            "Veeam/Backup/Clients/test-client-id/test-backup-id/Metadata/Lock/create.checkpoint/declare",
+        ];
+
+        for path in test_paths {
+            info!("📤 Simulating Veeam upload to: {}", path);
+            let content = format!("Veeam backup data for {}", path);
+
+            let put_result = client
+                .put_object()
+                .bucket(bucket)
+                .key(path)
+                .body(ByteStream::from(content.into_bytes()))
+                .send()
+                .await;
+
+            assert!(put_result.is_ok(), "Veeam upload failed for path: {}", path);
+            let output = put_result.unwrap();
+
+            info!("📥 Response version_id: {:?}", output.version_id);
+            assert!(output.version_id.is_some(), "❌ FAILED: Veeam expects version_id for path: {}", path);
+            assert!(
+                !output.version_id.as_ref().unwrap().is_empty(),
+                "❌ FAILED: version_id should not be empty for path: {}",
+                path
+            );
+
+            info!("✅ Veeam upload successful with version_id for: {}", path);
+        }
+
+        info!("✅ PASSED: Veeam backup workflow simulation completed successfully");
+    }
+
+    #[tokio::test]
+    async fn test_terraform_put_after_delete() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+        init_logging();
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        // Use a versioned bucket for this test
+        let bucket = "terraform";
+
+        let client = env.create_s3_client();
+        env.create_test_bucket(bucket).await?;
+        enable_versioning(&client, bucket).await?;
+
+        let key = "terraform.tfstate";
+        let first_version = client
+            .put_object()
+            .bucket(bucket)
+            .key(key)
+            .body(ByteStream::from(b"v1".to_vec()))
+            .send()
+            .await?
+            .version_id()
+            .ok_or("first Terraform state PUT omitted version ID")?
+            .to_string();
+
+        let deleted = client.delete_object().bucket(bucket).key(key).send().await?;
+        assert_eq!(deleted.delete_marker(), Some(true));
+        let delete_marker = deleted
+            .version_id()
+            .ok_or("Terraform state DELETE omitted delete marker version ID")?
+            .to_string();
+
+        let second_version = client
+            .put_object()
+            .bucket(bucket)
+            .key(key)
+            .body(ByteStream::from(b"v2".to_vec()))
+            .send()
+            .await?
+            .version_id()
+            .ok_or("second Terraform state PUT omitted version ID")?
+            .to_string();
+
+        let get_response = client.get_object().bucket(bucket).key(key).send().await?;
+        let current_body = get_response.body.collect().await?.into_bytes();
+        assert_eq!(current_body.as_ref(), b"v2");
+
+        let listed = client.list_object_versions().bucket(bucket).prefix(key).send().await?;
+        assert_eq!(listed.versions().len(), 2);
+        assert!(
+            listed
+                .versions()
+                .iter()
+                .any(|version| version.version_id() == Some(first_version.as_str()) && version.is_latest() == Some(false))
+        );
+        assert!(
+            listed
+                .versions()
+                .iter()
+                .any(|version| version.version_id() == Some(second_version.as_str()) && version.is_latest() == Some(true))
+        );
+        assert_eq!(listed.delete_markers().len(), 1);
+        assert_eq!(listed.delete_markers()[0].version_id(), Some(delete_marker.as_str()));
+        assert_eq!(listed.delete_markers()[0].is_latest(), Some(false));
+
+        Ok(())
+    }
+
+    /// Test 7: PutObject should omit version_id when versioning is Suspended
+    #[tokio::test]
+    async fn test_put_object_omits_version_id_with_suspended_versioning() {
+        init_logging();
+        info!("🧪 TEST: PutObject omits version_id with versioning suspended");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-suspended-version-id";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        suspend_versioning(&client, bucket)
+            .await
+            .expect("Failed to suspend versioning");
+
+        let key = "test-file-suspended.txt";
+        let content = b"Test content for suspended version ID test";
+
+        info!("📤 Uploading object to suspended versioning bucket");
+        let result = client
+            .put_object()
+            .bucket(bucket)
+            .key(key)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await;
+
+        assert!(result.is_ok(), "PutObject failed: {:?}", result.err());
+        let output = result.unwrap();
+
+        info!("📥 PutObject response - version_id: {:?}", output.version_id);
+
+        // When suspended, version_id must be omitted
+        assert_eq!(
+            output.version_id, None,
+            "❌ FAILED: version_id should be omitted when versioning is suspended"
+        );
+
+        info!("✅ PASSED: PutObject correctly omits version_id");
+    }
+
+    /// Test 8: CopyObject should omit version_id when versioning is Suspended
+    #[tokio::test]
+    async fn test_copy_object_omits_version_id_with_suspended_versioning() {
+        init_logging();
+        info!("🧪 TEST: CopyObject omits version_id with versioning suspended");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-copy-suspended-version-id";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        suspend_versioning(&client, bucket)
+            .await
+            .expect("Failed to suspend versioning");
+
+        let source_key = "source-file.txt";
+        let dest_key = "dest-file.txt";
+        let content = b"Content to copy into suspended bucket";
+
+        client
+            .put_object()
+            .bucket(bucket)
+            .key(source_key)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await
+            .expect("Failed to create source object");
+
+        let result = client
+            .copy_object()
+            .bucket(bucket)
+            .key(dest_key)
+            .copy_source(format!("{}/{}", bucket, source_key))
+            .send()
+            .await;
+
+        assert!(result.is_ok(), "CopyObject failed: {:?}", result.err());
+        let output = result.unwrap();
+
+        info!("📥 CopyObject response - version_id: {:?}", output.version_id);
+        assert_eq!(
+            output.version_id, None,
+            "❌ FAILED: version_id should be omitted when versioning is suspended"
+        );
+
+        info!("✅ PASSED: CopyObject correctly omits version_id");
+    }
+
+    /// Test 9: CompleteMultipartUpload should omit version_id when versioning is Suspended
+    #[tokio::test]
+    async fn test_multipart_upload_omits_version_id_with_suspended_versioning() {
+        init_logging();
+        info!("🧪 TEST: CompleteMultipartUpload omits version_id with versioning suspended");
+
+        let mut env = RustFSTestEnvironment::new().await.expect("Failed to create test environment");
+        env.start_rustfs_server(vec![]).await.expect("Failed to start RustFS");
+
+        let client = create_s3_client(&env);
+        let bucket = "test-multipart-suspended-version-id";
+
+        create_bucket(&client, bucket).await.expect("Failed to create bucket");
+        suspend_versioning(&client, bucket)
+            .await
+            .expect("Failed to suspend versioning");
+
+        let key = "multipart-file.txt";
+        let content = b"Part 1 content for suspended multipart upload test";
+
+        let create_result = client
+            .create_multipart_upload()
+            .bucket(bucket)
+            .key(key)
+            .send()
+            .await
+            .expect("Failed to create multipart upload");
+
+        let upload_id = create_result.upload_id().expect("No upload_id returned");
+
+        let upload_part_result = client
+            .upload_part()
+            .bucket(bucket)
+            .key(key)
+            .upload_id(upload_id)
+            .part_number(1)
+            .body(ByteStream::from_static(content))
+            .send()
+            .await
+            .expect("Failed to upload part");
+
+        let etag = upload_part_result.e_tag().expect("No etag returned").to_string();
+        let completed_part = CompletedPart::builder().part_number(1).e_tag(etag).build();
+        let completed_upload = CompletedMultipartUpload::builder().parts(completed_part).build();
+
+        let result = client
+            .complete_multipart_upload()
+            .bucket(bucket)
+            .key(key)
+            .upload_id(upload_id)
+            .multipart_upload(completed_upload)
+            .send()
+            .await;
+
+        assert!(result.is_ok(), "CompleteMultipartUpload failed: {:?}", result.err());
+        let output = result.unwrap();
+
+        info!("📥 CompleteMultipartUpload response - version_id: {:?}", output.version_id);
+        assert_eq!(
+            output.version_id, None,
+            "❌ FAILED: version_id should be omitted when versioning is suspended"
+        );
+
+        info!("✅ PASSED: CompleteMultipartUpload correctly omits version_id");
+    }
+}

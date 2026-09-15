@@ -1,0 +1,137 @@
+// Copyright 2023 The RocketMQ Rust Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::AtomicI64;
+use std::sync::atomic::Ordering;
+use std::sync::Arc;
+
+pub struct ControllableOffset {
+    value: Arc<AtomicI64>,
+    allow_to_update: Arc<AtomicBool>,
+}
+
+impl ControllableOffset {
+    pub fn new(value: i64) -> Self {
+        Self {
+            value: Arc::new(AtomicI64::new(value)),
+            allow_to_update: Arc::new(AtomicBool::new(true)),
+        }
+    }
+
+    pub fn new_frozen(value: i64) -> Self {
+        Self {
+            value: Arc::new(AtomicI64::new(value)),
+            allow_to_update: Arc::new(AtomicBool::new(false)),
+        }
+    }
+
+    pub fn new_atomic(value: AtomicI64) -> Self {
+        Self {
+            value: Arc::new(value),
+            allow_to_update: Arc::new(AtomicBool::new(true)),
+        }
+    }
+
+    pub fn update(&self, target: i64, increase_only: bool) {
+        if self.allow_to_update.load(Ordering::SeqCst) {
+            self.value
+                .try_update(Ordering::SeqCst, Ordering::SeqCst, |val| {
+                    if self.allow_to_update.load(Ordering::SeqCst) {
+                        if increase_only {
+                            Some(std::cmp::max(target, val))
+                        } else {
+                            Some(target)
+                        }
+                    } else {
+                        Some(val)
+                    }
+                })
+                .ok();
+        }
+    }
+
+    pub fn update_unconditionally(&self, target: i64) {
+        self.update(target, false);
+    }
+
+    pub fn update_and_freeze(&self, target: i64) {
+        self.value
+            .try_update(Ordering::SeqCst, Ordering::SeqCst, |_val| {
+                self.allow_to_update.store(false, Ordering::SeqCst);
+                Some(target)
+            })
+            .ok();
+    }
+
+    pub fn get_offset(&self) -> i64 {
+        self.value.load(Ordering::SeqCst)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn unfrozen_offset_accepts_lower_value_only_without_increase_only() {
+        let offset = ControllableOffset::new(10);
+
+        offset.update(5, true);
+        assert_eq!(offset.get_offset(), 10);
+
+        offset.update(5, false);
+        assert_eq!(offset.get_offset(), 5);
+    }
+
+    #[test]
+    fn update_and_freeze_locks_the_value_against_later_updates() {
+        let offset = ControllableOffset::new(10);
+
+        offset.update_and_freeze(20);
+        assert_eq!(offset.get_offset(), 20);
+
+        offset.update(30, true);
+        assert_eq!(offset.get_offset(), 20);
+
+        offset.update(5, false);
+        assert_eq!(offset.get_offset(), 20);
+
+        offset.update_unconditionally(40);
+        assert_eq!(offset.get_offset(), 20);
+    }
+
+    #[test]
+    fn new_frozen_rejects_both_update_modes_immediately() {
+        let offset = ControllableOffset::new_frozen(10);
+
+        offset.update(20, true);
+        assert_eq!(offset.get_offset(), 10);
+
+        offset.update(5, false);
+        assert_eq!(offset.get_offset(), 10);
+    }
+
+    #[test]
+    fn second_update_and_freeze_changes_the_frozen_value() {
+        let offset = ControllableOffset::new(10);
+
+        offset.update_and_freeze(20);
+        offset.update_and_freeze(7);
+        assert_eq!(offset.get_offset(), 7);
+
+        offset.update_unconditionally(100);
+        assert_eq!(offset.get_offset(), 7);
+    }
+}

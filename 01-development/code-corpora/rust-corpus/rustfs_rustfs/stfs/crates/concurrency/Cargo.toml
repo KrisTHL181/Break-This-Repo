@@ -1,0 +1,37 @@
+[package]
+name = "rustfs-concurrency"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+homepage.workspace = true
+description = "Shared concurrency contract types for RustFS - workload admission, queue snapshots, worker pools, and policy types"
+keywords = ["rustfs", "concurrency", "admission", "backpressure", "workers"]
+categories = ["concurrency", "filesystem"]
+
+[lints]
+workspace = true
+
+[features]
+default = []
+hotpath = ["hotpath/hotpath", "hotpath/tokio", "rustfs-io-core/hotpath"]
+hotpath-alloc = ["hotpath", "hotpath/hotpath-alloc", "rustfs-io-core/hotpath-alloc"]
+hotpath-cpu = ["hotpath", "hotpath/hotpath-cpu", "rustfs-io-core/hotpath-cpu"]
+
+[dependencies]
+hotpath.workspace = true
+# Internal crates
+rustfs-io-core = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+
+# Async runtime
+tokio = { workspace = true, features = ["sync", "fs", "rt-multi-thread"] }
+
+# Logging
+tracing = { workspace = true }
+
+[dev-dependencies]
+insta = { workspace = true, features = ["yaml", "json"] }
+serde_json = { workspace = true, features = ["raw_value"] }
+tokio = { workspace = true, features = ["test-util", "macros", "rt-multi-thread", "fs"] }

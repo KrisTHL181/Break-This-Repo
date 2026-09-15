@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Elysia.DreamPlugin.Sample</AssemblyName>
+    <RootNamespace>Elysia.DreamPlugin.Sample</RootNamespace>
+    <Description>A plugin that is compiled, staged next to the host, loaded at run time and then discarded.</Description>
+    <!-- The host discovers plugins as data; the plugin must not be linked into the host. -->
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+  </PropertyGroup>
+
+  <!--
+    Same load-bearing reference as Elysia.Mirror: the plugin contract is reached THROUGH the
+    repository-root `elysia` symlink, which points at the dream-seeker-core submodule. Both sides
+    of the plugin boundary therefore share one type identity for IDreamPlugin.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\elysia\src\DreamSeeker.Core\DreamSeeker.Core.csproj" />
+  </ItemGroup>
+
+</Project>

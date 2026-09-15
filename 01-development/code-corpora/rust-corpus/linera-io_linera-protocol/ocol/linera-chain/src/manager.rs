@@ -1,0 +1,1079 @@
+// Copyright (c) Zefchain Labs, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+//! # Chain manager
+//!
+//! This module contains the consensus mechanism for all microchains. Whenever a block is
+//! confirmed, a new chain manager is created for the next block height. It manages the consensus
+//! state until a new block is confirmed. As long as less than a third of the validators are faulty,
+//! it guarantees that at most one `ConfirmedBlock` certificate will be created for this height.
+//!
+//! The protocol proceeds in rounds, until it reaches a round where a block gets confirmed.
+//!
+//! There are four kinds of rounds:
+//!
+//! * In `Round::Fast`, only super owners can propose blocks, and validators vote to confirm a
+//!   block immediately. Super owners must be careful to make only one block proposal, or else they
+//!   can permanently block the microchain. If there are no super owners, `Round::Fast` is skipped.
+//! * In cooperative mode (`Round::MultiLeader`), all chain owners can propose blocks at any time.
+//!   The protocol is guaranteed to eventually confirm a block as long as no chain owner
+//!   continuously actively prevents progress.
+//! * In leader rotation mode (`Round::SingleLeader`), chain owners take turns at proposing blocks.
+//!   It can make progress as long as at least one owner is honest, even if other owners try to
+//!   prevent it.
+//! * In fallback/public mode (`Round::Validator`), validators take turns at proposing blocks.
+//!   It can always make progress under the standard assumption that there is a quorum of honest
+//!   validators.
+//!
+//! ## Safety, i.e. at most one block will be confirmed
+//!
+//! In all modes this is guaranteed as follows:
+//!
+//! * Validators (honest ones) never cast a vote if they have already cast any vote in a later
+//!   round.
+//! * Validators never vote for a `ValidatedBlock` **A** in round **r** if they have voted for a
+//!   _different_ `ConfirmedBlock` **B** in an earlier round **s** ≤ **r**, unless there is a
+//!   `ValidatedBlock` certificate (with a quorum of validator signatures) for **A** in some round
+//!   between **s** and **r** included in the block proposal.
+//! * Validators only vote for a `ConfirmedBlock` if there is a `ValidatedBlock` certificate for the
+//!   same block in the same round. (Or, in the `Fast` round, if there is a valid proposal.)
+//!
+//! This guarantees that once a quorum votes for some `ConfirmedBlock`, there can never be a
+//! `ValidatedBlock` certificate (and thus also no `ConfirmedBlock` certificate) for a different
+//! block in a later round. So if there are two different `ConfirmedBlock` certificates, they may
+//! be from different rounds, but they are guaranteed to contain the same block.
+//!
+//! ## Liveness, i.e. some block will eventually be confirmed
+//!
+//! In `Round::Fast`, liveness depends on the super owners coordinating, and proposing at most one
+//! block.
+//!
+//! If they propose none, and there are other owners, `Round::Fast` will eventually time out.
+//!
+//! In cooperative mode, if there is contention, the owners need to agree on a single owner as the
+//! next proposer. That owner should then download all highest-round certificates and block
+//! proposals known to the honest validators. They can then make a proposal in a round higher than
+//! all previous proposals. If there is any `ValidatedBlock` certificate they must include the
+//! highest one in their proposal, and propose that block. Otherwise they can propose a new block.
+//! Now all honest validators are allowed to vote for that proposal, and eventually confirm it.
+//!
+//! If the owners fail to cooperate, any honest owner can initiate the last multi-leader round by
+//! making a proposal there, then wait for it to time out, which starts the leader-based mode:
+//!
+//! In leader-based and fallback/public mode, an honest participant should subscribe to
+//! notifications from all validators, and follow the chain. Whenever another leader's round takes
+//! too long, they should request timeout votes from the validators to make the next round begin.
+//! Once the honest participant becomes the round leader, they should update all validators, so
+//! that they all agree on the current round. Then they download the highest `ValidatedBlock`
+//! certificate known to any honest validator and include that in their block proposal, just like
+//! in the cooperative case.
+
+use std::collections::BTreeMap;
+
+use allocative::Allocative;
+use custom_debug_derive::Debug;
+use futures::future::Either;
+use linera_base::{
+    crypto::{AccountPublicKey, ValidatorSecretKey},
+    data_types::{Blob, BlockHeight, Epoch, NonCanonicalBTreeMap, Round, Timestamp},
+    ensure,
+    identifiers::{AccountOwner, BlobId, ChainId},
+    ownership::ChainOwnership,
+};
+use linera_execution::ExecutionRuntimeContext;
+use linera_views::{
+    context::Context,
+    map_view::MapView,
+    register_view::RegisterView,
+    views::{ClonableView, View},
+    ViewError,
+};
+use rand_chacha::{rand_core::SeedableRng, ChaCha8Rng};
+use rand_distr::{Distribution, WeightedAliasIndex};
+use serde::{Deserialize, Serialize};
+
+use crate::{
+    block::{Block, ConfirmedBlock, Timeout, ValidatedBlock},
+    data_types::{BlockProposal, LiteVote, OriginalProposal, ProposedBlock, Vote},
+    types::{TimeoutCertificate, ValidatedBlockCertificate},
+    ChainError,
+};
+
+pub mod proof;
+
+/// The result of verifying a (valid) query.
+#[derive(Eq, PartialEq)]
+pub enum Outcome {
+    /// The query is accepted and should be acted upon.
+    Accept,
+    /// The query can be skipped without further action.
+    Skip,
+}
+
+/// A reference to a vote for either a validated or a confirmed block.
+pub type ValidatedOrConfirmedVote<'a> = Either<&'a Vote<ValidatedBlock>, &'a Vote<ConfirmedBlock>>;
+
+/// The latest block that validators may have voted to confirm: this is either the block proposal
+/// from the fast round or a validated block certificate. Validators are allowed to vote for this
+/// even if they have locked (i.e. voted to confirm) a different block earlier.
+#[derive(Debug, Clone, Serialize, Deserialize, Allocative)]
+#[cfg_attr(with_testing, derive(Eq, PartialEq))]
+pub enum LockingBlock {
+    /// A proposal in the `Fast` round.
+    Fast(BlockProposal),
+    /// A `ValidatedBlock` certificate in a round other than `Fast`.
+    Regular(ValidatedBlockCertificate),
+}
+
+impl LockingBlock {
+    /// Returns the locking block's round. To propose a different block, a `ValidatedBlock`
+    /// certificate from a higher round is needed.
+    pub fn round(&self) -> Round {
+        match self {
+            Self::Fast(_) => Round::Fast,
+            Self::Regular(certificate) => certificate.round,
+        }
+    }
+
+    /// Returns the ID of the chain this locking block belongs to.
+    pub fn chain_id(&self) -> ChainId {
+        match self {
+            Self::Fast(proposal) => proposal.content.block.chain_id,
+            Self::Regular(certificate) => certificate.value().chain_id(),
+        }
+    }
+}
+
+/// The state of the certification process for a chain's next block.
+#[cfg_attr(with_graphql, derive(async_graphql::SimpleObject), graphql(complex))]
+#[derive(Debug, View, ClonableView, Allocative)]
+#[allocative(bound = "C")]
+pub struct ChainManager<C>
+where
+    C: Clone + Context + 'static,
+{
+    /// The public keys, weights and types of the chain's owners.
+    pub ownership: RegisterView<C, ChainOwnership>,
+    /// The seed for the pseudo-random number generator that determines the round leaders.
+    pub seed: RegisterView<C, u64>,
+    /// The probability distribution for choosing a round leader.
+    #[cfg_attr(with_graphql, graphql(skip))] // Derived from ownership.
+    #[allocative(skip)]
+    pub distribution: RegisterView<C, Option<WeightedAliasIndex<u64>>>,
+    /// The probability distribution for choosing a fallback round leader.
+    #[cfg_attr(with_graphql, graphql(skip))] // Derived from validator weights.
+    #[allocative(skip)]
+    pub fallback_distribution: RegisterView<C, Option<WeightedAliasIndex<u64>>>,
+    /// Highest-round authenticated block that we have received, but not necessarily
+    /// checked yet. If there are multiple proposals in the same round, this contains only the
+    /// first one. This can even contain proposals that did not execute successfully, to determine
+    /// which round to propose in.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub signed_proposal: RegisterView<C, Option<BlockProposal>>,
+    /// Highest-round authenticated block that we have received and checked. If there are multiple
+    /// proposals in the same round, this contains only the first one.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub proposed: RegisterView<C, Option<BlockProposal>>,
+    /// These are blobs published or read by the proposed block.
+    pub proposed_blobs: MapView<C, BlobId, Blob>,
+    /// Latest validated proposal that a validator may have voted to confirm. This is either the
+    /// latest `ValidatedBlock` we have seen, or the proposal from the `Fast` round.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub locking_block: RegisterView<C, Option<LockingBlock>>,
+    /// These are blobs published or read by the locking block.
+    pub locking_blobs: MapView<C, BlobId, Blob>,
+    /// Latest leader timeout certificate we have received.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub timeout: RegisterView<C, Option<TimeoutCertificate>>,
+    /// Latest vote we cast to confirm a block.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub confirmed_vote: RegisterView<C, Option<Vote<ConfirmedBlock>>>,
+    /// Latest vote we cast to validate a block.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub validated_vote: RegisterView<C, Option<Vote<ValidatedBlock>>>,
+    /// Latest timeout vote we cast.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub timeout_vote: RegisterView<C, Option<Vote<Timeout>>>,
+    /// Fallback vote we cast.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub fallback_vote: RegisterView<C, Option<Vote<Timeout>>>,
+    /// The time after which we are ready to sign a timeout certificate for the current round.
+    pub round_timeout: RegisterView<C, Option<Timestamp>>,
+    /// The lowest round where we can still vote to validate or confirm a block. This is
+    /// the round to which the timeout applies.
+    ///
+    /// Having a leader timeout certificate in any given round causes the next one to become
+    /// current. Seeing a validated block certificate or a valid proposal in any round causes that
+    /// round to become current, unless a higher one already is.
+    #[cfg_attr(with_graphql, graphql(skip))]
+    pub current_round: RegisterView<C, Round>,
+    /// The owners that take over in fallback mode.
+    pub fallback_owners: RegisterView<C, NonCanonicalBTreeMap<AccountOwner, u64>>,
+}
+
+#[cfg(with_graphql)]
+#[async_graphql::ComplexObject]
+impl<C> ChainManager<C>
+where
+    C: Context + Clone + 'static,
+{
+    /// Returns the lowest round where we can still vote to validate or confirm a block. This is
+    /// the round to which the timeout applies.
+    ///
+    /// Having a leader timeout certificate in any given round causes the next one to become
+    /// current. Seeing a validated block certificate or a valid proposal in any round causes that
+    /// round to become current, unless a higher one already is.
+    #[graphql(derived(name = "current_round"))]
+    async fn _current_round(&self) -> Round {
+        self.current_round()
+    }
+}
+
+impl<C> ChainManager<C>
+where
+    C: Context + Clone + 'static,
+{
+    /// Replaces `self` with a new chain manager.
+    pub fn reset<'a>(
+        &mut self,
+        ownership: ChainOwnership,
+        height: BlockHeight,
+        local_time: Timestamp,
+        fallback_owners: impl Iterator<Item = (AccountPublicKey, u64)> + 'a,
+    ) -> Result<(), ChainError> {
+        let distribution = calculate_distribution(ownership.owners.iter());
+
+        let fallback_owners = fallback_owners
+            .map(|(pub_key, weight)| (AccountOwner::from(pub_key), weight))
+            .collect::<NonCanonicalBTreeMap<_, _>>();
+        let fallback_distribution = calculate_distribution(fallback_owners.iter());
+
+        let current_round = ownership.first_round();
+        let round_duration = ownership.round_timeout(current_round);
+        let round_timeout = round_duration.map(|rd| local_time.saturating_add(rd));
+
+        self.clear();
+        self.seed.set(height.0);
+        self.ownership.set(ownership);
+        self.distribution.set(distribution);
+        self.fallback_distribution.set(fallback_distribution);
+        self.fallback_owners.set(fallback_owners);
+        self.current_round.set(current_round);
+        self.round_timeout.set(round_timeout);
+        Ok(())
+    }
+
+    /// Returns the most recent confirmed vote we cast.
+    pub fn confirmed_vote(&self) -> Option<&Vote<ConfirmedBlock>> {
+        self.confirmed_vote.get().as_ref()
+    }
+
+    /// Returns the most recent validated vote we cast.
+    pub fn validated_vote(&self) -> Option<&Vote<ValidatedBlock>> {
+        self.validated_vote.get().as_ref()
+    }
+
+    /// Returns the lowest round where we can still vote to validate or confirm a block. This is
+    /// the round to which the timeout applies.
+    ///
+    /// Having a leader timeout certificate in any given round causes the next one to become
+    /// current. Seeing a validated block certificate or a valid proposal in any round causes that
+    /// round to become current, unless a higher one already is.
+    pub fn current_round(&self) -> Round {
+        *self.current_round.get()
+    }
+
+    /// Verifies that a proposed block is relevant and should be handled.
+    pub fn check_proposed_block(&self, proposal: &BlockProposal) -> Result<Outcome, ChainError> {
+        let new_block = &proposal.content.block;
+        let new_round = proposal.content.round;
+        if let Some(old_proposal) = self.proposed.get() {
+            if old_proposal.content == proposal.content {
+                return Ok(Outcome::Skip); // We have already seen this proposal; nothing to do.
+            }
+        }
+        // When a block is certified, incrementing its height must succeed.
+        ensure!(
+            new_block.height < BlockHeight::MAX,
+            ChainError::BlockHeightOverflow
+        );
+        let current_round = self.current_round();
+        match new_round {
+            // The proposal from the fast round may still be relevant as a locking block, so
+            // we don't compare against the current round here.
+            Round::Fast => {}
+            Round::MultiLeader(_) | Round::SingleLeader(0) => {
+                // If the fast round has not timed out yet, only a super owner is allowed to open
+                // a later round by making a proposal.
+                ensure!(
+                    self.is_super(&proposal.owner()) || !current_round.is_fast(),
+                    ChainError::WrongRound(current_round)
+                );
+                // After the fast round, proposals older than the current round are obsolete.
+                ensure!(
+                    new_round >= current_round,
+                    ChainError::InsufficientRound(new_round)
+                );
+            }
+            Round::SingleLeader(_) | Round::Validator(_) => {
+                // After the first single-leader round, only proposals from the current round are relevant.
+                ensure!(
+                    new_round == current_round,
+                    ChainError::WrongRound(current_round)
+                );
+            }
+        }
+        // The round of our validation votes is only allowed to increase.
+        if let Some(vote) = self.validated_vote() {
+            ensure!(
+                new_round > vote.round,
+                ChainError::InsufficientRoundStrict(vote.round)
+            );
+        }
+        // A proposal that isn't newer than the locking block is not relevant anymore.
+        if let Some(locking_block) = self.locking_block.get() {
+            ensure!(
+                locking_block.round() < new_round,
+                ChainError::MustBeNewerThanLockingBlock(new_block.height, locking_block.round())
+            );
+        }
+        // If we have voted to confirm a block, we may only vote to validate a *different* block
+        // if a validated block certificate justifies it from a round strictly after our
+        // confirmation. The validation vote will then sign the unlocking round `certificate.round`,
+        // and since our confirmation is in an earlier round, the claim "I have not voted to confirm
+        // a different block in any round at or above the unlocking round" stays truthful.
+        //
+        // Re-validating the very block we confirmed is also allowed, but the certificate must
+        // still be at least as recent as our confirmation. The unlocking round only constrains
+        // switching blocks, yet the round we sign is a claim about *ourselves*: an earlier
+        // confirmation of a different block could fall at or above an older certificate's round
+        // and turn the claim into a lie we could be slashed for. Our confirmed vote sits in the
+        // highest round we ever confirmed in, so `vote.round <= certificate.round` guarantees no
+        // different-block confirmation lies in the unlocking window `[certificate.round, round)`.
+        if let Some(vote) = self.confirmed_vote() {
+            ensure!(
+                match proposal.original_proposal.as_ref() {
+                    None => false,
+                    Some(OriginalProposal::Regular { certificate }) =>
+                        if vote.value().matches_proposed_block(new_block) {
+                            vote.round <= certificate.round
+                        } else {
+                            vote.round < certificate.round
+                        },
+                    Some(OriginalProposal::Fast(_)) => {
+                        vote.round.is_fast() && vote.value().matches_proposed_block(new_block)
+                    }
+                },
+                ChainError::HasIncompatibleConfirmedVote(new_block.height, vote.round)
+            );
+        }
+        Ok(Outcome::Accept)
+    }
+
+    /// Checks if the current round has timed out, and signs a `Timeout`. Returns `true` if the
+    /// chain manager's state has changed.
+    pub fn create_timeout_vote(
+        &mut self,
+        chain_id: ChainId,
+        height: BlockHeight,
+        round: Round,
+        epoch: Epoch,
+        key_pair: Option<&ValidatorSecretKey>,
+        local_time: Timestamp,
+    ) -> Result<bool, ChainError> {
+        let Some(key_pair) = key_pair else {
+            return Ok(false); // We are not a validator.
+        };
+        ensure!(
+            round == self.current_round(),
+            ChainError::WrongRound(self.current_round())
+        );
+        let Some(round_timeout) = *self.round_timeout.get() else {
+            return Err(ChainError::RoundDoesNotTimeOut);
+        };
+        ensure!(
+            local_time >= round_timeout,
+            ChainError::NotTimedOutYet(round_timeout)
+        );
+        if let Some(vote) = self.timeout_vote.get() {
+            if vote.round == round {
+                return Ok(false); // We already signed this timeout.
+            }
+        }
+        let value = Timeout::new(chain_id, height, epoch);
+        self.timeout_vote
+            .set(Some(Vote::new(value, round, key_pair)));
+        Ok(true)
+    }
+
+    /// Signs a `Timeout` certificate to switch to fallback mode.
+    ///
+    /// This must only be called after verifying that the condition for fallback mode is
+    /// satisfied locally.
+    pub fn vote_fallback(
+        &mut self,
+        chain_id: ChainId,
+        height: BlockHeight,
+        epoch: Epoch,
+        key_pair: Option<&ValidatorSecretKey>,
+    ) -> bool {
+        let Some(key_pair) = key_pair else {
+            return false; // We are not a validator.
+        };
+        if self.fallback_vote.get().is_some() || self.current_round() >= Round::Validator(0) {
+            return false; // We already signed this or are already in fallback mode.
+        }
+        let value = Timeout::new(chain_id, height, epoch);
+        let last_regular_round = Round::SingleLeader(u32::MAX);
+        self.fallback_vote
+            .set(Some(Vote::new(value, last_regular_round, key_pair)));
+        true
+    }
+
+    /// Verifies that a validated block is still relevant and should be handled.
+    pub fn check_validated_block(
+        &self,
+        certificate: &ValidatedBlockCertificate,
+    ) -> Result<Outcome, ChainError> {
+        let new_block = certificate.block();
+        let new_round = certificate.round;
+        if let Some(Vote { value, round, .. }) = self.confirmed_vote.get() {
+            if value.block() == new_block && *round == new_round {
+                return Ok(Outcome::Skip); // We already voted to confirm this block.
+            }
+        }
+
+        // Check if we already voted to validate in a later round.
+        if let Some(Vote { round, .. }) = self.validated_vote.get() {
+            ensure!(new_round >= *round, ChainError::InsufficientRound(*round))
+        }
+
+        if let Some(locking) = self.locking_block.get() {
+            ensure!(
+                new_round > locking.round(),
+                ChainError::InsufficientRoundStrict(locking.round())
+            );
+        }
+        Ok(Outcome::Accept)
+    }
+
+    /// Signs a vote to validate the proposed block.
+    pub fn create_vote(
+        &mut self,
+        proposal: &BlockProposal,
+        block: Block,
+        key_pair: Option<&ValidatorSecretKey>,
+        local_time: Timestamp,
+        blobs: BTreeMap<BlobId, Blob>,
+    ) -> Result<Option<ValidatedOrConfirmedVote<'_>>, ChainError> {
+        let round = proposal.content.round;
+
+        match &proposal.original_proposal {
+            // If the validated block certificate is more recent, update our locking block.
+            Some(OriginalProposal::Regular { certificate }) => {
+                if self
+                    .locking_block
+                    .get()
+                    .as_ref()
+                    .is_none_or(|locking| locking.round() < certificate.round)
+                {
+                    let value = ValidatedBlock::new(block.clone());
+                    if let Some(certificate) = certificate.clone().into_validated_certificate(value)
+                    {
+                        self.update_locking(LockingBlock::Regular(certificate), blobs.clone())?;
+                    }
+                }
+            }
+            // If this contains a proposal from the fast round, we consider that a locking block.
+            // It is useful for clients synchronizing with us, so they can re-propose it.
+            Some(OriginalProposal::Fast(signature)) => {
+                if self.locking_block.get().is_none() {
+                    let original_proposal = BlockProposal {
+                        signature: *signature,
+                        ..proposal.clone()
+                    };
+                    self.update_locking(LockingBlock::Fast(original_proposal), blobs.clone())?;
+                }
+            }
+            // If this proposal itself is from the fast round, it is also a locking block: We
+            // will vote to confirm it, so it is locked.
+            None => {
+                if round.is_fast() && self.locking_block.get().is_none() {
+                    // The fast block also counts as locking.
+                    self.update_locking(LockingBlock::Fast(proposal.clone()), blobs.clone())?;
+                }
+            }
+        }
+
+        // We record the proposed block, in case it affects the current round number.
+        self.update_proposed(proposal.clone(), blobs)?;
+        self.update_current_round(local_time);
+
+        let Some(key_pair) = key_pair else {
+            // Not a validator.
+            return Ok(None);
+        };
+
+        // If this is a fast block, vote to confirm. Otherwise vote to validate.
+        if round.is_fast() {
+            self.validated_vote.set(None);
+            let value = ConfirmedBlock::new(block);
+            // Attest that this confirmation is in the chain's first round, so the justification
+            // chain may be omitted: such a block is always the lower one in any fork. A fast
+            // block needs no validation, so there is no quorum to commit to.
+            let first_round = round == self.ownership.get().first_round();
+            let vote = Vote::new_with_first_round(value, round, first_round, None, key_pair);
+            Ok(Some(Either::Right(
+                self.confirmed_vote.get_mut().insert(vote),
+            )))
+        } else {
+            // The unlocking round we sign is the round of the justification this proposal relies
+            // on, and the justification commitment is the hash of that justifying quorum — by
+            // signing it we attest that we verified the quorum, so later receivers only need to
+            // check the signatures built on top of it. A fresh proposal or one retrying a fast
+            // block has no justifying validated certificate, so both are `None`; a regular retry
+            // is justified by its certificate.
+            let (unlocking_round, justification_commitment) = match &proposal.original_proposal {
+                Some(OriginalProposal::Regular { certificate }) => (
+                    Some(certificate.round),
+                    Some(certificate.full_justification_commitment()),
+                ),
+                Some(OriginalProposal::Fast(_)) | None => (None, None),
+            };
+            let value = ValidatedBlock::new(block);
+            let vote = Vote::new_with_unlocking_round(
+                value,
+                round,
+                unlocking_round,
+                justification_commitment,
+                key_pair,
+            );
+            Ok(Some(Either::Left(
+                self.validated_vote.get_mut().insert(vote),
+            )))
+        }
+    }
+
+    /// Signs a vote to confirm the validated block.
+    pub fn create_final_vote(
+        &mut self,
+        validated: ValidatedBlockCertificate,
+        key_pair: Option<&ValidatorSecretKey>,
+        local_time: Timestamp,
+        blobs: BTreeMap<BlobId, Blob>,
+    ) -> Result<(), ViewError> {
+        let round = validated.round;
+        let confirmed_block = ConfirmedBlock::new(validated.inner().block().clone());
+        // Vote to confirm. Attest whether this confirmation is in the chain's first round, so the
+        // justification chain may be omitted: such a block is always the lower one in any fork.
+        // Otherwise commit to the quorum that validated the block, attesting that we verified it
+        // so later receivers only need to check the confirmation signatures built on top.
+        let first_round = round == self.ownership.get().first_round();
+        let justification_commitment = if first_round {
+            None
+        } else {
+            Some(validated.full_justification_commitment())
+        };
+        self.update_locking(LockingBlock::Regular(validated), blobs)?;
+        self.update_current_round(local_time);
+        if let Some(key_pair) = key_pair {
+            if self.current_round() != round {
+                return Ok(()); // We never vote in a past round.
+            }
+            let vote = Vote::new_with_first_round(
+                confirmed_block,
+                round,
+                first_round,
+                justification_commitment,
+                key_pair,
+            );
+            // Ok to overwrite validation votes with confirmation votes at equal or higher round.
+            self.confirmed_vote.set(Some(vote));
+            self.validated_vote.set(None);
+        }
+        Ok(())
+    }
+
+    /// Returns the requested blob if it belongs to the proposal or the locking block.
+    pub async fn pending_blob(&self, blob_id: &BlobId) -> Result<Option<Blob>, ViewError> {
+        if let Some(blob) = self.proposed_blobs.get(blob_id).await? {
+            return Ok(Some(blob));
+        }
+        self.locking_blobs.get(blob_id).await
+    }
+
+    /// Returns the requested blobs if they belong to the proposal or the locking block.
+    pub async fn pending_blobs(&self, blob_ids: &[BlobId]) -> Result<Vec<Option<Blob>>, ViewError> {
+        let mut blobs = self.proposed_blobs.multi_get(blob_ids).await?;
+        let mut missing_indices = Vec::new();
+        let mut missing_blob_ids = Vec::new();
+        for (i, (blob, blob_id)) in blobs.iter().zip(blob_ids).enumerate() {
+            if blob.is_none() {
+                missing_indices.push(i);
+                missing_blob_ids.push(blob_id);
+            }
+        }
+        let second_blobs = self.locking_blobs.multi_get(missing_blob_ids).await?;
+        for (blob, i) in second_blobs.into_iter().zip(missing_indices) {
+            blobs[i] = blob;
+        }
+        Ok(blobs)
+    }
+
+    /// Updates `current_round` and `round_timeout` if necessary.
+    ///
+    /// This must be called after every change to `timeout`, `locking`, `proposed` or
+    /// `signed_proposal`.
+    ///
+    /// The current round starts at `Fast` if there is a super owner, `MultiLeader(0)` if at least
+    /// one multi-leader round is configured, or otherwise `SingleLeader(0)`.
+    ///
+    /// Single-leader rounds can only be ended by a timeout certificate for that round.
+    ///
+    /// The presence of any validated block certificate is also proof that a quorum of validators
+    /// is already in that round, even if we have not seen the corresponding timeout.
+    ///
+    /// Multi-leader rounds can always be skipped, so any correctly signed block proposal in a
+    /// later round ends a multi-leader round.
+    /// Since we don't accept proposals that violate that rule, we can compute the current round in
+    /// general by taking the maximum of all the above.
+    fn update_current_round(&mut self, local_time: Timestamp) {
+        let current_round = self
+            .timeout
+            .get()
+            .iter()
+            // A timeout certificate starts the next round.
+            .map(|certificate| {
+                self.ownership
+                    .get()
+                    .next_round(certificate.round)
+                    .unwrap_or(Round::Validator(u32::MAX))
+            })
+            // A locking block or a proposal is proof we have accepted that we are at least in
+            // this round.
+            .chain(self.locking_block.get().as_ref().map(LockingBlock::round))
+            .chain(
+                self.proposed
+                    .get()
+                    .iter()
+                    .chain(self.signed_proposal.get())
+                    .map(|proposal| proposal.content.round),
+            )
+            .max()
+            .unwrap_or_default()
+            // Otherwise compute the first round for this chain configuration.
+            .max(self.ownership.get().first_round());
+        if current_round <= self.current_round() {
+            return;
+        }
+        let round_duration = self.ownership.get().round_timeout(current_round);
+        self.round_timeout
+            .set(round_duration.map(|rd| local_time.saturating_add(rd)));
+        self.current_round.set(current_round);
+    }
+
+    /// Updates the round number and timer if the timeout certificate is from a higher round than
+    /// any known certificate.
+    pub fn handle_timeout_certificate(
+        &mut self,
+        certificate: TimeoutCertificate,
+        local_time: Timestamp,
+    ) {
+        let round = certificate.round;
+        if let Some(known_certificate) = self.timeout.get() {
+            if known_certificate.round >= round {
+                return;
+            }
+        }
+        self.timeout.set(Some(certificate));
+        self.update_current_round(local_time);
+    }
+
+    /// Returns whether the signer is a valid owner and allowed to propose a block in the
+    /// proposal's round.
+    ///
+    /// Super owners can always propose, except in `Validator` rounds, but it is recommended that
+    /// they don't interfere with single-leader rounds. In multi-leader rounds, any owner can
+    /// propose (or anyone, if `open_multi_leader_rounds`) and in other rounds there is only
+    /// one leader.
+    pub fn can_propose(&self, owner: &AccountOwner, round: Round) -> bool {
+        let ownership = self.ownership.get();
+        if ownership.super_owners.contains(owner) {
+            return !round.is_validator();
+        }
+        match round {
+            Round::Fast => false,
+            Round::MultiLeader(_) => ownership.can_propose_in_multi_leader_round(owner),
+            Round::SingleLeader(_) | Round::Validator(_) => self.round_leader(round) == Some(owner),
+        }
+    }
+
+    /// Returns the leader who is allowed to propose a block in the given round, or `None` if every
+    /// owner is allowed to propose. Exception: In `Round::Fast`, only super owners can propose.
+    fn round_leader(&self, round: Round) -> Option<&AccountOwner> {
+        let ownership = self.ownership.get();
+        compute_round_leader(
+            round,
+            *self.seed.get(),
+            ownership.first_leader.as_ref(),
+            &ownership.owners,
+            self.distribution.get().as_ref(),
+            self.fallback_owners.get(),
+            self.fallback_distribution.get().as_ref(),
+        )
+    }
+
+    /// Returns whether the owner is a super owner.
+    fn is_super(&self, owner: &AccountOwner) -> bool {
+        self.ownership.get().super_owners.contains(owner)
+    }
+
+    /// Sets the signed proposal, if it is newer than the known one, at most from the first
+    /// single-leader round. Returns whether it was updated.
+    ///
+    /// We don't update the signed proposal for any rounds later than `SingleLeader(0)`,
+    /// because single-leader rounds cannot be skipped without a timeout certificate.
+    pub fn update_signed_proposal(
+        &mut self,
+        proposal: &BlockProposal,
+        local_time: Timestamp,
+    ) -> bool {
+        if proposal.content.round > Round::SingleLeader(0) {
+            return false;
+        }
+        if let Some(old_proposal) = self.signed_proposal.get() {
+            if old_proposal.content.round >= proposal.content.round {
+                if *self.current_round.get() < old_proposal.content.round {
+                    tracing::warn!(
+                        chain_id = %proposal.content.block.chain_id,
+                        current_round = ?self.current_round.get(),
+                        proposal_round = ?old_proposal.content.round,
+                        "Proposal round is greater than current round. Updating."
+                    );
+                    self.update_current_round(local_time);
+                    return true;
+                }
+                return false;
+            }
+        }
+        if let Some(old_proposal) = self.proposed.get() {
+            if old_proposal.content.round >= proposal.content.round {
+                return false;
+            }
+        }
+        self.signed_proposal.set(Some(proposal.clone()));
+        self.update_current_round(local_time);
+        true
+    }
+
+    /// Sets the proposed block, if it is newer than our known latest proposal.
+    fn update_proposed(
+        &mut self,
+        proposal: BlockProposal,
+        blobs: BTreeMap<BlobId, Blob>,
+    ) -> Result<(), ViewError> {
+        if let Some(old_proposal) = self.proposed.get() {
+            if old_proposal.content.round >= proposal.content.round {
+                return Ok(());
+            }
+        }
+        if let Some(old_proposal) = self.signed_proposal.get() {
+            if old_proposal.content.round <= proposal.content.round {
+                self.signed_proposal.set(None);
+            }
+        }
+        self.proposed.set(Some(proposal));
+        self.proposed_blobs.clear();
+        for (blob_id, blob) in blobs {
+            self.proposed_blobs.insert(&blob_id, blob)?;
+        }
+        Ok(())
+    }
+
+    /// Sets the locking block and the associated blobs, if it is newer than the known one.
+    fn update_locking(
+        &mut self,
+        locking: LockingBlock,
+        blobs: BTreeMap<BlobId, Blob>,
+    ) -> Result<(), ViewError> {
+        if let Some(old_locked) = self.locking_block.get() {
+            if old_locked.round() >= locking.round() {
+                return Ok(());
+            }
+        }
+        self.locking_block.set(Some(locking));
+        self.locking_blobs.clear();
+        for (blob_id, blob) in blobs {
+            self.locking_blobs.insert(&blob_id, blob)?;
+        }
+        Ok(())
+    }
+}
+
+/// The safety-critical fields of a [`ChainManager`]: previously cast votes and the
+/// locking block. Re-applying these after a chain reset prevents a validator from
+/// being tricked into double-signing at a height/round it has already voted on.
+#[derive(Debug, Default)]
+pub struct ManagerSafetySnapshot {
+    confirmed_vote: Option<Vote<ConfirmedBlock>>,
+    validated_vote: Option<Vote<ValidatedBlock>>,
+    timeout_vote: Option<Vote<Timeout>>,
+    fallback_vote: Option<Vote<Timeout>>,
+    locking_block: Option<LockingBlock>,
+    locking_blobs: Vec<(BlobId, Blob)>,
+}
+
+impl ManagerSafetySnapshot {
+    /// Reads the safety-critical fields from the given `manager`.
+    pub async fn capture<C>(manager: &ChainManager<C>) -> Result<Self, ViewError>
+    where
+        C: Context + Clone + 'static,
+    {
+        Ok(Self {
+            confirmed_vote: manager.confirmed_vote.get().clone(),
+            validated_vote: manager.validated_vote.get().clone(),
+            timeout_vote: manager.timeout_vote.get().clone(),
+            fallback_vote: manager.fallback_vote.get().clone(),
+            locking_block: manager.locking_block.get().clone(),
+            locking_blobs: manager.locking_blobs.index_values().await?,
+        })
+    }
+
+    /// Writes the captured fields back into `manager`, overriding anything that
+    /// may have been produced by re-execution. The restored state is the safe
+    /// upper bound on what this validator has already committed to.
+    pub fn restore<C>(self, manager: &mut ChainManager<C>) -> Result<(), ViewError>
+    where
+        C: Context + Clone + 'static,
+    {
+        manager.confirmed_vote.set(self.confirmed_vote);
+        manager.validated_vote.set(self.validated_vote);
+        manager.timeout_vote.set(self.timeout_vote);
+        manager.fallback_vote.set(self.fallback_vote);
+        manager.locking_block.set(self.locking_block);
+        manager.locking_blobs.clear();
+        for (blob_id, blob) in self.locking_blobs {
+            manager.locking_blobs.insert(&blob_id, blob)?;
+        }
+        Ok(())
+    }
+}
+
+/// Chain manager information that is included in `ChainInfo` sent to clients.
+#[derive(Default, Clone, Debug, Serialize, Deserialize)]
+#[cfg_attr(with_testing, derive(Eq, PartialEq))]
+pub struct ChainManagerInfo {
+    /// The configuration of the chain's owners.
+    pub ownership: ChainOwnership,
+    /// The seed for the pseudo-random number generator that determines the round leaders.
+    pub seed: u64,
+    /// Latest authenticated block that we have received, if requested. This can even contain
+    /// proposals that did not execute successfully, to determine which round to propose in.
+    pub requested_signed_proposal: Option<Box<BlockProposal>>,
+    /// Latest authenticated block that we have received and checked, if requested.
+    #[debug(skip_if = Option::is_none)]
+    pub requested_proposed: Option<Box<BlockProposal>>,
+    /// Latest validated proposal that we have voted to confirm (or would have, if we are not a
+    /// validator).
+    #[debug(skip_if = Option::is_none)]
+    pub requested_locking: Option<Box<LockingBlock>>,
+    /// Latest timeout certificate we have seen.
+    #[debug(skip_if = Option::is_none)]
+    pub timeout: Option<Box<TimeoutCertificate>>,
+    /// Latest vote we cast (either to validate or to confirm a block).
+    #[debug(skip_if = Option::is_none)]
+    pub pending: Option<LiteVote>,
+    /// Latest timeout vote we cast.
+    #[debug(skip_if = Option::is_none)]
+    pub timeout_vote: Option<LiteVote>,
+    /// Fallback vote we cast.
+    #[debug(skip_if = Option::is_none)]
+    pub fallback_vote: Option<LiteVote>,
+    /// The value we voted for, if requested.
+    #[debug(skip_if = Option::is_none)]
+    pub requested_confirmed: Option<Box<ConfirmedBlock>>,
+    /// The value we voted for, if requested.
+    #[debug(skip_if = Option::is_none)]
+    pub requested_validated: Option<Box<ValidatedBlock>>,
+    /// The current round, i.e. the lowest round where we can still vote to validate a block.
+    pub current_round: Round,
+    /// The current leader, who is allowed to propose the next block.
+    /// `None` if everyone is allowed to propose.
+    #[debug(skip_if = Option::is_none)]
+    pub leader: Option<AccountOwner>,
+    /// The timestamp when the current round times out.
+    #[debug(skip_if = Option::is_none)]
+    pub round_timeout: Option<Timestamp>,
+}
+
+impl<C> From<&ChainManager<C>> for ChainManagerInfo
+where
+    C: Context + Clone + 'static,
+{
+    fn from(manager: &ChainManager<C>) -> Self {
+        let current_round = manager.current_round();
+        let pending = match (manager.confirmed_vote.get(), manager.validated_vote.get()) {
+            (None, None) => None,
+            (Some(confirmed_vote), Some(validated_vote))
+                if validated_vote.round > confirmed_vote.round =>
+            {
+                Some(validated_vote.lite())
+            }
+            (Some(vote), _) => Some(vote.lite()),
+            (None, Some(vote)) => Some(vote.lite()),
+        };
+        ChainManagerInfo {
+            ownership: manager.ownership.get().clone(),
+            seed: *manager.seed.get(),
+            requested_signed_proposal: None,
+            requested_proposed: None,
+            requested_locking: None,
+            timeout: manager.timeout.get().clone().map(Box::new),
+            pending,
+            timeout_vote: manager.timeout_vote.get().as_ref().map(Vote::lite),
+            fallback_vote: manager.fallback_vote.get().as_ref().map(Vote::lite),
+            requested_confirmed: None,
+            requested_validated: None,
+            current_round,
+            leader: manager.round_leader(current_round).copied(),
+            round_timeout: *manager.round_timeout.get(),
+        }
+    }
+}
+
+impl ChainManagerInfo {
+    /// Adds requested certificate values and proposals to the `ChainManagerInfo`.
+    pub fn add_values<C>(&mut self, manager: &ChainManager<C>)
+    where
+        C: Context + Clone + 'static,
+        C::Extra: ExecutionRuntimeContext,
+    {
+        self.requested_signed_proposal = manager.signed_proposal.get().clone().map(Box::new);
+        self.requested_proposed = manager.proposed.get().clone().map(Box::new);
+        self.requested_locking = manager.locking_block.get().clone().map(Box::new);
+        self.requested_confirmed = manager
+            .confirmed_vote
+            .get()
+            .as_ref()
+            .map(|vote| Box::new(vote.value.clone()));
+        self.requested_validated = manager
+            .validated_vote
+            .get()
+            .as_ref()
+            .map(|vote| Box::new(vote.value.clone()));
+    }
+
+    /// Returns whether `owner` may propose a block in the current round, based on the
+    /// already-computed [`leader`](Self::leader) for that round.
+    ///
+    /// [`leader`](Self::leader) is `None` in the fast and multi-leader rounds, where any
+    /// eligible owner may propose; in the single-leader and validator rounds it names the
+    /// only owner allowed to propose. Unlike [`should_propose`](Self::should_propose),
+    /// this needs no seed or committee, since the leader is taken as given.
+    pub fn can_propose(&self, owner: &AccountOwner) -> bool {
+        match &self.leader {
+            Some(leader) => leader == owner,
+            None => match self.current_round {
+                Round::Fast => self.ownership.super_owners.contains(owner),
+                _ => self.ownership.can_propose_in_multi_leader_round(owner),
+            },
+        }
+    }
+
+    /// Returns whether the `identity` is allowed to propose a block in `round`.
+    ///
+    /// **Exception:** In single-leader rounds, a **super owner** should only propose
+    /// if they are the designated **leader** for that round.
+    pub fn should_propose(
+        &self,
+        identity: &AccountOwner,
+        round: Round,
+        seed: u64,
+        current_committee: &BTreeMap<AccountOwner, u64>,
+    ) -> bool {
+        match round {
+            Round::Fast => self.ownership.super_owners.contains(identity),
+            Round::MultiLeader(_) => self.ownership.can_propose_in_multi_leader_round(identity),
+            Round::SingleLeader(_) | Round::Validator(_) => {
+                let distribution = calculate_distribution(self.ownership.owners.iter());
+                let fallback_distribution = calculate_distribution(current_committee.iter());
+                let leader = compute_round_leader(
+                    round,
+                    seed,
+                    self.ownership.first_leader.as_ref(),
+                    &self.ownership.owners,
+                    distribution.as_ref(),
+                    current_committee,
+                    fallback_distribution.as_ref(),
+                );
+                leader == Some(identity)
+            }
+        }
+    }
+
+    /// Returns whether a proposal with this content was already handled.
+    pub fn already_handled_proposal(&self, round: Round, proposed_block: &ProposedBlock) -> bool {
+        self.requested_proposed.as_ref().is_some_and(|proposal| {
+            proposal.content.round == round && *proposed_block == proposal.content.block
+        })
+    }
+
+    /// Returns whether there is a locking block in the current round.
+    pub fn has_locking_block_in_current_round(&self) -> bool {
+        self.requested_locking
+            .as_ref()
+            .is_some_and(|locking| locking.round() == self.current_round)
+    }
+}
+
+/// Calculates a probability distribution from the given weights, or `None` if there are no weights.
+fn calculate_distribution<'a, T: 'a>(
+    weights: impl IntoIterator<Item = (&'a T, &'a u64)>,
+) -> Option<WeightedAliasIndex<u64>> {
+    let weights: Vec<_> = weights.into_iter().map(|(_, weight)| *weight).collect();
+    if weights.is_empty() {
+        None
+    } else {
+        Some(WeightedAliasIndex::new(weights).ok()?)
+    }
+}
+
+/// Returns the designated leader for single-leader or validator rounds.
+/// Returns `None` for fast or multi-leader rounds.
+fn compute_round_leader<'a>(
+    round: Round,
+    seed: u64,
+    first_leader: Option<&'a AccountOwner>,
+    owners: &'a BTreeMap<AccountOwner, u64>,
+    distribution: Option<&WeightedAliasIndex<u64>>,
+    fallback_owners: &'a BTreeMap<AccountOwner, u64>,
+    fallback_distribution: Option<&WeightedAliasIndex<u64>>,
+) -> Option<&'a AccountOwner> {
+    match round {
+        Round::SingleLeader(r) => {
+            if r == 0 {
+                if let Some(first_leader) = first_leader {
+                    return Some(first_leader);
+                }
+            }
+            let index = round_leader_index(r, seed, distribution)?;
+            owners.keys().nth(index)
+        }
+        Round::Validator(r) => {
+            let index = round_leader_index(r, seed, fallback_distribution)?;
+            fallback_owners.keys().nth(index)
+        }
+        Round::Fast | Round::MultiLeader(_) => None,
+    }
+}
+
+/// Returns the index of the leader who is allowed to propose a block in the given round.
+fn round_leader_index(
+    round: u32,
+    seed: u64,
+    distribution: Option<&WeightedAliasIndex<u64>>,
+) -> Option<usize> {
+    let seed = u64::from(round).rotate_left(32).wrapping_add(seed);
+    let mut rng = ChaCha8Rng::seed_from_u64(seed);
+    Some(distribution?.sample(&mut rng))
+}

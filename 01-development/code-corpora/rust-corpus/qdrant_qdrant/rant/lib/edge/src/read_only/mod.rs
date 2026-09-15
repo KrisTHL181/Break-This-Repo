@@ -1,0 +1,79 @@
+//! Read-only follower of [`EdgeShard`](crate::EdgeShard).
+//!
+//! A leader process owns a read-write `EdgeShard` and writes to an on-disk directory. One or more
+//! follower processes open the *same* directory as a [`ReadOnlyEdgeShard`] and serve reads. A
+//! follower never writes: no WAL, no optimization, no segment creation. It live-reloads by
+//! [`live_reload`](ReadOnlyEdgeShard::live_reload)ing — rescanning the `segments/` directory to pick up
+//! segments the leader created/removed, and [`live_reload`](segment::segment::read_only::ReadOnlySegment::live_reload)ing
+//! the survivors to fold in the leader's flushed in-place appends and deletes.
+//!
+//! This mirrors the segment-level read-only design one level up: just as `ReadOnlySegment` is the
+//! read-only counterpart of `Segment`, `ReadOnlyEdgeShard` is the read-only counterpart of
+//! `EdgeShard`. Both expose a consistent [`EdgeReadView`](crate::EdgeReadView) and share its read
+//! logic.
+
+mod enumerate;
+mod holder;
+mod lifecycle;
+mod live_reload;
+mod load;
+mod shard_read;
+#[cfg(test)]
+pub(crate) mod tests;
+
+use std::path::{Path, PathBuf};
+use std::sync::Arc;
+
+use parking_lot::{Mutex, RwLock};
+use segment::data_types::load_profile::LoadProfile;
+use segment::index::UniversalReadExt;
+
+use crate::EdgeConfig;
+pub use crate::read_only::enumerate::{
+    ListedSegment, LocalSegmentEnumerator, ManifestSegmentEnumerator, SegmentEnumerator,
+};
+use crate::read_only::holder::ReadOnlySegmentHolder;
+
+/// Read-only follower view over an edge shard's on-disk directory.
+///
+/// Generic over the read backend `S` (e.g. `MmapFile` for local memory-mapped files; the same
+/// abstraction `ReadOnlySegment` uses, so blob/S3 backends are possible). Use
+/// [`open_mmap`](ReadOnlyEdgeShard::open_mmap) for the common local case.
+pub struct ReadOnlyEdgeShard<S: UniversalReadExt + 'static> {
+    path: PathBuf,
+    /// Read backend handle; passed to segment `open` and `live_reload`.
+    fs: S::Fs,
+    /// Config snapshot, derived from the segments (a follower has no `edge_config.json`). At open
+    /// it is overlaid with the tunables of the caller-provided config; each live_reload re-derives it
+    /// from the segments alone. Stored as an `Arc` so a read view can cheaply clone the current
+    /// snapshot while a live_reload swaps in a new one.
+    config: RwLock<Arc<EdgeConfig>>,
+    segments: RwLock<ReadOnlySegmentHolder<S>>,
+    /// Discovers the current segment directories. Injected because segment discovery is
+    /// backend-specific (see [`SegmentEnumerator`]) until an on-disk manifest exists.
+    enumerator: Box<dyn SegmentEnumerator>,
+    /// Fixed-size pool used to open segments in parallel on open/live_reload and to run per-segment
+    /// reads in parallel. Segments never carry `max_search_threads`, so it is sized from
+    /// `provided_config` alone: the CPU-derived default unless explicitly set (see
+    /// [`EdgeConfig::search_thread_count`]).
+    search_pool: Arc<rayon::ThreadPool>,
+    /// Request-specific load profile this shard was opened with, if any: components the request
+    /// won't touch are parked cold instead of warmed per the segment configs. Kept so segments a
+    /// later [`live_reload`](Self::live_reload) discovers load with the same placement.
+    load_profile: Option<LoadProfile>,
+    /// Serializes [`live_reload`](Self::live_reload)s: concurrent live_reloads would
+    /// duplicate the listing and load work, and could clear each other's staged
+    /// prefetches between a segment's preload and apply.
+    live_reload_lock: Mutex<()>,
+}
+
+impl<S: UniversalReadExt + 'static> ReadOnlyEdgeShard<S> {
+    pub fn path(&self) -> &Path {
+        &self.path
+    }
+
+    /// Number of segments currently open in the follower.
+    pub fn segments_count(&self) -> usize {
+        self.segments.read().uuids().len()
+    }
+}

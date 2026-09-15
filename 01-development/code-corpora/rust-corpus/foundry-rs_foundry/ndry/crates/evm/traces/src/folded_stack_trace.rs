@@ -1,0 +1,412 @@
+use alloy_primitives::hex::ToHexExt;
+use revm_inspectors::tracing::{
+    CallTraceArena,
+    types::{CallTraceNode, CallTraceStep, DecodedTraceStep, TraceMemberOrder},
+};
+
+/// Wrapper for building a folded stack trace using EVM call trace node.
+#[derive(Default)]
+pub struct EvmFoldedStackTraceBuilder {
+    /// Trace produced in isolate mode, meaning refund needs to be reversed at the depth=1
+    /// frame for consistent gas values.
+    isolate: bool,
+    /// Raw folded stack trace builder.
+    fst: FoldedStackTraceBuilder,
+}
+
+impl EvmFoldedStackTraceBuilder {
+    pub fn new(isolate: bool) -> Self {
+        Self { isolate, fst: FoldedStackTraceBuilder::default() }
+    }
+
+    /// Returns the folded stack trace as formatted strings.
+    pub fn build(self) -> Vec<String> {
+        self.fst.build()
+    }
+
+    /// Creates an entry for an EVM CALL in the folded stack trace. This method recursively
+    /// processes all the children nodes of the call node and at the end it exits.
+    pub fn process_call_node(&mut self, nodes: &[CallTraceNode], idx: usize) {
+        let node = &nodes[idx];
+
+        let func_name = if node.trace.kind.is_any_create() {
+            let contract_name = node
+                .trace
+                .decoded
+                .as_ref()
+                .and_then(|dc| dc.label.as_deref())
+                .unwrap_or("Contract");
+            format!("new {contract_name}")
+        } else {
+            let selector = node
+                .selector()
+                .map(|selector| selector.encode_hex_with_prefix())
+                .unwrap_or_else(|| "fallback".to_string());
+            let signature = node
+                .trace
+                .decoded
+                .as_ref()
+                .and_then(|dc| dc.call_data.as_ref())
+                .map(|dc| &dc.signature)
+                .unwrap_or(&selector);
+
+            if let Some(label) = node.trace.decoded.as_ref().and_then(|dc| dc.label.as_ref()) {
+                format!("{label}.{signature}")
+            } else {
+                signature.clone()
+            }
+        };
+
+        let mut gas_used = node.trace.gas_used;
+        let max_refund_adjust_depth = if self.isolate { 1 } else { 0 };
+        if node.trace.depth <= max_refund_adjust_depth {
+            gas_used += node.trace.gas_refund_counter;
+        }
+
+        self.fst.enter(func_name, gas_used);
+
+        // Track internal function step exits to do in this call context.
+        let mut step_exits = vec![];
+
+        // Process children nodes.
+        for order in &node.ordering {
+            match order {
+                TraceMemberOrder::Call(child_idx) => {
+                    let child_node_idx = node.children[*child_idx];
+                    self.process_call_node(nodes, child_node_idx);
+                }
+                TraceMemberOrder::Step(step_idx) => {
+                    self.exit_previous_steps(&mut step_exits, *step_idx);
+                    self.process_step(&node.trace.steps, *step_idx, &mut step_exits)
+                }
+                TraceMemberOrder::Log(_) => {}
+            }
+        }
+
+        // Exit pending internal function calls if any.
+        for _ in 0..step_exits.len() {
+            self.fst.exit();
+        }
+
+        // Exit from this call context in the folded stack trace.
+        self.fst.exit();
+    }
+
+    /// Creates an entry for an internal function call in the folded stack trace. This method only
+    /// enters the function in the folded stack trace, we cannot exit since we need to exit at a
+    /// future step. Hence, we keep track of the step end index in the `step_exits`.
+    fn process_step(
+        &mut self,
+        steps: &[CallTraceStep],
+        step_idx: usize,
+        step_exits: &mut Vec<usize>,
+    ) {
+        let step = &steps[step_idx];
+        if let Some(decoded_step) = &step.decoded {
+            match decoded_step.as_ref() {
+                DecodedTraceStep::InternalCall(decoded_internal_call, step_end_idx) => {
+                    // Gas metering resets can increase the remaining gas across an internal call.
+                    let gas_used =
+                        step.gas_remaining.saturating_sub(steps[*step_end_idx].gas_remaining);
+                    self.fst.enter(decoded_internal_call.func_name.clone(), gas_used);
+                    step_exits.push(*step_end_idx);
+                }
+                DecodedTraceStep::Line(_) => {}
+            }
+        }
+    }
+
+    /// Exits all the previous internal calls that should end before starting step_idx.
+    fn exit_previous_steps(&mut self, step_exits: &mut Vec<usize>, step_idx: usize) {
+        let initial_length = step_exits.len();
+        step_exits.retain(|&number| number > step_idx);
+
+        let num_exits = initial_length - step_exits.len();
+        for _ in 0..num_exits {
+            self.fst.exit();
+        }
+    }
+}
+
+/// Helps to translate a function enter-exit flow into a folded stack trace.
+///
+/// Example:
+/// ```solidity
+/// function top() { child_a(); child_b() } // consumes 500 gas
+/// function child_a() {} // consumes 100 gas
+/// function child_b() {} // consumes 200 gas
+/// ```
+///
+/// For execution of the `top` function looks like:
+/// 1. enter `top`
+/// 2. enter `child_a`
+/// 3. exit `child_a`
+/// 4. enter `child_b`
+/// 5. exit `child_b`
+/// 6. exit `top`
+///
+/// The translated folded stack trace lines look like:
+/// 1. top
+/// 2. top;child_a
+/// 3. top;child_b
+///
+/// Including the gas consumed by the function by itself.
+/// 1. top 200 // 500 - 100 - 200
+/// 2. top;child_a 100
+/// 3. top;child_b 200
+#[derive(Debug, Default)]
+pub struct FoldedStackTraceBuilder {
+    /// Trace entries.
+    traces: Vec<TraceEntry>,
+    /// Number of exits to be done before entering a new function.
+    exits: usize,
+}
+
+/// A single entry in a folded stack trace.
+#[derive(Debug, Default)]
+struct TraceEntry {
+    /// Names of all functions in the call stack of this trace.
+    names: Vec<String>,
+    /// Gas consumed by this function, not including refunds.
+    gas: u64,
+}
+
+impl FoldedStackTraceBuilder {
+    /// Enter execution of a function call that consumes `gas`.
+    pub fn enter(&mut self, label: String, gas: u64) {
+        let mut names = self.traces.last().map(|entry| entry.names.clone()).unwrap_or_default();
+
+        while self.exits > 0 {
+            names.pop();
+            self.exits -= 1;
+        }
+
+        names.push(label);
+        self.traces.push(TraceEntry { names, gas });
+    }
+
+    /// Exit execution of a function call.
+    pub const fn exit(&mut self) {
+        self.exits += 1;
+    }
+
+    /// Returns folded stack trace as formatted strings.
+    pub fn build(mut self) -> Vec<String> {
+        self.subtract_children();
+        self.traces.iter().map(|e| format!("{} {}", e.names.join(";"), e.gas)).collect()
+    }
+
+    /// Internal method to build the folded stack trace without subtracting gas consumed by
+    /// the children function calls.
+    pub fn build_without_subtraction(&self) -> Vec<String> {
+        self.traces.iter().map(|e| format!("{} {}", e.names.join(";"), e.gas)).collect()
+    }
+
+    /// Subtracts gas consumed by the children function calls from the parent function calls.
+    fn subtract_children(&mut self) {
+        // Iterate over each trace to find the children and subtract their values from the parents.
+        for i in 0..self.traces.len() {
+            let (left, right) = self.traces.split_at_mut(i);
+            let TraceEntry { names, gas } = &right[0];
+            if names.len() > 1 {
+                let parent_trace_to_match = &names[..names.len() - 1];
+                for parent in left.iter_mut().rev() {
+                    if parent.names == parent_trace_to_match {
+                        parent.gas = parent.gas.saturating_sub(*gas);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Builds a folded stack trace from a call trace arena.
+pub fn build(arena: &CallTraceArena, isolate: bool) -> Vec<String> {
+    let mut fst = EvmFoldedStackTraceBuilder::new(isolate);
+    if !arena.nodes().is_empty() {
+        fst.process_call_node(arena.nodes(), 0);
+    }
+    fst.build()
+}
+
+#[cfg(test)]
+mod tests {
+    use alloy_primitives::{Bytes, U256};
+    use revm::{bytecode::opcode::OpCode, interpreter::InstructionResult};
+    use revm_inspectors::tracing::{
+        CallTraceArena,
+        types::{CallTraceStep, DecodedInternalCall, DecodedTraceStep, TraceMemberOrder},
+    };
+
+    fn trace_step(gas_remaining: u64) -> CallTraceStep {
+        CallTraceStep {
+            pc: 0,
+            op: OpCode::STOP,
+            stack: Some(Vec::<U256>::new().into_boxed_slice()),
+            push_stack: None,
+            memory: None,
+            returndata: Bytes::new(),
+            gas_remaining,
+            gas_refund_counter: 0,
+            gas_used: 0,
+            gas_cost: 0,
+            state_gas_cost: None,
+            state_gas_reservoir: None,
+            state_gas_spent: 0,
+            storage_change: None,
+            status: Some(InstructionResult::Stop),
+            immediate_bytes: None,
+            decoded: None,
+        }
+    }
+
+    #[test]
+    fn test_fst_1() {
+        let mut trace = super::FoldedStackTraceBuilder::default();
+        trace.enter("top".to_string(), 500);
+        trace.enter("child_a".to_string(), 100);
+        trace.exit();
+        trace.enter("child_b".to_string(), 200);
+
+        assert_eq!(
+            trace.build_without_subtraction(),
+            vec![
+                "top 500", //
+                "top;child_a 100",
+                "top;child_b 200",
+            ]
+        );
+        assert_eq!(
+            trace.build(),
+            vec![
+                "top 200", // 500 - 100 - 200
+                "top;child_a 100",
+                "top;child_b 200",
+            ]
+        );
+    }
+
+    #[test]
+    fn test_fst_2() {
+        let mut trace = super::FoldedStackTraceBuilder::default();
+        trace.enter("top".to_string(), 500);
+        trace.enter("child_a".to_string(), 300);
+        trace.enter("child_b".to_string(), 100);
+        trace.exit();
+        trace.exit();
+        trace.enter("child_c".to_string(), 100);
+
+        assert_eq!(
+            trace.build_without_subtraction(),
+            vec![
+                "top 500", //
+                "top;child_a 300",
+                "top;child_a;child_b 100",
+                "top;child_c 100",
+            ]
+        );
+
+        assert_eq!(
+            trace.build(),
+            vec![
+                "top 100",         // 500 - 300 - 100
+                "top;child_a 200", // 300 - 100
+                "top;child_a;child_b 100",
+                "top;child_c 100",
+            ]
+        );
+    }
+
+    #[test]
+    fn test_fst_3() {
+        let mut trace = super::FoldedStackTraceBuilder::default();
+        trace.enter("top".to_string(), 1700);
+        trace.enter("child_a".to_string(), 500);
+        trace.exit();
+        trace.enter("child_b".to_string(), 500);
+        trace.enter("child_c".to_string(), 500);
+        trace.exit();
+        trace.exit();
+        trace.exit();
+        trace.enter("top2".to_string(), 1700);
+
+        assert_eq!(
+            trace.build_without_subtraction(),
+            vec![
+                "top 1700", //
+                "top;child_a 500",
+                "top;child_b 500",
+                "top;child_b;child_c 500",
+                "top2 1700",
+            ]
+        );
+
+        assert_eq!(
+            trace.build(),
+            vec![
+                "top 700", //
+                "top;child_a 500",
+                "top;child_b 0",
+                "top;child_b;child_c 500",
+                "top2 1700",
+            ]
+        );
+    }
+
+    #[test]
+    fn folded_stack_trace_saturates_parent_gas() {
+        let mut trace = super::FoldedStackTraceBuilder::default();
+        trace.enter("top".to_string(), 100);
+        trace.enter("child".to_string(), 150);
+
+        assert_eq!(trace.build(), vec!["top 0", "top;child 150"]);
+    }
+
+    #[test]
+    fn folded_stack_trace_keeps_precise_internal_function_names() {
+        let mut arena = CallTraceArena::default();
+        let root = &mut arena.nodes_mut()[0];
+        root.trace.gas_used = 100;
+        root.trace.gas_limit = 100;
+        root.trace.steps = vec![trace_step(100), trace_step(70)];
+        root.trace.steps[0].decoded = Some(Box::new(DecodedTraceStep::InternalCall(
+            DecodedInternalCall {
+                func_name: "DebugVarsTest::foo(uint256)".to_string(),
+                args: Some(vec!["42".to_string()]),
+                return_data: Some(vec!["43".to_string()]),
+            },
+            1,
+        )));
+        root.ordering = vec![TraceMemberOrder::Step(0), TraceMemberOrder::Step(1)];
+
+        assert_eq!(
+            super::build(&arena, false),
+            vec!["fallback 70", "fallback;DebugVarsTest::foo(uint256) 30",]
+        );
+    }
+
+    #[test]
+    fn folded_stack_trace_saturates_internal_call_gas_on_reset_metering() {
+        // Model an internal call whose gas meter resets before returning.
+        let mut arena = CallTraceArena::default();
+        let root = &mut arena.nodes_mut()[0];
+        root.trace.gas_used = 100;
+        root.trace.gas_limit = 100;
+        root.trace.steps = vec![trace_step(70), trace_step(100)];
+        root.trace.steps[0].decoded = Some(Box::new(DecodedTraceStep::InternalCall(
+            DecodedInternalCall {
+                func_name: "DebugVarsTest::resetsGas()".to_string(),
+                args: None,
+                return_data: None,
+            },
+            1,
+        )));
+        root.ordering = vec![TraceMemberOrder::Step(0), TraceMemberOrder::Step(1)];
+
+        assert_eq!(
+            super::build(&arena, false),
+            vec!["fallback 100", "fallback;DebugVarsTest::resetsGas() 0",]
+        );
+    }
+}

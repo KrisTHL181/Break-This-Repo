@@ -1,0 +1,196 @@
+//! Shared server-only module predicate for the Next.js RSC detectors.
+//!
+//! A module is SERVER-ONLY when it carries a `"use server"` directive, imports
+//! the `server-only` poison package (or another known server-only package), or
+//! imports a named server-only Next.js API from `next/headers`. The predicate
+//! is deliberately conservative (false-negative-preferring): a generic "DB
+//! client" or any package-name guess is NOT here, because there is no clean
+//! syntactic sink for it.
+//!
+//! The import-based half ([`imports_server_only_code`]) is shared between the
+//! `security` client/server-leak detector and the `mixed_client_server_barrel`
+//! detector so the server-only definition (the [`SERVER_ONLY_PACKAGES`] list
+//! and `next/headers` named-import handling) never drifts. The `"use server"`
+//! directive is NOT a server-only marker for the security detector: a
+//! `"use server"` module imported from a `"use client"` file is the sanctioned
+//! Server Action pattern (the bundler replaces the import with an action
+//! reference; the body never enters the client bundle), so only
+//! [`is_server_only_module`] (used by the barrel detector) includes it.
+
+use fallow_types::extract::{ImportedName, ModuleInfo};
+
+/// The React Server Components / Server Actions directive marking a module as
+/// server-only.
+const USE_SERVER: &str = "use server";
+
+/// The canonical "poison" package: importing it makes a module fail the build
+/// if it is ever bundled for the client. Its presence is a strong server-only
+/// signal.
+const SERVER_ONLY_POISON_PACKAGE: &str = "server-only";
+
+/// Server-only package specifiers that mark a module as a server-only sink no
+/// matter which name is imported. Deliberately conservative and narrow: a
+/// generic "DB client" or any package-name guess is NOT here. The `node:` and
+/// bare forms BOTH count, per the import-shape rule, so both are listed
+/// explicitly. `next/headers` is handled separately ([`NEXT_HEADERS_SOURCE`] +
+/// [`NEXT_HEADERS_SERVER_NAMES`]) because the sink is the specific server-only
+/// named API, not the module path.
+const SERVER_ONLY_PACKAGES: &[&str] = &[
+    SERVER_ONLY_POISON_PACKAGE,
+    "next/server",
+    "node:fs",
+    "fs",
+    "node:fs/promises",
+    "fs/promises",
+    "node:child_process",
+    "child_process",
+];
+
+/// The `next/headers` module specifier, gated on a named server-only import.
+const NEXT_HEADERS_SOURCE: &str = "next/headers";
+
+/// Server-only NAMED imports from `next/headers`. Importing any of these (named
+/// or namespace member) is reaching server-only runtime APIs Next.js refuses to
+/// run on the client. A bare side-effect `import "next/headers"` (no name) is
+/// NOT flagged: without a named server-only binding it is just a module load,
+/// the conservative no-false-positive choice.
+const NEXT_HEADERS_SERVER_NAMES: &[&str] = &["cookies", "headers", "draftMode"];
+
+/// Whether a single module qualifies as a server-only sink. Conservative: a
+/// `"use server"` directive, an import of a known server-only package, or a
+/// named server-only API from `next/headers`. The package check matches the
+/// import specifier directly, so `node:fs` and bare `fs` both count.
+///
+/// Includes the directive check, so it is the right predicate for the barrel
+/// detector; the security client/server-leak detector uses
+/// [`imports_server_only_code`] instead (a `"use server"` import from a client
+/// is the sanctioned Server Action boundary, not a leak).
+#[must_use]
+pub fn is_server_only_module(module: &ModuleInfo) -> bool {
+    module.directives.iter().any(|d| d == USE_SERVER) || imports_server_only_code(module)
+}
+
+/// Whether a module IMPORTS server-only code: the `server-only` poison package,
+/// a Node server runtime module, `next/server`, or a named server-only API from
+/// `next/headers`. Deliberately excludes the `"use server"` directive: a Server
+/// Action module is MEANT to be imported by client components, so the directive
+/// alone is not a server-only signal for the client/server-leak rule. The
+/// predicate is module-level and does not inspect export shape: a `"use server"`
+/// module that also imports one of these packages still matches even when every
+/// export is an async action, because only a non-action export can leak the
+/// import into the client bundle and fallow cannot tell the two apart here.
+#[must_use]
+pub fn imports_server_only_code(module: &ModuleInfo) -> bool {
+    module.imports.iter().any(|import| {
+        // An import of the `server-only` poison package, a Node server
+        // runtime module, or `next/server`. The specifier is matched directly
+        // so both the `node:` and bare forms count.
+        if SERVER_ONLY_PACKAGES.contains(&import.source.as_str()) {
+            return true;
+        }
+        // A server-only named API from `next/headers` (cookies / headers /
+        // draftMode), in named (`import { cookies }`) or namespace
+        // (`import * as h`) form. A bare side-effect import does not match.
+        import.source == NEXT_HEADERS_SOURCE && is_next_headers_server_import(&import.imported_name)
+    })
+}
+
+/// Whether an import binding from `next/headers` names a server-only API. A
+/// named import of `cookies` / `headers` / `draftMode` matches; a namespace
+/// import (`import * as headers from "next/headers"`) matches conservatively
+/// because any member access could be a server-only API. A side-effect or
+/// default import does not match.
+fn is_next_headers_server_import(name: &ImportedName) -> bool {
+    match name {
+        ImportedName::Named(named) => NEXT_HEADERS_SERVER_NAMES.contains(&named.as_str()),
+        ImportedName::Namespace => true,
+        ImportedName::Default | ImportedName::SideEffect => false,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::discover::FileId;
+    use fallow_types::extract::{ImportInfo, ModuleInfo};
+
+    fn empty_module() -> ModuleInfo {
+        ModuleInfo::empty(FileId(0))
+    }
+
+    fn module_with_import(source: &str, imported: ImportedName) -> ModuleInfo {
+        let mut module = empty_module();
+        module.imports.push(ImportInfo {
+            source: source.to_string(),
+            imported_name: imported,
+            local_name: "x".to_string(),
+            is_type_only: false,
+            is_type_only_star: false,
+            from_style: false,
+            span: oxc_span::Span::new(0, 10),
+            source_span: oxc_span::Span::new(0, 10),
+        });
+        module
+    }
+
+    #[test]
+    fn use_server_directive_is_server_only() {
+        let mut module = empty_module();
+        module.directives.push(USE_SERVER.to_string());
+        assert!(is_server_only_module(&module));
+    }
+
+    #[test]
+    fn use_server_directive_alone_does_not_import_server_only_code() {
+        let mut module = empty_module();
+        module.directives.push(USE_SERVER.to_string());
+        assert!(!imports_server_only_code(&module));
+    }
+
+    #[test]
+    fn use_server_module_importing_node_fs_still_imports_server_only_code() {
+        let mut module = module_with_import("node:fs", ImportedName::Named("readFile".to_string()));
+        module.directives.push(USE_SERVER.to_string());
+        assert!(imports_server_only_code(&module));
+    }
+
+    #[test]
+    fn server_only_poison_package_is_server_only() {
+        let module = module_with_import(SERVER_ONLY_POISON_PACKAGE, ImportedName::SideEffect);
+        assert!(is_server_only_module(&module));
+    }
+
+    #[test]
+    fn node_fs_and_bare_fs_both_count() {
+        assert!(is_server_only_module(&module_with_import(
+            "node:fs",
+            ImportedName::Named("readFileSync".to_string()),
+        )));
+        assert!(is_server_only_module(&module_with_import(
+            "fs",
+            ImportedName::Named("readFileSync".to_string()),
+        )));
+    }
+
+    #[test]
+    fn next_headers_named_server_api_counts() {
+        assert!(is_server_only_module(&module_with_import(
+            NEXT_HEADERS_SOURCE,
+            ImportedName::Named("cookies".to_string()),
+        )));
+    }
+
+    #[test]
+    fn next_headers_side_effect_import_does_not_count() {
+        assert!(!is_server_only_module(&module_with_import(
+            NEXT_HEADERS_SOURCE,
+            ImportedName::SideEffect,
+        )));
+    }
+
+    #[test]
+    fn plain_utility_module_is_not_server_only() {
+        let module = module_with_import("./format", ImportedName::Named("formatDate".to_string()));
+        assert!(!is_server_only_module(&module));
+    }
+}

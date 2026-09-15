@@ -1,0 +1,396 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#[cfg(test)]
+mod storage_metric_ownership_test;
+
+mod reliant;
+mod storage_api;
+
+// Common utilities for all E2E tests
+#[cfg(test)]
+pub mod common;
+
+// In-process fault-injection primitives (disk offline/replacement, shard corruption)
+#[cfg(test)]
+pub mod chaos;
+
+// Programmable S3 target for replication failure-path tests (backlog#1147 repl-8)
+// and on-demand-migration source scenarios (backlog#2151).
+#[cfg(test)]
+pub mod fake_s3_target;
+
+// On-demand migration (backlog#2147): shared two-server environment, admin
+// wrappers, and the harness self-test (backlog#2151). Behavior scenarios are
+// added by later ODM tasks.
+#[cfg(test)]
+pub mod on_demand_migration;
+
+// Socket-level network fault-injection proxy for black-box cluster tests
+// (backlog#1325 network fault-injection block): latency / blackhole / one-way
+// partition on the wire between nodes. Serves #1312/#1319 (lock-plane one-way
+// partition, accept-then-blackhole peer) and #1327 (cross-process replay/tamper
+// seam); cluster-harness wiring is a follow-up (rustfs#4937).
+#[cfg(test)]
+pub mod fault_proxy;
+
+// Reliability tests built on the fault-injection harness
+#[cfg(test)]
+mod reliability_disk_fault_test;
+
+// Privileged Linux-only 3x4 replacement rebuild proof for rustfs#5869/#1791.
+#[cfg(all(test, target_os = "linux"))]
+mod replacement_privileged_e2e_test;
+
+// dist-13 (backlog#1150/#1155): e2e regression net proving a large-object
+// degraded EC read never returns a silently truncated body (rustfs#4594/#4560/#4585).
+#[cfg(test)]
+mod degraded_read_eof_regression_test;
+
+// rustfs#4784: a mid-stream GET failure must be reportable from the source
+// server's log alone — naming the object, at the default log level.
+#[cfg(test)]
+mod get_stream_failure_observability_test;
+
+// backlog#1183: GET codec-streaming fast path must be byte/header identical to
+// the legacy duplex path before its rollout gates can be flipped on by default.
+#[cfg(test)]
+mod get_codec_streaming_compat_test;
+
+#[cfg(test)]
+mod version_id_regression_test;
+
+#[cfg(test)]
+mod select_request_root_alias_test;
+
+// Pinned previous-release -> current-build on-disk compatibility.
+#[cfg(test)]
+mod upgrade_compatibility_test;
+
+// Receiver-side replication LWW (rustfs/backlog#1953): stale inbound
+// replication metadata must not overwrite a newer local category state.
+#[cfg(test)]
+mod replication_lww_receiver_test;
+
+// Outbound target matrix: every object shape against every remote-target
+// failure mode the fake target models (SOP:
+// docs/postmortems/2026-09-03-replication-checksum-default-regression.md).
+#[cfg(test)]
+mod replication_target_matrix_test;
+
+// Data usage regression tests
+#[cfg(test)]
+mod data_usage_test;
+
+// KMS-specific test modules
+#[cfg(test)]
+mod kms;
+
+// Regression test for issue #1797
+#[cfg(test)]
+mod list_objects_duplicates_test;
+
+// Quota tests
+#[cfg(test)]
+mod quota_test;
+
+// Harness regression tests: console port isolation + fail-fast startup
+#[cfg(test)]
+mod server_startup_failfast_test;
+
+#[cfg(test)]
+mod bucket_policy_check_test;
+
+// Security boundary tests: DoS limits, SSRF prevention, concurrent-write integrity
+#[cfg(test)]
+mod security_boundary_test;
+
+// Cross-process replay/tamper acceptance for the internode NodeService v2 RPC
+// signature (backlog#1327): method-path transplant, nonce replay, body tampering
+// and the two strict rollout flips, all against a real spawned server.
+#[cfg(test)]
+mod internode_rpc_signature_e2e_test;
+
+// Opt-in per-client S3 API rate limiting (backlog#1191)
+#[cfg(test)]
+mod api_rate_limit_test;
+
+// Opt-in global connection cap on the main listener (backlog#1191 follow-up)
+#[cfg(test)]
+mod connection_cap_test;
+
+// Admin authorization gate: non-admin denial + root-credential lifecycle (backlog#1151 sec-4)
+#[cfg(test)]
+mod admin_auth_test;
+
+/// IAM / bucket / STS session policy with `s3:ExistingObjectTag` conditions (E2E).
+#[cfg(test)]
+mod existing_object_tag_policy_test;
+
+#[cfg(test)]
+mod sts_query_compat_test;
+
+// Regression tests for Issue #2036: anonymous access with PublicAccessBlock
+#[cfg(test)]
+mod anonymous_access_test;
+
+// Special characters in path test modules
+#[cfg(test)]
+mod special_chars_test;
+
+// Leading/duplicate slash key normalization tests (Issue #2427)
+#[cfg(test)]
+mod leading_slash_key_test;
+
+// Content-Encoding header preservation test
+#[cfg(test)]
+mod content_encoding_test;
+
+#[cfg(test)]
+mod archive_download_integrity_test;
+
+// ListObjectsV2 pagination test (Issue #1596)
+#[cfg(test)]
+mod list_objects_v2_pagination_test;
+
+// Regression test for Issue #3107: mc mirror small-bucket listing must not time out.
+#[cfg(test)]
+mod mc_mirror_small_bucket_test;
+
+// Policy variables tests
+#[cfg(test)]
+mod policy;
+
+#[cfg(test)]
+mod compression_test;
+
+// Regression test for Issue #1878: DeleteMarkers not visible immediately after delete_objects
+#[cfg(test)]
+mod delete_objects_versioning_test;
+
+#[cfg(test)]
+mod delete_authorization_test;
+
+// Regression test for signed DELETE Object?versionId requests without Content-Length.
+#[cfg(test)]
+mod delete_object_no_content_length_test;
+
+// Regression test for signed empty PutObject requests without Content-Length.
+#[cfg(test)]
+mod put_object_no_content_length_test;
+
+// Delete-marker visibility baseline for data-movement migration proof.
+#[cfg(test)]
+mod delete_marker_migration_semantics_test;
+
+// Regression test for Issue #2252: ListObjectVersions misses newest version after put -> delete -> put
+#[cfg(test)]
+mod list_object_versions_regression_test;
+
+// versions&metadata=true extension regression test
+#[cfg(test)]
+mod list_object_versions_metadata_extension_test;
+
+// list-type=2&metadata=true extension regression test
+#[cfg(test)]
+mod list_objects_v2_metadata_extension_test;
+
+#[cfg(test)]
+mod protocols;
+
+// Object Lock tests
+#[cfg(test)]
+mod object_lock;
+
+#[cfg(test)]
+mod cluster_concurrency_test;
+
+// Multi-drive (drivesPerNode) and 2-pool cluster harness smoke tests
+#[cfg(test)]
+mod cluster_multidrive_pool_test;
+
+// backlog#1433: real 4-node EC boundary gate for inline storage and GET paths.
+#[cfg(test)]
+mod inline_fast_path_cluster_test;
+
+// backlog#2207: two-node gate for the cluster-authoritative tier stats contract.
+#[cfg(test)]
+mod tier_stats_cluster_test;
+
+// PutObject / MultipartUpload with checksum (Content-MD5, x-amz-checksum-*)
+#[cfg(test)]
+mod checksum_upload_test;
+
+// Group deletion tests
+#[cfg(test)]
+mod group_delete_test;
+
+#[cfg(test)]
+mod head_object_range_test;
+
+#[cfg(test)]
+mod head_object_consistency_test;
+
+#[cfg(test)]
+mod heal_erasure_disk_rebuild_test;
+
+#[cfg(test)]
+mod copy_object_metadata_test;
+
+#[cfg(test)]
+mod copy_object_tagging_test;
+
+#[cfg(test)]
+mod copy_object_version_restore_test;
+
+#[cfg(test)]
+mod copy_object_checksum_test;
+
+#[cfg(test)]
+mod ssec_copy_test;
+
+#[cfg(test)]
+mod multipart_storage_class_test;
+
+#[cfg(test)]
+mod storage_class_capability_test;
+
+// S3 dummy-compat bucket API tests
+#[cfg(test)]
+mod bucket_logging_test;
+
+// Multipart control API auth regression tests
+#[cfg(test)]
+mod multipart_auth_test;
+
+// Negative presigned-URL (query-string SigV4) regression suite (backlog#1151
+// sec-2): expired, tampered signature, wrong secret, tampered target.
+#[cfg(test)]
+mod presigned_negative_test;
+
+// Negative header-SigV4 regression suite (backlog#1151 sec-1): tampered
+// signature, wrong secret, skewed date, malformed Authorization.
+#[cfg(test)]
+mod negative_sigv4_test;
+
+#[cfg(test)]
+mod stale_multipart_cleanup_cluster_test;
+
+// Object lambda end-to-end regression tests
+#[cfg(test)]
+mod object_lambda_test;
+
+// S3 event-notification webhook delivery end-to-end (backlog#1154 peri-1):
+// configure webhook target -> PutBucketNotificationConfiguration -> object
+// operation -> event delivered, plus filter negatives and store-queue redelivery.
+#[cfg(test)]
+mod notification_webhook_test;
+
+// TLS certificate hot-reload live-listener e2e (backlog#1154 peri-5): swap
+// certificates without a restart, existing sessions survive, bad material is
+// fail-safe (old certificate keeps serving, failure is logged).
+#[cfg(test)]
+mod tls_hot_reload_test;
+
+// Console listener over-the-wire smoke (backlog#1154 peri-4): public console
+// endpoints answer without credentials or leaks, the SPA prefix never falls
+// through to the S3 API, and the protected surface stays authenticated.
+#[cfg(test)]
+mod console_smoke_test;
+
+// Admin IAM management CRUD e2e (backlog#1154 peri-2): user / canned-policy /
+// service-account lifecycle over signed HTTP with data-plane effect assertions,
+// plus non-admin 403 probes per endpoint (sec-4 pattern).
+#[cfg(test)]
+mod admin_iam_crud_test;
+mod admin_mfa_test;
+
+#[cfg(test)]
+mod admin_pools_test;
+
+// Replication extension end-to-end regression tests
+#[cfg(test)]
+mod replication_extension_test;
+
+#[cfg(test)]
+mod snowball_auto_extract_test;
+
+#[cfg(test)]
+mod namespace_lock_quorum_test;
+
+#[cfg(test)]
+mod admin_timeout_regression_test;
+
+#[cfg(test)]
+mod overwrite_cleanup_regression_test;
+
+// Regression test for backlog#601: `GET //` ListBuckets browser compatibility.
+#[cfg(test)]
+mod list_buckets_double_slash_test;
+
+// Regression coverage for bucket-scoped ListBuckets authorization fallback.
+#[cfg(test)]
+mod list_buckets_auth_test;
+
+// ListBuckets visibility follows IAM authorization, not bucket policy.
+#[cfg(test)]
+mod list_buckets_iam_filter_test;
+
+// Regression test for backlog#629(b): region-aware CreateBucket SigV4.
+#[cfg(test)]
+mod create_bucket_region_test;
+
+// Regression coverage for backlog#618 item 8: copy-source invalid-date header.
+#[cfg(test)]
+mod copy_source_invalid_date_test;
+
+// P0 regression: event notification startup race (rustfs#5387, #5681, #5401, #5183, #5115, #4796)
+#[cfg(test)]
+mod notification_startup_regression_test;
+
+// P0 regression: lifecycle/ILM object expiration (rustfs#5407, #5167, #4963, #5615, #4879)
+#[cfg(test)]
+mod lifecycle_regression_test;
+
+// P0 regression: delete operations consistency (rustfs#5375, #5349, #5339, #5029, #4978, #760)
+#[cfg(test)]
+mod delete_regression_test;
+
+// P1 regression: listing/metacache completeness (rustfs#5166, #5156, #5051, #4810, #4648, #3191)
+#[cfg(test)]
+mod listing_regression_test;
+
+// Cluster regression: objects committed at degraded write quorum must stay
+// listable while a different drive is offline (CI run 33478999853).
+#[cfg(test)]
+mod degraded_listing_availability_test;
+
+// P1 regression: bucket statistics accuracy (rustfs#5615, #5008, #5116, #5055, #3898, #1012)
+#[cfg(test)]
+mod bucket_stats_regression_test;
+
+// P1 regression: distributed startup/quorum (rustfs#5416, #2945, #2794, #2601, #4040, #5655)
+#[cfg(test)]
+mod distributed_startup_regression_test;
+
+// 4-node / 4-disk distributed Actions suite (S3, lock, versioning, replication,
+// quota, observability, expand/decommission/rebalance, site replication, chaos).
+#[cfg(test)]
+mod distributed;
+
+// P1 regression: tier/ILM transition (rustfs#5218, #5130, #5011, #4826, #5024)
+#[cfg(test)]
+mod tier_transition_regression_test;
+
+pub mod tls_gen;

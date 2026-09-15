@@ -1,0 +1,115 @@
+use alloc::boxed::Box;
+use alloc::sync::Arc;
+
+use all_is_cubes::block::{AIR, Block};
+use all_is_cubes::euclid::size3;
+use all_is_cubes::listen;
+use all_is_cubes::space::SpaceTransaction;
+use all_is_cubes::universe;
+
+use crate::vui;
+
+#[derive(Debug)]
+#[doc(hidden)] // public only for tests; not a reliably reusable widget
+pub struct Crosshair {
+    icon: Block,
+    mouselook_mode: listen::DynSource<bool>,
+}
+
+impl Crosshair {
+    pub fn new(
+        theme: &vui::widgets::WidgetTheme,
+        mouselook_mode: listen::DynSource<bool>,
+    ) -> Arc<Self> {
+        let icon = theme.widget_blocks[vui::widgets::WidgetBlocks::Crosshair].clone();
+        Arc::new(Self {
+            icon,
+            mouselook_mode,
+        })
+    }
+}
+
+impl vui::Layoutable for Crosshair {
+    fn requirements(&self) -> vui::LayoutRequest {
+        vui::LayoutRequest {
+            minimum: size3(1, 1, 1),
+        }
+    }
+}
+
+impl vui::Widget for Crosshair {
+    fn controller(
+        self: Arc<Self>,
+        _: &vui::WidgetContext<'_, '_>,
+    ) -> Result<Box<dyn vui::WidgetController>, vui::InWidgetError> {
+        Ok(Box::new(CrosshairController {
+            todo: listen::Flag::listening(false, &self.mouselook_mode),
+            definition: self,
+        }))
+    }
+}
+
+/// Shows/hides the crosshair depending on mouselook mode.
+#[derive(Debug)]
+struct CrosshairController {
+    definition: Arc<Crosshair>,
+    todo: listen::Flag,
+}
+
+impl vui::WidgetController for CrosshairController {
+    fn step(
+        &mut self,
+        context: &vui::WidgetContext<'_, '_>,
+    ) -> Result<vui::StepSuccess, vui::StepError> {
+        let Some(_position) = context.grant().shrink_to_cube() else {
+            return Ok((vui::WidgetTransaction::default(), vui::Then::Drop));
+        };
+
+        if self.todo.get_and_clear() {
+            context.request_draw();
+        }
+
+        // TODO: waking
+        Ok((vui::WidgetTransaction::default(), vui::Then::Step))
+    }
+
+    fn draw(
+        &mut self,
+        context: &vui::WidgetContext<'_, '_>,
+        _from_scratch: bool,
+    ) -> Result<vui::WidgetTransaction, vui::InWidgetError> {
+        Ok(if let Some(position) = context.grant().shrink_to_cube() {
+            SpaceTransaction::set_cube(
+                position,
+                None,
+                Some(if self.definition.mouselook_mode.get() {
+                    self.definition.icon.clone()
+                } else {
+                    AIR
+                }),
+            )
+        } else {
+            vui::WidgetTransaction::default()
+        })
+    }
+}
+
+impl universe::VisitHandles for CrosshairController {
+    fn visit_handles(&self, visitor: &mut dyn universe::HandleVisitor) {
+        let Self {
+            definition,
+            todo: _,
+        } = self;
+        definition.visit_handles(visitor);
+    }
+}
+
+impl universe::VisitHandles for Crosshair {
+    fn visit_handles(&self, visitor: &mut dyn universe::HandleVisitor) {
+        let Self {
+            icon,
+            mouselook_mode: _,
+        } = self;
+        icon.visit_handles(visitor);
+    }
+}

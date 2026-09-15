@@ -1,0 +1,146 @@
+// -------------------------------------------------------------------------------------------------
+//  Copyright (C) 2015-2026 Nautech Systems Pty Ltd. All rights reserved.
+//  https://nautechsystems.io
+//
+//  Licensed under the GNU Lesser General Public License Version 3.0 (the "License");
+//  You may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at https://www.gnu.org/licenses/lgpl-3.0.en.html
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// -------------------------------------------------------------------------------------------------
+
+use std::str::FromStr;
+
+use nautilus_core::UnixNanos;
+use nautilus_model::{
+    data::{Bar, BarSpecification, BarType, InstrumentClose, QuoteTick, TradeTick},
+    identifiers::{InstrumentId, TradeId},
+    types::{Price, Quantity},
+};
+use sqlx::{Error, FromRow, Row, postgres::PgRow};
+
+use crate::sql::models::{
+    enums::{AggregationSourcePg, AggressorSidePg, BarAggregationPg, PriceTypePg},
+    read_usize,
+};
+
+#[derive(Debug)]
+pub struct QuoteTickRow(pub QuoteTick);
+
+#[derive(Debug)]
+pub struct TradeTickRow(pub TradeTick);
+
+#[derive(Debug)]
+pub struct BarRow(pub Bar);
+
+#[derive(Debug)]
+pub struct InstrumentCloseRow(pub InstrumentClose);
+
+impl<'r> FromRow<'r, PgRow> for QuoteTickRow {
+    fn from_row(row: &'r PgRow) -> Result<Self, Error> {
+        let instrument_id = row
+            .try_get::<&str, _>("instrument_id")
+            .map(InstrumentId::from)?;
+        let bid_price = row.try_get::<&str, _>("bid_price").map(Price::from)?;
+        let ask_price = row.try_get::<&str, _>("ask_price").map(Price::from)?;
+        let bid_size = row.try_get::<&str, _>("bid_size").map(Quantity::from)?;
+        let ask_size = row.try_get::<&str, _>("ask_size").map(Quantity::from)?;
+        let ts_event = row.try_get::<&str, _>("ts_event").map(UnixNanos::from)?;
+        let ts_init = row.try_get::<&str, _>("ts_init").map(UnixNanos::from)?;
+        let quote = QuoteTick::new(
+            instrument_id,
+            bid_price,
+            ask_price,
+            bid_size,
+            ask_size,
+            ts_event,
+            ts_init,
+        );
+        Ok(Self(quote))
+    }
+}
+
+impl<'r> FromRow<'r, PgRow> for TradeTickRow {
+    fn from_row(row: &'r PgRow) -> Result<Self, Error> {
+        let instrument_id = row
+            .try_get::<&str, _>("instrument_id")
+            .map(InstrumentId::from)?;
+        let price = row.try_get::<&str, _>("price").map(Price::from)?;
+        let size = row.try_get::<&str, _>("quantity").map(Quantity::from)?;
+        let aggressor_side = row
+            .try_get::<AggressorSidePg, _>("aggressor_side")
+            .map(|x| x.0)?;
+        let trade_id = row
+            .try_get::<&str, _>("venue_trade_id")
+            .map(TradeId::from)?;
+        let ts_event = row.try_get::<&str, _>("ts_event").map(UnixNanos::from)?;
+        let ts_init = row.try_get::<&str, _>("ts_init").map(UnixNanos::from)?;
+        let trade = TradeTick::new(
+            instrument_id,
+            price,
+            size,
+            aggressor_side,
+            trade_id,
+            ts_event,
+            ts_init,
+        );
+        Ok(Self(trade))
+    }
+}
+
+impl<'r> FromRow<'r, PgRow> for BarRow {
+    fn from_row(row: &'r PgRow) -> Result<Self, Error> {
+        let instrument_id: InstrumentId = decode_text_column(row, "instrument_id", "bar")?;
+        let step = read_usize(row, "step")?;
+        let price_type = row.try_get::<PriceTypePg, _>("price_type").map(|x| x.0)?;
+        let bar_aggregation = row
+            .try_get::<BarAggregationPg, _>("bar_aggregation")
+            .map(|x| x.0)?;
+        let aggregation_source = row
+            .try_get::<AggregationSourcePg, _>("aggregation_source")
+            .map(|x| x.0)?;
+        let spec = BarSpecification::new_checked(step, bar_aggregation, price_type)
+            .map_err(|e| Error::Decode(format!("Invalid bar specification in row: {e}").into()))?;
+        let bar_type = BarType::new(instrument_id, spec, aggregation_source);
+        let open: Price = decode_text_column(row, "open", "bar")?;
+        let high: Price = decode_text_column(row, "high", "bar")?;
+        let low: Price = decode_text_column(row, "low", "bar")?;
+        let close: Price = decode_text_column(row, "close", "bar")?;
+        let volume: Quantity = decode_text_column(row, "volume", "bar")?;
+        let ts_event: UnixNanos = decode_text_column(row, "ts_event", "bar")?;
+        let ts_init: UnixNanos = decode_text_column(row, "ts_init", "bar")?;
+        let bar = Bar::new_checked(bar_type, open, high, low, close, volume, ts_event, ts_init)
+            .map_err(|e| Error::Decode(format!("Invalid bar in row: {e}").into()))?;
+        Ok(Self(bar))
+    }
+}
+
+impl<'r> FromRow<'r, PgRow> for InstrumentCloseRow {
+    fn from_row(row: &'r PgRow) -> Result<Self, Error> {
+        let instrument_id = decode_text_column(row, "instrument_id", "instrument close")?;
+        let close_price = decode_text_column(row, "close_price", "instrument close")?;
+        let close_type = decode_text_column(row, "close_type", "instrument close")?;
+        let ts_event = decode_text_column(row, "ts_event", "instrument close")?;
+        let ts_init = decode_text_column(row, "ts_init", "instrument close")?;
+        Ok(Self(InstrumentClose::new(
+            instrument_id,
+            close_price,
+            close_type,
+            ts_event,
+            ts_init,
+        )))
+    }
+}
+
+fn decode_text_column<T: FromStr>(row: &PgRow, column: &str, record: &str) -> Result<T, Error>
+where
+    T::Err: std::fmt::Display,
+{
+    row.try_get::<&str, _>(column)?
+        .parse::<T>()
+        .map_err(|e| Error::Decode(format!("Invalid `{column}` value in {record} row: {e}").into()))
+}

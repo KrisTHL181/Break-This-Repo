@@ -1,0 +1,82 @@
+[package]
+name = "wasmtime-wasi-nn"
+version.workspace = true
+authors.workspace = true
+description = "Wasmtime implementation of the wasi-nn API"
+documentation = "https://docs.rs/wasmtime-wasi-nn"
+license = "Apache-2.0 WITH LLVM-exception"
+categories = ["wasm", "computer-vision"]
+keywords = ["webassembly", "wasm", "neural-network"]
+repository = "https://github.com/bytecodealliance/wasmtime"
+edition.workspace = true
+rust-version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+# These dependencies are necessary for the WITX-generation macros to work:
+wiggle = { workspace = true, features = ["wasmtime"] }
+
+# This dependency is necessary for the WIT-generation macros to work:
+wasmtime = { workspace = true, features = [
+    "component-model",
+    "runtime",
+    "std",
+] }
+
+# These dependencies are necessary for the wasi-nn implementation:
+tracing = { workspace = true }
+thiserror = { workspace = true }
+
+ort = { version = "2.0.0-rc.10", default-features = false, features = [
+    "copy-dylibs",
+], optional = true }
+tch = { version = "0.17.0", default-features = false, optional = true}
+
+[target.'cfg(target_pointer_width = "64")'.dependencies]
+openvino = { version = "0.11.0", features = [
+    "runtime-linking",
+], optional = true }
+
+[target.'cfg(windows)'.dependencies.windows]
+version = "0.52"
+features = [
+    "AI_MachineLearning",
+    "Storage_Streams",
+    "Foundation_Collections",
+    # For getting IVectorView<i64> from tensor.dimensions.
+    "implement",
+]
+optional = true
+
+[build-dependencies]
+walkdir = { workspace = true }
+
+[dev-dependencies]
+libtest-mimic = { workspace = true }
+test-programs-artifacts = { workspace = true }
+wasmtime-wasi = { workspace = true, features = ["p1"] }
+wasmtime = { workspace = true, features = ["cranelift"] }
+tracing-subscriber = { workspace = true }
+
+[features]
+default = ["openvino", "winml"]
+# OpenVINO is available on all platforms; it requires OpenVINO to be installed.
+openvino = ["dep:openvino"]
+# ONNX is available on all platforms.
+onnx = ["dep:ort"]
+# Use prebuilt ONNX Runtime binaries from ort.
+onnx-download = ["onnx", "ort/download-binaries"]
+# CUDA execution provider for NVIDIA GPU support (requires CUDA toolkit)
+onnx-cuda = ["onnx", "ort/cuda"]
+# Enable tracing for ONNX Runtime
+ort-tracing = ["onnx", "ort/tracing"]
+# WinML is only available on Windows 10 1809 and later.
+winml = ["dep:windows"]
+# PyTorch is available on all platforms; requires Libtorch to be installed
+pytorch = ["dep:tch"]
+
+[[test]]
+name = "test-programs"
+harness = false

@@ -1,0 +1,106 @@
+//  Copyright 2024 RustFS Team
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+
+use crate::admin::{auth::authorize_admin_request, router::Operation};
+use http::StatusCode;
+use matchit::Params;
+use rustfs_policy::policy::action::{Action, AdminAction};
+use s3s::{Body, S3Request, S3Response, S3Result, s3_error};
+use tracing::info;
+
+/// The pre-check keeps these endpoints' historical `AccessDenied` missing-credentials
+/// response; the shared gate reports `InvalidRequest` "get cred failed".
+pub(super) async fn authorize_profile_request(req: &S3Request<Body>) -> S3Result<()> {
+    if req.credentials.is_none() {
+        return Err(s3_error!(AccessDenied, "Signature is required"));
+    }
+
+    authorize_admin_request(req, vec![Action::AdminAction(AdminAction::ProfilingAdminAction)]).await?;
+    Ok(())
+}
+
+pub(super) fn profile_not_implemented_response(message: String) -> S3Response<(StatusCode, Body)> {
+    S3Response::new((StatusCode::NOT_IMPLEMENTED, Body::from(message)))
+}
+
+pub struct TriggerProfileCPU {}
+#[async_trait::async_trait]
+impl Operation for TriggerProfileCPU {
+    async fn call(&self, req: S3Request<Body>, _params: Params<'_, '_>) -> S3Result<S3Response<(StatusCode, Body)>> {
+        authorize_profile_request(&req).await?;
+        info!("Triggering CPU profile dump via S3 request...");
+
+        crate::profiling::log_cpu_pprof_dump_skipped();
+        Ok(profile_not_implemented_response(crate::profiling::local_cpu_pprof_unsupported_message()))
+    }
+}
+
+pub struct TriggerProfileMemory {}
+#[async_trait::async_trait]
+impl Operation for TriggerProfileMemory {
+    async fn call(&self, req: S3Request<Body>, _params: Params<'_, '_>) -> S3Result<S3Response<(StatusCode, Body)>> {
+        authorize_profile_request(&req).await?;
+        info!("Triggering Memory profile dump via S3 request...");
+
+        crate::profiling::log_memory_pprof_dump_skipped();
+        Ok(profile_not_implemented_response(crate::profiling::memory_pprof_unsupported_message()))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{TriggerProfileCPU, TriggerProfileMemory};
+    use crate::admin::router::Operation;
+    use crate::server::{PROFILE_CPU_PATH, PROFILE_MEMORY_PATH};
+    use http::{Extensions, HeaderMap, Uri};
+    use hyper::Method;
+    use matchit::Params;
+    use s3s::{Body, S3ErrorCode, S3Request};
+
+    fn build_profile_request(uri: &'static str) -> S3Request<Body> {
+        S3Request {
+            input: Body::empty(),
+            method: Method::GET,
+            uri: Uri::from_static(uri),
+            headers: HeaderMap::new(),
+            extensions: Extensions::new(),
+            credentials: None,
+            region: None,
+            service: None,
+            trailing_headers: None,
+        }
+    }
+
+    #[tokio::test]
+    async fn trigger_profile_cpu_rejects_missing_credentials() {
+        let result = TriggerProfileCPU {}
+            .call(build_profile_request(PROFILE_CPU_PATH), Params::new())
+            .await;
+        let err = result.expect_err("legacy CPU profile handler must reject anonymous requests");
+
+        assert_eq!(err.code(), &S3ErrorCode::AccessDenied);
+        assert_eq!(err.message(), Some("Signature is required"));
+    }
+
+    #[tokio::test]
+    async fn trigger_profile_memory_rejects_missing_credentials() {
+        let result = TriggerProfileMemory {}
+            .call(build_profile_request(PROFILE_MEMORY_PATH), Params::new())
+            .await;
+        let err = result.expect_err("legacy memory profile handler must reject anonymous requests");
+
+        assert_eq!(err.code(), &S3ErrorCode::AccessDenied);
+        assert_eq!(err.message(), Some("Signature is required"));
+    }
+}

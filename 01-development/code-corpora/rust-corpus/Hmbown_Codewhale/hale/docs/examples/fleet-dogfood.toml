@@ -1,0 +1,60 @@
+# Agent fleet dogfood smoke spec (#3166)
+#
+# This spec exercises the fleet end-to-end: create a run with two local
+# workers, run a workspace-check task and a protocol-review task, verify the
+# ledger records receipts, and confirm the status surfaces work. Each worker is
+# a headless `codewhale exec` run (see docs/AGENT_RUNTIME.md).
+#
+# Automated CI-safe smoke (no external services, no model calls):
+#   cargo test -p codewhale-tui --bins fleet::executor
+# It drives several concurrent exec-style workers (with one injected failure)
+# through the real host adapter and asserts terminal pass/fail outcomes.
+#
+# Manual run (drives real `codewhale exec` workers; needs provider creds):
+#   codewhale fleet run docs/examples/fleet-dogfood.toml --max-workers 2 --once
+#
+# Then check:
+#   codewhale fleet status
+#   codewhale fleet inspect <worker-id-from-status>
+#   codewhale fleet logs <worker-id-from-status>
+#
+# NOTE: this manual run path now drives real `codewhale exec` workers through
+# the FleetExecutor. Use `--once` when you only want to enqueue/lease once and
+# inspect state manually instead of keeping the manager loop attached.
+
+name = "dogfood smoke"
+labels = { milestone = "v0.8.60", class = "smoke" }
+
+[[tasks]]
+id = "cargo-check"
+name = "Workspace check"
+description = "Run `cargo check --workspace` and report any compilation errors."
+objective = "Verify the workspace compiles cleanly with zero errors."
+instructions = "Run `cargo check --workspace` in the repo root. If it compiles cleanly, report success. If there are errors, list each file:line and the error message. Do NOT attempt to fix anything — just report what you found."
+worker = { role = "release-checker", tool_profile = "read-only", tools = ["cargo"], capabilities = ["rust"] }
+workspace = { required_files = ["Cargo.toml"], writable_paths = [".codewhale/fleet"], environment = { required = ["PATH"] } }
+input_files = ["Cargo.toml"]
+context = ["You are running in a fleet smoke test. Be concise. Only report the pass/fail and any specific errors."]
+budget = { max_tokens = 8000, max_tool_calls = 12, max_seconds = 300 }
+expected_artifacts = ["log", "report", "receipt"]
+scorer = { kind = "exit_code" }
+retry_policy = { max_attempts = 2, initial_backoff_seconds = 5, max_backoff_seconds = 30 }
+timeout_seconds = 300
+tags = ["smoke", "check"]
+
+[[tasks]]
+id = "protocol-review"
+name = "Protocol review"
+description = "Review fleet protocol types for security and correctness."
+objective = "Inspect crates/protocol/src/fleet.rs and crates/secrets/src/lib.rs. Report any missing serde defaults, unsafe wire changes, or security-sensitive fields lacking SecretRef."
+instructions = "Read crates/protocol/src/fleet.rs and crates/secrets/src/lib.rs. Check for: (1) new fields without serde(default) or skip_serializing_if, (2) raw secrets in struct fields instead of FleetSecretRef, (3) missing Clone/Debug/PartialEq derives on new types. Write a concise report with file:line references for each finding. If there are no findings, report 'all clear'."
+worker = { role = "reviewer", tool_profile = "read-only", tools = ["rg", "git", "cargo"], capabilities = ["rust"] }
+workspace = { required_files = ["crates/protocol/src/fleet.rs", "crates/secrets/src/lib.rs"], writable_paths = [".codewhale/fleet"], environment = { required = ["PATH"] } }
+input_files = ["crates/protocol/src/fleet.rs", "crates/secrets/src/lib.rs"]
+context = ["You are a fleet protocol reviewer. Be thorough but concise. Reference specific lines."]
+budget = { max_tokens = 10000, max_tool_calls = 16, max_seconds = 600 }
+expected_artifacts = ["log", "report", "receipt"]
+scorer = { kind = "code_whale_verifier_prompt", prompt = "Verify the review includes at least one concrete file:line finding or explicitly says 'all clear'." }
+retry_policy = { max_attempts = 1, initial_backoff_seconds = 10 }
+timeout_seconds = 600
+tags = ["smoke", "review", "protocol"]

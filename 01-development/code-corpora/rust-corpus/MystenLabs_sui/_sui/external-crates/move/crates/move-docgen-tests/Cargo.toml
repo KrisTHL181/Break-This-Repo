@@ -1,0 +1,21 @@
+[package]
+name = "move-docgen-tests"
+version = "0.1.0"
+publish = false
+edition = "2024"
+license = "Apache-2.0"
+
+[dependencies]
+move-docgen.workspace = true
+move-package-alt.workspace = true
+move-package-alt-compilation.workspace = true
+move-command-line-common.workspace = true
+
+tempfile.workspace = true
+
+[dev-dependencies]
+datatest-stable.workspace = true
+
+[[test]]
+name = "testsuite"
+harness = false

@@ -1,0 +1,1398 @@
+//! Types for the `gc` operations.
+
+use crate::generators::gc_ops::limits::GcOpsLimits;
+use crate::generators::gc_ops::ops::GcOp;
+use mutatis::Generate;
+use serde::{Deserialize, Serialize};
+use std::collections::btree_map::Entry;
+use std::collections::{BTreeMap, BTreeSet, HashMap};
+use wasmtime_environ::graphs::{Dfs, DfsEvent, Graph, StronglyConnectedComponents};
+use wasmtime_environ::{EntityRef, entity_impl};
+
+/// Identifies a `(rec ...)` group.
+#[derive(
+    Debug, Copy, Clone, Eq, PartialOrd, PartialEq, Ord, Hash, Default, Serialize, Deserialize,
+)]
+pub struct RecGroupId(pub(crate) u32);
+
+/// Identifies a type within a rec group.
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    Eq,
+    PartialOrd,
+    PartialEq,
+    Ord,
+    Hash,
+    Default,
+    Serialize,
+    Deserialize,
+    mutatis::Mutate,
+)]
+pub struct TypeId(#[mutatis(default_mutate)] pub(crate) u32);
+
+macro_rules! for_each_field_type {
+    ( $mac:ident ) => {
+        $mac! {
+            #[storage(wasm_encoder::StorageType::I8)]
+            #[default_val(wasm_encoder::Instruction::I32Const(0xC1))]
+            I8,
+
+            #[storage(wasm_encoder::StorageType::I16)]
+            #[default_val(wasm_encoder::Instruction::I32Const(0xBEEF))]
+            I16,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::I32))]
+            #[default_val(wasm_encoder::Instruction::I32Const(0xDEAD_BEEF_u32 as i32))]
+            I32,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::I64))]
+            #[default_val(wasm_encoder::Instruction::I64Const(0xCAFE_BABE_DEAD_BEEF_u64 as i64))]
+            I64,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::F32))]
+            #[default_val(wasm_encoder::Instruction::F32Const(f32::from_bits(0x4048_F5C3).into()))]
+            F32,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::F64))]
+            #[default_val(wasm_encoder::Instruction::F64Const(f64::from_bits(0x4009_21FB_5444_2D18).into()))]
+            F64,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::V128))]
+            #[default_val(wasm_encoder::Instruction::V128Const(0xDEAD_BEEF_CAFE_BABE_1234_5678_ABCD_EF00_u128 as i128))]
+            V128,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::EXTERNREF))]
+            #[default_val(wasm_encoder::Instruction::RefNull(wasm_encoder::HeapType::EXTERN))]
+            ExternRef,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::Ref(wasm_encoder::RefType::EQREF)))]
+            #[default_val(wasm_encoder::Instruction::RefNull(wasm_encoder::HeapType::Abstract { shared: false, ty: wasm_encoder::AbstractHeapType::Eq }))]
+            EqRef,
+
+            #[storage(wasm_encoder::StorageType::Val(wasm_encoder::ValType::Ref(wasm_encoder::RefType::I31REF)))]
+            #[default_val(wasm_encoder::Instruction::RefNull(wasm_encoder::HeapType::I31))]
+            I31Ref,
+        }
+    };
+}
+
+macro_rules! define_field_type_enum {
+    ( $( #[storage($storage:expr)] #[default_val($default_val:expr)] $variant:ident, )* ) => {
+        /// The storage type of a struct field.
+        #[derive(
+            Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize, mutatis::Mutate,
+        )]
+        #[allow(missing_docs, reason = "self-describing")]
+        pub enum FieldType {
+            $( $variant, )*
+
+            /// Abstract `(ref null? struct)`.
+            StructRef {
+                #[mutatis(ignore)]
+                nullable: bool,
+            },
+
+            /// Concrete `(ref null? $t)` referencing a defined struct type.
+            Ref {
+                // `nullable` is ignored because support for non-nullable
+                // references isn't implemented yet and so `Types::fixup`
+                // unconditionally forces it to `true`. Mutating it here would
+                // be a waste of time.
+                #[mutatis(ignore)]
+                nullable: bool,
+
+                #[mutatis(default_mutate)]
+                type_id: TypeId,
+            },
+        }
+
+        impl FieldType {
+            /// Convert to a `wasm_encoder::StorageType`.
+            pub fn to_storage_type(
+                self,
+                type_ids_to_index: &BTreeMap<TypeId, u32>,
+            ) -> wasm_encoder::StorageType {
+                use wasm_encoder::{AbstractHeapType, HeapType, RefType, StorageType, ValType};
+                match self {
+                    $( FieldType::$variant => $storage, )*
+                    FieldType::StructRef { nullable } => StorageType::Val(ValType::Ref(RefType {
+                        nullable,
+                        heap_type: HeapType::Abstract {
+                            shared: false,
+                            ty: AbstractHeapType::Struct,
+                        },
+                    })),
+                    FieldType::Ref { nullable, type_id } => {
+                        // Fixup guarantees every concrete reference target is a
+                        // live type that gets a Wasm index, so a miss here is a
+                        // bug in fixup, not a recoverable case. Panic loudly
+                        // rather than silently emitting a `(ref null struct)`,
+                        // which would not validate against this field's
+                        // concrete type.
+                        let &idx = type_ids_to_index.get(&type_id).unwrap_or_else(|| {
+                            unreachable!(
+                                "concrete struct reference to {type_id:?} missing from \
+                                 index map; fixup should keep all reference targets"
+                            )
+                        });
+                        StorageType::Val(ValType::Ref(RefType {
+                            nullable,
+                            heap_type: HeapType::Concrete(idx),
+                        }))
+                    }
+                }
+            }
+
+            /// Returns `true` for packed storage types (i8, i16) that require
+            /// `struct.get_s`/`struct.get_u` instead of plain `struct.get`.
+            pub fn is_packed(self) -> bool {
+                matches!(self, FieldType::I8 | FieldType::I16)
+            }
+
+            /// Emit a default constant for this field type onto the stack
+            pub fn emit_default_const(
+                self,
+                func: &mut wasm_encoder::Function,
+                type_ids_to_index: &BTreeMap<TypeId, u32>,
+            ) {
+                match self {
+                    $( FieldType::$variant => { func.instruction(&$default_val); } )*
+                    FieldType::StructRef { .. } => {
+                        func.instruction(&wasm_encoder::Instruction::RefNull(
+                            wasm_encoder::HeapType::Abstract {
+                                shared: false,
+                                ty: wasm_encoder::AbstractHeapType::Struct,
+                            },
+                        ));
+                    }
+                    FieldType::Ref { type_id, .. } => {
+                        // See `to_storage_type`: a missing index is a fixup bug.
+                        // Emitting `ref.null struct` here would produce a value
+                        // that does not match the field's concrete `(ref null
+                        // $t)` type and yield an invalid module, so panic.
+                        let &idx = type_ids_to_index.get(&type_id).unwrap_or_else(|| {
+                            unreachable!(
+                                "concrete struct reference to {type_id:?} missing from \
+                                 index map; fixup should keep all reference targets"
+                            )
+                        });
+                        func.instruction(&wasm_encoder::Instruction::RefNull(
+                            wasm_encoder::HeapType::Concrete(idx),
+                        ));
+                    }
+                }
+            }
+        }
+    };
+}
+for_each_field_type!(define_field_type_enum);
+
+/// A single field within a struct type.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, mutatis::Mutate)]
+pub struct StructField {
+    /// The storage type of this field.
+    #[mutatis(default_mutate)]
+    pub(crate) field_type: FieldType,
+    /// Whether this field is mutable.
+    #[mutatis(default_mutate)]
+    pub(crate) mutable: bool,
+}
+
+/// A struct type definition.
+#[derive(Clone, Debug, Default, Serialize, Deserialize, mutatis::Mutate)]
+pub struct StructType {
+    /// The fields of this struct type.
+    #[mutatis(default_mutate)]
+    pub(crate) fields: Vec<StructField>,
+}
+
+/// An array type definition: a single element storage type plus mutability.
+#[derive(Clone, Debug, Serialize, Deserialize, mutatis::Mutate)]
+pub struct ArrayType {
+    /// The element storage type of this array type.
+    #[mutatis(default_mutate)]
+    pub(crate) element: StructField,
+}
+
+/// A composite type: either a struct or an array.
+#[derive(Clone, Debug, Serialize, Deserialize, mutatis::Mutate)]
+pub enum CompositeType {
+    /// A struct composite type.
+    Struct(#[mutatis(default_mutate)] StructType),
+    /// An array composite type.
+    Array(#[mutatis(default_mutate)] ArrayType),
+}
+
+impl CompositeType {
+    /// Returns `true` if this is an array composite type.
+    pub(crate) fn is_array(&self) -> bool {
+        matches!(self, CompositeType::Array(_))
+    }
+
+    /// The storage fields of this composite type: all struct fields or the
+    /// single array element.
+    pub(crate) fn fields(&self) -> &[StructField] {
+        match self {
+            CompositeType::Struct(st) => &st.fields,
+            CompositeType::Array(at) => std::slice::from_ref(&at.element),
+        }
+    }
+
+    /// Mutable view of the storage fields.
+    pub(crate) fn fields_mut(&mut self) -> &mut [StructField] {
+        match self {
+            CompositeType::Struct(st) => &mut st.fields,
+            CompositeType::Array(at) => std::slice::from_mut(&mut at.element),
+        }
+    }
+}
+
+/// A sub-type definition (the per-type payload).
+#[derive(Clone, Debug, Serialize, Deserialize, mutatis::Mutate)]
+pub struct SubType {
+    #[mutatis(default_mutate)]
+    pub(crate) is_final: bool,
+    #[mutatis(default_mutate)]
+    pub(crate) supertype: Option<TypeId>,
+    #[mutatis(default_mutate)]
+    pub(crate) composite_type: CompositeType,
+}
+
+/// Supertype graph: edges go from a type to its supertype.
+struct SupertypeGraph<'a> {
+    type_defs: &'a BTreeMap<TypeId, SubType>,
+}
+
+impl Graph<TypeId> for SupertypeGraph<'_> {
+    type NodesIter<'a>
+        = std::iter::Copied<std::collections::btree_map::Keys<'a, TypeId, SubType>>
+    where
+        Self: 'a;
+
+    fn nodes(&self) -> Self::NodesIter<'_> {
+        self.type_defs.keys().copied()
+    }
+
+    type SuccessorsIter<'a>
+        = std::option::IntoIter<TypeId>
+    where
+        Self: 'a;
+
+    fn successors(&self, node: TypeId) -> Self::SuccessorsIter<'_> {
+        self.type_defs
+            .get(&node)
+            .and_then(|def| def.supertype)
+            .into_iter()
+    }
+}
+
+/// Rec-group dependency graph: group A depends on group B when a type
+/// in A has a supertype in B.
+struct RecGroupGraph<'a> {
+    type_defs: &'a BTreeMap<TypeId, SubType>,
+    rec_groups: &'a BTreeMap<RecGroupId, BTreeSet<TypeId>>,
+    type_to_group: &'a BTreeMap<TypeId, RecGroupId>,
+}
+
+impl Graph<RecGroupId> for RecGroupGraph<'_> {
+    type NodesIter<'a>
+        = std::iter::Copied<std::collections::btree_map::Keys<'a, RecGroupId, BTreeSet<TypeId>>>
+    where
+        Self: 'a;
+
+    fn nodes(&self) -> Self::NodesIter<'_> {
+        self.rec_groups.keys().copied()
+    }
+
+    type SuccessorsIter<'a>
+        = std::vec::IntoIter<RecGroupId>
+    where
+        Self: 'a;
+
+    fn successors(&self, group: RecGroupId) -> Self::SuccessorsIter<'_> {
+        let mut deps = BTreeSet::new();
+
+        if let Some(type_ids) = self.rec_groups.get(&group) {
+            for &ty in type_ids {
+                let Some(def) = self.type_defs.get(&ty) else {
+                    continue;
+                };
+
+                // Supertype edge: the supertype's group must encode first.
+                if let Some(super_ty) = def.supertype {
+                    if let Some(&super_group) = self.type_to_group.get(&super_ty) {
+                        if super_group != group {
+                            deps.insert(super_group);
+                        }
+                    }
+                }
+
+                // Field-reference edges: a concrete `(ref null $t)` field (or
+                // array element) means `$t`'s group must encode first (references
+                // *within* a group are always legal and impose no ordering
+                // constraint).
+                for field in def.composite_type.fields() {
+                    if let FieldType::Ref { type_id, .. } = field.field_type {
+                        if let Some(&ref_group) = self.type_to_group.get(&type_id) {
+                            if ref_group != group {
+                                deps.insert(ref_group);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        deps.into_iter().collect::<Vec<_>>().into_iter()
+    }
+}
+
+/// A dense [`EntityRef`] node used to run strongly-connected-component analysis.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct RecGroupNode(u32);
+entity_impl!(RecGroupNode);
+
+/// A densely-indexed view of the rec-group dependency graph, suitable for
+struct DenseRecGroupGraph {
+    adjacency: Vec<Vec<RecGroupNode>>,
+}
+
+impl Graph<RecGroupNode> for DenseRecGroupGraph {
+    type NodesIter<'a>
+        = std::iter::Map<std::ops::Range<u32>, fn(u32) -> RecGroupNode>
+    where
+        Self: 'a;
+
+    fn nodes(&self) -> Self::NodesIter<'_> {
+        let len = u32::try_from(self.adjacency.len()).unwrap();
+        (0..len).map(RecGroupNode as fn(u32) -> RecGroupNode)
+    }
+
+    type SuccessorsIter<'a>
+        = std::iter::Copied<std::slice::Iter<'a, RecGroupNode>>
+    where
+        Self: 'a;
+
+    fn successors(&self, node: RecGroupNode) -> Self::SuccessorsIter<'_> {
+        self.adjacency[node.index()].iter().copied()
+    }
+}
+
+/// All type and rec-group state.
+///
+/// Rec groups own sets of [`TypeId`]s; moving a type between groups is
+/// just a set remove + set insert with no cascading index fixups.
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct Types {
+    /// Map from rec-group id to the set of types it contains.
+    pub(crate) rec_groups: BTreeMap<RecGroupId, BTreeSet<TypeId>>,
+    /// Map from type id to its definition.
+    pub(crate) type_defs: BTreeMap<TypeId, SubType>,
+}
+
+/// The live id at or after `id`, wrapping around, skipping `exclude`.
+fn nearest_live_type_id(
+    live: &BTreeSet<TypeId>,
+    id: TypeId,
+    exclude: Option<TypeId>,
+) -> Option<TypeId> {
+    // Type ids are drawn uniformly from the whole `u32` range (see
+    // `Types::fresh_type_id`), so walking the sorted id ring from an arbitrary
+    // starting point spreads resolutions evenly over the live
+    // types. Additionally, unlike indexing modulo the type count, it is also
+    // stable: adding or removing an unrelated type only changes the ids that
+    // fall in its immediate neighborhood.
+    live.range(id..)
+        .chain(live.range(..id))
+        .copied()
+        .find(|t| Some(*t) != exclude)
+}
+
+impl Types {
+    /// Create empty type state.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Return a fresh [`RecGroupId`] not already in use.
+    pub fn fresh_rec_group_id(&self, rng: &mut mutatis::Rng) -> RecGroupId {
+        for _ in 0..1000 {
+            let id = RecGroupId(rng.gen_u32());
+            if !self.rec_groups.contains_key(&id) {
+                return id;
+            }
+        }
+        panic!("failed to generate a new RecGroupId in 1000 iterations");
+    }
+
+    /// Return a fresh [`TypeId`] not already in use.
+    pub fn fresh_type_id(&self, rng: &mut mutatis::Rng) -> TypeId {
+        for _ in 0..1000 {
+            let id = TypeId(rng.gen_u32());
+            if !self.type_defs.contains_key(&id) {
+                return id;
+            }
+        }
+        panic!("failed to generate a new TypeId in 1000 iterations");
+    }
+
+    /// Insert an empty rec group. Returns `true` if it was newly inserted.
+    pub fn insert_rec_group(&mut self, id: RecGroupId) -> bool {
+        match self.rec_groups.entry(id) {
+            Entry::Vacant(e) => {
+                e.insert(BTreeSet::new());
+                true
+            }
+            Entry::Occupied(_) => false,
+        }
+    }
+
+    /// Insert a type with the given composite type into the given rec group.
+    ///
+    /// The rec group must already exist.
+    pub fn insert_type(
+        &mut self,
+        id: TypeId,
+        group: RecGroupId,
+        is_final: bool,
+        supertype: Option<TypeId>,
+        composite_type: CompositeType,
+    ) {
+        self.rec_groups
+            .get_mut(&group)
+            .expect("rec group must exist")
+            .insert(id);
+        self.type_defs.insert(
+            id,
+            SubType {
+                is_final,
+                supertype,
+                composite_type,
+            },
+        );
+    }
+
+    /// Insert a struct type into the given rec group.
+    ///
+    /// The rec group must already exist.
+    pub fn insert_struct(
+        &mut self,
+        id: TypeId,
+        group: RecGroupId,
+        is_final: bool,
+        supertype: Option<TypeId>,
+        fields: Vec<StructField>,
+    ) {
+        self.insert_type(
+            id,
+            group,
+            is_final,
+            supertype,
+            CompositeType::Struct(StructType { fields }),
+        );
+    }
+
+    /// Remove a type from its rec group and from `type_defs`.
+    pub fn remove_type(&mut self, id: TypeId) {
+        self.type_defs.remove(&id);
+        for members in self.rec_groups.values_mut() {
+            members.remove(&id);
+        }
+    }
+
+    /// Find which rec group a type belongs to, if any.
+    pub fn rec_group_of(&self, id: TypeId) -> Option<RecGroupId> {
+        self.rec_groups
+            .iter()
+            .find(|(_, members)| members.contains(&id))
+            .map(|(gid, _)| *gid)
+    }
+
+    /// Returns true iff `sub` is the same type as, or a subtype of, `sup`.
+    ///
+    /// Walks the supertype chain from `sub` upward looking for `sup`.
+    pub fn is_subtype(&self, mut sub: TypeId, sup: TypeId) -> bool {
+        loop {
+            if sub == sup {
+                return true;
+            }
+
+            let next = match self.type_defs.get(&sub).and_then(|d| d.supertype) {
+                Some(t) => t,
+                None => return false,
+            };
+            sub = next;
+        }
+    }
+
+    /// Return the type encoding order grouped by rec group.
+    ///
+    /// Rec groups are emitted in topological order (dependencies first),
+    /// and within each group members are sorted by the global supertype-
+    /// first topological order.
+    pub(crate) fn encoding_order_grouped(
+        &self,
+        out: &mut Vec<(RecGroupId, Vec<TypeId>)>,
+        type_to_group: &BTreeMap<TypeId, RecGroupId>,
+    ) {
+        let mut type_order = Vec::with_capacity(self.type_defs.len());
+        self.sort_types_topo(&mut type_order);
+
+        let type_position: HashMap<TypeId, usize> = type_order
+            .iter()
+            .enumerate()
+            .map(|(i, &id)| (id, i))
+            .collect();
+
+        let mut group_order = Vec::with_capacity(self.rec_groups.len());
+        self.sort_rec_groups_topo(&mut group_order, type_to_group);
+
+        out.clear();
+        out.reserve(group_order.len());
+        for gid in group_order {
+            if let Some(member_set) = self.rec_groups.get(&gid) {
+                let mut members: Vec<TypeId> = member_set.iter().copied().collect();
+                members.sort_by_key(|tid| type_position[tid]);
+                out.push((gid, members));
+            }
+        }
+    }
+
+    /// Topological sort of types by their supertype (supertype before subtype).
+    pub fn sort_types_topo(&self, out: &mut Vec<TypeId>) {
+        let graph = SupertypeGraph {
+            type_defs: &self.type_defs,
+        };
+
+        let mut dfs = Dfs::new(graph.nodes());
+        let mut seen = BTreeSet::new();
+
+        out.clear();
+        out.reserve(self.type_defs.len());
+
+        while let Some(event) = dfs.next(&graph, |id| seen.contains(&id)) {
+            match event {
+                DfsEvent::Pre(id) => {
+                    seen.insert(id);
+                }
+                DfsEvent::Post(id) => {
+                    out.push(id);
+                }
+                DfsEvent::AfterEdge(_, _) => {}
+            }
+        }
+    }
+
+    /// Topological sort of rec groups: if a type in group G has a
+    /// supertype in group H, then H appears before G in the output.
+    pub fn sort_rec_groups_topo(
+        &self,
+        out: &mut Vec<RecGroupId>,
+        type_to_group: &BTreeMap<TypeId, RecGroupId>,
+    ) {
+        let graph = RecGroupGraph {
+            type_defs: &self.type_defs,
+            rec_groups: &self.rec_groups,
+            type_to_group,
+        };
+
+        let mut dfs = Dfs::new(graph.nodes());
+        let mut seen = BTreeSet::new();
+
+        out.clear();
+        out.reserve(self.rec_groups.len());
+
+        while let Some(event) = dfs.next(&graph, |id| seen.contains(&id)) {
+            match event {
+                DfsEvent::Pre(id) => {
+                    seen.insert(id);
+                }
+                DfsEvent::Post(id) => {
+                    out.push(id);
+                }
+                DfsEvent::AfterEdge(_, _) => {}
+            }
+        }
+    }
+
+    /// Break cycles in the [type -> supertype] graph by dropping some supertype edges.
+    pub fn break_supertype_cycles(&mut self) {
+        let graph = SupertypeGraph {
+            type_defs: &self.type_defs,
+        };
+
+        let mut dfs = Dfs::new(graph.nodes());
+        let mut seen = BTreeSet::new();
+        let mut active = BTreeSet::new();
+        let mut to_clear = BTreeSet::new();
+
+        while let Some(event) = dfs.next(&graph, |id| seen.contains(&id)) {
+            match event {
+                DfsEvent::Pre(id) => {
+                    seen.insert(id);
+                    active.insert(id);
+                }
+                DfsEvent::Post(id) => {
+                    active.remove(&id);
+                }
+                DfsEvent::AfterEdge(from, to) => {
+                    if active.contains(&to) {
+                        to_clear.insert(from);
+                    }
+                }
+            }
+        }
+
+        for id in to_clear {
+            if let Some(def) = self.type_defs.get_mut(&id) {
+                def.supertype = None;
+            }
+        }
+    }
+
+    /// Build a reverse map from type id to its owning rec group.
+    pub(crate) fn type_to_group_map(&self) -> BTreeMap<TypeId, RecGroupId> {
+        self.rec_groups
+            .iter()
+            .flat_map(|(&gid, members)| members.iter().map(move |&tid| (tid, gid)))
+            .collect()
+    }
+
+    /// Resolve cross-group cycles in the rec-group dependency graph by
+    /// **merging** each strongly-connected component of mutually-dependent rec
+    /// groups into a single rec group.
+    pub fn merge_rec_group_cycles(&mut self, type_to_group: &BTreeMap<TypeId, RecGroupId>) {
+        if self.rec_groups.len() < 2 {
+            return;
+        }
+
+        let groups: Vec<RecGroupId> = self.rec_groups.keys().copied().collect();
+        let group_to_dense: BTreeMap<RecGroupId, u32> = groups
+            .iter()
+            .enumerate()
+            .map(|(i, &g)| (g, u32::try_from(i).unwrap()))
+            .collect();
+
+        let rec_graph = RecGroupGraph {
+            type_defs: &self.type_defs,
+            rec_groups: &self.rec_groups,
+            type_to_group,
+        };
+        let adjacency: Vec<Vec<RecGroupNode>> = groups
+            .iter()
+            .map(|&g| {
+                rec_graph
+                    .successors(g)
+                    .map(|succ| RecGroupNode(group_to_dense[&succ]))
+                    .collect()
+            })
+            .collect();
+
+        let dense = DenseRecGroupGraph { adjacency };
+        let sccs = StronglyConnectedComponents::new(&dense);
+
+        for (_, nodes) in sccs.iter() {
+            if nodes.len() < 2 {
+                continue;
+            }
+            // Fold every group in this component into the first one.
+            let group_ids: Vec<RecGroupId> = nodes.iter().map(|n| groups[n.index()]).collect();
+            let representative = group_ids[0];
+            let mut merged = BTreeSet::new();
+            for gid in &group_ids {
+                if let Some(members) = self.rec_groups.remove(gid) {
+                    merged.extend(members);
+                }
+            }
+            self.rec_groups.insert(representative, merged);
+        }
+    }
+
+    /// Point every supertype edge at a type that may legally be a supertype:
+    /// one that exists, is not final, and has the same composite kind as the
+    /// subtype.
+    ///
+    /// This does not consider cycles; that is left to `break_supertype_cycles`.
+    fn fixup_supertypes(&mut self) {
+        // Only non-final types may be named as a supertype, and only by a
+        // subtype of the same composite kind.
+        let mut structs = BTreeSet::new();
+        let mut arrays = BTreeSet::new();
+        for (id, def) in self.type_defs.iter() {
+            if def.is_final {
+                continue;
+            }
+            if def.composite_type.is_array() {
+                arrays.insert(*id);
+            } else {
+                structs.insert(*id);
+            }
+        }
+
+        let ids: Vec<TypeId> = self.type_defs.keys().copied().collect();
+        for tid in ids {
+            let def = &self.type_defs[&tid];
+            let Some(supertype) = def.supertype else {
+                continue;
+            };
+            let candidates = if def.composite_type.is_array() {
+                &arrays
+            } else {
+                &structs
+            };
+            // A type cannot be its own supertype.
+            let resolved = if candidates.contains(&supertype) && supertype != tid {
+                Some(supertype)
+            } else {
+                nearest_live_type_id(candidates, supertype, Some(tid))
+            };
+            self.type_defs.get_mut(&tid).unwrap().supertype = resolved;
+        }
+    }
+
+    /// Fix up the types to ensure they are within the limits.
+    pub fn fixup(
+        &mut self,
+        limits: &GcOpsLimits,
+        encoding_order_grouped: &mut Vec<(RecGroupId, Vec<TypeId>)>,
+    ) {
+        let max_rec_groups = usize::try_from(limits.max_rec_groups).unwrap();
+        let max_types = usize::try_from(limits.max_types).unwrap();
+
+        // 1. Trim excess types.
+        while self.type_defs.len() > max_types {
+            if let Some((tid, _)) = self.type_defs.pop_last() {
+                for members in self.rec_groups.values_mut() {
+                    members.remove(&tid);
+                }
+            }
+        }
+
+        // 2. Drop dangling references and deduplicate across groups.
+        let mut seen = BTreeSet::new();
+        for members in self.rec_groups.values_mut() {
+            members.retain(|tid| self.type_defs.contains_key(tid) && seen.insert(*tid));
+        }
+
+        // 3. Trim excess rec groups.
+        while self.rec_groups.len() > max_rec_groups {
+            self.rec_groups.pop_last();
+        }
+
+        // 4. Find all orphans (from trimmed groups or never in any group).
+        let housed: BTreeSet<TypeId> = self
+            .rec_groups
+            .values()
+            .flat_map(|m| m.iter().copied())
+            .collect();
+        let orphans: Vec<TypeId> = self
+            .type_defs
+            .keys()
+            .filter(|tid| !housed.contains(tid))
+            .copied()
+            .collect();
+
+        // 5. Adopt orphans or drop them.
+        if let Some(first_members) = self.rec_groups.values_mut().next() {
+            first_members.extend(orphans);
+        } else {
+            for tid in &orphans {
+                self.type_defs.remove(tid);
+            }
+        }
+
+        // 6. Repair supertype edges.
+        self.fixup_supertypes();
+
+        // 7. Trim struct fields to max_fields limit (arrays always have exactly
+        //    one element).
+        let max_fields = usize::try_from(limits.max_fields).unwrap();
+        for def in self.type_defs.values_mut() {
+            if let CompositeType::Struct(ref mut st) = def.composite_type {
+                st.fields.truncate(max_fields);
+            }
+        }
+
+        // 8. Normalize reference fields (struct fields and array elements alike).
+        let valid_type_ids: BTreeSet<TypeId> = self.type_defs.keys().copied().collect();
+        for def in self.type_defs.values_mut() {
+            for field in def.composite_type.fields_mut() {
+                match &mut field.field_type {
+                    FieldType::StructRef { nullable } => *nullable = true,
+                    FieldType::Ref { nullable, type_id } => {
+                        if !valid_type_ids.contains(type_id) {
+                            if let Some(live) =
+                                nearest_live_type_id(&valid_type_ids, *type_id, None)
+                            {
+                                *type_id = live;
+                            }
+                        }
+                        if valid_type_ids.contains(type_id) {
+                            *nullable = true;
+                        } else {
+                            // There are no types at all to point at.
+                            field.field_type = FieldType::StructRef { nullable: true };
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        // 9. Break supertype cycles and merge rec-group reference cycles, so
+        //     the type graph is well-founded before we encode it.
+        self.break_supertype_cycles();
+        let type_to_group = self.type_to_group_map();
+        self.merge_rec_group_cycles(&type_to_group);
+        // Merging changes group membership, so recompute the reverse map for
+        // the encoding-order computation below.
+        let type_to_group = self.type_to_group_map();
+
+        // 10. Ensure subtype fields are prefix-compatible with supertype fields.
+        //     Process in topological order (supertype before subtype).
+        let mut topo_order = Vec::new();
+        self.sort_types_topo(&mut topo_order);
+        for tid in &topo_order {
+            let Some(def) = self.type_defs.get(tid) else {
+                continue;
+            };
+            let Some(super_id) = def.supertype else {
+                continue;
+            };
+            let Some(super_def) = self.type_defs.get(&super_id) else {
+                continue;
+            };
+            // Step 6 guarantees the subtype and supertype share a composite
+            // kind. so match on the supertype and repair the subtype to match.
+            match &super_def.composite_type {
+                CompositeType::Struct(super_st) => {
+                    let super_fields = super_st.fields.clone();
+                    let def = self.type_defs.get_mut(tid).unwrap();
+                    let CompositeType::Struct(ref mut sub_st) = def.composite_type else {
+                        continue;
+                    };
+                    // Extend subtype fields if shorter than supertype.
+                    while sub_st.fields.len() < super_fields.len() {
+                        sub_st
+                            .fields
+                            .push(super_fields[sub_st.fields.len()].clone());
+                    }
+                    // Overwrite prefix to match supertype fields exactly.
+                    for (i, sf) in super_fields.iter().enumerate() {
+                        sub_st.fields[i] = sf.clone();
+                    }
+                }
+                CompositeType::Array(super_at) => {
+                    // Force the element to match exactly. This satisfies both the
+                    // covariant (immutable) and invariant (mutable) subtyping rules.
+                    let super_elem = super_at.element.clone();
+                    let def = self.type_defs.get_mut(tid).unwrap();
+                    let CompositeType::Array(ref mut sub_at) = def.composite_type else {
+                        continue;
+                    };
+                    sub_at.element = super_elem;
+                }
+            }
+        }
+
+        debug_assert!(self.is_well_formed(limits));
+
+        // 11. Compute encoding order (reuses type_to_group from step 9).
+        self.encoding_order_grouped(encoding_order_grouped, &type_to_group);
+    }
+
+    /// Check if the types are well-formed and within configured limits, i.e.
+    /// rec/type counts are within limits,
+    /// every type belongs to exactly one rec group,
+    /// and every rec group member must exist in type_defs.
+    fn is_well_formed(&self, limits: &GcOpsLimits) -> bool {
+        if self.rec_groups.len() > usize::try_from(limits.max_rec_groups).unwrap() {
+            log::debug!("[-] Failed: rec_groups.len() > max_rec_groups");
+            return false;
+        }
+        if self.type_defs.len() > usize::try_from(limits.max_types).unwrap() {
+            log::debug!("[-] Failed: type_defs.len() > max_types");
+            return false;
+        }
+        let mut all = BTreeSet::new();
+        for members in self.rec_groups.values() {
+            for tid in members {
+                if !self.type_defs.contains_key(tid) {
+                    log::debug!("[-] Failed: type_defs.contains_key(tid) is false");
+                    return false;
+                }
+                if !all.insert(*tid) {
+                    log::debug!("[-] Failed: all.insert(tid) is false");
+                    return false;
+                }
+            }
+        }
+        if !self.type_defs.keys().all(|tid| all.contains(tid)) {
+            log::debug!("[-] Failed: type_defs.keys().all(|tid| all.contains(tid)) is false");
+            return false;
+        }
+        // Every supertype must exist and must not be final.
+        let max_fields = usize::try_from(limits.max_fields).unwrap();
+        for (&tid, def) in &self.type_defs {
+            let fields = def.composite_type.fields();
+
+            // Check struct field count limit (arrays always have one element).
+            if !def.composite_type.is_array() && fields.len() > max_fields {
+                log::debug!(
+                    "[-] Failed: type {tid:?} has {} fields > max_fields {max_fields}",
+                    fields.len()
+                );
+                return false;
+            }
+
+            // Reference fields must be nullable (non-nullable references are
+            // deferred), and concrete references must target an existing type.
+            for field in fields {
+                match field.field_type {
+                    FieldType::StructRef { nullable } | FieldType::Ref { nullable, .. }
+                        if !nullable =>
+                    {
+                        log::debug!("[-] Failed: type {tid:?} has a non-nullable reference field");
+                        return false;
+                    }
+                    FieldType::Ref { type_id, .. } if !self.type_defs.contains_key(&type_id) => {
+                        log::debug!("[-] Failed: type {tid:?} references missing type {type_id:?}");
+                        return false;
+                    }
+                    _ => {}
+                }
+            }
+
+            if let Some(super_id) = def.supertype {
+                match self.type_defs.get(&super_id) {
+                    None => {
+                        log::debug!(
+                            "[-] Failed: supertype {super_id:?} missing for subtype {tid:?}"
+                        );
+                        return false;
+                    }
+                    Some(super_def) if super_def.is_final => {
+                        log::debug!("[-] Failed: subtype {tid:?} has final supertype {super_id:?}");
+                        return false;
+                    }
+                    Some(super_def)
+                        if super_def.composite_type.is_array() != def.composite_type.is_array() =>
+                    {
+                        log::debug!(
+                            "[-] Failed: subtype {tid:?} and supertype {super_id:?} have different composite kinds"
+                        );
+                        return false;
+                    }
+                    Some(super_def) => {
+                        // Subtype fields must be prefix-compatible with supertype
+                        // (for arrays, the single element must match exactly).
+                        let super_fields = super_def.composite_type.fields();
+                        if fields.len() < super_fields.len() {
+                            log::debug!(
+                                "[-] Failed: subtype {tid:?} has fewer fields than supertype {super_id:?}"
+                            );
+                            return false;
+                        }
+                        for (i, sf) in super_fields.iter().enumerate() {
+                            if fields[i] != *sf {
+                                log::debug!(
+                                    "[-] Failed: subtype {tid:?} field {i} differs from supertype {super_id:?}"
+                                );
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        true
+    }
+}
+
+/// Tracks the required operand type on the abstract value stack.
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum StackType {
+    /// `externref`.
+    ExternRef,
+    /// `eqref`.
+    Eq,
+    /// `i31ref`.
+    I31,
+    /// `(ref $*)` — optionally with a concrete type index.
+    Struct(Option<u32>),
+    /// `(ref array)` or `(ref $t)` — optionally with a concrete type index.
+    Array(Option<u32>),
+}
+
+impl StackType {
+    /// Ensure the top of `stack` satisfies `req`, emitting fixup ops as needed.
+    pub fn fixup(
+        req: Option<StackType>,
+        stack: &mut Vec<StackType>,
+        out: &mut Vec<GcOp>,
+        num_types: u32,
+        types: &Types,
+        encoding_order: &[TypeId],
+    ) {
+        log::trace!(
+            "[StackType::fixup] enter req={req:?} num_types={num_types} stack_len={} stack={stack:?}",
+            stack.len()
+        );
+        let mut result_types = Vec::new();
+        match req {
+            None => {
+                if stack.is_empty() {
+                    log::trace!("[StackType::fixup] None: empty stack -> emit NullExtern");
+                    Self::emit(GcOp::NullExtern, stack, out, num_types, &mut result_types);
+                }
+                let popped = stack.pop();
+                log::trace!("[StackType::fixup] None: pop -> {popped:?} stack={stack:?}");
+            }
+            Some(Self::ExternRef) => match stack.last() {
+                Some(Self::ExternRef) => {
+                    log::trace!("[StackType::fixup] ExternRef: top ok -> pop");
+                    stack.pop();
+                }
+                other => {
+                    log::trace!(
+                        "[StackType::fixup] ExternRef: mismatch top={other:?} -> emit NullExtern+pop"
+                    );
+                    Self::emit(GcOp::NullExtern, stack, out, num_types, &mut result_types);
+                    let popped = stack.pop();
+                    log::trace!(
+                        "[StackType::fixup] ExternRef: after emit pop -> {popped:?} stack={stack:?}"
+                    );
+                }
+            },
+            Some(Self::Eq) => match stack.last() {
+                // struct, array, and i31 are all subtypes of eq, so any of them
+                // on the stack satisfies an eqref requirement.
+                Some(Self::Eq) | Some(Self::Struct(_)) | Some(Self::Array(_)) | Some(Self::I31) => {
+                    log::trace!("[StackType::fixup] Eq: top ok -> pop");
+                    stack.pop();
+                }
+                other => {
+                    log::trace!("[StackType::fixup] Eq: mismatch top={other:?} -> emit NullEq+pop");
+                    Self::emit(GcOp::NullEq, stack, out, num_types, &mut result_types);
+                    let popped = stack.pop();
+                    log::trace!(
+                        "[StackType::fixup] Eq: after emit pop -> {popped:?} stack={stack:?}"
+                    );
+                }
+            },
+            Some(Self::I31) => match stack.last() {
+                Some(Self::I31) => {
+                    log::trace!("[StackType::fixup] I31: top ok -> pop");
+                    stack.pop();
+                }
+                other => {
+                    log::trace!(
+                        "[StackType::fixup] I31: mismatch top={other:?} -> emit RefI31+pop"
+                    );
+                    Self::emit(
+                        GcOp::RefI31 { value: 0 },
+                        stack,
+                        out,
+                        num_types,
+                        &mut result_types,
+                    );
+                    let popped = stack.pop();
+                    log::trace!(
+                        "[StackType::fixup] I31: after emit pop -> {popped:?} stack={stack:?}"
+                    );
+                }
+            },
+            Some(Self::Struct(wanted)) => {
+                let ok = match (wanted, stack.last()) {
+                    (Some(wanted), Some(Self::Struct(Some(actual)))) => {
+                        let sub = encoding_order
+                            .get(usize::try_from(*actual).unwrap())
+                            .copied();
+                        let sup = encoding_order
+                            .get(usize::try_from(wanted).unwrap())
+                            .copied();
+                        let st = match (sub, sup) {
+                            (Some(sub), Some(sup)) => types.is_subtype(sub, sup),
+                            _ => false,
+                        };
+                        log::trace!(
+                            "[StackType::fixup] Struct: actual={actual} wanted={wanted} is_subtype={st}"
+                        );
+                        st
+                    }
+                    (None, Some(Self::Struct(_))) => {
+                        log::trace!(
+                            "[StackType::fixup] Struct: abstract wanted, concrete stack -> ok"
+                        );
+                        true
+                    }
+                    _ => {
+                        log::trace!(
+                            "[StackType::fixup] Struct: no match wanted={wanted:?} last={:?} -> ok=false",
+                            stack.last()
+                        );
+                        false
+                    }
+                };
+
+                if ok {
+                    let popped = stack.pop();
+                    log::trace!("[StackType::fixup] Struct: ok -> pop {popped:?} stack={stack:?}");
+                } else {
+                    match wanted {
+                        // When num_types == 0, GcOp::fixup() should have dropped the ops
+                        // that require a concrete type.
+                        // But it keeps the ops that work with abstract types.
+                        // Since our mutator can legally remove all the types,
+                        // StackType::fixup() should insert GcOp::NullStruct()
+                        // to satisfy the undropped ops that work with abstract types.
+                        None => {
+                            log::trace!(
+                                "[StackType::fixup] Struct synthesize NullStruct stack_before={stack:?}"
+                            );
+                            Self::emit(GcOp::NullStruct, stack, out, num_types, &mut result_types);
+                            let popped = stack.pop();
+                            log::trace!(
+                                "[StackType::fixup] NullStruct: after emit pop -> {popped:?} stack={stack:?}"
+                            );
+                        }
+                        Some(t) => {
+                            debug_assert_ne!(
+                                num_types, 0,
+                                "typed struct requirement with num_types == 0; op should have been removed"
+                            );
+                            let t = Self::clamp(t, num_types);
+
+                            log::trace!(
+                                "[StackType::fixup] Struct synthesize StructNew type_index={t} stack_before={stack:?}"
+                            );
+                            Self::emit(
+                                GcOp::StructNew { type_index: t },
+                                stack,
+                                out,
+                                num_types,
+                                &mut result_types,
+                            );
+                            log::trace!(
+                                "[StackType::fixup] StructNew: after emit stack={stack:?} (next: pop operand)"
+                            );
+                            let popped = stack.pop();
+                            log::trace!(
+                                "[StackType::fixup] StructNew: pop -> {popped:?} stack={stack:?}"
+                            );
+                        }
+                    }
+                }
+            }
+            Some(Self::Array(wanted)) => {
+                let ok = match (wanted, stack.last()) {
+                    (Some(wanted), Some(Self::Array(Some(actual)))) => {
+                        let sub = encoding_order
+                            .get(usize::try_from(*actual).unwrap())
+                            .copied();
+                        let sup = encoding_order
+                            .get(usize::try_from(wanted).unwrap())
+                            .copied();
+                        match (sub, sup) {
+                            (Some(sub), Some(sup)) => types.is_subtype(sub, sup),
+                            _ => false,
+                        }
+                    }
+                    // Abstract arrayref requirement accepts any array on the stack.
+                    (None, Some(Self::Array(_))) => true,
+                    _ => false,
+                };
+
+                if ok {
+                    stack.pop();
+                } else {
+                    match wanted {
+                        // Abstract requirement: a null arrayref satisfies it.
+                        None => {
+                            Self::emit(GcOp::NullArray, stack, out, num_types, &mut result_types);
+                            stack.pop();
+                        }
+                        // Concrete requirement: synthesize a fresh array of that type.
+                        Some(t) => {
+                            debug_assert_ne!(
+                                num_types, 0,
+                                "typed array requirement with num_types == 0; op should have been removed"
+                            );
+                            let t = Self::clamp(t, num_types);
+                            Self::emit(
+                                GcOp::ArrayNewDefault { type_index: t },
+                                stack,
+                                out,
+                                num_types,
+                                &mut result_types,
+                            );
+                            stack.pop();
+                        }
+                    }
+                }
+            }
+        }
+        log::trace!(
+            "[StackType::fixup] leave stack_len={} stack={stack:?} out_len={}",
+            stack.len(),
+            out.len()
+        );
+    }
+
+    /// Emit an opcode and update the stack.
+    pub(crate) fn emit(
+        op: GcOp,
+        stack: &mut Vec<Self>,
+        out: &mut Vec<GcOp>,
+        num_types: u32,
+        result_types: &mut Vec<Self>,
+    ) {
+        log::trace!(
+            "[StackType::emit] op={op:?} stack_len_before={} num_types={num_types}",
+            stack.len()
+        );
+        out.push(op);
+        result_types.clear();
+        op.result_types(result_types);
+        for ty in result_types {
+            let clamped_ty = match ty {
+                Self::Struct(Some(t)) => Self::Struct(Some(Self::clamp(*t, num_types))),
+                Self::Array(Some(t)) => Self::Array(Some(Self::clamp(*t, num_types))),
+                other => *other,
+            };
+            log::trace!("[StackType::emit] push result {clamped_ty:?}");
+            stack.push(clamped_ty);
+        }
+        log::trace!("[StackType::emit] leave stack={stack:?}");
+    }
+
+    /// Fixup for cast ops: ensures the sub/super type relationship actually
+    /// holds. Always repairs the op rather than dropping it.
+    ///
+    /// For upcast the operand (sub) is on the stack, so we keep sub fixed
+    /// and adjust super. For downcast the operand (super) is on the stack,
+    /// so we keep super fixed and adjust sub.
+    pub fn fixup_cast(op: GcOp, types: &Types, encoding_order: &[TypeId]) -> GcOp {
+        match op {
+            GcOp::RefCastUpward {
+                sub_type_index,
+                super_type_index,
+            } => {
+                // Operand is sub (on the stack) — keep it, fix super.
+                let super_type_index = Self::find_supertype_of(
+                    sub_type_index,
+                    super_type_index,
+                    types,
+                    encoding_order,
+                );
+                GcOp::RefCastUpward {
+                    sub_type_index,
+                    super_type_index,
+                }
+            }
+            GcOp::RefCastDownward {
+                sub_type_index,
+                super_type_index,
+            } => {
+                // Operand is super (on the stack) — keep it, fix sub.
+                let sub_type_index =
+                    Self::find_subtype_of(super_type_index, sub_type_index, types, encoding_order);
+                GcOp::RefCastDownward {
+                    sub_type_index,
+                    super_type_index,
+                }
+            }
+            // Array casts use the same index repair (subtyping is kind-agnostic).
+            GcOp::ArrayRefCastUpward {
+                sub_type_index,
+                super_type_index,
+            } => {
+                let super_type_index = Self::find_supertype_of(
+                    sub_type_index,
+                    super_type_index,
+                    types,
+                    encoding_order,
+                );
+                GcOp::ArrayRefCastUpward {
+                    sub_type_index,
+                    super_type_index,
+                }
+            }
+            GcOp::ArrayRefCastDownward {
+                sub_type_index,
+                super_type_index,
+            } => {
+                let sub_type_index =
+                    Self::find_subtype_of(super_type_index, sub_type_index, types, encoding_order);
+                GcOp::ArrayRefCastDownward {
+                    sub_type_index,
+                    super_type_index,
+                }
+            }
+            other => other,
+        }
+    }
+
+    /// Given a sub type on the stack, find a valid super_type_index such
+    /// that sub <: super. Keeps sub fixed. Falls back to self-cast.
+    fn find_supertype_of(
+        sub_type_index: u32,
+        super_type_index: u32,
+        types: &Types,
+        encoding_order: &[TypeId],
+    ) -> u32 {
+        if let (Some(&sub_tid), Some(&super_tid)) = (
+            encoding_order.get(usize::try_from(sub_type_index).unwrap()),
+            encoding_order.get(usize::try_from(super_type_index).unwrap()),
+        ) {
+            // Already valid.
+            if types.is_subtype(sub_tid, super_tid) {
+                return super_type_index;
+            }
+            // Try sub's direct supertype.
+            if let Some(actual_super) = types.type_defs.get(&sub_tid).and_then(|d| d.supertype) {
+                if let Some(idx) = encoding_order.iter().position(|&t| t == actual_super) {
+                    return u32::try_from(idx).unwrap();
+                }
+            }
+        }
+        // Self-cast.
+        sub_type_index
+    }
+
+    /// Given a super type on the stack, find a valid sub_type_index such
+    /// that sub <: super. Keeps super fixed. Falls back to self-cast.
+    fn find_subtype_of(
+        super_type_index: u32,
+        sub_type_index: u32,
+        types: &Types,
+        encoding_order: &[TypeId],
+    ) -> u32 {
+        if let (Some(&sub_tid), Some(&super_tid)) = (
+            encoding_order.get(usize::try_from(sub_type_index).unwrap()),
+            encoding_order.get(usize::try_from(super_type_index).unwrap()),
+        ) {
+            // Already valid.
+            if types.is_subtype(sub_tid, super_tid) {
+                return sub_type_index;
+            }
+            // Try to find any direct subtype of super.
+            for (idx, tid) in encoding_order.iter().enumerate() {
+                if let Some(def) = types.type_defs.get(tid) {
+                    if def.supertype == Some(super_tid) {
+                        return u32::try_from(idx).unwrap();
+                    }
+                }
+            }
+        }
+        // Self-cast.
+        super_type_index
+    }
+
+    /// Clamp a type index to the number of types.
+    fn clamp(t: u32, n: u32) -> u32 {
+        if n == 0 { 0 } else { t % n }
+    }
+}

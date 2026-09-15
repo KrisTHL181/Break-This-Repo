@@ -1,0 +1,42 @@
+[package]
+name = "slatedb-dst"
+description = "A deterministic simulation testing (DST) tool for SlateDB."
+readme = "README.md"
+version.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+homepage.workspace = true
+# Skipping publication for this test crate for now. We can publish if users want.
+publish = false
+
+[lib]
+# Disable `libtest` harness because it fights with Criterion's `--output-format bencher`
+# See https://bheisler.github.io/criterion.rs/book/faq.html
+bench = false
+
+[dependencies]
+async-trait = { workspace = true }
+bytes = { workspace = true }
+chrono = { workspace = true }
+ctor = { workspace = true }
+fail-parallel = { workspace = true }
+futures = { workspace = true }
+log = { workspace = true }
+object_store = { workspace = true }
+parking_lot = { workspace = true }
+rand = { workspace = true }
+slatedb = { workspace = true, features = ["all"] }
+slatedb-common = { workspace = true, features = ["test-util"] }
+tempfile = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt", "test-util"] }
+tokio-util = { workspace = true, default-features = false, features = ["rt"] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["fmt", "env-filter"] }
+walkdir = { workspace = true }
+
+[dev-dependencies]
+rstest = { workspace = true }
+
+[lints]
+workspace = true

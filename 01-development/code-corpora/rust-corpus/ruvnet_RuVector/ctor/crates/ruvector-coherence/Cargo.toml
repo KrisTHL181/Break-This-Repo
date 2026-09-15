@@ -1,0 +1,39 @@
+[package]
+name = "ruvector-coherence"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Coherence measurement proxies for comparing attention mechanisms"
+
+[dependencies]
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+
+[features]
+default = []
+spectral = []  # Spectral coherence scoring for graph index health
+
+[lints.rust]
+unexpected_cfgs = { level = "allow", priority = -1 }
+unused_imports = "allow"
+dead_code = "allow"
+unused_variables = "allow"
+
+[lints.clippy]
+pedantic = { level = "allow", priority = -2 }
+all = { level = "warn", priority = -1 }
+correctness = { level = "deny", priority = 0 }
+suspicious = { level = "deny", priority = 0 }
+needless_range_loop = "allow"
+manual_div_ceil = "allow"
+manual_is_multiple_of = "allow"
+manual_range_contains = "allow"
+redundant_field_names = "allow"
+len_zero = "allow"
+get_first = "allow"
+useless_vec = "allow"
+manual_clamp = "allow"
+ptr_arg = "allow"

@@ -1,0 +1,362 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use crate::storage_api::startup::lifecycle::ECStore;
+use crate::{
+    connect::runtime::shutdown_connect_runtimes,
+    server::{
+        SHUTDOWN_TIMEOUT, ServiceStateManager, ShutdownHandle, start_persisted_event_notifier_reconciler, wait_for_shutdown,
+    },
+    startup_iam::{IamBootstrapDisposition, publish_ready_for_iam_bootstrap},
+    startup_runtime_sources,
+    startup_services::StartupServiceRuntime,
+    startup_shutdown::run_startup_shutdown_sequence,
+};
+use rustfs_common::GlobalReadiness;
+use rustfs_object_capacity::capacity_manager::CapacityBackgroundTasks;
+use rustfs_scanner::init_scanner_with_recovery;
+use std::{
+    io::{Error, Result},
+    net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
+};
+use tokio_util::sync::CancellationToken;
+use tracing::info;
+
+const LOG_COMPONENT_MAIN: &str = "main";
+const LOG_COMPONENT_EMBEDDED: &str = "embedded";
+const LOG_SUBSYSTEM_STARTUP: &str = "startup";
+const LOG_SUBSYSTEM_EMBEDDED: &str = "embedded";
+const EVENT_SERVER_READY: &str = "server_ready";
+const EVENT_SERVER_SHUTDOWN_STATE: &str = "server_shutdown_state";
+const EVENT_EMBEDDED_SERVER_STATE: &str = "embedded_server_state";
+
+/// Guards against a second embedded server startup racing the *irreversible*
+/// stages of the first one. backlog#1052 S1–S3 made the storage layer, the
+/// request path, and the app subsystems either per-instance or tolerant of
+/// double-init, so two embedded servers can coexist in the same process (the
+/// legacy hard rejection is gone). The guard now only serializes access to
+/// the shared bootstrap-context write-once cells during startup: the first
+/// startup runs, and any startup that overlaps with it before it hands off
+/// the bootstrap context is rejected — a narrow window that only matters if
+/// two `RustFSServerBuilder::build()` futures race, which no supported API
+/// path does today.
+static EMBEDDED_SERVER_STARTED: AtomicBool = AtomicBool::new(false);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct EmbeddedStartupAlreadyStarted;
+
+pub(crate) struct EmbeddedStartupGuard {
+    global_init_started: bool,
+}
+
+impl EmbeddedStartupGuard {
+    pub(crate) fn new() -> Self {
+        Self {
+            global_init_started: false,
+        }
+    }
+
+    pub(crate) fn mark_global_init_started(&mut self) -> std::result::Result<(), EmbeddedStartupAlreadyStarted> {
+        mark_embedded_global_init_started(&EMBEDDED_SERVER_STARTED, &mut self.global_init_started)
+    }
+}
+
+impl Default for EmbeddedStartupGuard {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+fn mark_embedded_global_init_started(
+    server_started: &AtomicBool,
+    global_init_started: &mut bool,
+) -> std::result::Result<(), EmbeddedStartupAlreadyStarted> {
+    if *global_init_started {
+        return Ok(());
+    }
+
+    server_started
+        .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
+        .map_err(|_| EmbeddedStartupAlreadyStarted)?;
+    *global_init_started = true;
+    Ok(())
+}
+
+/// Release the embedded startup guard so a subsequent startup in the same
+/// process can proceed (backlog#1052 S5). The guard only serializes the
+/// bootstrap-context write window; once startup has handed off, another
+/// server can begin.
+pub(crate) fn release_embedded_startup_guard() {
+    EMBEDDED_SERVER_STARTED.store(false, Ordering::SeqCst);
+}
+
+pub(crate) struct StartupRuntimeLifecycle {
+    pub(crate) server_address: String,
+    pub(crate) state_manager: Arc<ServiceStateManager>,
+    pub(crate) s3_shutdown_tx: Option<ShutdownHandle>,
+    pub(crate) console_shutdown_tx: Option<ShutdownHandle>,
+    pub(crate) capacity_tasks: Option<CapacityBackgroundTasks>,
+    pub(crate) service_runtime: StartupServiceRuntime,
+    pub(crate) store: Arc<ECStore>,
+    pub(crate) shutdown_token: CancellationToken,
+    pub(crate) readiness: Arc<GlobalReadiness>,
+}
+
+pub(crate) async fn run_startup_runtime_lifecycle(lifecycle: StartupRuntimeLifecycle) -> Result<()> {
+    let StartupRuntimeLifecycle {
+        server_address,
+        state_manager,
+        s3_shutdown_tx,
+        console_shutdown_tx,
+        capacity_tasks,
+        service_runtime,
+        store,
+        shutdown_token,
+        readiness,
+    } = lifecycle;
+    let StartupServiceRuntime {
+        optional_runtimes,
+        heartbeat,
+        inventory,
+        local_trace_capture,
+        iam_bootstrap,
+        enable_scanner,
+    } = service_runtime;
+
+    info!(
+        target: "rustfs::main::run",
+        event = EVENT_SERVER_READY,
+        component = LOG_COMPONENT_MAIN,
+        subsystem = LOG_SUBSYSTEM_STARTUP,
+        version = %crate::version::get_version(),
+        server_address = %server_address,
+        started_at = %jiff::Zoned::now(),
+        iam_bootstrap = ?iam_bootstrap,
+        "RustFS server ready"
+    );
+    publish_ready_for_iam_bootstrap(iam_bootstrap, readiness.as_ref(), Some(state_manager.as_ref())).await?;
+    startup_runtime_sources::publish_init_time_now().await;
+    let event_notifier_reconciler = start_persisted_event_notifier_reconciler(store.clone(), shutdown_token.clone());
+
+    let scanner_cleanup = init_scanner_with_recovery(shutdown_token.clone(), store, enable_scanner).await;
+
+    let shutdown_signal = wait_for_shutdown().await;
+    run_startup_shutdown_sequence(
+        &state_manager,
+        shutdown_signal,
+        s3_shutdown_tx,
+        console_shutdown_tx,
+        optional_runtimes,
+        capacity_tasks,
+        shutdown_token,
+    )
+    .await;
+    shutdown_connect_runtimes(heartbeat, inventory).await;
+    if let Some(runtime) = local_trace_capture {
+        runtime.shutdown().await;
+    }
+    if let Some(cleanup) = scanner_cleanup {
+        let _ = wait_for_scanner_cleanup(cleanup).await;
+    }
+    if let Err(err) = event_notifier_reconciler.await {
+        tracing::warn!(
+            target: "rustfs::main::run",
+            event = "notify_runtime_reconcile",
+            component = LOG_COMPONENT_MAIN,
+            subsystem = LOG_SUBSYSTEM_STARTUP,
+            state = "join_failed",
+            reason = if err.is_cancelled() { "task_cancelled" } else { "task_panicked" },
+            "Persisted notification runtime reconciler task failed to join"
+        );
+    }
+
+    info!(
+        target: "rustfs::main::run",
+        event = EVENT_SERVER_SHUTDOWN_STATE,
+        component = LOG_COMPONENT_MAIN,
+        subsystem = LOG_SUBSYSTEM_STARTUP,
+        state = ?state_manager.current_state(),
+        result = "stopped",
+        "RustFS server stopped"
+    );
+    startup_runtime_sources::shutdown_observability_guard()
+        .map_err(|err| Error::other(format!("shutdown_global_guard: {err}")))?;
+    Ok(())
+}
+
+async fn wait_for_scanner_cleanup(cleanup: tokio::task::JoinHandle<()>) -> bool {
+    // Dropping a JoinHandle detaches rather than aborts the task. Keep an
+    // in-flight reset's guards owned while this runtime remains alive. This
+    // bounded wait does not prove I/O drain at a later runtime/process exit.
+    match tokio::time::timeout(SHUTDOWN_TIMEOUT, cleanup).await {
+        Ok(Ok(())) => true,
+        Ok(Err(error)) => {
+            tracing::warn!(
+                target: "rustfs::main::run",
+                event = EVENT_SERVER_SHUTDOWN_STATE,
+                component = LOG_COMPONENT_MAIN,
+                subsystem = LOG_SUBSYSTEM_STARTUP,
+                state = "scanner_cleanup_join_failed",
+                reason = if error.is_cancelled() { "task_cancelled" } else { "task_panicked" },
+                "Scanner cleanup task failed to join"
+            );
+            false
+        }
+        Err(_) => {
+            tracing::warn!(
+                target: "rustfs::main::run",
+                event = EVENT_SERVER_SHUTDOWN_STATE,
+                component = LOG_COMPONENT_MAIN,
+                subsystem = LOG_SUBSYSTEM_STARTUP,
+                state = "scanner_cleanup_not_joined",
+                reason = "timeout",
+                timeout_secs = SHUTDOWN_TIMEOUT.as_secs(),
+                "Scanner cleanup completion is unconfirmed; task was not aborted"
+            );
+            false
+        }
+    }
+}
+
+pub(crate) async fn publish_embedded_startup_ready(
+    iam_bootstrap: IamBootstrapDisposition,
+    readiness: &GlobalReadiness,
+) -> Result<()> {
+    publish_ready_for_iam_bootstrap(iam_bootstrap, readiness, None).await?;
+    startup_runtime_sources::publish_init_time_now().await;
+    Ok(())
+}
+
+pub(crate) fn embedded_endpoint_address(address: SocketAddr) -> SocketAddr {
+    let ip = match address.ip() {
+        ip @ IpAddr::V4(v4) if !v4.is_unspecified() => ip,
+        IpAddr::V4(_) => IpAddr::V4(Ipv4Addr::LOCALHOST),
+        ip @ IpAddr::V6(v6) if !v6.is_unspecified() => ip,
+        IpAddr::V6(_) => IpAddr::V6(Ipv6Addr::LOCALHOST),
+    };
+
+    SocketAddr::new(ip, address.port())
+}
+
+pub(crate) fn log_embedded_server_ready(endpoint_address: SocketAddr) {
+    info!(
+        target: "rustfs::embedded",
+        component = LOG_COMPONENT_EMBEDDED,
+        subsystem = LOG_SUBSYSTEM_EMBEDDED,
+        event = EVENT_EMBEDDED_SERVER_STATE,
+        state = "ready",
+        "RustFS embedded server ready at http://{}",
+        endpoint_address
+    );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{embedded_endpoint_address, mark_embedded_global_init_started, wait_for_scanner_cleanup};
+    use std::{
+        net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr},
+        sync::atomic::{AtomicBool, Ordering},
+    };
+
+    #[tokio::test]
+    async fn disabled_cleanup_shutdown_joins_a_finished_task() {
+        assert!(wait_for_scanner_cleanup(tokio::spawn(async {})).await);
+    }
+
+    #[tokio::test]
+    async fn disabled_cleanup_shutdown_reports_task_failure() {
+        assert!(!wait_for_scanner_cleanup(tokio::spawn(async { panic!("fixture cleanup failure") })).await);
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn disabled_cleanup_shutdown_timeout_does_not_abort_owned_work() {
+        struct OwnedWork(std::sync::Arc<AtomicBool>);
+        impl Drop for OwnedWork {
+            fn drop(&mut self) {
+                self.0.store(true, Ordering::SeqCst);
+            }
+        }
+        let dropped = std::sync::Arc::new(AtomicBool::new(false));
+        let owned = OwnedWork(dropped.clone());
+        let (started, ready) = tokio::sync::oneshot::channel();
+        let (release, resume) = tokio::sync::oneshot::channel();
+        let (finished, done) = tokio::sync::oneshot::channel();
+        let task = tokio::spawn(async move {
+            let owned = owned;
+            started.send(()).expect("work started");
+            resume.await.expect("fixture releases owned work");
+            drop(owned);
+            finished.send(()).expect("work completed");
+        });
+        ready.await.expect("task must actually be in flight");
+        assert!(!wait_for_scanner_cleanup(task).await, "timeout is not a completed join");
+        assert!(!dropped.load(Ordering::SeqCst), "timeout must not abort the reset's owned guards");
+        release.send(()).expect("detached task remains alive");
+        done.await.expect("owned work should finish after explicit release");
+        assert!(dropped.load(Ordering::SeqCst));
+    }
+
+    #[test]
+    fn embedded_global_init_guard_allows_local_retry_before_mark() {
+        let server_started = AtomicBool::new(false);
+        let mut global_init_started = false;
+
+        mark_embedded_global_init_started(&server_started, &mut global_init_started)
+            .expect("first irreversible startup should mark global init");
+        mark_embedded_global_init_started(&server_started, &mut global_init_started)
+            .expect("repeated mark in same startup should be idempotent");
+
+        assert!(global_init_started);
+        assert!(server_started.load(Ordering::SeqCst));
+    }
+
+    #[test]
+    fn embedded_global_init_guard_rejects_second_startup_after_mark() {
+        let server_started = AtomicBool::new(true);
+        let mut global_init_started = false;
+
+        let result = mark_embedded_global_init_started(&server_started, &mut global_init_started);
+
+        assert!(result.is_err());
+        assert!(!global_init_started);
+    }
+
+    #[test]
+    fn embedded_endpoint_address_rewrites_unspecified_hosts() {
+        assert_eq!(
+            embedded_endpoint_address(SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), 9000)),
+            SocketAddr::new(IpAddr::V4(Ipv4Addr::LOCALHOST), 9000)
+        );
+        assert_eq!(
+            embedded_endpoint_address(SocketAddr::new(IpAddr::V6(Ipv6Addr::UNSPECIFIED), 9001)),
+            SocketAddr::new(IpAddr::V6(Ipv6Addr::LOCALHOST), 9001)
+        );
+    }
+
+    #[test]
+    fn embedded_endpoint_address_preserves_bound_hosts() {
+        assert_eq!(
+            embedded_endpoint_address(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(192, 0, 2, 10)), 9000)),
+            SocketAddr::new(IpAddr::V4(Ipv4Addr::new(192, 0, 2, 10)), 9000)
+        );
+        assert_eq!(
+            embedded_endpoint_address(SocketAddr::new(IpAddr::V6(Ipv6Addr::LOCALHOST), 9001)),
+            SocketAddr::new(IpAddr::V6(Ipv6Addr::LOCALHOST), 9001)
+        );
+    }
+}

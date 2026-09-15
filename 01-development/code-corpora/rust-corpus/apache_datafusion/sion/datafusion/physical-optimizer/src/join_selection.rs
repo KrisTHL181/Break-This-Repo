@@ -1,0 +1,589 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+//! The [`JoinSelection`] rule tries to modify a given plan so that it can
+//! accommodate infinite sources and utilize statistical information (if there
+//! is any) to obtain more performant plans. To achieve the first goal, it
+//! tries to transform a non-runnable query (with the given infinite sources)
+//! into a runnable query by replacing pipeline-breaking join operations with
+//! pipeline-friendly ones. To achieve the second goal, it selects the proper
+//! `PartitionMode` and the build side using the available statistics for hash joins.
+
+use crate::PhysicalOptimizerRule;
+use crate::optimizer::{ConfigOnlyContext, PhysicalOptimizerContext};
+use datafusion_common::Statistics;
+use datafusion_common::config::ConfigOptions;
+use datafusion_common::error::Result;
+use datafusion_common::tree_node::{Transformed, TransformedResult, TreeNode};
+use datafusion_common::{JoinSide, JoinType, internal_err};
+use datafusion_expr_common::sort_properties::SortProperties;
+use datafusion_physical_expr::LexOrdering;
+use datafusion_physical_expr::expressions::Column;
+use datafusion_physical_plan::execution_plan::EmissionType;
+use datafusion_physical_plan::joins::utils::ColumnIndex;
+use datafusion_physical_plan::joins::{
+    CrossJoinExec, HashJoinExec, NestedLoopJoinExec, PartitionMode,
+    StreamJoinPartitionMode, SymmetricHashJoinExec,
+};
+use datafusion_physical_plan::statistics::{StatisticsArgs, StatisticsContext};
+use datafusion_physical_plan::{ExecutionPlan, ExecutionPlanProperties};
+use std::sync::Arc;
+
+/// The [`JoinSelection`] rule tries to modify a given plan so that it can
+/// accommodate infinite sources and optimize joins in the plan according to
+/// available statistical information, if there is any.
+#[derive(Default, Debug)]
+pub struct JoinSelection {}
+
+impl JoinSelection {
+    #[expect(missing_docs)]
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
+/// Get statistics for a plan node, consulting the registry's providers if one
+/// is available.
+fn get_stats(
+    plan: &dyn ExecutionPlan,
+    context: &dyn PhysicalOptimizerContext,
+) -> Result<Arc<Statistics>> {
+    let ctx = match context.statistics_registry() {
+        Some(reg) => StatisticsContext::new_with_registry(reg.clone()),
+        None => StatisticsContext::new(),
+    };
+    ctx.compute(plan, &StatisticsArgs::new())
+}
+
+// TODO: We need some performance test for Right Semi/Right Join swap to Left Semi/Left Join in case that the right side is smaller but not much smaller.
+// TODO: In PrestoSQL, the optimizer flips join sides only if one side is much smaller than the other by more than SIZE_DIFFERENCE_THRESHOLD times, by default is 8 times.
+/// Checks whether join inputs should be swapped using available statistics.
+///
+/// It follows these steps:
+/// 1. If a [`datafusion_physical_plan::operator_statistics::StatisticsRegistry`] is
+///    provided, use it for cross-operator estimates
+///    (e.g., intermediate join outputs that would otherwise have `Absent` statistics).
+/// 2. Compare the in-memory sizes of both sides, and place the smaller side on
+///    the left (build) side.
+/// 3. If in-memory byte sizes are unavailable, fall back to row counts.
+/// 4. Do not reorder the join if neither statistic is available, or if
+///    `datafusion.optimizer.join_reordering` is disabled.
+///
+/// Used configurations
+/// - `optimizer.join_reordering`: allows or forbids statistics-driven join swapping
+pub(crate) fn should_swap_join_order(
+    left: &dyn ExecutionPlan,
+    right: &dyn ExecutionPlan,
+    context: &dyn PhysicalOptimizerContext,
+) -> Result<bool> {
+    if !context.config_options().optimizer.join_reordering {
+        return Ok(false);
+    }
+
+    let left_stats = get_stats(left, context)?;
+    let right_stats = get_stats(right, context)?;
+
+    // First compare total_byte_size, then fall back to num_rows if byte
+    // sizes are unavailable.
+    match (
+        left_stats.total_byte_size.get_value(),
+        right_stats.total_byte_size.get_value(),
+    ) {
+        (Some(l), Some(r)) => Ok(l > r),
+        _ => match (
+            left_stats.num_rows.get_value(),
+            right_stats.num_rows.get_value(),
+        ) {
+            (Some(l), Some(r)) => Ok(l > r),
+            _ => Ok(false),
+        },
+    }
+}
+
+fn supports_collect_by_thresholds(
+    plan: &dyn ExecutionPlan,
+    threshold_byte_size: usize,
+    threshold_num_rows: usize,
+    context: &dyn PhysicalOptimizerContext,
+) -> bool {
+    let Ok(stats) = get_stats(plan, context) else {
+        return false;
+    };
+
+    // Stats use `Precision<T>` to represent stats, where `Absent` means unknown.
+    // `Exact(0)` and `Inexact(0)` are both valid stats, and we should not treat
+    // them as unknown, `Absent` will return None (this is in regards to why
+    // `!=0` is not checked)
+    if let Some(byte_size) = stats.total_byte_size.get_value() {
+        *byte_size < threshold_byte_size
+    } else if let Some(num_rows) = stats.num_rows.get_value() {
+        *num_rows < threshold_num_rows
+    } else {
+        false
+    }
+}
+
+impl PhysicalOptimizerRule for JoinSelection {
+    fn optimize(
+        &self,
+        plan: Arc<dyn ExecutionPlan>,
+        config: &ConfigOptions,
+    ) -> Result<Arc<dyn ExecutionPlan>> {
+        self.optimize_with_context(plan, &ConfigOnlyContext::new(config))
+    }
+
+    fn optimize_with_context(
+        &self,
+        plan: Arc<dyn ExecutionPlan>,
+        context: &dyn PhysicalOptimizerContext,
+    ) -> Result<Arc<dyn ExecutionPlan>> {
+        let subrules: Vec<Box<PipelineFixerSubrule>> = vec![
+            Box::new(hash_join_convert_symmetric_subrule),
+            Box::new(hash_join_swap_subrule),
+        ];
+        let new_plan = plan
+            .transform_up(|p| apply_subrules(p, &subrules, context.config_options()))
+            .data()?;
+        new_plan
+            .transform_up(|plan| statistical_join_selection_subrule(plan, context))
+            .data()
+    }
+
+    fn name(&self) -> &str {
+        "join_selection"
+    }
+
+    fn schema_check(&self) -> bool {
+        true
+    }
+}
+
+/// Determines whether it is possible to swap inputs of a hash join - for null-aware joins, we can only swap `LeftAnti` with no filters
+fn can_swap_hash_join(hash_join: &HashJoinExec) -> bool {
+    hash_join.join_type().supports_swap()
+        && (!hash_join.null_aware
+            || (*hash_join.join_type() == JoinType::LeftAnti
+                && hash_join.filter().is_none()))
+}
+
+/// Tries to create a [`HashJoinExec`] in [`PartitionMode::CollectLeft`] when possible.
+///
+/// This function will first consider the given join type and check whether the
+/// `CollectLeft` mode is applicable. Otherwise, it will try to swap the join sides.
+/// When the `ignore_threshold` is false, this function will also check left
+/// and right sizes in bytes or rows.
+///
+/// Used configurations
+/// - `optimizer.hash_join_single_partition_threshold`: byte threshold for `CollectLeft`
+/// - `optimizer.hash_join_single_partition_threshold_rows`: row threshold for `CollectLeft`
+/// - `optimizer.join_reordering`: allows or forbids input swapping
+pub(crate) fn try_collect_left(
+    hash_join: &HashJoinExec,
+    ignore_threshold: bool,
+    context: &dyn PhysicalOptimizerContext,
+) -> Result<Option<Arc<dyn ExecutionPlan>>> {
+    let left = hash_join.left();
+    let right = hash_join.right();
+    let optimizer_config = &context.config_options().optimizer;
+
+    let left_can_collect = ignore_threshold
+        || supports_collect_by_thresholds(
+            &**left,
+            optimizer_config.hash_join_single_partition_threshold,
+            optimizer_config.hash_join_single_partition_threshold_rows,
+            context,
+        );
+    let right_can_collect = ignore_threshold
+        || supports_collect_by_thresholds(
+            &**right,
+            optimizer_config.hash_join_single_partition_threshold,
+            optimizer_config.hash_join_single_partition_threshold_rows,
+            context,
+        );
+
+    match (left_can_collect, right_can_collect) {
+        (true, true) => {
+            // For null-aware joins, we only swap `LeftAnti` joins where the left side is > right side
+            if can_swap_hash_join(hash_join)
+                && should_swap_join_order(&**left, &**right, context)?
+            {
+                Ok(Some(hash_join.swap_inputs(PartitionMode::CollectLeft)?))
+            } else {
+                Ok(Some(Arc::new(
+                    hash_join
+                        .builder()
+                        .with_partition_mode(PartitionMode::CollectLeft)
+                        .build()?,
+                )))
+            }
+        }
+        (true, false) => Ok(Some(Arc::new(
+            hash_join
+                .builder()
+                .with_partition_mode(PartitionMode::CollectLeft)
+                .build()?,
+        ))),
+        (false, true) => {
+            if optimizer_config.join_reordering && can_swap_hash_join(hash_join) {
+                hash_join.swap_inputs(PartitionMode::CollectLeft).map(Some)
+            } else {
+                Ok(None)
+            }
+        }
+        (false, false) => Ok(None),
+    }
+}
+
+/// Creates a partitioned hash join execution plan, swapping inputs if beneficial.
+///
+/// Checks if the join order should be swapped based on the join type and input statistics.
+/// If swapping is optimal and supported, creates a swapped partitioned hash join; otherwise,
+/// creates a standard partitioned hash join.
+///
+/// Used configurations
+/// - `optimizer.join_reordering`: allows or forbids statistics-driven join swapping
+pub(crate) fn partitioned_hash_join(
+    hash_join: &HashJoinExec,
+    context: &dyn PhysicalOptimizerContext,
+) -> Result<Arc<dyn ExecutionPlan>> {
+    let left = hash_join.left();
+    let right = hash_join.right();
+    let partition_mode = if hash_join.null_aware {
+        PartitionMode::CollectLeft
+    } else {
+        PartitionMode::Partitioned
+    };
+    if can_swap_hash_join(hash_join)
+        && should_swap_join_order(&**left, &**right, context)?
+    {
+        hash_join.swap_inputs(partition_mode)
+    } else {
+        // Null-aware anti joins must use CollectLeft mode because they track probe-side state
+        // (probe_side_non_empty, probe_side_has_null) per-partition, but need global knowledge
+        // for correct null handling. With partitioning, a partition might not see probe rows
+        // even if the probe side is globally non-empty, leading to incorrect NULL row handling.
+
+        Ok(Arc::new(
+            hash_join
+                .builder()
+                .with_partition_mode(partition_mode)
+                .build()?,
+        ))
+    }
+}
+
+/// This subrule tries to modify a given plan so that it can
+/// optimize hash and cross joins in the plan according to available statistical
+/// information.
+///
+/// Used configurations
+/// - `optimizer.hash_join_single_partition_threshold`: byte threshold for `CollectLeft`
+/// - `optimizer.hash_join_single_partition_threshold_rows`: row threshold for `CollectLeft`
+/// - `optimizer.join_reordering`: allows or forbids input swapping
+fn statistical_join_selection_subrule(
+    plan: Arc<dyn ExecutionPlan>,
+    context: &dyn PhysicalOptimizerContext,
+) -> Result<Transformed<Arc<dyn ExecutionPlan>>> {
+    let transformed = if let Some(hash_join) = plan.downcast_ref::<HashJoinExec>() {
+        match hash_join.partition_mode() {
+            PartitionMode::Auto => try_collect_left(hash_join, false, context)?
+                .map_or_else(
+                    || partitioned_hash_join(hash_join, context).map(Some),
+                    |v| Ok(Some(v)),
+                )?,
+            PartitionMode::CollectLeft => try_collect_left(hash_join, true, context)?
+                .map_or_else(
+                    || partitioned_hash_join(hash_join, context).map(Some),
+                    |v| Ok(Some(v)),
+                )?,
+            PartitionMode::Partitioned => {
+                let left = hash_join.left();
+                let right = hash_join.right();
+                if can_swap_hash_join(hash_join)
+                    && should_swap_join_order(&**left, &**right, context)?
+                {
+                    // Null-aware RightAnti only supports CollectLeft
+                    let partition_mode = if hash_join.null_aware {
+                        PartitionMode::CollectLeft
+                    } else {
+                        PartitionMode::Partitioned
+                    };
+                    hash_join.swap_inputs(partition_mode).map(Some)?
+                } else {
+                    None
+                }
+            }
+        }
+    } else if let Some(cross_join) = plan.downcast_ref::<CrossJoinExec>() {
+        let left = cross_join.left();
+        let right = cross_join.right();
+        if should_swap_join_order(&**left, &**right, context)? {
+            cross_join.swap_inputs().map(Some)?
+        } else {
+            None
+        }
+    } else if let Some(nl_join) = plan.downcast_ref::<NestedLoopJoinExec>() {
+        let left = nl_join.left();
+        let right = nl_join.right();
+        if nl_join.join_type().supports_swap()
+            && should_swap_join_order(&**left, &**right, context)?
+        {
+            nl_join.swap_inputs().map(Some)?
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+
+    Ok(if let Some(transformed) = transformed {
+        Transformed::yes(transformed)
+    } else {
+        Transformed::no(plan)
+    })
+}
+
+/// Pipeline-fixing join selection subrule.
+pub type PipelineFixerSubrule =
+    dyn Fn(Arc<dyn ExecutionPlan>, &ConfigOptions) -> Result<Arc<dyn ExecutionPlan>>;
+
+/// Converts a hash join to a symmetric hash join if both its inputs are
+/// unbounded and incremental.
+///
+/// This subrule checks if a hash join can be replaced with a symmetric hash join when dealing
+/// with unbounded (infinite) inputs on both sides. This replacement avoids pipeline breaking and
+/// preserves query runnability. If the replacement is applicable, this subrule makes this change;
+/// otherwise, it leaves the input unchanged.
+///
+/// # Arguments
+/// * `input` - The current state of the pipeline, including the execution plan.
+/// * `config_options` - Configuration options that might affect the transformation logic.
+///
+/// # Returns
+/// An `Option` that contains the `Result` of the transformation. If the transformation is not applicable,
+/// it returns `None`. If applicable, it returns `Some(Ok(...))` with the modified pipeline state,
+/// or `Some(Err(...))` if an error occurs during the transformation.
+fn hash_join_convert_symmetric_subrule(
+    input: Arc<dyn ExecutionPlan>,
+    config_options: &ConfigOptions,
+) -> Result<Arc<dyn ExecutionPlan>> {
+    // Check if the current plan node is a HashJoinExec.
+    if let Some(hash_join) = input.downcast_ref::<HashJoinExec>() {
+        let left_unbounded = hash_join.left.boundedness().is_unbounded();
+        let left_incremental = matches!(
+            hash_join.left.pipeline_behavior(),
+            EmissionType::Incremental | EmissionType::Both
+        );
+        let right_unbounded = hash_join.right.boundedness().is_unbounded();
+        let right_incremental = matches!(
+            hash_join.right.pipeline_behavior(),
+            EmissionType::Incremental | EmissionType::Both
+        );
+        // Process only if both left and right sides are unbounded and incrementally emit.
+        if left_unbounded && right_unbounded & left_incremental & right_incremental {
+            // Determine the partition mode based on configuration.
+            let mode = if config_options.optimizer.repartition_joins {
+                StreamJoinPartitionMode::Partitioned
+            } else {
+                StreamJoinPartitionMode::SinglePartition
+            };
+            // A closure to determine the required sort order for each side of the join in the SymmetricHashJoinExec.
+            // This function checks if the columns involved in the filter have any specific ordering requirements.
+            // If the child nodes (left or right side of the join) already have a defined order and the columns used in the
+            // filter predicate are ordered, this function captures that ordering requirement. The identified order is then
+            // used in the SymmetricHashJoinExec to maintain bounded memory during join operations.
+            // However, if the child nodes do not have an inherent order, or if the filter columns are unordered,
+            // the function concludes that no specific order is required for the SymmetricHashJoinExec. This approach
+            // ensures that the symmetric hash join operation only imposes ordering constraints when necessary,
+            // based on the properties of the child nodes and the filter condition.
+            let determine_order = |side: JoinSide| -> Option<LexOrdering> {
+                hash_join
+                    .filter()
+                    .map(|filter| {
+                        filter.column_indices().iter().any(
+                            |ColumnIndex {
+                                 index,
+                                 side: column_side,
+                             }| {
+                                // Skip if column side does not match the join side.
+                                if *column_side != side {
+                                    return false;
+                                }
+                                // Retrieve equivalence properties and schema based on the side.
+                                let (equivalence, schema) = match side {
+                                    JoinSide::Left => (
+                                        hash_join.left().equivalence_properties(),
+                                        hash_join.left().schema(),
+                                    ),
+                                    JoinSide::Right => (
+                                        hash_join.right().equivalence_properties(),
+                                        hash_join.right().schema(),
+                                    ),
+                                    JoinSide::None => return false,
+                                };
+
+                                let name = schema.field(*index).name();
+                                let col = Arc::new(Column::new(name, *index)) as _;
+                                // Check if the column is ordered.
+                                equivalence.get_expr_properties(col).sort_properties
+                                    != SortProperties::Unordered
+                            },
+                        )
+                    })
+                    .unwrap_or(false)
+                    .then(|| {
+                        match side {
+                            JoinSide::Left => hash_join.left().output_ordering(),
+                            JoinSide::Right => hash_join.right().output_ordering(),
+                            JoinSide::None => unreachable!(),
+                        }
+                        .cloned()
+                    })
+                    .flatten()
+            };
+
+            // Determine the sort order for both left and right sides.
+            let left_order = determine_order(JoinSide::Left);
+            let right_order = determine_order(JoinSide::Right);
+
+            return SymmetricHashJoinExec::try_new(
+                Arc::clone(hash_join.left()),
+                Arc::clone(hash_join.right()),
+                hash_join.on().to_vec(),
+                hash_join.filter().cloned(),
+                hash_join.join_type(),
+                hash_join.null_equality(),
+                left_order,
+                right_order,
+                mode,
+            )
+            .map(|exec| Arc::new(exec) as _);
+        }
+    }
+    Ok(input)
+}
+
+/// This subrule will swap build/probe sides of a hash join depending on whether
+/// one of its inputs may produce an infinite stream of records. The rule ensures
+/// that the left (build) side of the hash join always operates on an input stream
+/// that will produce a finite set of records. If the left side can not be chosen
+/// to be "finite", the join sides stay the same as the original query.
+/// ```text
+/// For example, this rule makes the following transformation:
+///
+///
+///
+///           +--------------+              +--------------+
+///           |              |  unbounded   |              |
+///    Left   | Infinite     |    true      | Hash         |\true
+///           | Data source  |--------------| Repartition  | \   +--------------+       +--------------+
+///           |              |              |              |  \  |              |       |              |
+///           +--------------+              +--------------+   - |  Hash Join   |-------| Projection   |
+///                                                            - |              |       |              |
+///           +--------------+              +--------------+  /  +--------------+       +--------------+
+///           |              |  unbounded   |              | /
+///    Right  | Finite       |    false     | Hash         |/false
+///           | Data Source  |--------------| Repartition  |
+///           |              |              |              |
+///           +--------------+              +--------------+
+///
+///
+///
+///           +--------------+              +--------------+
+///           |              |  unbounded   |              |
+///    Left   | Finite       |    false     | Hash         |\false
+///           | Data source  |--------------| Repartition  | \   +--------------+       +--------------+
+///           |              |              |              |  \  |              | true  |              | true
+///           +--------------+              +--------------+   - |  Hash Join   |-------| Projection   |-----
+///                                                            - |              |       |              |
+///           +--------------+              +--------------+  /  +--------------+       +--------------+
+///           |              |  unbounded   |              | /
+///    Right  | Infinite     |    true      | Hash         |/true
+///           | Data Source  |--------------| Repartition  |
+///           |              |              |              |
+///           +--------------+              +--------------+
+/// ```
+pub fn hash_join_swap_subrule(
+    mut input: Arc<dyn ExecutionPlan>,
+    _config_options: &ConfigOptions,
+) -> Result<Arc<dyn ExecutionPlan>> {
+    if let Some(hash_join) = input.downcast_ref::<HashJoinExec>()
+        && hash_join.left.boundedness().is_unbounded()
+        && !hash_join.right.boundedness().is_unbounded()
+        && !hash_join.null_aware // Don't swap null-aware anti joins
+        && matches!(
+            *hash_join.join_type(),
+            JoinType::Inner | JoinType::Left | JoinType::LeftSemi | JoinType::LeftAnti
+        )
+    {
+        input = swap_join_according_to_unboundedness(hash_join)?;
+    }
+    Ok(input)
+}
+
+/// This function swaps sides of a hash join to make it runnable even if one of
+/// its inputs are infinite. Note that this is not always possible; i.e.
+/// [`JoinType::Full`], [`JoinType::Right`], [`JoinType::RightAnti`] and
+/// [`JoinType::RightSemi`] can not run with an unbounded left side, even if
+/// we swap join sides. Therefore, we do not consider them here.
+/// This function is crate public as it is useful for downstream projects
+/// to implement, or experiment with, their own join selection rules.
+pub(crate) fn swap_join_according_to_unboundedness(
+    hash_join: &HashJoinExec,
+) -> Result<Arc<dyn ExecutionPlan>> {
+    let partition_mode = hash_join.partition_mode();
+    let join_type = hash_join.join_type();
+    match (*partition_mode, *join_type) {
+        (
+            _,
+            JoinType::Right
+            | JoinType::RightSemi
+            | JoinType::RightAnti
+            | JoinType::RightMark
+            | JoinType::Full,
+        ) => internal_err!("{join_type} join cannot be swapped for unbounded input."),
+        (PartitionMode::Partitioned, _) => {
+            hash_join.swap_inputs(PartitionMode::Partitioned)
+        }
+        (PartitionMode::CollectLeft, _) => {
+            hash_join.swap_inputs(PartitionMode::CollectLeft)
+        }
+        (PartitionMode::Auto, _) => {
+            // Use `PartitionMode::Partitioned` as default if `Auto` is selected.
+            hash_join.swap_inputs(PartitionMode::Partitioned)
+        }
+    }
+}
+
+/// Apply given `PipelineFixerSubrule`s to a given plan. This plan, along with
+/// auxiliary boundedness information, is in the `PipelineStatePropagator` object.
+fn apply_subrules(
+    mut input: Arc<dyn ExecutionPlan>,
+    subrules: &Vec<Box<PipelineFixerSubrule>>,
+    config_options: &ConfigOptions,
+) -> Result<Transformed<Arc<dyn ExecutionPlan>>> {
+    let original = Arc::clone(&input);
+    for subrule in subrules {
+        input = subrule(input, config_options)?;
+    }
+
+    let transformed = !Arc::ptr_eq(&original, &input);
+
+    Ok(Transformed::new_transformed(input, transformed))
+}
+
+// See tests in datafusion/core/tests/physical_optimizer

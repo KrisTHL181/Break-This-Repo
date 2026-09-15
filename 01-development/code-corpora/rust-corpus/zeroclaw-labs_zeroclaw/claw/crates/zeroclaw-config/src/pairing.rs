@@ -1,0 +1,1154 @@
+use parking_lot::Mutex;
+use sha2::{Digest, Sha256};
+use std::collections::{HashMap, HashSet};
+use std::sync::Arc;
+use std::time::{Duration, Instant};
+
+/// Maximum failed pairing attempts before lockout.
+const MAX_PAIR_ATTEMPTS: u32 = 5;
+/// Lockout duration after too many failed pairing attempts.
+const PAIR_LOCKOUT_SECS: u64 = 300; // 5 minutes
+/// Maximum number of tracked client entries to bound memory usage.
+const MAX_TRACKED_CLIENTS: usize = 10_000;
+/// Retention period for failed-attempt entries with no activity.
+const FAILED_ATTEMPT_RETENTION_SECS: u64 = 900; // 15 min
+/// Minimum interval between full sweeps of the failed-attempt map.
+const FAILED_ATTEMPT_SWEEP_INTERVAL_SECS: u64 = 300; // 5 min
+
+/// Per-client failed attempt state with optional absolute lockout deadline.
+#[derive(Debug, Clone, Copy)]
+struct FailedAttemptState {
+    count: u32,
+    lockout_until: Option<Instant>,
+    last_attempt: Instant,
+}
+
+/// Why a `generate_pairing_code_if_vacant` call failed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum GeneratePairingCodeError {
+    /// A pairing code is already pending; redeem or wait before issuing a new one.
+    Pending,
+    /// Pairing is disabled on this gateway.
+    PairingDisabled,
+}
+
+/// How long a freshly minted pairing code stays redeemable.
+///
+/// The code is the SOLE bearer credential for the certificate-issuance
+/// endpoint, and it is displayed on a console and written to logs, so its
+/// value has to stop being useful shortly after the operator has used it.
+/// One-time use alone left a copied code redeemable indefinitely and gave an
+/// online guesser unlimited wall-clock against a six-digit space.
+pub const PAIRING_CODE_TTL: Duration = Duration::from_secs(10 * 60);
+
+/// The active pairing code and when it was minted. `Instant` is monotonic, so
+/// the lifetime cannot be extended by moving the system clock.
+#[derive(Debug, Clone)]
+struct PendingCode {
+    code: String,
+    minted_at: Instant,
+}
+
+impl PendingCode {
+    fn new(code: String) -> Self {
+        Self {
+            code,
+            minted_at: Instant::now(),
+        }
+    }
+
+    /// Restore a previously reserved code WITHOUT refreshing its lifetime: a
+    /// failed issuance must not extend the window.
+    fn restored(code: String, minted_at: Instant) -> Self {
+        Self { code, minted_at }
+    }
+
+    fn is_expired_at(&self, now: Instant) -> bool {
+        now.duration_since(self.minted_at) >= PAIRING_CODE_TTL
+    }
+}
+
+/// Read the live code, clearing it first if its lifetime has elapsed. Every
+/// path that consults the slot goes through this so an expired code is dropped
+/// rather than merely reported as absent.
+fn take_live(slot: &mut Option<PendingCode>) -> Option<PendingCode> {
+    let now = Instant::now();
+    if slot.as_ref().is_some_and(|p| p.is_expired_at(now)) {
+        *slot = None;
+    }
+    slot.clone()
+}
+
+// TODO: I've just made this work with parking_lot but it should use either flume or tokio's async mutexes
+#[derive(Debug, Clone)]
+pub struct PairingGuard {
+    /// Whether pairing is required at all.
+    require_pairing: bool,
+    /// One-time pairing code (generated on startup, consumed on first pair).
+    pairing_code: Arc<Mutex<Option<PendingCode>>>,
+    /// Set of SHA-256 hashed bearer tokens (persisted across restarts).
+    paired_tokens: Arc<Mutex<HashSet<String>>>,
+    /// Brute-force protection: per-client failed attempt state + last sweep timestamp.
+    failed_attempts: Arc<Mutex<(HashMap<String, FailedAttemptState>, Instant)>>,
+}
+
+/// A successfully matched pairing code whose final token is not yet committed.
+///
+/// Dropping an uncommitted reservation restores the one-time code so validation
+/// or durable-write failures do not burn the operator's displayed code.
+#[derive(Debug)]
+pub struct PairingReservation {
+    guard: PairingGuard,
+    code: String,
+    /// Preserved so restoring the code on a failed issuance does not reset its
+    /// lifetime.
+    minted_at: Instant,
+    token: String,
+    committed: bool,
+}
+
+impl PairingReservation {
+    /// SHA-256 hash of the token that will be committed on success.
+    pub fn token_hash(&self) -> String {
+        hash_token(&self.token)
+    }
+
+    /// Commit the reservation, consuming the one-time code and storing the token.
+    pub fn commit(mut self) -> String {
+        let token = self.token.clone();
+        self.guard.paired_tokens.lock().insert(hash_token(&token));
+        self.committed = true;
+        token
+    }
+}
+
+impl Drop for PairingReservation {
+    fn drop(&mut self) {
+        if self.committed {
+            return;
+        }
+        let mut slot = self.guard.pairing_code.lock();
+        if slot.is_none() {
+            *slot = Some(PendingCode::restored(self.code.clone(), self.minted_at));
+        }
+    }
+}
+
+impl PairingGuard {
+    pub fn new(require_pairing: bool, existing_tokens: &[String]) -> Self {
+        let tokens: HashSet<String> = existing_tokens
+            .iter()
+            .map(|t| {
+                if is_token_hash(t) {
+                    t.clone()
+                } else {
+                    hash_token(t)
+                }
+            })
+            .collect();
+        let code = if require_pairing && tokens.is_empty() {
+            Some(PendingCode::new(generate_code()))
+        } else {
+            None
+        };
+        Self {
+            require_pairing,
+            pairing_code: Arc::new(Mutex::new(code)),
+            paired_tokens: Arc::new(Mutex::new(tokens)),
+            failed_attempts: Arc::new(Mutex::new((HashMap::new(), Instant::now()))),
+        }
+    }
+
+    /// The one-time pairing code (generated only on first startup when no tokens exist).
+    pub fn pairing_code(&self) -> Option<String> {
+        take_live(&mut self.pairing_code.lock()).map(|p| p.code)
+    }
+
+    /// Test-only: rewind the active code's mint time so expiry is exercisable
+    /// deterministically, with no wall-clock waits.
+    #[cfg(test)]
+    fn age_pairing_code(&self, by: Duration) {
+        let mut slot = self.pairing_code.lock();
+        if let Some(pending) = slot.as_mut() {
+            pending.minted_at = pending
+                .minted_at
+                .checked_sub(by)
+                .expect("test rewind must stay within Instant range");
+        }
+    }
+
+    /// Whether pairing is required at all.
+    pub fn require_pairing(&self) -> bool {
+        self.require_pairing
+    }
+
+    fn reserve_pair_blocking(
+        &self,
+        code: &str,
+        client_id: &str,
+    ) -> Result<Option<PairingReservation>, u64> {
+        let client_id = normalize_client_key(client_id);
+        let now = Instant::now();
+
+        // Periodic sweep + lockout check
+        {
+            let mut guard = self.failed_attempts.lock();
+            let (ref mut map, ref mut last_sweep) = *guard;
+
+            // Sweep stale entries on interval
+            if now.duration_since(*last_sweep).as_secs() >= FAILED_ATTEMPT_SWEEP_INTERVAL_SECS {
+                prune_failed_attempts(map, now);
+                *last_sweep = now;
+            }
+
+            // Check brute force lockout for this specific client
+            if let Some(state) = map.get(&client_id)
+                && let Some(until) = state.lockout_until
+            {
+                if now < until {
+                    let remaining = (until - now).as_secs();
+                    return Err(remaining.max(1));
+                }
+                // Lockout expired — reset inline
+                map.remove(&client_id);
+            }
+        }
+
+        if let Some(reservation) = self.try_reserve_code(code) {
+            // Reset failed attempts for this client on success
+            let mut guard = self.failed_attempts.lock();
+            guard.0.remove(&client_id);
+            return Ok(Some(reservation));
+        }
+
+        // Increment failed attempts for this client
+        {
+            let mut guard = self.failed_attempts.lock();
+            let (ref mut map, _) = *guard;
+
+            // Enforce capacity bound: prune stale first, then LRU-evict if still full
+            if map.len() >= MAX_TRACKED_CLIENTS {
+                prune_failed_attempts(map, now);
+            }
+            if map.len() >= MAX_TRACKED_CLIENTS {
+                // Evict the least-recently-active entry
+                if let Some(lru_key) = map
+                    .iter()
+                    .min_by_key(|(_, s)| s.last_attempt)
+                    .map(|(k, _)| k.clone())
+                {
+                    map.remove(&lru_key);
+                }
+            }
+
+            let entry = map.entry(client_id).or_insert(FailedAttemptState {
+                count: 0,
+                lockout_until: None,
+                last_attempt: now,
+            });
+
+            entry.last_attempt = now;
+            entry.count += 1;
+
+            if entry.count >= MAX_PAIR_ATTEMPTS {
+                entry.lockout_until = Some(now + std::time::Duration::from_secs(PAIR_LOCKOUT_SECS));
+            }
+        }
+
+        Ok(None)
+    }
+
+    fn try_pair_blocking(&self, code: &str, client_id: &str) -> Result<Option<String>, u64> {
+        Ok(self
+            .reserve_pair_blocking(code, client_id)?
+            .map(PairingReservation::commit))
+    }
+
+    /// Reserve the given code without committing it. The returned reservation
+    /// restores the code on drop unless `commit()` is called.
+    /// Constant-time code check + reservation, with NO lockout bookkeeping.
+    /// The shared core of the keyed and unkeyed paths.
+    fn try_reserve_code(&self, code: &str) -> Option<PairingReservation> {
+        let mut pairing_code = self.pairing_code.lock();
+        // An expired code is cleared here, not merely ignored, so it cannot be
+        // redeemed later and does not linger in memory.
+        let pending = take_live(&mut pairing_code)?;
+        if constant_time_eq(code.trim(), pending.code.trim()) {
+            let reservation = PairingReservation {
+                guard: self.clone(),
+                code: pending.code.clone(),
+                minted_at: pending.minted_at,
+                token: generate_token(),
+                committed: false,
+            };
+            // Reserve the pairing code so concurrent requests cannot both
+            // issue, but restore it on drop if issuance fails before commit.
+            *pairing_code = None;
+            return Some(reservation);
+        }
+        None
+    }
+
+    /// Code check WITHOUT per-client lockout accounting, for callers whose
+    /// peers all share one network identity and which apply their own
+    /// class-wide rate policy instead. The relay enrollment bridge is the
+    /// canonical case: every relay-routed client reaches the daemon from
+    /// loopback, so keying lockout on the peer address would let five wrong
+    /// codes from ONE hostile client lock out EVERY relay-routed enrollee
+    /// (shared-fate lockout). Never expose this to a caller that has a real
+    /// per-client identity - use [`PairingGuard::reserve_pair`] there.
+    pub async fn reserve_pair_unkeyed(&self, code: &str) -> Option<PairingReservation> {
+        let this = self.clone();
+        let code = code.to_string();
+        let handle = tokio::task::spawn_blocking(move || this.try_reserve_code(&code));
+        handle
+            .await
+            .expect("failed to spawn blocking task this should not happen")
+    }
+
+    pub async fn reserve_pair(
+        &self,
+        code: &str,
+        client_id: &str,
+    ) -> Result<Option<PairingReservation>, u64> {
+        let this = self.clone();
+        let code = code.to_string();
+        let client_id = client_id.to_string();
+        let handle =
+            tokio::task::spawn_blocking(move || this.reserve_pair_blocking(&code, &client_id));
+
+        handle
+            .await
+            .expect("failed to spawn blocking task this should not happen")
+    }
+
+    /// Attempt to pair with the given code. Returns a bearer token on success.
+    /// Returns `Err(lockout_seconds)` if locked out due to brute force.
+    /// `client_id` identifies the client for per-client lockout accounting.
+    pub async fn try_pair(&self, code: &str, client_id: &str) -> Result<Option<String>, u64> {
+        let this = self.clone();
+        let code = code.to_string();
+        let client_id = client_id.to_string();
+        // TODO: make this function the main one without spawning a task
+        let handle = tokio::task::spawn_blocking(move || this.try_pair_blocking(&code, &client_id));
+
+        handle
+            .await
+            .expect("failed to spawn blocking task this should not happen")
+    }
+
+    /// Check if a bearer token is valid (compares against stored hashes).
+    pub fn is_authenticated(&self, token: &str) -> bool {
+        if !self.require_pairing {
+            return true;
+        }
+        let hashed = hash_token(token);
+        let tokens = self.paired_tokens.lock();
+        tokens.contains(&hashed)
+    }
+
+    /// Returns true if the gateway is already paired (has at least one token).
+    pub fn is_paired(&self) -> bool {
+        let tokens = self.paired_tokens.lock();
+        !tokens.is_empty()
+    }
+
+    /// Get all paired token hashes (for persisting to config).
+    pub fn tokens(&self) -> Vec<String> {
+        let tokens = self.paired_tokens.lock();
+        tokens.iter().cloned().collect()
+    }
+
+    pub fn revoke_token(&self, token: &str) -> bool {
+        let hashed = hash_token(token);
+        let mut tokens = self.paired_tokens.lock();
+        tokens.remove(&hashed)
+    }
+
+    /// Revoke a paired token by its SHA-256 hash. Returns true if removed.
+    pub fn revoke_token_hash(&self, token_hash: &str) -> bool {
+        let mut tokens = self.paired_tokens.lock();
+        tokens.remove(token_hash)
+    }
+
+    pub fn revoke_all_tokens(&self) -> usize {
+        let mut tokens = self.paired_tokens.lock();
+        let count = tokens.len();
+        tokens.clear();
+        count
+    }
+
+    /// Generate a new pairing code that pairs an additional client.
+    /// Does not revoke existing tokens. To rotate a compromised token,
+    /// pair with `revoke_token`/`revoke_token_hash` + a config persist pass.
+    pub fn generate_new_pairing_code(&self) -> Option<String> {
+        if !self.require_pairing {
+            return None;
+        }
+        let new_code = generate_code();
+        *self.pairing_code.lock() = Some(PendingCode::new(new_code.clone()));
+        Some(new_code)
+    }
+
+    pub fn generate_pairing_code_if_vacant(&self) -> Result<String, GeneratePairingCodeError> {
+        if !self.require_pairing {
+            return Err(GeneratePairingCodeError::PairingDisabled);
+        }
+        let mut slot = self.pairing_code.lock();
+        // An expired code leaves the slot vacant: otherwise a lapsed code would
+        // block minting a replacement until the process restarted.
+        if take_live(&mut slot).is_some() {
+            return Err(GeneratePairingCodeError::Pending);
+        }
+        let new_code = generate_code();
+        *slot = Some(PendingCode::new(new_code.clone()));
+        Ok(new_code)
+    }
+
+    /// Get the token hash for a given plaintext token (for device registry lookup).
+    pub fn token_hash(token: &str) -> String {
+        use sha2::{Digest, Sha256};
+        hex::encode(Sha256::digest(token.as_bytes()))
+    }
+
+    /// Check if a token is paired and return its hash.
+    pub fn authenticate_and_hash(&self, token: &str) -> Option<String> {
+        if self.is_authenticated(token) {
+            Some(Self::token_hash(token))
+        } else {
+            None
+        }
+    }
+}
+
+/// Normalize a client identifier: trim whitespace, map empty to `"unknown"`.
+fn normalize_client_key(key: &str) -> String {
+    let trimmed = key.trim();
+    if trimmed.is_empty() {
+        "unknown".to_string()
+    } else {
+        trimmed.to_string()
+    }
+}
+
+/// Remove failed-attempt entries whose `last_attempt` is older than the retention window.
+fn prune_failed_attempts(map: &mut HashMap<String, FailedAttemptState>, now: Instant) {
+    map.retain(|_, state| {
+        now.duration_since(state.last_attempt).as_secs() < FAILED_ATTEMPT_RETENTION_SECS
+    });
+}
+
+/// Generate a 6-digit numeric pairing code using cryptographically secure randomness.
+fn generate_code() -> String {
+    const UPPER_BOUND: u32 = 1_000_000;
+    const REJECT_THRESHOLD: u32 = (u32::MAX / UPPER_BOUND) * UPPER_BOUND;
+
+    loop {
+        let uuid = uuid::Uuid::new_v4();
+        let bytes = uuid.as_bytes();
+        let raw = u32::from_le_bytes([bytes[0], bytes[1], bytes[2], bytes[3]]);
+
+        if raw < REJECT_THRESHOLD {
+            return format!("{:06}", raw % UPPER_BOUND);
+        }
+    }
+}
+
+fn generate_token() -> String {
+    let bytes: [u8; 32] = rand::random();
+    format!("zc_{}", hex::encode(bytes))
+}
+
+/// SHA-256 hash a bearer token for storage. Returns lowercase hex.
+fn hash_token(token: &str) -> String {
+    format!("{:x}", Sha256::digest(token.as_bytes()))
+}
+
+/// Check if a stored value looks like a SHA-256 hash (64 hex chars)
+/// rather than a plaintext token.
+fn is_token_hash(value: &str) -> bool {
+    value.len() == 64 && value.chars().all(|c| c.is_ascii_hexdigit())
+}
+
+#[allow(clippy::needless_bitwise_bool)]
+pub fn constant_time_eq(a: &str, b: &str) -> bool {
+    let a = a.as_bytes();
+    let b = b.as_bytes();
+
+    // Track length mismatch as a usize (non-zero = different lengths)
+    let len_diff = a.len() ^ b.len();
+
+    // XOR each byte, padding the shorter input with zeros.
+    // Iterates over max(a.len(), b.len()) to avoid timing differences.
+    let max_len = a.len().max(b.len());
+    let mut byte_diff = 0u8;
+    for i in 0..max_len {
+        let x = *a.get(i).unwrap_or(&0);
+        let y = *b.get(i).unwrap_or(&0);
+        byte_diff |= x ^ y;
+    }
+    // Intentional use of bitwise & (not &&) to ensure constant-time execution
+    // and prevent timing side-channel attacks. Both comparisons must execute.
+    (len_diff == 0) & (byte_diff == 0)
+}
+
+/// Check if a host string represents a non-localhost bind address.
+pub fn is_public_bind(host: &str) -> bool {
+    !matches!(
+        host,
+        "127.0.0.1" | "localhost" | "::1" | "[::1]" | "0:0:0:0:0:0:0:1"
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use tokio::test;
+
+    // ── PairingGuard ─────────────────────────────────────────
+
+    #[test]
+    async fn new_guard_generates_code_when_no_tokens() {
+        let guard = PairingGuard::new(true, &[]);
+        assert!(guard.pairing_code().is_some());
+        assert!(!guard.is_paired());
+    }
+
+    #[test]
+    async fn new_guard_no_code_when_tokens_exist() {
+        let guard = PairingGuard::new(true, &["zc_existing".into()]);
+        assert!(guard.pairing_code().is_none());
+        assert!(guard.is_paired());
+    }
+
+    #[test]
+    async fn new_guard_no_code_when_pairing_disabled() {
+        let guard = PairingGuard::new(false, &[]);
+        assert!(guard.pairing_code().is_none());
+    }
+
+    #[test]
+    async fn try_pair_correct_code() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        let token = guard.try_pair(&code, "test_client").await.unwrap();
+        assert!(token.is_some());
+        assert!(token.unwrap().starts_with("zc_"));
+        assert!(guard.is_paired());
+    }
+
+    #[test]
+    async fn reservation_restores_code_until_committed() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        {
+            let reservation = guard
+                .reserve_pair(&code, "test_client")
+                .await
+                .unwrap()
+                .expect("code should reserve");
+            assert_eq!(reservation.token_hash().len(), 64);
+            assert!(
+                guard.pairing_code().is_none(),
+                "reserved code must not be concurrently reusable"
+            );
+        }
+        assert_eq!(
+            guard.pairing_code().as_deref(),
+            Some(code.as_str()),
+            "dropping an uncommitted reservation restores the one-time code"
+        );
+        assert!(!guard.is_paired());
+    }
+
+    #[test]
+    async fn committed_reservation_consumes_code_and_stores_token() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        let token = guard
+            .reserve_pair(&code, "test_client")
+            .await
+            .unwrap()
+            .expect("code should reserve")
+            .commit();
+        assert!(token.starts_with("zc_"));
+        assert!(guard.pairing_code().is_none());
+        assert!(guard.is_authenticated(&token));
+    }
+
+    #[test]
+    async fn try_pair_wrong_code() {
+        let guard = PairingGuard::new(true, &[]);
+        let result = guard.try_pair("000000", "test_client").await.unwrap();
+        // Might succeed if code happens to be 000000, but extremely unlikely
+        // Just check it returns Ok(None) normally
+        let _ = result;
+    }
+
+    #[test]
+    async fn try_pair_empty_code() {
+        let guard = PairingGuard::new(true, &[]);
+        assert!(guard.try_pair("", "test_client").await.unwrap().is_none());
+    }
+
+    #[test]
+    async fn is_authenticated_with_valid_token() {
+        // Pass plaintext token — PairingGuard hashes it on load
+        let guard = PairingGuard::new(true, &["zc_valid".into()]);
+        assert!(guard.is_authenticated("zc_valid"));
+    }
+
+    #[test]
+    async fn is_authenticated_with_prehashed_token() {
+        // Pass an already-hashed token (64 hex chars)
+        let hashed = hash_token("zc_valid");
+        let guard = PairingGuard::new(true, &[hashed]);
+        assert!(guard.is_authenticated("zc_valid"));
+    }
+
+    #[test]
+    async fn is_authenticated_with_invalid_token() {
+        let guard = PairingGuard::new(true, &["zc_valid".into()]);
+        assert!(!guard.is_authenticated("zc_invalid"));
+    }
+
+    #[test]
+    async fn is_authenticated_when_pairing_disabled() {
+        let guard = PairingGuard::new(false, &[]);
+        assert!(guard.is_authenticated("anything"));
+        assert!(guard.is_authenticated(""));
+    }
+
+    #[test]
+    async fn tokens_returns_hashes() {
+        let guard = PairingGuard::new(true, &["zc_a".into(), "zc_b".into()]);
+        let tokens = guard.tokens();
+        assert_eq!(tokens.len(), 2);
+        // Tokens should be stored as 64-char hex hashes, not plaintext
+        for t in &tokens {
+            assert_eq!(t.len(), 64, "Token should be a SHA-256 hash");
+            assert!(t.chars().all(|c| c.is_ascii_hexdigit()));
+            assert!(!t.starts_with("zc_"), "Token should not be plaintext");
+        }
+    }
+
+    #[test]
+    async fn pair_then_authenticate() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        let token = guard.try_pair(&code, "test_client").await.unwrap().unwrap();
+        assert!(guard.is_authenticated(&token));
+        assert!(!guard.is_authenticated("wrong"));
+    }
+
+    // ── Token hashing ────────────────────────────────────────
+
+    #[test]
+    async fn hash_token_produces_64_hex_chars() {
+        let hash = hash_token("zc_test_token");
+        assert_eq!(hash.len(), 64);
+        assert!(hash.chars().all(|c| c.is_ascii_hexdigit()));
+    }
+
+    #[test]
+    async fn hash_token_is_deterministic() {
+        assert_eq!(hash_token("zc_abc"), hash_token("zc_abc"));
+    }
+
+    #[test]
+    async fn hash_token_differs_for_different_inputs() {
+        assert_ne!(hash_token("zc_a"), hash_token("zc_b"));
+    }
+
+    #[test]
+    async fn is_token_hash_detects_hash_vs_plaintext() {
+        assert!(is_token_hash(&hash_token("zc_test")));
+        assert!(!is_token_hash("zc_test_token"));
+        assert!(!is_token_hash("too_short"));
+        assert!(!is_token_hash(""));
+    }
+
+    // ── is_public_bind ───────────────────────────────────────
+
+    #[test]
+    async fn localhost_variants_not_public() {
+        assert!(!is_public_bind("127.0.0.1"));
+        assert!(!is_public_bind("localhost"));
+        assert!(!is_public_bind("::1"));
+        assert!(!is_public_bind("[::1]"));
+    }
+
+    #[test]
+    async fn zero_zero_is_public() {
+        assert!(is_public_bind("0.0.0.0"));
+    }
+
+    #[test]
+    async fn real_ip_is_public() {
+        assert!(is_public_bind("192.168.1.100"));
+        assert!(is_public_bind("10.0.0.1"));
+    }
+
+    // ── constant_time_eq ─────────────────────────────────────
+
+    #[test]
+    async fn constant_time_eq_same() {
+        assert!(constant_time_eq("abc", "abc"));
+        assert!(constant_time_eq("", ""));
+    }
+
+    #[test]
+    async fn constant_time_eq_different() {
+        assert!(!constant_time_eq("abc", "abd"));
+        assert!(!constant_time_eq("abc", "ab"));
+        assert!(!constant_time_eq("a", ""));
+    }
+
+    // ── generate helpers ─────────────────────────────────────
+
+    #[test]
+    async fn generate_code_is_6_digits() {
+        let code = generate_code();
+        assert_eq!(code.len(), 6);
+        assert!(code.chars().all(|c| c.is_ascii_digit()));
+    }
+
+    #[test]
+    async fn generate_code_is_not_deterministic() {
+        // Two codes should differ with overwhelming probability. We try
+        // multiple pairs so a single 1-in-10^6 collision doesn't cause
+        // a flaky CI failure. All 10 pairs colliding is ~1-in-10^60.
+        for _ in 0..10 {
+            if generate_code() != generate_code() {
+                return; // Pass: found a non-matching pair.
+            }
+        }
+        panic!("Generated 10 pairs of codes and all were collisions — CSPRNG failure");
+    }
+
+    #[test]
+    async fn generate_token_has_prefix_and_hex_payload() {
+        let token = generate_token();
+        let payload = token
+            .strip_prefix("zc_")
+            .expect("Generated token should include zc_ prefix");
+
+        assert_eq!(payload.len(), 64, "Token payload should be 32 bytes in hex");
+        assert!(
+            payload
+                .chars()
+                .all(|c| c.is_ascii_digit() || matches!(c, 'a'..='f')),
+            "Token payload should be lowercase hex"
+        );
+    }
+
+    // ── Brute force protection ───────────────────────────────
+
+    #[test]
+    async fn brute_force_lockout_after_max_attempts() {
+        let guard = PairingGuard::new(true, &[]);
+        let client = "attacker_client";
+        // Exhaust all attempts with wrong codes
+        for i in 0..MAX_PAIR_ATTEMPTS {
+            let result = guard.try_pair(&format!("wrong_{i}"), client).await;
+            assert!(result.is_ok(), "Attempt {i} should not be locked out yet");
+        }
+        // Next attempt should be locked out
+        let result = guard.try_pair("another_wrong", client).await;
+        assert!(
+            result.is_err(),
+            "Should be locked out after {MAX_PAIR_ATTEMPTS} attempts"
+        );
+        let lockout_secs = result.unwrap_err();
+        assert!(lockout_secs > 0, "Lockout should have remaining seconds");
+        assert!(
+            lockout_secs <= PAIR_LOCKOUT_SECS,
+            "Lockout should not exceed max"
+        );
+    }
+
+    #[test]
+    async fn correct_code_resets_failed_attempts() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        let client = "test_client";
+        // Fail a few times
+        for _ in 0..3 {
+            let _ = guard.try_pair("wrong", client).await;
+        }
+        // Correct code should still work (under MAX_PAIR_ATTEMPTS)
+        let result = guard.try_pair(&code, client).await.unwrap();
+        assert!(result.is_some(), "Correct code should work before lockout");
+    }
+
+    #[test]
+    async fn lockout_returns_remaining_seconds() {
+        let guard = PairingGuard::new(true, &[]);
+        let client = "test_client";
+        for _ in 0..MAX_PAIR_ATTEMPTS {
+            let _ = guard.try_pair("wrong", client).await;
+        }
+        let err = guard.try_pair("wrong", client).await.unwrap_err();
+        // Should be close to PAIR_LOCKOUT_SECS (within a second)
+        assert!(
+            err >= PAIR_LOCKOUT_SECS - 1,
+            "Remaining lockout should be ~{PAIR_LOCKOUT_SECS}s, got {err}s"
+        );
+    }
+
+    #[test]
+    async fn successful_pair_resets_only_requesting_client_state() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        let client_a = "client_a";
+        let client_b = "client_b";
+
+        // Both clients fail a few times
+        for _ in 0..3 {
+            let _ = guard.try_pair("wrong", client_a).await;
+            let _ = guard.try_pair("wrong", client_b).await;
+        }
+
+        // client_a pairs successfully — only its state should reset
+        let result = guard.try_pair(&code, client_a).await.unwrap();
+        assert!(result.is_some(), "client_a should pair successfully");
+
+        // client_b's failed count should still be intact (3 failures recorded)
+        let state = guard.failed_attempts.lock();
+        let b_state = state.0.get(client_b);
+        assert!(b_state.is_some(), "client_b state should still exist");
+        assert_eq!(
+            b_state.unwrap().count,
+            3,
+            "client_b should still have 3 failures"
+        );
+
+        // client_a should have been removed
+        assert!(
+            !state.0.contains_key(client_a),
+            "client_a state should be cleared"
+        );
+    }
+
+    #[test]
+    async fn failed_attempt_state_is_bounded_by_max_clients() {
+        let guard = PairingGuard::new(true, &[]);
+
+        // Fill the map to MAX_TRACKED_CLIENTS with stale entries
+        {
+            let mut state = guard.failed_attempts.lock();
+            let past = Instant::now()
+                .checked_sub(std::time::Duration::from_secs(
+                    FAILED_ATTEMPT_RETENTION_SECS + 60,
+                ))
+                .unwrap_or_else(Instant::now);
+            for i in 0..MAX_TRACKED_CLIENTS {
+                state.0.insert(
+                    format!("stale_client_{i}"),
+                    FailedAttemptState {
+                        count: 1,
+                        lockout_until: None,
+                        last_attempt: past,
+                    },
+                );
+            }
+        }
+
+        // A new client triggers an attempt — should prune stale entries and fit
+        let result = guard.try_pair("wrong", "new_client").await;
+        assert!(result.is_ok(), "New client should not be blocked");
+
+        let state = guard.failed_attempts.lock();
+        assert!(
+            state.0.len() <= MAX_TRACKED_CLIENTS,
+            "Map size should stay within bound, got {}",
+            state.0.len()
+        );
+        assert!(
+            state.0.contains_key("new_client"),
+            "New client should be tracked"
+        );
+    }
+
+    #[test]
+    async fn failed_attempt_sweep_prunes_expired_clients() {
+        let guard = PairingGuard::new(true, &[]);
+
+        // Seed a stale entry and set last_sweep to long ago so sweep triggers
+        {
+            let mut state = guard.failed_attempts.lock();
+            let past = Instant::now()
+                .checked_sub(std::time::Duration::from_secs(
+                    FAILED_ATTEMPT_RETENTION_SECS + 60,
+                ))
+                .unwrap_or_else(Instant::now);
+            state.0.insert(
+                "stale_client".to_string(),
+                FailedAttemptState {
+                    count: 2,
+                    lockout_until: None,
+                    last_attempt: past,
+                },
+            );
+            // Force last_sweep to be old enough to trigger sweep
+            state.1 = Instant::now()
+                .checked_sub(std::time::Duration::from_secs(
+                    FAILED_ATTEMPT_SWEEP_INTERVAL_SECS + 1,
+                ))
+                .unwrap_or_else(Instant::now);
+        }
+
+        // Any attempt triggers sweep
+        let _ = guard.try_pair("wrong", "fresh_client").await;
+
+        let state = guard.failed_attempts.lock();
+        assert!(
+            !state.0.contains_key("stale_client"),
+            "Stale client should have been pruned by sweep"
+        );
+        assert!(
+            state.0.contains_key("fresh_client"),
+            "Fresh client should still be tracked"
+        );
+    }
+
+    #[test]
+    async fn lockout_is_per_client() {
+        let guard = PairingGuard::new(true, &[]);
+        let attacker = "attacker_ip";
+        let legitimate = "legitimate_ip";
+
+        // Attacker exhausts attempts
+        for i in 0..MAX_PAIR_ATTEMPTS {
+            let _ = guard.try_pair(&format!("wrong_{i}"), attacker).await;
+        }
+        // Attacker is locked out
+        assert!(guard.try_pair("wrong", attacker).await.is_err());
+
+        // Legitimate client is NOT locked out
+        let result = guard.try_pair("wrong", legitimate).await;
+        assert!(
+            result.is_ok(),
+            "Legitimate client should not be locked out by attacker"
+        );
+    }
+
+    // ── Token revocation ─────────────────────────────────────
+
+    #[test]
+    async fn revoked_token_no_longer_authenticates() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        let token = guard.try_pair(&code, "c").await.unwrap().unwrap();
+        assert!(guard.is_authenticated(&token));
+
+        assert!(guard.revoke_token(&token));
+        assert!(!guard.is_authenticated(&token));
+        assert!(!guard.is_paired());
+    }
+
+    #[test]
+    async fn revoked_token_is_dropped_from_persistence_view() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        let token = guard.try_pair(&code, "c").await.unwrap().unwrap();
+        let expected_hash = hash_token(&token);
+        assert!(guard.tokens().contains(&expected_hash));
+
+        assert!(guard.revoke_token(&token));
+        assert!(!guard.tokens().contains(&expected_hash));
+    }
+
+    #[test]
+    async fn revoke_token_hash_matches_revoke_token() {
+        let guard = PairingGuard::new(true, &["zc_a".into(), "zc_b".into()]);
+        let hash_a = hash_token("zc_a");
+        assert!(guard.revoke_token_hash(&hash_a));
+        assert!(!guard.is_authenticated("zc_a"));
+        assert!(guard.is_authenticated("zc_b"));
+    }
+
+    #[test]
+    async fn revoke_unknown_token_is_noop() {
+        let guard = PairingGuard::new(true, &["zc_a".into()]);
+        assert!(!guard.revoke_token("zc_never_paired"));
+        assert!(guard.is_authenticated("zc_a"));
+    }
+
+    #[test]
+    async fn revoke_is_scoped_to_target_token() {
+        let guard = PairingGuard::new(true, &["zc_keep".into(), "zc_drop".into()]);
+        assert!(guard.revoke_token("zc_drop"));
+        assert!(guard.is_authenticated("zc_keep"));
+        assert!(!guard.is_authenticated("zc_drop"));
+    }
+
+    #[test]
+    async fn revoke_all_tokens_invalidates_every_token() {
+        let guard = PairingGuard::new(true, &["zc_a".into(), "zc_b".into(), "zc_c".into()]);
+        assert_eq!(guard.revoke_all_tokens(), 3);
+        assert!(!guard.is_authenticated("zc_a"));
+        assert!(!guard.is_authenticated("zc_b"));
+        assert!(!guard.is_authenticated("zc_c"));
+        assert!(!guard.is_paired());
+        assert!(guard.tokens().is_empty());
+    }
+
+    #[test]
+    async fn revoke_all_tokens_on_empty_set_returns_zero() {
+        let guard = PairingGuard::new(true, &[]);
+        assert_eq!(guard.revoke_all_tokens(), 0);
+    }
+
+    // ── Atomic pairing-code generation ───────────────────────
+
+    #[test]
+    async fn generate_pairing_code_if_vacant_succeeds_when_slot_empty() {
+        let guard = PairingGuard::new(true, &["zc_existing".into()]);
+        // `new()` does not issue a code once paired; slot is empty here.
+        assert!(guard.pairing_code().is_none());
+        let code = guard.generate_pairing_code_if_vacant().unwrap();
+        assert_eq!(guard.pairing_code().as_deref(), Some(code.as_str()));
+    }
+
+    #[test]
+    async fn generate_pairing_code_if_vacant_refuses_when_slot_occupied() {
+        let guard = PairingGuard::new(true, &[]);
+        let pre_existing = guard.pairing_code().expect("startup code");
+        let err = guard.generate_pairing_code_if_vacant().unwrap_err();
+        assert_eq!(err, GeneratePairingCodeError::Pending);
+        assert_eq!(
+            guard.pairing_code().as_deref(),
+            Some(pre_existing.as_str()),
+            "occupied slot must be preserved"
+        );
+    }
+
+    #[test]
+    async fn generate_pairing_code_if_vacant_refuses_when_pairing_disabled() {
+        let guard = PairingGuard::new(false, &[]);
+        let err = guard.generate_pairing_code_if_vacant().unwrap_err();
+        assert_eq!(err, GeneratePairingCodeError::PairingDisabled);
+    }
+
+    /// A pairing code is the sole bearer credential for certificate issuance
+    /// and is shown on a console and written to logs. One-time use alone left a
+    /// copied code redeemable indefinitely, so it must also expire - and the
+    /// expired value must be CLEARED, not merely reported absent.
+    #[test]
+    async fn expired_code_is_rejected_and_cleared() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+        guard.age_pairing_code(PAIRING_CODE_TTL);
+
+        assert!(
+            guard
+                .reserve_pair(&code, "test_client")
+                .await
+                .unwrap()
+                .is_none(),
+            "an expired code must not reserve"
+        );
+        assert!(
+            guard.pairing_code().is_none(),
+            "an expired code must be cleared from the slot, not left in memory"
+        );
+    }
+
+    /// Restoring a code after a failed issuance must not extend its lifetime:
+    /// otherwise a guesser could keep a code alive by failing repeatedly.
+    #[test]
+    async fn a_failed_issuance_does_not_extend_the_lifetime() {
+        let guard = PairingGuard::new(true, &[]);
+        let code = guard.pairing_code().unwrap().to_string();
+
+        // Take the code to within a second of expiry BEFORE the failed
+        // attempt, so a restore that reset the clock would be visible.
+        guard.age_pairing_code(PAIRING_CODE_TTL - Duration::from_secs(1));
+
+        // Reserve and drop uncommitted: the code is restored for a retry.
+        {
+            let _reservation = guard
+                .reserve_pair(&code, "test_client")
+                .await
+                .unwrap()
+                .expect("code should reserve");
+        }
+        assert_eq!(
+            guard.pairing_code().as_deref(),
+            Some(code.as_str()),
+            "a failed issuance must restore the code"
+        );
+
+        // Two more seconds carries the ORIGINAL schedule past expiry. Had the
+        // restore reset the clock, a full TTL would still remain here.
+        guard.age_pairing_code(Duration::from_secs(2));
+        assert!(
+            guard
+                .reserve_pair(&code, "test_client")
+                .await
+                .unwrap()
+                .is_none(),
+            "a restored code must still expire on its original schedule"
+        );
+    }
+
+    /// After expiry the slot counts as vacant, so an operator can mint a fresh
+    /// code without restarting the process - and that replacement redeems.
+    #[test]
+    async fn a_fresh_replacement_works_after_expiry() {
+        let guard = PairingGuard::new(true, &[]);
+        let stale = guard.pairing_code().unwrap().to_string();
+        guard.age_pairing_code(PAIRING_CODE_TTL);
+
+        let fresh = guard
+            .generate_pairing_code_if_vacant()
+            .expect("an expired code must leave the slot vacant");
+        assert_ne!(fresh, stale, "the replacement must be a new code");
+
+        assert!(
+            guard
+                .reserve_pair(&stale, "test_client")
+                .await
+                .unwrap()
+                .is_none(),
+            "the expired code must not redeem after replacement"
+        );
+        assert!(
+            guard
+                .reserve_pair(&fresh, "test_client")
+                .await
+                .unwrap()
+                .is_some(),
+            "the fresh replacement must redeem"
+        );
+    }
+
+    /// The one-active-code model is unchanged: minting replaces an unexpired
+    /// code rather than erroring, and the superseded value stops working.
+    #[test]
+    async fn minting_still_replaces_an_unexpired_code() {
+        let guard = PairingGuard::new(true, &[]);
+        let first = guard.pairing_code().unwrap().to_string();
+        let second = guard
+            .generate_new_pairing_code()
+            .expect("mint must replace unconditionally");
+        assert_ne!(first, second);
+        assert!(
+            guard
+                .reserve_pair(&first, "test_client")
+                .await
+                .unwrap()
+                .is_none(),
+            "the superseded code must not redeem"
+        );
+        assert!(
+            guard
+                .reserve_pair(&second, "test_client")
+                .await
+                .unwrap()
+                .is_some(),
+            "the replacement code must redeem"
+        );
+    }
+}

@@ -1,0 +1,245 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//! DELIBERATE DUPLICATION — do not merge these declarations into the
+//! rustfs-utils http module without a maintainer decision on the crate
+//! boundary.
+//!
+//! The canonical owners of these interop-contract values live in the
+//! rustfs-utils crate: `crates/utils/src/http/metadata_compat.rs` (dual
+//! x-rustfs-internal-/x-minio-internal- metadata keys),
+//! `crates/utils/src/http/header_compat.rs` (x-rustfs-/x-minio- header pairs),
+//! and `crates/utils/src/http/headers.rs` (standard S3 header names). This
+//! crate keeps a local copy because
+//! `rustfs-replication` is a wire-contract crate that must stay free of
+//! internal dependencies: `scripts/check_architecture_migration_rules.sh`
+//! rejects any `rustfs-utils` import or dependency here ("replication crate
+//! HTTP/helper contracts must not import or depend on rustfs-utils"), and the
+//! same rule bans `rustfs-filemeta` and `rustfs-storage-api`.
+//!
+//! Drift protection lives in the test module below: every constant's literal
+//! wire value is pinned, so a change on either side that breaks interop fails
+//! this crate's tests rather than silently forking the contract.
+
+use std::collections::HashMap;
+
+const RUSTFS_INTERNAL_PREFIX: &str = "x-rustfs-internal-";
+const MINIO_INTERNAL_PREFIX: &str = "x-minio-internal-";
+const RUSTFS_HEADER_PREFIX: &str = "x-rustfs-";
+const MINIO_HEADER_PREFIX: &str = "x-minio-";
+
+pub(crate) const AMZ_BUCKET_REPLICATION_STATUS: &str = "X-Amz-Replication-Status";
+pub(crate) const AMZ_OBJECT_LOCK_LEGAL_HOLD: &str = "X-Amz-Object-Lock-Legal-Hold";
+pub(crate) const AMZ_OBJECT_LOCK_MODE: &str = "X-Amz-Object-Lock-Mode";
+pub(crate) const AMZ_OBJECT_LOCK_RETAIN_UNTIL_DATE: &str = "X-Amz-Object-Lock-Retain-Until-Date";
+pub(crate) const AMZ_OBJECT_TAGGING: &str = "X-Amz-Tagging";
+pub(crate) const AMZ_WEBSITE_REDIRECT_LOCATION: &str = "x-amz-website-redirect-location";
+pub(crate) const CACHE_CONTROL: &str = "Cache-Control";
+pub(crate) const CONTENT_DISPOSITION: &str = "Content-Disposition";
+pub(crate) const CONTENT_ENCODING: &str = "Content-Encoding";
+pub(crate) const CONTENT_LANGUAGE: &str = "Content-Language";
+pub(crate) const EXPIRES: &str = "Expires";
+pub(crate) const SSEC_ALGORITHM_HEADER: &str = "x-amz-server-side-encryption-customer-algorithm";
+pub(crate) const SSEC_KEY_HEADER: &str = "x-amz-server-side-encryption-customer-key";
+pub(crate) const SSEC_KEY_MD5_HEADER: &str = "x-amz-server-side-encryption-customer-key-md5";
+pub(crate) const SUFFIX_ACTUAL_SIZE: &str = "actual-size";
+pub(crate) const SUFFIX_REPLICATION_STATUS: &str = "replication-status";
+pub(crate) const SUFFIX_REPLICATION_RESET_STATUS: &str = "replication-reset-status";
+
+fn internal_keys(suffix: &str) -> (String, String) {
+    (format!("{RUSTFS_INTERNAL_PREFIX}{suffix}"), format!("{MINIO_INTERNAL_PREFIX}{suffix}"))
+}
+
+fn rustfs_header_key(suffix: &str) -> String {
+    format!("{RUSTFS_HEADER_PREFIX}{suffix}")
+}
+
+fn minio_header_key(suffix: &str) -> String {
+    format!("{MINIO_HEADER_PREFIX}{suffix}")
+}
+
+pub(crate) fn internal_key_rustfs(suffix: &str) -> String {
+    format!("{RUSTFS_INTERNAL_PREFIX}{suffix}")
+}
+
+pub(crate) fn get_internal_metadata(map: &HashMap<String, String>, suffix: &str) -> Option<String> {
+    let (rustfs_key, minio_key) = internal_keys(suffix);
+    map.get(&rustfs_key)
+        .cloned()
+        .or_else(|| map.get(&minio_key).cloned())
+        .or_else(|| {
+            map.iter()
+                .find(|(key, _)| key.eq_ignore_ascii_case(&rustfs_key) || key.eq_ignore_ascii_case(&minio_key))
+                .map(|(_, value)| value.clone())
+        })
+}
+
+/// Return a non-empty internal value only when every RustFS/MinIO alias
+/// present for the suffix agrees. A single alias remains valid for rolling
+/// upgrade compatibility; conflicts fail closed at security boundaries.
+pub(crate) fn get_consistent_internal_metadata<'a>(map: &'a HashMap<String, String>, suffix: &str) -> Option<&'a str> {
+    let (rustfs_key, minio_key) = internal_keys(suffix);
+    let mut value: Option<&String> = None;
+    for (key, candidate) in map {
+        if !key.eq_ignore_ascii_case(&rustfs_key) && !key.eq_ignore_ascii_case(&minio_key) {
+            continue;
+        }
+        if candidate.is_empty() || value.is_some_and(|current| current != candidate) {
+            return None;
+        }
+        value = Some(candidate);
+    }
+    value.map(String::as_str)
+}
+
+pub(crate) fn get_header_metadata(map: &HashMap<String, String>, suffix: &str) -> Option<String> {
+    let rustfs_key = rustfs_header_key(suffix);
+    let minio_key = minio_header_key(suffix);
+    map.get(&rustfs_key).cloned().or_else(|| map.get(&minio_key).cloned())
+}
+
+pub(crate) fn has_prefix_fold(s: &str, prefix: &str) -> bool {
+    if s.starts_with(prefix) {
+        return true;
+    }
+
+    s.get(..prefix.len())
+        .is_some_and(|s_prefix| s_prefix.eq_ignore_ascii_case(prefix))
+}
+
+pub(crate) fn trim_etag(etag: &str) -> String {
+    etag.trim_matches('"').to_string()
+}
+
+#[cfg(test)]
+pub(crate) fn insert_internal_metadata(map: &mut HashMap<String, String>, suffix: &str, value: String) {
+    let (rustfs_key, minio_key) = internal_keys(suffix);
+    map.insert(rustfs_key, value.clone());
+    map.insert(minio_key, value);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{
+        SUFFIX_ACTUAL_SIZE, SUFFIX_REPLICATION_RESET_STATUS, get_consistent_internal_metadata, get_header_metadata,
+        get_internal_metadata, has_prefix_fold, insert_internal_metadata, internal_key_rustfs, trim_etag,
+    };
+    use std::collections::HashMap;
+
+    #[test]
+    fn internal_metadata_prefers_rustfs_and_falls_back_to_minio() {
+        let mut metadata = HashMap::from([("x-minio-internal-actual-size".to_string(), "10".to_string())]);
+
+        assert_eq!(get_internal_metadata(&metadata, SUFFIX_ACTUAL_SIZE).as_deref(), Some("10"));
+
+        metadata.insert("x-rustfs-internal-actual-size".to_string(), "11".to_string());
+        assert_eq!(get_internal_metadata(&metadata, SUFFIX_ACTUAL_SIZE).as_deref(), Some("11"));
+    }
+
+    #[test]
+    fn internal_metadata_keeps_case_insensitive_lookup_compatibility() {
+        let metadata = HashMap::from([("X-RustFS-Internal-Actual-Size".to_string(), "12".to_string())]);
+
+        assert_eq!(get_internal_metadata(&metadata, SUFFIX_ACTUAL_SIZE).as_deref(), Some("12"));
+    }
+
+    #[test]
+    fn consistent_internal_metadata_accepts_single_or_matching_aliases_and_rejects_conflicts() {
+        for key in ["x-rustfs-internal-replication-status", "X-Minio-Internal-Replication-Status"] {
+            let metadata = HashMap::from([(key.to_string(), "arn:target=PENDING;".to_string())]);
+            assert_eq!(
+                get_consistent_internal_metadata(&metadata, "replication-status"),
+                Some("arn:target=PENDING;")
+            );
+        }
+
+        let matching = HashMap::from([
+            ("x-rustfs-internal-replication-status".to_string(), "arn:target=COMPLETED;".to_string()),
+            ("X-Minio-Internal-Replication-Status".to_string(), "arn:target=COMPLETED;".to_string()),
+        ]);
+        assert_eq!(
+            get_consistent_internal_metadata(&matching, "replication-status"),
+            Some("arn:target=COMPLETED;")
+        );
+
+        let conflicting = HashMap::from([
+            ("x-rustfs-internal-replication-status".to_string(), "arn:target=PENDING;".to_string()),
+            ("x-minio-internal-replication-status".to_string(), "arn:target=REPLICA;".to_string()),
+        ]);
+        assert!(get_consistent_internal_metadata(&conflicting, "replication-status").is_none());
+
+        let empty_alias = HashMap::from([
+            ("x-rustfs-internal-replication-status".to_string(), "arn:target=PENDING;".to_string()),
+            ("x-minio-internal-replication-status".to_string(), String::new()),
+        ]);
+        assert!(get_consistent_internal_metadata(&empty_alias, "replication-status").is_none());
+    }
+
+    #[test]
+    fn internal_metadata_insert_writes_rustfs_and_minio_keys() {
+        let mut metadata = HashMap::new();
+        insert_internal_metadata(&mut metadata, SUFFIX_ACTUAL_SIZE, "13".to_string());
+
+        assert_eq!(metadata.get("x-rustfs-internal-actual-size").map(String::as_str), Some("13"));
+        assert_eq!(metadata.get("x-minio-internal-actual-size").map(String::as_str), Some("13"));
+    }
+
+    #[test]
+    fn header_metadata_prefers_rustfs_then_minio() {
+        let mut metadata = HashMap::from([("x-minio-replication-reset-status".to_string(), "old".to_string())]);
+
+        assert_eq!(get_header_metadata(&metadata, SUFFIX_REPLICATION_RESET_STATUS).as_deref(), Some("old"));
+
+        metadata.insert("x-rustfs-replication-reset-status".to_string(), "new".to_string());
+        assert_eq!(get_header_metadata(&metadata, SUFFIX_REPLICATION_RESET_STATUS).as_deref(), Some("new"));
+    }
+
+    #[test]
+    fn helper_contracts_match_replication_wire_rules() {
+        assert_eq!(
+            internal_key_rustfs("replication-reset-arn:target"),
+            "x-rustfs-internal-replication-reset-arn:target"
+        );
+        assert_eq!(trim_etag("\"abc\""), "abc");
+        assert!(has_prefix_fold("X-Amz-Meta-Foo", "x-amz-meta-"));
+        assert!(!has_prefix_fold("X-Amz-Meta-Foo", "amz-meta"));
+    }
+
+    /// Pins every duplicated interop constant to its literal wire value. The
+    /// canonical owner lives in the rustfs-utils crate (see the module doc);
+    /// an arch guard forbids depending on it from this crate, so byte-for-byte
+    /// pinning here is what keeps the two copies from drifting apart.
+    #[test]
+    fn duplicated_interop_constants_pin_canonical_wire_values() {
+        use super::*;
+
+        assert_eq!(AMZ_BUCKET_REPLICATION_STATUS, "X-Amz-Replication-Status");
+        assert_eq!(AMZ_OBJECT_LOCK_LEGAL_HOLD, "X-Amz-Object-Lock-Legal-Hold");
+        assert_eq!(AMZ_OBJECT_LOCK_MODE, "X-Amz-Object-Lock-Mode");
+        assert_eq!(AMZ_OBJECT_LOCK_RETAIN_UNTIL_DATE, "X-Amz-Object-Lock-Retain-Until-Date");
+        assert_eq!(AMZ_OBJECT_TAGGING, "X-Amz-Tagging");
+        assert_eq!(AMZ_WEBSITE_REDIRECT_LOCATION, "x-amz-website-redirect-location");
+        assert_eq!(CACHE_CONTROL, "Cache-Control");
+        assert_eq!(CONTENT_DISPOSITION, "Content-Disposition");
+        assert_eq!(CONTENT_ENCODING, "Content-Encoding");
+        assert_eq!(CONTENT_LANGUAGE, "Content-Language");
+        assert_eq!(EXPIRES, "Expires");
+        assert_eq!(SSEC_ALGORITHM_HEADER, "x-amz-server-side-encryption-customer-algorithm");
+        assert_eq!(SSEC_KEY_HEADER, "x-amz-server-side-encryption-customer-key");
+        assert_eq!(SSEC_KEY_MD5_HEADER, "x-amz-server-side-encryption-customer-key-md5");
+        assert_eq!(SUFFIX_ACTUAL_SIZE, "actual-size");
+        assert_eq!(SUFFIX_REPLICATION_STATUS, "replication-status");
+        assert_eq!(SUFFIX_REPLICATION_RESET_STATUS, "replication-reset-status");
+    }
+}

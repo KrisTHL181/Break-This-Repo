@@ -1,0 +1,469 @@
+//! Parts of advancing time in a universe.
+//!
+//! TODO(ecs): Figure out if this module makes sense after we finish the ECS migration.
+
+#![allow(
+    elided_lifetimes_in_paths,
+    clippy::needless_pass_by_value,
+    reason = "Bevy systems"
+)]
+
+use alloc::vec::Vec;
+use core::time::Duration;
+
+use bevy_ecs::{prelude as ecs, schedule::IntoScheduleConfigs as _, system::IntoSystem as _};
+use bevy_platform::time::Instant;
+use descriptive_unwrap::OptionExt as _;
+use hashbrown::{HashMap as HbHashMap, HashSet as HbHashSet};
+
+use crate::behavior;
+use crate::block;
+use crate::fluff::{self, Fluff};
+use crate::inv;
+use crate::math::{Cube, GridCoordinate, Gridgid};
+use crate::rerun_glue as rg;
+use crate::space::{
+    self, Contents, LightStorage, LightUpdatesInfo, Notifiers, Palette, Space, SpacePhysics,
+    SpaceStepInfo, SpaceTransaction, Ticks,
+};
+use crate::time::{self, TimeStats};
+use crate::transaction::{Merge as _, Transaction as _};
+use crate::universe::{
+    self, InfoCollector, QueryStateBundle as _, ReadTicket, SealedMember as _, UniverseId,
+};
+#[cfg(feature = "auto-threads")]
+use crate::util::ignore_poison;
+
+use super::palette;
+
+// -------------------------------------------------------------------------------------------------
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, bevy_ecs::schedule::SystemSet)]
+pub(crate) struct SpaceUpdateSet;
+
+/// Install systems related to `Space`s.
+pub(crate) fn add_space_systems(world: &mut ecs::World) {
+    // TODO(ecs): space behavior stepping is currently hardcoded in `Universe::step()`, not here
+
+    // Must be the same list of resources in `collect_space_step_info()`.
+    InfoCollector::<TimeStats, palette::PaletteStatsTag>::register(world);
+    InfoCollector::<TickActionsInfo>::register(world);
+    InfoCollector::<LightUpdatesInfo>::register(world);
+    InfoCollector::<behavior::BehaviorSetStepInfo, Space>::register(world);
+
+    let mut schedules = world.resource_mut::<ecs::Schedules>();
+    schedules.add_systems(
+        time::schedule::Step,
+        // TODO: Tick actions and behaviors need to be in an order because, for simulation logic,
+        // they both do mutations the other can see, and because, for borrowing, they both use
+        // `&mut World`, but we have not yet decided that this order is the “correct” in which to
+        // execute them.
+        ecs::IntoScheduleConfigs::chain((
+            execute_tick_actions_system,
+            step_behaviors_system.pipe(execute_behavior_transactions_system),
+        ))
+        .in_set(SpaceUpdateSet),
+    );
+
+    // Light updates should:
+    // * happen after changes to the world so the user sees the freshest light, and
+    // * still happen if time is paused,
+    // and putting them in `AfterStep` satisfies those requirements.
+    // (In the long run, we want to be doing light updates asynchronously in parallel with
+    // everything else, but that will require cleverer data management.)
+    schedules.add_systems(
+        time::schedule::AfterStep,
+        update_light_system.in_set(SpaceUpdateSet),
+    );
+
+    palette::add_palette_systems(world);
+}
+
+/// System that assembles the info from individual systems’ runs into a [`SpaceStepInfo`].
+/// This should be called at the end of a universe step.
+pub(crate) fn collect_space_step_info(
+    // Each of these resources is added in `add_space_systems()`.
+    mut evaluations: ecs::ResMut<InfoCollector<TimeStats, palette::PaletteStatsTag>>,
+    mut cubes: ecs::ResMut<InfoCollector<TickActionsInfo>>,
+    mut light: ecs::ResMut<InfoCollector<LightUpdatesInfo>>,
+    mut behaviors: ecs::ResMut<InfoCollector<behavior::BehaviorSetStepInfo, Space>>,
+) -> SpaceStepInfo {
+    let TickActionsInfo { count, time } = cubes.finish_collection();
+    SpaceStepInfo {
+        spaces: 1, // blatant lie
+        evaluations: evaluations.finish_collection(),
+        cube_ticks: count,
+        cube_time: time,
+        behaviors: behaviors.finish_collection(),
+        light: light.finish_collection(),
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
+
+#[derive(Clone, Copy, Debug, Default, derive_more::AddAssign)]
+// must be pub only because this is indirectly mentioned in Universe::step
+pub(crate) struct TickActionsInfo {
+    /// Number of cubes ticked.
+    count: usize,
+    /// Time spent on cube ticks.
+    time: Duration,
+}
+
+/// ECS system that handles the [`block::BlockAttributes::tick_action`]s of blocks in [`Space`]s.
+///
+/// TODO(ecs): Make this a more proper system with narrower queries that can run in parallel
+/// and not need `everything_but()` access.
+pub(crate) fn execute_tick_actions_system(
+    world: &mut ecs::World,
+    space_write_query_state: &mut ecs::QueryState<(
+        ecs::Entity,
+        &universe::Membership,
+        <SpaceTransaction as universe::TransactionOnEcs>::WriteQueryData,
+    )>,
+    read_queries: &mut universe::MemberReadQueryStates,
+) -> ecs::Result {
+    let _lex = rg::LogExecution::from_world(world, "tick_actions", "running");
+    let universe_id: UniverseId = *world.resource();
+    read_queries.update_archetypes(world);
+    let tick = world.resource::<universe::CurrentStep>().get()?.tick;
+
+    // Need unsafe cell to create "everything_but" read tickets.
+    let world_cell = world.as_unsafe_world_cell();
+
+    let mut ticked_cube_count: usize = 0;
+    let start_time = Instant::now();
+    for (
+        space_entity,
+        _membership,
+        (palette, contents, light, behaviors, default_spawn, notifiers, mut ticks_component),
+    ) in
+        // SAFETY: no other accesses exist outside this loop
+        unsafe { space_write_query_state.iter_unchecked(world_cell) }
+    {
+        let Ticks {
+            cubes_wanting_ticks,
+        } = &mut *ticks_component;
+
+        // SAFETY: this ticket is for everything but `space_entity` and the rest of
+        // this loop iteration will only access `space_entity`.
+        //
+        // TODO(ecs): Rearrange this system so that we don't need everything_but(),
+        // and can instead provide a normal read ticket because we’re not mutably borrowing
+        // the space.
+        let everything_but_read_ticket = unsafe {
+            ReadTicket::everything_but(universe_id, world_cell, space_entity, read_queries)
+        };
+
+        // Review self.cubes_wanting_ticks, and filter out actions that shouldn't
+        // happen this tick.
+        // TODO: Use a schedule-aware structure for cubes_wanting_ticks so we can iterate over
+        // fewer cubes.
+        let mut to_remove: Vec<Cube> = Vec::new();
+        let mut cubes_to_tick: Vec<Cube> = cubes_wanting_ticks
+            .iter()
+            .copied()
+            .filter(|&cube| {
+                if let Some(block::TickAction {
+                    operation: _,
+                    schedule,
+                }) = palette.entry(contents.0[cube]).evaluated.attributes().tick_action
+                {
+                    if !schedule.contains(tick) {
+                        // Don't tick yet.
+                        false
+                    } else {
+                        true
+                    }
+                } else {
+                    // Doesn't actually have an action.
+                    to_remove.push(cube);
+                    false
+                }
+            })
+            .collect();
+        // Sort the list so our results are deterministic (in particular, in the order of the
+        // emitted `Fluff`).
+        // TODO: Maybe it would be more efficient to use a `BTreeMap` for storage? Benchmark.
+        cubes_to_tick.sort_unstable_by_key(|&cube| <[GridCoordinate; 3]>::from(cube));
+
+        // Remove cubes that don't actually need ticks now or later.
+        for cube in to_remove {
+            cubes_wanting_ticks.remove(&cube);
+        }
+
+        // TODO: need to construct Read from our queries
+        let read: space::Read = space::Read {
+            palette: &palette,
+            contents: contents.0.as_ref(),
+            light: &light,
+            physics: &SpacePhysics::DEFAULT, // TODO: wrong
+            behaviors: &behaviors,
+            default_spawn: &default_spawn.0,
+            notifiers,
+        };
+
+        let mut first_pass_txn = SpaceTransaction::default();
+        let mut first_pass_cubes = HbHashSet::new();
+        let mut first_pass_conflicts: HbHashMap<Cube, SpaceTransaction> = HbHashMap::new();
+        for cube in cubes_to_tick.iter().copied() {
+            let Some(block::TickAction {
+                operation,
+                schedule: _,
+            }) = palette.entry(contents.0[cube]).evaluated.attributes().tick_action.as_ref()
+            else {
+                continue;
+            };
+
+            // Obtain the transaction.
+            let txn: SpaceTransaction = match operation.apply(
+                &read,
+                None,
+                Gridgid::from_translation(cube.lower_bounds().to_vector()),
+            ) {
+                Ok((space_txn, inventory_txn)) => {
+                    assert_eq!(inventory_txn, inv::InventoryTransaction::default());
+
+                    match universe::TransactionOnEcs::check(
+                        &space_txn,
+                        read,
+                        everything_but_read_ticket,
+                    ) {
+                        Err(_e) => {
+                            // The operation produced a transaction which, itself, cannot execute
+                            // against the state of the Space. Omit it from the set.
+                            notifiers.fluff_notifier.notify(&space::SpaceFluff {
+                                position: cube,
+                                fluff: Fluff::BlockFault(fluff::BlockFault::TickPrecondition(
+                                    space_txn.bounds().unwrap_or_else(|| cube.grid_aab()),
+                                )),
+                            });
+                            SpaceTransaction::default()
+                        }
+                        Ok(_) => space_txn,
+                    }
+                }
+                Err(_) => {
+                    // The operation failed to apply. This is normal if it just isn't the right
+                    // conditions yet.
+                    notifiers.fluff_notifier.notify(&space::SpaceFluff {
+                        position: cube,
+                        fluff: Fluff::BlockFault(fluff::BlockFault::TickPrecondition(
+                            cube.grid_aab(),
+                        )),
+                    });
+                    SpaceTransaction::default()
+                }
+            };
+
+            // TODO: if we have already hit a conflict, we shouldn't be executing first_pass_txn,
+            // so we should just do a merge check and not a full merge.
+            match first_pass_txn.check_merge(&txn) {
+                Ok(check) => {
+                    // This cube's transaction successfully merged with the first_pass_txn.
+                    // Therefore, either it will be successful, *or* it will turn out that the
+                    // first pass set includes a conflict.
+                    first_pass_txn.commit_merge(txn, check);
+                    first_pass_cubes.insert(cube);
+                }
+                Err(_conflict) => {
+                    // This cube's transaction conflicts with something in the first pass set.
+                    // We now know that:
+                    // * we're not going to commit this cube's transaction
+                    // * we're not going to commit some or all of the first_pass_txn,
+                    // but we still need to continue to refine the conflict detection.
+                    first_pass_conflicts.insert(cube, txn);
+                }
+            }
+        }
+
+        // TODO: What we should be doing now is identifying which transactions do not conflict with
+        // *any* other transaction. That will require a spatial data structure to compute
+        // efficiently. Instead, we'll just stop *all* tick actions, which is correct-in-a-sense
+        // even if it's very suboptimal game mechanics.
+        if first_pass_conflicts.is_empty() {
+            super::Mutation::with_write_query(
+                everything_but_read_ticket,
+                (
+                    palette,
+                    contents,
+                    light,
+                    behaviors,
+                    default_spawn,
+                    notifiers,
+                    ticks_component,
+                ),
+                |mutation| {
+                    if let Err(e) = first_pass_txn.execute_m(mutation) {
+                        // This really shouldn't happen, because we already check()ed every part of
+                        // first_pass_txn, but we don't want it to be fatal.
+                        // TODO: this logging should use util::ErrorChain
+                        log::error!("cube tick transaction could not be executed: {e:#?}");
+                    }
+                },
+            );
+
+            ticked_cube_count += first_pass_cubes.len();
+        } else {
+            // Don't run the transaction. Instead, report conflicts.
+            for cube in first_pass_cubes {
+                notifiers.fluff_notifier.notify(&space::SpaceFluff {
+                    position: cube,
+                    fluff: Fluff::BlockFault(fluff::BlockFault::TickConflict(
+                        // pick an arbitrary conflicting txn — best we can do for now till we
+                        // hqve the proper fine-grained conflict detector.
+                        {
+                            let (other_cube, other_txn) =
+                                first_pass_conflicts.iter().next().none_is_unreachable();
+                            other_txn.bounds().unwrap_or_else(|| other_cube.grid_aab())
+                        },
+                    )),
+                });
+            }
+            for cube in first_pass_conflicts.keys().copied() {
+                notifiers.fluff_notifier.notify(&space::SpaceFluff {
+                    position: cube,
+                    fluff: Fluff::BlockFault(fluff::BlockFault::TickConflict(
+                        first_pass_txn.bounds().unwrap_or_else(|| cube.grid_aab()),
+                    )),
+                });
+            }
+        }
+    }
+
+    world.resource_mut::<InfoCollector<TickActionsInfo>>().record(TickActionsInfo {
+        count: ticked_cube_count,
+        time: start_time.elapsed(),
+    });
+
+    Ok(())
+}
+
+fn update_light_system(
+    lex: rg::LogExecution,
+    current_step: ecs::Res<'_, universe::CurrentStep>,
+    info_collector: ecs::ResMut<InfoCollector<LightUpdatesInfo>>,
+    mut spaces_query: ecs::Query<(&Palette, &mut LightStorage, &mut Contents, &Notifiers)>,
+) -> ecs::Result {
+    let _lex = lex.name("light", "-");
+    let step_input = current_step.get()?;
+
+    cfg_select! {
+        feature = "auto-threads" => {
+            // for access from par_iter
+            let info_collector = bevy_platform::sync::Mutex::new(info_collector);
+
+            // Assume we can run in parallel, so the time per space is the full time.
+            // TODO: But the light updates themselves are also parallelized, so we may have
+            // contention that disagrees with such simple analyses. Fix that.
+            let duration = step_input.duration_for_space_light_updates(1);
+
+            spaces_query.par_iter_mut().for_each(
+                |(palette, mut light_storage, mut contents, notifiers)| {
+                    let (uc, mut change_buffer) =
+                        Space::borrow_light_update_context_ecs(palette, &mut contents, notifiers);
+                    let info = light_storage.update_light_from_queue(
+                        uc,
+                        &mut change_buffer,
+                        duration,
+                    );
+
+                    // ignore_poison is valid because we are appending only
+                    ignore_poison(info_collector.lock()).record(info);
+                },
+            );
+        }
+        _ => {
+            let mut info_collector = info_collector;
+
+            // Because execution is single-threaded, we need to partition the available time among
+            // the spaces that need it. In order to do so, find which ones have anything in their
+            // queue at all.
+            //
+            // TODO: Use some kind of change flags to not need to iterate over all spaces?
+            let spaces_needing_light_updates: usize = spaces_query
+                .iter()
+                .filter(|(_, light_storage, _, _)| !light_storage.light_update_queue.is_empty())
+                .count();
+            let duration = step_input.duration_for_space_light_updates(spaces_needing_light_updates);
+
+            spaces_query.iter_mut().for_each(
+                |(palette, mut light_storage, mut contents, notifiers)| {
+                    let (uc, mut change_buffer) =
+                        Space::borrow_light_update_context_ecs(palette, &mut contents, notifiers);
+                    let info = light_storage.update_light_from_queue(
+                        uc,
+                        &mut change_buffer,
+                        duration,
+                    );
+
+                    info_collector.record(info);
+                },
+            );
+
+            // log::trace!("light duration requested {duration:?} actual time {:?}", t1 - t0);
+        }
+    }
+
+    Ok(())
+}
+
+pub(crate) fn step_behaviors_system(
+    lex: rg::LogExecution,
+    current_step: ecs::Res<universe::CurrentStep>,
+    mut info_collector: ecs::ResMut<InfoCollector<behavior::BehaviorSetStepInfo, Space>>,
+    spaces: ecs::Query<(
+        &universe::Membership,
+        <Space as universe::SealedMember>::ReadQueryData,
+    )>,
+    everything: universe::AllMemberReadQueries,
+) -> Result<(Vec<universe::UniverseTransaction>, rg::LogExecutionActive), ecs::BevyError> {
+    let lex = lex.name("behaviors", "step");
+    let step_input = current_step.get()?;
+    let tick = step_input.tick;
+    let everything = everything.get();
+    let read_ticket = ReadTicket::from_queries(&everything);
+
+    let mut transactions: Vec<universe::UniverseTransaction> = Vec::new();
+
+    for (membership, data) in spaces {
+        let space_handle = membership.handle();
+        let space_read = Space::read_from_query(data);
+
+        if !tick.paused() {
+            let (transaction, behavior_step_info) = space_read.behaviors.step(
+                read_ticket,
+                &space_read,
+                &(|t: SpaceTransaction| t.bind(space_handle.clone())),
+                SpaceTransaction::behaviors,
+                tick,
+            );
+            info_collector.record(behavior_step_info);
+            if !transaction.is_empty() {
+                transactions.push(transaction);
+            }
+        }
+    }
+
+    lex.set_state("schedule wait");
+    Ok((transactions, lex))
+}
+
+pub(crate) fn execute_behavior_transactions_system(
+    ecs::In((transactions, lex)): ecs::In<(
+        Vec<universe::UniverseTransaction>,
+        rg::LogExecutionActive,
+    )>,
+    world: &mut ecs::World,
+    read_queries: &mut universe::MemberReadQueryStates,
+) {
+    lex.set_state("execute");
+    // TODO: Quick hack -- we would actually like to execute non-conflicting transactions and skip conflicting ones...
+    for t in transactions {
+        if let Err(e) = t.execute_on_world(world, read_queries) {
+            // TODO: Need to report these failures back to the source
+            // ... and perhaps in the UniverseStepInfo
+            log::info!("Transaction failure: {e}");
+        }
+    }
+}

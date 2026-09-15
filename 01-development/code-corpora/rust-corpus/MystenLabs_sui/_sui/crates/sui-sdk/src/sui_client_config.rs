@@ -1,0 +1,203 @@
+// Copyright (c) Mysten Labs, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+use std::fmt::{Display, Formatter, Write};
+
+use anyhow::anyhow;
+use serde::{Deserialize, Serialize};
+use serde_with::serde_as;
+
+use crate::{SUI_DEVNET_URL, SUI_LOCAL_NETWORK_URL, SUI_MAINNET_URL, SUI_TESTNET_URL};
+use sui_config::Config;
+use sui_keys::keystore::{AccountKeystore, Keystore};
+use sui_rpc_api::Client;
+use sui_rpc_api::client::HeadersInterceptor;
+use sui_types::{
+    base_types::*,
+    digests::{get_mainnet_chain_identifier, get_testnet_chain_identifier},
+};
+
+#[serde_as]
+#[derive(Serialize, Deserialize)]
+pub struct SuiClientConfig {
+    /// The keystore that holds the user's private keys, typically filebased keystore
+    pub keystore: Keystore,
+    /// Optional external keystore for managing keys that are not stored in the main keystore.
+    pub external_keys: Option<Keystore>,
+    /// List of environments that the client can connect to.
+    pub envs: Vec<SuiEnv>,
+    /// The alias of the currently active environment.
+    pub active_env: Option<String>,
+    /// The address that is currently active in the keystore.
+    pub active_address: Option<SuiAddress>,
+}
+
+impl SuiClientConfig {
+    pub fn new(keystore: Keystore) -> Self {
+        SuiClientConfig {
+            keystore,
+            external_keys: None,
+            envs: vec![],
+            active_env: None,
+            active_address: None,
+        }
+    }
+
+    pub fn get_env(&self, alias: &Option<String>) -> Option<&SuiEnv> {
+        if let Some(alias) = alias {
+            self.envs.iter().find(|env| &env.alias == alias)
+        } else {
+            self.envs.first()
+        }
+    }
+
+    pub fn get_active_env(&self) -> Result<&SuiEnv, anyhow::Error> {
+        self.get_env(&self.active_env).ok_or_else(|| {
+            anyhow!(
+                "Environment configuration not found for env [{}]",
+                self.active_env.as_deref().unwrap_or("None")
+            )
+        })
+    }
+
+    pub fn add_env(&mut self, env: SuiEnv) {
+        if !self
+            .envs
+            .iter()
+            .any(|other_env| other_env.alias == env.alias)
+        {
+            self.envs.push(env)
+        }
+    }
+
+    /// Update the cached chain ID for the specified environment.
+    pub fn update_env_chain_id(
+        &mut self,
+        alias: &str,
+        chain_id: String,
+    ) -> Result<(), anyhow::Error> {
+        let env = self
+            .envs
+            .iter_mut()
+            .find(|env| env.alias == alias)
+            .ok_or_else(|| anyhow!("Environment {} not found", alias))?;
+        env.chain_id = Some(chain_id);
+        Ok(())
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SuiEnv {
+    pub alias: String,
+    pub rpc: String,
+    pub ws: Option<String>,
+    /// Basic HTTP access authentication in the format of username:password, if needed.
+    pub basic_auth: Option<String>,
+    /// Cached chain identifier for this environment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chain_id: Option<String>,
+}
+
+impl SuiEnv {
+    pub fn create_grpc_client(&self) -> Result<Client, anyhow::Error> {
+        let mut client = Client::new(&self.rpc)?;
+
+        if let Some(basic_auth) = &self.basic_auth {
+            let fields: Vec<_> = basic_auth.split(':').collect();
+            if fields.len() != 2 {
+                return Err(anyhow!(
+                    "Basic auth should be in the format `username:password`"
+                ));
+            }
+            let mut headers = HeadersInterceptor::new();
+            headers.basic_auth(fields[0], Some(fields[1]));
+            client = client.with_headers(headers);
+        }
+
+        Ok(client)
+    }
+
+    pub fn devnet() -> Self {
+        Self {
+            alias: "devnet".to_string(),
+            rpc: SUI_DEVNET_URL.into(),
+            ws: None,
+            basic_auth: None,
+            chain_id: None,
+        }
+    }
+    pub fn testnet() -> Self {
+        Self {
+            alias: "testnet".to_string(),
+            rpc: SUI_TESTNET_URL.into(),
+            ws: None,
+            basic_auth: None,
+            chain_id: Some(get_testnet_chain_identifier().to_string()),
+        }
+    }
+
+    pub fn localnet() -> Self {
+        Self {
+            alias: "local".to_string(),
+            rpc: SUI_LOCAL_NETWORK_URL.into(),
+            ws: None,
+            basic_auth: None,
+            chain_id: None,
+        }
+    }
+
+    pub fn mainnet() -> Self {
+        Self {
+            alias: "mainnet".to_string(),
+            rpc: SUI_MAINNET_URL.into(),
+            ws: None,
+            basic_auth: None,
+            chain_id: Some(get_mainnet_chain_identifier().to_string()),
+        }
+    }
+}
+
+impl Display for SuiEnv {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut writer = String::new();
+        writeln!(writer, "Active environment : {}", self.alias)?;
+        write!(writer, "RPC URL: {}", self.rpc)?;
+        if let Some(ws) = &self.ws {
+            writeln!(writer)?;
+            write!(writer, "Websocket URL: {ws}")?;
+        }
+        if let Some(basic_auth) = &self.basic_auth {
+            writeln!(writer)?;
+            write!(writer, "Basic Auth: {}", basic_auth)?;
+        }
+        if let Some(chain_id) = &self.chain_id {
+            writeln!(writer)?;
+            write!(writer, "Chain ID: {}", chain_id)?;
+        }
+        write!(f, "{}", writer)
+    }
+}
+
+impl Config for SuiClientConfig {}
+
+impl Display for SuiClientConfig {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut writer = String::new();
+
+        writeln!(
+            writer,
+            "Managed addresses : {}",
+            self.keystore.addresses().len()
+        )?;
+        write!(writer, "Active address: ")?;
+        match self.active_address {
+            Some(r) => writeln!(writer, "{}", r)?,
+            None => writeln!(writer, "None")?,
+        };
+        writeln!(writer, "{}", self.keystore)?;
+        if let Ok(env) = self.get_active_env() {
+            write!(writer, "{}", env)?;
+        }
+        write!(f, "{}", writer)
+    }
+}

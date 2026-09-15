@@ -1,0 +1,56 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+use compio::fs::OpenOptions;
+use err_trail::ErrContext;
+use iggy_common::IggyError;
+use tracing::trace;
+
+/// Path handle for a segment's messages file, validated openable at segment
+/// build. Reads go through the partition's own sealed-segment handles; this
+/// exists so storage plumbing (bootstrap, state transfer) can resolve the
+/// segment path.
+#[derive(Debug)]
+pub struct MessagesReader {
+    file_path: String,
+}
+
+impl MessagesReader {
+    /// Opens the messages file read-only to prove it exists, then drops the
+    /// descriptor: nothing reads through this type.
+    pub async fn new(file_path: &str) -> Result<Self, IggyError> {
+        OpenOptions::new()
+            .read(true)
+            .open(file_path)
+            .await
+            .error(|e: &std::io::Error| format!("Failed to open messages file: {file_path}. {e}"))
+            .map_err(|_| IggyError::CannotReadFile)?;
+
+        Ok(Self::from_validated_path(file_path))
+    }
+
+    pub fn path(&self) -> String {
+        self.file_path.clone()
+    }
+
+    pub(super) fn from_validated_path(file_path: &str) -> Self {
+        trace!("Validated messages file for reading: {file_path}");
+        Self {
+            file_path: file_path.to_owned(),
+        }
+    }
+}

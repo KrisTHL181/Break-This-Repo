@@ -1,0 +1,167 @@
+use std::path::Path;
+
+use crate::util::data_structures::IndexSet;
+use cargo_util_schemas::manifest::InheritableDependency;
+use cargo_util_terminal::report::AnnotationKind;
+use cargo_util_terminal::report::Group;
+use cargo_util_terminal::report::Level;
+use cargo_util_terminal::report::Origin;
+use cargo_util_terminal::report::Snippet;
+use tracing::instrument;
+
+use super::SUSPICIOUS;
+use crate::CargoResult;
+use crate::GlobalContext;
+use crate::diagnostics::Lint;
+use crate::diagnostics::LintLevelProduct;
+use crate::diagnostics::ScopedDiagnosticStats;
+use crate::diagnostics::get_key_value_span;
+use crate::diagnostics::workspace_rel_path;
+use crate::workspace::MaybePackage;
+use crate::workspace::Workspace;
+
+pub static LINT: &Lint = &Lint {
+    name: "unused_workspace_dependencies",
+    primary_group: &SUSPICIOUS,
+    msrv: Some(super::CARGO_LINTS_MSRV),
+    feature_gate: None,
+    docs: Some(
+        r#"
+### What it does
+Checks for any entry in `[workspace.dependencies]` that has not been inherited
+
+### Why is this bad?
+They can give the false impression that these dependencies are used
+
+### Example
+```toml
+[workspace.dependencies]
+regex = "1"
+
+[dependencies]
+```
+"#,
+    ),
+};
+
+#[instrument(skip_all)]
+pub(crate) fn lint_workspace(
+    ws: &Workspace<'_>,
+    maybe_pkg: &MaybePackage,
+    manifest_path: &Path,
+    level: LintLevelProduct,
+    pkg_stats: &mut ScopedDiagnosticStats<'_>,
+    gctx: &GlobalContext,
+) -> CargoResult<()> {
+    let LintLevelProduct {
+        level: lint_level,
+        source,
+    } = level;
+
+    let workspace_deps: IndexSet<_> = maybe_pkg
+        .original_toml()
+        .and_then(|t| t.workspace.as_ref())
+        .and_then(|w| w.dependencies.as_ref())
+        .iter()
+        .flat_map(|d| d.keys())
+        .collect();
+
+    let mut inherited_deps = IndexSet::default();
+    for member in ws.members() {
+        let Some(original_toml) = member.manifest().original_toml() else {
+            return Ok(());
+        };
+        inherited_deps.extend(
+            original_toml
+                .build_dependencies()
+                .into_iter()
+                .flatten()
+                .filter(|(_, d)| is_inherited(d))
+                .map(|(name, _)| name),
+        );
+        inherited_deps.extend(
+            original_toml
+                .dependencies
+                .iter()
+                .flatten()
+                .filter(|(_, d)| is_inherited(d))
+                .map(|(name, _)| name),
+        );
+        inherited_deps.extend(
+            original_toml
+                .dev_dependencies()
+                .into_iter()
+                .flatten()
+                .filter(|(_, d)| is_inherited(d))
+                .map(|(name, _)| name),
+        );
+        for target in original_toml.target.iter().flat_map(|t| t.values()) {
+            inherited_deps.extend(
+                target
+                    .build_dependencies()
+                    .into_iter()
+                    .flatten()
+                    .filter(|(_, d)| is_inherited(d))
+                    .map(|(name, _)| name),
+            );
+            inherited_deps.extend(
+                target
+                    .dependencies
+                    .iter()
+                    .flatten()
+                    .filter(|(_, d)| is_inherited(d))
+                    .map(|(name, _)| name),
+            );
+            inherited_deps.extend(
+                target
+                    .dev_dependencies()
+                    .into_iter()
+                    .flatten()
+                    .filter(|(_, d)| is_inherited(d))
+                    .map(|(name, _)| name),
+            );
+        }
+    }
+
+    for (i, unused) in workspace_deps.difference(&inherited_deps).enumerate() {
+        let document = maybe_pkg.document();
+        let contents = maybe_pkg.contents();
+        let level = lint_level.to_diagnostic_level();
+        let manifest_path = workspace_rel_path(ws, manifest_path);
+        let emitted_source = LINT.emitted_source(lint_level, source);
+
+        let mut primary = Group::with_title(
+            level.primary_title(format!("unused workspace dependency `{unused}`")),
+        );
+        if let Some(document) = document
+            && let Some(contents) = contents
+        {
+            let mut snippet = Snippet::source(contents).path(&manifest_path);
+            if let Some(span) =
+                get_key_value_span(document, &["workspace", "dependencies", unused.as_str()])
+            {
+                snippet = snippet.annotation(AnnotationKind::Primary.span(span.key));
+            }
+            primary = primary.element(snippet);
+        } else {
+            primary = primary.element(Origin::path(&manifest_path));
+        }
+        if i == 0 {
+            primary = primary.element(Level::NOTE.message(emitted_source));
+        }
+        let mut report = vec![primary];
+        let help = Group::with_title(Level::HELP.secondary_title(format!(
+            "consider removing the workspace dependency `{unused}`"
+        )));
+        report.push(help);
+
+        pkg_stats.record_lint(lint_level);
+        gctx.shell().print_report(&report, lint_level.force())?;
+    }
+
+    Ok(())
+}
+
+fn is_inherited(dep: &InheritableDependency) -> bool {
+    matches!(dep, InheritableDependency::Inherit(_))
+}

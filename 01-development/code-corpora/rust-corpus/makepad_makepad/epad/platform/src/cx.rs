@@ -1,0 +1,664 @@
+use {
+    crate::{
+        action::ActionsBuf,
+        action::{ActionSend, ACTION_SENDER_GLOBAL},
+        area::Area,
+        component::ComponentRegistries,
+        cx_api::CxOsOp,
+        debug::Debug,
+        display_context::DisplayContext,
+        draw_list::CxDrawListPool,
+        draw_matrix::CxDrawMatrixPool,
+        draw_pass::CxDrawPassPool,
+        draw_shader::CxDrawShaders,
+        event::{
+            CancelScope, CxCancelScopes, CxDragDrop, CxFingers, CxKeyboard, DrawEvent, Event,
+            NextFrame, Trigger, WindowGeomChangeEvent,
+        },
+        geometry::CxGeometryPool,
+        gpu_info::GpuInfo,
+        os::CxOs,
+        perf_monitor::PerfMonitor,
+        performance_stats::PerformanceStats,
+        script::script::CxScriptData,
+        sploded::SplodedView,
+        texture::{CxTexturePool, Texture, TextureFormat, TextureUpdated},
+        thread::{SignalToUI, ToUIReceiver},
+        uniform_buffer::CxUniformBufferPool,
+        window::CxWindowPool,
+    },
+    makepad_futures::{
+        executor,
+        executor::{Executor, Spawner},
+    },
+    makepad_network::NetworkRuntime,
+    makepad_script::*,
+    makepad_studio_protocol::{
+        RunViewFrameData, RunViewFrameRequest, ScreenshotRequest, WidgetSnapshot,
+    },
+    std::{
+        any::{Any, TypeId},
+        cell::RefCell,
+        collections::{HashMap, HashSet, VecDeque},
+        rc::Rc,
+        sync::Arc,
+    },
+};
+
+//pub use makepad_shader_compiler::makepad_derive_live::*;
+//pub use makepad_shader_compiler::makepad_math::*;
+
+pub(crate) struct PendingCameraPlayback {
+    pub permission: crate::permission::Permission,
+    pub video_id: LiveId,
+    pub source: crate::event::VideoSource,
+    pub camera_preview_mode: crate::event::video_playback::CameraPreviewMode,
+    pub external_texture_id: u32,
+    pub texture_id: crate::texture::TextureId,
+    pub autoplay: bool,
+    pub should_loop: bool,
+}
+
+pub struct Cx {
+    pub script_vm: Option<Box<ScriptVmBase>>,
+    pub script_data: CxScriptData,
+    pub package_root: Option<String>,
+
+    pub debug_trace_active: bool,
+
+    pub(crate) os_type: OsType,
+    pub in_makepad_studio: bool,
+    /// Game controllers forwarded by Studio. An app hosted by Studio is a
+    /// child process with no window, so the OS hands controller input to
+    /// Studio instead; this is where that arrives, and it is what
+    /// `game_input_states` reads while `in_makepad_studio` is set.
+    pub(crate) game_input_remote: Vec<crate::event::game_input::GameInputState>,
+    pub demo_time_repaint: bool,
+    pub(crate) gpu_info: GpuInfo,
+    pub(crate) xr_capabilities: XrCapabilities,
+    pub(crate) cpu_cores: usize,
+    pub null_texture: Texture,
+    pub null_cube_texture: Texture,
+    pub windows: CxWindowPool,
+    pub passes: CxDrawPassPool,
+    pub draw_lists: CxDrawListPool,
+    pub draw_matrices: CxDrawMatrixPool,
+    pub textures: CxTexturePool,
+    pub uniform_buffers: CxUniformBufferPool,
+    pub(crate) geometries: CxGeometryPool,
+
+    pub draw_shaders: CxDrawShaders,
+
+    pub new_draw_event: DrawEvent,
+
+    pub redraw_id: u64,
+
+    pub(crate) repaint_id: u64,
+    pub(crate) event_id: u64,
+    pub(crate) timer_id: u64,
+    pub(crate) next_frame_id: u64,
+    pub(crate) permissions_request_id: i32,
+
+    pub keyboard: CxKeyboard,
+    pub(crate) cancel_scopes: CxCancelScopes,
+    pub fingers: CxFingers,
+    pub(crate) ime_area: Area,
+    pub keyboard_shift: f64,
+    pub(crate) drag_drop: CxDragDrop,
+
+    pub(crate) platform_ops: VecDeque<CxOsOp>,
+    pub(crate) pending_camera_playbacks: Vec<PendingCameraPlayback>,
+
+    pub(crate) new_next_frames: HashSet<NextFrame>,
+
+    pub new_actions: ActionsBuf,
+
+    pub(crate) dependencies: HashMap<String, CxDependency>,
+
+    pub(crate) triggers: HashMap<Area, Vec<Trigger>>,
+    /*
+    pub (crate) live_file_change_receiver: std::sync::mpsc::Receiver<Vec<LiveFileChange>>,
+    pub (crate) live_file_change_sender: std::sync::mpsc::Sender<Vec<LiveFileChange >>,
+    */
+    pub(crate) action_receiver: std::sync::mpsc::Receiver<ActionSend>,
+
+    pub os: CxOs,
+    // (cratethis cuts the compiletime of an end-user application in half
+    pub(crate) event_handler: Option<Box<dyn FnMut(&mut Cx, &Event)>>,
+
+    pub(crate) globals: Vec<(TypeId, Box<dyn Any>)>,
+
+    pub components: ComponentRegistries,
+
+    pub(crate) self_ref: Option<Rc<RefCell<Cx>>>,
+    pub(crate) in_draw_event: bool,
+
+    /// Display context for the main window, used by AdaptiveView
+    pub display_context: DisplayContext,
+
+    /// When true, the next event-loop iteration will fire `Event::ScriptReapply`,
+    /// which re-applies the captured app value with `Apply::ScriptReapply`
+    /// *without* re-running `script_mod`. Use this when a runtime mutation
+    /// has updated a shared heap object (e.g. `script_eval!` overriding a
+    /// preference); widgets that hold a reference to that object will pick
+    /// up the new value on re-apply, and `script_eval!` overrides are
+    /// preserved because the source-defined defaults aren't re-asserted.
+    pub pending_script_reapply: bool,
+
+    /// When true, the next event-loop iteration will fire `Event::LiveEdit`,
+    /// which re-runs `script_mod` and re-applies with `Apply::Rebake`. Use
+    /// this when a primitive heap value (e.g. `mod.widgets.SAFE_INSET_PAD_TOP`)
+    /// has changed and needs to be re-baked into widget definitions that
+    /// reference it via expressions like `top: (mod.widgets.SAFE_INSET_PAD_TOP)`
+    /// — those expressions are only re-evaluated when `script_mod` re-runs.
+    /// The re-run is still a full-tree walk, so prefer
+    /// `pending_script_reapply` whenever the change can be modeled as a
+    /// shared-heap-object mutation instead.
+    pub pending_live_edit_request: bool,
+
+    /// Which `Apply` variant the pending `Event::LiveEdit` should re-apply
+    /// the freshly re-run `script_mod` value with. A file-change hot reload
+    /// means the DSL actually changed, so the new template wins
+    /// (`Apply::Reload`). A `request_live_edit()` re-bake did not change the
+    /// DSL, so imperative runtime state must survive (`Apply::Rebake`) —
+    /// otherwise every safe-area inset change wipes each `set_text`,
+    /// `set_visible` and animator state in the tree.
+    pub(crate) live_edit_apply: Apply,
+
+    /// `WindowGeomChange` events queued up during an event dispatch.
+    pub(crate) pending_window_geom_changes: Vec<WindowGeomChangeEvent>,
+    pub(crate) clear_hover_queued: bool,
+
+    pub debug: Debug,
+
+    #[allow(dead_code)]
+    pub(crate) executor: Option<Executor>,
+    pub(crate) spawner: Spawner,
+
+    pub(crate) studio_http: String,
+
+    pub performance_stats: PerformanceStats,
+    /// Frame monitor behind the PerfGraph widget; off until the widget enables it.
+    pub perf_monitor: PerfMonitor,
+    /// The F10 exploded z-layer inspection view. Inert while off.
+    pub sploded: SplodedView,
+    /// How many `WidgetRef` draw scopes deep the current draw is — the turtle
+    /// nesting AS COMPONENTS SEE IT. Maintained by `WidgetRef::draw_walk` and
+    /// its siblings, stamped onto every draw call at creation, and used as the
+    /// z axis of the exploded view: one plane per selectable node.
+    pub nesting_depth: usize,
+    /// Deepest `nesting_depth` reached during the last draw. The exploded
+    /// view sizes its fan from this instead of a draw-call count.
+    pub nesting_depth_max: usize,
+    /// Runs after every draw event, before the paint: for tools that edit
+    /// the draw buffers in place (the tweaker's theme pulse) and must
+    /// re-apply after widgets rewrite them.
+    pub post_draw_hook: Option<Box<dyn FnMut(&mut Cx)>>,
+    #[allow(unused)]
+    pub(crate) screenshot_requests: Vec<ScreenshotRequest>,
+    #[allow(dead_code)]
+    pub(crate) run_view_frame_requests: Vec<RunViewFrameRequest>,
+    #[allow(dead_code)]
+    pub(crate) run_view_frame_results: ToUIReceiver<Result<RunViewFrameData, String>>,
+    #[allow(dead_code)]
+    pub(crate) run_view_frame_encode_in_flight: bool,
+    pub(crate) widget_tree_dump_requests: Vec<u64>,
+    pub(crate) widget_snapshot_requests: Vec<u64>,
+    /// Event ID that triggered a widget query cache invalidation.
+    /// When Some(event_id), indicates that widgets should clear their query caches
+    /// on the next event loop cycle. This ensures all views process the cache clear
+    /// before it's reset to None.
+    ///
+    /// This is primarily used when adaptive views change their active variant,
+    /// as the widget hierarchy changes require parent views to rebuild their widget queries.
+    pub widget_query_invalidation_event: Option<u64>,
+
+    pub widget_tree_ptr: *mut (),
+    pub widget_tree_dump_callback: Option<fn(&Cx) -> String>,
+    pub widget_query_callback: Option<fn(&Cx, &str) -> Vec<String>>,
+    pub widget_snapshot_callback: Option<fn(&Cx) -> Vec<WidgetSnapshot>>,
+    /// The tweaker overlay's remote dispatcher (widgets/src/tweaker.rs).
+    /// Registered by the widgets crate at startup, exactly like the widget
+    /// tree callbacks above; the /tweak routes in remote.rs delegate here so
+    /// platform never depends on widgets. `(op, query/body params) -> JSON`.
+    pub tweak_callback: Option<fn(&mut Cx, &str, &[(String, String)]) -> Result<String, String>>,
+
+    pub net: Arc<NetworkRuntime>,
+}
+
+#[derive(Clone)]
+pub struct CxRef(pub Rc<RefCell<Cx>>);
+
+pub struct CxDependency {
+    pub data: Option<Result<Rc<Vec<u8>>, String>>,
+}
+#[derive(Clone, Debug, Default, Script, ScriptHook)]
+pub struct AndroidParams {
+    #[live]
+    pub cache_path: String,
+    #[live]
+    pub data_path: String,
+    #[live]
+    pub density: f64,
+    #[live]
+    pub is_emulator: bool,
+    #[live]
+    pub has_xr_mode: bool,
+    #[live]
+    pub android_version: String,
+    #[live]
+    pub build_number: String,
+    #[live]
+    pub kernel_version: String,
+}
+
+#[derive(Clone, Debug, Default, Script, ScriptHook)]
+pub struct IosParams {
+    #[live]
+    pub data_path: String,
+    #[live]
+    pub device_model: String,
+    #[live]
+    pub system_version: String,
+}
+
+#[derive(Clone, Debug, Default, Script, ScriptHook)]
+pub struct OpenHarmonyParams {
+    #[live]
+    pub files_dir: String,
+    #[live]
+    pub cache_dir: String,
+    #[live]
+    pub temp_dir: String,
+    #[live]
+    pub device_type: String,
+    #[live]
+    pub os_full_name: String,
+    #[live]
+    pub display_density: f64,
+}
+
+#[derive(Clone, Debug, Default, Script, ScriptHook)]
+pub struct WebParams {
+    #[live]
+    pub protocol: String,
+    #[live]
+    pub host: String,
+    #[live]
+    pub hostname: String,
+    #[live]
+    pub pathname: String,
+    #[live]
+    pub search: String,
+    #[live]
+    pub hash: String,
+    #[live]
+    pub small_font_aliases: bool,
+}
+
+#[derive(Clone, Debug, Default, Script, ScriptHook)]
+pub struct LinuxWindowParams {
+    #[live]
+    pub custom_window_chrome: bool,
+}
+
+#[derive(Clone, Debug, Script, ScriptHook)]
+pub enum OsType {
+    #[pick]
+    Unknown,
+    Windows,
+    Macos,
+    #[live(IosParams::default())]
+    Ios(IosParams),
+    #[live(AndroidParams::default())]
+    Android(AndroidParams),
+    #[live(OpenHarmonyParams::default())]
+    OpenHarmony(OpenHarmonyParams),
+    #[live(LinuxWindowParams::default())]
+    LinuxWindow(LinuxWindowParams),
+    LinuxDirect,
+    #[live(WebParams::default())]
+    Web(WebParams),
+}
+
+#[derive(Default)]
+pub struct XrCapabilities {
+    pub ar_supported: bool,
+    pub vr_supported: bool,
+}
+
+impl OsType {
+    pub fn is_single_window(&self) -> bool {
+        match self {
+            OsType::Web(_) => true,
+            OsType::Ios(_) => true,
+            OsType::Android(_) => true,
+            OsType::LinuxDirect => true,
+            _ => false,
+        }
+    }
+    pub fn is_web(&self) -> bool {
+        match self {
+            OsType::Web(_) => true,
+            _ => false,
+        }
+    }
+
+    pub fn has_xr_mode(&self) -> bool {
+        match self {
+            OsType::Android(o) => o.has_xr_mode,
+            _ => false,
+        }
+    }
+
+    pub fn get_cache_dir(&self) -> Option<String> {
+        match self {
+            OsType::Android(params) => Some(params.cache_path.clone()),
+            OsType::OpenHarmony(params) => Some(params.cache_dir.clone()),
+            // Desktop Linux (windowed or DRM/direct): persist the GL program-binary cache
+            // under the XDG cache directory so compiled shaders survive across launches.
+            // Computed once and memoized (env lookup + directory creation).
+            //
+            // Note: the Windows backend is D3D11 and caches its compiled DXBC separately
+            // via `shader_cache_dir()` in `os/windows/d3d11.rs`, so it does not rely on
+            // this. macOS/iOS use Metal libraries and likewise do not use this path.
+            OsType::LinuxWindow(_) | OsType::LinuxDirect => {
+                use std::sync::OnceLock;
+                static DIR: OnceLock<Option<String>> = OnceLock::new();
+                DIR.get_or_init(|| {
+                    // Resolve the XDG cache base the same way the XDG Base Directory spec
+                    // (and the `robius-directories` crate) do: honor $XDG_CACHE_HOME only
+                    // when it is an *absolute* path, otherwise fall back to $HOME/.cache.
+                    // A relative or empty value is ignored per spec.
+                    let base = std::env::var_os("XDG_CACHE_HOME")
+                        .map(std::path::PathBuf::from)
+                        .filter(|p| p.is_absolute())
+                        .or_else(|| {
+                            std::env::var_os("HOME")
+                                .map(std::path::PathBuf::from)
+                                .filter(|p| p.is_absolute())
+                                .map(|home| home.join(".cache"))
+                        })?;
+                    let dir = base.join("makepad");
+                    std::fs::create_dir_all(&dir).ok()?;
+                    Some(dir.to_string_lossy().into_owned())
+                })
+                .clone()
+            }
+            _ => None,
+        }
+    }
+
+    pub fn get_data_dir(&self) -> Option<String> {
+        if let OsType::Android(params) = self {
+            Some(params.data_path.clone())
+        } else if let OsType::Ios(params) = self {
+            Some(params.data_path.clone())
+        } else if let OsType::OpenHarmony(params) = self {
+            Some(params.files_dir.clone())
+        } else {
+            None
+        }
+    }
+}
+
+impl Cx {
+    /// The caller becomes the foreground owner of cancel gestures — the `Escape` key and
+    /// the back gesture — until it ends the returned scope, drops it, or something begins
+    /// a scope in front of it.
+    ///
+    /// Begin one when the widget becomes the active thing (a modal opens, a drag starts,
+    /// a dictation session begins) and end it when it stops being.
+    pub fn begin_cancel_scope(&mut self) -> CancelScope {
+        self.cancel_scopes.begin()
+    }
+
+    /// Gives up a scope from [`Self::begin_cancel_scope()`]. Dropping it does the same.
+    pub fn end_cancel_scope(&mut self, scope: CancelScope) {
+        self.cancel_scopes.end(scope)
+    }
+
+    /// Whether the cancel gesture being delivered belongs to `scope`, which is the only
+    /// case in which that scope's owner should act on it.
+    pub fn owns_cancel(&self, scope: &CancelScope) -> bool {
+        self.cancel_scopes.owns_press(scope)
+    }
+
+    pub fn new(event_handler: Box<dyn FnMut(&mut Cx, &Event)>) -> Self {
+        #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
+        crate::os::termination_signal::install();
+
+        //#[cfg(any(target_arch = "wasm32", target_os = "android"))]
+        //crate::makepad_error_log::set_panic_hook();
+        // the null texture
+        let mut textures = CxTexturePool::default();
+        let null_texture = textures.alloc(TextureFormat::VecBGRAu8_32 {
+            width: 4,
+            height: 4,
+            data: Some(vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+            updated: TextureUpdated::Full,
+        });
+        let null_cube_texture = textures.alloc(TextureFormat::VecCubeBGRAu8_32 {
+            width: 4,
+            height: 4,
+            data: Some(vec![0; 4 * 4 * 6]),
+            updated: TextureUpdated::Full,
+        });
+
+        let (executor, spawner) = executor::new_executor_and_spawner();
+        //let (live_file_change_sender, live_file_change_receiver) = std::sync::mpsc::channel();
+        let (action_sender, action_receiver) = std::sync::mpsc::channel();
+        if let Ok(mut sender) = ACTION_SENDER_GLOBAL.lock() {
+            *sender = Some(action_sender);
+        }
+        // On platforms that use a shim backend (wasm, android), install it
+        // before creating the NetworkRuntime so it picks up the real backend.
+        #[cfg(target_arch = "wasm32")]
+        crate::os::web_network::install_network_backend_shim();
+        #[cfg(target_os = "android")]
+        crate::os::linux::android::android_network::install_network_backend_shim();
+
+        let net = Arc::new(NetworkRuntime::new(Default::default()));
+        net.set_wake_fn(Some(Arc::new(|| {
+            SignalToUI::set_ui_signal();
+        })));
+
+        let mut script_std = makepad_script_std::ScriptStd::with_network_runtime(net.clone());
+        let mut script_host = 0;
+        let mut vm = ScriptVm {
+            host: &mut script_host,
+            std: &mut script_std,
+            bx: Box::new(ScriptVmBase::new()),
+        };
+
+        //todo!();
+        crate::script::script_mod(&mut vm);
+        let script_vm = std::mem::replace(&mut vm.bx, Box::new(ScriptVmBase::empty()));
+        drop(vm);
+
+        Self {
+            package_root: None,
+            demo_time_repaint: false,
+            null_texture,
+            null_cube_texture,
+            cpu_cores: 8,
+            in_makepad_studio: false,
+            game_input_remote: Vec::new(),
+            in_draw_event: false,
+            os_type: OsType::Unknown,
+            gpu_info: Default::default(),
+            xr_capabilities: Default::default(),
+
+            windows: Default::default(),
+            passes: Default::default(),
+            draw_lists: Default::default(),
+            draw_matrices: Default::default(),
+            geometries: Default::default(),
+            textures,
+            uniform_buffers: Default::default(),
+
+            draw_shaders: Default::default(),
+
+            new_draw_event: Default::default(),
+            new_actions: Default::default(),
+
+            redraw_id: 1,
+            event_id: 1,
+            repaint_id: 1,
+            timer_id: 1,
+            next_frame_id: 1,
+            permissions_request_id: 0,
+
+            keyboard: Default::default(),
+            cancel_scopes: Default::default(),
+            fingers: Default::default(),
+            drag_drop: Default::default(),
+            ime_area: Default::default(),
+            keyboard_shift: 0.0,
+            platform_ops: Default::default(),
+            pending_camera_playbacks: Vec::new(),
+            studio_http: "".to_string(),
+            new_next_frames: Default::default(),
+
+            post_draw_hook: None,
+            screenshot_requests: Default::default(),
+            run_view_frame_requests: Default::default(),
+            run_view_frame_results: Default::default(),
+            run_view_frame_encode_in_flight: false,
+
+            dependencies: Default::default(),
+
+            triggers: Default::default(),
+
+            action_receiver,
+
+            os: CxOs::default(),
+
+            event_handler: Some(event_handler),
+
+            debug: Default::default(),
+
+            debug_trace_active: false,
+
+            globals: Default::default(),
+
+            components: ComponentRegistries::new(),
+
+            executor: Some(executor),
+            spawner,
+
+            self_ref: None,
+            performance_stats: Default::default(),
+            perf_monitor: Default::default(),
+            sploded: Default::default(),
+            nesting_depth: 0,
+            nesting_depth_max: 0,
+
+            display_context: Default::default(),
+            pending_script_reapply: false,
+            pending_live_edit_request: false,
+            live_edit_apply: Apply::Reload,
+            pending_window_geom_changes: Default::default(),
+            clear_hover_queued: false,
+
+            widget_tree_dump_requests: Default::default(),
+            widget_snapshot_requests: Default::default(),
+            widget_query_invalidation_event: None,
+            widget_tree_ptr: std::ptr::null_mut(),
+            widget_tree_dump_callback: None,
+            widget_query_callback: None,
+            widget_snapshot_callback: None,
+            tweak_callback: None,
+            net,
+
+            script_data: CxScriptData {
+                std: script_std,
+                crate_manifests: script_vm.code.crate_manifests.clone(),
+                live_reload: crate::live_reload::CxLiveReloadState {
+                    script_mod_overrides: script_vm.code.script_mod_overrides.clone(),
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            script_vm: Some(script_vm),
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Startup trace — working-tree instrumentation, gated on MAKEPAD_STARTUP_TRACE.
+//
+// Prints `[startup] <phase> +<ms>` where <ms> is measured from process exec
+// when a launcher exported MAKEPAD_STARTUP_T0 (epoch seconds, f64) just
+// before exec — that is the only way to see the pre-`main` dyld / Gatekeeper
+// window. Without it the clock starts at the first call.
+//
+// Costs nothing when the var is unset: one relaxed atomic load per call.
+// ---------------------------------------------------------------------------
+
+static STARTUP_TRACE_ON: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+static STARTUP_T0: std::sync::OnceLock<std::time::SystemTime> = std::sync::OnceLock::new();
+static STARTUP_ACC: std::sync::Mutex<Vec<(&'static str, f64, u32)>> =
+    std::sync::Mutex::new(Vec::new());
+
+#[inline]
+pub fn startup_trace_enabled() -> bool {
+    *STARTUP_TRACE_ON.get_or_init(|| std::env::var_os("MAKEPAD_STARTUP_TRACE").is_some())
+}
+
+fn startup_t0() -> std::time::SystemTime {
+    *STARTUP_T0.get_or_init(|| {
+        std::env::var("MAKEPAD_STARTUP_T0")
+            .ok()
+            .and_then(|v| v.trim().parse::<f64>().ok())
+            .map(|secs| {
+                std::time::UNIX_EPOCH + std::time::Duration::from_secs_f64(secs)
+            })
+            .unwrap_or_else(std::time::SystemTime::now)
+    })
+}
+
+/// Milliseconds since exec (or since the first trace call).
+pub fn startup_since_exec_ms() -> f64 {
+    std::time::SystemTime::now()
+        .duration_since(startup_t0())
+        .map(|d| d.as_secs_f64() * 1000.0)
+        .unwrap_or(0.0)
+}
+
+/// Mark a startup phase.
+pub fn startup_trace(phase: &str) {
+    if !startup_trace_enabled() {
+        return;
+    }
+    eprintln!("[startup] {:<28} +{:9.2} ms", phase, startup_since_exec_ms());
+}
+
+/// Accumulate a repeated sub-cost (shader compiles, font loads, …) under a
+/// bucket name; `startup_trace_flush` prints the totals.
+pub fn startup_acc(bucket: &'static str, ms: f64) {
+    if !startup_trace_enabled() {
+        return;
+    }
+    let mut acc = STARTUP_ACC.lock().unwrap();
+    if let Some(row) = acc.iter_mut().find(|r| r.0 == bucket) {
+        row.1 += ms;
+        row.2 += 1;
+    } else {
+        acc.push((bucket, ms, 1));
+    }
+}
+
+/// Print accumulated buckets and reset them.
+pub fn startup_trace_flush(phase: &str) {
+    if !startup_trace_enabled() {
+        return;
+    }
+    let rows = std::mem::take(&mut *STARTUP_ACC.lock().unwrap());
+    for (bucket, ms, n) in rows {
+        eprintln!(
+            "[startup] {:<28}  {:8.2} ms total over {} ({})",
+            bucket, ms, n, phase
+        );
+    }
+}

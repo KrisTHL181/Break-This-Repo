@@ -1,0 +1,152 @@
+// Copyright 2024 RustFS Team
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+//! Tower service implementation for the trusted proxy middleware.
+
+use crate::{ClientInfo, ProxyValidator};
+use http::Request;
+use std::sync::Arc;
+use std::task::{Context, Poll};
+use tower::Service;
+use tracing::{debug, trace, warn};
+
+/// Tower Service for the trusted proxy middleware.
+#[derive(Clone)]
+pub struct TrustedProxyMiddleware<S> {
+    /// The inner service being wrapped.
+    pub(crate) inner: S,
+    /// The validator used to verify proxy chains.
+    pub(crate) validator: Arc<ProxyValidator>,
+    /// Whether the middleware is enabled.
+    pub(crate) enabled: bool,
+}
+
+impl<S> TrustedProxyMiddleware<S> {
+    /// Creates a new `TrustedProxyMiddleware`.
+    pub fn new(inner: S, validator: Arc<ProxyValidator>, enabled: bool) -> Self {
+        Self {
+            inner,
+            validator,
+            enabled,
+        }
+    }
+
+    /// Creates a new `TrustedProxyMiddleware` from a `TrustedProxyLayer`.
+    pub fn from_layer(inner: S, layer: &super::layer::TrustedProxyLayer) -> Self {
+        Self::new(inner, layer.validator.clone(), layer.enabled)
+    }
+}
+
+impl<S, ReqBody> Service<Request<ReqBody>> for TrustedProxyMiddleware<S>
+where
+    S: Service<Request<ReqBody>> + Clone + Send + 'static,
+    S::Future: Send,
+{
+    type Response = S::Response;
+    type Error = S::Error;
+    type Future = S::Future;
+
+    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        self.inner.poll_ready(cx)
+    }
+
+    fn call(&mut self, mut req: Request<ReqBody>) -> Self::Future {
+        // If the middleware is disabled, pass the request through immediately.
+        if !self.enabled {
+            debug!(
+                event = "proxy_validation.middleware",
+                component = "trusted_proxies",
+                subsystem = "middleware",
+                state = "disabled",
+                "trusted proxy middleware bypassed"
+            );
+            return self.inner.call(req);
+        }
+
+        let start_time = std::time::Instant::now();
+
+        // Extract the direct peer address from the request extensions.
+        let peer_addr = req.extensions().get::<std::net::SocketAddr>().copied();
+
+        // Validate the request and extract client information.
+        match self.validator.validate_request(peer_addr, req.headers()) {
+            Ok(client_info) => {
+                // Insert the verified client info into the request extensions.
+                let duration = start_time.elapsed();
+                trace!(
+                    event = "proxy_validation.middleware",
+                    component = "trusted_proxies",
+                    subsystem = "middleware",
+                    result = if client_info.is_from_trusted_proxy {
+                        "trusted_proxy"
+                    } else {
+                        "direct"
+                    },
+                    peer_ip = peer_addr
+                        .map(|addr| addr.ip().to_string())
+                        .unwrap_or_else(|| "0.0.0.0".to_string()),
+                    client_ip = %client_info.real_ip,
+                    proxy_hops = client_info.proxy_hops,
+                    warning_count = client_info.warnings.len(),
+                    validation_mode = client_info.validation_mode.as_str(),
+                    duration_ms = duration.as_millis(),
+                    "trusted proxy evaluation completed"
+                );
+
+                req.extensions_mut().insert(client_info);
+            }
+            Err(err) => {
+                // If the error is recoverable, fallback to a direct connection info.
+                if err.is_recoverable() {
+                    let duration = start_time.elapsed();
+                    warn!(
+                        event = "proxy_validation.middleware",
+                        component = "trusted_proxies",
+                        subsystem = "middleware",
+                        result = "fallback",
+                        fallback = "socket_peer",
+                        peer_ip = peer_addr
+                            .map(|addr| addr.ip().to_string())
+                            .unwrap_or_else(|| "0.0.0.0".to_string()),
+                        error = %err,
+                        duration_ms = duration.as_millis(),
+                        "trusted proxy validation fell back to direct peer"
+                    );
+                    let client_info = ClientInfo::direct(
+                        peer_addr.unwrap_or_else(|| std::net::SocketAddr::new(std::net::IpAddr::from([0, 0, 0, 0]), 0)),
+                    );
+                    req.extensions_mut().insert(client_info);
+                } else {
+                    let duration = start_time.elapsed();
+                    warn!(
+                        event = "proxy_validation.middleware",
+                        component = "trusted_proxies",
+                        subsystem = "middleware",
+                        result = "error",
+                        fallback = "none",
+                        peer_ip = peer_addr
+                            .map(|addr| addr.ip().to_string())
+                            .unwrap_or_else(|| "0.0.0.0".to_string()),
+                        error = %err,
+                        duration_ms = duration.as_millis(),
+                        "trusted proxy validation failed"
+                    );
+                }
+            }
+        }
+
+        // Call the inner service.
+        self.inner.call(req)
+    }
+}

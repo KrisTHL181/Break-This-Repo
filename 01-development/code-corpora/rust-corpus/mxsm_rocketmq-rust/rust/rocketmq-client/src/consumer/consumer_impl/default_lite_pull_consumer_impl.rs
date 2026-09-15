@@ -1,0 +1,5476 @@
+// Copyright 2023 The RocketMQ Rust Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use std::collections::HashMap;
+use std::collections::HashSet;
+use std::future::Future;
+use std::sync::atomic::AtomicBool;
+use std::sync::atomic::AtomicI64;
+use std::sync::atomic::AtomicU64;
+#[cfg(any(test, feature = "test-support"))]
+use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::Ordering;
+use std::sync::Arc;
+use std::sync::Mutex as StdMutex;
+use std::sync::OnceLock;
+use std::sync::RwLock as StdRwLock;
+use std::sync::Weak;
+use std::time::Duration;
+use std::time::Instant;
+
+use crate::ClientError;
+use crate::ClientResult;
+use arc_swap::ArcSwap;
+use cheetah_string::CheetahString;
+#[cfg(any(test, feature = "test-support"))]
+use futures::stream::FuturesUnordered;
+#[cfg(any(test, feature = "test-support"))]
+use futures::StreamExt;
+use rocketmq_model::common::consumer::consume_from_where::ConsumeFromWhere;
+use rocketmq_model::common::filter::expression_type::ExpressionType;
+use rocketmq_model::common::message::message_ext::MessageExt;
+use rocketmq_model::common::message::message_queue::MessageQueue;
+use rocketmq_model::common::message::MessageTrait;
+use rocketmq_model::common::mix_all;
+use rocketmq_model::common::sys_flag::pull_sys_flag::PullSysFlag;
+use rocketmq_protocol::common::message::message_decoder as MessageDecoder;
+use rocketmq_protocol::protocol::body::process_queue_info::ProcessQueueInfo;
+use rocketmq_protocol::protocol::filter::filter_api::FilterAPI;
+use rocketmq_protocol::protocol::heartbeat::consume_type::ConsumeType;
+use rocketmq_protocol::protocol::heartbeat::message_model::MessageModel;
+use rocketmq_protocol::protocol::heartbeat::subscription_data::SubscriptionData;
+use rocketmq_protocol::protocol::namespace_util::NamespaceUtil;
+use rocketmq_runtime::common::time_utils::current_millis;
+use rocketmq_runtime::common::util_all;
+use rocketmq_runtime::BudgetLimit;
+use rocketmq_runtime::BudgetedQueue;
+use rocketmq_runtime::FullPolicy;
+use rocketmq_runtime::QueueSnapshot;
+use rocketmq_runtime::RateLimit;
+use rocketmq_runtime::ResourceBudget;
+use rocketmq_transport::api::RPCHook;
+use serde::Serialize;
+use tokio::sync::Mutex;
+use tokio::sync::OwnedSemaphorePermit;
+use tokio::sync::RwLock;
+use tokio::sync::Semaphore;
+use tokio_util::sync::CancellationToken;
+use tokio_util::task::TaskTracker;
+use tracing::info;
+use tracing::warn;
+
+use crate::base::client_config::ClientConfig;
+use crate::base::client_options::ClientOptions;
+use crate::base::query_result::QueryResult;
+use crate::consumer::allocate_message_queue_strategy::AllocateMessageQueueStrategy;
+use crate::consumer::consumer_impl::assigned_message_queue::AssignedMessageQueue;
+use crate::consumer::consumer_impl::lite_pull_consume_request::LitePullConsumeRequest;
+use crate::consumer::consumer_impl::pull_api_wrapper::PullAPIWrapper;
+use crate::consumer::consumer_impl::re_balance::rebalance_lite_pull_impl::RebalanceLitePullImpl;
+use crate::consumer::consumer_impl::re_balance::Rebalance;
+use crate::consumer::default_mq_pull_consumer::ClassicPullCallback;
+use crate::consumer::default_mq_pull_consumer::PullOptions;
+use crate::consumer::message_queue_listener::ArcMessageQueueListener;
+use crate::consumer::message_queue_listener::MessageQueueListener;
+use crate::consumer::mq_consumer_inner::MQConsumerInner;
+use crate::consumer::mq_consumer_inner::MQConsumerInnerImpl;
+use crate::consumer::pull_callback::PullCallback;
+use crate::consumer::pull_status::PullStatus;
+use crate::consumer::store::local_file_offset_store::LocalFileOffsetStore;
+use crate::consumer::store::offset_store::OffsetStore;
+use crate::consumer::store::read_offset_type::ReadOffsetType;
+use crate::consumer::store::remote_broker_offset_store::RemoteBrokerOffsetStore;
+use crate::consumer::topic_message_queue_change_listener::TopicMessageQueueChangeListener;
+use crate::factory::mq_client_instance::MQClientInstance;
+use crate::hook::consume_message_context::ConsumeMessageContext;
+use crate::hook::consume_message_hook::ConsumeMessageHook;
+use crate::hook::filter_message_hook::FilterMessageHook;
+use crate::implementation::communication_mode::CommunicationMode;
+use crate::implementation::mq_client_manager::ClientPool;
+use crate::implementation::mq_client_manager::ClientPoolToken;
+use crate::nameserver_discovery::NameServerDiscoveryConfig;
+use crate::runtime::spawn_client_task_with_context;
+use crate::runtime::spawn_client_tracked_task_with_context;
+use crate::runtime::ClientRuntime;
+use crate::runtime::ClientTrackedTaskHandle;
+use rocketmq_runtime::ChildServiceContext;
+
+mod assignment_registry;
+mod config;
+mod model;
+
+use assignment_registry::AssignmentEntry;
+use assignment_registry::AssignmentRegistry;
+pub use assignment_registry::AssignmentRegistrySnapshot;
+pub(crate) use config::default_lite_pull_consume_timestamp;
+pub(crate) use config::validate_lite_pull_consume_from_where;
+pub use config::LitePullConsumerConfig;
+pub use model::ServiceState;
+pub use model::SubscriptionType;
+
+const QUERY_UNIQ_KEY_LOOKBACK_MILLIS: u64 = 3 * 24 * 60 * 60 * 1000;
+const OFFSET_STORE_SHUTDOWN_TIMEOUT: Duration = Duration::from_secs(5);
+const REBALANCE_LISTENER_SHUTDOWN_TIMEOUT: Duration = Duration::from_secs(1);
+const ASSIGNMENT_TASK_SHUTDOWN_TIMEOUT: Duration = Duration::from_secs(5);
+const DEFAULT_CONSUME_REQUEST_CAPACITY: usize = 10_000;
+const MAX_CONSUME_REQUEST_CAPACITY: usize = 65_536;
+const CONSUME_REQUEST_MAX_AGE: Duration = Duration::from_secs(300);
+
+enum LitePullTaskHandle {
+    Tracked {
+        handle: ClientTrackedTaskHandle,
+        cancelled: Arc<AtomicBool>,
+    },
+}
+
+impl LitePullTaskHandle {
+    async fn abort_and_wait(self, timeout: Duration) -> bool {
+        match self {
+            Self::Tracked { handle, cancelled } => {
+                cancelled.store(true, Ordering::Release);
+                let stopped = handle.abort_and_wait(timeout).await;
+                if !stopped {
+                    warn!("lite pull task did not stop after abort");
+                }
+                stopped
+            }
+        }
+    }
+
+    async fn wait(self, timeout: Duration) -> bool {
+        match self {
+            Self::Tracked { handle, cancelled } => {
+                cancelled.store(true, Ordering::Release);
+                let report = handle.shutdown(timeout).await;
+                if !report.is_healthy() {
+                    warn!(
+                        report = %report.to_json(),
+                        "lite pull task shutdown report is unhealthy"
+                    );
+                }
+                report.is_healthy()
+            }
+        }
+    }
+
+    fn task_count(&self) -> usize {
+        match self {
+            Self::Tracked { handle, .. } => handle.task_count(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct LitePullTaskLifecycleProbe {
+    pub healthy: bool,
+    pub task_count_before_shutdown: usize,
+    pub task_count_after_shutdown: usize,
+    pub shutdown_elapsed_us: u128,
+}
+
+fn spawn_lite_pull_task<F>(
+    service_context: &ChildServiceContext,
+    thread_name: &'static str,
+    cancelled: Arc<AtomicBool>,
+    task: F,
+) -> std::io::Result<LitePullTaskHandle>
+where
+    F: Future<Output = ()> + Send + 'static,
+{
+    let handle = spawn_client_tracked_task_with_context(service_context, thread_name, Box::pin(task))?;
+    Ok(LitePullTaskHandle::Tracked { handle, cancelled })
+}
+
+async fn sleep_or_cancel(shutdown_signal: &Arc<AtomicBool>, cancelled: &Arc<AtomicBool>, delay: Duration) -> bool {
+    let deadline = tokio::time::Instant::now() + delay;
+    loop {
+        if shutdown_signal.load(Ordering::Acquire) || cancelled.load(Ordering::Acquire) {
+            return false;
+        }
+
+        let now = tokio::time::Instant::now();
+        if now >= deadline {
+            return true;
+        }
+
+        tokio::time::sleep((deadline - now).min(Duration::from_millis(50))).await;
+    }
+}
+
+#[cfg(any(test, feature = "test-support"))]
+#[derive(Debug, Clone, Serialize)]
+pub struct LitePullAssignmentRegistryProbe {
+    pub iterations: usize,
+    pub peak_entries: usize,
+    pub final_entries: usize,
+    pub final_owned_tasks: usize,
+    pub same_queue_serialized: bool,
+    pub different_queues_independent: bool,
+    pub stale_entry_rejected: bool,
+}
+
+async fn sleep_or_assignment_cancel(
+    shutdown_signal: &Arc<AtomicBool>,
+    cancelled: &Arc<AtomicBool>,
+    assignment_cancellation: &CancellationToken,
+    delay: Duration,
+) -> bool {
+    let deadline = tokio::time::Instant::now() + delay;
+    loop {
+        if shutdown_signal.load(Ordering::Acquire)
+            || cancelled.load(Ordering::Acquire)
+            || assignment_cancellation.is_cancelled()
+        {
+            return false;
+        }
+
+        let now = tokio::time::Instant::now();
+        if now >= deadline {
+            return true;
+        }
+
+        tokio::select! {
+            _ = assignment_cancellation.cancelled() => return false,
+            _ = tokio::time::sleep((deadline - now).min(Duration::from_millis(50))) => {}
+        }
+    }
+}
+
+/// Internal rebalance listener that mirrors Java LitePull's default MessageQueueListenerImpl.
+struct LitePullRebalanceListener {
+    consumer_impl: Weak<DefaultLitePullConsumerImpl>,
+    user_listener: Arc<StdRwLock<Option<ArcMessageQueueListener>>>,
+    task_tracker: TaskTracker,
+    shutdown_token: CancellationToken,
+}
+
+impl MessageQueueListener for LitePullRebalanceListener {
+    fn message_queue_changed(&self, topic: &str, mq_all: &HashSet<MessageQueue>, mq_assigned: &HashSet<MessageQueue>) {
+        let Some(consumer_impl) = self.consumer_impl.upgrade() else {
+            warn!("LitePull rebalance listener ignored change because consumer impl was dropped");
+            return;
+        };
+
+        let topic = CheetahString::from_slice(topic);
+        let mq_all = mq_all.clone();
+        let mq_assigned = mq_assigned.clone();
+        let service_context = consumer_impl.service_context.clone();
+        let user_listener = self.user_listener.clone();
+        let shutdown_token = self.shutdown_token.clone();
+        if shutdown_token.is_cancelled() {
+            warn!("LitePull rebalance listener ignored change because shutdown has started");
+            return;
+        }
+
+        let task = self.task_tracker.track_future(async move {
+            tokio::select! {
+                biased;
+                _ = shutdown_token.cancelled() => {},
+                _ = async move {
+                    if !consumer_impl.consumer_config_snapshot().classic_pull_manual_mode {
+                        if let Err(error) = consumer_impl
+                            .update_assign_queue_and_start_pull_task(topic.as_str(), &mq_all, &mq_assigned)
+                            .await
+                        {
+                            warn!(
+                                "LitePull rebalance assignment update failed. topic={}, error={}",
+                                topic, error
+                            );
+                        }
+                    }
+
+                    let listener = user_listener.read().ok().and_then(|listener| listener.clone());
+                    if let Some(listener) = listener {
+                        if let Err(error) = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                            listener.message_queue_changed(topic.as_str(), &mq_all, &mq_assigned);
+                        })) {
+                            warn!(
+                                "LitePull user message queue listener panicked. topic={}, error={:?}",
+                                topic, error
+                            );
+                        }
+                    }
+                } => {},
+            }
+        });
+
+        if let Err(error) = spawn_client_task_with_context(
+            &service_context,
+            "rocketmq-client-lite-pull-rebalance-listener",
+            Box::pin(task),
+        ) {
+            warn!(
+                "LitePull rebalance listener ignored async assignment update because task spawn failed. error={}",
+                error
+            );
+        }
+    }
+}
+
+fn lite_pull_request_sys_flag() -> i32 {
+    PullSysFlag::build_sys_flag_with_lite_pull(false, true, true, false, true) as i32
+}
+
+fn effective_pull_rpc_timeout(sys_flag: i32, config: &LitePullConsumerConfig) -> u64 {
+    if PullSysFlag::has_suspend_flag(sys_flag as u32) {
+        config.consumer_timeout_millis_when_suspend
+    } else {
+        config.consumer_pull_timeout_millis
+    }
+}
+
+#[cfg(any(test, feature = "test-support"))]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct LitePullSuspendTimeoutProbe {
+    pub header_suspend_timeout_millis: u64,
+    pub invoke_timeout_millis: u64,
+}
+
+#[cfg(any(test, feature = "test-support"))]
+pub fn run_lite_pull_suspend_timeout_probe(
+    suspended: bool,
+    broker_suspend_timeout_millis: u64,
+    suspend_rpc_timeout_millis: u64,
+    ordinary_rpc_timeout_millis: u64,
+) -> LitePullSuspendTimeoutProbe {
+    struct FakePullAdapter;
+
+    impl FakePullAdapter {
+        fn capture(header_suspend_timeout_millis: u64, invoke_timeout_millis: u64) -> LitePullSuspendTimeoutProbe {
+            LitePullSuspendTimeoutProbe {
+                header_suspend_timeout_millis,
+                invoke_timeout_millis,
+            }
+        }
+    }
+
+    let config = LitePullConsumerConfig {
+        broker_suspend_max_time_millis: broker_suspend_timeout_millis,
+        consumer_timeout_millis_when_suspend: suspend_rpc_timeout_millis,
+        consumer_pull_timeout_millis: ordinary_rpc_timeout_millis,
+        ..Default::default()
+    };
+    let sys_flag = PullSysFlag::build_sys_flag_with_lite_pull(false, suspended, true, false, true) as i32;
+
+    FakePullAdapter::capture(
+        config.broker_suspend_max_time_millis,
+        effective_pull_rpc_timeout(sys_flag, &config),
+    )
+}
+
+fn lite_pull_request_sub_version(subscription_data: &SubscriptionData) -> i64 {
+    if ExpressionType::is_tag_type(Some(subscription_data.expression_type.as_str())) {
+        0
+    } else {
+        subscription_data.sub_version
+    }
+}
+
+#[cfg(any(test, feature = "test-support"))]
+#[derive(Debug, Clone, Serialize)]
+pub struct LitePullConcurrencyContractProbe {
+    pub configured_limit: usize,
+    pub queues: usize,
+    pub peak_inflight: usize,
+    pub cancelled_waiter_released: bool,
+    pub runtime_mutation_rejected: bool,
+}
+
+struct AssignmentPullContext {
+    entry: Arc<AssignmentEntry>,
+    generation: u64,
+}
+
+struct ClassicPullCallbackAdapter<C> {
+    callback: C,
+    pull_api_wrapper: Arc<PullAPIWrapper>,
+    message_queue: MessageQueue,
+    subscription_data: SubscriptionData,
+    namespace: Option<CheetahString>,
+}
+
+impl<C> PullCallback for ClassicPullCallbackAdapter<C>
+where
+    C: ClassicPullCallback,
+{
+    async fn on_success(&mut self, mut pull_result: crate::PullResultExt) {
+        self.pull_api_wrapper
+            .process_pull_result(&self.message_queue, &mut pull_result, &self.subscription_data);
+        reset_classic_pull_message_topics(&mut pull_result.pull_result.msg_found_list, self.namespace.as_deref());
+        self.callback.on_success(pull_result.pull_result);
+    }
+
+    fn on_exception(&mut self, error: ClientError) {
+        self.callback.on_exception(error);
+    }
+}
+
+fn reset_classic_pull_message_topics(messages: &mut Option<Vec<MessageExt>>, namespace: Option<&str>) {
+    let Some(namespace) = namespace.filter(|namespace| !namespace.is_empty()) else {
+        return;
+    };
+    let Some(messages) = messages else {
+        return;
+    };
+    for message in messages {
+        let topic = NamespaceUtil::without_namespace_with_namespace(message.topic(), namespace);
+        message.set_topic(CheetahString::from_string(topic));
+    }
+}
+
+fn duration_millis(field: &'static str, duration: Duration) -> ClientResult<u64> {
+    u64::try_from(duration.as_millis()).map_err(|source| ClientError::config_invalid_source(field, true, source))
+}
+
+struct PreparedClassicPull {
+    message_queue: MessageQueue,
+    subscription_data: SubscriptionData,
+    sub_version: i64,
+    sys_flag: i32,
+    broker_suspend_timeout_millis: u64,
+    timeout_millis: u64,
+}
+
+fn prepare_classic_pull(options: &PullOptions) -> ClientResult<PreparedClassicPull> {
+    options.validate()?;
+    let message_queue = options.message_queue().clone();
+    let mut subscription_data = FilterAPI::build(
+        message_queue.topic(),
+        options.selector().get_expression(),
+        Some(options.selector().get_expression_type().clone()),
+    )
+    .map_err(crate::ClientError::illegal_argument)?;
+    if !ExpressionType::is_tag_type(Some(subscription_data.expression_type.as_str()))
+        && subscription_data.sub_version <= 0
+    {
+        subscription_data.sub_version = i64::try_from(current_millis()).unwrap_or(i64::MAX);
+    }
+    Ok(PreparedClassicPull {
+        sub_version: lite_pull_request_sub_version(&subscription_data),
+        subscription_data,
+        message_queue,
+        sys_flag: PullSysFlag::build_sys_flag(false, options.is_block_if_not_found(), true, false) as i32,
+        broker_suspend_timeout_millis: duration_millis(
+            "broker suspend timeout",
+            options.broker_suspend_timeout_value(),
+        )?,
+        timeout_millis: duration_millis("pull timeout", options.timeout_value())?,
+    })
+}
+
+/// Core implementation of lite pull consumer.
+pub struct DefaultLitePullConsumerImpl {
+    service_context: ChildServiceContext,
+    client_pool: ClientPool,
+    client_pool_token: Mutex<Option<ClientPoolToken>>,
+    nameserver_discovery: Option<NameServerDiscoveryConfig>,
+    // Configuration
+    pub(crate) client_config: ArcSwap<ClientConfig>,
+    consumer_config: ArcSwap<LitePullConsumerConfig>,
+
+    // Lifecycle state
+    lifecycle_transition: Mutex<()>,
+    service_state: StdRwLock<ServiceState>,
+    subscription_type: Arc<RwLock<SubscriptionType>>,
+    consumer_start_timestamp: AtomicI64,
+
+    // Core components
+    client_instance: StdRwLock<Option<Arc<MQClientInstance>>>,
+    rebalance_impl: Arc<RebalanceLitePullImpl>,
+    pull_api_wrapper: StdRwLock<Option<Arc<PullAPIWrapper>>>,
+    pull_concurrency_limiter: ArcSwap<Semaphore>,
+    offset_store: StdRwLock<Option<Arc<OffsetStore>>>,
+    rpc_hook: StdRwLock<Option<Arc<dyn RPCHook>>>,
+
+    // Queue management
+    assigned_message_queue: Arc<AssignedMessageQueue>,
+    assignment_registry: Arc<AssignmentRegistry>,
+
+    // Message flow
+    consume_requests: BudgetedQueue<LitePullConsumeRequest>,
+    poll_lock: Arc<Mutex<()>>,
+
+    // ASSIGN mode subscriptions
+    topic_to_sub_expression: Arc<RwLock<HashMap<CheetahString, CheetahString>>>,
+
+    // Flow control metrics
+    consume_request_flow_control_times: Arc<AtomicU64>,
+    queue_flow_control_times: Arc<AtomicU64>,
+    queue_max_span_flow_control_times: Arc<AtomicU64>,
+
+    // Auto-commit
+    next_auto_commit_deadline: Arc<AtomicI64>,
+
+    // Hooks
+    consume_message_hook_list: StdRwLock<Vec<Arc<dyn ConsumeMessageHook + Send + Sync>>>,
+    filter_message_hook_list: StdRwLock<Vec<Arc<dyn FilterMessageHook + Send + Sync>>>,
+
+    // Topic change listeners
+    topic_message_queue_change_listener_map:
+        Arc<RwLock<HashMap<CheetahString, Arc<dyn TopicMessageQueueChangeListener + Send + Sync>>>>,
+    message_queues_for_topic: Arc<RwLock<HashMap<CheetahString, HashSet<MessageQueue>>>>,
+    user_message_queue_listener: Arc<StdRwLock<Option<ArcMessageQueueListener>>>,
+
+    // Shutdown coordination
+    shutdown_signal: Arc<AtomicBool>,
+    topic_metadata_check_task_handle: StdMutex<Option<LitePullTaskHandle>>,
+    rebalance_listener_tasks: TaskTracker,
+    rebalance_listener_shutdown: CancellationToken,
+
+    // Self-reference (for callbacks)
+    self_reference: OnceLock<Weak<DefaultLitePullConsumerImpl>>,
+}
+
+impl DefaultLitePullConsumerImpl {
+    /// Creates a new lite pull consumer implementation.
+    ///
+    /// # Panics
+    ///
+    /// Panics when the process memory limit or resource budget cannot be
+    /// initialized. Production composition should use [`Self::try_new`].
+    pub fn new<C, L>(client_runtime: Arc<ClientRuntime>, client_config: C, consumer_config: L) -> Self
+    where
+        C: AsRef<ClientConfig>,
+        L: AsRef<LitePullConsumerConfig>,
+    {
+        Self::try_new(client_runtime, client_config, consumer_config)
+            .expect("lite pull consume request resource budget must be valid")
+    }
+
+    /// Creates a new lite pull consumer implementation with validated resource
+    /// budgets.
+    pub fn try_new<C, L>(client_runtime: Arc<ClientRuntime>, client_config: C, consumer_config: L) -> ClientResult<Self>
+    where
+        C: AsRef<ClientConfig>,
+        L: AsRef<LitePullConsumerConfig>,
+    {
+        Self::try_new_with_options(
+            client_runtime,
+            ClientOptions::legacy(client_config.as_ref().clone()),
+            consumer_config,
+        )
+    }
+
+    pub(crate) fn try_new_with_options<L>(
+        client_runtime: Arc<ClientRuntime>,
+        options: ClientOptions,
+        consumer_config: L,
+    ) -> ClientResult<Self>
+    where
+        L: AsRef<LitePullConsumerConfig>,
+    {
+        let client_config = options.client_config().clone();
+        let nameserver_discovery = options.nameserver_discovery().cloned();
+        let consumer_config = consumer_config.as_ref().clone();
+        let pull_thread_nums = consumer_config.pull_thread_nums;
+        let consume_requests = Self::build_consume_request_queue(&consumer_config, &client_runtime.resource_budget())?;
+        let rebalance_config = consumer_config.to_consumer_config();
+
+        let this = Self {
+            service_context: client_runtime.component(
+                rocketmq_runtime::ScopeId::try_new(format!("lite-consumer-{}", consumer_config.consumer_group))
+                    .expect("the lite consumer scope has a fixed nonblank prefix"),
+            ),
+            client_pool: client_runtime.pool().clone(),
+            client_pool_token: Mutex::new(None),
+            nameserver_discovery,
+            client_config: ArcSwap::from_pointee(client_config),
+            consumer_config: ArcSwap::from_pointee(consumer_config),
+            lifecycle_transition: Mutex::new(()),
+            service_state: StdRwLock::new(ServiceState::CreateJust),
+            subscription_type: Arc::new(RwLock::new(SubscriptionType::None)),
+            consumer_start_timestamp: AtomicI64::new(current_millis() as i64),
+            client_instance: StdRwLock::new(None),
+            rebalance_impl: Arc::new(RebalanceLitePullImpl::new(rebalance_config)),
+            pull_api_wrapper: StdRwLock::new(None),
+            pull_concurrency_limiter: ArcSwap::from_pointee(Semaphore::new(pull_thread_nums)),
+            offset_store: StdRwLock::new(None),
+            rpc_hook: StdRwLock::new(None),
+            assigned_message_queue: Arc::new(AssignedMessageQueue::new()),
+            assignment_registry: Arc::new(AssignmentRegistry::new()),
+            consume_requests,
+            poll_lock: Arc::new(Mutex::new(())),
+            topic_to_sub_expression: Arc::new(RwLock::new(HashMap::new())),
+            consume_request_flow_control_times: Arc::new(AtomicU64::new(0)),
+            queue_flow_control_times: Arc::new(AtomicU64::new(0)),
+            queue_max_span_flow_control_times: Arc::new(AtomicU64::new(0)),
+            next_auto_commit_deadline: Arc::new(AtomicI64::new(0)),
+            consume_message_hook_list: StdRwLock::new(Vec::new()),
+            filter_message_hook_list: StdRwLock::new(Vec::new()),
+            topic_message_queue_change_listener_map: Arc::new(RwLock::new(HashMap::new())),
+            message_queues_for_topic: Arc::new(RwLock::new(HashMap::new())),
+            user_message_queue_listener: Arc::new(StdRwLock::new(None)),
+            shutdown_signal: Arc::new(AtomicBool::new(false)),
+            topic_metadata_check_task_handle: StdMutex::new(None),
+            rebalance_listener_tasks: TaskTracker::new(),
+            rebalance_listener_shutdown: CancellationToken::new(),
+            self_reference: OnceLock::new(),
+        };
+        let wrapper = Arc::downgrade(&this.rebalance_impl);
+        this.rebalance_impl.set_rebalance_impl(wrapper);
+        Ok(this)
+    }
+
+    fn build_consume_request_queue(
+        consumer_config: &LitePullConsumerConfig,
+        parent_budget: &ResourceBudget,
+    ) -> ClientResult<BudgetedQueue<LitePullConsumeRequest>> {
+        let queue_bytes = (parent_budget.limit().capacity.bytes / 16).max(1);
+        let queue_count = usize::try_from(consumer_config.pull_threshold_for_all)
+            .unwrap_or(DEFAULT_CONSUME_REQUEST_CAPACITY)
+            .clamp(1, MAX_CONSUME_REQUEST_CAPACITY);
+        let queue_rate = u64::try_from(queue_count).unwrap_or(u64::MAX);
+        let limit = BudgetLimit::new(queue_count, queue_bytes, FullPolicy::Reject)
+            .with_rate(RateLimit::new(queue_rate, queue_rate))
+            .with_max_age(CONSUME_REQUEST_MAX_AGE);
+        let budget = parent_budget
+            .child("lite-pull-consume-requests", limit)
+            .map_err(|error| ClientError::config_invalid_source("client.litePull.consumeRequestQueue", true, error))?;
+        Ok(BudgetedQueue::new(budget))
+    }
+
+    fn enqueue_consume_request(&self, request: LitePullConsumeRequest) -> ClientResult<()> {
+        let retained_bytes = request.retained_bytes();
+        match self.consume_requests.try_push_data(request, retained_bytes) {
+            rocketmq_runtime::QueuePushOutcome::Rejected { .. } => {
+                Err(crate::mq_client_err!("Lite pull consume request rejected"))
+            }
+            rocketmq_runtime::QueuePushOutcome::Enqueued
+            | rocketmq_runtime::QueuePushOutcome::Coalesced { .. }
+            | rocketmq_runtime::QueuePushOutcome::DroppedStale { .. } => Ok(()),
+        }
+    }
+
+    #[must_use]
+    fn consume_request_queue_snapshot(&self) -> QueueSnapshot {
+        self.consume_requests.snapshot()
+    }
+
+    fn consumer_config_snapshot(&self) -> Arc<LitePullConsumerConfig> {
+        self.consumer_config.load_full()
+    }
+
+    fn update_consumer_config(&self, update: impl Fn(&mut LitePullConsumerConfig)) {
+        self.consumer_config.rcu(|current| {
+            let mut next = (**current).clone();
+            update(&mut next);
+            Arc::new(next)
+        });
+    }
+
+    fn update_client_config(&self, update: impl Fn(&mut ClientConfig)) {
+        self.client_config.rcu(|current| {
+            let mut next = (**current).clone();
+            update(&mut next);
+            Arc::new(next)
+        });
+    }
+
+    pub(crate) fn set_use_tls(&self, use_tls: bool) {
+        self.update_client_config(|config| config.set_use_tls(use_tls));
+    }
+
+    /// Binds the weak self-reference used by callbacks exactly once.
+    pub(crate) fn bind_self(self: &Arc<Self>) {
+        let self_reference = Arc::downgrade(self);
+        if self.self_reference.set(self_reference.clone()).is_ok() {
+            self.rebalance_impl
+                .set_message_queue_listener(Some(Arc::new(LitePullRebalanceListener {
+                    consumer_impl: self_reference,
+                    user_listener: self.user_message_queue_listener.clone(),
+                    task_tracker: self.rebalance_listener_tasks.clone(),
+                    shutdown_token: self.rebalance_listener_shutdown.clone(),
+                })));
+        }
+    }
+
+    pub fn set_rpc_hook(&self, rpc_hook: Option<Arc<dyn RPCHook>>) {
+        *self.rpc_hook.write().unwrap_or_else(|poisoned| poisoned.into_inner()) = rpc_hook;
+    }
+
+    /// Validates service state is Running.
+    #[inline]
+    fn make_sure_state_ok(&self) -> ClientResult<()> {
+        let service_state = self.service_state();
+        if service_state != ServiceState::Running {
+            return Err(crate::mq_client_err!(format!(
+                "The lite pull consumer service state not OK, {:?}, {}",
+                service_state,
+                rocketmq_model::common::FAQUrl::suggest_todo(rocketmq_model::common::FAQUrl::CLIENT_SERVICE_NOT_OK)
+            )));
+        }
+        Ok(())
+    }
+
+    pub(crate) fn ensure_classic_pull_running(&self) -> ClientResult<()> {
+        self.make_sure_state_ok()
+    }
+
+    pub(crate) async fn register_classic_pull_subscription(&self, topic: &CheetahString) -> ClientResult<()> {
+        if self.rebalance_impl.get_subscription_inner().contains_key(topic) {
+            return Ok(());
+        }
+        let subscription =
+            FilterAPI::build_subscription_data(topic, &CheetahString::from_static_str(SubscriptionData::SUB_ALL))
+                .map_err(crate::ClientError::illegal_argument)?;
+        self.rebalance_impl.put_subscription_data(topic.clone(), subscription);
+        if self.service_state() == ServiceState::Running {
+            if let Some(client_instance) = self.component_snapshot(&self.client_instance) {
+                client_instance.send_heartbeat_to_all_broker_with_lock().await;
+                self.update_topic_subscribe_info_when_subscription_changed().await?;
+            }
+        }
+        Ok(())
+    }
+
+    pub(crate) async fn classic_pull(&self, options: &PullOptions) -> ClientResult<crate::PullResult> {
+        struct NoopPullCallback;
+
+        impl PullCallback for NoopPullCallback {
+            async fn on_success(&mut self, _pull_result: crate::PullResultExt) {}
+
+            fn on_exception(&mut self, _error: ClientError) {}
+        }
+
+        self.make_sure_state_ok()?;
+        let prepared = prepare_classic_pull(options)?;
+        self.register_classic_pull_subscription(prepared.message_queue.topic())
+            .await?;
+        let wrapper = self
+            .component_snapshot(&self.pull_api_wrapper)
+            .ok_or_else(|| crate::mq_client_err!("PullAPIWrapper is not initialized"))?;
+        let pull = wrapper.pull_kernel_impl(
+            &prepared.message_queue,
+            prepared.subscription_data.sub_string.clone(),
+            prepared.subscription_data.expression_type.clone(),
+            prepared.sub_version,
+            options.offset(),
+            options.max_messages(),
+            options.max_size_in_bytes_value(),
+            prepared.sys_flag,
+            0,
+            prepared.broker_suspend_timeout_millis,
+            prepared.timeout_millis,
+            CommunicationMode::Sync,
+            NoopPullCallback,
+        );
+        let mut pull_result = tokio::time::timeout(options.timeout_value(), pull)
+            .await
+            .map_err(|_| ClientError::timeout("classic pull request", prepared.timeout_millis))??
+            .ok_or_else(|| crate::mq_client_err!("Synchronous classic pull returned no result"))?;
+        wrapper.process_pull_result(&prepared.message_queue, &mut pull_result, &prepared.subscription_data);
+        let namespace = self.client_config.load().namespace.clone();
+        reset_classic_pull_message_topics(&mut pull_result.pull_result.msg_found_list, namespace.as_deref());
+        Ok(pull_result.pull_result)
+    }
+
+    pub(crate) async fn classic_pull_async<C>(&self, options: PullOptions, callback: C) -> ClientResult<()>
+    where
+        C: ClassicPullCallback,
+    {
+        self.make_sure_state_ok()?;
+        let prepared = prepare_classic_pull(&options)?;
+        self.register_classic_pull_subscription(prepared.message_queue.topic())
+            .await?;
+        let wrapper = self
+            .component_snapshot(&self.pull_api_wrapper)
+            .ok_or_else(|| crate::mq_client_err!("PullAPIWrapper is not initialized"))?;
+        let callback = ClassicPullCallbackAdapter {
+            callback,
+            pull_api_wrapper: wrapper.clone(),
+            message_queue: prepared.message_queue.clone(),
+            subscription_data: prepared.subscription_data.clone(),
+            namespace: self.client_config.load().namespace.clone(),
+        };
+        wrapper
+            .pull_kernel_impl(
+                &prepared.message_queue,
+                prepared.subscription_data.sub_string,
+                prepared.subscription_data.expression_type,
+                prepared.sub_version,
+                options.offset(),
+                options.max_messages(),
+                options.max_size_in_bytes_value(),
+                prepared.sys_flag,
+                0,
+                prepared.broker_suspend_timeout_millis,
+                prepared.timeout_millis,
+                CommunicationMode::Async,
+                callback,
+            )
+            .await?;
+        Ok(())
+    }
+
+    pub(crate) async fn update_classic_pull_offset(&self, mq: &MessageQueue, offset: i64) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+        if offset < 0 {
+            return Err(crate::mq_client_err!("offset < 0"));
+        }
+        let offset_store = self
+            .offset_store()
+            .ok_or_else(|| crate::mq_client_err!("Offset store is not initialized"))?;
+        offset_store.update_offset(mq, offset, false).await;
+        Ok(())
+    }
+
+    pub(crate) async fn fetch_classic_pull_offset(&self, mq: &MessageQueue, from_store: bool) -> ClientResult<i64> {
+        self.make_sure_state_ok()?;
+        let offset_store = self
+            .offset_store()
+            .ok_or_else(|| crate::mq_client_err!("Offset store is not initialized"))?;
+        let read_type = if from_store {
+            ReadOffsetType::ReadFromStore
+        } else {
+            ReadOffsetType::MemoryFirstThenStore
+        };
+        let offset = offset_store.read_offset(mq, read_type).await;
+        if offset == -2 {
+            return Err(crate::mq_client_err!("Fetch consume offset from broker exception"));
+        }
+        Ok(offset)
+    }
+
+    /// Returns the current service state.
+    pub fn service_state(&self) -> ServiceState {
+        *self
+            .service_state
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+    }
+
+    fn set_service_state(&self, service_state: ServiceState) {
+        *self
+            .service_state
+            .write()
+            .unwrap_or_else(|poisoned| poisoned.into_inner()) = service_state;
+    }
+
+    fn component_snapshot<T: Clone>(&self, component: &StdRwLock<Option<T>>) -> Option<T> {
+        component
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .clone()
+    }
+
+    fn rpc_hook_snapshot(&self) -> Option<Arc<dyn RPCHook>> {
+        self.rpc_hook
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .clone()
+    }
+
+    fn consume_message_hooks_snapshot(&self) -> Vec<Arc<dyn ConsumeMessageHook + Send + Sync>> {
+        self.consume_message_hook_list
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .clone()
+    }
+
+    fn filter_message_hooks_snapshot(&self) -> Vec<Arc<dyn FilterMessageHook + Send + Sync>> {
+        self.filter_message_hook_list
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .clone()
+    }
+
+    /// Returns the configured consumer group.
+    pub fn consumer_group_config(&self) -> CheetahString {
+        self.consumer_config.load().consumer_group.clone()
+    }
+
+    /// Updates the consumer group before startup and keeps rebalance config in sync.
+    pub fn set_consumer_group(&self, consumer_group: CheetahString) -> ClientResult<()> {
+        let service_state = self
+            .service_state
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        if *service_state != ServiceState::CreateJust {
+            return Err(crate::mq_client_err!(
+                "consumerGroup can not be changed after the lite pull consumer has started."
+            ));
+        }
+
+        self.update_consumer_config(|config| config.consumer_group = consumer_group.clone());
+        self.rebalance_impl.set_consumer_group(consumer_group);
+        Ok(())
+    }
+
+    #[cfg(test)]
+    pub(crate) fn rebalance_consumer_group_name(&self) -> Option<CheetahString> {
+        self.rebalance_impl.rebalance_impl_inner.consumer_group()
+    }
+
+    /// Returns the active or preconfigured offset store.
+    pub fn offset_store(&self) -> Option<Arc<OffsetStore>> {
+        self.offset_store
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .clone()
+    }
+
+    /// Updates the offset store before startup and keeps rebalance state in sync.
+    pub fn set_offset_store(&self, offset_store: Option<Arc<OffsetStore>>) -> ClientResult<()> {
+        let service_state = self
+            .service_state
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        if *service_state != ServiceState::CreateJust {
+            return Err(crate::mq_client_err!(
+                "offsetStore can not be changed after the lite pull consumer has started."
+            ));
+        }
+
+        *self
+            .offset_store
+            .write()
+            .unwrap_or_else(|poisoned| poisoned.into_inner()) = offset_store.clone();
+        self.rebalance_impl.set_offset_store(offset_store);
+        Ok(())
+    }
+
+    #[cfg(test)]
+    pub(crate) fn rebalance_has_offset_store(&self) -> bool {
+        self.rebalance_impl.offset_store.load().is_some()
+    }
+
+    #[cfg(test)]
+    pub(crate) fn has_rpc_hook(&self) -> bool {
+        self.rpc_hook
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .is_some()
+    }
+
+    /// Validates configuration before starting.
+    fn check_config(&self) -> ClientResult<()> {
+        let config = self.consumer_config_snapshot();
+        if config.consumer_group.is_empty() {
+            return Err(crate::mq_client_err!("Consumer group cannot be empty"));
+        }
+
+        if config.consumer_group == mix_all::DEFAULT_CONSUMER_GROUP {
+            return Err(crate::mq_client_err!(format!(
+                "consumerGroup can not equal {}, please specify another one.{}",
+                mix_all::DEFAULT_CONSUMER_GROUP,
+                rocketmq_model::common::FAQUrl::suggest_todo(
+                    rocketmq_model::common::FAQUrl::CLIENT_PARAMETER_CHECK_URL
+                )
+            )));
+        }
+
+        validate_lite_pull_consume_from_where(config.consume_from_where)?;
+
+        if config.pull_batch_size < 1 || config.pull_batch_size > 1024 {
+            return Err(crate::mq_client_err!(format!(
+                "pullBatchSize must be in [1, 1024], current value: {}",
+                config.pull_batch_size
+            )));
+        }
+
+        if config.pull_thread_nums == 0 {
+            return Err(crate::mq_client_err!("pullThreadNums must be greater than 0"));
+        }
+
+        if config.pull_threshold_for_queue < 1 || config.pull_threshold_for_queue > 65535 {
+            return Err(crate::mq_client_err!(format!(
+                "pullThresholdForQueue must be in [1, 65535], current value: {}",
+                config.pull_threshold_for_queue
+            )));
+        }
+
+        if config.poll_timeout_millis == 0 {
+            return Err(crate::mq_client_err!("pollTimeoutMillis cannot be 0"));
+        }
+
+        if config.consumer_timeout_millis_when_suspend < config.broker_suspend_max_time_millis {
+            return Err(crate::mq_client_err!(
+                "Long polling mode, the consumer consumerTimeoutMillisWhenSuspend must greater than \
+                 brokerSuspendMaxTimeMillis"
+            ));
+        }
+
+        Ok(())
+    }
+
+    /// Sets subscription type and validates no conflicts.
+    async fn set_subscription_type(&self, sub_type: SubscriptionType) -> ClientResult<()> {
+        let mut subscription_type = self.subscription_type.write().await;
+        if *subscription_type == SubscriptionType::None {
+            *subscription_type = sub_type;
+            Ok(())
+        } else if *subscription_type != sub_type {
+            Err(crate::mq_client_err!("Subscribe and assign are mutually exclusive."))
+        } else {
+            Ok(())
+        }
+    }
+
+    async fn subscribe_inner(
+        &self,
+        topic: impl Into<CheetahString>,
+        sub_expression: impl Into<CheetahString>,
+        message_queue_listener: Option<ArcMessageQueueListener>,
+    ) -> ClientResult<()> {
+        let _transition = self.lifecycle_transition.lock().await;
+        let topic = topic.into();
+        let sub_expression = sub_expression.into();
+
+        if topic.is_empty() {
+            return Err(crate::mq_client_err!("Topic cannot be empty"));
+        }
+
+        self.set_subscription_type(SubscriptionType::Subscribe).await?;
+
+        let subscription_data = FilterAPI::build_subscription_data(&topic, &sub_expression)
+            .map_err(crate::ClientError::illegal_argument)?;
+
+        self.rebalance_impl.put_subscription_data(topic, subscription_data);
+        if let Some(listener) = message_queue_listener {
+            self.set_message_queue_listener(Some(listener));
+        }
+
+        if self.service_state() == ServiceState::Running {
+            if let Some(client_instance) = self.component_snapshot(&self.client_instance) {
+                client_instance.send_heartbeat_to_all_broker_with_lock().await;
+                self.update_topic_subscribe_info_when_subscription_changed().await?;
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Subscribes to a topic with optional tag expression filter.
+    pub async fn subscribe(
+        &self,
+        topic: impl Into<CheetahString>,
+        sub_expression: impl Into<CheetahString>,
+    ) -> ClientResult<()> {
+        self.subscribe_inner(topic, sub_expression, None).await
+    }
+
+    /// Manually assigns specific message queues (ASSIGN mode).
+    pub async fn assign(&self, message_queues: Vec<MessageQueue>) -> ClientResult<()> {
+        let _transition = self.lifecycle_transition.lock().await;
+        if message_queues.is_empty() {
+            return Err(crate::mq_client_err!("Message queues can not be null or empty."));
+        }
+
+        self.set_subscription_type(SubscriptionType::Assign).await?;
+
+        self.update_assigned_message_queue_for_assign(&message_queues).await;
+
+        if self.service_state() == ServiceState::Running {
+            self.update_pull_task_for_assign(&message_queues).await?;
+        }
+
+        Ok(())
+    }
+
+    async fn update_assigned_message_queue_for_topic(&self, topic: &str, assigned: &HashSet<MessageQueue>) {
+        self.assigned_message_queue
+            .update_assigned_message_queue_for_topic(topic, assigned.iter().cloned())
+            .await;
+    }
+
+    async fn update_pull_task_for_topic(&self, topic: &str, assigned: &HashSet<MessageQueue>) -> ClientResult<()> {
+        self.assignment_registry.reconcile_topic(topic, assigned).await;
+        for mq in assigned {
+            let Some(entry) = self.assignment_registry.ensure(mq.clone()).await else {
+                return Err(crate::mq_client_err!("LitePull assignment registry is closed"));
+            };
+            if !entry.has_task().await {
+                self.start_pull_task(mq.clone()).await?;
+            }
+        }
+        Ok(())
+    }
+
+    async fn update_assign_queue_and_start_pull_task(
+        &self,
+        topic: &str,
+        mq_all: &HashSet<MessageQueue>,
+        mq_divided: &HashSet<MessageQueue>,
+    ) -> ClientResult<()> {
+        let assigned = match self.consumer_config.load().message_model {
+            MessageModel::Broadcasting => mq_all,
+            MessageModel::Clustering => mq_divided,
+        };
+        self.update_assigned_message_queue_for_topic(topic, assigned).await;
+        self.update_pull_task_for_topic(topic, assigned).await
+    }
+
+    /// Updates assigned message queues for ASSIGN mode.
+    async fn update_assigned_message_queue_for_assign(&self, assigned: &[MessageQueue]) {
+        let assigned_set: HashSet<MessageQueue> = assigned.iter().cloned().collect();
+        self.assignment_registry.reconcile_all(&assigned_set).await;
+        for mq in &assigned_set {
+            if self.assignment_registry.ensure(mq.clone()).await.is_none() {
+                warn!("Skip registering LitePull assignment after shutdown: {}", mq);
+            }
+        }
+
+        self.assigned_message_queue
+            .update_assigned_message_queue(assigned_set)
+            .await;
+    }
+
+    /// Starts pull tasks for assigned queues in ASSIGN mode.
+    async fn update_pull_task_for_assign(&self, assigned: &[MessageQueue]) -> ClientResult<()> {
+        for mq in assigned {
+            let Some(entry) = self.assignment_registry.ensure(mq.clone()).await else {
+                return Err(crate::mq_client_err!("LitePull assignment registry is closed"));
+            };
+            if !entry.has_task().await {
+                self.start_pull_task(mq.clone()).await?;
+            }
+        }
+        Ok(())
+    }
+
+    /// Updates topic subscription info when subscription changes (SUBSCRIBE mode).
+    async fn update_topic_subscribe_info_when_subscription_changed(&self) -> ClientResult<()> {
+        let topics: Vec<CheetahString> = self
+            .rebalance_impl
+            .get_subscription_inner()
+            .iter()
+            .map(|entry| entry.key().clone())
+            .collect();
+
+        if let Some(client_instance) = self.component_snapshot(&self.client_instance) {
+            for topic in &topics {
+                client_instance
+                    .update_topic_route_info_from_name_server_topic(topic)
+                    .await;
+            }
+            client_instance.send_heartbeat_to_all_broker_with_lock_v2(true).await;
+        }
+
+        if !topics.is_empty() {
+            self.rebalance_impl.do_rebalance(false).await;
+            self.sync_assigned_queues_from_rebalance(&topics).await?;
+        }
+
+        Ok(())
+    }
+
+    async fn sync_assigned_queues_from_rebalance(&self, topics: &[CheetahString]) -> ClientResult<()> {
+        let assignments: Vec<(CheetahString, HashSet<MessageQueue>)> = {
+            let process_queue_table = self
+                .rebalance_impl
+                .rebalance_impl_inner
+                .process_queue_table
+                .read()
+                .await;
+
+            topics
+                .iter()
+                .map(|topic| {
+                    let assigned = process_queue_table
+                        .keys()
+                        .filter(|mq| mq.topic_str() == topic.as_str())
+                        .cloned()
+                        .collect::<HashSet<_>>();
+                    (topic.clone(), assigned)
+                })
+                .collect()
+        };
+
+        for (topic, assigned) in assignments {
+            self.update_assign_queue_and_start_pull_task(topic.as_str(), &assigned, &assigned)
+                .await?;
+        }
+
+        Ok(())
+    }
+
+    /// Starts the lite pull consumer.
+    pub async fn start(&self) -> ClientResult<()> {
+        let _transition = self.lifecycle_transition.lock().await;
+        let previous_state = {
+            let mut service_state = self
+                .service_state
+                .write()
+                .unwrap_or_else(|poisoned| poisoned.into_inner());
+            let previous_state = *service_state;
+            if previous_state == ServiceState::CreateJust {
+                *service_state = ServiceState::StartFailed;
+            }
+            previous_state
+        };
+
+        match previous_state {
+            ServiceState::CreateJust => {
+                let consumer_config = self.consumer_config_snapshot();
+                info!(
+                    "DefaultLitePullConsumerImpl [{}] starting. message_model={:?}",
+                    consumer_config.consumer_group, consumer_config.message_model
+                );
+
+                self.check_config()?;
+
+                if consumer_config.message_model == MessageModel::Clustering {
+                    self.update_client_config(ClientConfig::change_instance_name_to_pid);
+                }
+
+                let client_config = self.client_config.load_full();
+                let options =
+                    ClientOptions::from_parts(client_config.as_ref().clone(), self.nameserver_discovery.clone());
+                let pooled = self
+                    .client_pool
+                    .get_or_create_with_options(options, self.rpc_hook_snapshot())?;
+                let (client_instance, token) = pooled.into_parts();
+                *self.client_pool_token.lock().await = Some(token);
+                *self
+                    .client_instance
+                    .write()
+                    .unwrap_or_else(|poisoned| poisoned.into_inner()) = Some(client_instance.clone());
+
+                self.rebalance_impl.set_mq_client_factory(
+                    consumer_config.consumer_group.clone(),
+                    consumer_config.message_model,
+                    consumer_config.allocate_message_queue_strategy.clone(),
+                    client_instance.clone(),
+                );
+
+                if self.component_snapshot(&self.pull_api_wrapper).is_none() {
+                    let pull_api_wrapper = PullAPIWrapper::new(
+                        client_instance.clone(),
+                        consumer_config.consumer_group.clone(),
+                        consumer_config.unit_mode,
+                    );
+                    pull_api_wrapper.set_connect_broker_by_user(consumer_config.connect_broker_by_user);
+                    pull_api_wrapper.set_default_broker_id(consumer_config.default_broker_id);
+                    pull_api_wrapper.register_filter_message_hook(self.filter_message_hooks_snapshot());
+                    *self
+                        .pull_api_wrapper
+                        .write()
+                        .unwrap_or_else(|poisoned| poisoned.into_inner()) = Some(Arc::new(pull_api_wrapper));
+                }
+
+                let offset_store = match self.offset_store() {
+                    Some(offset_store) => offset_store,
+                    None => Arc::new(match consumer_config.message_model {
+                        MessageModel::Broadcasting => OffsetStore::new_with_local(LocalFileOffsetStore::try_new(
+                            self.service_context.component("offset-store"),
+                            client_instance.clone(),
+                            consumer_config.consumer_group.clone(),
+                        )?),
+                        MessageModel::Clustering => OffsetStore::new_with_remote(RemoteBrokerOffsetStore::new(
+                            client_instance.clone(),
+                            consumer_config.consumer_group.clone(),
+                        )),
+                    }),
+                };
+
+                offset_store.load().await?;
+
+                self.rebalance_impl.set_offset_store(Some(offset_store.clone()));
+
+                *self
+                    .offset_store
+                    .write()
+                    .unwrap_or_else(|poisoned| poisoned.into_inner()) = Some(offset_store);
+
+                let default_lite_pull_consumer_impl = self
+                    .self_reference
+                    .get()
+                    .and_then(Weak::upgrade)
+                    .ok_or_else(|| crate::mq_client_err!("default_lite_pull_consumer_impl is not initialized"))?;
+                let register_ok = client_instance
+                    .register_consumer(
+                        &consumer_config.consumer_group,
+                        MQConsumerInnerImpl::from_lite_pull(default_lite_pull_consumer_impl),
+                    )
+                    .await;
+                if !register_ok {
+                    self.release_client_pool_lease().await;
+                    self.set_service_state(ServiceState::CreateJust);
+                    return Err(crate::mq_client_err!(format!(
+                        "The consumer group[{}] has been created before, specify another name please.{}",
+                        consumer_config.consumer_group,
+                        rocketmq_model::common::FAQUrl::suggest_todo(
+                            rocketmq_model::common::FAQUrl::GROUP_NAME_DUPLICATE_URL
+                        )
+                    )));
+                }
+
+                if let Err(error) = Box::pin(client_instance.start()).await {
+                    client_instance
+                        .unregister_consumer(&consumer_config.consumer_group)
+                        .await;
+                    self.release_client_pool_lease().await;
+                    return Err(error);
+                }
+
+                self.set_service_state(ServiceState::Running);
+
+                self.start_topic_metadata_check_task()?;
+
+                info!(
+                    "DefaultLitePullConsumerImpl [{}] started successfully",
+                    consumer_config.consumer_group
+                );
+
+                if let Err(error) = self.operate_after_running().await {
+                    let _ = self.shutdown_transition().await;
+                    return Err(error);
+                }
+
+                Ok(())
+            }
+            ServiceState::Running => Err(crate::mq_client_err!("The lite pull consumer is already running")),
+            ServiceState::ShutdownAlready => Err(crate::mq_client_err!("The lite pull consumer has been shutdown")),
+            ServiceState::StartFailed => Err(crate::mq_client_err!(format!(
+                "The lite pull consumer start failed, current state: {:?}",
+                self.service_state()
+            ))),
+        }
+    }
+
+    /// Completes startup operations that depend on the final running state.
+    ///
+    /// This mirrors Java's `operateAfterRunning`: subscriptions made before `start`
+    /// need topic route refresh, and assignments made before `start` need pull tasks.
+    async fn operate_after_running(&self) -> ClientResult<()> {
+        let subscription_type = *self.subscription_type.read().await;
+        match subscription_type {
+            SubscriptionType::Subscribe => {
+                self.update_topic_subscribe_info_when_subscription_changed().await?;
+            }
+            SubscriptionType::Assign => {
+                let assigned: Vec<MessageQueue> =
+                    self.assigned_message_queue.message_queues().await.into_iter().collect();
+                self.update_pull_task_for_assign(&assigned).await?;
+            }
+            SubscriptionType::None => {}
+        }
+
+        self.refresh_registered_topic_message_queue_snapshots().await?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+        client_instance.check_client_in_broker().await
+    }
+
+    fn start_topic_metadata_check_task(&self) -> ClientResult<()> {
+        if self
+            .topic_metadata_check_task_handle
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .is_some()
+        {
+            return Ok(());
+        }
+
+        let weak_consumer_impl = self
+            .self_reference
+            .get()
+            .cloned()
+            .ok_or_else(|| crate::mq_client_err!("default_lite_pull_consumer_impl is not initialized"))?;
+        let shutdown_signal = self.shutdown_signal.clone();
+        let task_cancelled = Arc::new(AtomicBool::new(false));
+        let task_cancelled_for_task = task_cancelled.clone();
+        let check_interval =
+            Duration::from_millis(self.consumer_config.load().topic_metadata_check_interval_millis.max(1));
+
+        let handle = spawn_lite_pull_task(
+            &self.service_context,
+            "rocketmq-client-lite-pull-topic-metadata",
+            task_cancelled,
+            async move {
+                if !sleep_or_cancel(&shutdown_signal, &task_cancelled_for_task, Duration::from_secs(10)).await {
+                    return;
+                }
+
+                loop {
+                    if shutdown_signal.load(Ordering::Acquire) || task_cancelled_for_task.load(Ordering::Acquire) {
+                        break;
+                    }
+
+                    let Some(consumer_impl) = weak_consumer_impl.upgrade() else {
+                        break;
+                    };
+
+                    if let Err(error) = consumer_impl.fetch_topic_message_queues_and_compare().await {
+                        warn!("Scheduled fetchTopicMessageQueuesAndCompare exception: {}", error);
+                    }
+
+                    if !sleep_or_cancel(&shutdown_signal, &task_cancelled_for_task, check_interval).await {
+                        break;
+                    }
+                }
+            },
+        )
+        .map_err(|error| crate::ClientError::service_source("topic_metadata_check", error))?;
+        *self
+            .topic_metadata_check_task_handle
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner()) = Some(handle);
+
+        Ok(())
+    }
+
+    async fn refresh_registered_topic_message_queue_snapshots(&self) -> ClientResult<()> {
+        let topics: Vec<CheetahString> = self
+            .topic_message_queue_change_listener_map
+            .read()
+            .await
+            .keys()
+            .cloned()
+            .collect();
+
+        for topic in topics {
+            let message_queues = self.fetch_message_queues(topic.clone()).await?;
+            self.message_queues_for_topic
+                .write()
+                .await
+                .insert(topic, message_queues);
+        }
+
+        Ok(())
+    }
+
+    async fn notify_topic_message_queue_change_if_needed(
+        &self,
+        topic: &CheetahString,
+        new_message_queues: HashSet<MessageQueue>,
+    ) {
+        let listener = {
+            self.topic_message_queue_change_listener_map
+                .read()
+                .await
+                .get(topic)
+                .cloned()
+        };
+        let Some(listener) = listener else {
+            return;
+        };
+
+        let is_changed = {
+            let snapshots = self.message_queues_for_topic.read().await;
+            snapshots.get(topic) != Some(&new_message_queues)
+        };
+
+        if !is_changed {
+            return;
+        }
+
+        self.message_queues_for_topic
+            .write()
+            .await
+            .insert(topic.clone(), new_message_queues.clone());
+
+        let topic = topic.clone();
+        if let Err(error) = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            listener.on_changed(topic.as_str(), new_message_queues);
+        })) {
+            tracing::error!(
+                "topicMessageQueueChangeListener for topic {} panicked: {:?}",
+                topic,
+                error
+            );
+        }
+    }
+
+    async fn fetch_topic_message_queues_and_compare(&self) -> ClientResult<()> {
+        let topics: Vec<CheetahString> = self
+            .topic_message_queue_change_listener_map
+            .read()
+            .await
+            .keys()
+            .cloned()
+            .collect();
+
+        for topic in topics {
+            let new_message_queues = self.fetch_message_queues(topic.clone()).await?;
+            self.notify_topic_message_queue_change_if_needed(&topic, new_message_queues)
+                .await;
+        }
+
+        Ok(())
+    }
+
+    /// Shuts down the lite pull consumer gracefully.
+    pub async fn shutdown(&self) -> ClientResult<()> {
+        let _transition = self.lifecycle_transition.lock().await;
+        self.shutdown_transition().await
+    }
+
+    async fn release_client_pool_lease(&self) {
+        let token = self.client_pool_token.lock().await.take();
+        if let Some(token) = token {
+            self.client_pool.release(token).await;
+        }
+    }
+
+    async fn shutdown_transition(&self) -> ClientResult<()> {
+        match self.service_state() {
+            ServiceState::Running => {
+                let consumer_group = self.consumer_config.load().consumer_group.clone();
+                info!("DefaultLitePullConsumerImpl [{}] shutting down", consumer_group);
+
+                self.shutdown_signal.store(true, Ordering::Release);
+                self.consume_requests.close();
+                self.consume_requests.retain(|_| false);
+                self.rebalance_listener_shutdown.cancel();
+                self.rebalance_listener_tasks.close();
+                if tokio::time::timeout(
+                    REBALANCE_LISTENER_SHUTDOWN_TIMEOUT,
+                    self.rebalance_listener_tasks.wait(),
+                )
+                .await
+                .is_err()
+                {
+                    warn!(
+                        "LitePull rebalance listener tasks did not finish in time. group={}",
+                        consumer_group
+                    );
+                }
+
+                let metadata_handle = self
+                    .topic_metadata_check_task_handle
+                    .lock()
+                    .unwrap_or_else(|poisoned| poisoned.into_inner())
+                    .take();
+                if let Some(handle) = metadata_handle {
+                    if !handle.wait(Duration::from_secs(1)).await {
+                        warn!("Topic metadata check task did not finish in time");
+                    }
+                }
+
+                // Close assignment admission, then cancel and await every owned pull task.
+                let reports = self
+                    .assignment_registry
+                    .close_and_shutdown(Duration::from_secs(5))
+                    .await;
+                for (mq, healthy) in reports {
+                    if !healthy {
+                        warn!("Pull task for {:?} did not finish in time", mq);
+                    }
+                }
+                self.persist_consumer_offset().await;
+                if let Some(offset_store) = self.offset_store() {
+                    if !offset_store.shutdown(OFFSET_STORE_SHUTDOWN_TIMEOUT).await {
+                        warn!(
+                            "lite pull consumer [{}] offset store did not stop before timeout",
+                            consumer_group
+                        );
+                    }
+                }
+
+                let client = self
+                    .client_instance
+                    .write()
+                    .unwrap_or_else(|poisoned| poisoned.into_inner())
+                    .take();
+                if let Some(client) = client {
+                    client.unregister_consumer(&consumer_group).await;
+                    self.release_client_pool_lease().await;
+                }
+
+                self.set_service_state(ServiceState::ShutdownAlready);
+
+                info!("DefaultLitePullConsumerImpl [{}] shutdown successfully", consumer_group);
+
+                Ok(())
+            }
+            ServiceState::CreateJust => Ok(()),
+            ServiceState::ShutdownAlready => {
+                warn!("The lite pull consumer has already been shutdown");
+                Ok(())
+            }
+            ServiceState::StartFailed => {
+                self.release_client_pool_lease().await;
+                Ok(())
+            }
+        }
+    }
+
+    /// Returns whether the consumer is currently running.
+    pub async fn is_running(&self) -> bool {
+        matches!(self.service_state(), ServiceState::Running)
+    }
+
+    /// Subscribes to a topic with a listener for queue assignment changes.
+    pub async fn subscribe_with_listener<L>(
+        &self,
+        topic: impl Into<CheetahString>,
+        sub_expression: impl Into<CheetahString>,
+        listener: L,
+    ) -> ClientResult<()>
+    where
+        L: crate::consumer::message_queue_listener::MessageQueueListener + Send + Sync + 'static,
+    {
+        self.subscribe_with_listener_arc(topic, sub_expression, Arc::new(listener))
+            .await
+    }
+
+    /// Subscribes to a topic with a shared listener for queue assignment changes.
+    pub async fn subscribe_with_listener_arc(
+        &self,
+        topic: impl Into<CheetahString>,
+        sub_expression: impl Into<CheetahString>,
+        listener: ArcMessageQueueListener,
+    ) -> ClientResult<()> {
+        let topic = topic.into();
+        let sub_expression = sub_expression.into();
+
+        self.subscribe_inner(topic, sub_expression, Some(listener)).await
+    }
+
+    /// Subscribes to a topic with a message selector.
+    pub async fn subscribe_with_selector(
+        &self,
+        topic: impl Into<CheetahString>,
+        selector: Option<crate::consumer::message_selector::MessageSelector>,
+    ) -> ClientResult<()> {
+        let topic = topic.into();
+
+        match selector {
+            Some(sel) => {
+                let _transition = self.lifecycle_transition.lock().await;
+                if topic.is_empty() {
+                    return Err(crate::mq_client_err!("Topic cannot be empty"));
+                }
+
+                self.set_subscription_type(SubscriptionType::Subscribe).await?;
+
+                let subscription_data =
+                    FilterAPI::build(&topic, sel.get_expression(), Some(sel.get_expression_type().clone()))
+                        .map_err(crate::ClientError::illegal_argument)?;
+
+                self.rebalance_impl.put_subscription_data(topic, subscription_data);
+
+                if self.service_state() == ServiceState::Running {
+                    if let Some(client_instance) = self.component_snapshot(&self.client_instance) {
+                        client_instance.send_heartbeat_to_all_broker_with_lock().await;
+                        self.update_topic_subscribe_info_when_subscription_changed().await?;
+                    }
+                }
+
+                Ok(())
+            }
+            None => self.subscribe(topic, "*").await,
+        }
+    }
+
+    /// Checks if a message queue is paused.
+    pub async fn is_paused(&self, message_queue: &MessageQueue) -> bool {
+        self.assigned_message_queue.is_paused(message_queue).await
+    }
+
+    /// Updates the name server addresses.
+    pub async fn update_name_server_address(&self, addresses: Vec<String>) {
+        let joined_addr = addresses.join(";");
+        self.update_client_config(|config| {
+            config.set_namesrv_addr(CheetahString::from_string(joined_addr.clone()));
+        });
+
+        if let Some(client_instance) = self.component_snapshot(&self.client_instance) {
+            if let Some(api_impl) = client_instance.mq_client_api_impl.load_full() {
+                api_impl.update_name_server_address_list(&joined_addr).await;
+            }
+        }
+    }
+
+    /// Registers a listener for topic message queue changes.
+    pub async fn register_topic_message_queue_change_listener(
+        &self,
+        topic: impl Into<CheetahString>,
+        listener: Arc<dyn TopicMessageQueueChangeListener + Send + Sync>,
+    ) -> ClientResult<()> {
+        let topic = topic.into();
+        let previous = {
+            let mut listeners = self.topic_message_queue_change_listener_map.write().await;
+            listeners.insert(topic.clone(), listener)
+        };
+        if previous.is_some() {
+            warn!(
+                "Topic {} had been registered, new listener will overwrite the old one",
+                topic
+            );
+        }
+        if self.service_state() == ServiceState::Running {
+            let message_queues = self.fetch_message_queues(topic.clone()).await?;
+            self.message_queues_for_topic
+                .write()
+                .await
+                .insert(topic, message_queues);
+        }
+        Ok(())
+    }
+
+    /// Sets the subscription expression for a topic in assign mode.
+    pub async fn set_sub_expression_for_assign(
+        &self,
+        topic: impl Into<CheetahString>,
+        sub_expression: impl Into<CheetahString>,
+    ) -> ClientResult<()> {
+        let _transition = self.lifecycle_transition.lock().await;
+        let topic = topic.into();
+        let sub_expression = sub_expression.into();
+
+        if sub_expression.as_str().trim().is_empty() {
+            return Err(crate::mq_client_err!("subExpression can not be null or empty."));
+        }
+        if self.service_state() != ServiceState::CreateJust {
+            return Err(crate::mq_client_err!("setAssignTag only can be called before start."));
+        }
+
+        self.set_subscription_type(SubscriptionType::Assign).await?;
+
+        let mut map = self.topic_to_sub_expression.write().await;
+        map.insert(topic, sub_expression);
+        Ok(())
+    }
+
+    /// Alias for poll with explicit timeout parameter naming.
+    pub async fn poll_with_timeout(&self, timeout_millis: u64) -> ClientResult<Vec<Arc<MessageExt>>> {
+        self.poll(timeout_millis).await
+    }
+
+    /// Builds subscription information for heartbeat.
+    pub async fn build_subscriptions_for_heartbeat(
+        &self,
+        sub_expression_map: &mut HashMap<String, crate::consumer::message_selector::MessageSelector>,
+    ) -> ClientResult<()> {
+        // Get subscriptions from rebalance impl
+        let subscriptions = self.rebalance_impl.get_subscription_inner();
+
+        for item in subscriptions.iter() {
+            let topic = item.key().to_string();
+            let sub_data = item.value();
+            let selector = crate::consumer::message_selector::MessageSelector::new(
+                sub_data.expression_type.clone(),
+                sub_data.sub_string.clone(),
+            );
+            sub_expression_map.insert(topic, selector);
+        }
+
+        Ok(())
+    }
+
+    /// Returns the subscription data currently used for heartbeat payloads.
+    pub fn subscriptions_for_heartbeat(&self) -> HashSet<SubscriptionData> {
+        self.rebalance_impl
+            .get_subscription_inner()
+            .iter()
+            .map(|entry| entry.value().clone())
+            .collect()
+    }
+
+    /// Spawns an async pull task for a message queue.
+    async fn start_pull_task(&self, mq: MessageQueue) -> ClientResult<()> {
+        let entry = self
+            .assignment_registry
+            .get(&mq)
+            .await
+            .ok_or_else(|| crate::mq_client_err!(format!("Message queue is not actively assigned: {mq}")))?;
+        if entry.has_task().await {
+            return Ok(());
+        }
+
+        let weak_default_impl = self
+            .self_reference
+            .get()
+            .cloned()
+            .ok_or_else(|| crate::mq_client_err!("Consumer self-reference not initialized"))?;
+        let shutdown_signal = self.shutdown_signal.clone();
+        let task_cancelled = Arc::new(AtomicBool::new(false));
+        let task_cancelled_for_task = task_cancelled.clone();
+        let assignment_cancellation = entry.cancellation();
+        let task_generation = entry.next_task_generation();
+        let assignment_entry = Arc::downgrade(&entry);
+        let assignment_entry_for_task = Arc::clone(&entry);
+        let (start_task_tx, start_task_rx) = tokio::sync::oneshot::channel();
+        let assigned_mq = self.assigned_message_queue.clone();
+        let mq_clone = mq.clone();
+
+        let handle = spawn_lite_pull_task(
+            &self.service_context,
+            "rocketmq-client-lite-pull-task",
+            task_cancelled,
+            async move {
+                if start_task_rx.await.is_err() {
+                    return;
+                }
+                loop {
+                    if shutdown_signal.load(Ordering::Acquire)
+                        || task_cancelled_for_task.load(Ordering::Acquire)
+                        || assignment_cancellation.is_cancelled()
+                    {
+                        break;
+                    }
+
+                    let Some(default_impl) = weak_default_impl.upgrade() else {
+                        break;
+                    };
+
+                    let pq = match assigned_mq.get_process_queue(&mq_clone).await {
+                        Some(pq) if !pq.is_dropped() => pq,
+                        _ => break,
+                    };
+
+                    if assigned_mq.is_paused(&mq_clone).await {
+                        if !sleep_or_assignment_cancel(
+                            &shutdown_signal,
+                            &task_cancelled_for_task,
+                            &assignment_cancellation,
+                            Duration::from_millis(
+                                default_impl
+                                    .consumer_config
+                                    .load()
+                                    .pull_time_delay_millis_when_exception,
+                            ),
+                        )
+                        .await
+                        {
+                            break;
+                        }
+                        continue;
+                    }
+
+                    let assignment = AssignmentPullContext {
+                        entry: Arc::clone(&assignment_entry_for_task),
+                        generation: task_generation,
+                    };
+                    match default_impl.pull_inner(&mq_clone, &pq, Some(&assignment)).await {
+                        Ok(delay) => {
+                            if delay > 0
+                                && !sleep_or_assignment_cancel(
+                                    &shutdown_signal,
+                                    &task_cancelled_for_task,
+                                    &assignment_cancellation,
+                                    Duration::from_millis(delay),
+                                )
+                                .await
+                            {
+                                break;
+                            }
+                        }
+                        Err(e) => {
+                            tracing::error!("Pull error for {:?}: {}", mq_clone, e);
+                            if !sleep_or_assignment_cancel(
+                                &shutdown_signal,
+                                &task_cancelled_for_task,
+                                &assignment_cancellation,
+                                Duration::from_millis(
+                                    default_impl
+                                        .consumer_config
+                                        .load()
+                                        .pull_time_delay_millis_when_exception,
+                                ),
+                            )
+                            .await
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                if let Some(entry) = assignment_entry.upgrade() {
+                    entry.clear_task_if_generation(task_generation).await;
+                }
+            },
+        )
+        .map_err(|error| crate::ClientError::service_source("lite_pull_assignment", error))?;
+
+        match self
+            .assignment_registry
+            .install_task(&mq, &entry, task_generation, handle)
+            .await
+        {
+            Ok(()) => {
+                if start_task_tx.send(()).is_err() {
+                    if let Some(handle) = entry.take_task_if_generation(task_generation).await {
+                        handle.abort_and_wait(ASSIGNMENT_TASK_SHUTDOWN_TIMEOUT).await;
+                    }
+                }
+            }
+            Err(handle) => {
+                drop(start_task_tx);
+                handle.abort_and_wait(ASSIGNMENT_TASK_SHUTDOWN_TIMEOUT).await;
+            }
+        }
+        Ok(())
+    }
+
+    /// Core pull logic (returns delay in milliseconds).
+    async fn pull_inner(
+        &self,
+        mq: &MessageQueue,
+        process_queue: &Arc<crate::consumer::consumer_impl::process_queue::ProcessQueue>,
+        assignment: Option<&AssignmentPullContext>,
+    ) -> ClientResult<u64> {
+        struct NoopPullCallback;
+
+        impl PullCallback for NoopPullCallback {
+            async fn on_success(&mut self, _pull_result: crate::PullResultExt) {}
+
+            fn on_exception(&mut self, _e: crate::ClientError) {}
+        }
+
+        self.make_sure_state_ok()?;
+        process_queue.set_last_pull_timestamp(current_millis());
+
+        if let Some(delay) = self.check_flow_control(mq, process_queue).await? {
+            return Ok(delay);
+        }
+
+        let pull_offset = self.next_pull_offset(mq).await?;
+        let consumer_config = self.consumer_config_snapshot();
+
+        if pull_offset < 0 {
+            return Ok(consumer_config.pull_time_delay_millis_when_exception);
+        }
+
+        let subscription_data = self.subscription_data_for_queue(mq).await?;
+        let sub_version = lite_pull_request_sub_version(&subscription_data);
+        let sys_flag = lite_pull_request_sys_flag();
+        let pull_rpc_timeout_millis = effective_pull_rpc_timeout(sys_flag, &consumer_config);
+        let pull_deadline = tokio::time::Instant::now()
+            .checked_add(Duration::from_millis(pull_rpc_timeout_millis))
+            .ok_or_else(|| crate::mq_client_err!("Lite pull timeout exceeds the supported deadline range"))?;
+
+        let pull_api_wrapper = self
+            .component_snapshot(&self.pull_api_wrapper)
+            .ok_or_else(|| crate::mq_client_err!("PullAPIWrapper is not initialized"))?;
+        let Some(pull_permit) = self.acquire_pull_permit(mq, assignment).await? else {
+            return Ok(0);
+        };
+        let pull_request = pull_api_wrapper.pull_kernel_impl(
+            mq,
+            subscription_data.sub_string.clone(),
+            subscription_data.expression_type.clone(),
+            sub_version,
+            pull_offset,
+            consumer_config.pull_batch_size,
+            i32::MAX,
+            sys_flag,
+            0,
+            consumer_config.broker_suspend_max_time_millis,
+            pull_rpc_timeout_millis,
+            CommunicationMode::Sync,
+            NoopPullCallback,
+        );
+        let mut pull_result = tokio::time::timeout_at(pull_deadline, pull_request)
+            .await
+            .map_err(|_| ClientError::timeout("lite pull request", pull_rpc_timeout_millis))??
+            .ok_or_else(|| crate::mq_client_err!("Synchronous lite pull returned no result"))?;
+        drop(pull_permit);
+
+        pull_api_wrapper.process_pull_result(mq, &mut pull_result, &subscription_data);
+
+        match pull_result.pull_result.pull_status {
+            PullStatus::Found => {
+                let messages = pull_result
+                    .pull_result
+                    .msg_found_list
+                    .take()
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(Arc::new)
+                    .collect::<Vec<_>>();
+                let (entry, lock) = self.assignment_operation(mq).await?;
+                let _guard = lock.lock().await;
+                if entry.is_retired() {
+                    return Ok(0);
+                }
+                let result_is_current = self
+                    .update_pull_offset_if_no_pending_seek(
+                        mq,
+                        pull_result.pull_result.next_begin_offset as i64,
+                        process_queue,
+                    )
+                    .await;
+                if result_is_current && !messages.is_empty() {
+                    self.cache_lite_pull_batch(messages, mq, process_queue, pull_offset)
+                        .await?;
+                }
+
+                Ok(0)
+            }
+            PullStatus::NoNewMsg | PullStatus::NoMatchedMsg => {
+                let (entry, lock) = self.assignment_operation(mq).await?;
+                let _guard = lock.lock().await;
+                if entry.is_retired() {
+                    return Ok(0);
+                }
+                self.update_pull_offset_if_no_pending_seek(
+                    mq,
+                    pull_result.pull_result.next_begin_offset as i64,
+                    process_queue,
+                )
+                .await;
+                Ok(0)
+            }
+            PullStatus::OffsetIllegal => {
+                warn!(
+                    "Lite pull offset illegal, mq={}, requested_offset={}, result={}",
+                    mq, pull_offset, pull_result.pull_result
+                );
+                Ok(self
+                    .handle_offset_illegal_pull_result(
+                        mq,
+                        process_queue,
+                        pull_result.pull_result.next_begin_offset as i64,
+                    )
+                    .await)
+            }
+        }
+    }
+
+    async fn cache_lite_pull_batch(
+        &self,
+        messages: Vec<Arc<MessageExt>>,
+        mq: &MessageQueue,
+        process_queue: &Arc<crate::consumer::consumer_impl::process_queue::ProcessQueue>,
+        pull_offset: i64,
+    ) -> ClientResult<()> {
+        let retry_offset = messages.first().map_or(pull_offset, |message| message.queue_offset);
+        let cached_messages = messages.clone();
+        process_queue.put_message(&messages).await;
+        if let Err(error) =
+            self.enqueue_consume_request(LitePullConsumeRequest::new(messages, mq.clone(), process_queue.clone()))
+        {
+            self.consume_request_flow_control_times.fetch_add(1, Ordering::Relaxed);
+            process_queue.remove_message(&cached_messages).await;
+            process_queue.set_consuming(false);
+            self.assigned_message_queue
+                .update_pull_offset(mq, retry_offset, process_queue)
+                .await;
+            return Err(error);
+        }
+        Ok(())
+    }
+
+    async fn assignment_operation(
+        &self,
+        message_queue: &MessageQueue,
+    ) -> ClientResult<(Arc<AssignmentEntry>, Arc<Mutex<()>>)> {
+        let entry =
+            self.assignment_registry.get(message_queue).await.ok_or_else(|| {
+                crate::mq_client_err!(format!("Message queue is not actively assigned: {message_queue}"))
+            })?;
+        Ok((entry.clone(), entry.operation_lock()))
+    }
+
+    async fn update_pull_offset_if_no_pending_seek(
+        &self,
+        mq: &MessageQueue,
+        next_pull_offset: i64,
+        process_queue: &Arc<crate::consumer::consumer_impl::process_queue::ProcessQueue>,
+    ) -> bool {
+        if self.assigned_message_queue.get_seek_offset(mq).await == -1 {
+            self.assigned_message_queue
+                .update_pull_offset(mq, next_pull_offset, process_queue)
+                .await;
+            true
+        } else {
+            false
+        }
+    }
+
+    async fn handle_offset_illegal_pull_result(
+        &self,
+        mq: &MessageQueue,
+        process_queue: &Arc<crate::consumer::consumer_impl::process_queue::ProcessQueue>,
+        next_pull_offset: i64,
+    ) -> u64 {
+        let Ok((entry, lock)) = self.assignment_operation(mq).await else {
+            return self.consumer_config.load().pull_time_delay_millis_when_exception;
+        };
+        let _guard = lock.lock().await;
+        if entry.is_retired() {
+            return self.consumer_config.load().pull_time_delay_millis_when_exception;
+        }
+        self.update_pull_offset_if_no_pending_seek(mq, next_pull_offset, process_queue)
+            .await;
+        self.consumer_config.load().pull_time_delay_millis_when_exception
+    }
+
+    async fn subscription_data_for_queue(&self, mq: &MessageQueue) -> ClientResult<SubscriptionData> {
+        let subscription_inner = self.rebalance_impl.get_subscription_inner();
+        if let Some(subscription_data) = subscription_inner.get(mq.topic()) {
+            return Ok(subscription_data.value().clone());
+        }
+
+        let expression = {
+            let topic_to_sub_expression = self.topic_to_sub_expression.read().await;
+            topic_to_sub_expression
+                .get(mq.topic())
+                .cloned()
+                .unwrap_or_else(|| CheetahString::from_static_str(SubscriptionData::SUB_ALL))
+        };
+
+        FilterAPI::build(
+            mq.topic(),
+            &expression,
+            Some(CheetahString::from_static_str(ExpressionType::TAG)),
+        )
+        .map_err(crate::ClientError::illegal_argument)
+    }
+
+    async fn next_pull_offset(&self, mq: &MessageQueue) -> ClientResult<i64> {
+        let seek_offset = self.assigned_message_queue.get_seek_offset(mq).await;
+        if seek_offset != -1 {
+            self.assigned_message_queue.update_consume_offset(mq, seek_offset).await;
+            self.assigned_message_queue.clear_seek_offset(mq).await;
+            self.clear_message_queue_in_cache(mq).await;
+            return Ok(seek_offset);
+        }
+
+        let current_pull_offset = self.assigned_message_queue.get_pull_offset(mq).await;
+        if current_pull_offset >= 0 {
+            return Ok(current_pull_offset);
+        }
+
+        self.compute_initial_pull_offset(mq).await
+    }
+
+    #[allow(deprecated)]
+    async fn compute_initial_pull_offset(&self, mq: &MessageQueue) -> ClientResult<i64> {
+        if let Some(offset_store) = self.offset_store() {
+            let stored_offset = offset_store.read_offset(mq, ReadOffsetType::MemoryFirstThenStore).await;
+            if stored_offset >= 0 {
+                return Ok(stored_offset);
+            }
+        }
+
+        let consumer_config = self.consumer_config_snapshot();
+        match consumer_config.consume_from_where {
+            ConsumeFromWhere::ConsumeFromFirstOffset | ConsumeFromWhere::ConsumeFromMinOffset => {
+                self.min_offset(mq).await
+            }
+            ConsumeFromWhere::ConsumeFromTimestamp => {
+                if mq.topic_str().starts_with(mix_all::RETRY_GROUP_TOPIC_PREFIX) {
+                    return self.max_offset(mq).await;
+                }
+                let timestamp = consumer_config
+                    .consume_timestamp
+                    .as_deref()
+                    .and_then(|value| util_all::parse_date(value, util_all::YYYYMMDDHHMMSS))
+                    .ok_or_else(|| crate::mq_client_err!("consumeTimestamp is invalid"))?
+                    .and_utc()
+                    .timestamp_millis() as u64;
+                self.search_offset(mq, timestamp).await
+            }
+            ConsumeFromWhere::ConsumeFromLastOffset
+            | ConsumeFromWhere::ConsumeFromLastOffsetAndFromMinWhenBootFirst
+            | ConsumeFromWhere::ConsumeFromMaxOffset => {
+                if mq.topic_str().starts_with(mix_all::RETRY_GROUP_TOPIC_PREFIX) {
+                    self.min_offset(mq).await
+                } else {
+                    self.max_offset(mq).await
+                }
+            }
+        }
+    }
+
+    /// Check all flow control conditions.
+    async fn check_flow_control(
+        &self,
+        _mq: &MessageQueue,
+        pq: &Arc<crate::consumer::consumer_impl::process_queue::ProcessQueue>,
+    ) -> ClientResult<Option<u64>> {
+        let config = self.consumer_config_snapshot();
+
+        // Global cache flow control
+        if config.pull_threshold_for_all > 0 {
+            let cache_msg_count = self.get_cached_message_count().await;
+            if cache_msg_count > config.pull_threshold_for_all {
+                self.consume_request_flow_control_times.fetch_add(1, Ordering::Relaxed);
+                return Ok(Some(config.pull_time_delay_millis_when_cache_flow_control));
+            }
+        }
+
+        // Per-queue message count
+        let cached_msg_count = pq.msg_count() as i64;
+        if cached_msg_count > config.pull_threshold_for_queue {
+            self.queue_flow_control_times.fetch_add(1, Ordering::Relaxed);
+            return Ok(Some(config.pull_time_delay_millis_when_cache_flow_control));
+        }
+
+        // Per-queue message size
+        let cached_msg_size = (pq.msg_size() / (1024 * 1024)) as i64;
+        if cached_msg_size > config.pull_threshold_size_for_queue as i64 {
+            self.queue_flow_control_times.fetch_add(1, Ordering::Relaxed);
+            return Ok(Some(config.pull_time_delay_millis_when_cache_flow_control));
+        }
+
+        // Offset span control
+        let max_span = pq.get_max_span().await;
+        if max_span as i64 > config.consume_max_span {
+            self.queue_max_span_flow_control_times.fetch_add(1, Ordering::Relaxed);
+            return Ok(Some(config.pull_time_delay_millis_when_cache_flow_control));
+        }
+
+        Ok(None)
+    }
+
+    /// Get total cached message count across all queues.
+    async fn get_cached_message_count(&self) -> i64 {
+        self.assigned_message_queue.total_msg_count().await
+    }
+
+    /// Get total cached message size in MiB.
+    async fn get_cached_message_size_in_mib(&self) -> i64 {
+        self.assigned_message_queue.total_msg_size_in_mib().await
+    }
+
+    /// Polls for messages with the specified timeout.
+    pub async fn poll(&self, timeout_millis: u64) -> ClientResult<Vec<Arc<MessageExt>>> {
+        let _poll_guard = self.poll_lock.lock().await;
+        self.make_sure_state_ok()?;
+
+        if self.consumer_config.load().auto_commit {
+            self.maybe_auto_commit().await;
+        }
+
+        let deadline = tokio::time::Instant::now() + Duration::from_millis(timeout_millis);
+
+        loop {
+            let remaining = deadline.saturating_duration_since(tokio::time::Instant::now());
+
+            let queued_request = if remaining.is_zero() {
+                let Some(request) = self.consume_requests.try_pop_budgeted() else {
+                    return Ok(Vec::new());
+                };
+                request
+            } else {
+                match tokio::time::timeout(remaining, self.consume_requests.recv_budgeted()).await {
+                    Ok(Some(request)) => request,
+                    Ok(None) | Err(_) => return Ok(Vec::new()),
+                }
+            };
+            let (request, _permit, _) = queued_request.into_parts();
+
+            if request.process_queue.is_dropped() {
+                if tokio::time::Instant::now() >= deadline {
+                    return Ok(Vec::new());
+                }
+                continue;
+            }
+
+            let mut messages = request.messages;
+            // Execute async operations without holding the lock.
+            let offset = request.process_queue.remove_message(&messages).await;
+            self.assigned_message_queue
+                .update_consume_offset(&request.message_queue, offset)
+                .await;
+
+            // Reset topic to remove namespace if configured
+            self.reset_topic(&mut messages);
+
+            // Execute consume message hooks if registered
+            let consume_message_hooks = self.consume_message_hooks_snapshot();
+            if !consume_message_hooks.is_empty() {
+                let consumer_group = self.consumer_config.load().consumer_group.clone();
+                let client_config = self.client_config.load_full();
+                let mut context = ConsumeMessageContext::new(consumer_group, &messages)
+                    .with_mq(request.message_queue.clone())
+                    .with_namespace(client_config.namespace.clone().unwrap_or_default());
+
+                // Execute hook before with panic protection
+                for hook in &consume_message_hooks {
+                    if let Err(err) = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        hook.consume_message_before(&mut context);
+                    })) {
+                        tracing::error!(
+                            "consumeMessageHook {} executeHookBefore panicked: {:?}",
+                            hook.hook_name(),
+                            err
+                        );
+                    }
+                }
+
+                // Update context for successful consumption
+                context.status = CheetahString::from_static_str("CONSUME_SUCCESS");
+                context.success = true;
+                context.access_channel = Some(client_config.access_channel);
+
+                // Execute hook after with panic protection
+                for hook in &consume_message_hooks {
+                    if let Err(err) = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        hook.consume_message_after(&mut context);
+                    })) {
+                        tracing::error!(
+                            "consumeMessageHook {} executeHookAfter panicked: {:?}",
+                            hook.hook_name(),
+                            err
+                        );
+                    }
+                }
+            }
+
+            request.process_queue.update_last_consume_timestamp();
+
+            return Ok(messages);
+        }
+    }
+
+    /// Checks if auto-commit is needed and performs it.
+    async fn maybe_auto_commit(&self) {
+        let now = current_millis() as i64;
+        let next_deadline = self.next_auto_commit_deadline.load(Ordering::Acquire);
+
+        if now >= next_deadline {
+            let new_deadline = now + self.consumer_config.load().auto_commit_interval_millis as i64;
+
+            // Use CAS to ensure only one thread performs the commit.
+            if self
+                .next_auto_commit_deadline
+                .compare_exchange(next_deadline, new_deadline, Ordering::AcqRel, Ordering::Acquire)
+                .is_ok()
+            {
+                if let Err(e) = self.commit_all().await {
+                    tracing::warn!("Auto-commit failed: {}", e);
+                    // Revert deadline on failure to allow retry
+                    self.next_auto_commit_deadline.store(next_deadline, Ordering::Release);
+                }
+            }
+        }
+    }
+
+    /// Commits offsets for all assigned message queues.
+    pub async fn commit_all(&self) -> ClientResult<()> {
+        let queues = self.assigned_message_queue.message_queues().await;
+
+        if let Err(e) = self.make_sure_state_ok() {
+            tracing::error!("Failed to commit all offsets, service state invalid: {}", e);
+            return Ok(());
+        }
+
+        for mq in queues {
+            if let Err(e) = self.commit_assigned_message_queue_offset(&mq).await {
+                tracing::error!("Failed to commit offset for queue {:?}: {}", mq, e);
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Commits offset for a specific message queue.
+    pub async fn commit_sync(&self, mq: &MessageQueue, persist: bool) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+
+        let updated = self.commit_assigned_message_queue_offset(mq).await?;
+
+        if persist && updated {
+            if let Some(offset_store) = self.offset_store() {
+                let mut mqs = HashSet::new();
+                mqs.insert(mq.clone());
+                offset_store.persist_all(&mqs).await;
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn commit_assigned_message_queue_offset(&self, mq: &MessageQueue) -> ClientResult<bool> {
+        let consume_offset = self.assigned_message_queue.get_consume_offset(mq).await;
+
+        if consume_offset == -1 {
+            tracing::error!("Consume offset is -1 for queue {:?}, skip commit", mq);
+            return Ok(false);
+        }
+
+        if let Some(pq) = self.assigned_message_queue.get_process_queue(mq).await {
+            if !pq.is_dropped() {
+                self.update_consume_offset(mq, consume_offset).await?;
+                return Ok(true);
+            }
+        }
+
+        Ok(false)
+    }
+
+    /// Commits the current assigned consume offsets for the specified queues.
+    pub async fn commit_message_queues(
+        &self,
+        message_queues: &HashSet<MessageQueue>,
+        persist: bool,
+    ) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+
+        if message_queues.is_empty() {
+            return Ok(());
+        }
+
+        for mq in message_queues {
+            self.commit_assigned_message_queue_offset(mq).await?;
+        }
+
+        if persist {
+            if let Some(offset_store) = self.offset_store() {
+                offset_store.persist_all(message_queues).await;
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Commits offsets for multiple message queues.
+    pub async fn commit(&self, offsets: HashMap<MessageQueue, i64>, persist: bool) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+
+        if offsets.is_empty() {
+            tracing::warn!("Offset map is empty, skip commit");
+            return Ok(());
+        }
+
+        let mqs_to_persist: HashSet<MessageQueue> = offsets.keys().cloned().collect();
+
+        for (mq, offset) in offsets {
+            if offset == -1 {
+                tracing::error!("Consume offset is -1 for queue {:?}", mq);
+                continue;
+            }
+
+            if let Some(pq) = self.assigned_message_queue.get_process_queue(&mq).await {
+                if !pq.is_dropped() {
+                    // Continue on error to allow other queues to commit.
+                    if let Err(e) = self.update_consume_offset(&mq, offset).await {
+                        tracing::error!("Failed to update offset for queue {:?}: {}", mq, e);
+                        continue;
+                    }
+                }
+            }
+        }
+
+        if persist {
+            if let Some(offset_store) = self.offset_store() {
+                offset_store.persist_all(&mqs_to_persist).await;
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Updates the consume offset for a message queue.
+    async fn update_consume_offset(&self, mq: &MessageQueue, offset: i64) -> ClientResult<()> {
+        if let Some(offset_store) = self.offset_store() {
+            offset_store.update_offset(mq, offset, false).await;
+        }
+        Ok(())
+    }
+
+    /// Returns the set of assigned message queues.
+    pub async fn assignment(&self) -> HashSet<MessageQueue> {
+        self.assigned_message_queue.message_queues().await
+    }
+
+    /// Returns low-cardinality lifecycle diagnostics for LitePull assignments.
+    #[must_use]
+    pub async fn assignment_registry_snapshot(&self) -> AssignmentRegistrySnapshot {
+        self.assignment_registry.snapshot().await
+    }
+
+    /// Registers a consume message hook for monitoring message consumption.
+    pub fn register_consume_message_hook(&self, hook: Arc<dyn ConsumeMessageHook + Send + Sync>) {
+        self.consume_message_hook_list
+            .write()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .push(hook);
+    }
+
+    #[cfg(test)]
+    pub(crate) fn consume_message_hook_count(&self) -> usize {
+        self.consume_message_hook_list
+            .read()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+            .len()
+    }
+
+    /// Removes namespace from message topics if namespace is configured.
+    fn reset_topic(&self, messages: &mut [Arc<MessageExt>]) {
+        if messages.is_empty() {
+            return;
+        }
+
+        let client_config = self.client_config.load();
+        if let Some(namespace) = &client_config.namespace {
+            if !namespace.is_empty() {
+                for msg in messages.iter_mut() {
+                    let topic = msg.message.topic().to_string();
+                    let topic_without_namespace =
+                        NamespaceUtil::without_namespace_with_namespace(&topic, namespace.as_str());
+                    Arc::make_mut(msg)
+                        .message
+                        .set_topic(CheetahString::from_string(topic_without_namespace));
+                }
+            }
+        }
+    }
+
+    /// Pauses consumption for the specified message queues.
+    pub async fn pause(&self, message_queues: &[MessageQueue]) {
+        for mq in message_queues {
+            self.assigned_message_queue.set_paused(mq, true).await;
+        }
+    }
+
+    /// Resumes consumption for the specified message queues.
+    pub async fn resume(&self, message_queues: &[MessageQueue]) {
+        for mq in message_queues {
+            self.assigned_message_queue.set_paused(mq, false).await;
+        }
+    }
+
+    /// Seeks to the specified offset for the given message queue.
+    pub async fn seek(&self, message_queue: &MessageQueue, offset: i64) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+        self.seek_internal(message_queue, offset, true).await
+    }
+
+    /// Seeks to the beginning of the message queue.
+    pub async fn seek_to_begin(&self, message_queue: &MessageQueue) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+        let begin = self.min_offset(message_queue).await?;
+        self.seek_internal(message_queue, begin, false).await
+    }
+
+    /// Seeks to the end of the message queue.
+    pub async fn seek_to_end(&self, message_queue: &MessageQueue) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+        let end = self.max_offset(message_queue).await?;
+        self.seek_internal(message_queue, end, false).await
+    }
+
+    /// Internal seek implementation with optional offset validation.
+    async fn seek_internal(
+        &self,
+        message_queue: &MessageQueue,
+        offset: i64,
+        validate_offset: bool,
+    ) -> ClientResult<()> {
+        self.ensure_message_queue_assigned(message_queue).await?;
+
+        // Validate offset range if requested (skip for seek_to_begin/end to avoid duplicate queries)
+        if validate_offset {
+            let min_offset = self.min_offset(message_queue).await?;
+            let max_offset = self.max_offset(message_queue).await?;
+            if offset < min_offset || offset > max_offset {
+                return Err(crate::mq_client_err!(format!(
+                    "Seek offset illegal, seek offset = {}, min offset = {}, max offset = {}",
+                    offset, min_offset, max_offset
+                )));
+            }
+        }
+
+        let (entry, lock) = self.assignment_operation(message_queue).await?;
+        let _guard = lock.lock().await;
+        if entry.is_retired() {
+            return Err(crate::mq_client_err!(format!(
+                "Message queue assignment was removed: {message_queue}"
+            )));
+        }
+
+        // Check again under the queue lock in case rebalance changed assignment after offset lookup.
+        self.ensure_message_queue_assigned(message_queue).await?;
+
+        // Check if ProcessQueue is dropped
+        if let Some(pq) = self.assigned_message_queue.get_process_queue(message_queue).await {
+            if pq.is_dropped() {
+                return Err(crate::mq_client_err!(format!(
+                    "ProcessQueue is dropped for message queue: {:?}",
+                    message_queue
+                )));
+            }
+        }
+
+        let _poll_guard = self.poll_lock.lock().await;
+        self.clear_message_queue_in_cache(message_queue).await;
+
+        // Stop and join the task owned by this assignment entry before restarting it.
+        if let Some(handle) = entry.take_task().await {
+            if !handle.abort_and_wait(Duration::from_secs(5)).await {
+                warn!("Pull task for {:?} did not finish before seek restart", message_queue);
+            }
+        }
+
+        // Set seek offset
+        self.assigned_message_queue.set_seek_offset(message_queue, offset).await;
+
+        // Start new pull task
+        if self.assignment_registry.is_current(message_queue, &entry).await {
+            self.start_pull_task(message_queue.clone()).await?;
+        }
+
+        Ok(())
+    }
+
+    async fn ensure_message_queue_assigned(&self, message_queue: &MessageQueue) -> ClientResult<()> {
+        let assigned = self.assigned_message_queue.message_queues().await;
+        if assigned.contains(message_queue) {
+            return Ok(());
+        }
+
+        let subscription_type = *self.subscription_type.read().await;
+        let error_msg = if subscription_type == SubscriptionType::Subscribe {
+            format!(
+                "The message queue is not in assigned list, may be rebalancing, message queue: {:?}",
+                message_queue
+            )
+        } else {
+            format!(
+                "The message queue is not in assigned list, message queue: {:?}",
+                message_queue
+            )
+        };
+        Err(crate::mq_client_err!(error_msg))
+    }
+
+    /// Returns the committed offset for the message queue.
+    pub async fn committed(&self, message_queue: &MessageQueue) -> ClientResult<i64> {
+        self.make_sure_state_ok()?;
+
+        if let Some(offset_store) = self.offset_store() {
+            let offset = offset_store
+                .read_offset(message_queue, ReadOffsetType::MemoryFirstThenStore)
+                .await;
+            if offset == -2 {
+                return Err(crate::mq_client_err!("Fetch consume offset from broker exception"));
+            }
+            if offset == -1 {
+                tracing::warn!("No offset found for message queue: {:?}, returning -1", message_queue);
+            }
+            return Ok(offset);
+        }
+
+        Err(crate::mq_client_err!("Offset store is not initialized"))
+    }
+
+    /// Unsubscribes from the specified topic.
+    ///
+    /// Removes the topic subscription, stops and removes all pull tasks for the topic,
+    /// and clears assigned message queues for the topic.
+    ///
+    /// This operation can be performed regardless of the consumer state.
+    pub async fn unsubscribe(&self, topic: impl Into<CheetahString>) -> ClientResult<()> {
+        let _transition = self.lifecycle_transition.lock().await;
+        let topic = topic.into();
+
+        // Remove from rebalance_impl subscription
+        self.rebalance_impl.get_subscription_inner().remove(&topic);
+
+        // Detach, cancel, and join every queue-scoped resource for this topic.
+        self.assignment_registry.remove_topic(topic.as_str()).await;
+
+        // Remove from assigned_message_queue
+        self.assigned_message_queue
+            .remove_assigned_message_queue(topic.as_str())
+            .await;
+
+        Ok(())
+    }
+
+    /// Searches for the queue offset whose store timestamp is closest to the specified timestamp.
+    ///
+    /// Returns the earliest offset whose store timestamp is greater than or equal to `timestamp`.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the consumer is not in a valid state or if the broker address
+    /// cannot be resolved.
+    pub async fn search_offset(&self, mq: &MessageQueue, timestamp: u64) -> ClientResult<i64> {
+        self.make_sure_state_ok()?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        client_instance.mq_admin_impl.search_offset(mq, timestamp).await
+    }
+
+    /// Fetches all message queues for the specified topic.
+    ///
+    /// Returns a set of message queues with namespace removed from topic names.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the consumer is not in a valid state or if the topic route
+    /// information cannot be retrieved.
+    pub async fn fetch_message_queues(&self, topic: impl Into<CheetahString>) -> ClientResult<HashSet<MessageQueue>> {
+        use crate::factory::mq_client_instance::topic_route_data2topic_subscribe_info;
+
+        self.make_sure_state_ok()?;
+
+        let topic = topic.into();
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        // Use the client-instance route path so queue discovery and the broker-address table are
+        // updated atomically. A direct NameServer query returns queues but leaves the subsequent
+        // Classic Pull request unable to resolve their broker addresses.
+        let topic_route_data = client_instance
+            .query_topic_route_data(&topic)
+            .await
+            .ok_or_else(|| crate::mq_client_err!(format!("No route data found for topic: {}", topic)))?;
+
+        // Convert route data to subscribe info
+        let mq_set = topic_route_data2topic_subscribe_info(topic.as_str(), &topic_route_data);
+
+        if mq_set.is_empty() {
+            return Err(crate::mq_client_err!(format!(
+                "Can not find Message Queue for this topic: {}",
+                topic
+            )));
+        }
+
+        // Parse message queues to remove namespace
+        self.parse_message_queues(&mq_set)
+    }
+
+    /// Creates a topic through the Java-compatible MQAdmin facade.
+    pub async fn create_topic(
+        &self,
+        key: &str,
+        new_topic: &str,
+        queue_num: i32,
+        topic_sys_flag: i32,
+        attributes: HashMap<String, String>,
+    ) -> ClientResult<()> {
+        self.make_sure_state_ok()?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        client_instance
+            .mq_admin_impl
+            .create_topic(key, new_topic, queue_num, topic_sys_flag, attributes)
+            .await
+    }
+
+    /// Queries messages by key through the Java-compatible MQAdmin facade.
+    pub async fn query_message(
+        &self,
+        topic: &str,
+        key: &str,
+        max_num: i32,
+        begin: u64,
+        end: u64,
+    ) -> ClientResult<QueryResult> {
+        self.make_sure_state_ok()?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        client_instance
+            .mq_admin_impl
+            .query_message(topic, key, max_num, begin, end)
+            .await
+    }
+
+    /// Queries one message by unique key, matching DefaultMQProducer's fallback path.
+    pub async fn query_message_by_uniq_key(&self, topic: &str, uniq_key: &str) -> ClientResult<MessageExt> {
+        self.make_sure_state_ok()?;
+
+        let begin = current_millis().saturating_sub(QUERY_UNIQ_KEY_LOOKBACK_MILLIS);
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+        let result = client_instance
+            .mq_admin_impl
+            .query_message_with_unique_flag(topic, uniq_key, 32, begin, i64::MAX as u64, true)
+            .await?;
+        result
+            .message_list()
+            .first()
+            .cloned()
+            .ok_or_else(|| crate::mq_client_err!("query message by uniq key finished, but no message."))
+    }
+
+    /// Views a message by offset message id through the Java-compatible MQAdmin facade.
+    pub async fn view_message(&self, topic: &str, msg_id: &str) -> ClientResult<MessageExt> {
+        self.make_sure_state_ok()?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        if MessageDecoder::decode_message_id(msg_id).is_ok() {
+            client_instance.mq_admin_impl.view_message(topic, msg_id).await
+        } else {
+            self.query_message_by_uniq_key(topic, msg_id).await
+        }
+    }
+
+    /// Parses message queues by removing namespace from their topic names.
+    fn parse_message_queues(&self, queue_set: &HashSet<MessageQueue>) -> ClientResult<HashSet<MessageQueue>> {
+        let client_config = self.client_config.load();
+        let namespace = client_config.get_namespace_v2().map(|s| s.as_str()).unwrap_or_default();
+
+        let mut result = HashSet::with_capacity(queue_set.len());
+        for mq in queue_set {
+            let user_topic = NamespaceUtil::without_namespace_with_namespace(mq.topic_str(), namespace);
+            result.insert(MessageQueue::from_parts(user_topic, mq.broker_name(), mq.queue_id()));
+        }
+
+        Ok(result)
+    }
+
+    /// Returns the offset for the specified message queue at the given timestamp.
+    ///
+    /// This is an alias for `search_offset`.
+    #[allow(dead_code)]
+    pub async fn offset_for_timestamp(&self, mq: &MessageQueue, timestamp: u64) -> ClientResult<i64> {
+        self.search_offset(mq, timestamp).await
+    }
+
+    /// Returns the earliest message store time for the specified message queue.
+    #[allow(dead_code)]
+    pub async fn earliest_msg_store_time(&self, mq: &MessageQueue) -> ClientResult<i64> {
+        self.make_sure_state_ok()?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        client_instance.mq_admin_impl.earliest_msg_store_time(mq).await
+    }
+
+    /// Returns the maximum offset of the specified message queue.
+    #[allow(dead_code)]
+    pub async fn max_offset_public(&self, mq: &MessageQueue) -> ClientResult<i64> {
+        self.max_offset(mq).await
+    }
+
+    /// Returns the minimum offset of the specified message queue.
+    #[allow(dead_code)]
+    pub async fn min_offset_public(&self, mq: &MessageQueue) -> ClientResult<i64> {
+        self.min_offset(mq).await
+    }
+
+    /// Returns whether auto-commit is enabled.
+    #[allow(dead_code)]
+    pub fn is_auto_commit(&self) -> bool {
+        self.consumer_config.load().auto_commit
+    }
+
+    /// Updates whether offsets are automatically committed during poll.
+    pub fn set_auto_commit(&self, auto_commit: bool) {
+        self.update_consumer_config(|config| config.auto_commit = auto_commit);
+    }
+
+    /// Returns the interval between automatic offset commits.
+    pub fn auto_commit_interval_millis(&self) -> u64 {
+        self.consumer_config.load().auto_commit_interval_millis
+    }
+
+    /// Updates the interval between automatic offset commits.
+    pub fn set_auto_commit_interval_millis(&self, interval_millis: u64) {
+        self.update_consumer_config(|config| config.auto_commit_interval_millis = interval_millis);
+    }
+
+    /// Returns whether the subscription group runs in unit mode.
+    pub fn is_unit_mode(&self) -> bool {
+        self.consumer_config.load().unit_mode
+    }
+
+    /// Updates whether the subscription group runs in unit mode.
+    pub fn set_unit_mode(&self, unit_mode: bool) {
+        self.update_consumer_config(|config| config.unit_mode = unit_mode);
+        if let Some(wrapper) = self.component_snapshot(&self.pull_api_wrapper) {
+            wrapper.set_unit_mode(unit_mode);
+        }
+        self.rebalance_impl.set_unit_mode(unit_mode);
+    }
+
+    /// Returns the configured message model.
+    pub fn message_model_config(&self) -> MessageModel {
+        self.consumer_config.load().message_model
+    }
+
+    /// Updates the configured message model.
+    pub fn set_message_model(&self, message_model: MessageModel) {
+        self.update_consumer_config(|config| config.message_model = message_model);
+        self.rebalance_impl.set_message_model(message_model);
+    }
+
+    /// Returns where consumption starts when no offset exists.
+    pub fn consume_from_where_config(&self) -> ConsumeFromWhere {
+        self.consumer_config.load().consume_from_where
+    }
+
+    /// Updates where consumption starts when no offset exists.
+    pub fn set_consume_from_where(&self, consume_from_where: ConsumeFromWhere) -> ClientResult<()> {
+        validate_lite_pull_consume_from_where(consume_from_where)?;
+        self.update_consumer_config(|config| config.consume_from_where = consume_from_where);
+        self.rebalance_impl.set_consume_from_where(consume_from_where);
+        Ok(())
+    }
+
+    /// Returns the configured timestamp for ConsumeFromTimestamp.
+    pub fn consume_timestamp(&self) -> Option<CheetahString> {
+        self.consumer_config.load().consume_timestamp.clone()
+    }
+
+    /// Updates the configured timestamp for ConsumeFromTimestamp.
+    pub fn set_consume_timestamp(&self, consume_timestamp: Option<CheetahString>) {
+        self.update_consumer_config(|config| config.consume_timestamp = consume_timestamp.clone());
+        self.rebalance_impl.set_consume_timestamp(consume_timestamp);
+    }
+
+    /// Returns the queue allocation strategy used during rebalance.
+    pub fn allocate_message_queue_strategy(&self) -> Arc<dyn AllocateMessageQueueStrategy + Send + Sync> {
+        self.consumer_config.load().allocate_message_queue_strategy.clone()
+    }
+
+    /// Updates the queue allocation strategy used during rebalance.
+    pub fn set_allocate_message_queue_strategy(
+        &self,
+        allocate_message_queue_strategy: Arc<dyn AllocateMessageQueueStrategy + Send + Sync>,
+    ) {
+        self.update_consumer_config(|config| {
+            config.allocate_message_queue_strategy = allocate_message_queue_strategy.clone();
+        });
+        self.rebalance_impl
+            .set_allocate_message_queue_strategy(allocate_message_queue_strategy);
+    }
+
+    #[cfg(test)]
+    pub(crate) fn rebalance_allocate_message_queue_strategy_name(&self) -> Option<&'static str> {
+        self.rebalance_impl
+            .rebalance_impl_inner
+            .allocate_message_queue_strategy()
+            .map(|strategy| strategy.get_name())
+    }
+
+    /// Returns the user message queue listener invoked after LitePull rebalance updates assignment.
+    pub fn message_queue_listener(&self) -> Option<ArcMessageQueueListener> {
+        self.user_message_queue_listener
+            .read()
+            .ok()
+            .and_then(|listener| listener.clone())
+    }
+
+    /// Updates the user message queue listener invoked after LitePull rebalance updates assignment.
+    pub fn set_message_queue_listener(&self, listener: Option<ArcMessageQueueListener>) {
+        match self.user_message_queue_listener.write() {
+            Ok(mut current) => *current = listener,
+            Err(error) => warn!("LitePull message queue listener lock poisoned: {}", error),
+        }
+    }
+
+    /// Returns the topic metadata check interval in milliseconds.
+    pub fn topic_metadata_check_interval_millis(&self) -> u64 {
+        self.consumer_config.load().topic_metadata_check_interval_millis
+    }
+
+    /// Updates the topic metadata check interval in milliseconds.
+    pub fn set_topic_metadata_check_interval_millis(&self, interval_millis: u64) {
+        self.update_consumer_config(|config| config.topic_metadata_check_interval_millis = interval_millis);
+    }
+
+    /// Returns whether broker selection is controlled by user configuration.
+    pub fn is_connect_broker_by_user(&self) -> bool {
+        self.component_snapshot(&self.pull_api_wrapper)
+            .as_ref()
+            .map_or(self.consumer_config.load().connect_broker_by_user, |wrapper| {
+                wrapper.is_connect_broker_by_user()
+            })
+    }
+
+    /// Updates whether broker selection is controlled by user configuration.
+    pub fn set_connect_broker_by_user(&self, connect_broker_by_user: bool) {
+        self.update_consumer_config(|config| config.connect_broker_by_user = connect_broker_by_user);
+        if let Some(wrapper) = self.component_snapshot(&self.pull_api_wrapper) {
+            wrapper.set_connect_broker_by_user(connect_broker_by_user);
+        }
+    }
+
+    /// Returns the broker ID used when user-controlled broker selection is enabled.
+    pub fn default_broker_id(&self) -> u64 {
+        self.component_snapshot(&self.pull_api_wrapper)
+            .as_ref()
+            .map_or(self.consumer_config.load().default_broker_id, |wrapper| {
+                wrapper.default_broker_id()
+            })
+    }
+
+    /// Updates the broker ID used when user-controlled broker selection is enabled.
+    pub fn set_default_broker_id(&self, broker_id: u64) {
+        self.update_consumer_config(|config| config.default_broker_id = broker_id);
+        if let Some(wrapper) = self.component_snapshot(&self.pull_api_wrapper) {
+            wrapper.set_default_broker_id(broker_id);
+        }
+    }
+
+    /// Returns the default poll timeout in milliseconds.
+    pub fn poll_timeout_millis(&self) -> u64 {
+        self.consumer_config.load().poll_timeout_millis
+    }
+
+    /// Updates the default poll timeout in milliseconds.
+    pub fn set_poll_timeout_millis(&self, timeout_millis: u64) {
+        self.update_consumer_config(|config| config.poll_timeout_millis = timeout_millis);
+    }
+
+    /// Returns the maximum time that the broker may suspend a long-poll pull request.
+    pub fn broker_suspend_max_time_millis(&self) -> u64 {
+        self.consumer_config.load().broker_suspend_max_time_millis
+    }
+
+    /// Updates the maximum time that the broker may suspend a long-poll pull request.
+    pub fn set_broker_suspend_max_time_millis(&self, timeout_millis: u64) {
+        self.update_consumer_config(|config| config.broker_suspend_max_time_millis = timeout_millis);
+    }
+
+    /// Returns the consumer-side timeout for suspended long-poll pull requests.
+    pub fn consumer_timeout_millis_when_suspend(&self) -> u64 {
+        self.consumer_config.load().consumer_timeout_millis_when_suspend
+    }
+
+    /// Updates the consumer-side timeout for suspended long-poll pull requests.
+    pub fn set_consumer_timeout_millis_when_suspend(&self, timeout_millis: u64) {
+        self.update_consumer_config(|config| config.consumer_timeout_millis_when_suspend = timeout_millis);
+    }
+
+    /// Returns the RPC timeout used for lite pull requests in milliseconds.
+    pub fn consumer_pull_timeout_millis(&self) -> u64 {
+        self.consumer_config.load().consumer_pull_timeout_millis
+    }
+
+    /// Updates the RPC timeout used for lite pull requests in milliseconds.
+    pub fn set_consumer_pull_timeout_millis(&self, timeout_millis: u64) {
+        self.update_consumer_config(|config| config.consumer_pull_timeout_millis = timeout_millis);
+    }
+
+    /// Returns the maximum number of messages requested in one pull.
+    pub fn pull_batch_size(&self) -> i32 {
+        self.consumer_config.load().pull_batch_size
+    }
+
+    /// Updates the maximum number of messages requested in one pull.
+    pub fn set_pull_batch_size(&self, pull_batch_size: i32) {
+        self.update_consumer_config(|config| config.pull_batch_size = pull_batch_size);
+    }
+
+    /// Returns the configured number of pull worker threads.
+    pub fn pull_thread_nums(&self) -> usize {
+        self.consumer_config.load().pull_thread_nums
+    }
+
+    /// Updates the configured number of concurrent pull RPCs before startup.
+    pub fn try_set_pull_thread_nums(&self, pull_thread_nums: usize) -> ClientResult<()> {
+        if pull_thread_nums == 0 {
+            return Err(crate::mq_client_err!("pullThreadNums must be greater than 0"));
+        }
+        if self.service_state() != ServiceState::CreateJust {
+            return Err(crate::mq_client_err!(
+                "pullThreadNums can not be changed after the lite pull consumer has started."
+            ));
+        }
+        self.update_consumer_config(|config| config.pull_thread_nums = pull_thread_nums);
+        self.pull_concurrency_limiter
+            .store(Arc::new(Semaphore::new(pull_thread_nums)));
+        Ok(())
+    }
+
+    async fn acquire_pull_permit(
+        &self,
+        message_queue: &MessageQueue,
+        assignment: Option<&AssignmentPullContext>,
+    ) -> ClientResult<Option<OwnedSemaphorePermit>> {
+        let limiter = self.pull_concurrency_limiter.load_full();
+        let permit = if let Some(assignment) = assignment {
+            let cancellation = assignment.entry.cancellation();
+            tokio::select! {
+                biased;
+                _ = cancellation.cancelled() => return Ok(None),
+                permit = limiter.acquire_owned() => permit,
+            }
+        } else {
+            limiter.acquire_owned().await
+        }
+        .map_err(|_| crate::mq_client_err!("Lite pull concurrency limiter is closed"))?;
+
+        if let Some(assignment) = assignment {
+            if !self
+                .assignment_registry
+                .is_current(message_queue, &assignment.entry)
+                .await
+                || !assignment.entry.owns_task_generation(assignment.generation).await
+            {
+                return Ok(None);
+            }
+        }
+
+        Ok(Some(permit))
+    }
+
+    /// Compatibility setter for callers that do not consume configuration errors.
+    ///
+    /// Prefer [`Self::try_set_pull_thread_nums`] when configuration failure must
+    /// be reported to the caller.
+    pub fn set_pull_thread_nums(&self, pull_thread_nums: usize) {
+        if let Err(error) = self.try_set_pull_thread_nums(pull_thread_nums) {
+            warn!("Ignoring invalid pullThreadNums update: {error}");
+        }
+    }
+
+    /// Returns the total cached-message threshold across all queues.
+    pub fn pull_threshold_for_all(&self) -> i64 {
+        self.consumer_config.load().pull_threshold_for_all
+    }
+
+    /// Updates the total cached-message threshold across all queues.
+    pub fn set_pull_threshold_for_all(&self, pull_threshold_for_all: i64) {
+        self.update_consumer_config(|config| config.pull_threshold_for_all = pull_threshold_for_all);
+    }
+
+    /// Returns the cached-message threshold for each queue.
+    pub fn pull_threshold_for_queue(&self) -> i64 {
+        self.consumer_config.load().pull_threshold_for_queue
+    }
+
+    /// Updates the cached-message threshold for each queue.
+    pub fn set_pull_threshold_for_queue(&self, pull_threshold_for_queue: i64) {
+        self.update_consumer_config(|config| config.pull_threshold_for_queue = pull_threshold_for_queue);
+    }
+
+    /// Returns the cached-message-size threshold in MiB for each queue.
+    pub fn pull_threshold_size_for_queue(&self) -> i32 {
+        self.consumer_config.load().pull_threshold_size_for_queue
+    }
+
+    /// Updates the cached-message-size threshold in MiB for each queue.
+    pub fn set_pull_threshold_size_for_queue(&self, pull_threshold_size_for_queue: i32) {
+        self.update_consumer_config(|config| config.pull_threshold_size_for_queue = pull_threshold_size_for_queue);
+    }
+
+    /// Returns the maximum cached offset span.
+    pub fn consume_max_span(&self) -> i64 {
+        self.consumer_config.load().consume_max_span
+    }
+
+    /// Updates the maximum cached offset span.
+    pub fn set_consume_max_span(&self, consume_max_span: i64) {
+        self.update_consumer_config(|config| config.consume_max_span = consume_max_span);
+    }
+
+    async fn max_offset(&self, message_queue: &MessageQueue) -> ClientResult<i64> {
+        self.make_sure_state_ok()?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        let broker_result = client_instance
+            .find_broker_address_in_subscribe(message_queue.broker_name(), mix_all::MASTER_ID, true)
+            .await
+            .ok_or_else(|| {
+                crate::mq_client_err!(format!("Broker address not found for: {}", message_queue.broker_name()))
+            })?;
+
+        client_instance
+            .mq_client_api_impl
+            .load_full()
+            .ok_or_else(|| crate::mq_client_err!("MQClientAPIImpl not initialized"))?
+            .get_max_offset(broker_result.broker_addr.as_str(), message_queue, 3000)
+            .await
+    }
+
+    async fn min_offset(&self, message_queue: &MessageQueue) -> ClientResult<i64> {
+        self.make_sure_state_ok()?;
+
+        let client_instance = self
+            .component_snapshot(&self.client_instance)
+            .ok_or_else(|| crate::mq_client_err!("Client instance not initialized"))?;
+
+        let broker_result = client_instance
+            .find_broker_address_in_subscribe(message_queue.broker_name(), mix_all::MASTER_ID, true)
+            .await
+            .ok_or_else(|| {
+                crate::mq_client_err!(format!("Broker address not found for: {}", message_queue.broker_name()))
+            })?;
+
+        client_instance
+            .mq_client_api_impl
+            .load_full()
+            .ok_or_else(|| crate::mq_client_err!("MQClientAPIImpl not initialized"))?
+            .get_min_offset(broker_result.broker_addr.as_str(), message_queue, 3000)
+            .await
+    }
+
+    async fn clear_message_queue_in_cache(&self, message_queue: &MessageQueue) {
+        if let Some(process_queue) = self.assigned_message_queue.get_process_queue(message_queue).await {
+            process_queue.clear().await;
+        }
+
+        self.consume_requests
+            .retain(|request| request.message_queue != *message_queue);
+    }
+}
+
+#[cfg(any(test, feature = "test-support"))]
+#[doc(hidden)]
+pub async fn run_lite_pull_concurrency_contract_probe(
+    client_runtime: Arc<ClientRuntime>,
+    configured_limit: usize,
+    queues: usize,
+) -> LitePullConcurrencyContractProbe {
+    let configured_limit = configured_limit.max(1);
+    let queues = queues.max(configured_limit);
+    let consumer = Arc::new(DefaultLitePullConsumerImpl::new(
+        client_runtime,
+        Arc::new(ClientConfig::default()),
+        Arc::new(LitePullConsumerConfig {
+            consumer_group: CheetahString::from_static_str("lite_pull_concurrency_contract_probe_group"),
+            pull_thread_nums: configured_limit,
+            ..Default::default()
+        }),
+    ));
+    let message_queue = MessageQueue::from_parts("probe-topic", "probe-broker", 0);
+    let active = Arc::new(AtomicUsize::new(0));
+    let peak = Arc::new(AtomicUsize::new(0));
+    let changed = Arc::new(tokio::sync::Notify::new());
+    let releases = Arc::new(Semaphore::new(0));
+    let pulls = (0..queues)
+        .map(|_| {
+            let consumer = Arc::clone(&consumer);
+            let message_queue = message_queue.clone();
+            let active = Arc::clone(&active);
+            let peak = Arc::clone(&peak);
+            let changed = Arc::clone(&changed);
+            let releases = Arc::clone(&releases);
+            async move {
+                let _permit = consumer
+                    .acquire_pull_permit(&message_queue, None)
+                    .await
+                    .expect("probe limiter should stay open")
+                    .expect("unassigned probe acquisition returns a permit");
+                let now_active = active.fetch_add(1, Ordering::AcqRel) + 1;
+                let mut observed = peak.load(Ordering::Acquire);
+                while now_active > observed {
+                    match peak.compare_exchange_weak(observed, now_active, Ordering::AcqRel, Ordering::Acquire) {
+                        Ok(_) => break,
+                        Err(current) => observed = current,
+                    }
+                }
+                changed.notify_waiters();
+                let release = releases.acquire().await.expect("probe release semaphore stays open");
+                release.forget();
+                active.fetch_sub(1, Ordering::AcqRel);
+                changed.notify_waiters();
+            }
+        })
+        .collect::<FuturesUnordered<_>>();
+
+    let drive = async move {
+        let mut pulls = pulls;
+        while pulls.next().await.is_some() {}
+    };
+    let control = async {
+        loop {
+            let notified = changed.notified();
+            if peak.load(Ordering::Acquire) >= configured_limit {
+                break;
+            }
+            notified.await;
+        }
+        releases.add_permits(queues);
+    };
+    tokio::join!(drive, control);
+
+    let held = futures::future::join_all((0..configured_limit).map(|_| {
+        let consumer = Arc::clone(&consumer);
+        let message_queue = message_queue.clone();
+        async move {
+            consumer
+                .acquire_pull_permit(&message_queue, None)
+                .await
+                .expect("probe limiter should stay open")
+                .expect("probe should acquire configured permits")
+        }
+    }))
+    .await;
+    let entry = consumer
+        .assignment_registry
+        .ensure(message_queue.clone())
+        .await
+        .expect("probe assignment registry should be open");
+    let assignment = AssignmentPullContext { entry, generation: 1 };
+    let waiting = consumer.acquire_pull_permit(&message_queue, Some(&assignment));
+    tokio::pin!(waiting);
+    tokio::select! {
+        result = &mut waiting => panic!("probe waiter completed before assignment cancellation: {result:?}"),
+        () = tokio::task::yield_now() => {}
+    }
+    consumer.assignment_registry.remove(&message_queue).await;
+    let cancelled_waiter_released = waiting.await.ok().flatten().is_none();
+    drop(held);
+
+    consumer.set_service_state(ServiceState::Running);
+    let runtime_mutation_rejected = consumer.try_set_pull_thread_nums(configured_limit + 1).is_err();
+
+    LitePullConcurrencyContractProbe {
+        configured_limit,
+        queues,
+        peak_inflight: peak.load(Ordering::Acquire),
+        cancelled_waiter_released,
+        runtime_mutation_rejected,
+    }
+}
+
+impl MQConsumerInner for DefaultLitePullConsumerImpl {
+    fn group_name(&self) -> CheetahString {
+        self.consumer_config.load().consumer_group.clone()
+    }
+
+    fn message_model(&self) -> MessageModel {
+        self.consumer_config.load().message_model
+    }
+
+    fn consume_type(&self) -> ConsumeType {
+        // Lite pull consumer uses active consumption model
+        ConsumeType::ConsumeActively
+    }
+
+    fn consume_from_where(&self) -> ConsumeFromWhere {
+        self.consumer_config.load().consume_from_where
+    }
+
+    fn subscriptions(&self) -> HashSet<SubscriptionData> {
+        let sub_inner = self.rebalance_impl.get_subscription_inner();
+        sub_inner.iter().map(|entry| entry.value().clone()).collect()
+    }
+
+    async fn do_rebalance(&self) {
+        if *self.subscription_type.read().await == SubscriptionType::Subscribe {
+            let topics: Vec<CheetahString> = self
+                .rebalance_impl
+                .get_subscription_inner()
+                .iter()
+                .map(|entry| entry.key().clone())
+                .collect();
+            self.rebalance_impl.do_rebalance(false).await;
+            if let Err(error) = self.sync_assigned_queues_from_rebalance(&topics).await {
+                warn!(
+                    "LitePull failed to synchronize rebalance assignments for group={}, error={}",
+                    self.consumer_config.load().consumer_group,
+                    error
+                );
+            }
+        }
+    }
+
+    async fn try_rebalance(&self) -> ClientResult<bool> {
+        self.do_rebalance().await;
+        Ok(true)
+    }
+
+    async fn persist_consumer_offset(&self) {
+        // Check service state before persisting
+        if let Err(e) = self.make_sure_state_ok() {
+            tracing::error!("Persist consumer offset error, service state invalid: {}", e);
+            return;
+        }
+
+        // Collect message queues quickly while holding locks, then release.
+        let subscription_type = *self.subscription_type.read().await;
+
+        let mqs = match subscription_type {
+            SubscriptionType::Subscribe => {
+                let process_queue_table = self
+                    .rebalance_impl
+                    .rebalance_impl_inner
+                    .process_queue_table
+                    .read()
+                    .await;
+                process_queue_table.keys().cloned().collect::<HashSet<_>>()
+            }
+            SubscriptionType::Assign => self.assigned_message_queue.message_queues().await,
+            SubscriptionType::None => HashSet::new(),
+        };
+
+        if !mqs.is_empty() {
+            if let Some(offset_store) = self.offset_store() {
+                offset_store.persist_all(&mqs).await;
+            }
+        }
+    }
+
+    async fn update_topic_subscribe_info(&self, topic: CheetahString, info: &HashSet<MessageQueue>) {
+        let subscription_inner = self.rebalance_impl.get_subscription_inner();
+        if subscription_inner.contains_key(&topic) {
+            self.rebalance_impl
+                .rebalance_impl_inner
+                .topic_subscribe_info_table
+                .write()
+                .await
+                .insert(topic, info.clone());
+        }
+    }
+
+    async fn is_subscribe_topic_need_update(&self, topic: &str) -> bool {
+        let subscription_inner = self.rebalance_impl.get_subscription_inner();
+
+        if subscription_inner.contains_key(topic) {
+            let contains = self
+                .rebalance_impl
+                .rebalance_impl_inner
+                .topic_subscribe_info_table
+                .read()
+                .await
+                .contains_key(topic);
+            return !contains;
+        }
+        false
+    }
+
+    fn is_unit_mode(&self) -> bool {
+        self.consumer_config.load().unit_mode
+    }
+
+    async fn reset_offsets(&self, topic: &CheetahString, offsets: HashMap<MessageQueue, i64>) {
+        let Some(offset_store) = self.offset_store() else {
+            warn!(
+                "lite pull reset offset ignored because offset store is not initialized. group={}, topic={}",
+                self.consumer_config.load().consumer_group,
+                topic
+            );
+            return;
+        };
+
+        for (mq, offset) in offsets {
+            if mq.topic() == topic {
+                offset_store.update_and_freeze_offset(&mq, offset).await;
+            }
+        }
+    }
+
+    async fn consumer_status(&self, topic: &CheetahString) -> HashMap<MessageQueue, i64> {
+        let Some(offset_store) = self.offset_store() else {
+            warn!(
+                "lite pull consumer status is empty because offset store is not initialized. group={}, topic={}",
+                self.consumer_config.load().consumer_group,
+                topic
+            );
+            return HashMap::new();
+        };
+
+        offset_store.clone_offset_table(topic).await
+    }
+
+    async fn consumer_running_info(
+        &self,
+    ) -> rocketmq_protocol::protocol::body::consumer_running_info::ConsumerRunningInfo {
+        let mut info = rocketmq_protocol::protocol::body::consumer_running_info::ConsumerRunningInfo::new();
+        info.consume_type = self.consume_type();
+        info.consume_orderly = false;
+        info.prop_consumer_start_timestamp = self.consumer_start_timestamp.load(Ordering::Acquire) as u64;
+        info.sync_properties_from_derived_fields();
+        let consumer_config = self.consumer_config_snapshot();
+        info.set_property("consumerGroup", consumer_config.consumer_group.to_string());
+        info.set_property("messageModel", format!("{:?}", consumer_config.message_model));
+        info.set_property("pullBatchSize", consumer_config.pull_batch_size.to_string());
+        info.set_property("autoCommit", consumer_config.auto_commit.to_string());
+        info.set_property(
+            "autoCommitIntervalMillis",
+            consumer_config.auto_commit_interval_millis.to_string(),
+        );
+
+        for entry in self.rebalance_impl.get_subscription_inner().iter() {
+            info.subscription_set.insert(entry.value().clone());
+        }
+
+        let assigned_message_queues = self.assigned_message_queue.message_queues().await;
+        for mq in assigned_message_queues {
+            let Some(process_queue) = self.assigned_message_queue.get_process_queue(&mq).await else {
+                continue;
+            };
+            let commit_offset = if let Some(offset_store) = self.offset_store() {
+                offset_store
+                    .read_offset(&mq, ReadOffsetType::MemoryFirstThenStore)
+                    .await
+            } else {
+                0
+            };
+            let mut pq_info = ProcessQueueInfo {
+                commit_offset,
+                ..Default::default()
+            };
+            process_queue.fill_process_queue_info(&mut pq_info).await;
+            info.mq_table.insert(mq, pq_info);
+        }
+
+        info
+    }
+}
+
+#[doc(hidden)]
+pub async fn run_lite_pull_task_lifecycle_probe(service_context: ChildServiceContext) -> LitePullTaskLifecycleProbe {
+    let cancelled = Arc::new(AtomicBool::new(false));
+    let task_cancelled = cancelled.clone();
+    let handle = spawn_lite_pull_task(
+        &service_context,
+        "rocketmq-client-lite-pull-task-probe",
+        cancelled,
+        async move {
+            while !task_cancelled.load(Ordering::Acquire) {
+                tokio::time::sleep(Duration::from_millis(1)).await;
+            }
+        },
+    )
+    .expect("lite pull lifecycle probe task should spawn");
+    let task_count_before_shutdown = handle.task_count();
+
+    let shutdown_started = Instant::now();
+    let shutdown_healthy = handle.wait(Duration::from_secs(1)).await;
+    let shutdown_elapsed_us = shutdown_started.elapsed().as_micros();
+    let task_count_after_shutdown = 0;
+
+    LitePullTaskLifecycleProbe {
+        healthy: shutdown_healthy && task_count_before_shutdown == 1 && task_count_after_shutdown == 0,
+        task_count_before_shutdown,
+        task_count_after_shutdown,
+        shutdown_elapsed_us,
+    }
+}
+
+#[cfg(any(test, feature = "test-support"))]
+#[doc(hidden)]
+pub async fn run_lite_pull_assignment_registry_probe(iterations: usize) -> LitePullAssignmentRegistryProbe {
+    let registry = AssignmentRegistry::new();
+    let mut peak_entries = 0;
+
+    for queue_id in 0..iterations {
+        let queue_id = i32::try_from(queue_id % i32::MAX as usize).unwrap_or_default();
+        let queue = MessageQueue::from_parts("assignment-churn", "broker-a", queue_id);
+        registry
+            .ensure(queue.clone())
+            .await
+            .expect("probe registry remains open");
+        peak_entries = peak_entries.max(registry.snapshot().await.entries);
+        assert!(registry.remove_and_wait(&queue).await);
+    }
+
+    let first_queue = MessageQueue::from_parts("assignment-lock", "broker-a", 0);
+    let second_queue = MessageQueue::from_parts("assignment-lock", "broker-a", 1);
+    let first_entry = registry
+        .ensure(first_queue.clone())
+        .await
+        .expect("probe registry remains open");
+    let second_entry = registry
+        .ensure(second_queue.clone())
+        .await
+        .expect("probe registry remains open");
+    let first_lock = first_entry.operation_lock();
+    let first_guard = first_lock.lock().await;
+    let same_queue_serialized = first_lock.try_lock().is_err();
+    let second_lock = second_entry.operation_lock();
+    let different_queues_independent = second_lock.try_lock().is_ok();
+    drop(first_guard);
+
+    let stale_entry = Arc::clone(&first_entry);
+    assert!(registry.remove_and_wait(&first_queue).await);
+    let stale_entry_rejected = !registry.is_current(&first_queue, &stale_entry).await;
+    assert!(registry.remove_and_wait(&second_queue).await);
+    registry.close_and_shutdown(Duration::from_secs(1)).await;
+    let final_snapshot = registry.snapshot().await;
+
+    LitePullAssignmentRegistryProbe {
+        iterations,
+        peak_entries,
+        final_entries: final_snapshot.entries,
+        final_owned_tasks: final_snapshot.owned_tasks,
+        same_queue_serialized,
+        different_queues_independent,
+        stale_entry_rejected,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::test_support::error_assertions::client_exception;
+    use std::sync::atomic::AtomicBool;
+    use std::sync::atomic::AtomicU64;
+    use std::sync::atomic::AtomicUsize;
+    use std::sync::atomic::Ordering as AtomicOrdering;
+    use std::sync::Barrier;
+    use std::sync::Mutex as StdMutex;
+
+    use super::*;
+    use crate::base::access_channel::AccessChannel;
+
+    #[test]
+    fn classic_pull_contract_preserves_filter_and_suspend_wire_fields() {
+        let queue = MessageQueue::from_parts("TopicA", "broker-a", 2);
+        let ordinary = PullOptions::new(
+            queue.clone(),
+            crate::consumer::MessageSelector::by_tag("TagA || TagB"),
+            7,
+            16,
+        )
+        .expect("ordinary Classic Pull options should be valid");
+        let ordinary = prepare_classic_pull(&ordinary).expect("ordinary request should prepare");
+        assert_eq!(ordinary.subscription_data.expression_type.as_str(), ExpressionType::TAG);
+        assert_eq!(ordinary.sub_version, 0);
+        assert!(!PullSysFlag::has_suspend_flag(ordinary.sys_flag as u32));
+        assert!(PullSysFlag::has_subscription_flag(ordinary.sys_flag as u32));
+        assert!(!PullSysFlag::has_lite_pull_flag(ordinary.sys_flag as u32));
+
+        let suspended = PullOptions::new(
+            queue,
+            crate::consumer::MessageSelector::by_sql("region = 'east'"),
+            7,
+            16,
+        )
+        .expect("SQL Classic Pull options should be valid")
+        .broker_suspend_timeout(Duration::from_secs(3))
+        .timeout(Duration::from_secs(4))
+        .block_if_not_found(true);
+        let suspended = prepare_classic_pull(&suspended).expect("suspended request should prepare");
+        assert_eq!(
+            suspended.subscription_data.expression_type.as_str(),
+            ExpressionType::SQL92
+        );
+        assert!(suspended.sub_version > 0);
+        assert!(PullSysFlag::has_suspend_flag(suspended.sys_flag as u32));
+        assert!(PullSysFlag::has_subscription_flag(suspended.sys_flag as u32));
+        assert!(!PullSysFlag::has_lite_pull_flag(suspended.sys_flag as u32));
+        assert_eq!(suspended.broker_suspend_timeout_millis, 3000);
+        assert_eq!(suspended.timeout_millis, 4000);
+    }
+
+    fn test_context() -> ChildServiceContext {
+        crate::runtime::test_service_context("default-lite-pull-consumer-impl-test")
+    }
+
+    fn test_instance(client_id: &'static str) -> Arc<MQClientInstance> {
+        let runtime = crate::runtime::test_client_runtime("default-lite-pull-consumer-instance-test");
+        MQClientInstance::new_arc(
+            ClientConfig::default(),
+            0,
+            client_id,
+            None,
+            runtime.component(client_id),
+            runtime.telemetry_handle().clone(),
+            runtime.pool().request_future_holder(),
+        )
+    }
+
+    type ConsumeHookEvent = (CheetahString, bool, CheetahString, Option<AccessChannel>);
+
+    struct CapturingConsumeHook {
+        events: StdMutex<Vec<ConsumeHookEvent>>,
+    }
+
+    impl CapturingConsumeHook {
+        fn new() -> Self {
+            Self {
+                events: StdMutex::new(Vec::new()),
+            }
+        }
+
+        fn events(&self) -> Vec<ConsumeHookEvent> {
+            self.events.lock().expect("consume hook events lock").clone()
+        }
+    }
+
+    impl ConsumeMessageHook for CapturingConsumeHook {
+        fn hook_name(&self) -> &'static str {
+            "CapturingConsumeHook"
+        }
+
+        fn consume_message_before(&self, context: &mut ConsumeMessageContext) {
+            self.events.lock().expect("consume hook events lock").push((
+                CheetahString::from_static_str("before"),
+                context.success,
+                context.status.clone(),
+                context.access_channel,
+            ));
+        }
+
+        fn consume_message_after(&self, context: &mut ConsumeMessageContext) {
+            self.events.lock().expect("consume hook events lock").push((
+                CheetahString::from_static_str("after"),
+                context.success,
+                context.status.clone(),
+                context.access_channel,
+            ));
+        }
+    }
+
+    #[tokio::test]
+    async fn spawn_lite_pull_task_uses_injected_runtime_context() {
+        let (tx, rx) = std::sync::mpsc::channel();
+        let cancelled = Arc::new(AtomicBool::new(false));
+
+        let handle = spawn_lite_pull_task(
+            &test_context(),
+            "rocketmq-client-lite-pull-test",
+            cancelled,
+            async move {
+                let current_thread = std::thread::current();
+                let thread_name = current_thread.name().unwrap_or_default().to_string();
+                tx.send(thread_name).expect("test receiver should still be open");
+            },
+        )
+        .expect("lite pull task should spawn through the injected runtime");
+
+        let thread_name = rx
+            .recv_timeout(Duration::from_secs(1))
+            .expect("injected lite pull task should complete");
+        assert_eq!(thread_name, "rocketmq-client-unit-test");
+        assert!(handle.abort_and_wait(ASSIGNMENT_TASK_SHUTDOWN_TIMEOUT).await);
+    }
+
+    #[tokio::test]
+    async fn naturally_completed_pull_task_clears_its_owned_handle() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-natural-task-completion-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("natural-task-completion-group"),
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+        let mq = MessageQueue::from_parts("natural-task-completion-topic", "broker-a", 0);
+        impl_
+            .assignment_registry
+            .ensure(mq.clone())
+            .await
+            .expect("assignment registry is open");
+
+        impl_.start_pull_task(mq.clone()).await.expect("pull task should start");
+
+        tokio::time::timeout(Duration::from_secs(1), async {
+            while impl_.assignment_registry_snapshot().await.owned_tasks != 0 {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .expect("naturally completed task should clear its owned handle");
+
+        assert!(impl_.assignment_registry.remove_and_wait(&mq).await);
+    }
+
+    #[tokio::test]
+    async fn lite_pull_task_wait_aborts_tracked_task_after_timeout() {
+        struct DropFlag(Arc<tokio::sync::Notify>);
+
+        impl Drop for DropFlag {
+            fn drop(&mut self) {
+                self.0.notify_one();
+            }
+        }
+
+        let task_aborted = Arc::new(tokio::sync::Notify::new());
+        let task_aborted_inner = task_aborted.clone();
+        let (started_tx, started_rx) = tokio::sync::oneshot::channel();
+
+        let task_cancelled = Arc::new(AtomicBool::new(false));
+        let task_handle = spawn_lite_pull_task(
+            &test_context(),
+            "rocketmq-client-lite-pull-timeout-test",
+            task_cancelled,
+            async move {
+                let _drop_flag = DropFlag(task_aborted_inner);
+                let _ = started_tx.send(());
+                std::future::pending::<()>().await;
+            },
+        )
+        .expect("lite pull timeout test task should spawn");
+
+        tokio::time::timeout(Duration::from_secs(1), started_rx)
+            .await
+            .expect("lite pull timeout test task should start")
+            .expect("lite pull timeout test task should report startup");
+
+        assert!(!task_handle.wait(Duration::from_millis(20)).await);
+        tokio::time::timeout(Duration::from_secs(1), task_aborted.notified())
+            .await
+            .expect("timed-out lite pull task should finish aborting");
+    }
+
+    #[tokio::test]
+    async fn lite_pull_task_lifecycle_probe_reports_clean_shutdown() {
+        let probe = run_lite_pull_task_lifecycle_probe(test_context()).await;
+
+        assert!(probe.healthy, "{probe:?}");
+        assert_eq!(probe.task_count_before_shutdown, 1);
+        assert_eq!(probe.task_count_after_shutdown, 0);
+    }
+
+    struct SlowAfterConsumeHook {
+        after_timestamp: Arc<AtomicU64>,
+    }
+
+    impl ConsumeMessageHook for SlowAfterConsumeHook {
+        fn hook_name(&self) -> &'static str {
+            "SlowAfterConsumeHook"
+        }
+
+        fn consume_message_before(&self, _context: &mut ConsumeMessageContext) {}
+
+        fn consume_message_after(&self, _context: &mut ConsumeMessageContext) {
+            std::thread::sleep(Duration::from_millis(15));
+            self.after_timestamp.store(
+                rocketmq_runtime::common::time_utils::current_millis(),
+                AtomicOrdering::SeqCst,
+            );
+        }
+    }
+
+    struct BlockingFirstMessageHook {
+        entered_first_after: Arc<AtomicBool>,
+        release_first_after: Arc<AtomicBool>,
+    }
+
+    impl ConsumeMessageHook for BlockingFirstMessageHook {
+        fn hook_name(&self) -> &'static str {
+            "BlockingFirstMessageHook"
+        }
+
+        fn consume_message_before(&self, _context: &mut ConsumeMessageContext) {}
+
+        fn consume_message_after(&self, context: &mut ConsumeMessageContext) {
+            if context
+                .msg_list
+                .first()
+                .is_some_and(|message| message.queue_offset == 1)
+            {
+                self.entered_first_after.store(true, AtomicOrdering::SeqCst);
+                while !self.release_first_after.load(AtomicOrdering::SeqCst) {
+                    std::thread::sleep(Duration::from_millis(2));
+                }
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn shutdown_in_create_just_keeps_state_like_java_noop() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_shutdown_create_group"),
+                ..Default::default()
+            }),
+        );
+
+        impl_.shutdown().await.expect("shutdown should be a no-op before start");
+
+        assert_eq!(impl_.service_state(), ServiceState::CreateJust);
+    }
+
+    #[tokio::test]
+    async fn shutdown_in_start_failed_keeps_state_like_java_default_case() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_shutdown_failed_group"),
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::StartFailed);
+
+        impl_
+            .shutdown()
+            .await
+            .expect("shutdown should be a no-op after failed start");
+
+        assert_eq!(impl_.service_state(), ServiceState::StartFailed);
+    }
+
+    #[tokio::test]
+    async fn concurrent_shutdown_calls_share_one_lifecycle_transition() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_concurrent_shutdown_group"),
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+        impl_.set_service_state(ServiceState::Running);
+
+        let (first, second) = tokio::join!(impl_.shutdown(), impl_.shutdown());
+
+        first.expect("first shutdown should complete");
+        second.expect("second shutdown should observe the completed transition");
+        assert_eq!(impl_.service_state(), ServiceState::ShutdownAlready);
+    }
+
+    #[test]
+    fn callback_self_reference_is_weak_and_does_not_keep_root_alive() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_weak_root_group"),
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+        let weak_impl = Arc::downgrade(&impl_);
+
+        drop(impl_);
+
+        assert!(weak_impl.upgrade().is_none());
+    }
+
+    #[tokio::test]
+    async fn start_without_self_reference_returns_error_without_panic() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_missing_self_ref_group"),
+                ..Default::default()
+            }),
+        );
+
+        let error = impl_
+            .start()
+            .await
+            .expect_err("missing self-reference should return an error");
+
+        assert!(client_exception(&error)
+            .to_string()
+            .contains("default_lite_pull_consumer_impl is not initialized"));
+    }
+
+    #[test]
+    #[allow(deprecated)]
+    fn check_config_rejects_unsupported_consume_from_where_like_java_lite_pull() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_invalid_consume_from_where_group"),
+                consume_from_where: ConsumeFromWhere::ConsumeFromMaxOffset,
+                ..Default::default()
+            }),
+        );
+
+        let error = impl_
+            .check_config()
+            .expect_err("Java LitePull rejects legacy consumeFromWhere values");
+
+        assert!(client_exception(&error)
+            .to_string()
+            .contains("Invalid ConsumeFromWhere Value"));
+    }
+
+    #[test]
+    fn check_config_rejects_default_consumer_group_like_java_lite_pull() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str(mix_all::DEFAULT_CONSUMER_GROUP),
+                ..Default::default()
+            }),
+        );
+
+        let error = impl_
+            .check_config()
+            .expect_err("Java LitePull rejects DEFAULT_CONSUMER_GROUP");
+
+        assert!(client_exception(&error)
+            .to_string()
+            .contains("consumerGroup can not equal DEFAULT_CONSUMER"));
+    }
+
+    #[test]
+    fn check_config_rejects_consumer_suspend_timeout_below_broker_suspend_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_invalid_suspend_timeout_group"),
+                broker_suspend_max_time_millis: 30_000,
+                consumer_timeout_millis_when_suspend: 20_000,
+                ..Default::default()
+            }),
+        );
+
+        let error = impl_
+            .check_config()
+            .expect_err("Java LitePull rejects consumer suspend timeout below broker suspend timeout");
+
+        assert!(client_exception(&error).to_string().contains(
+            "Long polling mode, the consumer consumerTimeoutMillisWhenSuspend must greater than \
+             brokerSuspendMaxTimeMillis"
+        ));
+    }
+
+    #[test]
+    fn check_config_rejects_zero_pull_thread_nums() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-zero-concurrency-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_zero_concurrency_group"),
+                pull_thread_nums: 0,
+                ..Default::default()
+            }),
+        );
+
+        let error = impl_
+            .check_config()
+            .expect_err("zero concurrent pull RPCs cannot make progress");
+
+        assert!(client_exception(&error)
+            .to_string()
+            .contains("pullThreadNums must be greater than 0"));
+    }
+
+    #[tokio::test]
+    async fn pull_concurrency_permit_is_bounded_and_assignment_cancellation_aware() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-concurrency-permit-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_concurrency_permit_group"),
+                pull_thread_nums: 2,
+                ..Default::default()
+            }),
+        );
+        let mq = MessageQueue::from_parts("topic", "broker", 0);
+        let entry = impl_
+            .assignment_registry
+            .ensure(mq.clone())
+            .await
+            .expect("assignment registry should be open");
+        let first = impl_
+            .acquire_pull_permit(&mq, None)
+            .await
+            .expect("first permit acquisition should succeed")
+            .expect("first permit should exist");
+        let second = impl_
+            .acquire_pull_permit(&mq, None)
+            .await
+            .expect("second permit acquisition should succeed")
+            .expect("second permit should exist");
+        assert_eq!(impl_.pull_concurrency_limiter.load().available_permits(), 0);
+
+        let assignment = AssignmentPullContext { entry, generation: 1 };
+        let waiting = impl_.acquire_pull_permit(&mq, Some(&assignment));
+        tokio::pin!(waiting);
+        tokio::select! {
+            result = &mut waiting => panic!("third acquisition completed before capacity or cancellation: {result:?}"),
+            () = tokio::task::yield_now() => {}
+        }
+
+        impl_.assignment_registry.remove(&mq).await;
+        assert!(waiting
+            .await
+            .expect("assignment cancellation is not an acquisition error")
+            .is_none());
+        drop(first);
+        drop(second);
+        assert_eq!(impl_.pull_concurrency_limiter.load().available_permits(), 2);
+    }
+
+    #[test]
+    fn pull_thread_nums_updates_before_start_and_rejects_runtime_mutation() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-concurrency-config-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_concurrency_config_group"),
+                ..Default::default()
+            }),
+        );
+
+        impl_
+            .try_set_pull_thread_nums(3)
+            .expect("pre-start concurrency update should succeed");
+        assert_eq!(impl_.pull_thread_nums(), 3);
+        assert_eq!(impl_.pull_concurrency_limiter.load().available_permits(), 3);
+
+        impl_.set_service_state(ServiceState::Running);
+        let error = impl_
+            .try_set_pull_thread_nums(4)
+            .expect_err("running concurrency update should be rejected");
+        assert!(client_exception(&error)
+            .to_string()
+            .contains("pullThreadNums can not be changed after the lite pull consumer has started"));
+        assert_eq!(impl_.pull_thread_nums(), 3);
+    }
+
+    #[test]
+    fn set_consumer_group_updates_rebalance_before_start_and_rejects_running_mutation() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_initial_group"),
+                ..Default::default()
+            }),
+        );
+
+        impl_
+            .set_consumer_group(CheetahString::from_static_str("lite_pull_updated_group"))
+            .expect("consumer group should update before start");
+
+        assert_eq!(impl_.consumer_group_config().as_str(), "lite_pull_updated_group");
+        assert_eq!(
+            impl_.rebalance_consumer_group_name().as_deref(),
+            Some("lite_pull_updated_group")
+        );
+
+        impl_.set_service_state(ServiceState::Running);
+
+        let error = impl_
+            .set_consumer_group(CheetahString::from_static_str("lite_pull_late_group"))
+            .expect_err("consumer group changes after running should be rejected");
+
+        assert!(client_exception(&error)
+            .to_string()
+            .contains("consumerGroup can not be changed after the lite pull consumer has started"));
+        assert_eq!(impl_.consumer_group_config().as_str(), "lite_pull_updated_group");
+
+        let impl_ = Arc::new(impl_);
+        let barrier = Arc::new(Barrier::new(5));
+
+        let workers = [
+            {
+                let impl_ = impl_.clone();
+                let barrier = barrier.clone();
+                std::thread::spawn(move || {
+                    barrier.wait();
+                    impl_.set_auto_commit(false);
+                })
+            },
+            {
+                let impl_ = impl_.clone();
+                let barrier = barrier.clone();
+                std::thread::spawn(move || {
+                    barrier.wait();
+                    impl_.set_auto_commit_interval_millis(1234);
+                })
+            },
+            {
+                let impl_ = impl_.clone();
+                let barrier = barrier.clone();
+                std::thread::spawn(move || {
+                    barrier.wait();
+                    impl_.set_pull_batch_size(64);
+                })
+            },
+            {
+                let impl_ = impl_.clone();
+                let barrier = barrier.clone();
+                std::thread::spawn(move || {
+                    barrier.wait();
+                    impl_.set_pull_threshold_for_all(22_222);
+                })
+            },
+        ];
+
+        barrier.wait();
+        for worker in workers {
+            worker.join().expect("config update worker should finish");
+        }
+
+        let config = impl_.consumer_config_snapshot();
+        assert!(!config.auto_commit);
+        assert_eq!(config.auto_commit_interval_millis, 1234);
+        assert_eq!(config.pull_batch_size, 64);
+        assert_eq!(config.pull_threshold_for_all, 22_222);
+    }
+
+    #[test]
+    fn set_offset_store_updates_rebalance_before_start_and_rejects_running_mutation() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_offset_store_group"),
+                ..Default::default()
+            }),
+        );
+        let offset_store = Arc::new(OffsetStore::new_test());
+
+        impl_
+            .set_offset_store(Some(offset_store))
+            .expect("offset store should update before start");
+
+        assert!(impl_.offset_store().is_some());
+        assert!(impl_.rebalance_has_offset_store());
+
+        impl_
+            .set_offset_store(None)
+            .expect("offset store should be clearable before start");
+
+        assert!(impl_.offset_store().is_none());
+        assert!(!impl_.rebalance_has_offset_store());
+
+        impl_.set_service_state(ServiceState::Running);
+
+        let error = impl_
+            .set_offset_store(Some(Arc::new(OffsetStore::new_test())))
+            .expect_err("offset store changes after running should be rejected");
+
+        assert!(client_exception(&error)
+            .to_string()
+            .contains("offsetStore can not be changed after the lite pull consumer has started"));
+    }
+
+    #[tokio::test]
+    async fn set_unit_mode_updates_pull_api_wrapper_for_filter_hooks_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_unit_mode_group"),
+                ..Default::default()
+            }),
+        );
+        let client_instance = test_instance("lite-pull-unit-mode-test");
+        *impl_.pull_api_wrapper.write().expect("pull wrapper lock") = Some(Arc::new(PullAPIWrapper::new(
+            client_instance,
+            CheetahString::from_static_str("lite_pull_unit_mode_group"),
+            false,
+        )));
+
+        impl_.set_unit_mode(true);
+
+        assert!(impl_.is_unit_mode());
+        assert!(impl_
+            .component_snapshot(&impl_.pull_api_wrapper)
+            .as_ref()
+            .expect("pull wrapper should be present")
+            .unit_mode());
+    }
+
+    #[test]
+    fn lite_pull_request_protocol_flags_match_java_pull_sync_impl() {
+        let sys_flag = lite_pull_request_sys_flag() as u32;
+        assert!(!PullSysFlag::has_commit_offset_flag(sys_flag));
+        assert!(PullSysFlag::has_suspend_flag(sys_flag));
+        assert!(PullSysFlag::has_subscription_flag(sys_flag));
+        assert!(!PullSysFlag::has_class_filter_flag(sys_flag));
+        assert!(PullSysFlag::has_lite_pull_flag(sys_flag));
+
+        let tag_subscription = SubscriptionData {
+            expression_type: CheetahString::from_static_str(ExpressionType::TAG),
+            sub_version: 123,
+            ..Default::default()
+        };
+        assert_eq!(lite_pull_request_sub_version(&tag_subscription), 0);
+
+        let sql_subscription = SubscriptionData {
+            expression_type: CheetahString::from_static_str(ExpressionType::SQL92),
+            sub_version: 456,
+            ..Default::default()
+        };
+        assert_eq!(lite_pull_request_sub_version(&sql_subscription), 456);
+    }
+
+    #[test]
+    fn lite_pull_rpc_timeout_follows_the_suspend_flag() {
+        let config = LitePullConsumerConfig {
+            broker_suspend_max_time_millis: 20_000,
+            consumer_timeout_millis_when_suspend: 30_000,
+            consumer_pull_timeout_millis: 10_000,
+            ..Default::default()
+        };
+        let suspended = PullSysFlag::build_sys_flag_with_lite_pull(false, true, true, false, true) as i32;
+        let ordinary = PullSysFlag::build_sys_flag_with_lite_pull(false, false, true, false, true) as i32;
+
+        assert_eq!(effective_pull_rpc_timeout(suspended, &config), 30_000);
+        assert_eq!(effective_pull_rpc_timeout(ordinary, &config), 10_000);
+    }
+
+    #[tokio::test]
+    async fn operate_after_running_starts_preassigned_pull_tasks() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_preassigned_group"),
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+
+        let mq = MessageQueue::from_parts("topic-a", "broker-a", 0);
+        impl_
+            .assign(vec![mq.clone()])
+            .await
+            .expect("assign before running should succeed");
+        *impl_.client_instance.write().expect("client instance lock") =
+            Some(test_instance("lite-pull-operate-after-running-test"));
+        impl_.set_service_state(ServiceState::Running);
+
+        impl_
+            .operate_after_running()
+            .await
+            .expect("operate_after_running should start preassigned pull task");
+
+        assert_eq!(impl_.assignment_registry_snapshot().await.owned_tasks, 1);
+
+        impl_.shutdown_signal.store(true, Ordering::Release);
+        impl_.assignment_registry.remove_and_wait(&mq).await;
+    }
+
+    #[tokio::test]
+    async fn assign_update_aborts_removed_pull_tasks_like_java() {
+        struct DropFlag(Arc<AtomicBool>);
+
+        impl Drop for DropFlag {
+            fn drop(&mut self) {
+                self.0.store(true, AtomicOrdering::SeqCst);
+            }
+        }
+
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_assign_abort_group"),
+                ..Default::default()
+            }),
+        );
+        let removed_mq = MessageQueue::from_parts("topic-assign-abort", "broker-a", 0);
+        let retained_mq = MessageQueue::from_parts("topic-assign-abort", "broker-a", 1);
+        let task_aborted = Arc::new(AtomicBool::new(false));
+        let task_aborted_inner = Arc::clone(&task_aborted);
+        let (started_tx, started_rx) = tokio::sync::oneshot::channel();
+        let task_cancelled = Arc::new(AtomicBool::new(false));
+        let handle = spawn_lite_pull_task(
+            &test_context(),
+            "rocketmq-client-lite-pull-assign-abort-test",
+            task_cancelled,
+            async move {
+                let _drop_flag = DropFlag(task_aborted_inner);
+                let _ = started_tx.send(());
+                std::future::pending::<()>().await;
+            },
+        )
+        .expect("lite pull assign abort test task should spawn");
+        let entry = impl_
+            .assignment_registry
+            .ensure(removed_mq.clone())
+            .await
+            .expect("assignment registry is open");
+        let task_generation = entry.next_task_generation();
+        assert!(
+            impl_
+                .assignment_registry
+                .install_task(&removed_mq, &entry, task_generation, handle)
+                .await
+                .is_ok(),
+            "test task should be installed"
+        );
+        tokio::time::timeout(Duration::from_secs(1), started_rx)
+            .await
+            .expect("lite pull assign abort test task should start")
+            .expect("lite pull assign abort test task should report startup");
+
+        impl_
+            .update_assigned_message_queue_for_assign(std::slice::from_ref(&retained_mq))
+            .await;
+
+        assert!(impl_.assignment_registry.get(&removed_mq).await.is_none());
+        for _ in 0..20 {
+            if task_aborted.load(AtomicOrdering::SeqCst) {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+        assert!(task_aborted.load(AtomicOrdering::SeqCst));
+        assert!(impl_.assignment().await.contains(&retained_mq));
+    }
+
+    #[tokio::test]
+    async fn consumer_running_info_includes_assigned_process_queues() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_running_info_group"),
+                ..Default::default()
+            }),
+        );
+        let mq = MessageQueue::from_parts("topic-running-info", "broker-a", 0);
+        impl_
+            .assign(vec![mq.clone()])
+            .await
+            .expect("assign before running should succeed");
+
+        let info = impl_.consumer_running_info().await;
+
+        assert!(info.prop_consumer_start_timestamp > 0);
+        assert!(info.mq_table.contains_key(&mq));
+        assert_eq!(info.mq_table.get(&mq).map(|pq| pq.commit_offset), Some(0));
+    }
+
+    #[tokio::test]
+    async fn update_name_server_address_updates_client_api_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_update_namesrv_group"),
+                ..Default::default()
+            }),
+        );
+        *impl_.client_instance.write().expect("client instance lock") =
+            Some(test_instance("lite-pull-update-namesrv-test"));
+
+        impl_
+            .update_name_server_address(vec!["127.0.0.1:9876".to_string(), "127.0.0.2:9876".to_string()])
+            .await;
+
+        assert_eq!(
+            impl_.client_config.load().namesrv_addr.as_deref(),
+            Some("127.0.0.1:9876;127.0.0.2:9876")
+        );
+        let client_instance = impl_
+            .component_snapshot(&impl_.client_instance)
+            .expect("client instance should be initialized");
+        let api_impl = client_instance
+            .mq_client_api_impl
+            .load_full()
+            .expect("client api should be initialized");
+        let mut actual_addresses = api_impl.get_name_server_address_list().to_vec();
+        actual_addresses.sort();
+        assert_eq!(
+            actual_addresses,
+            vec![
+                CheetahString::from_static_str("127.0.0.1:9876"),
+                CheetahString::from_static_str("127.0.0.2:9876"),
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn subscribe_with_sql_selector_preserves_expression_type_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_sql_selector_group"),
+                ..Default::default()
+            }),
+        );
+        let topic = CheetahString::from_static_str("topic-sql-selector");
+        let expression = CheetahString::from_static_str("a > 10");
+
+        impl_
+            .subscribe_with_selector(
+                topic.clone(),
+                Some(crate::consumer::message_selector::MessageSelector::by_sql(
+                    expression.clone(),
+                )),
+            )
+            .await
+            .expect("SQL92 selector should build subscription data");
+
+        let subscriptions = impl_.rebalance_impl.get_subscription_inner();
+        let subscription = subscriptions
+            .get(&topic)
+            .expect("subscription should be stored for SQL92 selector");
+        assert_eq!(subscription.expression_type, ExpressionType::SQL92);
+        assert_eq!(subscription.sub_string, expression);
+        assert!(subscription.tags_set.is_empty());
+        assert!(subscription.code_set.is_empty());
+        drop(subscription);
+
+        let mut heartbeat_selectors = HashMap::new();
+        impl_
+            .build_subscriptions_for_heartbeat(&mut heartbeat_selectors)
+            .await
+            .expect("heartbeat selector map should build");
+        let selector = heartbeat_selectors
+            .get(topic.as_str())
+            .expect("heartbeat selector should retain topic");
+        assert_eq!(selector.get_expression_type(), ExpressionType::SQL92);
+        assert_eq!(selector.get_expression(), expression.as_str());
+    }
+
+    #[tokio::test]
+    async fn set_sub_expression_for_assign_matches_java_validation_and_state() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_assign_filter_group"),
+                ..Default::default()
+            }),
+        );
+        let topic = CheetahString::from_static_str("topic-assign-filter");
+
+        let blank_error = impl_
+            .set_sub_expression_for_assign(topic.clone(), " ")
+            .await
+            .expect_err("Java LitePull rejects blank assign filter expressions");
+        assert!(client_exception(&blank_error)
+            .to_string()
+            .contains("subExpression can not be null or empty."));
+        assert_eq!(*impl_.subscription_type.read().await, SubscriptionType::None);
+
+        impl_
+            .set_sub_expression_for_assign(topic.clone(), "TagA || TagB")
+            .await
+            .expect("valid assign filter should be accepted before start");
+        assert_eq!(*impl_.subscription_type.read().await, SubscriptionType::Assign);
+        let map = impl_.topic_to_sub_expression.read().await;
+        assert_eq!(
+            map.get(&topic).map(|expression| expression.as_str()),
+            Some("TagA || TagB")
+        );
+        drop(map);
+
+        let running_impl = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_assign_filter_running_group"),
+                ..Default::default()
+            }),
+        );
+        running_impl.set_service_state(ServiceState::Running);
+
+        let running_error = running_impl
+            .set_sub_expression_for_assign(topic, "TagA")
+            .await
+            .expect_err("Java LitePull only allows assign filters before start");
+        assert!(client_exception(&running_error)
+            .to_string()
+            .contains("setAssignTag only can be called before start."));
+    }
+
+    #[tokio::test]
+    async fn next_pull_offset_applies_seek_to_consume_offset_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_seek_offset_group"),
+                ..Default::default()
+            }),
+        );
+        let mq = MessageQueue::from_parts("topic-seek", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        impl_.assigned_message_queue.update_consume_offset(&mq, 3).await;
+        impl_.assigned_message_queue.set_seek_offset(&mq, 42).await;
+
+        let offset = impl_
+            .next_pull_offset(&mq)
+            .await
+            .expect("seek offset should be returned without broker lookup");
+
+        assert_eq!(offset, 42);
+        assert_eq!(impl_.assigned_message_queue.get_seek_offset(&mq).await, -1);
+        assert_eq!(impl_.assigned_message_queue.get_consume_offset(&mq).await, 42);
+    }
+
+    #[tokio::test]
+    async fn seek_rejects_unassigned_queue_before_broker_offset_lookup_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_seek_unassigned_group"),
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+
+        let mq = MessageQueue::from_parts("topic-seek-unassigned", "broker-a", 0);
+        let error = impl_
+            .seek(&mq, 10)
+            .await
+            .expect_err("Java LitePull rejects unassigned queues before querying offsets");
+
+        let message = client_exception(&error).to_string();
+        assert!(message.contains("The message queue is not in assigned list"));
+        assert!(!message.contains("Client instance not initialized"));
+    }
+
+    #[tokio::test]
+    async fn commit_all_updates_offsets_without_persisting_like_java() {
+        let group = CheetahString::from_static_str("lite_pull_commit_all_group");
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: group,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+
+        let mq = MessageQueue::from_parts("topic-commit-all", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        impl_.assigned_message_queue.update_consume_offset(&mq, 100).await;
+
+        let offset_store = Arc::new(OffsetStore::new_test());
+        offset_store.update_offset(&mq, 5, false).await;
+        *impl_.offset_store.write().expect("offset store lock") = Some(offset_store.clone());
+
+        impl_.commit_all().await.expect("commit all should update offset store");
+
+        assert_eq!(offset_store.read_offset(&mq, ReadOffsetType::ReadFromMemory).await, 100);
+        assert_eq!(offset_store.test_persist_all_count(), 0);
+    }
+
+    #[tokio::test]
+    async fn commit_message_queues_uses_assigned_consume_offset_like_java() {
+        let group = CheetahString::from_static_str("lite_pull_commit_set_group");
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: group,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+
+        let mq = MessageQueue::from_parts("topic-commit-set", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        impl_.assigned_message_queue.update_consume_offset(&mq, 100).await;
+
+        let offset_store = Arc::new(OffsetStore::new_test());
+        offset_store.update_offset(&mq, 5, false).await;
+        *impl_.offset_store.write().expect("offset store lock") = Some(offset_store.clone());
+
+        let queues = HashSet::from([mq.clone()]);
+        impl_
+            .commit_message_queues(&queues, false)
+            .await
+            .expect("commit set should use assigned consume offset");
+
+        assert_eq!(offset_store.read_offset(&mq, ReadOffsetType::ReadFromMemory).await, 100);
+        assert_eq!(offset_store.test_persist_all_count(), 0);
+    }
+
+    #[tokio::test]
+    async fn commit_message_queues_with_persist_calls_persist_all_like_java() {
+        let group = CheetahString::from_static_str("lite_pull_commit_set_persist_group");
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: group,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+
+        let mq = MessageQueue::from_parts("topic-commit-set-persist", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        impl_.assigned_message_queue.update_consume_offset(&mq, 100).await;
+
+        let offset_store = Arc::new(OffsetStore::new_test());
+        *impl_.offset_store.write().expect("offset store lock") = Some(offset_store.clone());
+
+        let queues = HashSet::from([mq]);
+        impl_
+            .commit_message_queues(&queues, true)
+            .await
+            .expect("commit set should explicitly persist when requested");
+
+        assert_eq!(offset_store.test_persist_all_count(), 1);
+    }
+
+    #[tokio::test]
+    async fn poll_zero_timeout_returns_cached_message_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_zero_timeout_group"),
+                auto_commit: false,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+
+        let mq = MessageQueue::from_parts("topic-zero-timeout", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        let process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&mq)
+            .await
+            .expect("assigned queue should have a process queue");
+        let message = Arc::new(MessageExt {
+            queue_offset: 7,
+            ..Default::default()
+        });
+        let queued_messages = vec![message.clone()];
+        process_queue.put_message(&queued_messages).await;
+        impl_
+            .enqueue_consume_request(LitePullConsumeRequest::new(vec![message], mq.clone(), process_queue))
+            .expect("consume request queue should accept cached message");
+
+        let messages = impl_
+            .poll(0)
+            .await
+            .expect("zero-timeout poll should complete without waiting");
+
+        assert_eq!(messages.len(), 1);
+        assert_eq!(messages[0].queue_offset, 7);
+        assert_eq!(impl_.assigned_message_queue.get_consume_offset(&mq).await, 8);
+    }
+
+    #[tokio::test]
+    async fn consecutive_lite_pull_batches_each_publish_a_poll_request() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-consecutive-batches-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_consecutive_batches_group"),
+                auto_commit: false,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+
+        let mq = MessageQueue::from_parts("topic-consecutive-batches", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        let process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&mq)
+            .await
+            .expect("assigned queue should have a process queue");
+
+        for offset in [0_i64, 1] {
+            impl_
+                .cache_lite_pull_batch(
+                    vec![Arc::new(MessageExt {
+                        queue_offset: offset,
+                        ..Default::default()
+                    })],
+                    &mq,
+                    &process_queue,
+                    offset,
+                )
+                .await
+                .expect("each pull result should publish a poll request");
+        }
+
+        assert_eq!(impl_.consume_request_queue_snapshot().depth, 2);
+        let first = impl_.poll(0).await.expect("first batch should be pollable");
+        let second = impl_.poll(0).await.expect("second batch should be pollable");
+        assert_eq!(first[0].queue_offset, 0);
+        assert_eq!(second[0].queue_offset, 1);
+        assert_eq!(impl_.assigned_message_queue.get_consume_offset(&mq).await, 2);
+    }
+
+    #[test]
+    fn overload_rejects_excess_lite_pull_consume_requests_without_queue_growth() {
+        let impl_ = DefaultLitePullConsumerImpl::try_new(
+            crate::runtime::test_client_runtime("lite-pull-overload-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_overload_group"),
+                pull_threshold_for_all: 2,
+                ..Default::default()
+            }),
+        )
+        .expect("lite pull consumer budget");
+        let mq = MessageQueue::from_parts("topic-lite-pull-overload", "broker-a", 0);
+        let process_queue = Arc::new(crate::consumer::consumer_impl::process_queue::ProcessQueue::new());
+
+        for offset in 0..4 {
+            let result = impl_.enqueue_consume_request(LitePullConsumeRequest::new(
+                vec![Arc::new(MessageExt {
+                    queue_offset: offset,
+                    ..Default::default()
+                })],
+                mq.clone(),
+                process_queue.clone(),
+            ));
+            assert_eq!(result.is_ok(), offset < 2);
+        }
+
+        let snapshot = impl_.consume_request_queue_snapshot();
+        assert_eq!(snapshot.depth, 2);
+        assert_eq!(snapshot.reserved_count, 2);
+        assert_eq!(snapshot.rejected_count, 2);
+    }
+
+    #[tokio::test]
+    async fn clear_message_queue_in_cache_removes_pending_consume_requests_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_clear_cache_group"),
+                auto_commit: false,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+
+        let cleared_mq = MessageQueue::from_parts("topic-clear-cache", "broker-a", 0);
+        let retained_mq = MessageQueue::from_parts("topic-clear-cache", "broker-a", 1);
+        impl_.assigned_message_queue.put(cleared_mq.clone()).await;
+        impl_.assigned_message_queue.put(retained_mq.clone()).await;
+
+        let cleared_process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&cleared_mq)
+            .await
+            .expect("cleared queue should have a process queue");
+        let retained_process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&retained_mq)
+            .await
+            .expect("retained queue should have a process queue");
+        let cleared_message = Arc::new(MessageExt {
+            queue_offset: 11,
+            ..Default::default()
+        });
+        let retained_message = Arc::new(MessageExt {
+            queue_offset: 22,
+            ..Default::default()
+        });
+        let cleared_messages = vec![cleared_message.clone()];
+        let retained_messages = vec![retained_message.clone()];
+        cleared_process_queue.put_message(&cleared_messages).await;
+        retained_process_queue.put_message(&retained_messages).await;
+        impl_
+            .enqueue_consume_request(LitePullConsumeRequest::new(
+                vec![cleared_message],
+                cleared_mq.clone(),
+                cleared_process_queue.clone(),
+            ))
+            .expect("cleared consume request should enqueue");
+        impl_
+            .enqueue_consume_request(LitePullConsumeRequest::new(
+                vec![retained_message],
+                retained_mq.clone(),
+                retained_process_queue,
+            ))
+            .expect("retained consume request should enqueue");
+
+        impl_.clear_message_queue_in_cache(&cleared_mq).await;
+
+        assert_eq!(cleared_process_queue.msg_count(), 0);
+        let messages = impl_
+            .poll(0)
+            .await
+            .expect("poll should keep requests from other message queues");
+
+        assert_eq!(messages.len(), 1);
+        assert_eq!(messages[0].queue_offset, 22);
+        assert_eq!(impl_.assigned_message_queue.get_consume_offset(&retained_mq).await, 23);
+    }
+
+    #[tokio::test]
+    async fn poll_sets_access_channel_only_for_after_hook_like_java() {
+        let client_config = ClientConfig {
+            access_channel: AccessChannel::Cloud,
+            ..Default::default()
+        };
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(client_config),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_hook_access_channel_group"),
+                auto_commit: false,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+        let hook = Arc::new(CapturingConsumeHook::new());
+        impl_.register_consume_message_hook(hook.clone());
+
+        let mq = MessageQueue::from_parts("topic-hook-access-channel", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        let process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&mq)
+            .await
+            .expect("assigned queue should have a process queue");
+        let message = Arc::new(MessageExt {
+            queue_offset: 9,
+            ..Default::default()
+        });
+        let queued_messages = vec![message.clone()];
+        process_queue.put_message(&queued_messages).await;
+        impl_
+            .enqueue_consume_request(LitePullConsumeRequest::new(vec![message], mq, process_queue))
+            .expect("consume request queue should accept cached message");
+
+        let messages = impl_
+            .poll(0)
+            .await
+            .expect("poll should run consume hooks for cached messages");
+
+        assert_eq!(messages.len(), 1);
+        assert_eq!(
+            hook.events(),
+            vec![
+                (
+                    CheetahString::from_static_str("before"),
+                    false,
+                    CheetahString::new(),
+                    None
+                ),
+                (
+                    CheetahString::from_static_str("after"),
+                    true,
+                    CheetahString::from_static_str("CONSUME_SUCCESS"),
+                    Some(AccessChannel::Cloud)
+                ),
+            ]
+        );
+    }
+
+    #[tokio::test]
+    async fn poll_refreshes_last_consume_timestamp_after_hooks_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_timestamp_after_hook_group"),
+                auto_commit: false,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+        let after_timestamp = Arc::new(AtomicU64::new(0));
+        impl_.register_consume_message_hook(Arc::new(SlowAfterConsumeHook {
+            after_timestamp: after_timestamp.clone(),
+        }));
+
+        let mq = MessageQueue::from_parts("topic-hook-timestamp", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        let process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&mq)
+            .await
+            .expect("assigned queue should have a process queue");
+        let message = Arc::new(MessageExt {
+            queue_offset: 11,
+            ..Default::default()
+        });
+        let queued_messages = vec![message.clone()];
+        process_queue.put_message(&queued_messages).await;
+        impl_
+            .enqueue_consume_request(LitePullConsumeRequest::new(vec![message], mq, process_queue.clone()))
+            .expect("consume request queue should accept cached message");
+
+        let messages = impl_
+            .poll(0)
+            .await
+            .expect("poll should refresh last consume timestamp after hooks");
+
+        let hook_after_timestamp = after_timestamp.load(AtomicOrdering::SeqCst);
+        assert_eq!(messages.len(), 1);
+        assert!(hook_after_timestamp > 0);
+        assert!(process_queue.get_last_consume_timestamp() >= hook_after_timestamp);
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn concurrent_poll_calls_are_serialized_like_java_synchronized_poll() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_serialized_poll_group"),
+                auto_commit: false,
+                ..Default::default()
+            }),
+        ));
+        impl_.set_service_state(ServiceState::Running);
+
+        let entered_first_after = Arc::new(AtomicBool::new(false));
+        let release_first_after = Arc::new(AtomicBool::new(false));
+        impl_.register_consume_message_hook(Arc::new(BlockingFirstMessageHook {
+            entered_first_after: entered_first_after.clone(),
+            release_first_after: release_first_after.clone(),
+        }));
+
+        let mq = MessageQueue::from_parts("topic-serialized-poll", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        let process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&mq)
+            .await
+            .expect("assigned queue should have a process queue");
+        let first_message = Arc::new(MessageExt {
+            queue_offset: 1,
+            ..Default::default()
+        });
+        let second_message = Arc::new(MessageExt {
+            queue_offset: 2,
+            ..Default::default()
+        });
+        let queued_messages = vec![first_message.clone(), second_message.clone()];
+        process_queue.put_message(&queued_messages).await;
+        impl_
+            .enqueue_consume_request(LitePullConsumeRequest::new(
+                vec![first_message],
+                mq.clone(),
+                process_queue.clone(),
+            ))
+            .expect("first consume request should enqueue");
+        impl_
+            .enqueue_consume_request(LitePullConsumeRequest::new(vec![second_message], mq, process_queue))
+            .expect("second consume request should enqueue");
+
+        let first_consumer = impl_.clone();
+        let first_poll = tokio::spawn(async move {
+            first_consumer
+                .poll(0)
+                .await
+                .expect("first poll should succeed")
+                .first()
+                .expect("first poll should return a message")
+                .queue_offset
+        });
+
+        tokio::time::timeout(Duration::from_secs(1), async {
+            while !entered_first_after.load(AtomicOrdering::SeqCst) {
+                tokio::time::sleep(Duration::from_millis(1)).await;
+            }
+        })
+        .await
+        .expect("first poll should enter after hook");
+
+        let second_done = Arc::new(AtomicBool::new(false));
+        let second_done_for_task = second_done.clone();
+        let second_consumer = impl_.clone();
+        let second_poll = tokio::spawn(async move {
+            let offset = second_consumer
+                .poll(0)
+                .await
+                .expect("second poll should succeed")
+                .first()
+                .expect("second poll should return a message")
+                .queue_offset;
+            second_done_for_task.store(true, AtomicOrdering::SeqCst);
+            offset
+        });
+
+        tokio::time::sleep(Duration::from_millis(20)).await;
+        assert!(
+            !second_done.load(AtomicOrdering::SeqCst),
+            "second poll completed while the first poll was still inside a hook"
+        );
+
+        release_first_after.store(true, AtomicOrdering::SeqCst);
+
+        assert_eq!(first_poll.await.expect("first poll task should finish"), 1);
+        assert_eq!(second_poll.await.expect("second poll task should finish"), 2);
+    }
+
+    #[tokio::test]
+    async fn pull_inner_refreshes_last_pull_timestamp_before_flow_control_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_last_pull_timestamp_group"),
+                pull_threshold_for_queue: 0,
+                pull_time_delay_millis_when_cache_flow_control: 123,
+                ..Default::default()
+            }),
+        );
+        impl_.set_service_state(ServiceState::Running);
+        let mq = MessageQueue::from_parts("topic-flow-control", "broker-a", 0);
+        let process_queue = Arc::new(crate::consumer::consumer_impl::process_queue::ProcessQueue::new());
+        process_queue.set_last_pull_timestamp(1);
+        let queued_messages = vec![Arc::new(MessageExt {
+            queue_offset: 0,
+            ..Default::default()
+        })];
+        process_queue.put_message(&queued_messages).await;
+
+        let delay = impl_
+            .pull_inner(&mq, &process_queue, None)
+            .await
+            .expect("flow control should return a delay without broker access");
+
+        assert_eq!(delay, 123);
+        assert!(process_queue.get_last_pull_timestamp() > 1);
+    }
+
+    #[tokio::test]
+    async fn pull_result_does_not_overwrite_pending_seek_offset_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_pending_seek_group"),
+                ..Default::default()
+            }),
+        );
+        let mq = MessageQueue::from_parts("topic-pending-seek", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        let process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&mq)
+            .await
+            .expect("assigned queue should have a process queue");
+        impl_
+            .assigned_message_queue
+            .update_pull_offset(&mq, 10, &process_queue)
+            .await;
+        impl_.assigned_message_queue.set_seek_offset(&mq, 42).await;
+
+        let updated = impl_
+            .update_pull_offset_if_no_pending_seek(&mq, 99, &process_queue)
+            .await;
+
+        assert!(!updated);
+        assert_eq!(impl_.assigned_message_queue.get_pull_offset(&mq).await, 10);
+        assert_eq!(impl_.assigned_message_queue.get_seek_offset(&mq).await, 42);
+    }
+
+    #[tokio::test]
+    async fn offset_illegal_corrects_pull_offset_without_dropping_queue_like_java_lite_pull() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_offset_illegal_group"),
+                pull_time_delay_millis_when_exception: 321,
+                ..Default::default()
+            }),
+        );
+        let mq = MessageQueue::from_parts("topic-offset-illegal", "broker-a", 0);
+        impl_.assigned_message_queue.put(mq.clone()).await;
+        impl_
+            .assignment_registry
+            .ensure(mq.clone())
+            .await
+            .expect("assignment registry is open");
+        let process_queue = impl_
+            .assigned_message_queue
+            .get_process_queue(&mq)
+            .await
+            .expect("assigned queue should have a process queue");
+
+        let delay = impl_.handle_offset_illegal_pull_result(&mq, &process_queue, 88).await;
+
+        assert_eq!(delay, 321);
+        assert!(!process_queue.is_dropped());
+        assert_eq!(impl_.assigned_message_queue.get_pull_offset(&mq).await, 88);
+    }
+
+    #[tokio::test]
+    async fn rebalance_update_assigns_divided_queues_and_starts_pull_tasks() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_rebalance_update_group"),
+                message_model: MessageModel::Clustering,
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+
+        let mq0 = MessageQueue::from_parts("topic-a", "broker-a", 0);
+        let mq1 = MessageQueue::from_parts("topic-a", "broker-a", 1);
+        let all = HashSet::from([mq0.clone(), mq1.clone()]);
+
+        impl_
+            .update_assign_queue_and_start_pull_task("topic-a", &all, &HashSet::from([mq0.clone()]))
+            .await
+            .expect("first rebalance update should start mq0");
+        impl_
+            .update_assign_queue_and_start_pull_task("topic-a", &all, &HashSet::from([mq1.clone()]))
+            .await
+            .expect("second rebalance update should switch to mq1");
+
+        let assigned = impl_.assignment().await;
+        assert!(!assigned.contains(&mq0));
+        assert!(assigned.contains(&mq1));
+
+        assert!(impl_.assignment_registry.get(&mq0).await.is_none());
+        assert!(impl_.assignment_registry.get(&mq1).await.is_some());
+        assert_eq!(impl_.assignment_registry_snapshot().await.owned_tasks, 1);
+
+        impl_.shutdown_signal.store(true, Ordering::Release);
+        impl_
+            .assignment_registry
+            .close_and_shutdown(Duration::from_secs(1))
+            .await;
+    }
+
+    struct CountingMessageQueueListener {
+        calls: Arc<AtomicUsize>,
+    }
+
+    impl MessageQueueListener for CountingMessageQueueListener {
+        fn message_queue_changed(
+            &self,
+            _topic: &str,
+            _mq_all: &HashSet<MessageQueue>,
+            _mq_assigned: &HashSet<MessageQueue>,
+        ) {
+            self.calls.fetch_add(1, AtomicOrdering::SeqCst);
+        }
+    }
+
+    #[tokio::test]
+    async fn lite_pull_rebalance_listener_invokes_user_listener() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_user_listener_group"),
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        {
+            let mut user_listener = impl_
+                .user_message_queue_listener
+                .write()
+                .expect("user listener lock should not be poisoned");
+            *user_listener = Some(Arc::new(CountingMessageQueueListener { calls: calls.clone() }));
+        }
+
+        let listener = LitePullRebalanceListener {
+            consumer_impl: Arc::downgrade(&impl_),
+            user_listener: impl_.user_message_queue_listener.clone(),
+            task_tracker: impl_.rebalance_listener_tasks.clone(),
+            shutdown_token: impl_.rebalance_listener_shutdown.clone(),
+        };
+        let mq = MessageQueue::from_parts("topic-a", "broker-a", 0);
+        let all = HashSet::from([mq.clone()]);
+        listener.message_queue_changed("topic-a", &all, &all);
+
+        impl_.rebalance_listener_tasks.close();
+        tokio::time::timeout(Duration::from_secs(1), impl_.rebalance_listener_tasks.wait())
+            .await
+            .expect("rebalance listener task should finish before timeout");
+
+        tokio::time::timeout(Duration::from_secs(1), async {
+            while calls.load(AtomicOrdering::SeqCst) == 0 {
+                tokio::time::sleep(Duration::from_millis(1)).await;
+            }
+        })
+        .await
+        .expect("user listener should be invoked after assignment update");
+        assert_eq!(calls.load(AtomicOrdering::SeqCst), 1);
+
+        let assigned = impl_.assignment().await;
+        assert!(
+            assigned.contains(&mq),
+            "LitePull should update its internal assignment before invoking the user listener"
+        );
+
+        impl_.shutdown_signal.store(true, Ordering::Release);
+        impl_
+            .assignment_registry
+            .close_and_shutdown(Duration::from_secs(1))
+            .await;
+    }
+
+    #[tokio::test]
+    async fn classic_pull_rebalance_listener_never_starts_lite_pull_tasks() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("classic-pull-rebalance-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("classic_pull_rebalance_group"),
+                classic_pull_manual_mode: true,
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        {
+            let mut user_listener = impl_
+                .user_message_queue_listener
+                .write()
+                .expect("user listener lock should not be poisoned");
+            *user_listener = Some(Arc::new(CountingMessageQueueListener { calls: calls.clone() }));
+        }
+
+        let listener = LitePullRebalanceListener {
+            consumer_impl: Arc::downgrade(&impl_),
+            user_listener: impl_.user_message_queue_listener.clone(),
+            task_tracker: impl_.rebalance_listener_tasks.clone(),
+            shutdown_token: impl_.rebalance_listener_shutdown.clone(),
+        };
+        let mq = MessageQueue::from_parts("topic-a", "broker-a", 0);
+        let all = HashSet::from([mq.clone()]);
+        listener.message_queue_changed("topic-a", &all, &all);
+
+        impl_.rebalance_listener_tasks.close();
+        tokio::time::timeout(Duration::from_secs(1), impl_.rebalance_listener_tasks.wait())
+            .await
+            .expect("classic rebalance listener task should finish before timeout");
+
+        assert_eq!(calls.load(AtomicOrdering::SeqCst), 1);
+        assert!(
+            impl_.assignment().await.is_empty(),
+            "Classic Pull must not populate the LitePull assignment registry"
+        );
+        assert_eq!(impl_.assignment_registry_snapshot().await.owned_tasks, 0);
+    }
+
+    #[tokio::test]
+    async fn lite_pull_rebalance_listener_ignores_changes_after_shutdown_token_cancelled() {
+        let impl_ = Arc::new(DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_cancelled_listener_group"),
+                ..Default::default()
+            }),
+        ));
+        impl_.bind_self();
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        {
+            let mut user_listener = impl_
+                .user_message_queue_listener
+                .write()
+                .expect("user listener lock should not be poisoned");
+            *user_listener = Some(Arc::new(CountingMessageQueueListener { calls: calls.clone() }));
+        }
+
+        impl_.rebalance_listener_shutdown.cancel();
+        let listener = LitePullRebalanceListener {
+            consumer_impl: Arc::downgrade(&impl_),
+            user_listener: impl_.user_message_queue_listener.clone(),
+            task_tracker: impl_.rebalance_listener_tasks.clone(),
+            shutdown_token: impl_.rebalance_listener_shutdown.clone(),
+        };
+        let mq = MessageQueue::from_parts("topic-a", "broker-a", 0);
+        let all = HashSet::from([mq.clone()]);
+        listener.message_queue_changed("topic-a", &all, &all);
+
+        impl_.rebalance_listener_tasks.close();
+        tokio::time::timeout(Duration::from_millis(100), impl_.rebalance_listener_tasks.wait())
+            .await
+            .expect("cancelled rebalance listener should not leave tracked tasks");
+
+        assert_eq!(calls.load(AtomicOrdering::SeqCst), 0);
+        assert!(!impl_.assignment().await.contains(&mq));
+    }
+
+    #[tokio::test]
+    async fn subscribe_with_listener_installs_user_listener_with_subscription_like_java() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_subscribe_listener_group"),
+                ..Default::default()
+            }),
+        );
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        let listener: ArcMessageQueueListener = Arc::new(CountingMessageQueueListener { calls });
+        impl_
+            .subscribe_with_listener_arc(
+                CheetahString::from_static_str("topic-a"),
+                CheetahString::from_static_str("TagA"),
+                listener.clone(),
+            )
+            .await
+            .expect("subscribe with listener should succeed before start");
+
+        let stored_listener = impl_
+            .message_queue_listener()
+            .expect("subscribe with listener should install the user listener");
+        assert!(Arc::ptr_eq(&stored_listener, &listener));
+        assert!(
+            impl_.rebalance_impl.get_subscription_inner().contains_key("topic-a"),
+            "subscribe with listener should build the same subscription data as Java"
+        );
+    }
+
+    struct CountingTopicMessageQueueChangeListener {
+        calls: Arc<AtomicUsize>,
+        last_topic: Arc<StdMutex<Option<String>>>,
+        last_queue_count: Arc<AtomicUsize>,
+    }
+
+    impl TopicMessageQueueChangeListener for CountingTopicMessageQueueChangeListener {
+        fn on_changed(&self, topic: &str, message_queues: HashSet<MessageQueue>) {
+            self.calls.fetch_add(1, AtomicOrdering::SeqCst);
+            *self.last_topic.lock().expect("last topic lock should not be poisoned") = Some(topic.to_string());
+            self.last_queue_count
+                .store(message_queues.len(), AtomicOrdering::SeqCst);
+        }
+    }
+
+    #[tokio::test]
+    async fn topic_message_queue_change_listener_fires_only_when_snapshot_changes() {
+        let impl_ = DefaultLitePullConsumerImpl::new(
+            crate::runtime::test_client_runtime("lite-pull-impl-test"),
+            Arc::new(ClientConfig::default()),
+            Arc::new(LitePullConsumerConfig {
+                consumer_group: CheetahString::from_static_str("lite_pull_topic_metadata_group"),
+                ..Default::default()
+            }),
+        );
+
+        let topic = CheetahString::from_static_str("topic-a");
+        let mq0 = MessageQueue::from_parts("topic-a", "broker-a", 0);
+        let mq1 = MessageQueue::from_parts("topic-a", "broker-a", 1);
+        let calls = Arc::new(AtomicUsize::new(0));
+        let last_topic = Arc::new(StdMutex::new(None));
+        let last_queue_count = Arc::new(AtomicUsize::new(0));
+
+        impl_.topic_message_queue_change_listener_map.write().await.insert(
+            topic.clone(),
+            Arc::new(CountingTopicMessageQueueChangeListener {
+                calls: calls.clone(),
+                last_topic: last_topic.clone(),
+                last_queue_count: last_queue_count.clone(),
+            }),
+        );
+        impl_
+            .message_queues_for_topic
+            .write()
+            .await
+            .insert(topic.clone(), HashSet::from([mq0.clone()]));
+
+        impl_
+            .notify_topic_message_queue_change_if_needed(&topic, HashSet::from([mq0.clone()]))
+            .await;
+        assert_eq!(calls.load(AtomicOrdering::SeqCst), 0);
+
+        impl_
+            .notify_topic_message_queue_change_if_needed(&topic, HashSet::from([mq0.clone(), mq1.clone()]))
+            .await;
+
+        assert_eq!(calls.load(AtomicOrdering::SeqCst), 1);
+        assert_eq!(
+            last_topic
+                .lock()
+                .expect("last topic lock should not be poisoned")
+                .as_deref(),
+            Some("topic-a")
+        );
+        assert_eq!(last_queue_count.load(AtomicOrdering::SeqCst), 2);
+
+        let snapshot = impl_.message_queues_for_topic.read().await;
+        assert_eq!(snapshot.get(&topic).map(HashSet::len), Some(2));
+    }
+}

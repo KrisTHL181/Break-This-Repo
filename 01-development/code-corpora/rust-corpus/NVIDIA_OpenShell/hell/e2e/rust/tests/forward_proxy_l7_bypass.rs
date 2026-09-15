@@ -1,0 +1,187 @@
+// SPDX-FileCopyrightText: Copyright (c) 2025-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+// SPDX-License-Identifier: Apache-2.0
+
+//! Regression tests: the forward proxy path must evaluate L7 rules for
+//! endpoints that have them configured.  Allowed requests (e.g. GET on a
+//! read-only endpoint) should succeed; denied requests (e.g. POST) should
+//! receive 403.
+
+#![cfg(feature = "e2e")]
+
+use std::io::Write;
+
+use openshell_e2e::harness::container::ContainerHttpServer;
+use openshell_e2e::harness::sandbox::SandboxGuard;
+use tempfile::NamedTempFile;
+
+const TEST_SERVER_ALIAS: &str = "rest-l7.openshell.test";
+
+async fn start_test_server() -> Result<ContainerHttpServer, String> {
+    let script = r#"from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b'{"ok":true}')
+    def do_DELETE(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b'{"ok":true}')
+    def log_message(self, format, *args):
+        pass
+
+HTTPServer(("0.0.0.0", 8000), Handler).serve_forever()
+"#;
+
+    ContainerHttpServer::start_python(TEST_SERVER_ALIAS, script).await
+}
+
+fn write_policy_with_l7_rules(host: &str, port: u16) -> Result<NamedTempFile, String> {
+    let mut file = NamedTempFile::new().map_err(|e| format!("create temp policy file: {e}"))?;
+    let policy = format!(
+        r#"version: 1
+
+filesystem_policy:
+  include_workdir: true
+  read_only:
+    - /usr
+    - /lib
+    - /proc
+    - /dev/urandom
+    - /app
+    - /etc
+    - /var/log
+  read_write:
+    - /sandbox
+    - /tmp
+    - /dev/null
+
+landlock:
+  compatibility: best_effort
+
+process:
+  run_as_user: sandbox
+  run_as_group: sandbox
+
+network_policies:
+  test_l7:
+    name: test_l7
+    endpoints:
+      - host: {host}
+        port: {port}
+        protocol: rest
+        enforcement: enforce
+        allowed_ips:
+          - "10.0.0.0/8"
+          - "172.0.0.0/8"
+          - "192.168.0.0/16"
+          - "fc00::/7"
+        rules:
+          - allow:
+              method: GET
+              path: /allowed
+    binaries:
+      - path: /usr/bin/curl
+      - path: /usr/bin/python*
+      - path: /usr/local/bin/python*
+      - path: /sandbox/.uv/python/*/bin/python*
+"#
+    );
+    file.write_all(policy.as_bytes())
+        .map_err(|e| format!("write temp policy file: {e}"))?;
+    file.flush()
+        .map_err(|e| format!("flush temp policy file: {e}"))?;
+    Ok(file)
+}
+
+/// GET /allowed should succeed — the L7 policy explicitly allows it.
+#[tokio::test]
+async fn forward_proxy_allows_l7_permitted_request() {
+    let server = start_test_server().await.expect("start test server");
+    let policy =
+        write_policy_with_l7_rules(&server.host, server.port).expect("write custom policy");
+    let policy_path = policy
+        .path()
+        .to_str()
+        .expect("temp policy path should be utf-8")
+        .to_string();
+
+    let script = format!(
+        r#"
+import urllib.request, urllib.error, json, sys, time
+url = "http://{host}:{port}/allowed"
+# Retry expected-allowed requests across the startup symlink-resolution reload,
+# which can transiently surface as a stale-policy 403 in the forward proxy.
+last = {{"status": -1, "error": "not attempted"}}
+for attempt in range(6):
+    try:
+        resp = urllib.request.urlopen(url, timeout=15)
+        last = {{"status": resp.status, "error": None, "attempt": attempt + 1}}
+        break
+    except urllib.error.HTTPError as e:
+        last = {{"status": e.code, "error": str(e), "attempt": attempt + 1}}
+        if e.code != 403:
+            break
+        time.sleep(0.3)
+    except Exception as e:
+        last = {{"status": -1, "error": str(e), "attempt": attempt + 1}}
+        break
+print(json.dumps(last))
+"#,
+        host = server.host,
+        port = server.port,
+    );
+
+    let guard = SandboxGuard::create(&["--policy", &policy_path, "--", "python3", "-c", &script])
+        .await
+        .expect("sandbox create");
+
+    // L7 policy allows GET /allowed — should succeed.
+    assert!(
+        guard.create_output.contains("\"status\": 200"),
+        "expected 200 for L7-allowed GET, got:\n{}",
+        guard.create_output
+    );
+}
+
+/// POST /allowed should be denied — the L7 policy only allows GET.
+#[tokio::test]
+async fn forward_proxy_denies_l7_blocked_request() {
+    let server = start_test_server().await.expect("start test server");
+    let policy =
+        write_policy_with_l7_rules(&server.host, server.port).expect("write custom policy");
+    let policy_path = policy
+        .path()
+        .to_str()
+        .expect("temp policy path should be utf-8")
+        .to_string();
+
+    let script = format!(
+        r#"
+import urllib.request, urllib.error, json, sys
+url = "http://{host}:{port}/allowed"
+req = urllib.request.Request(url, data=b"test", method="POST")
+try:
+    resp = urllib.request.urlopen(req, timeout=15)
+    print(json.dumps({{"status": resp.status, "error": None}}))
+except urllib.error.HTTPError as e:
+    print(json.dumps({{"status": e.code, "error": str(e)}}))
+except Exception as e:
+    print(json.dumps({{"status": -1, "error": str(e)}}))
+"#,
+        host = server.host,
+        port = server.port,
+    );
+
+    let guard = SandboxGuard::create(&["--policy", &policy_path, "--", "python3", "-c", &script])
+        .await
+        .expect("sandbox create");
+
+    // L7 policy denies POST — should return 403.
+    assert!(
+        guard.create_output.contains("\"status\": 403"),
+        "expected 403 for L7-denied POST, got:\n{}",
+        guard.create_output
+    );
+}

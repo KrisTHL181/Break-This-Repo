@@ -1,0 +1,17 @@
+[package]
+name = "bb_ffi"
+version = "0.2.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bb_ffi_macros = { path = "../bb_ffi_macros" }
+wasmer = { version = "2.2.1", default-features = false, features = ["sys"], optional = true }
+
+[build-dependencies]
+cbindgen = { version = "0.24.3", optional = true }
+bb_data = { path = "../bb_data" }
+
+[features]
+host = ["wasmer", "cbindgen"]

@@ -1,0 +1,74 @@
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+use std::str::FromStr;
+
+use iggy::prelude::{IdKind, Identifier};
+use pyo3::{
+    exceptions::{PyRuntimeError, PyValueError},
+    prelude::*,
+};
+use pyo3_stub_gen::impl_stub_type;
+
+#[derive(Clone, FromPyObject, IntoPyObject)]
+pub enum PyIdentifier {
+    #[pyo3(transparent, annotation = "str")]
+    String(String),
+    #[pyo3(transparent, annotation = "int")]
+    Int(u32),
+}
+impl_stub_type!(PyIdentifier = String | isize);
+
+impl TryFrom<&PyIdentifier> for Identifier {
+    type Error = PyErr;
+
+    fn try_from(py_identifier: &PyIdentifier) -> Result<Self, Self::Error> {
+        match py_identifier {
+            PyIdentifier::String(s) => {
+                Identifier::from_str(s).map_err(|e| PyErr::new::<PyValueError, _>(e.to_string()))
+            }
+            PyIdentifier::Int(i) => {
+                Identifier::numeric(*i).map_err(|e| PyErr::new::<PyValueError, _>(e.to_string()))
+            }
+        }
+    }
+}
+
+impl TryFrom<PyIdentifier> for Identifier {
+    type Error = PyErr;
+
+    fn try_from(py_identifier: PyIdentifier) -> Result<Self, Self::Error> {
+        Identifier::try_from(&py_identifier)
+    }
+}
+
+impl TryFrom<&Identifier> for PyIdentifier {
+    type Error = PyErr;
+
+    fn try_from(val: &Identifier) -> Result<Self, Self::Error> {
+        match val.kind {
+            IdKind::String => val
+                .get_string_value()
+                .map(PyIdentifier::String)
+                .map_err(|e| PyErr::new::<PyRuntimeError, _>(e.to_string())),
+            IdKind::Numeric => val
+                .get_u32_value()
+                .map(PyIdentifier::Int)
+                .map_err(|e| PyErr::new::<PyRuntimeError, _>(e.to_string())),
+        }
+    }
+}

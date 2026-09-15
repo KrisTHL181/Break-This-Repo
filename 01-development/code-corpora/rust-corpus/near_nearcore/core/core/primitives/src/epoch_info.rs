@@ -1,0 +1,981 @@
+use crate::rand::StakeWeightedIndex;
+use crate::shard_layout::ShardLayout;
+use crate::types::validator_stake::{ValidatorStake, ValidatorStakeIter};
+use crate::types::{AccountId, ValidatorKickoutReason, ValidatorStakeV1};
+use crate::validator_mandates::ValidatorMandates;
+use crate::version::PROTOCOL_VERSION;
+use borsh::{BorshDeserialize, BorshSerialize};
+use near_primitives_core::types::{Balance, EpochHeight, ProtocolVersion, ValidatorId};
+use near_primitives_core::version::ProtocolFeature;
+use near_primitives_core::{
+    hash::hash,
+    types::{BlockHeight, ShardId},
+};
+use near_schema_checker_lib::ProtocolSchema;
+use smart_default::SmartDefault;
+use std::collections::{BTreeMap, HashMap, HashSet};
+
+/// Information per epoch.
+#[derive(
+    BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq, Eq, serde::Serialize, ProtocolSchema,
+)]
+pub enum EpochInfo {
+    V1(EpochInfoV1),
+    V2(EpochInfoV2),
+    V3(EpochInfoV3),
+    V4(EpochInfoV4),
+    V5(EpochInfoV5),
+}
+
+pub type RngSeed = [u8; 32];
+
+#[derive(
+    Default,
+    BorshSerialize,
+    BorshDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    serde::Serialize,
+    ProtocolSchema,
+)]
+pub struct ValidatorWeight(ValidatorId, u64);
+
+// V4 -> V5: Add shard layout (for dynamic resharding)
+#[derive(
+    BorshSerialize, BorshDeserialize, Clone, Debug, PartialEq, Eq, serde::Serialize, ProtocolSchema,
+)]
+pub struct EpochInfoV5 {
+    pub epoch_height: EpochHeight,
+    pub validators: Vec<ValidatorStake>,
+    pub validator_to_index: HashMap<AccountId, ValidatorId>,
+    pub block_producers_settlement: Vec<ValidatorId>,
+    pub chunk_producers_settlement: Vec<Vec<ValidatorId>>,
+    pub stake_change: BTreeMap<AccountId, Balance>,
+    pub validator_reward: HashMap<AccountId, Balance>,
+    pub validator_kickout: HashMap<AccountId, ValidatorKickoutReason>,
+    pub minted_amount: Balance,
+    pub seat_price: Balance,
+    pub protocol_version: ProtocolVersion,
+    pub shard_layout: ShardLayout,
+    /// The epoch height at which the most recent resharding occurred.
+    /// `None` means no resharding has happened since dynamic resharding was enabled.
+    pub last_resharding: Option<EpochHeight>,
+    // stuff for selecting validators at each height
+    rng_seed: RngSeed,
+    block_producers_sampler: StakeWeightedIndex,
+    chunk_producers_sampler: Vec<StakeWeightedIndex>,
+    /// Contains the epoch's validator mandates. Used to sample chunk validators.
+    validator_mandates: ValidatorMandates,
+}
+
+// V3 -> V4: Add structures and methods for stateless validator assignment.
+#[derive(
+    SmartDefault,
+    BorshSerialize,
+    BorshDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    serde::Serialize,
+    ProtocolSchema,
+)]
+pub struct EpochInfoV4 {
+    pub epoch_height: EpochHeight,
+    pub validators: Vec<ValidatorStake>,
+    pub validator_to_index: HashMap<AccountId, ValidatorId>,
+    pub block_producers_settlement: Vec<ValidatorId>,
+    pub chunk_producers_settlement: Vec<Vec<ValidatorId>>,
+    /// Deprecated.
+    pub _hidden_validators_settlement: Vec<ValidatorWeight>,
+    /// Deprecated.
+    pub _fishermen: Vec<crate::types::validator_stake::ValidatorStake>,
+    /// Deprecated.
+    pub _fishermen_to_index: HashMap<AccountId, ValidatorId>,
+    pub stake_change: BTreeMap<AccountId, Balance>,
+    pub validator_reward: HashMap<AccountId, Balance>,
+    pub validator_kickout: HashMap<AccountId, ValidatorKickoutReason>,
+    pub minted_amount: Balance,
+    pub seat_price: Balance,
+    #[default(PROTOCOL_VERSION)]
+    pub protocol_version: ProtocolVersion,
+    // stuff for selecting validators at each height
+    rng_seed: RngSeed,
+    block_producers_sampler: crate::rand::StakeWeightedIndex,
+    chunk_producers_sampler: Vec<crate::rand::StakeWeightedIndex>,
+    /// Contains the epoch's validator mandates. Used to sample chunk validators.
+    validator_mandates: crate::validator_mandates::ValidatorMandates,
+}
+
+impl Default for EpochInfo {
+    fn default() -> Self {
+        Self::V2(EpochInfoV2::default())
+    }
+}
+
+// V1 -> V2: Use versioned ValidatorStake structure in validators and fishermen
+#[derive(
+    SmartDefault,
+    BorshSerialize,
+    BorshDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    serde::Serialize,
+    ProtocolSchema,
+)]
+pub struct EpochInfoV2 {
+    /// Ordinal of given epoch from genesis.
+    /// There can be multiple epochs with the same ordinal in case of long forks.
+    pub epoch_height: EpochHeight,
+    /// List of current validators.
+    pub validators: Vec<ValidatorStake>,
+    /// Validator account id to index in proposals.
+    pub validator_to_index: HashMap<AccountId, ValidatorId>,
+    /// Settlement of validators responsible for block production.
+    pub block_producers_settlement: Vec<ValidatorId>,
+    /// Per each shard, settlement validators that are responsible.
+    pub chunk_producers_settlement: Vec<Vec<ValidatorId>>,
+    /// Settlement of hidden validators with weights used to determine how many shards they will validate.
+    pub hidden_validators_settlement: Vec<ValidatorWeight>,
+    /// List of current fishermen.
+    pub fishermen: Vec<ValidatorStake>,
+    /// Fisherman account id to index of proposal.
+    pub fishermen_to_index: HashMap<AccountId, ValidatorId>,
+    /// New stake for validators.
+    pub stake_change: BTreeMap<AccountId, Balance>,
+    /// Validator reward for the epoch.
+    pub validator_reward: HashMap<AccountId, Balance>,
+    /// Validators who are kicked out in this epoch.
+    pub validator_kickout: HashMap<AccountId, ValidatorKickoutReason>,
+    /// Total minted tokens in the epoch.
+    pub minted_amount: Balance,
+    /// Seat price of this epoch.
+    pub seat_price: Balance,
+    /// Current protocol version during this epoch.
+    #[default(PROTOCOL_VERSION)]
+    pub protocol_version: ProtocolVersion,
+}
+
+// V2 -> V3: Structures for randomly selecting validators at each height based on new
+// block producer and chunk producer selection algorithm.
+#[derive(
+    SmartDefault,
+    BorshSerialize,
+    BorshDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    serde::Serialize,
+    ProtocolSchema,
+)]
+pub struct EpochInfoV3 {
+    pub epoch_height: EpochHeight,
+    pub validators: Vec<ValidatorStake>,
+    pub validator_to_index: HashMap<AccountId, ValidatorId>,
+    pub block_producers_settlement: Vec<ValidatorId>,
+    pub chunk_producers_settlement: Vec<Vec<ValidatorId>>,
+    pub hidden_validators_settlement: Vec<ValidatorWeight>,
+    pub fishermen: Vec<ValidatorStake>,
+    pub fishermen_to_index: HashMap<AccountId, ValidatorId>,
+    pub stake_change: BTreeMap<AccountId, Balance>,
+    pub validator_reward: HashMap<AccountId, Balance>,
+    pub validator_kickout: HashMap<AccountId, ValidatorKickoutReason>,
+    pub minted_amount: Balance,
+    pub seat_price: Balance,
+    #[default(PROTOCOL_VERSION)]
+    pub protocol_version: ProtocolVersion,
+    // stuff for selecting validators at each height
+    rng_seed: RngSeed,
+    block_producers_sampler: StakeWeightedIndex,
+    chunk_producers_sampler: Vec<StakeWeightedIndex>,
+}
+
+impl EpochInfo {
+    pub fn new(
+        epoch_height: EpochHeight,
+        validators: Vec<ValidatorStake>,
+        validator_to_index: HashMap<AccountId, ValidatorId>,
+        block_producers_settlement: Vec<ValidatorId>,
+        chunk_producers_settlement: Vec<Vec<ValidatorId>>,
+        stake_change: BTreeMap<AccountId, Balance>,
+        validator_reward: HashMap<AccountId, Balance>,
+        validator_kickout: HashMap<AccountId, ValidatorKickoutReason>,
+        minted_amount: Balance,
+        seat_price: Balance,
+        protocol_version: ProtocolVersion,
+        rng_seed: RngSeed,
+        validator_mandates: ValidatorMandates,
+        shard_layout: ShardLayout,
+        last_resharding: Option<EpochHeight>,
+    ) -> Self {
+        let stake_weights = |ids: &[ValidatorId]| -> StakeWeightedIndex {
+            StakeWeightedIndex::new(
+                ids.iter()
+                    .copied()
+                    .map(|validator_id| validators[validator_id as usize].stake())
+                    .collect(),
+            )
+        };
+        let block_producers_sampler = stake_weights(&block_producers_settlement);
+        let chunk_producers_sampler =
+            chunk_producers_settlement.iter().map(|vs| stake_weights(vs)).collect();
+        if ProtocolFeature::DynamicResharding.enabled(protocol_version) {
+            return Self::V5(EpochInfoV5 {
+                epoch_height,
+                validators,
+                validator_to_index,
+                block_producers_settlement,
+                chunk_producers_settlement,
+                stake_change,
+                validator_reward,
+                validator_kickout,
+                minted_amount,
+                seat_price,
+                protocol_version,
+                shard_layout,
+                last_resharding,
+                rng_seed,
+                block_producers_sampler,
+                chunk_producers_sampler,
+                validator_mandates,
+            });
+        }
+        Self::V4(EpochInfoV4 {
+            epoch_height,
+            validators,
+            _fishermen: Default::default(),
+            validator_to_index,
+            block_producers_settlement,
+            chunk_producers_settlement,
+            _hidden_validators_settlement: Default::default(),
+            stake_change,
+            validator_reward,
+            validator_kickout,
+            _fishermen_to_index: Default::default(),
+            minted_amount,
+            seat_price,
+            protocol_version,
+            rng_seed,
+            block_producers_sampler,
+            chunk_producers_sampler,
+            validator_mandates,
+        })
+    }
+
+    #[inline]
+    pub fn epoch_height_mut(&mut self) -> &mut EpochHeight {
+        match self {
+            Self::V1(v1) => &mut v1.epoch_height,
+            Self::V2(v2) => &mut v2.epoch_height,
+            Self::V3(v3) => &mut v3.epoch_height,
+            Self::V4(v4) => &mut v4.epoch_height,
+            Self::V5(v5) => &mut v5.epoch_height,
+        }
+    }
+
+    #[inline]
+    pub fn epoch_height(&self) -> EpochHeight {
+        match self {
+            Self::V1(v1) => v1.epoch_height,
+            Self::V2(v2) => v2.epoch_height,
+            Self::V3(v3) => v3.epoch_height,
+            Self::V4(v4) => v4.epoch_height,
+            Self::V5(v5) => v5.epoch_height,
+        }
+    }
+
+    #[inline]
+    pub fn seat_price(&self) -> Balance {
+        match self {
+            Self::V1(v1) => v1.seat_price,
+            Self::V2(v2) => v2.seat_price,
+            Self::V3(v3) => v3.seat_price,
+            Self::V4(v4) => v4.seat_price,
+            Self::V5(v5) => v5.seat_price,
+        }
+    }
+
+    #[inline]
+    pub fn minted_amount(&self) -> Balance {
+        match self {
+            Self::V1(v1) => v1.minted_amount,
+            Self::V2(v2) => v2.minted_amount,
+            Self::V3(v3) => v3.minted_amount,
+            Self::V4(v4) => v4.minted_amount,
+            Self::V5(v5) => v5.minted_amount,
+        }
+    }
+
+    #[inline]
+    pub fn block_producers_settlement(&self) -> &[ValidatorId] {
+        match self {
+            Self::V1(v1) => &v1.block_producers_settlement,
+            Self::V2(v2) => &v2.block_producers_settlement,
+            Self::V3(v3) => &v3.block_producers_settlement,
+            Self::V4(v4) => &v4.block_producers_settlement,
+            Self::V5(v5) => &v5.block_producers_settlement,
+        }
+    }
+
+    #[inline]
+    pub fn chunk_producers_settlement(&self) -> &[Vec<ValidatorId>] {
+        match self {
+            Self::V1(v1) => &v1.chunk_producers_settlement,
+            Self::V2(v2) => &v2.chunk_producers_settlement,
+            Self::V3(v3) => &v3.chunk_producers_settlement,
+            Self::V4(v4) => &v4.chunk_producers_settlement,
+            Self::V5(v5) => &v5.chunk_producers_settlement,
+        }
+    }
+
+    #[inline]
+    pub fn chunk_producers_settlement_mut(&mut self) -> &mut Vec<Vec<ValidatorId>> {
+        match self {
+            Self::V1(v1) => &mut v1.chunk_producers_settlement,
+            Self::V2(v2) => &mut v2.chunk_producers_settlement,
+            Self::V3(v3) => &mut v3.chunk_producers_settlement,
+            Self::V4(v4) => &mut v4.chunk_producers_settlement,
+            Self::V5(v5) => &mut v5.chunk_producers_settlement,
+        }
+    }
+
+    #[inline]
+    pub fn validator_kickout(&self) -> &HashMap<AccountId, ValidatorKickoutReason> {
+        match self {
+            Self::V1(v1) => &v1.validator_kickout,
+            Self::V2(v2) => &v2.validator_kickout,
+            Self::V3(v3) => &v3.validator_kickout,
+            Self::V4(v4) => &v4.validator_kickout,
+            Self::V5(v5) => &v5.validator_kickout,
+        }
+    }
+
+    #[inline]
+    pub fn protocol_version(&self) -> ProtocolVersion {
+        match self {
+            Self::V1(v1) => v1.protocol_version,
+            Self::V2(v2) => v2.protocol_version,
+            Self::V3(v3) => v3.protocol_version,
+            Self::V4(v4) => v4.protocol_version,
+            Self::V5(v5) => v5.protocol_version,
+        }
+    }
+
+    #[inline]
+    pub fn stake_change(&self) -> &BTreeMap<AccountId, Balance> {
+        match self {
+            Self::V1(v1) => &v1.stake_change,
+            Self::V2(v2) => &v2.stake_change,
+            Self::V3(v3) => &v3.stake_change,
+            Self::V4(v4) => &v4.stake_change,
+            Self::V5(v5) => &v5.stake_change,
+        }
+    }
+
+    #[inline]
+    pub fn validator_reward(&self) -> &HashMap<AccountId, Balance> {
+        match self {
+            Self::V1(v1) => &v1.validator_reward,
+            Self::V2(v2) => &v2.validator_reward,
+            Self::V3(v3) => &v3.validator_reward,
+            Self::V4(v4) => &v4.validator_reward,
+            Self::V5(v5) => &v5.validator_reward,
+        }
+    }
+
+    #[inline]
+    pub fn validators_iter(&self) -> ValidatorStakeIter<'_> {
+        match self {
+            Self::V1(v1) => ValidatorStakeIter::v1(&v1.validators),
+            Self::V2(v2) => ValidatorStakeIter::new(&v2.validators),
+            Self::V3(v3) => ValidatorStakeIter::new(&v3.validators),
+            Self::V4(v4) => ValidatorStakeIter::new(&v4.validators),
+            Self::V5(v5) => ValidatorStakeIter::new(&v5.validators),
+        }
+    }
+
+    #[inline]
+    pub fn validator_stake(&self, validator_id: u64) -> Balance {
+        match self {
+            Self::V1(v1) => v1.validators[validator_id as usize].stake,
+            Self::V2(v2) => v2.validators[validator_id as usize].stake(),
+            Self::V3(v3) => v3.validators[validator_id as usize].stake(),
+            Self::V4(v4) => v4.validators[validator_id as usize].stake(),
+            Self::V5(v5) => v5.validators[validator_id as usize].stake(),
+        }
+    }
+
+    #[inline]
+    pub fn validator_account_id(&self, validator_id: u64) -> &AccountId {
+        match self {
+            Self::V1(v1) => &v1.validators[validator_id as usize].account_id,
+            Self::V2(v2) => v2.validators[validator_id as usize].account_id(),
+            Self::V3(v3) => v3.validators[validator_id as usize].account_id(),
+            Self::V4(v4) => v4.validators[validator_id as usize].account_id(),
+            Self::V5(v5) => v5.validators[validator_id as usize].account_id(),
+        }
+    }
+
+    #[inline]
+    pub fn account_is_validator(&self, account_id: &AccountId) -> bool {
+        match self {
+            Self::V1(v1) => v1.validator_to_index.contains_key(account_id),
+            Self::V2(v2) => v2.validator_to_index.contains_key(account_id),
+            Self::V3(v3) => v3.validator_to_index.contains_key(account_id),
+            Self::V4(v4) => v4.validator_to_index.contains_key(account_id),
+            Self::V5(v5) => v5.validator_to_index.contains_key(account_id),
+        }
+    }
+
+    pub fn get_validator_id(&self, account_id: &AccountId) -> Option<&ValidatorId> {
+        match self {
+            Self::V1(v1) => v1.validator_to_index.get(account_id),
+            Self::V2(v2) => v2.validator_to_index.get(account_id),
+            Self::V3(v3) => v3.validator_to_index.get(account_id),
+            Self::V4(v4) => v4.validator_to_index.get(account_id),
+            Self::V5(v5) => v5.validator_to_index.get(account_id),
+        }
+    }
+
+    pub fn get_validator_by_account(&self, account_id: &AccountId) -> Option<ValidatorStake> {
+        match self {
+            Self::V1(v1) => v1.validator_to_index.get(account_id).map(|validator_id| {
+                ValidatorStake::V1(v1.validators[*validator_id as usize].clone())
+            }),
+            Self::V2(v2) => v2
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v2.validators[*validator_id as usize].clone()),
+            Self::V3(v3) => v3
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v3.validators[*validator_id as usize].clone()),
+            Self::V4(v4) => v4
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v4.validators[*validator_id as usize].clone()),
+            Self::V5(v5) => v5
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v5.validators[*validator_id as usize].clone()),
+        }
+    }
+
+    pub fn get_validator_stake(&self, account_id: &AccountId) -> Option<Balance> {
+        match self {
+            Self::V1(v1) => v1
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v1.validators[*validator_id as usize].stake),
+            Self::V2(v2) => v2
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v2.validators[*validator_id as usize].stake()),
+            Self::V3(v3) => v3
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v3.validators[*validator_id as usize].stake()),
+            Self::V4(v4) => v4
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v4.validators[*validator_id as usize].stake()),
+            Self::V5(v5) => v5
+                .validator_to_index
+                .get(account_id)
+                .map(|validator_id| v5.validators[*validator_id as usize].stake()),
+        }
+    }
+
+    #[inline]
+    pub fn get_validator(&self, validator_id: u64) -> ValidatorStake {
+        match self {
+            Self::V1(v1) => ValidatorStake::V1(v1.validators[validator_id as usize].clone()),
+            Self::V2(v2) => v2.validators[validator_id as usize].clone(),
+            Self::V3(v3) => v3.validators[validator_id as usize].clone(),
+            Self::V4(v4) => v4.validators[validator_id as usize].clone(),
+            Self::V5(v5) => v5.validators[validator_id as usize].clone(),
+        }
+    }
+
+    #[inline]
+    pub fn validators_len(&self) -> usize {
+        match self {
+            Self::V1(v1) => v1.validators.len(),
+            Self::V2(v2) => v2.validators.len(),
+            Self::V3(v3) => v3.validators.len(),
+            Self::V4(v4) => v4.validators.len(),
+            Self::V5(v5) => v5.validators.len(),
+        }
+    }
+
+    #[inline]
+    pub fn rng_seed(&self) -> RngSeed {
+        match self {
+            Self::V1(_) | Self::V2(_) => Default::default(),
+            Self::V3(v3) => v3.rng_seed,
+            Self::V4(v4) => v4.rng_seed,
+            Self::V5(v5) => v5.rng_seed,
+        }
+    }
+
+    #[inline]
+    pub fn validator_mandates(&self) -> ValidatorMandates {
+        match self {
+            Self::V1(_) | Self::V2(_) | Self::V3(_) => Default::default(),
+            Self::V4(v4) => v4.validator_mandates.clone(),
+            Self::V5(v5) => v5.validator_mandates.clone(),
+        }
+    }
+
+    pub fn sample_block_producer(&self, height: BlockHeight) -> ValidatorId {
+        match &self {
+            Self::V1(v1) => {
+                let bp_settlement = &v1.block_producers_settlement;
+                bp_settlement[(height % (bp_settlement.len() as u64)) as usize]
+            }
+            Self::V2(v2) => {
+                let bp_settlement = &v2.block_producers_settlement;
+                bp_settlement[(height % (bp_settlement.len() as u64)) as usize]
+            }
+            Self::V3(v3) => {
+                let seed = Self::block_produce_seed(height, &v3.rng_seed);
+                v3.block_producers_settlement[v3.block_producers_sampler.sample(seed)]
+            }
+            Self::V4(v4) => {
+                let seed = Self::block_produce_seed(height, &v4.rng_seed);
+                v4.block_producers_settlement[v4.block_producers_sampler.sample(seed)]
+            }
+            Self::V5(v5) => {
+                let seed = Self::block_produce_seed(height, &v5.rng_seed);
+                v5.block_producers_settlement[v5.block_producers_sampler.sample(seed)]
+            }
+        }
+    }
+
+    pub fn sample_chunk_producer(
+        &self,
+        shard_layout: &ShardLayout,
+        shard_id: ShardId,
+        height: BlockHeight,
+    ) -> Option<ValidatorId> {
+        let shard_index = shard_layout.get_shard_index(shard_id).ok()?;
+        match &self {
+            Self::V1(v1) => {
+                let cp_settlement = &v1.chunk_producers_settlement;
+                let shard_cps = cp_settlement.get(shard_index)?;
+                shard_cps.get((height as u64 % (shard_cps.len() as u64)) as usize).copied()
+            }
+            Self::V2(v2) => {
+                let cp_settlement = &v2.chunk_producers_settlement;
+                let shard_cps = cp_settlement.get(shard_index)?;
+                shard_cps.get((height as u64 % (shard_cps.len() as u64)) as usize).copied()
+            }
+            Self::V3(v3) => {
+                let seed = Self::chunk_produce_seed(&v3.rng_seed, height, shard_id);
+                let sample = v3.chunk_producers_sampler.get(shard_index)?.sample(seed);
+                v3.chunk_producers_settlement.get(shard_index)?.get(sample).copied()
+            }
+            Self::V4(v4) => {
+                let seed = Self::chunk_produce_seed(&v4.rng_seed, height, shard_id);
+                let sample = v4.chunk_producers_sampler.get(shard_index)?.sample(seed);
+                v4.chunk_producers_settlement.get(shard_index)?.get(sample).copied()
+            }
+            Self::V5(v5) => {
+                let seed = Self::chunk_produce_seed(&v5.rng_seed, height, shard_id);
+                let sample = v5.chunk_producers_sampler.get(shard_index)?.sample(seed);
+                v5.chunk_producers_settlement.get(shard_index)?.get(sample).copied()
+            }
+        }
+    }
+
+    /// Sample a chunk producer for (shard_id, height), excluding any validator in
+    /// `exclude`. Mirrors `sample_chunk_producer`, filtering the per-shard settlement
+    /// first. Returns None when every eligible producer is excluded (caller falls back
+    /// to `sample_chunk_producer`).
+    pub fn sample_chunk_producer_excluding(
+        &self,
+        shard_layout: &ShardLayout,
+        shard_id: ShardId,
+        height: BlockHeight,
+        exclude: &HashSet<ValidatorId>,
+    ) -> Option<ValidatorId> {
+        if exclude.is_empty() {
+            return self.sample_chunk_producer(shard_layout, shard_id, height);
+        }
+        let shard_index = shard_layout.get_shard_index(shard_id).ok()?;
+        match &self {
+            Self::V1(v1) => Self::sample_excluding_modulo(
+                v1.chunk_producers_settlement.get(shard_index)?,
+                exclude,
+                height,
+            ),
+            Self::V2(v2) => Self::sample_excluding_modulo(
+                v2.chunk_producers_settlement.get(shard_index)?,
+                exclude,
+                height,
+            ),
+            Self::V3(v3) => Self::sample_excluding_weighted(
+                v3.chunk_producers_settlement.get(shard_index)?,
+                exclude,
+                &v3.validators,
+                Self::chunk_produce_seed(&v3.rng_seed, height, shard_id),
+            ),
+            Self::V4(v4) => Self::sample_excluding_weighted(
+                v4.chunk_producers_settlement.get(shard_index)?,
+                exclude,
+                &v4.validators,
+                Self::chunk_produce_seed(&v4.rng_seed, height, shard_id),
+            ),
+            Self::V5(v5) => Self::sample_excluding_weighted(
+                v5.chunk_producers_settlement.get(shard_index)?,
+                exclude,
+                &v5.validators,
+                Self::chunk_produce_seed(&v5.rng_seed, height, shard_id),
+            ),
+        }
+    }
+
+    /// Filter `settlement` by `exclude`, then pick by `height` modulo (V1/V2 rule).
+    fn sample_excluding_modulo(
+        settlement: &[ValidatorId],
+        exclude: &HashSet<ValidatorId>,
+        height: BlockHeight,
+    ) -> Option<ValidatorId> {
+        let filtered: Vec<ValidatorId> =
+            settlement.iter().copied().filter(|id| !exclude.contains(id)).collect();
+        if filtered.is_empty() {
+            return None;
+        }
+        Some(filtered[(height % filtered.len() as u64) as usize])
+    }
+
+    /// Filter `settlement` by `exclude`, then pick via a fresh stake-weighted
+    /// distribution renormalized over the surviving producers (V3/V4/V5 rule).
+    fn sample_excluding_weighted(
+        settlement: &[ValidatorId],
+        exclude: &HashSet<ValidatorId>,
+        validators: &[ValidatorStake],
+        seed: [u8; 32],
+    ) -> Option<ValidatorId> {
+        let (filtered, stakes): (Vec<ValidatorId>, Vec<Balance>) = settlement
+            .iter()
+            .copied()
+            .filter(|id| !exclude.contains(id))
+            .filter_map(|id| validators.get(id as usize).map(|v| (id, v.stake())))
+            .unzip();
+        if filtered.is_empty() {
+            return None;
+        }
+        let sampler = StakeWeightedIndex::new(stakes);
+        Some(filtered[sampler.sample(seed)])
+    }
+
+    #[cfg(feature = "rand")]
+    pub fn sample_chunk_validators(
+        &self,
+        height: BlockHeight,
+    ) -> crate::validator_mandates::ChunkValidatorStakeAssignment {
+        // Chunk validator assignment was introduced with `V4`.
+        match &self {
+            Self::V1(_) | Self::V2(_) | Self::V3(_) => Default::default(),
+            Self::V4(v4) => {
+                let mut rng = Self::chunk_validate_rng(&v4.rng_seed, height);
+                v4.validator_mandates.sample(&mut rng)
+            }
+            Self::V5(v5) => {
+                let mut rng = Self::chunk_validate_rng(&v5.rng_seed, height);
+                v5.validator_mandates.sample(&mut rng)
+            }
+        }
+    }
+
+    pub fn shard_layout(&self) -> Option<&ShardLayout> {
+        match self {
+            Self::V5(v5) => Some(&v5.shard_layout),
+            _ => None,
+        }
+    }
+
+    /// Get the epoch height at which the most recent resharding occurred.
+    /// Returns `None` for pre-V5 `EpochInfo` or when no resharding has happened.
+    pub fn last_resharding(&self) -> Option<EpochHeight> {
+        match self {
+            Self::V1(_) | Self::V2(_) | Self::V3(_) | Self::V4(_) => None,
+            Self::V5(v5) => v5.last_resharding,
+        }
+    }
+
+    /// 32 bytes from epoch_seed, 8 bytes from height
+    fn block_produce_seed(height: BlockHeight, seed: &RngSeed) -> [u8; 32] {
+        let mut buffer = [0u8; 40];
+        buffer[0..32].copy_from_slice(seed);
+        buffer[32..40].copy_from_slice(&height.to_le_bytes());
+        hash(&buffer).0
+    }
+
+    fn chunk_produce_seed(seed: &RngSeed, height: BlockHeight, shard_id: ShardId) -> [u8; 32] {
+        // 32 bytes from epoch_seed, 8 bytes from height, 8 bytes from shard_id
+        let mut buffer = [0u8; 48];
+        buffer[0..32].copy_from_slice(seed);
+        buffer[32..40].copy_from_slice(&height.to_le_bytes());
+        buffer[40..48].copy_from_slice(&shard_id.to_le_bytes());
+        hash(&buffer).0
+    }
+}
+
+#[cfg(feature = "rand")]
+impl EpochInfo {
+    /// Returns a new RNG obtained from combining the provided `seed` and `height`.
+    ///
+    /// The returned RNG can be used to shuffle slices via [`rand::seq::SliceRandom`].
+    fn chunk_validate_rng(seed: &RngSeed, height: BlockHeight) -> rand_chacha::ChaCha20Rng {
+        // A deterministic seed is produces using the block height and the provided seed.
+        // This is important as all nodes need to agree on the set and order of chunk_validators
+        let mut buffer = [0u8; 40];
+        buffer[0..32].copy_from_slice(seed);
+        buffer[32..40].copy_from_slice(&height.to_le_bytes());
+
+        // The recommended seed for cryptographic RNG's is `[u8; 32]` and some required traits
+        // are not implemented for larger seeds, see
+        // https://docs.rs/rand_core/0.6.2/rand_core/trait.SeedableRng.html#associated-types
+        // Therefore `buffer` is hashed to obtain a `[u8; 32]`.
+        let seed = hash(&buffer);
+        rand::SeedableRng::from_seed(seed.0)
+    }
+
+    /// Returns a new RNG used for random chunk producer modifications
+    /// during shard assignments.
+    pub fn shard_assignment_rng(seed: &RngSeed) -> rand_chacha::ChaCha20Rng {
+        let mut buffer = [0u8; 62];
+        buffer[0..32].copy_from_slice(seed);
+        // Do this to avoid any possibility of colliding with any other rng.
+        buffer[32..62].copy_from_slice(b"shard_assignment_shuffling_rng");
+        let seed = hash(&buffer);
+        rand::SeedableRng::from_seed(seed.0)
+    }
+}
+
+/// Information per epoch.
+#[derive(
+    SmartDefault,
+    BorshSerialize,
+    BorshDeserialize,
+    Clone,
+    Debug,
+    PartialEq,
+    Eq,
+    serde::Serialize,
+    ProtocolSchema,
+)]
+pub struct EpochInfoV1 {
+    /// Ordinal of given epoch from genesis.
+    /// There can be multiple epochs with the same ordinal in case of long forks.
+    pub epoch_height: EpochHeight,
+    /// List of current validators.
+    pub validators: Vec<ValidatorStakeV1>,
+    /// Validator account id to index in proposals.
+    pub validator_to_index: HashMap<AccountId, ValidatorId>,
+    /// Settlement of validators responsible for block production.
+    pub block_producers_settlement: Vec<ValidatorId>,
+    /// Per each shard, settlement validators that are responsible.
+    pub chunk_producers_settlement: Vec<Vec<ValidatorId>>,
+    /// Settlement of hidden validators with weights used to determine how many shards they will validate.
+    pub hidden_validators_settlement: Vec<ValidatorWeight>,
+    /// List of current fishermen.
+    pub fishermen: Vec<ValidatorStakeV1>,
+    /// Fisherman account id to index of proposal.
+    pub fishermen_to_index: HashMap<AccountId, ValidatorId>,
+    /// New stake for validators.
+    pub stake_change: BTreeMap<AccountId, Balance>,
+    /// Validator reward for the epoch.
+    pub validator_reward: HashMap<AccountId, Balance>,
+    /// Validators who are kicked out in this epoch.
+    pub validator_kickout: HashMap<AccountId, ValidatorKickoutReason>,
+    /// Total minted tokens in the epoch.
+    pub minted_amount: Balance,
+    /// Seat price of this epoch.
+    pub seat_price: Balance,
+    /// Current protocol version during this epoch.
+    #[default(PROTOCOL_VERSION)]
+    pub protocol_version: ProtocolVersion,
+}
+
+#[cfg(test)]
+mod sample_excluding_tests {
+    use super::{EpochInfo, EpochInfoV1, EpochInfoV2, EpochInfoV3, EpochInfoV4, EpochInfoV5};
+    use crate::rand::StakeWeightedIndex;
+    use crate::shard_layout::ShardLayout;
+    use crate::types::validator_stake::ValidatorStake;
+    use crate::validator_mandates::ValidatorMandates;
+    use near_crypto::{KeyType, SecretKey};
+    use near_primitives_core::types::{Balance, BlockHeight, ShardId, ValidatorId};
+    use near_primitives_core::version::PROTOCOL_VERSION;
+    use std::collections::HashSet;
+
+    const SEED: [u8; 32] = [7; 32];
+
+    fn validators(stakes: &[u128]) -> Vec<ValidatorStake> {
+        stakes
+            .iter()
+            .enumerate()
+            .map(|(i, &s)| {
+                let account_id: crate::types::AccountId = format!("test{i}").parse().unwrap();
+                let public_key =
+                    SecretKey::from_seed(KeyType::ED25519, account_id.as_ref()).public_key();
+                ValidatorStake::new(account_id, public_key, Balance::from_yoctonear(s))
+            })
+            .collect()
+    }
+
+    /// Single-shard layout plus its shard id.
+    fn layout() -> (ShardLayout, ShardId) {
+        let layout = ShardLayout::single_shard();
+        let shard_id = layout.shard_ids().next().unwrap();
+        (layout, shard_id)
+    }
+
+    fn v1(settlement: Vec<ValidatorId>) -> EpochInfo {
+        EpochInfo::V1(EpochInfoV1 {
+            chunk_producers_settlement: vec![settlement],
+            ..Default::default()
+        })
+    }
+
+    fn v2(settlement: Vec<ValidatorId>) -> EpochInfo {
+        EpochInfo::V2(EpochInfoV2 {
+            chunk_producers_settlement: vec![settlement],
+            ..Default::default()
+        })
+    }
+
+    fn sampler(settlement: &[ValidatorId], vs: &[ValidatorStake]) -> StakeWeightedIndex {
+        StakeWeightedIndex::new(settlement.iter().map(|&id| vs[id as usize].stake()).collect())
+    }
+
+    fn v3(settlement: Vec<ValidatorId>, vs: Vec<ValidatorStake>) -> EpochInfo {
+        let cp_sampler = sampler(&settlement, &vs);
+        EpochInfo::V3(EpochInfoV3 {
+            validators: vs,
+            chunk_producers_settlement: vec![settlement],
+            rng_seed: SEED,
+            chunk_producers_sampler: vec![cp_sampler],
+            ..Default::default()
+        })
+    }
+
+    fn v4(settlement: Vec<ValidatorId>, vs: Vec<ValidatorStake>) -> EpochInfo {
+        let cp_sampler = sampler(&settlement, &vs);
+        EpochInfo::V4(EpochInfoV4 {
+            validators: vs,
+            chunk_producers_settlement: vec![settlement],
+            rng_seed: SEED,
+            chunk_producers_sampler: vec![cp_sampler],
+            ..Default::default()
+        })
+    }
+
+    fn v5(settlement: Vec<ValidatorId>, vs: Vec<ValidatorStake>) -> EpochInfo {
+        let cp_sampler = sampler(&settlement, &vs);
+        EpochInfo::V5(EpochInfoV5 {
+            epoch_height: 0,
+            validators: vs,
+            validator_to_index: Default::default(),
+            block_producers_settlement: vec![],
+            chunk_producers_settlement: vec![settlement],
+            stake_change: Default::default(),
+            validator_reward: Default::default(),
+            validator_kickout: Default::default(),
+            minted_amount: Balance::ZERO,
+            seat_price: Balance::ZERO,
+            protocol_version: PROTOCOL_VERSION,
+            shard_layout: ShardLayout::single_shard(),
+            last_resharding: None,
+            rng_seed: SEED,
+            block_producers_sampler: StakeWeightedIndex::default(),
+            chunk_producers_sampler: vec![cp_sampler],
+            validator_mandates: ValidatorMandates::default(),
+        })
+    }
+
+    /// For a two-producer settlement, excluding the default producer must yield the
+    /// single survivor (exact, seed-independent) across every EpochInfo variant.
+    #[test]
+    fn sample_chunk_producer_excluding_variants() {
+        let (sl, shard_id) = layout();
+        let height: BlockHeight = 1;
+        let stakes = [1_000_000u128, 3_000_000];
+        let vs = validators(&stakes);
+        let variants = [
+            v1(vec![0, 1]),
+            v2(vec![0, 1]),
+            v3(vec![0, 1], vs.clone()),
+            v4(vec![0, 1], vs.clone()),
+            v5(vec![0, 1], vs),
+        ];
+        for ei in variants {
+            let default = ei.sample_chunk_producer(&sl, shard_id, height).unwrap();
+            let exclude = HashSet::from([default]);
+            let survivor = if default == 0 { 1 } else { 0 };
+            assert_eq!(
+                ei.sample_chunk_producer_excluding(&sl, shard_id, height, &exclude),
+                Some(survivor),
+                "variant {ei:?} excluding default {default} should leave {survivor}",
+            );
+        }
+    }
+
+    /// Empty `exclude` must delegate to `sample_chunk_producer` (modulo + weighted).
+    #[test]
+    fn sample_chunk_producer_excluding_empty_delegates() {
+        let (sl, shard_id) = layout();
+        let vs = validators(&[1_000_000, 2_000_000, 3_000_000]);
+        let empty = HashSet::new();
+        for ei in [v2(vec![0, 1, 2]), v5(vec![0, 1, 2], vs)] {
+            for height in 0..10 {
+                assert_eq!(
+                    ei.sample_chunk_producer_excluding(&sl, shard_id, height, &empty),
+                    ei.sample_chunk_producer(&sl, shard_id, height),
+                );
+            }
+        }
+    }
+
+    /// Excluding every producer returns `None` (the caller's fallback signal).
+    #[test]
+    fn sample_chunk_producer_excluding_all_returns_none() {
+        let (sl, shard_id) = layout();
+        let vs = validators(&[1_000_000, 2_000_000]);
+        let exclude = HashSet::from([0, 1]);
+        for ei in [v1(vec![0, 1]), v5(vec![0, 1], vs)] {
+            assert_eq!(ei.sample_chunk_producer_excluding(&sl, shard_id, 3, &exclude), None);
+        }
+    }
+
+    /// Weighted path: deterministic across calls, and the survivor matches an
+    /// independently reconstructed renormalized distribution over the survivors.
+    #[test]
+    fn sample_chunk_producer_excluding_deterministic() {
+        let (sl, shard_id) = layout();
+        let stakes = [1_000_000u128, 2_000_000, 5_000_000];
+        let vs = validators(&stakes);
+        let ei = v5(vec![0, 1, 2], vs.clone());
+        let exclude = HashSet::from([0]);
+        let height: BlockHeight = 4;
+
+        let first = ei.sample_chunk_producer_excluding(&sl, shard_id, height, &exclude);
+        let second = ei.sample_chunk_producer_excluding(&sl, shard_id, height, &exclude);
+        assert_eq!(first, second);
+
+        // Independently rebuild the renormalized distribution over survivors [1, 2].
+        let survivors: Vec<ValidatorId> = vec![1, 2];
+        let survivor_stakes = survivors.iter().map(|&id| vs[id as usize].stake()).collect();
+        let expected_index = StakeWeightedIndex::new(survivor_stakes)
+            .sample(EpochInfo::chunk_produce_seed(&SEED, height, shard_id));
+        assert_eq!(first, Some(survivors[expected_index]));
+    }
+}

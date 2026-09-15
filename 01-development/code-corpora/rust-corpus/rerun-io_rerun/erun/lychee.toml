@@ -1,0 +1,253 @@
+################################################################################
+# Config for the link checker lychee.
+#
+# Download & learn more at:
+# https://github.com/lycheeverse/lychee
+#
+# Example config:
+# https://github.com/lycheeverse/lychee/blob/master/lychee.example.toml
+#
+# Run `lychee . --dump` to list all found links that are being checked.
+#
+# Note that by default lychee will only check markdown and html files,
+# to check any other files you have to point to them explicitly, e.g.:
+# `lychee **/*.rs`
+# To make things worse, `exclude_path` is ignored for these globs,
+# so local runs with lots of gitignored files will be slow.
+# (https://github.com/lycheeverse/lychee/issues/1405)
+#
+# This unfortunately doesn't list anything for non-glob checks.
+################################################################################
+
+# Maximum number of concurrent link checks.
+# Workaround for "too many open files" error on MacOS, see https://github.com/lycheeverse/lychee/issues/1248
+max_concurrency = 96
+
+# Check links inside `<code>` and `<pre>` blocks as well as Markdown code blocks.
+include_verbatim = true
+
+# Proceed for server connections considered insecure (invalid TLS).
+insecure = true
+
+# Maximum number of allowed retries before a link is declared dead.
+max_retries = 4
+
+# Wait time between attempts in seconds.
+retry_wait_time = 2
+
+# Comma-separated list of accepted status codes for valid links.
+accept = [
+  "100..=103", # Informational codes.
+  "200..=299", # Success codes.
+  "429", # Too many requests. This is practically never a sign of a broken link.
+  "403", # A lot of endpoints always return 403 for the link checker
+]
+
+# Exclude these filesystem paths from getting checked.
+exclude_path = [
+  # Unfortunately lychee doesn't yet read .gitignore https://github.com/lycheeverse/lychee/issues/1331
+  # The following entries are there because of that:
+  "__pycache__",
+  "_deps/",
+  ".git",
+  ".pixi",
+  "build",
+  "docs/python/",
+  "rerun_cpp/_deps",
+  "rerun_cpp/docs/html",
+  "rerun_cpp/docs/xml",
+  "rerun_cpp/src/rerun/third_party/",
+  "rerun_cpp/tmp/",
+  "rerun_js/node_modules/",
+  "rerun_notebook/node_modules/",
+  "rerun_py/site/",
+  "target_ra",
+  "target_wasm",
+  "target",
+  "venv",
+
+  # Generated ghat action definitions (contain upstream URLs we don't control)
+  ".github/ghat/actions",
+
+  # Actually ignored files beyond .gitignore
+  "lychee.toml", # Contains regex patterns with URL-like strings that aren't actual links.
+  "crates/store/re_uri/src/lib.rs", # Contains some malformed URLs, but they are not actual links.
+  "crates/store/re_uri/src/redap_uri.rs", # Same as above.
+  "crates/store/re_grpc_server/src/lib.rs", # Contains CORS tests with fake origin URLs
+  "crates/utils/re_analytics/src/event.rs", # Contains test with malformed urls
+  "crates/utils/re_perf_telemetry/src/telemetry.rs", # Contains `parse_rerun_endpoint` docs/tests with fake `rerun://host…` URLs
+  "crates/viewer/re_viewer/src/reflection/mod.rs", # Checker struggles how links from examples are escaped here. They are all checked elsewhere, so not an issue.
+  "docs/content/changelog/upcoming", # Transient per-PR changeset entries; their relative links resolve from changelog/ once merged at release, and the merged changeset is link-checked then.
+  "docs/snippets/INDEX.md", # The snippet index is guaranteed should be correct by design.
+  "scripts/lint.py", # Contains url-matching regexes that aren't actual urls
+  "scripts/screenshot_compare/assets/templates/",
+  ".typos.toml",
+]
+# Exclude URLs and mail addresses from checking (supports regex).
+exclude = [
+  # Skip speculative links.
+  #
+  # Append `?speculative-link` to a link that is correct but not live yet,
+  # e.g. a rerun.io/docs page added by the same PR, or an API reference for an
+  # unreleased type. The release process strips these markers again,
+  # see the "Clean up documentation links" step in `RELEASES.md`.
+  '.*?speculative-link',
+
+  # Strings with replacements.
+  '/__VIEWER_VERSION__/', # Replacement variable __VIEWER_VERSION__.
+  '/\$', # Replacement variable $.
+  '\$pr_number', # Shell variable in release workflow.
+  '\$$', # URL ending in `$`: stripped template variable (e.g. `${{ inputs.X }}`).
+  '/GIT_HASH/', # Replacement variable GIT_HASH.
+  '\{\}', # Ignore links with string interpolation.
+  '\$relpath\^', # Relative paths as used by rerun_cpp's doc header.
+  '%7B.+%7D', # Ignore strings that look like ready to use links but contain a replacement strings. The URL escaping is for '{.+}' (this seems to be needed for html embedded urls since lychee assumes they use this encoding).
+  '%7B%7D', # Ignore links with string interpolation, escaped variant.
+
+  # Ignore storage-node example links
+  'rerun:/.*',
+
+  # Local links that require further setup.
+  '/examples', # Relative link to our examples gallery.
+  'http://0.0.0.0',
+  'http://127.0.0.1',
+  'http://127.0.0.2',
+  'http://localhost',
+  're_viewer.js', # Build artifact that html is linking to.
+  'recording:/', # rrd recording link.
+  'ws:/',
+
+  # API endpoints.
+  'https://fonts.googleapis.com/', # Font API entrypoint, not a link.
+  'https://fonts.gstatic.com/', # Font API entrypoint, not a link.
+  'https://tel.rerun.io/', # Analytics endpoint.
+  'https://docs-assets.developer.apple.com/ml-research/datasets/arkitscenes/v1', # Used by arkit_scenes.
+  'https://overpass-api.de/api/interpreter', # Used by openstreetmap_data example
+
+  # Avoid rate limiting.
+  'https://crates.io/crates/w\+', # Avoid crates.io rate-limiting
+  'https://github.com/rerun-io/rerun/commit/\.*', # Ignore links to our own commits (typically in changelog).
+  'https://github.com/rerun-io/rerun/pull/\.*', # Ignore links to our own pull requests (typically in changelog).
+  'https://github.com/rerun-io/rerun/issues/\.*', # Ignore links to our own issues.
+
+  # Intentionally faked links.
+  'https?://(rerun|example)\.invalid/.*', # URL-rendering tests in re_ui notifications.
+  'mailto:help@example\.invalid', # URL-rendering tests in re_ui notifications.
+  '^https://github/$',
+  'file:///does/not/exist.rrd',
+  'file:///path/to/file',
+  'file:///tmp/droidnano/Fri_Aug_18_09:46:43_2023.rrd',
+  'file://cors.json', # AWS CLI `--cors-configuration file://…` syntax in docs/content/hub/bucket-cors.md, not a real link.
+  'file://foo',
+  'file://path/to/file.rrd',
+  'file://somehost/file/path.rrd',
+  'http://foo.*',
+  'http://x/',
+  'https://foo.*',
+  'https://github\.com/rerun-io/rerun/n',
+  'https://link.to',
+  'https://private-user-images\.githubusercontent\.com/demo\.mp4\?x=1&y=2',
+  'https://rerun.rs',
+  'https://private-user-images.githubusercontent.com/123/456/demo.mp4.*',
+  'https://static.rerun.io/demo.mp4',
+  'https://static.rerun.io/my_screenshot/',
+  'https://static/',
+  'https://static\.rerun\.io/abc_github-01234567\.mp4',
+  'https://static\.rerun\.io/commented\.mp4',
+  'https://static\.rerun\.io/demo\.mp4',
+  'https://static\.rerun\.io/demo\.mp4/n',
+  'https://static\.rerun\.io/example\.mp4',
+  'https://static\.rerun\.io/hash_demo\.mp4',
+  'https://user-images/',
+  'https://x/',
+  'https://your-hosted-asset-url.com/re_viewer_bg.wasm',
+  'https://your-hosted-asset-url.com/widget.js',
+  'rerun://localhost:51234/recording/some-recording-id',
+
+  'https://customer.cloud.rerun.io/.*',
+  'https://redap.rerun.io',
+  'http://wrong-scheme',
+  'rerun\+http://localhost:\{grpc_port\}/proxy',
+  '.*scheme:/.*',
+  'http(s)?://example.com/.*',
+  'file:///uri1.rrd',
+  'file:///uri2.rrd',
+  'file:///recordings/data.rrd', # Example URL in the url-pill tests.
+
+  # Fake URLs in the `extract_standalone_url` tests in `re_ui`'s `ui_layout.rs`.
+  'file:///tmp/recording\.rrd',
+  'h2c://example\.com/path',
+  '^https://exam/$', # Lychee truncates the test string `https://exam\tple.com` at the tab.
+
+  # Link fragments and data links in examples.
+  'https://raw.githubusercontent.com/googlefonts/noto-emoji/', # URL fragment.
+  'https://static.rerun.io/rgbd_dataset', # Base data link for rgbd dataset.
+  'https://storage.googleapis.com/', # Storage API entrypoint, not a link.
+  'https://ref\.rerun\.io/prose/?$', # GCS bucket prefix, no directory index.
+  'https://build\.rerun\.io/mirror/mozilla/sccache/?$', # GCS bucket prefix, no directory index.
+
+  # Not accessible from CI.
+  '.github/workflows/.*.yml', # GitHub action workflows cause issues on CI.
+  'https://9p.io/sys/doc/lexnames.html', # Works locally but on CI we get: `Failed: Network error: error:0A000152:SSL routines:final_renegotiate:unsafe legacy renegotiation disabled:ssl/statem/extensions.c:946:`
+  'https://claude.site/artifacts/*', # Giving a 500, but only from CI
+  'https://fifteen-thirtyeight.rerun.io/script.js', # Gives 403 forbidden on CI.
+  'https://github.com/user-attachments/assets/.*', # Gives Not Found on CI, but works locally.
+  'https://git.sr.ht/*', # Bot protection returns 418 I'm a teapot on CI.
+  'https://lib.rs/*', # Gives 403 forbidden on CI.
+  'https://math.stackexchange.com/*', # Gives 403 forbidden on CI.
+  'https://pixabay.com/photos/brother-sister-girl-family-boy-977170/', # Gives 403 forbidden on CI.
+  'https://stackoverflow.com/*', # Stackoverflow links are no longer accessible from CI.
+  'https://vimeo.com/*', # Gives 403 forbidden on CI.
+  'https://vimeo/', # Malformed URL extracted from code doing startsWith checks.
+  'https://player.vimeo.com/*', # Gives 403 forbidden on CI.
+  'https://www.youtube-nocookie.com/*', # Gives 403 forbidden on CI.
+  'https://www.npmjs.com/*', # Gives 403 forbidden on CI.
+  'https://www.reddit.com/*', # Gives 403 forbidden on CI.
+  'https://www.shadertoy.com/*', # 403 on CI
+  'https://www.tensorflow.org/*', # tensorflow.org apparently blocks CI.
+  'https://www.unicode.org/license.txt', # Gives network error on CI.
+  'https://www\.image-engineering\.de/library/technotes/714-color-spaces-rec-709-vs-srgb', # Two consecutive CI runs had their connections reset by the server.
+
+  # `CHANGELOG.md` links to a release's changeset page, which only goes live with the docs deploy
+  # that follows the release — so the newest links 404 until then.
+  'https://rerun.io/docs/changelog/changeset-.*',
+
+  # Need GitHub login.
+  'https://github.com/rerun-io/landing',
+  'https://github.com/rerun-io/documentation',
+  'https://github.com/rerun-io/dataplatform',
+
+  # Needs authentication
+  'https://.*\.eks\.amazonaws\.com/', # EKS API server endpoints in CI workflows.
+  'https://.*\.blob\.core\.windows\.net/', # Azure blob storage, requires auth.
+  'https://rerun\.grafana\.net/api/datasources/.*', # Grafana API endpoints, requires auth.
+  'https://ms-b22605aed932-7275.fra.meilisearch.io',
+  'https://eu.posthog.com/project/', # Requires to be logged in on PostHog.
+  'https://github.com/rerun-io/internal-test-assets/\.*',
+  'https://github.com/google/mediapipe/issues/5188', # For some reason that link has always failed.
+  'https://www.figma.com/.*',
+
+  'https://stilearning.com/*', # License header URL, site unreachable from CI.
+
+  # Temporarily down or not accessible.
+  'https://dl.acm.org/doi/10.1145/3638550.3643617', # We might be getting rate-limited here.
+  'https://forum.doom9.org/.*',
+  'https://github.com/rerun-io/rerun/releases/download/prerelease', # Pre-release downloads may go down while a pre-release updates or pre-release CI partially breaks.
+  'https://wiki.ros.org/.*', # Constant timeouts.
+  'https://www.doxygen.nl/.*', # Getting 403, but the links work.
+
+  # Works but is really slow at times:
+  'https://anaconda.org/conda-forge/libarrow',
+  'https://cvg.cit.tum.de/data/datasets/visual-inertial-dataset',
+  'https://openaccess.thecvf.com/content/CVPR2023/html/Du_Learning_To_Render_Novel_Views_From_Wide-Baseline_Stereo_Pairs_CVPR_2023_paper.html',
+  'https://picsum.photos/*',
+
+  # These are APIs:
+  'https://api.linear.app/graphql',
+  'https://api.rootly.com/.*',
+  'https://api.workos.com/.*',
+  'https://rerun.io/api',
+  'https://rerun.io/login',
+
+  # '^file:///',                                  # Ignore local file links. They need to be tested, but it's useful for external links we have to ping.
+]

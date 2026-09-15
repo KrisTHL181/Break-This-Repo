@@ -1,0 +1,54 @@
+mod argument;
+mod arithmetic;
+mod buffer;
+mod builtin;
+mod either;
+mod fspath;
+mod getargs;
+mod getset;
+pub(crate) mod method;
+mod number;
+mod protocol;
+mod time;
+
+pub use argument::{
+    ArgumentError, Callee, FromArgOptional, FromArgs, FuncArgs, IntoFuncArgs, KwArgs, KwArgsMap,
+    OptionalArg, OptionalOption, PosArgs,
+};
+pub(crate) use argument::{arity_message, unexpected_keyword_message};
+pub use arithmetic::{PyArithmeticValue, PyComparisonValue};
+pub use buffer::{
+    ArgAsciiBuffer, ArgBytesLike, ArgContiguousBytesLike, ArgMemoryBuffer, ArgStrOrBytesLike,
+};
+pub use builtin::{IntoPyNativeFn, PyNativeFn, static_func, static_raw_func};
+pub use either::Either;
+pub use fspath::FsPath;
+pub(crate) use getargs::ArgSpec;
+pub use getset::PySetterValue;
+pub(super) use getset::{IntoPyGetterFunc, IntoPySetterFunc, PyGetterFunc, PySetterFunc};
+pub use method::{HeapMethodDef, PyMethodDef, PyMethodFlags};
+pub use number::{ArgIndex, ArgIntoBool, ArgIntoComplex, ArgIntoFloat, ArgPrimitiveIndex, ArgSize};
+pub use protocol::{ArgCallable, ArgIterable, ArgMapping, ArgSequence};
+pub use time::TimeoutSeconds;
+
+use crate::{PyObject, PyResult, VirtualMachine, builtins::PyStr, convert::TryFromBorrowedObject};
+use builtin::{BorrowedParam, OwnedParam, RefParam};
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum ArgByteOrder {
+    Big,
+    Little,
+}
+
+impl<'a> TryFromBorrowedObject<'a> for ArgByteOrder {
+    fn try_from_borrowed_object(vm: &VirtualMachine, obj: &'a PyObject) -> PyResult<Self> {
+        obj.try_value_with(
+            |s: &PyStr| match s.as_bytes() {
+                b"big" => Ok(Self::Big),
+                b"little" => Ok(Self::Little),
+                _ => Err(vm.new_value_error("byteorder must be either 'little' or 'big'")),
+            },
+            vm,
+        )
+    }
+}

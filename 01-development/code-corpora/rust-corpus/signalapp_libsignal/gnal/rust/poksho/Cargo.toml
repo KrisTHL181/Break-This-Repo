@@ -1,0 +1,31 @@
+#
+# Copyright 2020-2022 Signal Messenger, LLC.
+# SPDX-License-Identifier: AGPL-3.0-only
+#
+
+[package]
+name = "poksho"
+version = "0.7.0"
+authors.workspace = true
+license.workspace = true
+edition = "2024"
+rust-version = "1.88"
+
+[lints]
+workspace = true
+
+[dependencies]
+curve25519-dalek = { workspace = true }
+hmac = { workspace = true }
+sha2 = { workspace = true }
+
+[dev-dependencies]
+hex = { workspace = true }
+
+# For benchmarking
+criterion = { workspace = true }
+rand = { workspace = true }
+
+[[bench]]
+name = "sho"
+harness = false

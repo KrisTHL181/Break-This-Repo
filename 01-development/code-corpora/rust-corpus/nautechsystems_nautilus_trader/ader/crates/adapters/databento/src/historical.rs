@@ -1,0 +1,1273 @@
+// -------------------------------------------------------------------------------------------------
+//  Copyright (C) 2015-2026 Nautech Systems Pty Ltd. All rights reserved.
+//  https://nautechsystems.io
+//
+//  Licensed under the GNU Lesser General Public License Version 3.0 (the "License");
+//  You may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at https://www.gnu.org/licenses/lgpl-3.0.en.html
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+// -------------------------------------------------------------------------------------------------
+
+//! Core Databento historical client for both Rust and Python usage.
+
+use std::{fmt::Debug, fs, num::NonZeroU64, path::PathBuf, str::FromStr, sync::Arc};
+
+use ahash::AHashMap;
+use databento::{
+    dbn::{self, decode::DbnMetadata},
+    historical::timeseries::GetRangeParams,
+};
+use indexmap::IndexMap;
+use nautilus_core::{AtomicMap, UnixNanos, consts::NAUTILUS_USER_AGENT, time::AtomicTime};
+use nautilus_model::{
+    data::{Bar, Data, InstrumentStatus, OrderBookDelta, OrderBookDepth10, QuoteTick, TradeTick},
+    enums::BarAggregation,
+    identifiers::{InstrumentId, Symbol, Venue},
+    instruments::{Instrument, InstrumentAny},
+};
+
+use crate::{
+    common::{Credential, get_date_time_range},
+    decode::{
+        MboDeltaBuffer, decode_imbalance_msg, decode_instrument_def_msg, decode_mbo_msg,
+        decode_mbp10_msg, decode_record, decode_statistics_msg, decode_status_msg,
+        is_supported_stat_type,
+    },
+    symbology::{
+        MetadataCache, check_consistent_symbology, decode_nautilus_instrument_id,
+        infer_symbology_type,
+    },
+    types::{DatabentoImbalance, DatabentoPublisher, DatabentoStatistics, PublisherId},
+};
+
+/// Core Databento historical client for fetching historical market data.
+///
+/// This client provides both synchronous and asynchronous interfaces for fetching
+/// various types of historical market data from Databento.
+#[derive(Clone)]
+pub struct DatabentoHistoricalClient {
+    credential: Credential,
+    clock: &'static AtomicTime,
+    inner: Arc<databento::HistoricalClient>,
+    publisher_venue_map: Arc<IndexMap<PublisherId, Venue>>,
+    symbol_venue_map: Arc<AtomicMap<Symbol, Venue>>,
+    price_precisions: Arc<AtomicMap<Symbol, u8>>,
+    use_exchange_as_venue: bool,
+}
+
+/// Parameters for range queries to Databento historical API.
+#[derive(Debug)]
+pub struct RangeQueryParams {
+    pub dataset: String,
+    pub symbols: Vec<String>,
+    pub start: UnixNanos,
+    pub end: Option<UnixNanos>,
+    pub limit: Option<u64>,
+    pub price_precision: Option<u8>,
+}
+
+/// Result containing dataset date range information.
+#[derive(Debug, Clone)]
+pub struct DatasetRange {
+    pub start: String,
+    pub end: String,
+}
+
+impl Debug for DatabentoHistoricalClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct(stringify!(DatabentoHistoricalClient))
+            .field("credential", &self.credential)
+            .finish()
+    }
+}
+
+impl DatabentoHistoricalClient {
+    /// Returns the API key from the stored credential.
+    #[must_use]
+    pub fn api_key(&self) -> &str {
+        self.credential.api_key()
+    }
+
+    /// Creates a new [`DatabentoHistoricalClient`] instance.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if client creation or publisher loading fails.
+    pub fn new(
+        credential: Credential,
+        publishers_filepath: PathBuf,
+        clock: &'static AtomicTime,
+        use_exchange_as_venue: bool,
+    ) -> anyhow::Result<Self> {
+        let client = databento::HistoricalClient::builder()
+            .user_agent_extension(NAUTILUS_USER_AGENT.into())
+            .key(credential.api_key())
+            .map_err(|e| anyhow::anyhow!("Failed to create client builder: {e}"))?
+            .build()
+            .map_err(|e| anyhow::anyhow!("Failed to build client: {e}"))?;
+
+        Self::from_client(
+            credential,
+            publishers_filepath,
+            clock,
+            use_exchange_as_venue,
+            client,
+        )
+    }
+
+    /// Creates a new [`DatabentoHistoricalClient`] instance with a custom API base URL.
+    ///
+    /// This is intended for tests, benchmarks, and controlled deployments that route
+    /// Databento Historical API requests through a proxy.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if client creation, URL parsing, or publisher loading fails.
+    pub fn new_with_base_url(
+        credential: Credential,
+        publishers_filepath: PathBuf,
+        clock: &'static AtomicTime,
+        use_exchange_as_venue: bool,
+        base_url: &str,
+    ) -> anyhow::Result<Self> {
+        let client = databento::HistoricalClient::builder()
+            .user_agent_extension(NAUTILUS_USER_AGENT.into())
+            .base_url(base_url.parse().map_err(|e| {
+                anyhow::anyhow!("Failed to parse Databento Historical API base URL: {e}")
+            })?)
+            .key(credential.api_key())
+            .map_err(|e| anyhow::anyhow!("Failed to create client builder: {e}"))?
+            .build()
+            .map_err(|e| anyhow::anyhow!("Failed to build client: {e}"))?;
+
+        Self::from_client(
+            credential,
+            publishers_filepath,
+            clock,
+            use_exchange_as_venue,
+            client,
+        )
+    }
+
+    fn from_client(
+        credential: Credential,
+        publishers_filepath: PathBuf,
+        clock: &'static AtomicTime,
+        use_exchange_as_venue: bool,
+        client: databento::HistoricalClient,
+    ) -> anyhow::Result<Self> {
+        let file_content = fs::read_to_string(publishers_filepath)?;
+        let publishers_vec: Vec<DatabentoPublisher> = serde_json::from_str(&file_content)?;
+
+        let publisher_venue_map = publishers_vec
+            .into_iter()
+            .map(|p| (p.publisher_id, Venue::from(p.venue.as_str())))
+            .collect::<IndexMap<u16, Venue>>();
+
+        Ok(Self {
+            clock,
+            inner: Arc::new(client),
+            publisher_venue_map: Arc::new(publisher_venue_map),
+            symbol_venue_map: Arc::new(AtomicMap::new()),
+            price_precisions: Arc::new(AtomicMap::new()),
+            credential,
+            use_exchange_as_venue,
+        })
+    }
+
+    /// Caches a `price_precision` for the given `symbol`.
+    ///
+    /// When market data is fetched without an explicit `price_precision`, the
+    /// client resolves precision per record from this cache. Instruments
+    /// returned by [`Self::get_range_instruments`] are inserted automatically.
+    pub fn set_price_precision(&self, symbol: Symbol, price_precision: u8) {
+        self.price_precisions.insert(symbol, price_precision);
+    }
+
+    /// Returns a cached `price_precision` for the given `symbol`.
+    #[must_use]
+    pub fn price_precision(&self, symbol: Symbol) -> Option<u8> {
+        self.price_precisions.load().get(&symbol).copied()
+    }
+
+    /// Resolves a price precision for the given `instrument_id`.
+    ///
+    /// Resolution order:
+    /// 1. The explicit `price_precision` argument (if `Some`).
+    /// 2. The cached precision for the instrument's symbol.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error when no precision is available.
+    fn resolve_price_precision(
+        &self,
+        instrument_id: &InstrumentId,
+        price_precision: Option<u8>,
+    ) -> anyhow::Result<u8> {
+        if let Some(precision) = price_precision {
+            return Ok(precision);
+        }
+
+        let precisions = self.price_precisions.load();
+        precisions
+            .get(&instrument_id.symbol)
+            .copied()
+            .ok_or_else(|| {
+                anyhow::anyhow!(
+                    "Could not resolve `price_precision` for {instrument_id}: \
+                     pass `price_precision` explicitly, call `set_price_precision`, \
+                     or fetch the instrument definitions first via `get_range_instruments`"
+                )
+            })
+    }
+
+    fn resolve_cached_price_precision(
+        &self,
+        instrument_id: &InstrumentId,
+        price_precision: Option<u8>,
+        precision_cache: &mut AHashMap<InstrumentId, u8>,
+    ) -> anyhow::Result<u8> {
+        if let Some(precision) = price_precision {
+            return Ok(precision);
+        }
+
+        if let Some(precision) = precision_cache.get(instrument_id) {
+            return Ok(*precision);
+        }
+
+        let precision = self.resolve_price_precision(instrument_id, None)?;
+        precision_cache.insert(*instrument_id, precision);
+        Ok(precision)
+    }
+
+    /// Gets the date range for a specific dataset.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request fails.
+    pub async fn get_dataset_range(&self, dataset: &str) -> anyhow::Result<DatasetRange> {
+        let mut client = (*self.inner).clone();
+        let response = client
+            .metadata()
+            .get_dataset_range(dataset)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get dataset range: {e}"))?;
+
+        Ok(DatasetRange {
+            start: response.start.to_string(),
+            end: response.end.to_string(),
+        })
+    }
+
+    /// Fetches instrument definitions for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_instruments(
+        &self,
+        params: RangeQueryParams,
+    ) -> anyhow::Result<Vec<InstrumentAny>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn::Schema::Definition)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut instruments = Vec::new();
+
+        while let Some(msg) = decoder.decode_record::<dbn::InstrumentDefMsg>().await? {
+            let record = dbn::RecordRef::from(msg);
+            let sym_map = self.symbol_venue_map.load();
+            let mut instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+
+            if self.use_exchange_as_venue && instrument_id.venue == Venue::GLBX() {
+                let exchange = msg
+                    .exchange()
+                    .map_err(|e| anyhow::anyhow!("Missing exchange in record: {e}"))?;
+                let venue = Venue::from_code(exchange)
+                    .map_err(|e| anyhow::anyhow!("Venue not found for exchange {exchange}: {e}"))?;
+                instrument_id.venue = venue;
+            }
+
+            match decode_instrument_def_msg(msg, instrument_id, None, None) {
+                Ok(Some(instrument)) => instruments.push(instrument),
+                Ok(None) => {} // Decoder logged a warning for the unsupported class
+                Err(e) => anyhow::bail!("Failed to decode instrument {instrument_id}: {e}"),
+            }
+        }
+
+        for instrument in &instruments {
+            self.price_precisions
+                .insert(instrument.id().symbol, instrument.price_precision());
+        }
+
+        Ok(instruments)
+    }
+
+    /// Fetches quote ticks for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_quotes(
+        &self,
+        params: RangeQueryParams,
+        schema: Option<String>,
+    ) -> anyhow::Result<Vec<QuoteTick>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+        let schema = schema.unwrap_or_else(|| "mbp-1".to_string());
+        let dbn_schema = dbn::Schema::from_str(&schema)?;
+
+        match dbn_schema {
+            dbn::Schema::Mbp1
+            | dbn::Schema::Tbbo
+            | dbn::Schema::Bbo1S
+            | dbn::Schema::Bbo1M
+            | dbn::Schema::Cmbp1
+            | dbn::Schema::Tcbbo
+            | dbn::Schema::Cbbo1S
+            | dbn::Schema::Cbbo1M => (),
+            _ => anyhow::bail!(
+                "Invalid schema. Must be one of: mbp-1, tbbo, bbo-1s, bbo-1m, cmbp-1, tcbbo, cbbo-1s, cbbo-1m"
+            ),
+        }
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn_schema)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let price_precision_arg = params.price_precision;
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut precision_cache = AHashMap::new();
+        let mut result: Vec<QuoteTick> = Vec::new();
+
+        let mut process_record = |record: dbn::RecordRef| -> anyhow::Result<()> {
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+            let price_precision = self.resolve_cached_price_precision(
+                &instrument_id,
+                price_precision_arg,
+                &mut precision_cache,
+            )?;
+
+            let (data, _) = decode_record(
+                &record,
+                instrument_id,
+                price_precision,
+                None,
+                false, // Don't include trades
+                true,
+            )?;
+
+            match data {
+                Some(Data::Quote(quote)) => result.push(quote),
+                None => {} // Skip records with undefined bid/ask prices
+                _ => anyhow::bail!("Invalid data element not `QuoteTick`, was {data:?}"),
+            }
+            Ok(())
+        };
+
+        match dbn_schema {
+            dbn::Schema::Mbp1 => {
+                while let Some(msg) = decoder.decode_record::<dbn::Mbp1Msg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Tbbo => {
+                while let Some(msg) = decoder.decode_record::<dbn::TbboMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Cmbp1 => {
+                while let Some(msg) = decoder.decode_record::<dbn::Cmbp1Msg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Tcbbo => {
+                while let Some(msg) = decoder.decode_record::<dbn::TcbboMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Bbo1M => {
+                while let Some(msg) = decoder.decode_record::<dbn::Bbo1MMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Bbo1S => {
+                while let Some(msg) = decoder.decode_record::<dbn::Bbo1SMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Cbbo1S | dbn::Schema::Cbbo1M => {
+                while let Some(msg) = decoder.decode_record::<dbn::CbboMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            _ => anyhow::bail!("Invalid schema {dbn_schema}"),
+        }
+
+        Ok(result)
+    }
+
+    /// Fetches order book depth10 snapshots for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_order_book_depth10(
+        &self,
+        params: RangeQueryParams,
+        depth: Option<usize>,
+    ) -> anyhow::Result<Vec<OrderBookDepth10>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+
+        // For now, only support MBP_10 schema for depth 10
+        let _depth = depth.unwrap_or(10);
+        if _depth != 10 {
+            anyhow::bail!("Only depth=10 is currently supported for order book depths");
+        }
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn::Schema::Mbp10)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let price_precision_arg = params.price_precision;
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut precision_cache = AHashMap::new();
+        let mut result: Vec<OrderBookDepth10> = Vec::new();
+
+        let mut process_record = |record: dbn::RecordRef| -> anyhow::Result<()> {
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+            let price_precision = self.resolve_cached_price_precision(
+                &instrument_id,
+                price_precision_arg,
+                &mut precision_cache,
+            )?;
+
+            if let Some(msg) = record.get::<dbn::Mbp10Msg>() {
+                let depth = decode_mbp10_msg(msg, instrument_id, price_precision, None)?;
+                result.push(depth);
+            }
+
+            Ok(())
+        };
+
+        while let Some(msg) = decoder.decode_record::<dbn::Mbp10Msg>().await? {
+            process_record(dbn::RecordRef::from(msg))?;
+        }
+
+        Ok(result)
+    }
+
+    /// Fetches order book deltas for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_order_book_deltas(
+        &self,
+        params: RangeQueryParams,
+    ) -> anyhow::Result<Vec<OrderBookDelta>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn::Schema::Mbo)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let price_precision_arg = params.price_precision;
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut precision_cache = AHashMap::new();
+        let mut result: Vec<OrderBookDelta> = Vec::new();
+        let mut delta_buffer = MboDeltaBuffer::default();
+
+        let mut process_record = |record: dbn::RecordRef| -> anyhow::Result<()> {
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+            let price_precision = self.resolve_cached_price_precision(
+                &instrument_id,
+                price_precision_arg,
+                &mut precision_cache,
+            )?;
+
+            if let Some(msg) = record.get::<dbn::MboMsg>() {
+                let (delta, _trade) =
+                    decode_mbo_msg(msg, instrument_id, price_precision, None, false)?;
+                delta_buffer.push(msg, instrument_id, delta);
+                while let Some(delta) = delta_buffer.pop_ready() {
+                    result.push(delta);
+                }
+            }
+
+            Ok(())
+        };
+
+        while let Some(msg) = decoder.decode_record::<dbn::MboMsg>().await? {
+            process_record(dbn::RecordRef::from(msg))?;
+        }
+
+        delta_buffer.finish();
+        while let Some(delta) = delta_buffer.pop_ready() {
+            result.push(delta);
+        }
+
+        Ok(result)
+    }
+
+    /// Fetches trade ticks for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_trades(
+        &self,
+        params: RangeQueryParams,
+        schema: Option<String>,
+    ) -> anyhow::Result<Vec<TradeTick>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+        let schema = schema.unwrap_or_else(|| "trades".to_string());
+        let dbn_schema = dbn::Schema::from_str(&schema)?;
+
+        match dbn_schema {
+            dbn::Schema::Trades
+            | dbn::Schema::Tbbo
+            | dbn::Schema::Tcbbo
+            | dbn::Schema::Mbp1
+            | dbn::Schema::Cmbp1 => (),
+            _ => {
+                anyhow::bail!("Invalid schema. Must be one of: trades, tbbo, tcbbo, mbp-1, cmbp-1")
+            }
+        }
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn_schema)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let price_precision_arg = params.price_precision;
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut precision_cache = AHashMap::new();
+        let mut result: Vec<TradeTick> = Vec::new();
+
+        let mut process_record = |record: dbn::RecordRef| -> anyhow::Result<()> {
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+            let price_precision = self.resolve_cached_price_precision(
+                &instrument_id,
+                price_precision_arg,
+                &mut precision_cache,
+            )?;
+
+            let (data, data2) =
+                decode_record(&record, instrument_id, price_precision, None, true, true)?;
+
+            match (data, data2) {
+                (Some(Data::Trade(trade)), _) | (_, Some(Data::Trade(trade))) => result.push(trade),
+                (Some(_) | None, None) => {}
+                (None, Some(data)) => {
+                    anyhow::bail!("Invalid data element not `TradeTick`, was {data:?}")
+                }
+                (Some(data), Some(_)) => {
+                    anyhow::bail!("Invalid data element not `TradeTick`, was {data:?}")
+                }
+            }
+            Ok(())
+        };
+
+        match dbn_schema {
+            dbn::Schema::Trades => {
+                while let Some(msg) = decoder.decode_record::<dbn::TradeMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Mbp1 => {
+                while let Some(msg) = decoder.decode_record::<dbn::Mbp1Msg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Tbbo => {
+                while let Some(msg) = decoder.decode_record::<dbn::TbboMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Cmbp1 => {
+                while let Some(msg) = decoder.decode_record::<dbn::Cmbp1Msg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            dbn::Schema::Tcbbo => {
+                while let Some(msg) = decoder.decode_record::<dbn::TcbboMsg>().await? {
+                    process_record(dbn::RecordRef::from(msg))?;
+                }
+            }
+            _ => anyhow::bail!("Invalid schema {dbn_schema}"),
+        }
+
+        Ok(result)
+    }
+
+    /// Fetches bars for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_bars(
+        &self,
+        params: RangeQueryParams,
+        aggregation: BarAggregation,
+        timestamp_on_close: bool,
+    ) -> anyhow::Result<Vec<Bar>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let schema = match aggregation {
+            BarAggregation::Second => dbn::Schema::Ohlcv1S,
+            BarAggregation::Minute => dbn::Schema::Ohlcv1M,
+            BarAggregation::Hour => dbn::Schema::Ohlcv1H,
+            BarAggregation::Day => dbn::Schema::Ohlcv1D,
+            _ => anyhow::bail!("Invalid `BarAggregation` for request, was {aggregation}"),
+        };
+
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(schema)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let price_precision_arg = params.price_precision;
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut precision_cache = AHashMap::new();
+        let mut result: Vec<Bar> = Vec::new();
+
+        while let Some(msg) = decoder.decode_record::<dbn::OhlcvMsg>().await? {
+            let record = dbn::RecordRef::from(msg);
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+            let price_precision = self.resolve_cached_price_precision(
+                &instrument_id,
+                price_precision_arg,
+                &mut precision_cache,
+            )?;
+
+            let (data, _) = decode_record(
+                &record,
+                instrument_id,
+                price_precision,
+                None,
+                false, // Not applicable
+                timestamp_on_close,
+            )?;
+
+            match data {
+                Some(Data::Bar(bar)) => {
+                    result.push(bar);
+                }
+                _ => anyhow::bail!("Invalid data element not `Bar`, was {data:?}"),
+            }
+        }
+
+        Ok(result)
+    }
+
+    /// Fetches imbalance data for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_imbalance(
+        &self,
+        params: RangeQueryParams,
+    ) -> anyhow::Result<Vec<DatabentoImbalance>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn::Schema::Imbalance)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let price_precision_arg = params.price_precision;
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut precision_cache = AHashMap::new();
+        let mut result: Vec<DatabentoImbalance> = Vec::new();
+
+        while let Some(msg) = decoder.decode_record::<dbn::ImbalanceMsg>().await? {
+            let record = dbn::RecordRef::from(msg);
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+            let price_precision = self.resolve_cached_price_precision(
+                &instrument_id,
+                price_precision_arg,
+                &mut precision_cache,
+            )?;
+
+            let imbalance = decode_imbalance_msg(msg, instrument_id, price_precision, None)?;
+            result.push(imbalance);
+        }
+
+        Ok(result)
+    }
+
+    /// Fetches statistics data for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_statistics(
+        &self,
+        params: RangeQueryParams,
+    ) -> anyhow::Result<Vec<DatabentoStatistics>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn::Schema::Statistics)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let price_precision_arg = params.price_precision;
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut precision_cache = AHashMap::new();
+        let mut result: Vec<DatabentoStatistics> = Vec::new();
+
+        while let Some(msg) = decoder.decode_record::<dbn::StatMsg>().await? {
+            // Precheck before precision resolution so unmodeled types skip cleanly
+            if !is_supported_stat_type(msg.stat_type) {
+                log::warn!("Skipping unsupported `stat_type` {}", msg.stat_type);
+                continue;
+            }
+
+            let record = dbn::RecordRef::from(msg);
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+            let price_precision = self.resolve_cached_price_precision(
+                &instrument_id,
+                price_precision_arg,
+                &mut precision_cache,
+            )?;
+
+            if let Some(statistics) =
+                decode_statistics_msg(msg, instrument_id, price_precision, None)?
+            {
+                result.push(statistics);
+            }
+        }
+
+        Ok(result)
+    }
+
+    /// Fetches status data for the given parameters.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if the API request or data processing fails.
+    pub async fn get_range_status(
+        &self,
+        params: RangeQueryParams,
+    ) -> anyhow::Result<Vec<InstrumentStatus>> {
+        let symbols: Vec<&str> = params.symbols.iter().map(String::as_str).collect();
+        check_consistent_symbology(&symbols)?;
+
+        let first_symbol = params
+            .symbols
+            .first()
+            .ok_or_else(|| anyhow::anyhow!("No symbols provided"))?;
+        let stype_in = infer_symbology_type(first_symbol);
+        let end = params.end.unwrap_or_else(|| self.clock.get_time_ns());
+        let time_range = get_date_time_range(params.start, end)?;
+
+        let range_params = GetRangeParams::builder()
+            .dataset(params.dataset)
+            .date_time_range(time_range)
+            .symbols(symbols)
+            .stype_in(stype_in)
+            .schema(dbn::Schema::Status)
+            .maybe_limit(params.limit.and_then(NonZeroU64::new))
+            .build();
+
+        let mut client = (*self.inner).clone();
+        let mut decoder = client
+            .timeseries()
+            .get_range(&range_params)
+            .await
+            .map_err(|e| anyhow::anyhow!("Failed to get range: {e}"))?;
+
+        let metadata = decoder.metadata().clone();
+        let mut metadata_cache = MetadataCache::new(metadata);
+        let mut result: Vec<InstrumentStatus> = Vec::new();
+
+        while let Some(msg) = decoder.decode_record::<dbn::StatusMsg>().await? {
+            let record = dbn::RecordRef::from(msg);
+            let sym_map = self.symbol_venue_map.load();
+            let instrument_id = decode_nautilus_instrument_id(
+                &record,
+                &mut metadata_cache,
+                &self.publisher_venue_map,
+                &sym_map,
+            )?;
+
+            let status = decode_status_msg(msg, instrument_id, None)?;
+            result.push(status);
+        }
+
+        Ok(result)
+    }
+
+    /// Prepares symbols from instrument IDs.
+    pub fn prepare_symbols_from_instrument_ids(
+        &self,
+        instrument_ids: &[InstrumentId],
+    ) -> Vec<String> {
+        self.symbol_venue_map.rcu(|m| {
+            for id in instrument_ids {
+                m.entry(id.symbol).or_insert(id.venue);
+            }
+        });
+
+        instrument_ids
+            .iter()
+            .map(|id| id.symbol.to_string())
+            .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::ffi::c_char;
+
+    use databento::dbn::{MappingInterval, SymbolMapping, encode::EncodeRecord};
+    use nautilus_core::time::get_atomic_clock_realtime;
+    use rstest::{fixture, rstest};
+    use time::macros::date;
+    use tokio::{
+        io::{AsyncReadExt, AsyncWriteExt},
+        net::TcpListener,
+    };
+
+    use super::*;
+
+    fn test_api_key() -> String {
+        "test-000000000000000000000000000".to_string()
+    }
+
+    fn publishers_path() -> PathBuf {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("publishers.json")
+    }
+
+    fn mbo_record(action: c_char, flags: u8, sequence: u32) -> dbn::MboMsg {
+        let ts_event = 1_609_160_400_000_000_000;
+        dbn::MboMsg {
+            hd: dbn::RecordHeader::new::<dbn::MboMsg>(dbn::rtype::MBO, 1, 1, ts_event),
+            order_id: u64::from(sequence),
+            price: 4_800_250_000_000,
+            size: 2,
+            flags: dbn::FlagSet::new(flags),
+            channel_id: 1,
+            action,
+            side: 'A' as c_char,
+            ts_recv: ts_event,
+            ts_in_delta: 0,
+            sequence,
+        }
+    }
+
+    fn encode_mbo_response(records: &[dbn::MboMsg]) -> Vec<u8> {
+        let metadata = dbn::Metadata::builder()
+            .dataset("GLBX.MDP3")
+            .schema(Some(dbn::Schema::Mbo))
+            .start(1_609_160_400_000_000_000)
+            .stype_in(Some(dbn::SType::RawSymbol))
+            .stype_out(dbn::SType::InstrumentId)
+            .symbols(vec!["ESM4".to_string()])
+            .mappings(vec![SymbolMapping {
+                raw_symbol: "ESM4".to_string(),
+                intervals: vec![MappingInterval {
+                    start_date: date!(2020 - 12 - 28),
+                    end_date: date!(2020 - 12 - 29),
+                    symbol: "1".to_string(),
+                }],
+            }])
+            .build();
+        let mut body = Vec::new();
+        {
+            let mut encoder = dbn::encode::dbn::Encoder::with_zstd(&mut body, &metadata).unwrap();
+            encoder.encode_records(records).unwrap();
+            encoder.flush().unwrap();
+        }
+        body
+    }
+
+    async fn serve_response(listener: TcpListener, body: Vec<u8>) {
+        let (mut stream, _) = listener.accept().await.unwrap();
+        let mut request = Vec::new();
+        let mut buffer = [0_u8; 1024];
+        loop {
+            let read = stream.read(&mut buffer).await.unwrap();
+            if read == 0 {
+                break;
+            }
+            request.extend_from_slice(&buffer[..read]);
+            if request.windows(4).any(|window| window == b"\r\n\r\n") {
+                break;
+            }
+        }
+
+        let headers = format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+            body.len(),
+        );
+        stream.write_all(headers.as_bytes()).await.unwrap();
+        stream.write_all(&body).await.unwrap();
+        stream.shutdown().await.unwrap();
+    }
+
+    #[fixture]
+    fn historical_client() -> DatabentoHistoricalClient {
+        DatabentoHistoricalClient::new(
+            Credential::new(test_api_key()),
+            publishers_path(),
+            get_atomic_clock_realtime(),
+            false,
+        )
+        .unwrap()
+    }
+
+    #[rstest]
+    fn test_new_with_base_url_rejects_invalid_url() {
+        let err = DatabentoHistoricalClient::new_with_base_url(
+            Credential::new(test_api_key()),
+            publishers_path(),
+            get_atomic_clock_realtime(),
+            false,
+            "://invalid",
+        )
+        .expect_err("expected invalid base URL to fail");
+        let err_msg = format!("{err}");
+
+        assert!(
+            err_msg.contains("Failed to parse Databento Historical API base URL"),
+            "unexpected error message: {err_msg}",
+        );
+    }
+
+    #[rstest]
+    #[tokio::test]
+    async fn test_get_range_order_book_deltas_preserves_boundaries_and_drains_end() {
+        let last = dbn::flags::LAST;
+        let body = encode_mbo_response(&[
+            mbo_record('C' as c_char, 0, 1),
+            mbo_record('N' as c_char, last, 2),
+            mbo_record('C' as c_char, 0, 3),
+        ]);
+        let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let base_url = format!("http://{}/", listener.local_addr().unwrap());
+        let server = tokio::spawn(serve_response(listener, body));
+        let client = DatabentoHistoricalClient::new_with_base_url(
+            Credential::new(test_api_key()),
+            publishers_path(),
+            get_atomic_clock_realtime(),
+            false,
+            &base_url,
+        )
+        .unwrap();
+
+        let deltas = client
+            .get_range_order_book_deltas(RangeQueryParams {
+                dataset: "GLBX.MDP3".to_string(),
+                symbols: vec!["ESM4".to_string()],
+                start: 1_609_160_000_000_000_000.into(),
+                end: Some(1_609_161_000_000_000_000.into()),
+                limit: None,
+                price_precision: Some(2),
+            })
+            .await
+            .unwrap();
+        server.await.unwrap();
+
+        assert_eq!(deltas.len(), 2);
+        assert_eq!(deltas[0].instrument_id, InstrumentId::from("ESM4.GLBX"));
+        assert_eq!(deltas[0].order.order_id, 1);
+        assert_eq!(deltas[0].flags, last);
+        assert_eq!(deltas[0].sequence, 1);
+        assert_eq!(deltas[1].instrument_id, InstrumentId::from("ESM4.GLBX"));
+        assert_eq!(deltas[1].order.order_id, 3);
+        assert_eq!(deltas[1].flags, 0);
+        assert_eq!(deltas[1].sequence, 3);
+    }
+
+    #[rstest]
+    fn test_set_price_precision_inserts_into_cache(historical_client: DatabentoHistoricalClient) {
+        let symbol = Symbol::from("ESM4");
+
+        assert_eq!(historical_client.price_precision(symbol), None);
+
+        historical_client.set_price_precision(symbol, 2);
+
+        assert_eq!(historical_client.price_precision(symbol), Some(2));
+    }
+
+    #[rstest]
+    fn test_resolve_price_precision_explicit_arg(historical_client: DatabentoHistoricalClient) {
+        let instrument_id = InstrumentId::from("ESM4.GLBX");
+        // Seed a deliberately wrong cache value so we know the explicit arg wins
+        historical_client.set_price_precision(Symbol::from("ESM4"), 9);
+
+        let precision = historical_client
+            .resolve_price_precision(&instrument_id, Some(2))
+            .unwrap();
+        assert_eq!(precision, 2);
+    }
+
+    #[rstest]
+    fn test_resolve_price_precision_cache_hit(historical_client: DatabentoHistoricalClient) {
+        let instrument_id = InstrumentId::from("ESM4.GLBX");
+        historical_client.set_price_precision(Symbol::from("ESM4"), 2);
+
+        let precision = historical_client
+            .resolve_price_precision(&instrument_id, None)
+            .unwrap();
+        assert_eq!(precision, 2);
+    }
+
+    #[rstest]
+    fn test_resolve_price_precision_cache_miss_errors(
+        historical_client: DatabentoHistoricalClient,
+    ) {
+        let instrument_id = InstrumentId::from("ESM4.GLBX");
+
+        let err = historical_client
+            .resolve_price_precision(&instrument_id, None)
+            .expect_err("expected cache-miss error");
+        let err_msg = format!("{err}");
+        assert!(
+            err_msg.contains("Could not resolve `price_precision`"),
+            "unexpected error message: {err_msg}",
+        );
+        assert!(
+            err_msg.contains("ESM4.GLBX"),
+            "error should name the instrument: {err_msg}",
+        );
+    }
+}

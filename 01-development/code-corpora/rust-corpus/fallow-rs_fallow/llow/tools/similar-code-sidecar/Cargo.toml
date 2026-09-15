@@ -1,0 +1,45 @@
+[workspace]
+
+[package]
+name = "fallow-similar-code-sidecar"
+version = "3.25.0"
+edition = "2024"
+rust-version = "1.92"
+license = "MIT"
+publish = false
+description = "Local JinaBERT embedding sidecar for Fallow similar-code analysis"
+repository = "https://github.com/fallow-rs/fallow"
+
+[[bin]]
+name = "fallow-similar-code"
+path = "src/main.rs"
+
+[dependencies]
+candle = { package = "candle-core", version = "=0.11.0" }
+candle-nn = "=0.11.0"
+candle-transformers = "=0.11.0"
+clap = { version = "=4.6.6", features = ["derive"] }
+serde = { version = "=1.0.228", features = ["derive"] }
+serde_json = "=1.0.151"
+sha2 = "=0.11.0"
+tokenizers = { version = "=0.22.2", default-features = false, features = ["fancy-regex"] }
+ureq = { version = "=3.4.0", default-features = false, features = ["rustls"] }
+
+[dev-dependencies]
+tempfile = "=3.27.0"
+
+[build-dependencies]
+serde_json = "=1.0.151"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "warn"
+expect_used = "warn"
+dbg_macro = "warn"
+todo = "warn"
+
+[lints.rust]
+unsafe_code = "warn"
+unsafe_op_in_unsafe_fn = "warn"
+unused_unsafe = "warn"

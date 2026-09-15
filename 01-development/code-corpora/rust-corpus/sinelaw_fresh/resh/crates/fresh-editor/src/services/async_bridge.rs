@@ -1,0 +1,928 @@
+//! Async Bridge: Communication between async Tokio runtime and sync main loop
+//!
+//! This module implements the hybrid architecture described in TOKIO_ANALYSIS.md:
+//! - Tokio runtime handles I/O tasks (LSP, file watching, git, etc.)
+//! - Main UI loop stays synchronous (rendering, input, buffer manipulation)
+//! - std::sync::mpsc channels bridge the two worlds
+//!
+//! Philosophy:
+//! - I/O should be async (LSP, filesystem, network)
+//! - Computation should be sync (editing, rendering)
+//! - Main loop remains responsive and simple
+
+use crate::view::file_tree::{FileTreeView, NodeId};
+use lsp_types::{
+    CodeActionOrCommand, CompletionItem, Diagnostic, FoldingRange, InlayHint, Location,
+    SemanticTokensFullDeltaResult, SemanticTokensRangeResult, SemanticTokensResult, SignatureHelp,
+};
+use serde_json::Value;
+use std::sync::mpsc;
+
+/// Semantic token responses grouped by request type.
+#[derive(Debug)]
+pub enum LspSemanticTokensResponse {
+    Full(Result<Option<SemanticTokensResult>, String>),
+    FullDelta(Result<Option<SemanticTokensFullDeltaResult>, String>),
+    Range(Result<Option<SemanticTokensRangeResult>, String>),
+}
+
+/// How a completed remote attach is installed.
+pub enum RemoteAttachMode {
+    /// Global: replace the editor's single authority and restart the whole
+    /// editor around the remote backend (the original `setAuthority`-style
+    /// destructive transition). Every window becomes remote.
+    Restart,
+    /// Born-attached: spawn a *new window* whose authority is the remote
+    /// backend, leaving existing (local / other-remote) windows untouched.
+    /// The session coexists warm beside them; switching windows retargets the
+    /// active authority (see `set_active_window` / Gap A). `command` is the
+    /// optional agent argv for the window's seed terminal.
+    Window {
+        label: String,
+        command: Option<Vec<String>>,
+    },
+    /// Reconnect an **existing dormant** session: a remote session restored
+    /// from disk (its backend spec known, but its live authority still the
+    /// local placeholder) whose user just switched to it. Re-point *that
+    /// window's* authority at the freshly-connected backend and park the
+    /// keepalive — no new window, no editor restart.
+    Reconnect { window_id: fresh_core::WindowId },
+}
+
+/// A completed remote-agent attach: the assembled authority plus the
+/// keepalive that must outlive it. Carried back from the async connect
+/// task to the main loop, which installs it per `mode`. Manual `Debug`
+/// because the fields are not `Debug`.
+pub struct RemoteAttachReady {
+    pub authority: crate::services::authority::Authority,
+    pub keepalive: Box<dyn std::any::Any + Send>,
+    /// Pod-side root to re-open the editor at (the remote workspace, e.g.
+    /// `/workspace`). Without this the editor keeps the *local* working
+    /// directory after attach, so the explorer / quick-open / open-file all
+    /// look at a host path that doesn't exist in the pod. `None` falls back to
+    /// the remote home directory.
+    pub working_dir: Option<std::path::PathBuf>,
+    /// Restart (global) vs. born-attached new window.
+    pub mode: RemoteAttachMode,
+    /// Declarative spec for *how to reconnect* this backend — stored on the
+    /// session so a restart / relaunch can bring it back (dormant) and
+    /// reconnect it, rather than degrading it to local.
+    pub spec: crate::services::authority::SessionAuthoritySpec,
+    /// JS callback id of the `attachRemoteAgent` promise to settle once the
+    /// session (authority + window) is fully constructed. The main loop
+    /// resolves it on success and rejects it if window creation fails, so the
+    /// plugin's dialog only closes when there is a real session to show.
+    pub request_id: u64,
+}
+
+impl std::fmt::Debug for RemoteAttachReady {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("RemoteAttachReady")
+            .field("label", &self.authority.display_label)
+            .finish_non_exhaustive()
+    }
+}
+
+/// Messages sent from async tasks to the synchronous main loop
+#[derive(Debug)]
+pub enum AsyncMessage {
+    /// An async `attachRemoteAgent` connect succeeded — install the
+    /// authority + keepalive and restart.
+    RemoteAttachReady(RemoteAttachReady),
+
+    /// A remote agent channel's transport was silently hot-swapped back in by
+    /// the background reconnect task (`spawn_reconnect_task`). Carries the
+    /// channel's stable id (`AgentChannel::id`); the editor maps it to the
+    /// owning window and reattaches — respawning the embedded terminals that
+    /// died with the dropped carrier. This is the event-driven counterpart to
+    /// the app-level `RemoteAttachMode::Reconnect` rebuild path.
+    RemoteReconnected { connection_id: u64 },
+
+    /// Content for a remote session's placeholder buffer, read off the editor
+    /// loop (see `Window::pending_content_load`). The main loop installs it into
+    /// `window_id`'s `buffer_id`, replacing the empty placeholder — or logs and
+    /// drops it on read error. Keeps remote workspace restore from freezing the
+    /// UI: the buffers appear instantly (empty) and fill in as this arrives.
+    RemoteBufferContentLoaded {
+        window_id: fresh_core::WindowId,
+        buffer_id: fresh_core::BufferId,
+        content: Result<Vec<u8>, String>,
+    },
+
+    /// An async `attachRemoteAgent` connect failed — reject the plugin's
+    /// promise with `error` (the plugin shows it and creates no window); the
+    /// editor stays on its current authority. `reconnect_window` is `Some(id)`
+    /// only when the failed connect was a *dive-triggered reconnect* of an
+    /// existing dormant session (`RemoteAttachMode::Reconnect`); the handler
+    /// records the error on that window so the status-bar remote indicator can
+    /// show `FailedAttach` for it. `None` for born-attached / restart attaches,
+    /// whose failure the launching plugin surfaces via the rejected promise.
+    RemoteAttachFailed {
+        error: String,
+        request_id: u64,
+        reconnect_window: Option<fresh_core::WindowId>,
+    },
+
+    /// LSP diagnostics received for a file
+    LspDiagnostics {
+        uri: String,
+        diagnostics: Vec<Diagnostic>,
+        /// Name of the server that sent these diagnostics (for per-server tracking)
+        server_name: String,
+    },
+
+    /// LSP server initialized successfully
+    LspInitialized {
+        language: String,
+        /// Name of the specific server (for per-server capability tracking)
+        server_name: String,
+        /// Capabilities reported by this server
+        capabilities: crate::services::lsp::manager::ServerCapabilitySummary,
+    },
+
+    /// A request to an initialized LSP server expired without a reply.
+    ///
+    /// Emitted per timeout so the editor can tell the user that the
+    /// server is not answering, rather than leaving the status bar on
+    /// "ready" while features silently do nothing (issue #2197).
+    LspRequestTimeout {
+        language: String,
+        server_name: String,
+        /// The LSP method that timed out, e.g. `textDocument/hover`.
+        method: String,
+        /// How long the request waited before being cancelled.
+        timeout: std::time::Duration,
+        /// Timeouts on this server since its last answered request.
+        consecutive: u32,
+    },
+
+    /// LSP server crashed or failed
+    LspError {
+        language: String,
+        error: String,
+        /// Path to the stderr log file for this LSP session
+        stderr_log_path: Option<std::path::PathBuf>,
+    },
+
+    /// LSP completion response
+    LspCompletion {
+        request_id: u64,
+        items: Vec<CompletionItem>,
+    },
+
+    /// LSP go-to-definition response
+    LspGotoDefinition {
+        request_id: u64,
+        locations: Vec<Location>,
+    },
+
+    /// LSP go-to-implementation response
+    LspImplementation {
+        request_id: u64,
+        locations: Vec<Location>,
+    },
+
+    /// LSP rename response
+    LspRename {
+        request_id: u64,
+        result: Result<lsp_types::WorkspaceEdit, String>,
+    },
+
+    /// LSP hover response
+    LspHover {
+        request_id: u64,
+        /// Hover contents as a single string (joined if multiple parts)
+        contents: String,
+        /// Whether the content is markdown (true) or plaintext (false)
+        is_markdown: bool,
+        /// Optional range of the symbol that was hovered over (LSP line/character positions)
+        /// Used to highlight the hovered symbol
+        range: Option<((u32, u32), (u32, u32))>,
+    },
+
+    /// LSP find references response
+    LspReferences {
+        request_id: u64,
+        locations: Vec<Location>,
+    },
+
+    /// LSP signature help response
+    LspSignatureHelp {
+        request_id: u64,
+        signature_help: Option<SignatureHelp>,
+    },
+
+    /// LSP code actions response
+    LspCodeActions {
+        request_id: u64,
+        actions: Vec<CodeActionOrCommand>,
+    },
+
+    /// LSP completionItem/resolve response
+    LspCompletionResolved {
+        request_id: u64,
+        item: Result<lsp_types::CompletionItem, String>,
+    },
+
+    /// LSP textDocument/formatting response
+    LspFormatting {
+        request_id: u64,
+        uri: String,
+        edits: Vec<lsp_types::TextEdit>,
+    },
+
+    /// LSP textDocument/prepareRename response
+    LspPrepareRename {
+        request_id: u64,
+        result: Result<serde_json::Value, String>,
+    },
+
+    /// LSP pulled diagnostics response (textDocument/diagnostic)
+    LspPulledDiagnostics {
+        request_id: u64,
+        uri: String,
+        /// Name of the server that produced this pull report. Pull
+        /// diagnostics are tracked per-server (several servers can
+        /// pull-serve the same URI), so the response must say who it
+        /// came from.
+        server_name: String,
+        /// New result_id for incremental updates (None if server doesn't support)
+        result_id: Option<String>,
+        /// Diagnostics (empty if unchanged)
+        diagnostics: Vec<Diagnostic>,
+        /// True if diagnostics haven't changed since previous_result_id
+        unchanged: bool,
+    },
+
+    /// LSP inlay hints response (textDocument/inlayHint)
+    LspInlayHints {
+        request_id: u64,
+        uri: String,
+        /// Inlay hints for the requested range
+        hints: Vec<InlayHint>,
+    },
+
+    /// LSP folding ranges response (textDocument/foldingRange)
+    LspFoldingRanges {
+        request_id: u64,
+        uri: String,
+        ranges: Vec<FoldingRange>,
+    },
+
+    /// LSP semantic tokens response (full, full/delta, or range)
+    LspSemanticTokens {
+        request_id: u64,
+        uri: String,
+        response: LspSemanticTokensResponse,
+    },
+
+    /// LSP server status became quiescent (project fully loaded)
+    /// This is a rust-analyzer specific notification (experimental/serverStatus)
+    LspServerQuiescent { language: String },
+
+    /// LSP server requests diagnostic refresh (workspace/diagnostic/refresh)
+    /// Client should re-pull diagnostics for all open documents
+    LspDiagnosticRefresh { language: String },
+
+    /// LSP server requests an inlay-hint refresh (workspace/inlayHint/refresh).
+    /// Client should re-pull inlay hints for all open documents — used when the
+    /// server learns more later (e.g. a change in file A alters inferred types
+    /// in file B, which the user never edited so was never otherwise re-pulled).
+    LspInlayHintRefresh { language: String },
+
+    /// LSP server requests a semantic-tokens refresh
+    /// (workspace/semanticTokens/refresh). Client should re-pull semantic
+    /// tokens for all open documents.
+    LspSemanticTokensRefresh { language: String },
+
+    /// LSP server registered (`client/registerCapability`) or unregistered
+    /// (`client/unregisterCapability`) one or more capabilities dynamically.
+    /// Many servers advertise little or nothing statically in their
+    /// `initialize` result and instead register providers afterwards, so these
+    /// must update the stored `ServerCapabilities` or the features stay gated
+    /// off for the whole session. `register == false` means unregister.
+    /// Each entry is `(method, register_options)`.
+    LspDynamicCapabilities {
+        language: String,
+        server_name: String,
+        register: bool,
+        registrations: Vec<(String, Option<Value>)>,
+    },
+
+    /// File changed externally (future: file watching)
+    FileChanged { path: String },
+
+    /// Git status updated (future: git integration)
+    GitStatusChanged { status: String },
+
+    /// File explorer initialized with tree view. Carries the id of the window
+    /// that requested it: a background preview/materialize can init a
+    /// *non-active* window's explorer, so the view must land on that window —
+    /// applying it to whatever is active would clobber an unrelated explorer.
+    FileExplorerInitialized {
+        window: fresh_core::WindowId,
+        view: FileTreeView,
+    },
+
+    /// Initial file-explorer build failed for the requesting window. Carries
+    /// the window id (see `FileExplorerInitialized`) so the column reservation
+    /// taken in `init_file_explorer` is released on the right window.
+    FileExplorerInitFailed { window: fresh_core::WindowId },
+
+    /// File explorer node toggle completed
+    FileExplorerToggleNode(NodeId),
+
+    /// File explorer node refresh completed
+    FileExplorerRefreshNode(NodeId),
+
+    /// File explorer expand to path completed. Carries the requesting window id
+    /// (see `FileExplorerInitialized`) so the expanded view returns to its own
+    /// window rather than the active one.
+    FileExplorerExpandedToPath {
+        window: fresh_core::WindowId,
+        view: FileTreeView,
+    },
+
+    /// Plugin-related async messages
+    Plugin(fresh_core::api::PluginAsyncMessage),
+
+    /// File open dialog: directory listing completed
+    FileOpenDirectoryLoaded(std::io::Result<Vec<crate::services::fs::DirEntry>>),
+
+    /// File open dialog: async shortcuts (Windows drive letters) loaded
+    FileOpenShortcutsLoaded(Vec<crate::app::file_open::NavigationShortcut>),
+
+    /// Terminal output received (triggers redraw). Tagged with the
+    /// owning window: terminal ids are only unique within a window, so a
+    /// bare id can't be attributed to a session without guessing.
+    TerminalOutput {
+        terminal: fresh_core::WindowTerminalId,
+    },
+
+    /// Result of an asynchronous system-clipboard read. The main loop
+    /// blocks input dispatch while a paste is in flight; the matching
+    /// `request_id` ensures a late result that arrived after the
+    /// timeout fallback fired is discarded as stale. `text` is `None`
+    /// when the read errored, returned empty, or was cancelled by the
+    /// deadline.
+    ClipboardPasteResult {
+        request_id: u64,
+        text: Option<String>,
+    },
+
+    /// File watcher delivered an event for a path under a
+    /// `WatchPath`-registered watcher. Routed to the
+    /// `path_changed` plugin hook by the main loop.
+    PathChanged {
+        /// Watch handle the event came from (matches the value
+        /// returned by `WatchPath`).
+        handle: u64,
+        path: std::path::PathBuf,
+        /// Conservative bucketing of `notify::EventKind`.
+        kind: PathChangeKind,
+    },
+
+    /// Terminal process exited.
+    ///
+    /// `exit_code` is `None` when the editor cannot determine a status
+    /// (the wait happens in a separate thread, signal exits, kill
+    /// before wait, etc.). Populated end-to-end is a follow-up; the
+    /// initial wiring sends `None` so plugin handlers see the variant
+    /// shape that matches `HookArgs::TerminalExited`.
+    TerminalExited {
+        terminal: fresh_core::WindowTerminalId,
+        exit_code: Option<i32>,
+    },
+
+    /// LSP progress notification ($/progress)
+    LspProgress {
+        language: String,
+        token: String,
+        value: LspProgressValue,
+    },
+
+    /// LSP window message (window/showMessage)
+    LspWindowMessage {
+        language: String,
+        message_type: LspMessageType,
+        message: String,
+    },
+
+    /// LSP log message (window/logMessage)
+    LspLogMessage {
+        language: String,
+        message_type: LspMessageType,
+        message: String,
+    },
+
+    /// LSP workspace/applyEdit (server -> client request)
+    /// Server asks client to apply a workspace edit (during executeCommand, etc.)
+    LspApplyEdit {
+        edit: lsp_types::WorkspaceEdit,
+        label: Option<String>,
+    },
+
+    /// LSP codeAction/resolve response
+    LspCodeActionResolved {
+        request_id: u64,
+        action: Result<lsp_types::CodeAction, String>,
+    },
+
+    /// LSP server request (server -> client)
+    /// Used for custom/extension methods that plugins can handle
+    LspServerRequest {
+        language: String,
+        server_command: String,
+        method: String,
+        params: Option<Value>,
+    },
+
+    /// Response for a plugin-initiated LSP request
+    PluginLspResponse {
+        language: String,
+        request_id: u64,
+        result: Result<Value, String>,
+    },
+
+    /// Plugin process completed with output
+    PluginProcessOutput {
+        /// Unique ID for this process (to match with callback)
+        process_id: u64,
+        /// Standard output
+        stdout: String,
+        /// Standard error
+        stderr: String,
+        /// Exit code
+        exit_code: i32,
+    },
+
+    /// LSP server status update (progress, messages, etc.)
+    LspStatusUpdate {
+        language: String,
+        /// Name of the specific server (for multi-server status tracking)
+        server_name: String,
+        status: LspServerStatus,
+        message: Option<String>,
+    },
+
+    /// Background grammar build completed — swap in the new registry.
+    /// `callback_ids` contains plugin callbacks to resolve (empty for the
+    /// initial startup build).
+    GrammarRegistryBuilt {
+        registry: std::sync::Arc<crate::primitives::grammar::GrammarRegistry>,
+        callback_ids: Vec<fresh_core::api::JsCallbackId>,
+    },
+
+    /// Quick Open file list loaded by a background task.
+    /// `complete` is `true` when the scan is finished, `false` for incremental
+    /// partial updates sent while the walk is still in progress.
+    QuickOpenFilesLoaded {
+        /// The working directory the files were enumerated under. Lets
+        /// the editor drop results that arrive after the user has
+        /// switched windows/projects (the cache is keyed by cwd).
+        cwd: String,
+        files: std::sync::Arc<Vec<crate::input::quick_open::providers::FileEntry>>,
+        complete: bool,
+    },
+
+    /// Startup-async: a single plugin directory finished loading on the
+    /// plugin thread. Carries the same payload as the blocking
+    /// `load_plugins_from_dir_with_config` return value.
+    PluginsDirLoaded {
+        dir: std::path::PathBuf,
+        errors: Vec<String>,
+        discovered_plugins: std::collections::HashMap<String, fresh_core::config::PluginConfig>,
+    },
+
+    /// Startup-async: every directory in the startup batch has loaded and
+    /// the resulting `.d.ts` declarations have been collected from the
+    /// plugin runtime. Triggers `init_script::write_plugin_declarations`.
+    PluginDeclarationsReady { declarations: Vec<(String, String)> },
+
+    /// Startup-async: `init.ts` (auto-loaded source plugin) finished
+    /// running its top level and has either succeeded, failed, or was
+    /// skipped/fused. The handler logs and applies the corresponding
+    /// status message, and (on `Loaded`) clears the crash fuse.
+    PluginInitScriptLoaded(PluginInitScriptOutcome),
+}
+
+/// Async equivalent of `init_script::InitOutcome`. Wraps the same set
+/// of states but is plain data so it can travel across the bridge.
+#[derive(Debug, Clone)]
+pub enum PluginInitScriptOutcome {
+    NotFound,
+    Disabled,
+    CrashFused { failures: u32 },
+    Loaded,
+    Failed { message: String },
+}
+
+/// Conservative bucketing of `notify::EventKind`. We don't expose
+/// the full notify enum to plugins because the kind set varies by
+/// platform and changes between notify releases. Plugins switch on
+/// these strings; refining requires a new variant + a new string
+/// (additive, no breakage).
+#[derive(Debug, Clone, Copy)]
+pub enum PathChangeKind {
+    Modify,
+    Create,
+    Delete,
+    Rename,
+    Other,
+}
+
+impl PathChangeKind {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            PathChangeKind::Modify => "modify",
+            PathChangeKind::Create => "create",
+            PathChangeKind::Delete => "delete",
+            PathChangeKind::Rename => "rename",
+            PathChangeKind::Other => "other",
+        }
+    }
+}
+
+/// LSP progress value types
+#[derive(Debug, Clone)]
+pub enum LspProgressValue {
+    Begin {
+        title: String,
+        message: Option<String>,
+        percentage: Option<u32>,
+    },
+    Report {
+        message: Option<String>,
+        percentage: Option<u32>,
+    },
+    End {
+        message: Option<String>,
+    },
+}
+
+/// LSP message type (corresponds to MessageType in LSP spec)
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LspMessageType {
+    Error = 1,
+    Warning = 2,
+    Info = 3,
+    Log = 4,
+}
+
+/// LSP server status
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LspServerStatus {
+    Starting,
+    Initializing,
+    Running,
+    /// Initialized and alive, but requests are timing out.
+    ///
+    /// A server can complete `initialize` and then answer nothing — pyright
+    /// 1.1.408 does exactly that (issue #2197) — and the editor used to
+    /// keep reporting "ready" while every hover, definition and diagnostic
+    /// request silently expired after 30s. This status is what makes that
+    /// visible; it reverts to `Running` as soon as a request is answered.
+    Unresponsive,
+    Error,
+    Shutdown,
+}
+
+/// Bridge between async Tokio runtime and sync main loop
+///
+/// Design:
+/// - Lightweight, cloneable sender that can be passed to async tasks
+/// - Non-blocking receiver checked each frame in main loop
+/// - No locks needed in main loop (channel handles synchronization)
+#[derive(Clone)]
+pub struct AsyncBridge {
+    sender: mpsc::Sender<AsyncMessage>,
+    // Receiver wrapped in Arc<Mutex<>> to allow cloning
+    receiver: std::sync::Arc<std::sync::Mutex<mpsc::Receiver<AsyncMessage>>>,
+}
+
+impl AsyncBridge {
+    /// Create a new async bridge with an unbounded channel
+    ///
+    /// Unbounded is appropriate here because:
+    /// 1. Main loop processes messages every 16ms (60fps)
+    /// 2. LSP messages are infrequent (< 100/sec typically)
+    /// 3. Memory usage is bounded by message rate × frame time
+    pub fn new() -> Self {
+        let (sender, receiver) = mpsc::channel();
+        Self {
+            sender,
+            receiver: std::sync::Arc::new(std::sync::Mutex::new(receiver)),
+        }
+    }
+
+    /// Get a cloneable sender for async tasks
+    ///
+    /// This sender can be:
+    /// - Cloned freely (cheap Arc internally)
+    /// - Sent to async tasks
+    /// - Stored in LspClient instances
+    pub fn sender(&self) -> mpsc::Sender<AsyncMessage> {
+        self.sender.clone()
+    }
+
+    /// Try to receive pending messages (non-blocking)
+    ///
+    /// Called each frame in the main loop to process async messages.
+    /// Returns all pending messages without blocking.
+    pub fn try_recv_all(&self) -> Vec<AsyncMessage> {
+        let mut messages = Vec::new();
+
+        // Lock the receiver and drain all pending messages
+        if let Ok(receiver) = self.receiver.lock() {
+            while let Ok(msg) = receiver.try_recv() {
+                messages.push(msg);
+            }
+        }
+
+        messages
+    }
+
+    /// Check if there are pending messages (non-blocking)
+    pub fn has_messages(&self) -> bool {
+        // Note: This is racy but safe - only used for optimization
+        if let Ok(receiver) = self.receiver.lock() {
+            receiver.try_recv().is_ok()
+        } else {
+            false
+        }
+    }
+}
+
+impl Default for AsyncBridge {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_async_bridge_send_receive() {
+        let bridge = AsyncBridge::new();
+        let sender = bridge.sender();
+
+        // Send a message
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "rust".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+
+        // Receive it
+        let messages = bridge.try_recv_all();
+        assert_eq!(messages.len(), 1);
+
+        match &messages[0] {
+            AsyncMessage::LspInitialized {
+                language,
+                server_name,
+                ..
+            } => {
+                assert_eq!(language, "rust");
+                assert_eq!(server_name, "test");
+            }
+            _ => panic!("Wrong message type"),
+        }
+    }
+
+    #[test]
+    fn test_async_bridge_multiple_messages() {
+        let bridge = AsyncBridge::new();
+        let sender = bridge.sender();
+
+        // Send multiple messages
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "rust".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "typescript".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+
+        // Receive all at once
+        let messages = bridge.try_recv_all();
+        assert_eq!(messages.len(), 2);
+    }
+
+    #[test]
+    fn test_async_bridge_no_messages() {
+        let bridge = AsyncBridge::new();
+
+        // Try to receive with no messages
+        let messages = bridge.try_recv_all();
+        assert_eq!(messages.len(), 0);
+    }
+
+    #[test]
+    fn test_async_bridge_clone_sender() {
+        let bridge = AsyncBridge::new();
+        let sender1 = bridge.sender();
+        let sender2 = sender1.clone();
+
+        // Both senders work
+        sender1
+            .send(AsyncMessage::LspInitialized {
+                language: "rust".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+        sender2
+            .send(AsyncMessage::LspInitialized {
+                language: "typescript".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+
+        let messages = bridge.try_recv_all();
+        assert_eq!(messages.len(), 2);
+    }
+
+    #[test]
+    fn test_async_bridge_diagnostics() {
+        let bridge = AsyncBridge::new();
+        let sender = bridge.sender();
+
+        // Send diagnostic message
+        let diagnostics = vec![lsp_types::Diagnostic {
+            range: lsp_types::Range {
+                start: lsp_types::Position {
+                    line: 0,
+                    character: 0,
+                },
+                end: lsp_types::Position {
+                    line: 0,
+                    character: 5,
+                },
+            },
+            severity: Some(lsp_types::DiagnosticSeverity::ERROR),
+            code: None,
+            code_description: None,
+            source: Some("rust-analyzer".to_string()),
+            message: "test error".to_string(),
+            related_information: None,
+            tags: None,
+            data: None,
+        }];
+
+        sender
+            .send(AsyncMessage::LspDiagnostics {
+                uri: "file:///test.rs".to_string(),
+                diagnostics: diagnostics.clone(),
+                server_name: "rust-analyzer".to_string(),
+            })
+            .unwrap();
+
+        let messages = bridge.try_recv_all();
+        assert_eq!(messages.len(), 1);
+
+        match &messages[0] {
+            AsyncMessage::LspDiagnostics {
+                uri,
+                diagnostics: diags,
+                server_name,
+            } => {
+                assert_eq!(uri, "file:///test.rs");
+                assert_eq!(diags.len(), 1);
+                assert_eq!(diags[0].message, "test error");
+                assert_eq!(server_name, "rust-analyzer");
+            }
+            _ => panic!("Expected LspDiagnostics message"),
+        }
+    }
+
+    #[test]
+    fn test_async_bridge_error_message() {
+        let bridge = AsyncBridge::new();
+        let sender = bridge.sender();
+
+        sender
+            .send(AsyncMessage::LspError {
+                language: "rust".to_string(),
+                error: "Failed to initialize".to_string(),
+                stderr_log_path: None,
+            })
+            .unwrap();
+
+        let messages = bridge.try_recv_all();
+        assert_eq!(messages.len(), 1);
+
+        match &messages[0] {
+            AsyncMessage::LspError {
+                language,
+                error,
+                stderr_log_path,
+            } => {
+                assert_eq!(language, "rust");
+                assert_eq!(error, "Failed to initialize");
+                assert!(stderr_log_path.is_none());
+            }
+            _ => panic!("Expected LspError message"),
+        }
+    }
+
+    #[test]
+    fn test_async_bridge_clone_bridge() {
+        let bridge = AsyncBridge::new();
+        let bridge_clone = bridge.clone();
+        let sender = bridge.sender();
+
+        // Send via original bridge's sender
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "rust".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+
+        // Receive via cloned bridge
+        let messages = bridge_clone.try_recv_all();
+        assert_eq!(messages.len(), 1);
+    }
+
+    #[test]
+    fn test_async_bridge_multiple_calls_to_try_recv_all() {
+        let bridge = AsyncBridge::new();
+        let sender = bridge.sender();
+
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "rust".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+
+        // First call gets the message
+        let messages1 = bridge.try_recv_all();
+        assert_eq!(messages1.len(), 1);
+
+        // Second call gets nothing
+        let messages2 = bridge.try_recv_all();
+        assert_eq!(messages2.len(), 0);
+    }
+
+    #[test]
+    fn test_async_bridge_ordering() {
+        let bridge = AsyncBridge::new();
+        let sender = bridge.sender();
+
+        // Send messages in order
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "rust".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "typescript".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+        sender
+            .send(AsyncMessage::LspInitialized {
+                language: "python".to_string(),
+                server_name: "test".to_string(),
+                capabilities: Default::default(),
+            })
+            .unwrap();
+
+        // Messages should be received in same order
+        let messages = bridge.try_recv_all();
+        assert_eq!(messages.len(), 3);
+
+        match (&messages[0], &messages[1], &messages[2]) {
+            (
+                AsyncMessage::LspInitialized { language: l1, .. },
+                AsyncMessage::LspInitialized { language: l2, .. },
+                AsyncMessage::LspInitialized { language: l3, .. },
+            ) => {
+                assert_eq!(l1, "rust");
+                assert_eq!(l2, "typescript");
+                assert_eq!(l3, "python");
+            }
+            _ => panic!("Expected ordered LspInitialized messages"),
+        }
+    }
+}

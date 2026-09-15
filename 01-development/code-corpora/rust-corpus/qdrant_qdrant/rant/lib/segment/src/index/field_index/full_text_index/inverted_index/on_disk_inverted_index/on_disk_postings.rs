@@ -1,0 +1,277 @@
+use std::cell::Cell;
+use std::marker::PhantomData;
+use std::path::PathBuf;
+
+use common::generic_consts::{Random, Sequential};
+use common::universal_io::{
+    OkNotFound, OpenOptions, ReadRange, UniversalIoError, UioResult, UniversalRead,
+    UniversalReadFs,
+};
+use posting_list::{PostingList, PostingListView};
+use zerocopy::FromBytes;
+
+use crate::common::operation_error::OperationResult;
+use crate::index::field_index::full_text_index::inverted_index::TokenId;
+use crate::index::field_index::full_text_index::inverted_index::on_disk_inverted_index::raw_posting_list::RawPostingList;
+use crate::index::field_index::full_text_index::inverted_index::on_disk_inverted_index::types::{
+    PostingListHeader, PostingsHeader, ZerocopyPostingValue,
+};
+
+/// Posting lists stored on disk and accessed via the [`UniversalRead`]
+/// abstraction. The on-disk layout is produced by
+/// [`create_postings_file`](super::create_postings::create_postings_file)
+/// and matches the layout documented there.
+///
+/// `get_header(token_id)` indexes the per-token header array directly:
+/// `size_of::<PostingsHeader>() + token_id * size_of::<PostingListHeader>()`.
+/// Each [`PostingListHeader`] then points (via absolute `offset`) into the
+/// posting-data region.
+pub struct OnDiskPostings<V: ZerocopyPostingValue, S: UniversalRead> {
+    _path: PathBuf,
+    storage: S,
+    header: PostingsHeader,
+    _value_type: PhantomData<V>,
+}
+
+type HeaderResult = Result<(TokenId, PostingListHeader), UniversalIoError>;
+
+/// Output of [`UniversalPostings::headers_iter`]: the in-range headers, paired
+/// with the pre-filtered list of token ids that were outside the valid range.
+struct HeadersBatch {
+    headers: Vec<HeaderResult>,
+    missing: Vec<TokenId>,
+}
+
+impl<V: ZerocopyPostingValue, S: UniversalRead> OnDiskPostings<V, S> {
+    /// Open the postings file at `path` via the `S` storage backend.
+    ///
+    /// Returns `Ok(None)` if the file is not found
+    pub fn open<Fs: UniversalReadFs<File = S>>(
+        fs: &Fs,
+        path: impl Into<PathBuf>,
+        options: OpenOptions,
+        extra: Fs::OpenExtra,
+    ) -> OperationResult<Option<Self>> {
+        let path = path.into();
+        let Some(storage) = fs.open(&path, options, extra).ok_not_found()? else {
+            return Ok(None);
+        };
+
+        let header = storage.read::<_, PostingsHeader>(ReadRange::one(0), Sequential)?[0];
+
+        Ok(Some(Self {
+            _path: path,
+            storage,
+            header,
+            _value_type: PhantomData,
+        }))
+    }
+
+    /// Hint the storage backend to populate any RAM cache backing this file.
+    /// For mmap-backed storage this is `madvise(MADV_POPULATE_READ)` and blocks
+    /// until pages are populated.
+    pub fn populate(&self) -> OperationResult<()> {
+        self.storage.populate()?;
+        Ok(())
+    }
+
+    /// Hint the storage backend to drop any RAM cache backing this file.
+    /// For mmap-backed storage this is `madvise(MADV_PAGEOUT)`.
+    pub fn clear_cache(&self) -> OperationResult<()> {
+        self.storage.clear_ram_cache()?;
+        Ok(())
+    }
+
+    /// Read the posting list headers for a batch of token ids.
+    ///
+    /// The returned [`HeadersBatch`] pairs the in-range `(token_id, header)`
+    /// pairs with the list of token ids that were out-of-range. Order is not
+    /// guaranteed to match the input.
+    fn headers_iter(&self, token_ids: &[TokenId]) -> Result<HeadersBatch, UniversalIoError> {
+        let header_length = size_of::<PostingListHeader>() as u64;
+        let posting_count = self.header.posting_count;
+
+        let mut valid_ranges: Vec<(TokenId, ReadRange)> = Vec::with_capacity(token_ids.len());
+        let mut filtered_out: Vec<TokenId> = Vec::new();
+
+        for &token_id in token_ids {
+            if posting_count <= token_id as usize {
+                filtered_out.push(token_id);
+                continue;
+            }
+            let header_offset =
+                size_of::<PostingsHeader>() as u64 + u64::from(token_id) * header_length;
+
+            valid_ranges.push((
+                token_id,
+                ReadRange {
+                    byte_offset: header_offset,
+                    length: header_length,
+                },
+            ));
+        }
+
+        // Read the headers via the callback API and collect them. Each header is
+        // parsed (copied) out of the read bytes, so nothing borrows the file past
+        // the read — `read_batch` is sufficient here, no pipeline needed.
+        let mut headers: Vec<HeaderResult> = Vec::with_capacity(valid_ranges.len());
+        self.storage
+            .read_batch(valid_ranges, Random, |token_id, bytes| {
+                headers.push(
+                    PostingListHeader::read_from_prefix(bytes)
+                        .map(|(header, _)| (token_id, header))
+                        .map_err(UniversalIoError::from),
+                );
+                UioResult::Ok(())
+            })?;
+
+        Ok(HeadersBatch {
+            headers,
+            missing: filtered_out,
+        })
+    }
+
+    fn get_header(&self, token_id: TokenId) -> OperationResult<Option<PostingListHeader>> {
+        let HeadersBatch { headers, .. } = self.headers_iter(&[token_id])?;
+        let Some(entry) = headers.into_iter().next() else {
+            return Ok(None);
+        };
+        let (_, header) = entry?;
+        Ok(Some(header))
+    }
+
+    /// Create PostingListView<V> from the given header
+    ///
+    /// Assume the following layout:
+    ///
+    /// ```ignore
+    /// last_doc_id: &'a PointOffsetType,
+    /// chunks_index: &'a [PostingChunk<()>],
+    /// data: &'a [u8],
+    /// var_size_data: &'a [u8], // might be empty in case of only ids
+    /// _alignment: &'a [u8], // 0-3 extra bytes to align the data
+    /// remainder_postings: &'a [PointOffsetType],
+    /// ```
+    #[cfg(test)]
+    fn raw_posting<'a>(
+        &'a self,
+        header: PostingListHeader,
+    ) -> Result<RawPostingList<'a>, UniversalIoError> {
+        let read_range = ReadRange {
+            byte_offset: header.offset,
+            length: header.posting_size::<V>() as u64,
+        };
+        let bytes = self.storage.read::<_, u8>(read_range, Sequential)?;
+        let result = RawPostingList::new(bytes, header);
+        Ok(result)
+    }
+
+    #[cfg(test)]
+    pub fn get(&self, token_id: TokenId) -> OperationResult<Option<RawPostingList<'_>>> {
+        let header = self.get_header(token_id)?;
+        if let Some(header) = header {
+            let posting = self.raw_posting(header).map(Some)?;
+            return Ok(posting);
+        }
+        Ok(None)
+    }
+
+    /// Number of elements in the posting list for `token_id`. Reads only the
+    /// per-token header, not the posting bytes.
+    pub fn posting_len(&self, token_id: TokenId) -> OperationResult<Option<usize>> {
+        Ok(self.get_header(token_id)?.map(|h| h.posting_len()))
+    }
+
+    /// Read the posting lists for the given `headers` and hand the resulting
+    /// views to `callback`. The posting reads are pipelined.
+    fn with_posting_views<T>(
+        &self,
+        headers: Vec<HeaderResult>,
+        expected_capacity: usize,
+        callback: impl FnOnce(Vec<(TokenId, PostingListView<'_, V>)>) -> OperationResult<T>,
+    ) -> OperationResult<T> {
+        let header_err: Cell<Option<UniversalIoError>> = Cell::new(None);
+
+        let range_iter = headers
+            .into_iter()
+            .filter_map(|header_res| match header_res {
+                Ok((token_id, header)) => {
+                    let range = ReadRange {
+                        byte_offset: header.offset,
+                        length: header.posting_size::<V>() as u64,
+                    };
+                    Some(((token_id, header), range))
+                }
+                Err(err) => {
+                    header_err.set(Some(err));
+                    None
+                }
+            });
+
+        let mut raw_postings: Vec<(TokenId, RawPostingList<'_>)> =
+            Vec::with_capacity(expected_capacity);
+
+        for entry in self.storage.read_iter(range_iter, Sequential)? {
+            let ((token_id, header), bytes) = entry?;
+            raw_postings.push((token_id, RawPostingList::new(bytes, header)));
+        }
+
+        if let Some(err) = header_err.take() {
+            return Err(err.into());
+        }
+
+        let views = raw_postings
+            .iter()
+            .map(|(token_id, raw)| raw.as_view::<V>().map(|view| (*token_id, view)))
+            .collect::<OperationResult<Vec<_>>>()?;
+
+        callback(views)
+    }
+
+    /// Fetch posting lists for the given token ids and hand them to `callback`,
+    /// which is *always* invoked: with `Some(views)` when every token has a
+    /// posting list, or `None` when at least one is missing (i.e. nothing can
+    /// match). Always running lets batch callers iterate their items in a single
+    /// pass, reporting a non-match for the `None` case, instead of a separate
+    /// fallback loop.
+    pub fn with_all_or_none_postings<T>(
+        &self,
+        token_ids: &[TokenId],
+        callback: impl FnOnce(Option<Vec<(TokenId, PostingListView<'_, V>)>>) -> OperationResult<T>,
+    ) -> OperationResult<T> {
+        let HeadersBatch { headers, missing } = self.headers_iter(token_ids)?;
+
+        if !missing.is_empty() {
+            return callback(None);
+        }
+
+        self.with_posting_views(headers, token_ids.len(), |views| callback(Some(views)))
+    }
+
+    /// Fetch all existing posting lists for the given token ids and hand them
+    /// to `callback`. Token ids without a posting list are silently ignored.
+    pub fn with_existing_postings<T>(
+        &self,
+        token_ids: &[TokenId],
+        callback: impl FnOnce(Vec<(TokenId, PostingListView<'_, V>)>) -> OperationResult<T>,
+    ) -> OperationResult<T> {
+        let HeadersBatch { headers, .. } = self.headers_iter(token_ids)?;
+
+        self.with_posting_views(headers, token_ids.len(), callback)
+    }
+
+    pub fn all_postings(&self) -> OperationResult<Vec<PostingList<V>>> {
+        let mut result = Vec::new();
+        let all_tokens = (0..self.header.posting_count as TokenId).collect::<Vec<_>>();
+
+        self.with_existing_postings(&all_tokens, |views| {
+            for (_, view) in views {
+                let posting_list = view.to_owned();
+                result.push(posting_list);
+            }
+            Ok(())
+        })?;
+
+        Ok(result)
+    }
+}

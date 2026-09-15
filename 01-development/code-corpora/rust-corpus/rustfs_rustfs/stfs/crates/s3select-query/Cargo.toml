@@ -1,0 +1,63 @@
+# Copyright 2024 RustFS Team
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[package]
+name = "rustfs-s3select-query"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+homepage.workspace = true
+description = "S3 Select query engine for RustFS, enabling efficient data retrieval from S3-compatible storage using SQL-like queries."
+keywords = ["s3-select", "query-engine", "rustfs", "Minio", "data-retrieval"]
+categories = ["web-programming", "development-tools", "data-structures"]
+documentation = "https://docs.rs/rustfs-s3select-query/latest/rustfs_s3select_query/"
+
+[lints]
+workspace = true
+
+[features]
+default = []
+hotpath = [
+    "hotpath/hotpath",
+    "hotpath/tokio",
+    "hotpath/futures",
+    "hotpath/parking_lot",
+    "rustfs-s3select-api/hotpath",
+]
+hotpath-alloc = ["hotpath", "hotpath/hotpath-alloc", "rustfs-s3select-api/hotpath-alloc"]
+hotpath-cpu = ["hotpath", "hotpath/hotpath-cpu", "rustfs-s3select-api/hotpath-cpu"]
+
+[dependencies]
+hotpath.workspace = true
+rustfs-s3select-api = { workspace = true }
+async-recursion = { workspace = true }
+async-trait.workspace = true
+bytes.workspace = true
+datafusion = { workspace = true, default-features = false, features = ["parquet", "recursive_protection", "sql"] }
+derive_builder = { workspace = true }
+futures = { workspace = true }
+parking_lot = { workspace = true }
+s3s = { workspace = true, features = ["minio"] }
+serde.workspace = true
+serde_json.workspace = true
+tokio = { workspace = true, features = ["fs", "rt-multi-thread", "sync", "time"] }
+tracing = { workspace = true }
+
+[dev-dependencies]
+rustfs-test-utils = { workspace = true, features = ["put-object-commit-barrier"] }
+
+[lib]
+doctest = false

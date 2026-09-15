@@ -1,0 +1,3148 @@
+//! This module contains implementations of smart-contract traits and instructions for [`Account`] structure
+//! and implementations for account queries.
+
+use iroha_data_model::{prelude::*, query::error::FindError};
+use iroha_telemetry::metrics;
+
+use super::prelude::*;
+
+/// All instructions related to accounts:
+/// - minting/burning public key into account signatories
+/// - minting/burning signature condition check
+/// - update metadata
+/// - grant permissions and roles
+/// - Revoke permissions or roles
+pub mod isi {
+    use iroha_data_model::isi::{
+        InstructionType,
+        error::{InvalidParameterError, MintabilityError, RepetitionError},
+    };
+    use iroha_executor_data_model::isi::multisig::MultisigSpec;
+
+    use super::*;
+    use crate::{role::RoleIdWithOwner, state::StateTransaction};
+
+    fn is_idempotent_alias_permission(permission: &Permission) -> bool {
+        iroha_executor_data_model::permission::account::CanManageAccountAlias::try_from(permission)
+            .is_ok()
+            || iroha_executor_data_model::permission::account::CanResolveAccountAlias::try_from(
+                permission,
+            )
+            .is_ok()
+    }
+
+    fn invalid_account_recovery(message: impl Into<std::string::String>) -> Error {
+        Error::InvalidParameter(InvalidParameterError::SmartContract(message.into()))
+    }
+
+    fn multisig_spec_key() -> Name {
+        "multisig/spec"
+            .parse()
+            .expect("multisig spec key must be a valid name")
+    }
+
+    fn validate_multisig_spec_ttl_update(
+        state_transaction: &StateTransaction<'_, '_>,
+        authority: &AccountId,
+        account_id: &AccountId,
+        key: &Name,
+        value: &Json,
+    ) -> Result<bool, Error> {
+        if key != &multisig_spec_key() {
+            return Ok(false);
+        }
+        if authority != account_id {
+            return Err(Error::InvariantViolation(
+                format!(
+                    "account metadata key `{key}` may only be updated by the native multisig account itself"
+                )
+                .into(),
+            ));
+        }
+
+        let account = state_transaction
+            .world
+            .account(account_id)
+            .map_err(Error::from)?;
+        let current_value = account.metadata().get(key).ok_or_else(|| {
+            Error::InvariantViolation(
+                format!("account metadata key `{key}` is missing native multisig state").into(),
+            )
+        })?;
+        let current_spec = MultisigSpec::try_from(current_value).map_err(|err| {
+            Error::InvariantViolation(
+                format!(
+                    "account metadata key `{key}` contains invalid native multisig state: {err}"
+                )
+                .into(),
+            )
+        })?;
+        let next_spec = MultisigSpec::try_from(value).map_err(|err| {
+            Error::InvariantViolation(
+                format!("account metadata key `{key}` update contains invalid native multisig state: {err}")
+                    .into(),
+            )
+        })?;
+
+        if current_spec.signatories != next_spec.signatories
+            || current_spec.quorum != next_spec.quorum
+        {
+            return Err(Error::InvariantViolation(
+                format!(
+                    "account metadata key `{key}` update may only change native multisig transaction_ttl_ms"
+                )
+                .into(),
+            ));
+        }
+
+        Ok(true)
+    }
+
+    fn stable_recovery_alias(
+        state_transaction: &StateTransaction<'_, '_>,
+        account_id: &AccountId,
+    ) -> Result<AccountAlias, Error> {
+        state_transaction
+            .world
+            .account(account_id)
+            .map_err(Error::from)?
+            .label()
+            .cloned()
+            .ok_or_else(|| {
+                invalid_account_recovery(format!(
+                    "account `{account_id}` must have a stable alias to use social recovery"
+                ))
+            })
+    }
+
+    fn validate_recovery_policy(policy: &AccountRecoveryPolicy) -> Result<(), Error> {
+        AccountRecoveryPolicy::new(policy.guardians.clone(), policy.quorum, policy.timelock_ms)
+            .map(|_| ())
+            .map_err(|err| invalid_account_recovery(err.to_string()))
+    }
+
+    fn active_account_for_alias(
+        state_transaction: &StateTransaction<'_, '_>,
+        alias: &AccountAlias,
+    ) -> Result<AccountId, Error> {
+        state_transaction
+            .world
+            .account_aliases
+            .get(alias)
+            .cloned()
+            .ok_or_else(|| {
+                invalid_account_recovery(format!(
+                    "account alias `{alias:?}` does not resolve to an active account"
+                ))
+            })
+    }
+
+    fn current_account_is_recovery_guardian(
+        policy: &AccountRecoveryPolicy,
+        authority: &AccountId,
+    ) -> bool {
+        policy.contains_guardian(authority)
+    }
+
+    fn ensure_recovery_request_targets_current_lineage(
+        state_transaction: &StateTransaction<'_, '_>,
+        request: &AccountRecoveryRequest,
+        current_account: &AccountId,
+    ) -> Result<(), Error> {
+        let record = state_transaction
+            .world
+            .account_rekey_records
+            .get(&request.alias)
+            .ok_or_else(|| {
+                invalid_account_recovery(format!(
+                    "account recovery alias `{:#?}` no longer has a continuity record",
+                    request.alias
+                ))
+            })?;
+
+        if &record.active_account_id != current_account {
+            return Err(invalid_account_recovery(format!(
+                "account recovery alias `{:#?}` no longer points to the expected active account",
+                request.alias
+            )));
+        }
+
+        if record.active_account_id != request.active_account_id_at_proposal
+            && !record
+                .previous_account_ids
+                .contains(&request.active_account_id_at_proposal)
+        {
+            return Err(invalid_account_recovery(format!(
+                "account recovery request for `{:#?}` no longer matches the active alias lineage",
+                request.alias
+            )));
+        }
+
+        Ok(())
+    }
+
+    fn proposed_account_id(new_controller: &AccountController) -> AccountId {
+        match new_controller {
+            AccountController::Single(signatory) => AccountId::new(signatory.clone()),
+            AccountController::Multisig(policy) => AccountId::new_multisig(policy.clone()),
+        }
+    }
+
+    impl Execute for Transfer<Account, AssetDefinitionId, Account> {
+        fn execute(
+            self,
+            authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let Transfer {
+                source,
+                object,
+                destination,
+            } = self;
+
+            let _ = state_transaction.world.account(&source)?;
+            let _ = state_transaction.world.account(&destination)?;
+
+            let authority_is_source_owner = authority == &source;
+            if !authority_is_source_owner {
+                return Err(Error::InvariantViolation(
+                    "Can't transfer asset definition of another account"
+                        .to_owned()
+                        .into(),
+                ));
+            }
+
+            let asset_definition = state_transaction.world.asset_definition_mut(&object)?;
+
+            if asset_definition.owned_by() != &source {
+                return Err(Error::Find(FindError::Account(source)));
+            }
+
+            asset_definition.set_owned_by(destination.clone());
+            state_transaction
+                .world
+                .emit_events(Some(AssetDefinitionEvent::OwnerChanged(
+                    AssetDefinitionOwnerChanged {
+                        asset_definition: object,
+                        new_owner: destination,
+                    },
+                )));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for SetKeyValue<Account> {
+        #[metrics(+"set_account_key_value")]
+        fn execute(
+            self,
+            authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            // Destructure to move key/value once; avoid duplicate clones.
+            let SetKeyValue {
+                object: account_id,
+                key,
+                value,
+            } = self;
+            if crate::smartcontracts::isi::multisig::is_reserved_multisig_metadata_key(&key) {
+                let ttl_only_update = validate_multisig_spec_ttl_update(
+                    state_transaction,
+                    authority,
+                    &account_id,
+                    &key,
+                    &value,
+                )?;
+                if !ttl_only_update {
+                    return Err(Error::InvariantViolation(
+                        format!(
+                            "account metadata key `{key}` is reserved for native multisig state"
+                        )
+                        .into(),
+                    ));
+                }
+            }
+            // Enforce metadata value size limit (custom parameter or default)
+            crate::smartcontracts::limits::enforce_json_size(
+                state_transaction,
+                &value,
+                "max_metadata_value_bytes",
+                crate::smartcontracts::limits::DEFAULT_JSON_LIMIT,
+            )?;
+
+            // Insert into account metadata; move key/value into the map directly.
+            state_transaction
+                .world
+                .account_mut(&account_id)
+                .map_err(Error::from)
+                .map(|account| account.insert(key.clone(), value.clone()))?;
+
+            // Emit event with a single extra clone from inserted value.
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::MetadataInserted(MetadataChanged {
+                    target: account_id,
+                    key,
+                    value,
+                })));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for RemoveKeyValue<Account> {
+        #[metrics(+"remove_account_key_value")]
+        fn execute(
+            self,
+            _authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let account_id = self.object().clone();
+            if crate::smartcontracts::isi::multisig::is_reserved_multisig_metadata_key(self.key()) {
+                return Err(Error::InvariantViolation(
+                    format!(
+                        "account metadata key `{}` is reserved for native multisig state",
+                        self.key()
+                    )
+                    .into(),
+                ));
+            }
+
+            let value = state_transaction
+                .world
+                .account_mut(&account_id)
+                .and_then(|account| {
+                    account
+                        .remove(self.key())
+                        .ok_or_else(|| FindError::MetadataKey(self.key().clone()))
+                })?;
+
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::MetadataRemoved(MetadataChanged {
+                    target: account_id,
+                    key: self.key().clone(),
+                    value,
+                })));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for ReplaceAccountController {
+        #[metrics(+"replace_account_controller")]
+        fn execute(
+            self,
+            authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let ReplaceAccountController {
+                account,
+                new_controller,
+            } = self;
+            let previous_controller = state_transaction
+                .world
+                .account(&account)
+                .map_err(Error::from)?
+                .id()
+                .controller()
+                .clone();
+
+            let new_account = crate::smartcontracts::isi::multisig::replace_account_controller(
+                authority,
+                state_transaction,
+                &account,
+                new_controller.clone(),
+            )?;
+
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::ControllerReplaced(
+                    AccountControllerReplaced {
+                        account: new_account,
+                        previous_account: account,
+                        previous_controller,
+                        new_controller,
+                    },
+                )));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for SetAccountRecoveryPolicy {
+        #[metrics(+"set_account_recovery_policy")]
+        fn execute(
+            self,
+            _authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let SetAccountRecoveryPolicy { account, policy } = self;
+            validate_recovery_policy(&policy)?;
+            let alias = stable_recovery_alias(state_transaction, &account)?;
+
+            state_transaction
+                .world
+                .account_recovery_policies
+                .insert(alias.clone(), policy.clone());
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::Recovery(
+                    AccountRecoveryEvent::PolicySet(AccountRecoveryPolicySet {
+                        account,
+                        alias,
+                        policy,
+                    }),
+                )));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for ClearAccountRecoveryPolicy {
+        #[metrics(+"clear_account_recovery_policy")]
+        fn execute(
+            self,
+            _authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let ClearAccountRecoveryPolicy { account } = self;
+            let alias = stable_recovery_alias(state_transaction, &account)?;
+            if state_transaction
+                .world
+                .account_recovery_requests
+                .get(&alias)
+                .is_some_and(AccountRecoveryRequest::is_pending)
+            {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery policy for `{alias:?}` cannot be cleared while a request is pending"
+                )));
+            }
+
+            if state_transaction
+                .world
+                .account_recovery_policies
+                .remove(alias.clone())
+                .is_none()
+            {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery policy for `{alias:?}` does not exist"
+                )));
+            }
+
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::Recovery(
+                    AccountRecoveryEvent::PolicyCleared(AccountRecoveryPolicyCleared {
+                        account,
+                        alias,
+                    }),
+                )));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for ProposeAccountRecovery {
+        #[metrics(+"propose_account_recovery")]
+        fn execute(
+            self,
+            authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let ProposeAccountRecovery {
+                alias,
+                new_controller,
+            } = self;
+            let current_account = active_account_for_alias(state_transaction, &alias)?;
+            let policy = state_transaction
+                .world
+                .account_recovery_policies
+                .get(&alias)
+                .cloned()
+                .ok_or_else(|| {
+                    invalid_account_recovery(format!(
+                        "account recovery policy for `{alias:?}` does not exist"
+                    ))
+                })?;
+
+            if authority != &current_account
+                && !current_account_is_recovery_guardian(&policy, authority)
+            {
+                return Err(invalid_account_recovery(format!(
+                    "only the active account or a configured guardian may propose recovery for `{alias:?}`"
+                )));
+            }
+
+            if state_transaction
+                .world
+                .account_recovery_requests
+                .get(&alias)
+                .is_some_and(AccountRecoveryRequest::is_pending)
+            {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery for `{alias:?}` already has a pending request"
+                )));
+            }
+
+            let candidate = proposed_account_id(&new_controller);
+            if candidate == current_account {
+                return Err(invalid_account_recovery(format!(
+                    "replacement controller for `{alias:?}` must change the canonical account id"
+                )));
+            }
+            if state_transaction.world.accounts.get(&candidate).is_some() {
+                return Err(invalid_account_recovery(format!(
+                    "replacement controller for `{alias:?}` resolves to existing account `{candidate}`"
+                )));
+            }
+
+            let execute_after_ms = state_transaction
+                .block_unix_timestamp_ms()
+                .saturating_add(policy.timelock_ms.get());
+            let request = AccountRecoveryRequest::new(
+                alias.clone(),
+                current_account.clone(),
+                new_controller,
+                authority.clone(),
+                execute_after_ms,
+            );
+            state_transaction
+                .world
+                .account_recovery_requests
+                .insert(alias.clone(), request.clone());
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::Recovery(
+                    AccountRecoveryEvent::Proposed(AccountRecoveryProposed {
+                        account: current_account,
+                        alias,
+                        request,
+                    }),
+                )));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for ApproveAccountRecovery {
+        #[metrics(+"approve_account_recovery")]
+        fn execute(
+            self,
+            authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let ApproveAccountRecovery { alias } = self;
+            let current_account = active_account_for_alias(state_transaction, &alias)?;
+            let policy = state_transaction
+                .world
+                .account_recovery_policies
+                .get(&alias)
+                .cloned()
+                .ok_or_else(|| {
+                    invalid_account_recovery(format!(
+                        "account recovery policy for `{alias:?}` does not exist"
+                    ))
+                })?;
+            if !current_account_is_recovery_guardian(&policy, authority) {
+                return Err(invalid_account_recovery(format!(
+                    "account `{authority}` is not a guardian for `{alias:?}`"
+                )));
+            }
+            let request = state_transaction
+                .world
+                .account_recovery_requests
+                .get_mut(&alias)
+                .ok_or_else(|| {
+                    invalid_account_recovery(format!(
+                        "account recovery request for `{alias:?}` does not exist"
+                    ))
+                })?;
+            if !request.is_pending() {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery request for `{alias:?}` is not pending"
+                )));
+            }
+            request.approve(authority);
+            let updated_request = request.clone();
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::Recovery(
+                    AccountRecoveryEvent::Approved(AccountRecoveryApproved {
+                        account: current_account,
+                        alias,
+                        approver: authority.clone(),
+                        request: updated_request,
+                    }),
+                )));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for CancelAccountRecovery {
+        #[metrics(+"cancel_account_recovery")]
+        fn execute(
+            self,
+            authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let CancelAccountRecovery { alias } = self;
+            let current_account = active_account_for_alias(state_transaction, &alias)?;
+            let policy = state_transaction
+                .world
+                .account_recovery_policies
+                .get(&alias)
+                .cloned()
+                .ok_or_else(|| {
+                    invalid_account_recovery(format!(
+                        "account recovery policy for `{alias:?}` does not exist"
+                    ))
+                })?;
+            let request = state_transaction
+                .world
+                .account_recovery_requests
+                .get_mut(&alias)
+                .ok_or_else(|| {
+                    invalid_account_recovery(format!(
+                        "account recovery request for `{alias:?}` does not exist"
+                    ))
+                })?;
+            if !request.is_pending() {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery request for `{alias:?}` is not pending"
+                )));
+            }
+
+            let owner_can_cancel = authority == &current_account;
+            let guardian_quorum_can_cancel =
+                current_account_is_recovery_guardian(&policy, authority)
+                    && policy.quorum_reached(&request.approvals);
+            if !owner_can_cancel && !guardian_quorum_can_cancel {
+                return Err(invalid_account_recovery(format!(
+                    "account `{authority}` is not allowed to cancel recovery for `{alias:?}`"
+                )));
+            }
+
+            request.cancel();
+            let cancelled = request.clone();
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::Recovery(
+                    AccountRecoveryEvent::Cancelled(AccountRecoveryCancelled {
+                        account: current_account,
+                        alias,
+                        cancelled_by: authority.clone(),
+                        request: cancelled,
+                    }),
+                )));
+
+            Ok(())
+        }
+    }
+
+    impl Execute for FinalizeAccountRecovery {
+        #[metrics(+"finalize_account_recovery")]
+        fn execute(
+            self,
+            authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let FinalizeAccountRecovery { alias } = self;
+            let current_account = active_account_for_alias(state_transaction, &alias)?;
+            let policy = state_transaction
+                .world
+                .account_recovery_policies
+                .get(&alias)
+                .cloned()
+                .ok_or_else(|| {
+                    invalid_account_recovery(format!(
+                        "account recovery policy for `{alias:?}` does not exist"
+                    ))
+                })?;
+
+            let mut request = state_transaction
+                .world
+                .account_recovery_requests
+                .get(&alias)
+                .cloned()
+                .ok_or_else(|| {
+                    invalid_account_recovery(format!(
+                        "account recovery request for `{alias:?}` does not exist"
+                    ))
+                })?;
+            if !request.is_pending() {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery request for `{alias:?}` is not pending"
+                )));
+            }
+            if !policy.quorum_reached(&request.approvals) {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery request for `{alias:?}` has not reached guardian quorum"
+                )));
+            }
+            if state_transaction.block_unix_timestamp_ms() < request.execute_after_ms {
+                return Err(invalid_account_recovery(format!(
+                    "account recovery request for `{alias:?}` is still timelocked"
+                )));
+            }
+
+            ensure_recovery_request_targets_current_lineage(
+                state_transaction,
+                &request,
+                &current_account,
+            )?;
+            let new_account = crate::smartcontracts::isi::multisig::replace_account_controller(
+                authority,
+                state_transaction,
+                &current_account,
+                request.proposed_controller.clone(),
+            )?;
+
+            request.finalize();
+            state_transaction
+                .world
+                .account_recovery_requests
+                .insert(alias.clone(), request.clone());
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::ControllerReplaced(
+                    AccountControllerReplaced {
+                        account: new_account.clone(),
+                        previous_account: current_account.clone(),
+                        previous_controller: current_account.controller().clone(),
+                        new_controller: request.proposed_controller.clone(),
+                    },
+                )));
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::Recovery(
+                    AccountRecoveryEvent::Finalized(AccountRecoveryFinalized {
+                        account: new_account,
+                        previous_account: current_account,
+                        alias,
+                        request,
+                    }),
+                )));
+
+            Ok(())
+        }
+    }
+
+    // centralized in smartcontracts::limits
+
+    impl Execute for Grant<Permission, Account> {
+        #[metrics(+"grant_account_permission")]
+        fn execute(
+            self,
+            _authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let account_id = self.destination().clone();
+            let permission = self.object().clone();
+
+            // Check if account exists
+            state_transaction.world.account_mut(&account_id)?;
+
+            if state_transaction
+                .world
+                .account_contains_inherent_permission(&account_id, &permission)
+            {
+                if is_idempotent_alias_permission(&permission) {
+                    return Ok(());
+                }
+                return Err(RepetitionError {
+                    instruction: InstructionType::Grant,
+                    id: permission.into(),
+                }
+                .into());
+            }
+
+            state_transaction
+                .world
+                .add_account_permission(&account_id, permission.clone());
+
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::PermissionAdded(
+                    AccountPermissionChanged {
+                        account: account_id.clone(),
+                        permission,
+                    },
+                )));
+
+            state_transaction.invalidate_permission_cache_for_account(&account_id);
+
+            Ok(())
+        }
+    }
+
+    impl Execute for Revoke<Permission, Account> {
+        #[metrics(+"revoke_account_permission")]
+        fn execute(
+            self,
+            _authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let account_id = self.destination().clone();
+            let permission = self.object().clone();
+
+            // Check if account exists
+            state_transaction.world.account(&account_id)?;
+
+            if !state_transaction
+                .world
+                .remove_account_permission(&account_id, &permission)
+            {
+                return Err(FindError::Permission(permission.into()).into());
+            }
+
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::PermissionRemoved(
+                    AccountPermissionChanged {
+                        account: account_id.clone(),
+                        permission,
+                    },
+                )));
+
+            state_transaction.invalidate_permission_cache_for_account(&account_id);
+
+            Ok(())
+        }
+    }
+
+    impl Execute for Grant<RoleId, Account> {
+        #[metrics(+"grant_account_role")]
+        fn execute(
+            self,
+            _authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let account_id = self.destination().clone();
+            let role_id = self.object().clone();
+
+            state_transaction.world.role(&role_id)?;
+            state_transaction.world.account(&account_id)?;
+
+            if state_transaction
+                .world
+                .account_roles
+                .insert(
+                    RoleIdWithOwner::new(account_id.clone(), role_id.clone()),
+                    (),
+                )
+                .is_some()
+            {
+                return Err(RepetitionError {
+                    instruction: InstructionType::Grant,
+                    id: IdBox::RoleId(role_id),
+                }
+                .into());
+            }
+
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::RoleGranted(AccountRoleChanged {
+                    account: account_id.clone(),
+                    role: role_id,
+                })));
+
+            state_transaction.invalidate_permission_cache_for_account(&account_id);
+
+            Ok(())
+        }
+    }
+
+    impl Execute for Revoke<RoleId, Account> {
+        #[metrics(+"revoke_account_role")]
+        fn execute(
+            self,
+            _authority: &AccountId,
+            state_transaction: &mut StateTransaction<'_, '_>,
+        ) -> Result<(), Error> {
+            let account_id = self.destination().clone();
+            let role_id = self.object().clone();
+
+            if state_transaction
+                .world
+                .account_roles
+                .remove(RoleIdWithOwner {
+                    account: account_id.clone(),
+                    id: role_id.clone(),
+                })
+                .is_none()
+            {
+                return Err(FindError::Role(role_id).into());
+            }
+
+            state_transaction
+                .world
+                .emit_events(Some(AccountEvent::RoleRevoked(AccountRoleChanged {
+                    account: account_id.clone(),
+                    role: role_id,
+                })));
+
+            state_transaction.invalidate_permission_cache_for_account(&account_id);
+
+            Ok(())
+        }
+    }
+
+    /// Stop minting on the [`AssetDefinition`] globally.
+    ///
+    /// # Errors
+    /// If the [`AssetDefinition`] is not `Mintable::Once`.
+    #[inline]
+    pub fn forbid_minting(definition: &mut AssetDefinition) -> Result<(), MintabilityError> {
+        if definition.mintable() == Mintable::Once {
+            definition.set_mintable(Mintable::Not);
+            Ok(())
+        } else {
+            Err(MintabilityError::ForbidMintOnMintable)
+        }
+    }
+
+    #[cfg(test)]
+    mod test {
+        use core::num::NonZeroU64;
+
+        use iroha_data_model::{
+            domain::DomainId,
+            error::ParseError,
+            isi::error::InstructionExecutionError,
+            prelude::{Account, AssetDefinition, Domain, Grant, Permission, Register},
+        };
+        use iroha_primitives::json::Json;
+        use iroha_test_samples::{ALICE_ID, gen_account_in};
+
+        use crate::smartcontracts::isi::Registrable as _;
+        use crate::{
+            block::ValidBlock,
+            kura::Kura,
+            query::store::LiveQueryStore,
+            smartcontracts::Execute,
+            state::{State, World, WorldReadOnly},
+        };
+
+        #[test]
+        fn cannot_forbid_minting_on_asset_mintable_infinitely() -> Result<(), ParseError> {
+            let (authority, _authority_keypair) = gen_account_in("wonderland");
+            let mut definition = {
+                let __asset_definition_id = iroha_data_model::asset::AssetDefinitionId::new(
+                    DomainId::try_new("hello", "universal")?,
+                    "test".parse()?,
+                );
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            }
+            .build(&authority);
+            assert!(super::forbid_minting(&mut definition).is_err());
+            Ok(())
+        }
+
+        fn new_dummy_block() -> crate::block::CommittedBlock {
+            let (leader_public_key, leader_private_key) =
+                iroha_crypto::KeyPair::random().into_parts();
+            let peer_id = crate::PeerId::new(leader_public_key);
+            let topology = crate::sumeragi::network_topology::Topology::new(vec![peer_id]);
+            ValidBlock::new_dummy_and_modify_header(&leader_private_key, |h| {
+                h.set_height(NonZeroU64::new(1).unwrap());
+            })
+            .commit(&topology)
+            .unpack(|_| {})
+            .unwrap()
+        }
+
+        #[test]
+        fn duplicate_alias_permission_grant_is_idempotent() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+            let wonderland: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+
+            Register::domain(Domain::new(wonderland.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(ALICE_ID.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let permission = Permission::from(
+                iroha_executor_data_model::permission::account::CanManageAccountAlias {
+                    scope: iroha_executor_data_model::permission::account::AccountAliasPermissionScope::Dataspace(
+                        iroha_data_model::nexus::DataSpaceId::UNIVERSAL,
+                    ),
+                },
+            );
+
+            Grant::account_permission(permission.clone(), ALICE_ID.clone())
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Grant::account_permission(permission.clone(), ALICE_ID.clone())
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let permissions = stx
+                .world
+                .account_permissions_iter(&ALICE_ID)
+                .unwrap()
+                .cloned()
+                .collect::<Vec<_>>();
+            assert_eq!(permissions.len(), 1);
+            assert_eq!(permissions[0], permission);
+        }
+
+        #[test]
+        fn duplicate_non_alias_permission_grant_still_rejects() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+            let wonderland: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+
+            Register::domain(Domain::new(wonderland.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(ALICE_ID.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let permission = Permission::new("custom_permission".into(), Json::new(()));
+
+            Grant::account_permission(permission.clone(), ALICE_ID.clone())
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            let err = Grant::account_permission(permission.clone(), ALICE_ID.clone())
+                .execute(&ALICE_ID, &mut stx)
+                .expect_err("duplicate non-alias grant must still fail");
+
+            assert!(matches!(err, InstructionExecutionError::Repetition(_)));
+        }
+    }
+}
+
+/// Implementations for account queries.
+pub mod query {
+    use std::{collections::BTreeSet, sync::Arc};
+
+    use eyre::Result;
+    use iroha_crypto::PublicKey;
+    use iroha_data_model::{
+        account::Account,
+        permission::Permission,
+        query::{
+            dsl::{CompoundPredicate, EvaluatePredicate},
+            error::QueryExecutionFail as Error,
+            json::PredicateJson,
+        },
+    };
+    use norito::json::Value;
+
+    use super::*;
+    use crate::{
+        smartcontracts::{ValidQuery, ValidSingularQuery},
+        state::{StateReadOnly, WorldReadOnly},
+    };
+
+    fn account_from_entry(
+        _world: &impl WorldReadOnly,
+        account_id: &AccountId,
+        account_value: &AccountValue,
+    ) -> Account {
+        let details = account_value.as_ref();
+        Account {
+            id: account_id.clone(),
+            metadata: details.metadata.clone(),
+            label: details.label.clone(),
+            uaid: details.uaid,
+            opaque_ids: details.opaque_ids.clone(),
+        }
+    }
+
+    #[cfg(test)]
+    fn seed_domain_name_lease(
+        world: &mut crate::state::World,
+        owner: &AccountId,
+        domain_id: &DomainId,
+    ) {
+        let selector = crate::sns::selector_for_domain(domain_id).expect("selector");
+        let address =
+            iroha_data_model::account::AccountAddress::from_account_id(owner).expect("address");
+        let record = iroha_data_model::sns::NameRecordV1::new(
+            selector.clone(),
+            owner.clone(),
+            vec![iroha_data_model::sns::NameControllerV1::account(&address)],
+            0,
+            0,
+            u64::MAX,
+            u64::MAX,
+            u64::MAX,
+            Metadata::default(),
+        );
+        world.smart_contract_state_mut_for_testing().insert(
+            crate::sns::record_storage_key(&selector),
+            norito::codec::Encode::encode(&record),
+        );
+    }
+
+    #[cfg(test)]
+    fn seed_manage_account_alias_dataspace_permission(
+        state_transaction: &mut crate::state::StateTransaction<'_, '_>,
+        authority: &AccountId,
+        dataspace: iroha_data_model::nexus::DataSpaceId,
+    ) {
+        state_transaction.world.add_account_permission(
+            authority,
+            Permission::from(
+                iroha_executor_data_model::permission::account::CanManageAccountAlias {
+                    scope:
+                        iroha_executor_data_model::permission::account::AccountAliasPermissionScope::Dataspace(
+                            dataspace,
+                        ),
+                },
+            ),
+        );
+    }
+
+    #[cfg(test)]
+    fn alias_domain(domain: &DomainId) -> AccountAliasDomain {
+        AccountAliasDomain::new(domain.name().clone())
+    }
+
+    #[cfg(test)]
+    fn seed_manage_account_alias_permissions(
+        state_transaction: &mut crate::state::StateTransaction<'_, '_>,
+        authority: &AccountId,
+        domain: &DomainId,
+        dataspace: iroha_data_model::nexus::DataSpaceId,
+    ) {
+        seed_manage_account_alias_dataspace_permission(state_transaction, authority, dataspace);
+        state_transaction.world.add_account_permission(
+            authority,
+            Permission::from(
+                iroha_executor_data_model::permission::account::CanManageAccountAlias {
+                    scope:
+                        iroha_executor_data_model::permission::account::AccountAliasPermissionScope::Domain(
+                            domain.clone(),
+                        ),
+                },
+            ),
+        );
+    }
+
+    #[cfg(test)]
+    fn seed_authority_account(world: &mut crate::state::World, authority: &AccountId) {
+        let account = Account {
+            id: authority.clone(),
+            metadata: Metadata::default(),
+            label: None,
+            uaid: None,
+            opaque_ids: Vec::new(),
+        };
+        let (account_id, account_value) = iroha_data_model::IntoKeyValue::into_key_value(account);
+        world.accounts.insert(account_id, account_value);
+    }
+
+    #[cfg(test)]
+    fn seed_account_alias_lease(
+        state_transaction: &mut crate::state::StateTransaction<'_, '_>,
+        owner: &AccountId,
+        label: &AccountAlias,
+    ) {
+        let selector = crate::sns::selector_for_account_alias(
+            label,
+            &state_transaction.nexus.dataspace_catalog,
+        )
+        .expect("selector");
+        let address =
+            iroha_data_model::account::AccountAddress::from_account_id(owner).expect("address");
+        let record = iroha_data_model::sns::NameRecordV1::new(
+            selector.clone(),
+            owner.clone(),
+            vec![iroha_data_model::sns::NameControllerV1::account(&address)],
+            0,
+            0,
+            1_000,
+            2_000,
+            3_000,
+            Metadata::default(),
+        );
+        state_transaction.world.smart_contract_state.insert(
+            crate::sns::record_storage_key(&selector),
+            norito::codec::Encode::encode(&record),
+        );
+    }
+
+    fn account_alias_value(
+        account_id: &AccountId,
+        account_value: &AccountValue,
+        field: &str,
+    ) -> Option<Option<String>> {
+        let details = account_value.as_ref();
+        match field {
+            "id" | "account" | "account_id" => Some(Some(account_id.to_string())),
+            "uaid" | "universal_account_id" => Some(details.uaid().map(ToString::to_string)),
+            _ => None,
+        }
+    }
+
+    fn predicate_value_equals_str(value: &Value, expected: &str) -> bool {
+        matches!(value, Value::String(raw) if raw == expected)
+    }
+
+    fn predicate_values_contain_str(values: &[Value], expected: &str) -> bool {
+        values
+            .iter()
+            .any(|value| matches!(value, Value::String(raw) if raw == expected))
+    }
+
+    fn account_field_is_id(field: &str) -> bool {
+        matches!(field, "id" | "account" | "account_id")
+    }
+
+    fn parse_account_id_value(value: &Value) -> Option<AccountId> {
+        match value {
+            Value::String(raw) => AccountId::parse_encoded(raw)
+                .ok()
+                .map(|parsed| parsed.into_account_id())
+                .or_else(|| raw.parse::<PublicKey>().ok().map(AccountId::new)),
+            _ => None,
+        }
+    }
+
+    fn intersect_account_id_candidates(
+        candidates: &mut Option<BTreeSet<AccountId>>,
+        next: BTreeSet<AccountId>,
+    ) {
+        if let Some(existing) = candidates {
+            existing.retain(|candidate| next.contains(candidate));
+            return;
+        }
+        *candidates = Some(next);
+    }
+
+    /// Extract account-id candidates constrained by JSON predicate clauses.
+    ///
+    /// Returns `None` when the predicate does not constrain id/account fields.
+    /// Returns `Some(empty-set)` when id/account constraints are unsatisfiable.
+    fn account_predicate_candidate_ids(
+        predicate: &PredicateJson,
+    ) -> Option<Arc<BTreeSet<AccountId>>> {
+        let mut candidates: Option<BTreeSet<AccountId>> = None;
+
+        for cond in &predicate.equals {
+            if !account_field_is_id(&cond.field) {
+                continue;
+            }
+            let next = parse_account_id_value(&cond.value)
+                .into_iter()
+                .collect::<BTreeSet<_>>();
+            intersect_account_id_candidates(&mut candidates, next);
+        }
+
+        for cond in &predicate.r#in {
+            if !account_field_is_id(&cond.field) {
+                continue;
+            }
+            let next = cond
+                .values
+                .iter()
+                .filter_map(parse_account_id_value)
+                .collect::<BTreeSet<_>>();
+            intersect_account_id_candidates(&mut candidates, next);
+        }
+
+        candidates.map(Arc::new)
+    }
+
+    enum AccountSimpleIdPath {
+        One(AccountId),
+        Set(Arc<BTreeSet<AccountId>>),
+    }
+
+    fn account_predicate_simple_id_path(predicate: &PredicateJson) -> Option<AccountSimpleIdPath> {
+        if !predicate.exists.is_empty() {
+            return None;
+        }
+
+        if predicate.r#in.is_empty() && predicate.equals.len() == 1 {
+            let cond = &predicate.equals[0];
+            if !account_field_is_id(&cond.field) {
+                return None;
+            }
+            return parse_account_id_value(&cond.value).map(AccountSimpleIdPath::One);
+        }
+
+        if predicate.equals.is_empty() && predicate.r#in.len() == 1 {
+            let cond = &predicate.r#in[0];
+            if !account_field_is_id(&cond.field) {
+                return None;
+            }
+            let ids = cond
+                .values
+                .iter()
+                .map(parse_account_id_value)
+                .collect::<Option<BTreeSet<_>>>()?;
+            return Some(AccountSimpleIdPath::Set(Arc::new(ids)));
+        }
+
+        None
+    }
+
+    fn predicate_is_id_only(predicate: &PredicateJson) -> bool {
+        let has_any_clause = !predicate.equals.is_empty()
+            || !predicate.r#in.is_empty()
+            || !predicate.exists.is_empty();
+        has_any_clause
+            && predicate
+                .equals
+                .iter()
+                .all(|cond| account_field_is_id(&cond.field))
+            && predicate
+                .r#in
+                .iter()
+                .all(|cond| account_field_is_id(&cond.field))
+            && predicate
+                .exists
+                .iter()
+                .all(|field| account_field_is_id(field))
+    }
+
+    /// Evaluate JSON predicate fields that can be resolved directly from account id/details
+    /// without building a full `Account` object.
+    ///
+    /// Returns:
+    /// - `Some(true|false)` when all predicate fields were alias-resolved.
+    /// - `None` when at least one field requires full JSON evaluation fallback.
+    fn predicate_matches_account_aliases(
+        predicate: &PredicateJson,
+        account_id: &AccountId,
+        account_value: &AccountValue,
+    ) -> Option<bool> {
+        for cond in &predicate.equals {
+            let Some(alias) = account_alias_value(account_id, account_value, &cond.field) else {
+                return None;
+            };
+            let Some(alias) = alias else {
+                return Some(false);
+            };
+            if !predicate_value_equals_str(&cond.value, &alias) {
+                return Some(false);
+            }
+        }
+
+        for cond in &predicate.r#in {
+            let Some(alias) = account_alias_value(account_id, account_value, &cond.field) else {
+                return None;
+            };
+            let Some(alias) = alias else {
+                return Some(false);
+            };
+            if !predicate_values_contain_str(&cond.values, &alias) {
+                return Some(false);
+            }
+        }
+
+        for field in &predicate.exists {
+            let Some(alias) = account_alias_value(account_id, account_value, field) else {
+                return None;
+            };
+            if alias.is_none() {
+                return Some(false);
+            }
+        }
+
+        Some(true)
+    }
+
+    fn account_matches_filter(
+        world: &impl WorldReadOnly,
+        filter: &CompoundPredicate<Account>,
+        predicate_json: Option<&PredicateJson>,
+        account_id: &AccountId,
+        account_value: &AccountValue,
+    ) -> Option<Account> {
+        if let Some(predicate) = predicate_json
+            && let Some(matches) =
+                predicate_matches_account_aliases(predicate, account_id, account_value)
+        {
+            if !matches {
+                return None;
+            }
+            return Some(account_from_entry(world, account_id, account_value));
+        }
+
+        let account = account_from_entry(world, account_id, account_value);
+        filter.applies(&account).then_some(account)
+    }
+
+    impl ValidQuery for FindRolesByAccountId {
+        #[metrics(+"find_roles_by_account_id")]
+        fn execute(
+            self,
+            filter: CompoundPredicate<RoleId>,
+            state_ro: &impl StateReadOnly,
+        ) -> Result<impl Iterator<Item = RoleId>, Error> {
+            let account_id = self.account_id();
+            state_ro.world().account(account_id)?;
+            Ok(state_ro
+                .world()
+                .account_roles_iter(account_id)
+                .filter(move |&role_id| filter.applies(role_id))
+                .cloned())
+        }
+    }
+
+    impl ValidQuery for FindPermissionsByAccountId {
+        #[metrics(+"find_permissions_by_account_id")]
+        fn execute(
+            self,
+            filter: CompoundPredicate<Permission>,
+            state_ro: &impl StateReadOnly,
+        ) -> Result<impl Iterator<Item = Permission>, Error> {
+            let account_id = self.account_id();
+            Ok(state_ro
+                .world()
+                .account_permissions_iter(account_id)?
+                .filter(move |&permission| filter.applies(permission))
+                .cloned())
+        }
+    }
+
+    impl ValidQuery for FindAccounts {
+        #[metrics(+"find_accounts")]
+        fn execute(
+            self,
+            filter: CompoundPredicate<Account>,
+            state_ro: &impl StateReadOnly,
+        ) -> Result<impl Iterator<Item = Account>, Error> {
+            let world = state_ro.world();
+            let filter_payload = filter.json_payload();
+            if filter_payload.is_none() {
+                let iter: Box<dyn Iterator<Item = Account> + '_> = Box::new(
+                    world
+                        .accounts_iter()
+                        .map(|entry| account_from_entry(world, entry.id(), entry.value())),
+                );
+                return Ok(iter);
+            }
+            let predicate_json =
+                filter_payload.and_then(|raw| norito::json::from_str::<PredicateJson>(raw).ok());
+            let simple_id_path = predicate_json
+                .as_ref()
+                .and_then(account_predicate_simple_id_path);
+
+            if let Some(path) = simple_id_path {
+                let iter: Box<dyn Iterator<Item = Account> + '_> = match path {
+                    AccountSimpleIdPath::One(account_id) => {
+                        Box::new(world.accounts().get_key_value(&account_id).into_iter().map(
+                            |(account_id, account_value)| {
+                                account_from_entry(world, account_id, account_value)
+                            },
+                        ))
+                    }
+                    AccountSimpleIdPath::Set(account_ids) => {
+                        let account_ids = account_ids.iter().cloned().collect::<Vec<_>>();
+                        Box::new(account_ids.into_iter().filter_map(move |account_id| {
+                            world.accounts().get_key_value(&account_id).map(
+                                |(account_id, account_value)| {
+                                    account_from_entry(world, account_id, account_value)
+                                },
+                            )
+                        }))
+                    }
+                };
+                return Ok(iter);
+            }
+
+            let candidate_ids = predicate_json
+                .as_ref()
+                .and_then(account_predicate_candidate_ids);
+            let id_only_predicate = predicate_json.as_ref().is_some_and(predicate_is_id_only);
+
+            if let Some(candidates) = candidate_ids {
+                let candidates = candidates.iter().cloned().collect::<Vec<_>>();
+                let iter: Box<dyn Iterator<Item = Account> + '_> =
+                    Box::new(candidates.into_iter().filter_map(move |account_id| {
+                        let Some((account_id, account_value)) =
+                            world.accounts().get_key_value(&account_id)
+                        else {
+                            return None;
+                        };
+                        if id_only_predicate {
+                            return Some(account_from_entry(world, account_id, account_value));
+                        }
+                        account_matches_filter(
+                            world,
+                            &filter,
+                            predicate_json.as_ref(),
+                            account_id,
+                            account_value,
+                        )
+                    }));
+                return Ok(iter);
+            }
+
+            let iter: Box<dyn Iterator<Item = Account> + '_> =
+                Box::new(world.accounts_iter().filter_map(move |entry| {
+                    account_matches_filter(
+                        world,
+                        &filter,
+                        predicate_json.as_ref(),
+                        entry.id(),
+                        entry.value(),
+                    )
+                }));
+            Ok(iter)
+        }
+    }
+
+    impl ValidQuery for FindAccountIds {
+        #[metrics(+"find_account_ids")]
+        fn execute(
+            self,
+            filter: CompoundPredicate<AccountId>,
+            state_ro: &impl StateReadOnly,
+        ) -> Result<impl Iterator<Item = AccountId>, Error> {
+            let world = state_ro.world();
+            Ok(world
+                .accounts_iter()
+                .map(|entry| entry.id().clone())
+                .filter(move |account_id| filter.applies(account_id)))
+        }
+    }
+
+    impl ValidQuery for FindAccountsWithAsset {
+        #[metrics(+"find_accounts_with_asset")]
+        fn execute(
+            self,
+            filter: CompoundPredicate<Account>,
+            state_ro: &impl StateReadOnly,
+        ) -> std::result::Result<impl Iterator<Item = Account>, Error> {
+            let asset_definition_id = self.asset_definition_id().clone();
+            let world = state_ro.world();
+            let filter_payload = filter.json_payload();
+
+            trace!(%asset_definition_id);
+
+            if filter_payload.is_none() {
+                let subjects = world
+                    .asset_definition_holders()
+                    .get(&asset_definition_id)
+                    .map(|holders| holders.iter().cloned().collect::<Vec<_>>())
+                    .unwrap_or_default();
+                let iter: Box<dyn Iterator<Item = Account> + '_> =
+                    Box::new(subjects.into_iter().filter_map(move |subject| {
+                        let Some((account_id, account_value)) =
+                            world.accounts().get_key_value(&subject)
+                        else {
+                            return None;
+                        };
+
+                        let has_balance = world
+                            .assets_in_account_by_definition_iter(account_id, &asset_definition_id)
+                            // Skip zero-valued placeholders (including genesis seeds).
+                            .any(|asset| !asset.value().is_zero());
+
+                        if !has_balance {
+                            return None;
+                        }
+
+                        Some(account_from_entry(world, account_id, account_value))
+                    }));
+                return Ok(iter);
+            }
+
+            let predicate_json =
+                filter_payload.and_then(|raw| norito::json::from_str::<PredicateJson>(raw).ok());
+            let simple_id_path = predicate_json
+                .as_ref()
+                .and_then(account_predicate_simple_id_path);
+
+            if let Some(path) = simple_id_path {
+                let subjects = match (
+                    world.asset_definition_holders().get(&asset_definition_id),
+                    path,
+                ) {
+                    (Some(holders), AccountSimpleIdPath::One(account_id)) => holders
+                        .contains(&account_id)
+                        .then_some(account_id)
+                        .into_iter()
+                        .collect::<Vec<_>>(),
+                    (Some(holders), AccountSimpleIdPath::Set(account_ids)) => account_ids
+                        .iter()
+                        .filter(|account_id| holders.contains(*account_id))
+                        .cloned()
+                        .collect::<Vec<_>>(),
+                    (None, _) => Vec::new(),
+                };
+
+                let iter: Box<dyn Iterator<Item = Account> + '_> =
+                    Box::new(subjects.into_iter().filter_map(move |subject| {
+                        let Some((account_id, account_value)) =
+                            world.accounts().get_key_value(&subject)
+                        else {
+                            return None;
+                        };
+
+                        let has_balance = world
+                            .assets_in_account_by_definition_iter(account_id, &asset_definition_id)
+                            // Skip zero-valued placeholders (including genesis seeds).
+                            .any(|asset| !asset.value().is_zero());
+
+                        if !has_balance {
+                            return None;
+                        }
+
+                        Some(account_from_entry(world, account_id, account_value))
+                    }));
+                return Ok(iter);
+            }
+
+            let candidate_ids = predicate_json
+                .as_ref()
+                .and_then(account_predicate_candidate_ids);
+            let id_only_predicate = predicate_json.as_ref().is_some_and(predicate_is_id_only);
+
+            let subjects = match (
+                world.asset_definition_holders().get(&asset_definition_id),
+                candidate_ids.as_ref(),
+            ) {
+                (Some(holders), Some(candidates)) => candidates
+                    .iter()
+                    .filter(|account_id| holders.contains(*account_id))
+                    .cloned()
+                    .collect::<Vec<_>>(),
+                (Some(holders), None) => holders.iter().cloned().collect::<Vec<_>>(),
+                (None, _) => Vec::new(),
+            };
+
+            let iter: Box<dyn Iterator<Item = Account> + '_> =
+                Box::new(subjects.into_iter().filter_map(move |subject| {
+                    let Some((account_id, account_value)) =
+                        world.accounts().get_key_value(&subject)
+                    else {
+                        return None;
+                    };
+
+                    let has_balance = world
+                        .assets_in_account_by_definition_iter(account_id, &asset_definition_id)
+                        // Skip zero-valued placeholders (including genesis seeds).
+                        .any(|asset| !asset.value().is_zero());
+
+                    if !has_balance {
+                        return None;
+                    }
+
+                    if id_only_predicate {
+                        return Some(account_from_entry(world, account_id, account_value));
+                    }
+
+                    account_matches_filter(
+                        world,
+                        &filter,
+                        predicate_json.as_ref(),
+                        account_id,
+                        account_value,
+                    )
+                }));
+            Ok(iter)
+        }
+    }
+
+    impl ValidSingularQuery for FindAccountById {
+        #[metrics(+"find_account_by_id")]
+        fn execute(&self, state_ro: &impl StateReadOnly) -> Result<Account, Error> {
+            let world = state_ro.world();
+            let (account_id, account_value) = world
+                .accounts()
+                .get_key_value(self.account_id())
+                .ok_or_else(|| Error::Find(FindError::Account(self.account_id().clone())))?;
+            Ok(account_from_entry(world, account_id, account_value))
+        }
+    }
+
+    impl ValidSingularQuery for FindAccountByAlias {
+        #[metrics(+"find_account_by_alias")]
+        fn execute(&self, state_ro: &impl StateReadOnly) -> Result<Account, Error> {
+            let world = state_ro.world();
+            let account_id = if let Some(record) = world.account_rekey_records().get(self.alias()) {
+                record.active_account_id.clone()
+            } else if let Some(account_id) = world.account_aliases().get(self.alias()) {
+                account_id.clone()
+            } else {
+                let mut matched_account_id: Option<AccountId> = None;
+                for (account_id, value) in world.accounts().iter() {
+                    if value.as_ref().label() != Some(self.alias()) {
+                        continue;
+                    }
+                    if let Some(existing) = matched_account_id.as_ref()
+                        && existing != account_id
+                    {
+                        return Err(Error::Conversion(format!(
+                            "account alias `{:?}` is bound to multiple accounts: {existing} and {account_id}",
+                            self.alias()
+                        )));
+                    }
+                    matched_account_id = Some(account_id.clone());
+                }
+                matched_account_id.ok_or(Error::NotFound)?
+            };
+
+            let (account_id, account_value) = world
+                .accounts()
+                .get_key_value(&account_id)
+                .ok_or_else(|| Error::Find(FindError::Account(account_id.clone())))?;
+            Ok(account_from_entry(world, account_id, account_value))
+        }
+    }
+
+    impl ValidSingularQuery for FindAliasesByAccountId {
+        #[metrics(+"find_aliases_by_account_id")]
+        fn execute(
+            &self,
+            state_ro: &impl StateReadOnly,
+        ) -> Result<Vec<AccountAliasBindingRecord>, Error> {
+            let now_ms = state_ro
+                .latest_block()
+                .map(|block| u64::try_from(block.header().creation_time().as_millis()).unwrap_or(0))
+                .unwrap_or(0);
+            let dataspace_filter = self
+                .dataspace()
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .map(|dataspace| {
+                    state_ro
+                        .nexus()
+                        .dataspace_catalog
+                        .by_alias(dataspace)
+                        .map(|entry| entry.id)
+                        .ok_or_else(|| {
+                            Error::Conversion(format!("unknown dataspace alias: {dataspace}"))
+                        })
+                })
+                .transpose()?;
+            let domain_filter = self
+                .domain()
+                .map(str::trim)
+                .filter(|value| !value.is_empty())
+                .map(|domain| {
+                    domain
+                        .parse::<iroha_data_model::account::rekey::AccountAliasDomain>()
+                        .map_err(|err| {
+                            Error::Conversion(format!("invalid alias domain segment: {err}"))
+                        })
+                })
+                .transpose()?;
+
+            let account_id = self.account_id();
+            let Some(account) = state_ro.world().accounts().get(account_id) else {
+                return Err(Error::NotFound);
+            };
+
+            let labels = state_ro
+                .world()
+                .account_aliases_by_account()
+                .get(account_id)
+                .cloned()
+                .unwrap_or_default();
+            labels
+                .into_iter()
+                .filter(|label| {
+                    !dataspace_filter.is_some_and(|dataspace| label.dataspace != dataspace)
+                        && !domain_filter
+                            .as_ref()
+                            .is_some_and(|domain| label.domain.as_ref() != Some(domain))
+                })
+                .map(|label| {
+                    let alias = label
+                        .to_literal(&state_ro.nexus().dataspace_catalog)
+                        .map_err(|err| {
+                            Error::Conversion(format!("invalid account alias binding: {err}"))
+                        })?;
+                    let dataspace = state_ro
+                        .nexus()
+                        .dataspace_catalog
+                        .by_id(label.dataspace)
+                        .ok_or_else(|| {
+                            Error::Conversion(
+                                "account alias dataspace is missing from the catalog".to_owned(),
+                            )
+                        })?
+                        .alias
+                        .clone();
+                    let record = crate::sns::get_name_record(
+                        state_ro.world(),
+                        &state_ro.nexus().dataspace_catalog,
+                        crate::sns::SnsNamespace::AccountAlias,
+                        &alias,
+                        now_ms,
+                    )
+                    .map_err(|err| {
+                        Error::Conversion(format!("invalid account alias lease record: {err}"))
+                    })?;
+                    Ok(AccountAliasBindingRecord {
+                        account_id: account_id.clone(),
+                        alias,
+                        dataspace,
+                        domain: label.domain.as_ref().map(ToString::to_string),
+                        is_primary: account.as_ref().label() == Some(&label),
+                        status: record.status,
+                        lease_expiry_ms: Some(record.expires_at_ms),
+                        grace_until_ms: Some(record.grace_expires_at_ms),
+                        bound_at_ms: record.registered_at_ms,
+                    })
+                })
+                .collect()
+        }
+    }
+
+    impl ValidSingularQuery for FindAccountRecoveryPolicyByAlias {
+        #[metrics(+"find_account_recovery_policy_by_alias")]
+        fn execute(&self, state_ro: &impl StateReadOnly) -> Result<AccountRecoveryPolicy, Error> {
+            state_ro
+                .world()
+                .account_recovery_policies()
+                .get(self.alias())
+                .cloned()
+                .ok_or(Error::NotFound)
+        }
+    }
+
+    impl ValidSingularQuery for FindAccountRecoveryRequestByAlias {
+        #[metrics(+"find_account_recovery_request_by_alias")]
+        fn execute(&self, state_ro: &impl StateReadOnly) -> Result<AccountRecoveryRequest, Error> {
+            state_ro
+                .world()
+                .account_recovery_requests()
+                .get(self.alias())
+                .cloned()
+                .ok_or(Error::NotFound)
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use core::num::NonZeroU64;
+
+        use iroha_data_model::isi::error::{InstructionExecutionError, InvalidParameterError};
+        use iroha_executor_data_model::permission::peer::CanManagePeers;
+        use iroha_primitives::json::Json;
+        use iroha_test_samples::{ALICE_ID, gen_account_in};
+
+        use super::*;
+        use crate::{
+            block::ValidBlock,
+            kura::Kura,
+            query::store::LiveQueryStore,
+            state::{State, World},
+        };
+
+        fn new_dummy_block() -> crate::block::CommittedBlock {
+            let (leader_public_key, leader_private_key) =
+                iroha_crypto::KeyPair::random().into_parts();
+            let peer_id = crate::PeerId::new(leader_public_key);
+            let topology = crate::sumeragi::network_topology::Topology::new(vec![peer_id]);
+            ValidBlock::new_dummy_and_modify_header(&leader_private_key, |h| {
+                h.set_height(NonZeroU64::new(1).unwrap());
+            })
+            .commit(&topology)
+            .unpack(|_| {})
+            .unwrap()
+        }
+
+        fn new_block_header(
+            height: u64,
+            creation_time_ms: u64,
+        ) -> iroha_data_model::block::BlockHeader {
+            iroha_data_model::block::BlockHeader::new(
+                NonZeroU64::new(height).expect("non-zero block height"),
+                None,
+                None,
+                None,
+                creation_time_ms,
+                0,
+            )
+        }
+
+        fn new_state_with_authority() -> State {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let mut world = World::default();
+            seed_authority_account(&mut world, &ALICE_ID);
+            State::new(world, kura, query_handle)
+        }
+
+        fn new_state_with_authority_and_domain_lease(domain_id: &DomainId) -> State {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let mut world = World::default();
+            seed_authority_account(&mut world, &ALICE_ID);
+            seed_domain_name_lease(&mut world, &ALICE_ID, domain_id);
+            State::new(world, kura, query_handle)
+        }
+
+        fn root_alias(label: &str) -> AccountAlias {
+            AccountAlias::domainless(
+                label.parse().expect("account alias label"),
+                iroha_data_model::nexus::DataSpaceId::UNIVERSAL,
+            )
+        }
+
+        fn register_labeled_account(
+            state_transaction: &mut crate::state::StateTransaction<'_, '_>,
+            authority: &AccountId,
+            account_id: &AccountId,
+            alias: &AccountAlias,
+        ) {
+            Register::account(Account::new(account_id.clone()))
+                .execute(authority, state_transaction)
+                .expect("register account");
+            state_transaction
+                .world
+                .account_mut(account_id)
+                .expect("registered account")
+                .set_label(Some(alias.clone()));
+            state_transaction
+                .world
+                .insert_account_alias_binding(alias.clone(), account_id.clone());
+            state_transaction.world.account_rekey_records.insert(
+                alias.clone(),
+                iroha_data_model::account::rekey::AccountRekeyRecord::new(
+                    alias.clone(),
+                    account_id.clone(),
+                ),
+            );
+        }
+
+        fn assert_smart_contract_error_contains(err: InstructionExecutionError, fragment: &str) {
+            match err {
+                InstructionExecutionError::InvalidParameter(
+                    InvalidParameterError::SmartContract(message),
+                ) => {
+                    assert!(
+                        message.contains(fragment),
+                        "expected smart-contract error containing `{fragment}`, got `{message}`"
+                    );
+                }
+                other => panic!("unexpected error: {other:?}"),
+            }
+        }
+
+        #[test]
+        fn find_accounts_with_asset_ignores_zero_holdings() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            // Setup domain and two accounts
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            // Register asset definition and mint zero to acc1, one to acc2
+            let ad: AssetDefinitionId = iroha_data_model::asset::AssetDefinitionId::new(
+                DomainId::try_new("wonderland", "universal").unwrap(),
+                "test_coin".parse().unwrap(),
+            );
+            Register::asset_definition({
+                let __asset_definition_id = ad.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            let a1 = AssetId::new(ad.clone(), acc1.clone());
+            let a2 = AssetId::new(ad.clone(), acc2.clone());
+            // minting zero yields an asset entry with zero quantity
+            Mint::asset_numeric(Numeric::zero(), a1)
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Mint::asset_numeric(1u32, a2)
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            // Query should only return acc2
+            let view = state.view();
+            let results: Vec<_> = FindAccountsWithAsset::new(ad)
+                .execute(CompoundPredicate::PASS, &view)
+                .unwrap()
+                .map(|a| a.id)
+                .collect();
+            assert_eq!(results, vec![acc2]);
+        }
+
+        #[test]
+        fn replace_account_controller_single_to_single_preserves_linked_state() {
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            let state = new_state_with_authority_and_domain_lease(&domain_id);
+            let mut block = state.block(new_block_header(1, 0));
+            let mut stx = block.transaction();
+
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (account_id, _) = gen_account_in("wonderland");
+            let alias = root_alias("merchant");
+            register_labeled_account(&mut stx, &ALICE_ID, &account_id, &alias);
+
+            let metadata_key: Name = "tier".parse().unwrap();
+            stx.world
+                .account_mut(&account_id)
+                .unwrap()
+                .insert(metadata_key.clone(), Json::new("gold"));
+            stx.world
+                .add_account_permission(&account_id, Permission::from(CanManagePeers));
+
+            let asset_definition_id =
+                iroha_data_model::asset::AssetDefinitionId::new(domain_id, "rose".parse().unwrap());
+            Register::asset_definition({
+                let __asset_definition_id = asset_definition_id.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            let old_asset_id = AssetId::new(asset_definition_id.clone(), account_id.clone());
+            Mint::asset_numeric(5u32, old_asset_id.clone())
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let replacement_key = iroha_crypto::KeyPair::random();
+            let replacement_account = AccountId::new(replacement_key.public_key().clone());
+            ReplaceAccountController {
+                account: account_id.clone(),
+                new_controller: AccountController::single(replacement_key.public_key().clone()),
+            }
+            .execute(&account_id, &mut stx)
+            .expect("replace single-key controller");
+
+            assert!(matches!(
+                stx.world.account(&account_id),
+                Err(FindError::Account(_))
+            ));
+            let replacement = stx.world.account(&replacement_account).unwrap();
+            assert_eq!(replacement.label(), Some(&alias));
+            assert!(replacement.metadata().get(&metadata_key).is_some());
+
+            let permissions = stx
+                .world
+                .account_permissions
+                .get(&replacement_account)
+                .expect("permissions moved to replacement account");
+            assert!(permissions.contains(&Permission::from(CanManagePeers)));
+
+            let new_asset_id =
+                AssetId::new(asset_definition_id.clone(), replacement_account.clone());
+            assert!(stx.world.assets.get(&new_asset_id).is_some());
+            let holders = stx
+                .world
+                .asset_definition_holders
+                .get(&asset_definition_id)
+                .expect("holder index should be present");
+            assert!(holders.contains(&replacement_account));
+            assert!(!holders.contains(&account_id));
+
+            assert_eq!(
+                stx.world.account_aliases.get(&alias),
+                Some(&replacement_account)
+            );
+            assert_eq!(
+                stx.world
+                    .account_rekey_records
+                    .get(&alias)
+                    .expect("rekey record should survive")
+                    .active_account_id,
+                replacement_account
+            );
+        }
+
+        #[test]
+        fn set_account_recovery_policy_rejects_unlabeled_account() {
+            let state = new_state_with_authority();
+            let mut block = state.block(new_block_header(1, 0));
+            let mut stx = block.transaction();
+
+            let (account_id, _) = gen_account_in("wonderland");
+            Register::account(Account::new(account_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            let (guardian_id, _) = gen_account_in("wonderland");
+            Register::account(Account::new(guardian_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let policy = AccountRecoveryPolicy::new(
+                vec![RecoveryGuardian::new(guardian_id, 1)],
+                1,
+                NonZeroU64::new(10).unwrap(),
+            )
+            .unwrap();
+
+            let err = SetAccountRecoveryPolicy {
+                account: account_id,
+                policy,
+            }
+            .execute(&ALICE_ID, &mut stx)
+            .expect_err("unlabeled account should reject recovery policy");
+            assert_smart_contract_error_contains(err, "stable alias");
+        }
+
+        #[test]
+        fn account_recovery_flow_finalizes_after_timelock() {
+            let state = new_state_with_authority();
+
+            let owner_key = iroha_crypto::KeyPair::random();
+            let owner_id = AccountId::new(owner_key.public_key().clone());
+            let guardian_key = iroha_crypto::KeyPair::random();
+            let guardian_id = AccountId::new(guardian_key.public_key().clone());
+            let alias = root_alias("guardianed");
+            let replacement_key = iroha_crypto::KeyPair::random();
+            let replacement_account = AccountId::new(replacement_key.public_key().clone());
+
+            {
+                let mut block = state.block(new_block_header(1, 0));
+                let mut stx = block.transaction();
+
+                register_labeled_account(&mut stx, &ALICE_ID, &owner_id, &alias);
+                Register::account(Account::new(guardian_id.clone()))
+                    .execute(&ALICE_ID, &mut stx)
+                    .unwrap();
+
+                let policy = AccountRecoveryPolicy::new(
+                    vec![RecoveryGuardian::new(guardian_id.clone(), 1)],
+                    1,
+                    NonZeroU64::new(10).unwrap(),
+                )
+                .unwrap();
+
+                SetAccountRecoveryPolicy {
+                    account: owner_id.clone(),
+                    policy: policy.clone(),
+                }
+                .execute(&owner_id, &mut stx)
+                .unwrap();
+
+                ProposeAccountRecovery {
+                    alias: alias.clone(),
+                    new_controller: AccountController::single(replacement_key.public_key().clone()),
+                }
+                .execute(&owner_id, &mut stx)
+                .unwrap();
+
+                ApproveAccountRecovery {
+                    alias: alias.clone(),
+                }
+                .execute(&guardian_id, &mut stx)
+                .unwrap();
+                ApproveAccountRecovery {
+                    alias: alias.clone(),
+                }
+                .execute(&guardian_id, &mut stx)
+                .unwrap();
+
+                let request = stx
+                    .world
+                    .account_recovery_requests
+                    .get(&alias)
+                    .expect("request should be stored");
+                assert_eq!(request.approvals.len(), 1);
+
+                let err = FinalizeAccountRecovery {
+                    alias: alias.clone(),
+                }
+                .execute(&guardian_id, &mut stx)
+                .expect_err("timelock should block immediate finalization");
+                assert_smart_contract_error_contains(err, "timelocked");
+
+                stx.apply();
+                block.commit().unwrap();
+            }
+
+            let mut block = state.block(new_block_header(2, 10));
+            let mut stx = block.transaction();
+            FinalizeAccountRecovery {
+                alias: alias.clone(),
+            }
+            .execute(&guardian_id, &mut stx)
+            .expect("finalize after timelock");
+
+            assert!(matches!(
+                stx.world.account(&owner_id),
+                Err(FindError::Account(_))
+            ));
+            assert!(stx.world.account(&replacement_account).is_ok());
+            assert_eq!(
+                stx.world.account_aliases.get(&alias),
+                Some(&replacement_account)
+            );
+            assert_eq!(
+                stx.world
+                    .account_recovery_requests
+                    .get(&alias)
+                    .expect("request should remain for audit")
+                    .status,
+                AccountRecoveryStatus::Finalized
+            );
+            assert!(
+                stx.world.account_recovery_policies.get(&alias).is_some(),
+                "recovery policy should remain after finalization"
+            );
+
+            let err = FinalizeAccountRecovery {
+                alias: alias.clone(),
+            }
+            .execute(&guardian_id, &mut stx)
+            .expect_err("finalized request must not be replayable");
+            assert_smart_contract_error_contains(err, "is not pending");
+        }
+
+        #[test]
+        fn account_recovery_requires_quorum_and_guardian_quorum_can_cancel() {
+            let state = new_state_with_authority();
+
+            let owner_key = iroha_crypto::KeyPair::random();
+            let owner_id = AccountId::new(owner_key.public_key().clone());
+            let guardian_one_key = iroha_crypto::KeyPair::random();
+            let guardian_one_id = AccountId::new(guardian_one_key.public_key().clone());
+            let guardian_two_key = iroha_crypto::KeyPair::random();
+            let guardian_two_id = AccountId::new(guardian_two_key.public_key().clone());
+            let alias = root_alias("quorum-guarded");
+            let replacement_key = iroha_crypto::KeyPair::random();
+
+            let mut block = state.block(new_block_header(1, 0));
+            let mut stx = block.transaction();
+
+            register_labeled_account(&mut stx, &ALICE_ID, &owner_id, &alias);
+            Register::account(Account::new(guardian_one_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(guardian_two_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let policy = AccountRecoveryPolicy::new(
+                vec![
+                    RecoveryGuardian::new(guardian_one_id.clone(), 1),
+                    RecoveryGuardian::new(guardian_two_id.clone(), 1),
+                ],
+                2,
+                NonZeroU64::new(10).unwrap(),
+            )
+            .unwrap();
+
+            SetAccountRecoveryPolicy {
+                account: owner_id.clone(),
+                policy,
+            }
+            .execute(&owner_id, &mut stx)
+            .unwrap();
+
+            ProposeAccountRecovery {
+                alias: alias.clone(),
+                new_controller: AccountController::single(replacement_key.public_key().clone()),
+            }
+            .execute(&owner_id, &mut stx)
+            .unwrap();
+
+            ApproveAccountRecovery {
+                alias: alias.clone(),
+            }
+            .execute(&guardian_one_id, &mut stx)
+            .unwrap();
+
+            let err = FinalizeAccountRecovery {
+                alias: alias.clone(),
+            }
+            .execute(&guardian_one_id, &mut stx)
+            .expect_err("finalization must reject before quorum");
+            assert_smart_contract_error_contains(err, "guardian quorum");
+
+            ApproveAccountRecovery {
+                alias: alias.clone(),
+            }
+            .execute(&guardian_two_id, &mut stx)
+            .unwrap();
+
+            CancelAccountRecovery {
+                alias: alias.clone(),
+            }
+            .execute(&guardian_one_id, &mut stx)
+            .expect("guardian quorum should be able to cancel");
+
+            let request = stx
+                .world
+                .account_recovery_requests
+                .get(&alias)
+                .expect("cancelled request should remain queryable");
+            assert_eq!(request.status, AccountRecoveryStatus::Cancelled);
+        }
+
+        #[test]
+        fn find_accounts_returns_registered_accounts_for_pass_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _) = gen_account_in("wonderland");
+            let (acc2, _) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let mut results: Vec<_> = FindAccounts
+                .execute(CompoundPredicate::PASS, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            results.sort();
+
+            let mut expected = vec![acc1, acc2];
+            expected.sort();
+            assert_eq!(results, expected);
+        }
+
+        #[test]
+        fn find_accounts_applies_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let tier_key: Name = "tier".parse().unwrap();
+            SetKeyValue::account(acc1.clone(), tier_key.clone(), Json::from("gold"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            SetKeyValue::account(acc2.clone(), tier_key, Json::from("silver"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate =
+                CompoundPredicate::<Account>::build(|p| p.equals("metadata.tier", "gold"));
+            let results: Vec<_> = FindAccounts
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            assert_eq!(results, vec![acc1]);
+        }
+
+        #[test]
+        fn find_accounts_applies_id_literal_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate =
+                CompoundPredicate::<Account>::build(|p| p.equals("id", acc2.to_string()));
+            let results: Vec<_> = FindAccounts
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            assert_eq!(results, vec![acc2]);
+        }
+
+        #[test]
+        fn find_accounts_applies_id_in_literal_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            let (acc3, _kp3) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc3.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate = CompoundPredicate::<Account>::build(|p| {
+                p.in_values("id", [acc2.to_string(), acc3.to_string()])
+            });
+            let mut results: Vec<_> = FindAccounts
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            results.sort();
+            let mut expected = vec![acc2, acc3];
+            expected.sort();
+            assert_eq!(results, expected);
+        }
+
+        #[test]
+        fn find_accounts_applies_mixed_id_and_metadata_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let tier_key: Name = "tier".parse().unwrap();
+            SetKeyValue::account(acc1.clone(), tier_key.clone(), Json::from("gold"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            SetKeyValue::account(acc2.clone(), tier_key, Json::from("silver"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate = CompoundPredicate::<Account>::build(|p| {
+                p.equals("id", acc1.to_string())
+                    .equals("metadata.tier", "gold")
+            });
+            let results: Vec<_> = FindAccounts
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            assert_eq!(results, vec![acc1]);
+        }
+
+        #[test]
+        fn find_accounts_with_asset_applies_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let ad: AssetDefinitionId = iroha_data_model::asset::AssetDefinitionId::new(
+                DomainId::try_new("wonderland", "universal").unwrap(),
+                "test_coin".parse().unwrap(),
+            );
+            Register::asset_definition({
+                let __asset_definition_id = ad.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let tier_key: Name = "tier".parse().unwrap();
+            SetKeyValue::account(acc1.clone(), tier_key.clone(), Json::from("gold"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            SetKeyValue::account(acc2.clone(), tier_key, Json::from("silver"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate =
+                CompoundPredicate::<Account>::build(|p| p.equals("metadata.tier", "gold"));
+            let results: Vec<_> = FindAccountsWithAsset::new(ad)
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            assert_eq!(results, vec![acc1]);
+        }
+
+        #[test]
+        fn find_accounts_with_asset_applies_id_literal_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let ad: AssetDefinitionId = iroha_data_model::asset::AssetDefinitionId::new(
+                DomainId::try_new("wonderland", "universal").unwrap(),
+                "test_coin".parse().unwrap(),
+            );
+            Register::asset_definition({
+                let __asset_definition_id = ad.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate =
+                CompoundPredicate::<Account>::build(|p| p.equals("id", acc2.to_string()));
+            let results: Vec<_> = FindAccountsWithAsset::new(ad)
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            assert_eq!(results, vec![acc2]);
+        }
+
+        #[test]
+        fn find_accounts_with_asset_applies_id_in_literal_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            let (acc3, _kp3) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc3.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let ad: AssetDefinitionId = iroha_data_model::asset::AssetDefinitionId::new(
+                DomainId::try_new("wonderland", "universal").unwrap(),
+                "test_coin".parse().unwrap(),
+            );
+            Register::asset_definition({
+                let __asset_definition_id = ad.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate = CompoundPredicate::<Account>::build(|p| {
+                p.in_values("id", [acc2.to_string(), acc3.to_string()])
+            });
+            let results: Vec<_> = FindAccountsWithAsset::new(ad)
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            assert_eq!(results, vec![acc2]);
+        }
+
+        #[test]
+        fn find_accounts_with_asset_applies_mixed_id_and_metadata_predicate() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (acc1, _kp1) = gen_account_in("wonderland");
+            let (acc2, _kp2) = gen_account_in("wonderland");
+            Register::account(Account::new(acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let ad: AssetDefinitionId = iroha_data_model::asset::AssetDefinitionId::new(
+                DomainId::try_new("wonderland", "universal").unwrap(),
+                "test_coin".parse().unwrap(),
+            );
+            Register::asset_definition({
+                let __asset_definition_id = ad.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc1.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Mint::asset_numeric(1u32, AssetId::new(ad.clone(), acc2.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let tier_key: Name = "tier".parse().unwrap();
+            SetKeyValue::account(acc1.clone(), tier_key.clone(), Json::from("gold"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            SetKeyValue::account(acc2.clone(), tier_key, Json::from("silver"))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let predicate = CompoundPredicate::<Account>::build(|p| {
+                p.equals("id", acc1.to_string())
+                    .equals("metadata.tier", "gold")
+            });
+            let results: Vec<_> = FindAccountsWithAsset::new(ad)
+                .execute(predicate, &view)
+                .unwrap()
+                .map(|account| account.id)
+                .collect();
+            assert_eq!(results, vec![acc1]);
+        }
+
+        #[test]
+        fn find_aliases_by_account_id_returns_primary_alias_bindings() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let linked_domain: DomainId = DomainId::try_new("banka", "universal").unwrap();
+            let mut world = World::default();
+            seed_domain_name_lease(&mut world, &ALICE_ID, &linked_domain);
+            seed_authority_account(&mut world, &ALICE_ID);
+            let state = State::new(world, kura, query_handle);
+            state.nexus.write().dataspace_catalog =
+                iroha_data_model::nexus::DataSpaceCatalog::new(vec![
+                    iroha_data_model::nexus::DataSpaceMetadata::default(),
+                    iroha_data_model::nexus::DataSpaceMetadata {
+                        id: iroha_data_model::nexus::DataSpaceId::new(9),
+                        alias: "centralbank".to_owned(),
+                        description: None,
+                        fault_tolerance: 1,
+                    },
+                ])
+                .expect("catalog");
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            stx.world.domains.insert(
+                linked_domain.clone(),
+                Domain::new(linked_domain.clone()).build(&ALICE_ID),
+            );
+            seed_manage_account_alias_permissions(
+                &mut stx,
+                &ALICE_ID,
+                &linked_domain,
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+
+            let (account_id, _) = gen_account_in("banka");
+            let primary_label = AccountAlias::new_in_dataspace(
+                "merchant".parse().expect("label"),
+                Some(alias_domain(&linked_domain)),
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+            seed_account_alias_lease(&mut stx, &ALICE_ID, &primary_label);
+            let account = Account::new(account_id.clone())
+                .with_label(Some(primary_label.clone()))
+                .build(&account_id);
+            let (stored_account_id, stored_value) =
+                iroha_data_model::IntoKeyValue::into_key_value(account);
+            stx.world.accounts.insert(stored_account_id, stored_value);
+            stx.world
+                .insert_account_alias_binding(primary_label.clone(), account_id.clone());
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let aliases = FindAliasesByAccountId::new(
+                account_id.clone(),
+                Some("centralbank".to_owned()),
+                Some("banka".to_owned()),
+            )
+            .execute(&view)
+            .unwrap();
+            assert_eq!(aliases.len(), 1);
+            assert_eq!(aliases[0].alias, "merchant@banka.centralbank");
+            assert_eq!(aliases[0].dataspace, "centralbank");
+            assert_eq!(aliases[0].domain.as_deref(), Some("banka"));
+            assert!(aliases[0].is_primary);
+        }
+
+        #[test]
+        fn find_aliases_by_account_id_returns_empty_when_filters_do_not_match() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let linked_domain: DomainId = DomainId::try_new("banka", "universal").unwrap();
+            let mut world = World::default();
+            seed_domain_name_lease(&mut world, &ALICE_ID, &linked_domain);
+            seed_authority_account(&mut world, &ALICE_ID);
+            let state = State::new(world, kura, query_handle);
+            state.nexus.write().dataspace_catalog =
+                iroha_data_model::nexus::DataSpaceCatalog::new(vec![
+                    iroha_data_model::nexus::DataSpaceMetadata::default(),
+                    iroha_data_model::nexus::DataSpaceMetadata {
+                        id: iroha_data_model::nexus::DataSpaceId::new(9),
+                        alias: "centralbank".to_owned(),
+                        description: None,
+                        fault_tolerance: 1,
+                    },
+                ])
+                .expect("catalog");
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            stx.world.domains.insert(
+                linked_domain.clone(),
+                Domain::new(linked_domain.clone()).build(&ALICE_ID),
+            );
+            seed_manage_account_alias_permissions(
+                &mut stx,
+                &ALICE_ID,
+                &linked_domain,
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+
+            let (account_id, _) = gen_account_in("banka");
+            let primary_label = AccountAlias::new_in_dataspace(
+                "merchant".parse().expect("label"),
+                Some(alias_domain(&linked_domain)),
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+            seed_account_alias_lease(&mut stx, &ALICE_ID, &primary_label);
+            let account = Account::new(account_id.clone())
+                .with_label(Some(primary_label.clone()))
+                .build(&account_id);
+            let (stored_account_id, stored_value) =
+                iroha_data_model::IntoKeyValue::into_key_value(account);
+            stx.world.accounts.insert(stored_account_id, stored_value);
+            stx.world
+                .insert_account_alias_binding(primary_label.clone(), account_id.clone());
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let aliases = FindAliasesByAccountId::new(
+                account_id,
+                Some("centralbank".to_owned()),
+                Some("bankb".to_owned()),
+            )
+            .execute(&view)
+            .unwrap();
+            assert!(aliases.is_empty());
+        }
+
+        #[test]
+        fn find_account_by_alias_resolves_primary_alias() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let linked_domain: DomainId = DomainId::try_new("banka", "universal").unwrap();
+            let mut world = World::default();
+            seed_domain_name_lease(&mut world, &ALICE_ID, &linked_domain);
+            seed_authority_account(&mut world, &ALICE_ID);
+            let state = State::new(world, kura, query_handle);
+            state.nexus.write().dataspace_catalog =
+                iroha_data_model::nexus::DataSpaceCatalog::new(vec![
+                    iroha_data_model::nexus::DataSpaceMetadata::default(),
+                    iroha_data_model::nexus::DataSpaceMetadata {
+                        id: iroha_data_model::nexus::DataSpaceId::new(9),
+                        alias: "centralbank".to_owned(),
+                        description: None,
+                        fault_tolerance: 1,
+                    },
+                ])
+                .expect("catalog");
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            Register::domain(Domain::new(linked_domain.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            seed_manage_account_alias_permissions(
+                &mut stx,
+                &ALICE_ID,
+                &linked_domain,
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+
+            let (account_id, _) = gen_account_in("banka");
+            let primary_label = AccountAlias::new_in_dataspace(
+                "merchant".parse().expect("label"),
+                Some(alias_domain(&linked_domain)),
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+            seed_account_alias_lease(&mut stx, &ALICE_ID, &primary_label);
+            let account = Account::new(account_id.clone())
+                .with_label(Some(primary_label.clone()))
+                .build(&account_id);
+            let (stored_account_id, stored_value) =
+                iroha_data_model::IntoKeyValue::into_key_value(account);
+            stx.world.accounts.insert(stored_account_id, stored_value);
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let account = FindAccountByAlias::new(primary_label)
+                .execute(&view)
+                .unwrap();
+            assert_eq!(account.id(), &account_id);
+        }
+
+        #[test]
+        fn find_aliases_by_account_id_returns_root_dataspace_alias_without_domain() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let mut world = World::default();
+            seed_authority_account(&mut world, &ALICE_ID);
+            let state = State::new(world, kura, query_handle);
+            state.nexus.write().dataspace_catalog =
+                iroha_data_model::nexus::DataSpaceCatalog::new(vec![
+                    iroha_data_model::nexus::DataSpaceMetadata::default(),
+                    iroha_data_model::nexus::DataSpaceMetadata {
+                        id: iroha_data_model::nexus::DataSpaceId::new(9),
+                        alias: "centralbank".to_owned(),
+                        description: None,
+                        fault_tolerance: 1,
+                    },
+                ])
+                .expect("catalog");
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            seed_manage_account_alias_dataspace_permission(
+                &mut stx,
+                &ALICE_ID,
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+
+            let (account_id, _) = gen_account_in("wonderland");
+            let root_label = AccountAlias::new_in_dataspace(
+                "merchant".parse().expect("label"),
+                None,
+                iroha_data_model::nexus::DataSpaceId::new(9),
+            );
+            seed_account_alias_lease(&mut stx, &ALICE_ID, &root_label);
+            Register::account(Account::new(account_id.clone()).with_label(Some(root_label)))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            stx.apply();
+            state_block.commit().unwrap();
+
+            let view = state.view();
+            let aliases =
+                FindAliasesByAccountId::new(account_id, Some("centralbank".to_owned()), None)
+                    .execute(&view)
+                    .unwrap();
+            assert_eq!(aliases.len(), 1);
+            assert_eq!(aliases[0].alias, "merchant@centralbank");
+            assert_eq!(aliases[0].dataspace, "centralbank");
+            assert_eq!(aliases[0].domain, None);
+            assert!(aliases[0].is_primary);
+        }
+
+        #[test]
+        fn transfer_asset_definition_rejects_unauthorized_authority() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (source, _) = gen_account_in("wonderland");
+            let (destination, _) = gen_account_in("wonderland");
+            let (intruder, _) = gen_account_in("wonderland");
+            Register::account(Account::new(source.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(destination.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(intruder.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let asset_definition: AssetDefinitionId =
+                iroha_data_model::asset::AssetDefinitionId::new(
+                    DomainId::try_new("wonderland", "universal").unwrap(),
+                    "bond".parse().unwrap(),
+                );
+            Register::asset_definition({
+                let __asset_definition_id = asset_definition.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            stx.world
+                .asset_definition_mut(&asset_definition)
+                .unwrap()
+                .set_owned_by(source.clone());
+
+            let err = Transfer::asset_definition(
+                source.clone(),
+                asset_definition.clone(),
+                destination.clone(),
+            )
+            .execute(&intruder, &mut stx)
+            .expect_err("unauthorized authority must not transfer asset definition ownership");
+            assert!(
+                err.to_string().contains("Can't transfer asset definition"),
+                "unexpected error: {err}"
+            );
+            assert_eq!(
+                stx.world
+                    .asset_definition(&asset_definition)
+                    .unwrap()
+                    .owned_by(),
+                &source,
+                "owner must remain unchanged on failed transfer"
+            );
+        }
+
+        #[test]
+        fn transfer_asset_definition_allows_source_owner() {
+            let kura = Kura::blank_kura_for_testing();
+            let query_handle = LiveQueryStore::start_test();
+            let state = State::new(World::default(), kura, query_handle);
+
+            let block = new_dummy_block();
+            let mut state_block = state.block(block.as_ref().header());
+            let mut stx = state_block.transaction();
+
+            let domain_id: DomainId = DomainId::try_new("wonderland", "universal").unwrap();
+            Register::domain(Domain::new(domain_id.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(ALICE_ID.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let (source, _) = gen_account_in("wonderland");
+            let (destination, _) = gen_account_in("wonderland");
+            Register::account(Account::new(source.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+            Register::account(Account::new(destination.clone()))
+                .execute(&ALICE_ID, &mut stx)
+                .unwrap();
+
+            let asset_definition: AssetDefinitionId =
+                iroha_data_model::asset::AssetDefinitionId::new(
+                    DomainId::try_new("wonderland", "universal").unwrap(),
+                    "bond".parse().unwrap(),
+                );
+            Register::asset_definition({
+                let __asset_definition_id = asset_definition.clone();
+                AssetDefinition::numeric(__asset_definition_id.clone())
+                    .with_name(__asset_definition_id.name().to_string())
+            })
+            .execute(&ALICE_ID, &mut stx)
+            .unwrap();
+            stx.world
+                .asset_definition_mut(&asset_definition)
+                .unwrap()
+                .set_owned_by(source.clone());
+
+            Transfer::asset_definition(
+                source.clone(),
+                asset_definition.clone(),
+                destination.clone(),
+            )
+            .execute(&source, &mut stx)
+            .expect("source owner must be allowed to transfer ownership");
+            assert_eq!(
+                stx.world
+                    .asset_definition(&asset_definition)
+                    .unwrap()
+                    .owned_by(),
+                &destination
+            );
+        }
+    }
+}

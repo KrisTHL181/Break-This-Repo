@@ -1,0 +1,336 @@
+// Copyright 2023 RisingWave Labs
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+use itertools::Itertools;
+use risingwave_common::catalog::TableId;
+use risingwave_hummock_sdk::change_log::EpochNewChangeLog;
+use risingwave_hummock_sdk::compact_task::{CompactTask, CompactTaskAssignment};
+use risingwave_hummock_sdk::version::HummockVersionDelta;
+use risingwave_meta_model::compaction_config::CompactionConfig;
+use risingwave_meta_model::compaction_status::LevelHandlers;
+use risingwave_meta_model::compaction_task::CompactionTask;
+use risingwave_meta_model::hummock_table_change_log::ActiveModel as MetaStoreTableChangeLog;
+use risingwave_meta_model::hummock_version_delta::FullVersionDelta;
+use risingwave_meta_model::hummock_version_stats::TableStats;
+use risingwave_meta_model::{
+    CompactionGroupId, CompactionTaskId, Epoch, HummockVersionId, compaction_config,
+    compaction_status, compaction_task, hummock_pinned_snapshot, hummock_pinned_version,
+    hummock_version_delta, hummock_version_stats,
+};
+use risingwave_pb::hummock::{
+    HummockPinnedSnapshot, HummockPinnedVersion, HummockVersionStats, PbSstableInfo,
+};
+use sea_orm::ActiveValue::Set;
+use sea_orm::EntityTrait;
+use sea_orm::sea_query::OnConflict;
+
+use crate::hummock::compaction::CompactStatus;
+use crate::hummock::model::CompactionGroup;
+use crate::model::{MetadataModelError, MetadataModelResult, Transactional};
+
+pub type Transaction = sea_orm::DatabaseTransaction;
+
+pub(crate) fn compaction_task_model_to_assignment(
+    model: compaction_task::Model,
+) -> CompactTaskAssignment {
+    CompactTaskAssignment {
+        compact_task: CompactTask::from(model.task.to_protobuf()),
+        context_id: model.context_id,
+    }
+}
+
+impl From<sea_orm::DbErr> for MetadataModelError {
+    fn from(err: sea_orm::DbErr) -> Self {
+        // TODO: a separate error variant
+        MetadataModelError::InternalError(err.into())
+    }
+}
+
+// TODO: reduce boilerplate code
+
+#[async_trait::async_trait]
+impl Transactional<Transaction> for CompactionGroup {
+    async fn upsert_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        let m = compaction_config::ActiveModel {
+            compaction_group_id: Set(self.group_id),
+            config: Set(CompactionConfig::from(&(*self.compaction_config))),
+        };
+        compaction_config::Entity::insert(m)
+            .on_conflict(
+                OnConflict::column(compaction_config::Column::CompactionGroupId)
+                    .update_columns([compaction_config::Column::Config])
+                    .to_owned(),
+            )
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+
+    async fn delete_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        compaction_config::Entity::delete_by_id(
+            CompactionGroupId::try_from(self.group_id).unwrap(),
+        )
+        .exec(trx)
+        .await?;
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl Transactional<Transaction> for CompactStatus {
+    async fn upsert_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        let m = compaction_status::ActiveModel {
+            compaction_group_id: Set(self.compaction_group_id),
+            status: Set(LevelHandlers::from(
+                self.level_handlers.iter().map_into().collect_vec(),
+            )),
+        };
+        compaction_status::Entity::insert(m)
+            .on_conflict(
+                OnConflict::column(compaction_status::Column::CompactionGroupId)
+                    .update_columns([compaction_status::Column::Status])
+                    .to_owned(),
+            )
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+
+    async fn delete_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        compaction_status::Entity::delete_by_id(
+            CompactionGroupId::try_from(self.compaction_group_id).unwrap(),
+        )
+        .exec(trx)
+        .await?;
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl Transactional<Transaction> for CompactTaskAssignment {
+    async fn upsert_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        let task: risingwave_pb::hummock::CompactTask = (&self.compact_task).into();
+        let m = compaction_task::ActiveModel {
+            id: Set(self.compact_task.task_id.try_into().unwrap()),
+            context_id: Set(self.context_id),
+            task: Set(CompactionTask::from(&task)),
+        };
+        compaction_task::Entity::insert(m)
+            .on_conflict(
+                OnConflict::column(compaction_task::Column::Id)
+                    .update_columns([
+                        compaction_task::Column::ContextId,
+                        compaction_task::Column::Task,
+                    ])
+                    .to_owned(),
+            )
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+
+    async fn delete_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        compaction_task::Entity::delete_by_id(
+            CompactionTaskId::try_from(self.compact_task.task_id).unwrap(),
+        )
+        .exec(trx)
+        .await?;
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl Transactional<Transaction> for HummockPinnedVersion {
+    async fn upsert_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        let m = hummock_pinned_version::ActiveModel {
+            context_id: Set(self.context_id),
+            min_pinned_id: Set(self.min_pinned_id),
+        };
+        hummock_pinned_version::Entity::insert(m)
+            .on_conflict(
+                OnConflict::column(hummock_pinned_version::Column::ContextId)
+                    .update_columns([hummock_pinned_version::Column::MinPinnedId])
+                    .to_owned(),
+            )
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+
+    async fn delete_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        hummock_pinned_version::Entity::delete_by_id(self.context_id)
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl Transactional<Transaction> for HummockPinnedSnapshot {
+    async fn upsert_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        let m = hummock_pinned_snapshot::ActiveModel {
+            context_id: Set(self.context_id),
+            min_pinned_snapshot: Set(self.minimal_pinned_snapshot.try_into().unwrap()),
+        };
+        hummock_pinned_snapshot::Entity::insert(m)
+            .on_conflict(
+                OnConflict::column(hummock_pinned_snapshot::Column::ContextId)
+                    .update_columns([hummock_pinned_snapshot::Column::MinPinnedSnapshot])
+                    .to_owned(),
+            )
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+
+    async fn delete_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        hummock_pinned_snapshot::Entity::delete_by_id(self.context_id)
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl Transactional<Transaction> for HummockVersionStats {
+    async fn upsert_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        let m = hummock_version_stats::ActiveModel {
+            id: Set(self.hummock_version_id),
+            stats: Set(TableStats(self.table_stats.clone())),
+        };
+        hummock_version_stats::Entity::insert(m)
+            .on_conflict(
+                OnConflict::column(hummock_version_stats::Column::Id)
+                    .update_columns([hummock_version_stats::Column::Stats])
+                    .to_owned(),
+            )
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+
+    async fn delete_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        hummock_version_stats::Entity::delete_by_id(
+            HummockVersionId::try_from(self.hummock_version_id).unwrap(),
+        )
+        .exec(trx)
+        .await?;
+        Ok(())
+    }
+}
+
+#[async_trait::async_trait]
+impl Transactional<Transaction> for HummockVersionDelta {
+    async fn upsert_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        let m = hummock_version_delta::ActiveModel {
+            id: Set(self.id),
+            prev_id: Set(self.prev_id),
+            max_committed_epoch: Set(0.into()),
+            safe_epoch: Set(0.into()),
+            trivial_move: Set(self.trivial_move),
+            full_version_delta: Set(FullVersionDelta::from(&self.into())),
+        };
+        hummock_version_delta::Entity::insert(m)
+            .on_conflict(
+                OnConflict::column(hummock_version_delta::Column::Id)
+                    .update_columns([
+                        hummock_version_delta::Column::PrevId,
+                        hummock_version_delta::Column::MaxCommittedEpoch,
+                        hummock_version_delta::Column::SafeEpoch,
+                        hummock_version_delta::Column::TrivialMove,
+                        hummock_version_delta::Column::FullVersionDelta,
+                    ])
+                    .to_owned(),
+            )
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+
+    async fn delete_in_transaction(&self, trx: &mut Transaction) -> MetadataModelResult<()> {
+        hummock_version_delta::Entity::delete_by_id(self.id)
+            .exec(trx)
+            .await?;
+        Ok(())
+    }
+}
+
+impl From<compaction_config::Model> for CompactionGroup {
+    fn from(value: compaction_config::Model) -> Self {
+        Self::new(value.compaction_group_id, value.config.to_protobuf())
+    }
+}
+
+impl From<compaction_status::Model> for CompactStatus {
+    fn from(value: compaction_status::Model) -> Self {
+        Self {
+            compaction_group_id: value.compaction_group_id,
+            level_handlers: value.status.to_protobuf().iter().map_into().collect(),
+        }
+    }
+}
+
+pub fn to_table_change_log_meta_store_model(
+    table_id: TableId,
+    change_log: &EpochNewChangeLog,
+) -> MetaStoreTableChangeLog {
+    MetaStoreTableChangeLog {
+        table_id: Set(table_id),
+        checkpoint_epoch: Set(change_log.checkpoint_epoch as _),
+        non_checkpoint_epochs: Set(change_log
+            .non_checkpoint_epochs
+            .iter()
+            .map(|e| *e as Epoch)
+            .collect::<Vec<_>>()
+            .into()),
+        new_value_sst: Set(change_log
+            .new_value
+            .iter()
+            .map(Into::into)
+            .collect::<Vec<PbSstableInfo>>()
+            .into()),
+        old_value_sst: Set(change_log
+            .old_value
+            .iter()
+            .map(Into::into)
+            .collect::<Vec<PbSstableInfo>>()
+            .into()),
+    }
+}
+
+pub fn to_table_change_log(
+    change_log: risingwave_meta_model::hummock_table_change_log::Model,
+) -> EpochNewChangeLog {
+    EpochNewChangeLog {
+        new_value: change_log
+            .new_value_sst
+            .to_protobuf()
+            .into_iter()
+            .map(Into::into)
+            .collect(),
+        old_value: change_log
+            .old_value_sst
+            .to_protobuf()
+            .into_iter()
+            .map(Into::into)
+            .collect(),
+        non_checkpoint_epochs: change_log
+            .non_checkpoint_epochs
+            .0
+            .iter()
+            .map(|e| *e as _)
+            .collect(),
+        checkpoint_epoch: change_log.checkpoint_epoch as _,
+    }
+}

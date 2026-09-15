@@ -1,0 +1,2296 @@
+use super::*;
+use crate::db_probe::{begin_measurement, finish_measurement};
+use crate::redaction::redact_postgres_url;
+use ironclaw_stress::db_probe::{
+    self as db_probe, DbProbeConfig, DbProbeDelta, DbProbeSnapshot, StatsScope,
+    aggregate_statement_calls, begin as begin_db_probe, capture as capture_db_probe,
+    finish as finish_db_probe, pg_stat_statements_unavailable, sanitize_postgres_error,
+    summarize_measurement, try_capture_libsql,
+};
+
+#[test]
+fn redacts_postgres_uri_credentials_but_keeps_host() {
+    let redacted = redact_postgres_url("postgres://user:secret@localhost:5432/app");
+
+    assert_eq!(redacted, "postgres://<redacted>@localhost:5432/app");
+    assert!(!redacted.contains("secret"));
+}
+
+#[test]
+fn redacts_postgresql_uri_password_query_parameter() {
+    let redacted =
+        redact_postgres_url("postgresql://localhost/app?sslmode=require&password=secret");
+
+    assert_eq!(
+        redacted,
+        "postgresql://localhost/app?sslmode=require&password=<redacted>"
+    );
+    assert!(!redacted.contains("secret"));
+}
+
+#[test]
+fn redacts_key_value_postgres_password() {
+    let redacted = redact_postgres_url("host=localhost user=postgres password=secret dbname=app");
+
+    assert_eq!(
+        redacted,
+        "host=localhost user=postgres password=<redacted> dbname=app"
+    );
+    assert!(!redacted.contains("secret"));
+}
+
+#[test]
+fn redacts_libsql_absolute_path() {
+    let redacted = redact_libsql_path(Path::new("/tmp/ironclaw-stress-secret.db"));
+
+    assert_eq!(redacted, "libsql://<redacted-local-path>");
+    assert!(!redacted.contains("/tmp"));
+}
+
+#[test]
+fn synthetic_ids_are_generated_once_for_requested_cardinality() {
+    let args = test_args();
+    let ids = SyntheticIds::new(&args).expect("synthetic ids build");
+
+    assert_eq!(ids.tenant_count(), args.tenants);
+    assert_eq!(ids.user_count(), args.users);
+}
+
+#[test]
+fn active_thread_count_reuses_hot_thread_but_keeps_actor_fanout() {
+    let mut args = test_args();
+    args.users = 4;
+    args.active_thread_count = 1;
+    let ids = SyntheticIds::new(&args).expect("synthetic ids build");
+
+    let first = ids.user_turn_context(&args, 0, 0).expect("first context");
+    let second = ids.user_turn_context(&args, 0, 1).expect("second context");
+
+    assert_ne!(first.user_id.as_str(), second.user_id.as_str());
+    assert_eq!(first.thread_id.as_str(), second.thread_id.as_str());
+    assert_eq!(
+        first.thread_owner_user_id.as_str(),
+        second.thread_owner_user_id.as_str()
+    );
+}
+
+#[test]
+fn fixed_operation_mode_spreads_concurrent_workers_across_threads() {
+    let mut args = test_args();
+    args.users = 8;
+    args.concurrency = 8;
+    args.operations = 200;
+    args.active_thread_count = 0;
+    let ids = SyntheticIds::new(&args).expect("synthetic ids build");
+
+    let thread_ids = (0..args.concurrency)
+        .map(|worker_index| {
+            ids.user_turn_context(&args, worker_index, 0)
+                .expect("context")
+                .thread_id
+        })
+        .collect::<std::collections::BTreeSet<_>>();
+
+    assert_eq!(thread_ids.len(), args.concurrency);
+}
+
+#[test]
+fn user_turn_workers_keep_disjoint_thread_partitions() {
+    let mut args = test_args();
+    args.users = 10;
+    args.concurrency = 4;
+    args.operations = 100;
+    args.active_thread_count = 0;
+    let ids = SyntheticIds::new(&args).expect("synthetic ids build");
+
+    let mut seen_by_worker = Vec::new();
+    for worker_index in 0..args.concurrency {
+        let thread_ids = (0..args.operations)
+            .map(|operation_index| {
+                ids.user_turn_context(&args, worker_index, operation_index)
+                    .expect("context")
+                    .thread_id
+            })
+            .collect::<std::collections::BTreeSet<_>>();
+        seen_by_worker.push(thread_ids);
+    }
+
+    for worker_index in 0..seen_by_worker.len() {
+        for other_worker_index in worker_index + 1..seen_by_worker.len() {
+            assert!(
+                seen_by_worker[worker_index].is_disjoint(&seen_by_worker[other_worker_index]),
+                "workers {worker_index} and {other_worker_index} should not share target threads"
+            );
+        }
+    }
+    let all_threads = seen_by_worker
+        .iter()
+        .flat_map(|thread_ids| thread_ids.iter().cloned())
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(all_threads.len(), args.users);
+}
+
+#[test]
+fn user_turn_default_rejects_more_workers_than_users() {
+    let mut args = test_args();
+    args.scenario = Scenario::ChatTurn;
+    args.users = 2;
+    args.concurrency = 3;
+    args.active_thread_count = 0;
+
+    let error =
+        validate_args(&args).expect_err("default user-turn mode should require enough users");
+
+    assert!(error.contains("--users to be greater than or equal to --concurrency"));
+}
+
+#[test]
+fn chat_turn_rejects_multi_process_runs() {
+    let mut args = test_args();
+    args.scenario = Scenario::ChatTurn;
+    args.processes = 2;
+
+    let error = validate_args(&args).expect_err("chat-turn is single-process only");
+
+    assert!(error.contains("--scenario chat-turn requires --processes 1"));
+}
+
+fn scripted_api_args() -> Args {
+    let mut args = test_args();
+    args.scenario = Scenario::ApiUserCapacity;
+    args.api_base_url = Some("http://127.0.0.1:4216".to_string());
+    args.api_scripted_tool = Some(scripted::ScriptKey::MemoryRoundtrip);
+    args.mock_llm_bind = Some("127.0.0.1:19090".parse().expect("bind address parses"));
+    args
+}
+
+#[test]
+fn scripted_api_requires_api_scenario() {
+    let mut args = scripted_api_args();
+    args.scenario = Scenario::ChatTurn;
+
+    let error = validate_args(&args).expect_err("scripted mode needs the api scenario");
+
+    assert!(error.contains("--api-scripted-tool requires --scenario api-user-capacity"));
+}
+
+#[test]
+fn scripted_api_requires_mock_llm_bind() {
+    let mut args = scripted_api_args();
+    args.mock_llm_bind = None;
+
+    let error = validate_args(&args).expect_err("scripted mode needs the mock sidecar");
+
+    assert!(error.contains("--api-scripted-tool requires --mock-llm-bind"));
+}
+
+#[test]
+fn scripted_api_requires_wait_for_assistant() {
+    let mut args = scripted_api_args();
+    args.api_wait_for_assistant = false;
+
+    let error = validate_args(&args).expect_err("scripted mode needs verdict polling");
+
+    assert!(error.contains("--api-scripted-tool requires --api-wait-for-assistant"));
+}
+
+#[test]
+fn scripted_api_rejects_out_of_range_doc_sizes() {
+    let mut args = scripted_api_args();
+
+    // Below the floor: 1024 bytes cannot survive the /4 memory-grow split
+    // and stay above the read-back token, so the recorded size bucket would
+    // not describe the bytes actually written.
+    args.api_scripted_doc_sizes = vec![1024];
+    let error = validate_args(&args).expect_err("sub-4KiB documents are meaningless");
+    assert!(error.contains("--api-scripted-doc-sizes values must be between 4096 and"));
+
+    // Above the ceiling: stops an operator from requesting a multi-gigabyte
+    // durable write against the hosted Postgres target.
+    args.api_scripted_doc_sizes = vec![scripted::MAX_SCRIPTED_DOC_SIZE_BYTES + 1];
+    let error = validate_args(&args).expect_err("oversized documents are rejected");
+    assert!(error.contains("--api-scripted-doc-sizes values must be between"));
+
+    args.api_scripted_doc_sizes = Vec::new();
+    let error = validate_args(&args).expect_err("an empty size list is rejected");
+    assert!(error.contains("--api-scripted-doc-sizes must not be empty"));
+}
+
+#[test]
+fn scripted_api_hot_writers_reject_file_roundtrip_script() {
+    let mut args = scripted_api_args();
+    args.api_scripted_tool = Some(scripted::ScriptKey::WriteFileRoundtrip);
+    args.api_hot_writers = 2;
+
+    let error = validate_args(&args)
+        .expect_err("hot writers need a shared document; write_file_roundtrip uses per-op paths");
+
+    assert!(error.contains("--api-hot-writers requires a memory script"));
+}
+
+#[test]
+fn scripted_cli_flag_combination_parses_and_gates_execution() {
+    // Drive the scripted flag combination through the CLI parser (clap
+    // typing and default resolution) and then through the validation gate
+    // that runs before any workload starts.
+    let args = Args::try_parse_from([
+        "ironclaw_stress",
+        "--backend",
+        "libsql",
+        "--scenario",
+        "api-user-capacity",
+        "--api-base-url",
+        "http://127.0.0.1:4216",
+        "--api-scripted-tool",
+        "memory_roundtrip",
+        "--mock-llm-bind",
+        "127.0.0.1:19090",
+    ])
+    .expect("scripted flag combination parses");
+    assert_eq!(
+        args.api_scripted_tool,
+        Some(scripted::ScriptKey::MemoryRoundtrip)
+    );
+    assert_eq!(
+        args.api_scripted_doc_sizes,
+        vec![4096, 32768, 131072, 1048576]
+    );
+    validate_args(&args).expect("valid scripted configuration passes the startup gate");
+
+    // An unknown script key is rejected by clap itself before validation.
+    let parse_error = Args::try_parse_from([
+        "ironclaw_stress",
+        "--backend",
+        "libsql",
+        "--scenario",
+        "api-user-capacity",
+        "--api-base-url",
+        "http://127.0.0.1:4216",
+        "--api-scripted-tool",
+        "not_a_script",
+        "--mock-llm-bind",
+        "127.0.0.1:19090",
+    ])
+    .expect_err("unknown script key is rejected at parse time");
+    assert!(parse_error.to_string().contains("possible values"));
+
+    // A valid key without the required sidecar is rejected by validation
+    // before any workload starts.
+    let mut missing_sidecar = args;
+    missing_sidecar.mock_llm_bind = None;
+    let error = validate_args(&missing_sidecar).expect_err("sidecar is required");
+    assert!(error.contains("--api-scripted-tool requires --mock-llm-bind"));
+
+    // Scripted verdicts are read from the timeline, so assistant polling is
+    // required for the flow to complete.
+    let mut no_polling = scripted_api_args();
+    no_polling.api_wait_for_assistant = false;
+    let error = validate_args(&no_polling).expect_err("assistant polling is required");
+    assert!(error.contains("--api-scripted-tool requires --api-wait-for-assistant"));
+}
+
+#[test]
+fn scripted_api_hot_writers_require_script_key() {
+    let mut args = test_args();
+    args.scenario = Scenario::ApiUserCapacity;
+    args.api_base_url = Some("http://127.0.0.1:4216".to_string());
+    args.api_hot_writers = 2;
+
+    let error = validate_args(&args).expect_err("hot writers need a script");
+
+    assert!(error.contains("--api-hot-writers requires --api-scripted-tool"));
+}
+
+#[test]
+fn scripted_api_accepts_valid_configuration() {
+    let args = scripted_api_args();
+    validate_args(&args).expect("valid scripted api configuration should pass validation");
+}
+
+#[test]
+fn prewarm_dispatches_secret_and_process_local_scenarios() {
+    assert_eq!(
+        Scenario::SecretConsume.prewarm_target(),
+        PrewarmTarget::SecretControlPlane
+    );
+    assert_eq!(Scenario::CpuBurn.prewarm_target(), PrewarmTarget::None);
+    assert_eq!(Scenario::MemoryChurn.prewarm_target(), PrewarmTarget::None);
+    assert_eq!(
+        Scenario::ReserveRelease.prewarm_target(),
+        PrewarmTarget::ResourceGovernor
+    );
+    assert_eq!(Scenario::ChatTurn.prewarm_target(), PrewarmTarget::UserTurn);
+}
+
+#[test]
+fn turn_lifecycle_churn_is_a_user_turn_scenario() {
+    let mut args = test_args();
+    args.scenario = Scenario::TurnLifecycleChurn;
+    args.users = args.concurrency;
+    args.processes = 1;
+
+    validate_args(&args).expect("turn lifecycle churn should use user-turn validation");
+    assert_eq!(args.scenario.as_str(), "turn-lifecycle-churn");
+
+    args.processes = 2;
+    let error = validate_args(&args).expect_err("turn lifecycle churn is single-process only");
+    assert!(error.contains("--scenario turn-lifecycle-churn requires --processes 1"));
+}
+
+#[test]
+fn mixed_user_session_rejects_multi_process_runs() {
+    let mut args = test_args();
+    args.scenario = Scenario::MixedUserSession;
+    args.processes = 2;
+
+    let error = validate_args(&args).expect_err("mixed sessions are single-process only");
+
+    assert!(error.contains("--scenario mixed-user-session requires --processes 1"));
+}
+
+#[test]
+fn large_context_preset_populates_workload_defaults() {
+    let args = parse_test_args([
+        "ironclaw_stress",
+        "--backend",
+        "libsql",
+        "--preset",
+        "large-context",
+    ]);
+
+    assert_eq!(args.preset, Some(StressPreset::LargeContext));
+    assert_eq!(args.scenario, Scenario::MixedUserSession);
+    assert_eq!(args.concurrency, 4);
+    assert_eq!(args.operations, 50);
+    assert_eq!(args.users, 100);
+    assert_eq!(args.prefill_threads, 100);
+    assert_eq!(args.prefill_turns_per_thread, 50);
+    assert_eq!(args.context_max_messages, 100);
+}
+
+#[test]
+fn db_write_measurement_preset_is_one_deterministic_tool_heavy_turn() {
+    let default_args = parse_test_args([
+        "ironclaw_stress",
+        "--backend",
+        "postgres",
+        "--preset",
+        "db-write-measurement",
+    ]);
+    assert_eq!(default_args.db_write_idle_seconds, 300);
+
+    let args = parse_test_args([
+        "ironclaw_stress",
+        "--backend",
+        "postgres",
+        "--preset",
+        "db-write-measurement",
+        "--db-write-idle-seconds",
+        "12",
+    ]);
+
+    assert_eq!(args.scenario, Scenario::ToolSession);
+    assert_eq!(args.concurrency, 1);
+    assert_eq!(args.operations, 1);
+    assert_eq!(args.users, 1);
+    assert_eq!(args.active_thread_count, 1);
+    assert_eq!(args.tool_calls_per_turn, 10);
+    assert_eq!(args.db_write_idle_seconds, 12);
+    validate_args(&args).expect("measurement preset is valid");
+}
+
+#[test]
+fn db_write_measurement_preset_supports_libsql() {
+    let args = parse_test_args([
+        "ironclaw_stress",
+        "--backend",
+        "libsql",
+        "--preset",
+        "db-write-measurement",
+        "--db-write-idle-seconds",
+        "0",
+    ]);
+
+    validate_args(&args).expect("libSQL measurement preset is valid");
+    assert_eq!(args.scenario, Scenario::ToolSession);
+    assert_eq!(args.tool_calls_per_turn, 10);
+}
+
+#[test]
+fn db_write_measurement_rejects_unsupported_combinations() {
+    let cases = [
+        (
+            vec![
+                "ironclaw_stress",
+                "--backend",
+                "postgres",
+                "--db-write-reset-stats",
+            ],
+            "--db-write-reset-stats requires --preset db-write-measurement",
+        ),
+        (
+            vec![
+                "ironclaw_stress",
+                "--backend",
+                "postgres",
+                "--preset",
+                "db-write-measurement",
+                "--process-journal-backend",
+                "memory-journal",
+            ],
+            "do not override its workload shape",
+        ),
+        (
+            vec![
+                "ironclaw_stress",
+                "--backend",
+                "postgres",
+                "--preset",
+                "db-write-measurement",
+                "--tool-calls-per-turn",
+                "4",
+            ],
+            "do not override its workload shape",
+        ),
+        (
+            vec![
+                "ironclaw_stress",
+                "--backend",
+                "postgres",
+                "--preset",
+                "db-write-measurement",
+                "--repetitions",
+                "2",
+            ],
+            "cannot be combined with suite, ramp, sweep, or repeated runs",
+        ),
+        (
+            vec![
+                "ironclaw_stress",
+                "--backend",
+                "postgres",
+                "--preset",
+                "db-write-measurement",
+                "--gate-blocked-every",
+                "1",
+            ],
+            "do not override its workload shape",
+        ),
+        (
+            vec![
+                "ironclaw_stress",
+                "--backend",
+                "postgres",
+                "--db-write-idle-seconds",
+                "1",
+            ],
+            "--db-write-idle-seconds requires --preset db-write-measurement",
+        ),
+    ];
+
+    for (arguments, expected_error) in cases {
+        let matches = Args::command()
+            .try_get_matches_from(arguments)
+            .expect("parse unsupported measurement arguments");
+        let args = parse_args_from_matches(&matches).expect("build unsupported measurement args");
+        let error = validate_args(&args).expect_err("unsupported measurement args must fail");
+        assert!(
+            error.contains(expected_error),
+            "expected error containing {expected_error:?}, got {error:?}"
+        );
+    }
+}
+
+#[test]
+fn pg_stat_statements_reset_requires_version_1_7_or_newer() {
+    assert!(!db_probe::pg_stat_statements_reset_supported("1.6"));
+    assert!(db_probe::pg_stat_statements_reset_supported("1.7"));
+    assert!(db_probe::pg_stat_statements_reset_supported("1.11"));
+    assert!(!db_probe::pg_stat_statements_reset_supported("invalid"));
+}
+
+#[test]
+fn measurement_stats_scope_uses_stable_wire_values() {
+    assert_eq!(
+        serde_json::to_value(db_probe::StatsScope::ExplicitResetCurrentDatabase)
+            .expect("serialize explicit-reset scope"),
+        "explicit-reset-current-database"
+    );
+    assert_eq!(
+        serde_json::to_value(db_probe::StatsScope::SnapshotDeltaCurrentDatabase)
+            .expect("serialize snapshot-delta scope"),
+        "snapshot-delta-current-database"
+    );
+}
+
+#[test]
+fn preset_respects_explicit_overrides() {
+    let args = parse_test_args([
+        "ironclaw_stress",
+        "--backend",
+        "libsql",
+        "--preset",
+        "large-context",
+        "--users",
+        "7",
+        "--context-max-messages",
+        "11",
+    ]);
+
+    assert_eq!(args.users, 7);
+    assert_eq!(args.prefill_threads, 7);
+    assert_eq!(args.context_max_messages, 11);
+}
+
+#[test]
+fn bottleneck_finder_suite_includes_core_pressure_cases() {
+    let cases = suite::build_cases(StressSuite::BottleneckFinder);
+    let labels = cases
+        .iter()
+        .map(|case| case.label)
+        .collect::<std::collections::BTreeSet<_>>();
+
+    assert!(labels.contains("resource-contention"));
+    assert!(labels.contains("chat-baseline"));
+    assert!(!labels.contains("hot-thread"));
+    assert!(labels.contains("large-context"));
+    assert!(labels.contains("tool-heavy"));
+    assert!(labels.contains("tool-wait"));
+    assert!(labels.contains("tool-failure"));
+    assert!(labels.contains("model-tail"));
+    assert!(labels.contains("cpu-burn"));
+    assert!(labels.contains("memory-churn"));
+}
+
+/// The suite regression fix depends on every non-API libSQL case getting its
+/// own database path: sharing the parent's path is what let earlier cases'
+/// still-running pollers contend on the file and invalidate the benchmark.
+/// Existing suite tests only assert case labels, so a regression here would be
+/// silent.
+#[test]
+fn libsql_cases_use_distinct_generated_database_paths() {
+    let mut base = test_args();
+    base.backend = crate::Backend::Libsql;
+    base.libsql_path = None;
+    let cases = suite::build_cases(StressSuite::BottleneckFinder);
+    let mut seen = std::collections::BTreeSet::new();
+    for case in &cases {
+        let mut case_args = base.clone();
+        suite::apply_case(&base, case, &mut case_args, "run-id");
+        if case_args.scenario.is_api_capacity() {
+            continue;
+        }
+        let path = case_args
+            .libsql_path
+            .clone()
+            .expect("every non-API libSQL case gets a generated database path");
+        assert!(
+            seen.insert(path.clone()),
+            "case {} reused database path {}",
+            case.label,
+            path.display()
+        );
+    }
+    assert!(
+        seen.len() > 1,
+        "the suite must exercise more than one isolated libSQL case"
+    );
+}
+
+/// An explicit `--libsql-path` is honoured and still isolates every case.
+///
+/// Two properties at once, because they trade off against each other: the
+/// operator's directory and extension survive (the path is not silently
+/// replaced with a temporary file), and no two cases land on the same file.
+/// Keying the suffix on the scenario satisfies only the first — `tool-heavy`,
+/// `tool-wait`, and `tool-failure` are all `ToolSession` and would share one
+/// database, which is the cross-runtime lock contention the split exists to
+/// prevent.
+#[test]
+fn explicit_libsql_path_is_preserved_and_still_isolates_each_case() {
+    let mut base = test_args();
+    base.backend = crate::Backend::Libsql;
+    base.libsql_path = Some(std::path::PathBuf::from(
+        "/tmp/operator-choice/bench.sqlite",
+    ));
+    let cases = suite::build_cases(StressSuite::BottleneckFinder);
+    let mut seen = std::collections::BTreeSet::new();
+    let mut checked = 0;
+    for case in &cases {
+        let mut case_args = base.clone();
+        suite::apply_case(&base, case, &mut case_args, "run-id");
+        if case_args.scenario.is_api_capacity() {
+            continue;
+        }
+        let path = case_args
+            .libsql_path
+            .clone()
+            .expect("every non-API libSQL case gets a database path");
+        assert_eq!(
+            path.parent(),
+            Some(std::path::Path::new("/tmp/operator-choice")),
+            "case {} moved off the operator's directory to {}",
+            case.label,
+            path.display()
+        );
+        assert_eq!(
+            path.extension().and_then(|extension| extension.to_str()),
+            Some("sqlite"),
+            "case {} dropped the operator's extension: {}",
+            case.label,
+            path.display()
+        );
+        assert!(
+            seen.insert(path.clone()),
+            "case {} reused database path {}",
+            case.label,
+            path.display()
+        );
+        checked += 1;
+    }
+    assert!(
+        checked > 1,
+        "the suite must exercise more than one explicit-path libSQL case"
+    );
+}
+
+/// Teardown removes the database and both SQLite sidecars it created.
+///
+/// Drives the real side effect against real files rather than asserting on a
+/// derived string: the previous derivation used `Path::with_extension`, which
+/// only lined up for `.db`, and a string-shaped assertion would have agreed
+/// with it. The path here carries a non-`.db` extension for that reason, which
+/// is also the shape an explicit `--libsql-path` now produces.
+#[tokio::test]
+async fn cleanup_removes_the_database_and_its_sqlite_sidecars() {
+    let dir = std::env::temp_dir().join(format!("ironclaw-stress-cleanup-{}", std::process::id()));
+    tokio::fs::create_dir_all(&dir)
+        .await
+        .expect("create temp dir");
+    // A non-UTF-8 byte in the name is what pins the `OsString` derivation: an
+    // ASCII name survives a `to_string_lossy` round trip unchanged, so on the
+    // ASCII path this case still only covers the extension half of the defect.
+    //
+    // Linux only. macOS rejects a non-UTF-8 filename at creation with EILSEQ
+    // ("Illegal byte sequence"), so seeding the file is impossible there —
+    // gating keeps the byte-preservation pin on the CI runners while leaving
+    // the case runnable for developers on macOS.
+    #[cfg(target_os = "linux")]
+    let database = {
+        use std::os::unix::ffi::OsStringExt;
+        let mut name = b"bench-tool-heavy-".to_vec();
+        name.push(0xff);
+        name.extend_from_slice(b".sqlite");
+        dir.join(std::ffi::OsString::from_vec(name))
+    };
+    #[cfg(not(target_os = "linux"))]
+    let database = dir.join("bench-tool-heavy.sqlite");
+    let mut created = vec![database.clone()];
+    for suffix in ["-wal", "-shm"] {
+        let mut sidecar = database.clone().into_os_string();
+        sidecar.push(suffix);
+        created.push(std::path::PathBuf::from(sidecar));
+    }
+    for path in &created {
+        tokio::fs::write(path, b"x").await.expect("seed file");
+    }
+
+    crate::cleanup_generated_libsql_path(&database).await;
+
+    for path in &created {
+        assert!(
+            !path.exists(),
+            "{} survived cleanup; SQLite appends -wal/-shm to the whole file \
+             name, so deriving them by extension misses any non-.db path",
+            path.display()
+        );
+    }
+    tokio::fs::remove_dir_all(&dir)
+        .await
+        .expect("remove temp dir");
+}
+
+#[test]
+fn postgres_pool_pressure_suite_includes_remote_pool_cases() {
+    let cases = suite::build_cases(StressSuite::PostgresPoolPressure);
+    let labels = cases
+        .iter()
+        .map(|case| case.label)
+        .collect::<std::collections::BTreeSet<_>>();
+
+    assert!(labels.contains("postgres-chat-pool"));
+    assert!(!labels.contains("postgres-hot-thread-pool"));
+    assert!(labels.contains("postgres-context-pool"));
+    assert!(labels.contains("postgres-tool-pool"));
+}
+
+#[test]
+fn log_prefix_includes_suite_case_label() {
+    let mut args = test_args();
+    args.suite_case_label = Some("large-context".to_string());
+
+    assert_eq!(log_prefix(&args), "[ironclaw-stress case=large-context]");
+
+    args.child_index = Some(2);
+    assert_eq!(
+        log_prefix(&args),
+        "[ironclaw-stress child=2 case=large-context]"
+    );
+}
+
+#[test]
+fn soak_user_session_preset_uses_duration_mode() {
+    let args = parse_test_args([
+        "ironclaw_stress",
+        "--backend",
+        "libsql",
+        "--preset",
+        "soak-user-session",
+    ]);
+
+    assert_eq!(args.preset, Some(StressPreset::SoakUserSession));
+    assert_eq!(args.scenario, Scenario::MixedUserSession);
+    assert_eq!(args.duration_seconds, 900);
+    assert_eq!(args.warmup_seconds, 60);
+    assert_eq!(args.trace_interval_seconds, 30);
+    assert_eq!(args.prefill_turns_per_thread, 20);
+}
+
+#[test]
+fn suite_rejects_multi_process_runs() {
+    let mut args = test_args();
+    args.suite = Some(StressSuite::BottleneckFinder);
+    args.processes = 2;
+
+    let error = validate_args(&args).expect_err("suite should reject multi-process runs");
+
+    assert!(error.contains("--suite requires --processes 1"));
+}
+
+#[test]
+fn postgres_pool_pressure_suite_requires_postgres_backend() {
+    let mut args = test_args();
+    args.suite = Some(StressSuite::PostgresPoolPressure);
+    args.backend = Backend::Libsql;
+
+    let error = validate_args(&args).expect_err("postgres suite should reject libsql backend");
+
+    assert!(error.contains("--suite postgres-pool-pressure requires --backend postgres"));
+}
+
+#[test]
+fn suite_rejects_preset_runs() {
+    let mut args = test_args();
+    args.suite = Some(StressSuite::BottleneckFinder);
+    args.preset = Some(StressPreset::LargeContext);
+
+    let error = validate_args(&args).expect_err("suite should reject preset runs");
+
+    assert!(error.contains("--suite cannot be combined with --preset"));
+}
+
+#[test]
+fn context_growth_rejects_multi_process_runs() {
+    let mut args = test_args();
+    args.scenario = Scenario::ContextGrowth;
+    args.processes = 2;
+
+    let error = validate_args(&args).expect_err("context-growth is single-process only");
+
+    assert!(error.contains("--scenario context-growth requires --processes 1"));
+}
+
+#[test]
+fn tool_session_rejects_multi_process_runs() {
+    let mut args = test_args();
+    args.scenario = Scenario::ToolSession;
+    args.processes = 2;
+
+    let error = validate_args(&args).expect_err("tool-session is single-process only");
+
+    assert!(error.contains("--scenario tool-session requires --processes 1"));
+}
+
+#[test]
+fn context_growth_rejects_zero_turns_per_operation() {
+    let mut args = test_args();
+    args.context_growth_turns_per_operation = 0;
+
+    let error = validate_args(&args).expect_err("zero context growth turns is invalid");
+
+    assert!(error.contains("--context-growth-turns-per-operation"));
+}
+
+#[test]
+fn tool_session_rejects_zero_tool_calls() {
+    let mut args = test_args();
+    args.tool_calls_per_turn = 0;
+
+    let error = validate_args(&args).expect_err("zero tool calls are invalid");
+
+    assert!(error.contains("--tool-calls-per-turn"));
+}
+
+#[test]
+fn tool_session_rejects_oversized_preview_output() {
+    let mut args = test_args();
+    args.tool_output_bytes = 16 * 1024 + 1;
+
+    let error = validate_args(&args).expect_err("oversized tool preview is invalid");
+
+    assert!(error.contains("--tool-output-bytes"));
+}
+
+#[test]
+fn prefill_requires_both_thread_and_turn_counts() {
+    let mut args = test_args();
+    args.scenario = Scenario::ChatTurn;
+    args.prefill_threads = 2;
+
+    let error = validate_args(&args).expect_err("partial prefill settings are invalid");
+
+    assert!(error.contains("--prefill-threads and --prefill-turns-per-thread"));
+}
+
+#[test]
+fn prefill_rejects_non_user_turn_scenarios() {
+    let mut args = test_args();
+    args.scenario = Scenario::ReserveRelease;
+    args.prefill_threads = 2;
+    args.prefill_turns_per_thread = 3;
+
+    let error = validate_args(&args).expect_err("resource scenario prefill is invalid");
+
+    assert!(error.contains("--prefill-threads requires a user-turn scenario"));
+}
+
+#[test]
+fn prefill_rejects_more_threads_than_users() {
+    let mut args = test_args();
+    args.scenario = Scenario::ChatTurn;
+    args.users = 2;
+    args.prefill_threads = 3;
+    args.prefill_turns_per_thread = 1;
+
+    let error = validate_args(&args).expect_err("prefill thread count exceeds users");
+
+    assert!(error.contains("--prefill-threads must be less than or equal to --users"));
+}
+
+#[test]
+fn prefill_rejects_sweep_user_values_below_prefill_threads() {
+    let mut args = test_args();
+    args.scenario = Scenario::ChatTurn;
+    args.users = 4;
+    args.prefill_threads = 3;
+    args.prefill_turns_per_thread = 1;
+    args.sweep_users = vec![2, 4];
+
+    let error = validate_args(&args).expect_err("sweep users below prefill threads");
+
+    assert!(error.contains("every --sweep-users value"));
+}
+
+#[test]
+fn warmup_requires_duration_mode() {
+    let mut args = test_args();
+    args.duration_seconds = 0;
+    args.warmup_seconds = 1;
+
+    let error = validate_args(&args).expect_err("warmup without duration is invalid");
+
+    assert!(error.contains("--warmup-seconds requires --duration-seconds"));
+}
+
+#[test]
+fn duration_mode_has_no_fixed_progress_total() {
+    let mut args = test_args();
+    args.duration_seconds = 10;
+
+    assert!(matches!(
+        args.operation_target(),
+        OperationTarget::Duration { .. }
+    ));
+    assert_eq!(args.operation_target().progress_total(), None);
+}
+
+#[test]
+fn sweep_concurrency_rejects_zero_values() {
+    let mut args = test_args();
+    args.sweep_concurrency = vec![1, 0, 2];
+
+    let error = validate_args(&args).expect_err("zero sweep concurrency is invalid");
+
+    assert!(error.contains("--sweep-concurrency values must be greater than 0"));
+}
+
+#[test]
+fn sweep_concurrency_validation_uses_sweep_max_not_base_concurrency() {
+    let mut args = test_args();
+    args.scenario = Scenario::MixedUserSession;
+    args.concurrency = 8;
+    args.sweep_concurrency = vec![2, 4];
+    args.users = 4;
+    args.active_thread_count = 0;
+
+    validate_args(&args).expect("sweep cases only require enough users for the sweep max");
+}
+
+#[test]
+fn active_thread_count_rejects_values_above_users() {
+    let mut args = test_args();
+    args.active_thread_count = args.users + 1;
+
+    let error = validate_args(&args).expect_err("active thread count exceeds users");
+
+    assert!(error.contains("--active-thread-count"));
+}
+
+#[test]
+fn sweep_active_thread_count_rejects_values_above_sweep_users() {
+    let mut args = test_args();
+    args.sweep_users = vec![2, 4];
+    args.sweep_active_thread_count = vec![0, 3];
+
+    let error = validate_args(&args).expect_err("active thread sweep exceeds users");
+
+    assert!(error.contains("--sweep-active-thread-count"));
+}
+
+#[test]
+fn sweep_payload_axes_enable_sweep() {
+    let mut args = test_args();
+    args.sweep_tool_output_bytes = vec![0, 1024];
+
+    assert!(sweep::is_enabled(&args));
+}
+
+#[test]
+fn sweep_context_axes_reject_zero_values() {
+    let mut args = test_args();
+    args.sweep_context_max_messages = vec![0];
+
+    let error = validate_args(&args).expect_err("zero sweep context max is invalid");
+
+    assert!(error.contains("--sweep-context-max-messages"));
+}
+
+#[test]
+fn sweep_tool_call_axes_reject_zero_values() {
+    let mut args = test_args();
+    args.sweep_tool_calls_per_turn = vec![0];
+
+    let error = validate_args(&args).expect_err("zero sweep tool calls are invalid");
+
+    assert!(error.contains("--sweep-tool-calls-per-turn"));
+}
+
+#[test]
+fn sweep_tool_output_axes_reject_oversized_values() {
+    let mut args = test_args();
+    args.sweep_tool_output_bytes = vec![16 * 1024 + 1];
+
+    let error = validate_args(&args).expect_err("oversized sweep tool output is invalid");
+
+    assert!(error.contains("--sweep-tool-output-bytes"));
+}
+
+#[test]
+fn ramp_builds_bounded_geometric_values() {
+    assert_eq!(ramp::build_values(3, 20, 2), vec![3, 6, 12, 20]);
+    assert_eq!(ramp::build_values(4, 4, 2), vec![4]);
+}
+
+#[test]
+fn ramp_rejects_multiple_axes() {
+    let mut args = test_args();
+    args.ramp_concurrency = Some(8);
+    args.ramp_users = Some(100);
+
+    let error = validate_args(&args).expect_err("multiple ramp axes are invalid");
+
+    assert!(error.contains("use only one of --ramp-concurrency or --ramp-users"));
+}
+
+#[test]
+fn ramp_rejects_sweep_flags() {
+    let mut args = test_args();
+    args.ramp_concurrency = Some(8);
+    args.sweep_users = vec![10, 20];
+
+    let error = validate_args(&args).expect_err("ramp and sweep cannot combine");
+
+    assert!(error.contains("ramp mode cannot be combined with sweep flags"));
+}
+
+#[test]
+fn ramp_rejects_factor_one() {
+    let mut args = test_args();
+    args.ramp_concurrency = Some(8);
+    args.ramp_factor = 1;
+
+    let error = validate_args(&args).expect_err("ramp factor one is invalid");
+
+    assert!(error.contains("--ramp-factor must be greater than 1"));
+}
+
+#[test]
+fn thresholds_report_violating_run_label() {
+    let mut args = test_args();
+    args.max_failure_rate = Some(0.1);
+    let metrics = sweep::RunMetrics {
+        attempted: 10,
+        failed: 2,
+        throughput_ops_sec: 100.0,
+        cpu_ms: Some(10),
+        peak_rss_kb: Some(1024),
+        p95_us: 1_000,
+        p99_us: 1_000,
+        max_us: 1_000,
+    };
+
+    let error = sweep::enforce_thresholds(&args, &[("c2".to_string(), metrics)])
+        .expect_err("failure rate threshold should fail");
+
+    assert!(error.contains("c2"));
+    assert!(error.contains("failure_rate"));
+}
+
+#[test]
+fn trace_child_path_keeps_parent_trace_name() {
+    let child_path = trace::child_trace_path(Path::new("/tmp/ironclaw-trace.jsonl"), 3);
+
+    assert_eq!(
+        child_path,
+        Path::new("/tmp/ironclaw-trace.jsonl.child-3.jsonl")
+    );
+}
+
+#[test]
+fn trace_labeled_path_sanitizes_label() {
+    let trace_path =
+        trace::labeled_trace_path(Path::new("/tmp/ironclaw-trace.jsonl"), "ramp concurrency/8");
+
+    assert_eq!(
+        trace_path,
+        Path::new("/tmp/ironclaw-trace.jsonl.ramp_concurrency_8.jsonl")
+    );
+}
+
+#[test]
+fn progress_counters_drain_interval_latencies() {
+    let counters = progress::ProgressCounters::new(true);
+
+    counters.record(false, Duration::from_micros(10));
+    counters.record(true, Duration::from_micros(20));
+
+    assert_eq!(counters.snapshot().attempted, 2);
+    assert_eq!(counters.snapshot().failed, 1);
+    assert_eq!(counters.drain_interval_latencies_us(), vec![10, 20]);
+    assert!(counters.drain_interval_latencies_us().is_empty());
+}
+
+#[test]
+fn process_pressure_cpu_burn_generates_successful_samples() {
+    let mut args = test_args();
+    args.scenario = Scenario::CpuBurn;
+    args.concurrency = 1;
+    args.operations = 2;
+    args.cpu_work_units = 10;
+
+    let samples = process_pressure::run(&args).expect("cpu burn samples");
+
+    assert_eq!(samples.len(), 2);
+    assert!(samples.iter().all(|sample| sample.error.is_none()));
+}
+
+#[test]
+fn process_pressure_memory_churn_generates_successful_samples() {
+    let mut args = test_args();
+    args.scenario = Scenario::MemoryChurn;
+    args.concurrency = 1;
+    args.operations = 2;
+    args.memory_bytes = 4096;
+
+    let samples = process_pressure::run(&args).expect("memory churn samples");
+
+    assert_eq!(samples.len(), 2);
+    assert!(samples.iter().all(|sample| sample.error.is_none()));
+}
+
+#[test]
+fn uniform_model_latency_is_deterministic_and_bounded() {
+    let mut args = test_args();
+    args.run_id = Some("latency-test".to_string());
+    args.model_latency_ms = 100;
+    args.model_latency_profile = ModelLatencyProfile::Uniform;
+    args.model_latency_jitter_ms = 50;
+
+    let first = user_turn::synthetic_model_wait_ms(&args, 2, 3);
+    let second = user_turn::synthetic_model_wait_ms(&args, 2, 3);
+
+    assert_eq!(first, second);
+    assert!((100..=150).contains(&first));
+}
+
+#[test]
+fn tail_spike_model_latency_spikes_every_nth_operation() {
+    let mut args = test_args();
+    args.operations = 10;
+    args.model_latency_ms = 100;
+    args.model_latency_profile = ModelLatencyProfile::TailSpike;
+    args.model_latency_spike_every = 3;
+    args.model_latency_spike_ms = 900;
+
+    assert_eq!(user_turn::synthetic_model_wait_ms(&args, 0, 1), 100);
+    assert_eq!(user_turn::synthetic_model_wait_ms(&args, 0, 2), 900);
+}
+
+#[test]
+fn provider_model_latency_requires_mixed_user_session() {
+    let matches = Args::command()
+        .try_get_matches_from([
+            "ironclaw_stress",
+            "--backend",
+            "libsql",
+            "--scenario",
+            "chat-turn",
+            "--model-latency-source",
+            "provider",
+        ])
+        .expect("parse args");
+
+    let args = parse_args_from_matches(&matches).expect("parse stress args");
+    let error = validate_args(&args).expect_err("provider mode validation");
+
+    assert!(
+        error.contains("--model-latency-source provider requires --scenario mixed-user-session")
+    );
+}
+
+#[test]
+fn provider_model_latency_args_are_reported() {
+    let args = parse_test_args([
+        "ironclaw_stress",
+        "--backend",
+        "libsql",
+        "--scenario",
+        "mixed-user-session",
+        "--model-latency-source",
+        "provider",
+        "--provider-model",
+        "gpt-test",
+        "--provider-max-tokens",
+        "8",
+    ]);
+
+    assert_eq!(args.model_latency_source, ModelLatencySource::Provider);
+    assert_eq!(args.provider_model.as_deref(), Some("gpt-test"));
+    assert_eq!(args.provider_max_tokens, 8);
+}
+
+#[test]
+fn synthetic_tool_failure_cadence_is_deterministic() {
+    let mut args = test_args();
+    args.operations = 10;
+    args.tool_calls_per_turn = 3;
+    args.tool_failure_every = 4;
+
+    assert!(!user_turn::synthetic_tool_failed(&args, 0, 0, 0));
+    assert!(user_turn::synthetic_tool_failed(&args, 0, 1, 0));
+}
+
+#[test]
+fn failure_causes_are_grouped_by_bucket_and_stage() {
+    let samples = vec![
+        Sample {
+            latency: Duration::from_micros(10),
+            error: Some("turn_thread_busy".to_string()),
+            failure: Some(FailureCause::new(
+                "turn_thread_busy",
+                "submit_turn",
+                "thread already has an active run",
+            )),
+            stages: None,
+        },
+        Sample {
+            latency: Duration::from_micros(20),
+            error: Some("turn_thread_busy".to_string()),
+            failure: Some(FailureCause::new(
+                "turn_thread_busy",
+                "mark_rejected_busy",
+                "ignored alternate detail",
+            )),
+            stages: None,
+        },
+    ];
+
+    let causes = summarize_failure_causes(&samples);
+    let busy = causes
+        .get("turn_thread_busy")
+        .expect("busy failure summary");
+
+    assert_eq!(busy.count, 2);
+    assert_eq!(busy.stages["submit_turn"], 1);
+    assert_eq!(busy.stages["mark_rejected_busy"], 1);
+    assert_eq!(busy.sample_detail, "thread already has an active run");
+}
+
+#[test]
+fn operation_attribution_groups_user_turn_stage_durations() {
+    let samples = vec![Sample {
+        latency: Duration::from_micros(50),
+        error: None,
+        failure: None,
+        stages: Some(UserTurnStageDurations {
+            ensure_thread: Some(Duration::from_micros(1)),
+            accept_inbound: Some(Duration::from_micros(2)),
+            submit_turn: Some(Duration::from_micros(3)),
+            claim_run: Some(Duration::from_micros(4)),
+            block_run: Some(Duration::from_micros(17)),
+            resume_turn: Some(Duration::from_micros(18)),
+            reclaim_run: Some(Duration::from_micros(19)),
+            complete_run: Some(Duration::from_micros(5)),
+            load_context: Some(Duration::from_micros(6)),
+            resource_reserve: Some(Duration::from_micros(7)),
+            resource_reconcile: Some(Duration::from_micros(8)),
+            resource_release: Some(Duration::from_micros(9)),
+            model_wait: Some(Duration::from_micros(10)),
+            tool_wait: Some(Duration::from_micros(11)),
+            append_assistant: Some(Duration::from_micros(12)),
+            finalize_assistant: Some(Duration::from_micros(13)),
+            append_tool_result: Some(Duration::from_micros(14)),
+            append_tool_preview: Some(Duration::from_micros(15)),
+            update_assistant_draft: Some(Duration::from_micros(16)),
+            ..UserTurnStageDurations::default()
+        }),
+    }];
+
+    let attribution =
+        summary::summarize_user_turn_operation_attribution(&samples).expect("attribution summary");
+
+    assert_eq!(attribution.thread_store_writes.count, 1);
+    assert_eq!(attribution.thread_store_writes.latency.p95_us, 73);
+    assert_eq!(attribution.turn_store.latency.p95_us, 66);
+    assert_eq!(attribution.context_reads.latency.p95_us, 6);
+    assert_eq!(attribution.resource_governor.latency.p95_us, 24);
+    assert_eq!(attribution.synthetic_wait.latency.p95_us, 21);
+}
+
+#[test]
+fn human_summary_includes_stage_latency_and_failure_tables() {
+    let summary = run_summary_with_bottlenecks();
+
+    let rendered = human::render_run_summary(&summary);
+
+    assert!(rendered.contains("Operation attribution"));
+    assert!(rendered.contains("thread_store_writes"));
+    assert!(rendered.contains("model_tool_wait"));
+    assert!(rendered.contains("Stage latency"));
+    assert!(rendered.contains("submit_turn"));
+    assert!(rendered.contains("resource_reserve"));
+    assert!(rendered.contains("model_wait"));
+    assert!(rendered.contains("append_tool_result"));
+    assert!(rendered.contains("Prefill"));
+    assert!(rendered.contains("DB probe"));
+    assert!(rendered.contains("libsql_file"));
+    assert!(rendered.contains("Failure causes"));
+    assert!(rendered.contains("turn_thread_busy"));
+}
+
+#[test]
+fn human_summary_places_db_probe_errors_in_matching_columns() {
+    let mut summary = run_summary_with_bottlenecks();
+    summary.db_probe = Some(db_probe::DbProbeSummary {
+        before: db_probe::DbProbeSnapshot {
+            error: Some("before_failed".to_string()),
+            ..DbProbeSnapshot::default()
+        },
+        after: db_probe::DbProbeSnapshot {
+            error: Some("after_failed".to_string()),
+            ..DbProbeSnapshot::default()
+        },
+        delta: DbProbeDelta::default(),
+        idle_after: None,
+        idle_delta: None,
+        measurement: None,
+    });
+
+    let rendered = human::render_run_summary(&summary);
+    let before_line = rendered
+        .lines()
+        .find(|line| line.contains("before_error"))
+        .expect("before error line");
+    let after_line = rendered
+        .lines()
+        .find(|line| line.contains("after_error"))
+        .expect("after error line");
+
+    assert_eq!(
+        before_line.split_whitespace().collect::<Vec<_>>(),
+        ["before_error", "before_failed", "-", "-"]
+    );
+    assert_eq!(
+        after_line.split_whitespace().collect::<Vec<_>>(),
+        ["after_error", "-", "after_failed", "-"]
+    );
+}
+
+#[test]
+fn postgres_probe_error_redacts_resolved_url() {
+    let url = "postgresql://postgres:secret@localhost:5432/app";
+    let error = format!("connection failed for {url}");
+
+    let sanitized = sanitize_postgres_error(url, error);
+
+    assert!(sanitized.contains("postgresql://<redacted>@localhost:5432/app"));
+    assert!(!sanitized.contains("secret"));
+}
+
+#[test]
+fn missing_pg_stat_statements_error_is_actionable_and_redacted() {
+    let message = pg_stat_statements_unavailable(
+        "postgresql://postgres:secret@localhost:5432/app",
+        "extension is not installed",
+    );
+
+    assert!(message.contains("CREATE EXTENSION pg_stat_statements"));
+    assert!(message.contains("shared_preload_libraries"));
+    assert!(message.contains("postgresql://<redacted>@localhost:5432/app"));
+    assert!(!message.contains("secret"));
+}
+
+#[test]
+fn postgres_write_delta_aggregates_tables_queries_and_totals() {
+    let before = db_probe::DbProbeSnapshot {
+        postgres_table_writes: vec![db_probe::PostgresTableWrites {
+            table: "root_filesystem_entries".to_string(),
+            inserts: 10,
+            updates: 4,
+            deletes: 1,
+        }],
+        postgres_statement_calls: vec![db_probe::PostgresStatementCalls {
+            query_id: "000000000000002a".to_string(),
+            operation: "insert".to_string(),
+            tables: vec!["root_filesystem_entries".to_string()],
+            calls: 5,
+        }],
+        ..DbProbeSnapshot::default()
+    };
+    let after = db_probe::DbProbeSnapshot {
+        postgres_table_writes: vec![db_probe::PostgresTableWrites {
+            table: "root_filesystem_entries".to_string(),
+            inserts: 13,
+            updates: 9,
+            deletes: 1,
+        }],
+        postgres_statement_calls: vec![db_probe::PostgresStatementCalls {
+            query_id: "000000000000002a".to_string(),
+            operation: "insert".to_string(),
+            tables: vec!["root_filesystem_entries".to_string()],
+            calls: 12,
+        }],
+        ..DbProbeSnapshot::default()
+    };
+
+    let summary = summarize_measurement(
+        before,
+        after,
+        None,
+        db_probe::DbWriteMeasurement {
+            workload: "single-tool-heavy-user-turn".to_string(),
+            tool_calls_per_turn: 10,
+            idle_observation_seconds: 0,
+            reset_stats: false,
+            stats_scope: StatsScope::SnapshotDeltaCurrentDatabase,
+        },
+    );
+
+    assert_eq!(summary.delta.postgres_table_writes[0].inserts, 3);
+    assert_eq!(summary.delta.postgres_table_writes[0].updates, 5);
+    assert_eq!(summary.delta.postgres_table_writes_total.total(), 8);
+    assert_eq!(summary.delta.postgres_statement_calls[0].calls, 7);
+    assert_eq!(summary.delta.postgres_statement_calls_total, 7);
+    assert_eq!(summary.delta.postgres_statement_calls_by_table[0].calls, 7);
+    let json = serde_json::to_value(&summary).expect("serialize measurement summary");
+    assert_eq!(
+        json["measurement"]["workload"],
+        "single-tool-heavy-user-turn"
+    );
+    assert_eq!(json["before"]["postgres_table_writes"][0]["inserts"], 10);
+    assert_eq!(json["after"]["postgres_statement_calls"][0]["calls"], 12);
+    assert_eq!(
+        json["delta"]["postgres_statement_calls_by_table"][0]["calls"],
+        7
+    );
+}
+
+#[test]
+fn libsql_write_delta_aggregates_instrumented_table_rows() {
+    let before = db_probe::DbProbeSnapshot {
+        libsql_table_writes: vec![db_probe::LibSqlTableWrites {
+            table: "root_filesystem_entries".to_string(),
+            inserts: 2,
+            updates: 1,
+            deletes: 0,
+        }],
+        ..DbProbeSnapshot::default()
+    };
+    let after = db_probe::DbProbeSnapshot {
+        libsql_table_writes: vec![db_probe::LibSqlTableWrites {
+            table: "root_filesystem_entries".to_string(),
+            inserts: 5,
+            updates: 5,
+            deletes: 1,
+        }],
+        ..DbProbeSnapshot::default()
+    };
+
+    let summary = summarize_measurement(
+        before,
+        after,
+        None,
+        db_probe::DbWriteMeasurement {
+            workload: "single-tool-heavy-user-turn".to_string(),
+            tool_calls_per_turn: 10,
+            idle_observation_seconds: 0,
+            reset_stats: false,
+            stats_scope: StatsScope::SnapshotDeltaCurrentDatabase,
+        },
+    );
+
+    assert_eq!(summary.delta.libsql_table_writes[0].inserts, 3);
+    assert_eq!(summary.delta.libsql_table_writes[0].updates, 4);
+    assert_eq!(summary.delta.libsql_table_writes[0].deletes, 1);
+    assert_eq!(summary.delta.libsql_table_writes_total.total(), 8);
+}
+
+async fn create_libsql_measurement_tables(connection: &libsql::Connection) {
+    connection
+        .execute_batch(
+            "CREATE TABLE IF NOT EXISTS root_filesystem_entries (id INTEGER PRIMARY KEY);\
+             CREATE TABLE IF NOT EXISTS root_filesystem_events (id INTEGER PRIMARY KEY);\
+             CREATE TABLE IF NOT EXISTS root_filesystem_index_specs (id INTEGER PRIMARY KEY);\
+             CREATE TABLE IF NOT EXISTS root_filesystem_ordered_index_rows (id INTEGER PRIMARY KEY);\
+             CREATE TABLE IF NOT EXISTS root_filesystem_sequences (id INTEGER PRIMARY KEY);\
+             CREATE TABLE IF NOT EXISTS trigger_records (id INTEGER PRIMARY KEY);\
+             CREATE TABLE IF NOT EXISTS trigger_run_history (id INTEGER PRIMARY KEY);",
+        )
+        .await
+        .expect("create measurement tables");
+}
+
+#[tokio::test]
+async fn libsql_probe_counts_insert_update_and_delete_rows_by_table() {
+    let path = std::env::temp_dir().join(format!(
+        "ironclaw-stress-write-probe-{}.db",
+        uuid::Uuid::new_v4().simple()
+    ));
+    let db = libsql::Builder::new_local(&path)
+        .build()
+        .await
+        .expect("build local libSQL");
+    let connection = db.connect().expect("connect local libSQL");
+    connection
+        .execute_batch(
+            "CREATE TABLE root_filesystem_entries (path TEXT PRIMARY KEY, contents BLOB);\
+             CREATE TABLE root_filesystem_events (id INTEGER PRIMARY KEY, payload BLOB);",
+        )
+        .await
+        .expect("create measured tables");
+    create_libsql_measurement_tables(&connection).await;
+    drop(connection);
+    drop(db);
+
+    let mut args = test_args();
+    args.backend = Backend::Libsql;
+    args.libsql_path = Some(path.clone());
+    begin_measurement(&args)
+        .await
+        .expect("begin write measurement");
+    let db = libsql::Builder::new_local(&path)
+        .build()
+        .await
+        .expect("reopen local libSQL");
+    let connection = db.connect().expect("reconnect local libSQL");
+    connection
+        .execute(
+            "INSERT INTO root_filesystem_entries(path, contents) VALUES (?1, ?2)",
+            libsql::params!["/one", vec![1_u8]],
+        )
+        .await
+        .expect("insert measured row");
+    connection
+        .execute(
+            "UPDATE root_filesystem_entries SET contents = ?1 WHERE path = ?2",
+            libsql::params![vec![2_u8], "/one"],
+        )
+        .await
+        .expect("update measured row");
+    connection
+        .execute(
+            "DELETE FROM root_filesystem_entries WHERE path = ?1",
+            ["/one"],
+        )
+        .await
+        .expect("delete measured row");
+    drop(connection);
+    drop(db);
+
+    let snapshot = try_capture_libsql(path.clone())
+        .await
+        .expect("capture libSQL counters");
+    let entries = snapshot
+        .libsql_table_writes
+        .iter()
+        .find(|table| table.table == "root_filesystem_entries")
+        .expect("entries counter");
+    assert_eq!(
+        (entries.inserts, entries.updates, entries.deletes),
+        (1, 1, 1)
+    );
+    finish_measurement(&args)
+        .await
+        .expect("remove write counters");
+    let db = libsql::Builder::new_local(&path)
+        .build()
+        .await
+        .expect("reopen cleaned libSQL");
+    let connection = db.connect().expect("connect cleaned libSQL");
+    let mut rows = connection
+        .query(
+            "SELECT COUNT(*) FROM sqlite_schema \
+             WHERE name LIKE 'ironclaw_stress_%'",
+            (),
+        )
+        .await
+        .expect("query instrumentation schema");
+    let row = rows
+        .next()
+        .await
+        .expect("read instrumentation count")
+        .expect("instrumentation count row");
+    let remaining: i64 = row.get(0).expect("instrumentation count");
+    assert_eq!(remaining, 0);
+    drop(rows);
+    drop(connection);
+    drop(db);
+    crate::cleanup_generated_libsql_path(&path).await;
+}
+
+#[tokio::test]
+async fn libsql_probe_rejects_negative_and_overflow_counters() {
+    for invalid_count in ["-1", "9223372036854775808"] {
+        let path = std::env::temp_dir().join(format!(
+            "ironclaw-stress-invalid-write-counter-{}.db",
+            uuid::Uuid::new_v4().simple()
+        ));
+        let database = libsql::Builder::new_local(&path)
+            .build()
+            .await
+            .expect("build local libSQL");
+        let connection = database.connect().expect("connect local libSQL");
+        connection
+            .execute_batch("CREATE TABLE root_filesystem_entries (path TEXT PRIMARY KEY);")
+            .await
+            .expect("create measured table");
+        create_libsql_measurement_tables(&connection).await;
+        drop(connection);
+        drop(database);
+
+        let config = DbProbeConfig::libsql(&path, true);
+        begin_db_probe(&config)
+            .await
+            .expect("begin write measurement");
+        let database = libsql::Builder::new_local(&path)
+            .build()
+            .await
+            .expect("reopen local libSQL");
+        let connection = database.connect().expect("reconnect local libSQL");
+        connection
+            .execute_batch(&format!(
+                "INSERT INTO ironclaw_stress_write_counters(table_name, operation, row_count) \
+                 VALUES ('root_filesystem_entries', 'insert', {invalid_count});"
+            ))
+            .await
+            .expect("store invalid counter");
+        drop(connection);
+        drop(database);
+
+        let error = capture_db_probe(&config)
+            .await
+            .expect_err("invalid counter must fail capture");
+        assert!(error.to_string().contains("libsql probe failed"));
+        assert!(std::error::Error::source(&error).is_some());
+        assert_eq!(error.backend(), "libsql");
+        assert_eq!(error.operation_name(), "capture");
+
+        finish_db_probe(&config)
+            .await
+            .expect("remove write counters");
+        crate::cleanup_generated_libsql_path(&path).await;
+    }
+}
+
+#[tokio::test]
+async fn libsql_measurement_reports_missing_tables() {
+    let path = std::env::temp_dir().join(format!(
+        "ironclaw-stress-missing-measurement-table-{}.db",
+        uuid::Uuid::new_v4().simple()
+    ));
+    let database = libsql::Builder::new_local(&path)
+        .build()
+        .await
+        .expect("build local libSQL");
+    let connection = database.connect().expect("connect local libSQL");
+    connection
+        .execute_batch("CREATE TABLE root_filesystem_entries (id INTEGER PRIMARY KEY);")
+        .await
+        .expect("create one measured table");
+    drop(connection);
+    drop(database);
+
+    let config = DbProbeConfig::libsql(&path, true);
+    let snapshot = begin_db_probe(&config)
+        .await
+        .expect("missing tables remain explicitly reportable");
+    assert_eq!(
+        snapshot.libsql_table_writes[0].table,
+        "root_filesystem_entries"
+    );
+    assert!(
+        snapshot
+            .uninstrumented_tables
+            .contains(&"root_filesystem_events".to_string())
+    );
+    finish_db_probe(&config)
+        .await
+        .expect("remove write counters");
+    crate::cleanup_generated_libsql_path(&path).await;
+}
+
+#[test]
+fn human_summary_renders_libsql_write_measurement() {
+    let mut summary = run_summary_with_bottlenecks();
+    summary.db_probe = Some(summarize_measurement(
+        db_probe::DbProbeSnapshot {
+            libsql_table_writes: vec![db_probe::LibSqlTableWrites {
+                table: "root_filesystem_entries".to_string(),
+                inserts: 1,
+                updates: 0,
+                deletes: 0,
+            }],
+            ..DbProbeSnapshot::default()
+        },
+        db_probe::DbProbeSnapshot {
+            libsql_table_writes: vec![db_probe::LibSqlTableWrites {
+                table: "root_filesystem_entries".to_string(),
+                inserts: 4,
+                updates: 2,
+                deletes: 0,
+            }],
+            ..DbProbeSnapshot::default()
+        },
+        None,
+        db_probe::DbWriteMeasurement {
+            workload: "single-tool-heavy-user-turn".to_string(),
+            tool_calls_per_turn: 10,
+            idle_observation_seconds: 0,
+            reset_stats: false,
+            stats_scope: StatsScope::SnapshotDeltaCurrentDatabase,
+        },
+    ));
+
+    let rendered = human::render_run_summary(&summary);
+
+    assert!(rendered.contains("libSQL instrumented table writes"));
+    assert!(rendered.contains("root_filesystem_entries.insert"));
+    assert!(rendered.contains("counter-trigger writes are excluded"));
+    assert!(!rendered.contains("Postgres table writes"));
+}
+
+#[test]
+fn postgres_statement_aggregation_groups_normalized_queries_without_sql_text() {
+    let statements = aggregate_statement_calls([
+        (
+            42,
+            "INSERT INTO root_filesystem_entries(path, contents) VALUES ($1, 'secret-value')",
+            3,
+        ),
+        (
+            42,
+            "INSERT INTO root_filesystem_entries(path, contents) VALUES ($1, 'other-secret')",
+            4,
+        ),
+        (
+            7,
+            "UPDATE trigger_records SET enabled = $1 WHERE trigger_id = $2",
+            2,
+        ),
+        (99, "SELECT * FROM unrelated_table", 100),
+    ]);
+
+    assert_eq!(statements.len(), 2);
+    assert_eq!(statements[0].calls + statements[1].calls, 9);
+    assert!(statements.iter().any(|statement| {
+        statement.tables == ["root_filesystem_entries"] && statement.calls == 7
+    }));
+    assert!(
+        statements
+            .iter()
+            .any(|statement| statement.tables == ["trigger_records"] && statement.calls == 2)
+    );
+    let serialized = serde_json::to_string(&statements).expect("serialize statement counters");
+    assert!(!serialized.contains("secret-value"));
+    assert!(!serialized.contains("other-secret"));
+    assert!(!serialized.contains("UPDATE trigger_records"));
+}
+
+#[test]
+fn human_summary_renders_postgres_write_and_idle_measurement() {
+    let mut summary = run_summary_with_bottlenecks();
+    let before = db_probe::DbProbeSnapshot {
+        postgres_table_writes: vec![db_probe::PostgresTableWrites {
+            table: "root_filesystem_events".to_string(),
+            inserts: 1,
+            updates: 0,
+            deletes: 0,
+        }],
+        ..DbProbeSnapshot::default()
+    };
+    let after = db_probe::DbProbeSnapshot {
+        postgres_table_writes: vec![db_probe::PostgresTableWrites {
+            table: "root_filesystem_events".to_string(),
+            inserts: 4,
+            updates: 0,
+            deletes: 0,
+        }],
+        ..DbProbeSnapshot::default()
+    };
+    let idle_after = db_probe::DbProbeSnapshot {
+        postgres_table_writes: vec![db_probe::PostgresTableWrites {
+            table: "root_filesystem_events".to_string(),
+            inserts: 5,
+            updates: 0,
+            deletes: 0,
+        }],
+        ..DbProbeSnapshot::default()
+    };
+    summary.db_probe = Some(summarize_measurement(
+        before,
+        after,
+        Some(idle_after),
+        db_probe::DbWriteMeasurement {
+            workload: "single-tool-heavy-user-turn".to_string(),
+            tool_calls_per_turn: 10,
+            idle_observation_seconds: 300,
+            reset_stats: false,
+            stats_scope: StatsScope::SnapshotDeltaCurrentDatabase,
+        },
+    ));
+
+    let rendered = human::render_run_summary(&summary);
+
+    assert!(rendered.contains("DB write measurement"));
+    assert!(rendered.contains("single-tool-heavy-user-turn"));
+    assert!(rendered.contains("Postgres table writes"));
+    assert!(rendered.contains("root_filesystem_events"));
+    assert!(rendered.contains("Postgres idle table writes"));
+    assert!(rendered.contains("300"));
+}
+
+#[test]
+fn bottleneck_report_identifies_failure_stage_and_db_growth() {
+    let args = test_args();
+    let captured = capture::CapturedRun::Single(Box::new(run_summary_with_bottlenecks()));
+
+    let rendered = analysis::render_bottleneck_report(&args, "run", &captured);
+
+    assert!(rendered.contains("Bottleneck analysis"));
+    assert!(rendered.contains("failure_rate"));
+    assert!(rendered.contains("turn_thread_busy"));
+    assert!(rendered.contains("top_stage_p95"));
+    assert!(rendered.contains("top_operation_group"));
+    assert!(rendered.contains("model_tool_wait"));
+    assert!(rendered.contains("model_wait"));
+    assert!(rendered.contains("libsql_growth"));
+}
+
+#[test]
+fn bottleneck_report_includes_thread_list_stage_latency() {
+    let args = test_args();
+    let mut summary = run_summary_with_bottlenecks();
+    let stages = summary
+        .stage_latency
+        .as_mut()
+        .expect("test summary has stage latency");
+    stages.list_threads_cold = stage(1, 2_000_000);
+    stages.model_wait = stage(1, 1_000);
+    let captured = capture::CapturedRun::Single(Box::new(summary));
+
+    let rendered = analysis::render_bottleneck_report(&args, "run", &captured);
+
+    assert!(rendered.contains("list_threads_cold"));
+    assert!(rendered.contains("larger --thread-list-threads"));
+}
+
+#[test]
+fn bottleneck_report_surfaces_missing_trace_file() {
+    let mut args = test_args();
+    args.trace_jsonl = Some(PathBuf::from("/tmp/ironclaw-missing-trace-test.jsonl"));
+    let _ = std::fs::remove_file(args.trace_jsonl.as_ref().expect("trace path"));
+    let captured = capture::CapturedRun::Single(Box::new(run_summary_with_bottlenecks()));
+
+    let rendered = analysis::render_bottleneck_report(&args, "run", &captured);
+
+    assert!(rendered.contains("trace_read_error"));
+    assert!(rendered.contains("ironclaw-missing-trace-test.jsonl"));
+}
+
+#[test]
+fn comparison_report_flags_single_run_regressions() {
+    let baseline_path = temp_compare_path("single");
+    let baseline = serde_json::json!({
+        "attempted": 100,
+        "failed": 0,
+        "throughput_ops_sec": 100.0,
+        "latency": {
+            "p95_us": 1_000,
+            "p99_us": 2_000,
+            "max_us": 3_000
+        },
+        "process": {
+            "delta_cpu_ms": 100,
+            "peak_rss_kb": 1_000
+        }
+    });
+    std::fs::write(&baseline_path, baseline.to_string()).expect("write baseline");
+    let current = serde_json::json!({
+        "attempted": 100,
+        "failed": 5,
+        "throughput_ops_sec": 70.0,
+        "latency": {
+            "p95_us": 2_000,
+            "p99_us": 3_000,
+            "max_us": 4_000
+        },
+        "process": {
+            "delta_cpu_ms": 140,
+            "peak_rss_kb": 1_400
+        }
+    });
+
+    let rendered =
+        compare::render_comparison_report(&baseline_path, &current).expect("comparison report");
+
+    assert!(rendered.contains("Comparison report"));
+    assert!(rendered.contains("throughput regression"));
+    assert!(rendered.contains("p95 regression"));
+    assert!(rendered.contains("failure-rate regression"));
+    assert!(rendered.contains("CPU regression"));
+    assert!(rendered.contains("RSS regression"));
+    let _ = std::fs::remove_file(baseline_path);
+}
+
+#[test]
+fn comparison_report_accepts_jsonl_suite() {
+    let baseline_path = temp_compare_path("jsonl");
+    let baseline = [
+        serde_json::json!({
+            "label": "c1",
+            "metrics": {
+                "attempted": 10,
+                "failed": 0,
+                "throughput_ops_sec": 10.0,
+                "p95_us": 1_000,
+                "p99_us": 1_000,
+                "max_us": 1_000
+            }
+        }),
+        serde_json::json!({
+            "label": "c2",
+            "metrics": {
+                "attempted": 10,
+                "failed": 0,
+                "throughput_ops_sec": 20.0,
+                "p95_us": 1_000,
+                "p99_us": 1_000,
+                "max_us": 1_000
+            }
+        }),
+    ]
+    .into_iter()
+    .map(|value| value.to_string())
+    .collect::<Vec<_>>()
+    .join("\n");
+    std::fs::write(&baseline_path, baseline).expect("write baseline jsonl");
+    let current = serde_json::json!({
+        "runs": [
+            {
+                "label": "c1",
+                "metrics": {
+                    "attempted": 10,
+                    "failed": 0,
+                    "throughput_ops_sec": 8.0,
+                    "p95_us": 1_500,
+                    "p99_us": 1_500,
+                    "max_us": 1_500
+                }
+            },
+            {
+                "label": "c2",
+                "metrics": {
+                    "attempted": 10,
+                    "failed": 0,
+                    "throughput_ops_sec": 20.0,
+                    "p95_us": 1_000,
+                    "p99_us": 1_000,
+                    "max_us": 1_000
+                }
+            }
+        ]
+    });
+
+    let rendered =
+        compare::render_comparison_report(&baseline_path, &current).expect("comparison report");
+
+    assert!(rendered.contains("c1"));
+    assert!(rendered.contains("c2"));
+    assert!(rendered.contains("c1 throughput regression"));
+    assert!(rendered.contains("c1 p95 regression"));
+    let _ = std::fs::remove_file(baseline_path);
+}
+
+#[test]
+fn comparison_report_compares_single_runs_with_different_labels() {
+    let baseline_path = temp_compare_path("single-jsonl");
+    let baseline = serde_json::json!({
+        "label": "baseline-point",
+        "metrics": {
+            "attempted": 10,
+            "failed": 0,
+            "throughput_ops_sec": 10.0,
+            "p95_us": 1_000,
+            "p99_us": 1_000,
+            "max_us": 1_000
+        }
+    });
+    std::fs::write(&baseline_path, baseline.to_string()).expect("write baseline jsonl");
+    let current = serde_json::json!({
+        "attempted": 10,
+        "failed": 0,
+        "throughput_ops_sec": 5.0,
+        "latency": {
+            "p95_us": 1_000,
+            "p99_us": 1_000,
+            "max_us": 1_000
+        }
+    });
+
+    let rendered =
+        compare::render_comparison_report(&baseline_path, &current).expect("comparison report");
+
+    assert!(rendered.contains("baseline-point -> run"));
+    assert!(rendered.contains("throughput regression"));
+    assert!(!rendered.contains("missing_in_baseline"));
+    assert!(!rendered.contains("missing_in_current"));
+    let _ = std::fs::remove_file(baseline_path);
+}
+
+fn run_summary_with_bottlenecks() -> RunSummary {
+    let mut errors = std::collections::BTreeMap::new();
+    errors.insert("turn_thread_busy".to_string(), 1);
+    let mut cause_stages = std::collections::BTreeMap::new();
+    cause_stages.insert("submit_turn".to_string(), 1);
+    let mut failure_causes = std::collections::BTreeMap::new();
+    failure_causes.insert(
+        "turn_thread_busy".to_string(),
+        FailureCauseSummary {
+            count: 1,
+            stages: cause_stages,
+            sample_detail: "thread already has an active run".to_string(),
+        },
+    );
+    RunSummary {
+        backend: Backend::Libsql,
+        preset: Some(StressPreset::ToolHeavy),
+        scenario: Scenario::MixedUserSession,
+        run_id: "run".to_string(),
+        target: "libsql://<redacted-local-path>".to_string(),
+        child_index: None,
+        processes: 1,
+        concurrency: 1,
+        operations_per_thread: 1,
+        duration_seconds: 0,
+        warmup_seconds: 0,
+        trace_jsonl_enabled: false,
+        trace_interval_seconds: 1,
+        users: 1,
+        active_thread_count: 1,
+        threads_per_owner: 1,
+        process_journal_backend: ProcessJournalBackend::FilesystemJournal,
+        gate_blocked_every: 0,
+        tenants: 1,
+        prefill_threads: 1,
+        prefill_turns_per_thread: 2,
+        prefill_concurrency: 1,
+        model_latency_ms: 0,
+        model_latency_source: ModelLatencySource::Synthetic,
+        provider_model: None,
+        provider_max_tokens: 16,
+        model_latency_profile: ModelLatencyProfile::Fixed,
+        model_latency_jitter_ms: 0,
+        model_latency_spike_every: 0,
+        model_latency_spike_ms: 0,
+        user_message_bytes: 0,
+        assistant_message_bytes: 0,
+        context_max_messages: 20,
+        thread_list_threads: 1000,
+        thread_list_users: 1,
+        thread_list_page_size: 50,
+        context_growth_turns_per_operation: 4,
+        tool_calls_per_turn: 2,
+        tool_latency_ms: 0,
+        tool_output_bytes: 1024,
+        tool_failure_every: 0,
+        attempted: 1,
+        succeeded: 0,
+        failed: 1,
+        duration_ms: 1,
+        throughput_ops_sec: 1.0,
+        latency: latency(1_000),
+        process: ProcessMetrics::default(),
+        db_probe: Some(db_probe_summary()),
+        prefill: Some(prefill_summary()),
+        operation_attribution: Some(user_turn::UserTurnOperationAttributionSummary {
+            thread_store_writes: attribution(1, 10_000),
+            context_reads: empty_attribution(),
+            turn_store: attribution(1, 2_000),
+            resource_governor: attribution(1, 3_000),
+            synthetic_wait: attribution(1, 1_000_000),
+        }),
+        stage_latency: Some(UserTurnStageLatencySummary {
+            ensure_thread: empty_stage(),
+            accept_inbound: empty_stage(),
+            submit_turn: stage(1, 2_000),
+            mark_submitted: empty_stage(),
+            mark_rejected_busy: empty_stage(),
+            list_threads_cold: empty_stage(),
+            list_threads_warm: empty_stage(),
+            claim_run: empty_stage(),
+            block_run: empty_stage(),
+            resume_turn: empty_stage(),
+            reclaim_run: empty_stage(),
+            append_assistant: empty_stage(),
+            finalize_assistant: empty_stage(),
+            complete_run: empty_stage(),
+            load_context: empty_stage(),
+            resource_reserve: stage(1, 3_000),
+            model_wait: stage(1, 1_000_000),
+            tool_wait: stage(1, 4_000),
+            append_tool_result: stage(1, 5_000),
+            append_tool_preview: stage(1, 6_000),
+            update_assistant_draft: stage(1, 7_000),
+            resource_reconcile: empty_stage(),
+            resource_release: empty_stage(),
+        }),
+        api_capacity: None,
+        errors,
+        failure_causes,
+    }
+}
+
+fn test_args() -> Args {
+    Args {
+        backend: Backend::Libsql,
+        preset: None,
+        suite: None,
+        processes: 1,
+        concurrency: 2,
+        operations: 3,
+        duration_seconds: 0,
+        warmup_seconds: 0,
+        users: 4,
+        active_thread_count: 0,
+        threads_per_owner: 1,
+        process_journal_backend: ProcessJournalBackend::FilesystemJournal,
+        gate_blocked_every: 0,
+        tenants: 2,
+        prefill_threads: 0,
+        prefill_turns_per_thread: 0,
+        prefill_concurrency: 4,
+        scenario: Scenario::ReserveRelease,
+        run_id: None,
+        libsql_path: None,
+        postgres_url: None,
+        postgres_pool_size: 4,
+        db_write_idle_seconds: 0,
+        db_write_reset_stats: false,
+        api_base_url: None,
+        api_users_jsonl: None,
+        api_bearer_token: None,
+        api_admin_bearer_token: None,
+        api_admin_provisioners: 1,
+        api_read_qps_per_user: 0.0,
+        api_read_workers: 0,
+        api_read_mix: crate::api_capacity::default_read_mix(),
+        api_page_size: 50,
+        api_message_interval_ms: 0,
+        api_wait_for_assistant: true,
+        api_terminal_timeout_ms: 30_000,
+        api_poll_interval_ms: 250,
+        api_request_timeout_ms: 10_000,
+        api_setup_concurrency: 16,
+        api_scripted_tool: None,
+        api_scripted_doc_sizes: vec![4096, 32768, 131072, 1048576],
+        api_hot_writers: 0,
+        api_threads_per_user: 1,
+        thread_list_untitled: false,
+        api_background_users: 0,
+        api_background_concurrency: 0,
+        api_background_operations: 1,
+        api_background_start_delay_ms: 250,
+        mock_llm_bind: None,
+        mock_llm_model: "stress-mock".to_string(),
+        mock_llm_latency_ms: 0,
+        mock_llm_background_latency_ms: 0,
+        mock_llm_jitter_ms: 0,
+        mock_llm_output_bytes: 128,
+        mock_llm_failure_rate: 0.0,
+        progress_interval_seconds: 0,
+        human_read: false,
+        bottleneck_report: false,
+        compare_json: None,
+        ramp_concurrency: None,
+        ramp_users: None,
+        ramp_factor: 2,
+        sweep_concurrency: Vec::new(),
+        sweep_users: Vec::new(),
+        sweep_active_thread_count: Vec::new(),
+        sweep_model_latency_ms: Vec::new(),
+        sweep_user_message_bytes: Vec::new(),
+        sweep_assistant_message_bytes: Vec::new(),
+        sweep_context_max_messages: Vec::new(),
+        sweep_context_growth_turns_per_operation: Vec::new(),
+        sweep_tool_calls_per_turn: Vec::new(),
+        sweep_tool_output_bytes: Vec::new(),
+        repetitions: 1,
+        output_jsonl: None,
+        trace_jsonl: None,
+        trace_interval_seconds: 1,
+        max_failure_rate: None,
+        max_p95_ms: None,
+        min_throughput: None,
+        max_rss_mb: None,
+        max_cpu_ms: None,
+        model_latency_ms: 0,
+        model_latency_source: ModelLatencySource::Synthetic,
+        provider_model: None,
+        provider_max_tokens: 16,
+        model_latency_profile: ModelLatencyProfile::Fixed,
+        model_latency_jitter_ms: 0,
+        model_latency_spike_every: 0,
+        model_latency_spike_ms: 0,
+        user_message_bytes: 0,
+        assistant_message_bytes: 0,
+        context_max_messages: 20,
+        thread_list_threads: 1000,
+        thread_list_users: 1,
+        thread_list_page_size: 50,
+        context_growth_turns_per_operation: 4,
+        tool_calls_per_turn: 2,
+        tool_latency_ms: 0,
+        tool_output_bytes: 1024,
+        tool_failure_every: 0,
+        span_log_failures: false,
+        slow_span_threshold_ms: 0,
+        span_sample_limit: 100,
+        cpu_work_units: 10,
+        memory_bytes: 4096,
+        memory_hold_ms: 0,
+        child_index: None,
+        warmup_phase: false,
+        suite_case_label: None,
+    }
+}
+
+fn parse_test_args<const N: usize>(args: [&str; N]) -> Args {
+    let matches = Args::command()
+        .try_get_matches_from(args)
+        .expect("parse test args");
+    parse_args_from_matches(&matches).expect("build args")
+}
+
+fn db_probe_summary() -> db_probe::DbProbeSummary {
+    db_probe::DbProbeSummary {
+        before: db_probe::DbProbeSnapshot {
+            libsql_file_bytes: Some(1024),
+            ..DbProbeSnapshot::default()
+        },
+        after: db_probe::DbProbeSnapshot {
+            libsql_file_bytes: Some(2048),
+            ..DbProbeSnapshot::default()
+        },
+        delta: db_probe::DbProbeDelta {
+            libsql_file_bytes: Some(1024),
+            ..DbProbeDelta::default()
+        },
+        idle_after: None,
+        idle_delta: None,
+        measurement: None,
+    }
+}
+
+fn prefill_summary() -> user_turn::PrefillSummary {
+    user_turn::PrefillSummary {
+        threads: 1,
+        turns_per_thread: 2,
+        concurrency: 1,
+        attempted: 2,
+        succeeded: 2,
+        failed: 0,
+        duration_ms: 10,
+        throughput_ops_sec: 200.0,
+        latency: latency(1_000),
+        errors: std::collections::BTreeMap::new(),
+    }
+}
+
+fn stage(count: u64, p50_us: u128) -> user_turn::StageLatencySummary {
+    user_turn::StageLatencySummary {
+        count,
+        latency: latency(p50_us),
+    }
+}
+
+fn empty_stage() -> user_turn::StageLatencySummary {
+    stage(0, 0)
+}
+
+fn attribution(count: u64, p50_us: u128) -> user_turn::OperationAttributionSummary {
+    user_turn::OperationAttributionSummary {
+        count,
+        latency: latency(p50_us),
+    }
+}
+
+fn empty_attribution() -> user_turn::OperationAttributionSummary {
+    attribution(0, 0)
+}
+
+fn latency(p50_us: u128) -> LatencySummary {
+    LatencySummary {
+        min_us: p50_us,
+        p50_us,
+        p95_us: p50_us,
+        p99_us: p50_us,
+        max_us: p50_us,
+    }
+}
+
+fn temp_compare_path(label: &str) -> PathBuf {
+    std::env::temp_dir().join(format!(
+        "ironclaw-compare-{label}-{}.json",
+        std::process::id()
+    ))
+}

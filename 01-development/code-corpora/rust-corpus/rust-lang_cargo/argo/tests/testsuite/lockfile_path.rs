@@ -1,0 +1,459 @@
+//! Tests for `lockfile-path` flag
+
+use std::fs;
+
+use crate::prelude::*;
+use cargo_test_support::compare::assert_e2e;
+use cargo_test_support::install::assert_has_installed_exe;
+use cargo_test_support::registry::{Package, RegistryBuilder};
+use cargo_test_support::str;
+use cargo_test_support::{
+    ProjectBuilder, basic_bin_manifest, cargo_test, paths, project, symlink_supported,
+};
+
+#[cargo_test]
+fn config_lockfile_created() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let p = make_project().build();
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .with_stderr_data(str![""])
+        .run();
+
+    assert!(!p.root().join("Cargo.lock").exists());
+    assert!(p.root().join(lockfile_path).exists());
+}
+
+#[cargo_test]
+fn config_basic_lockfile_read() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let p = make_project().file(lockfile_path, VALID_LOCKFILE).build();
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .run();
+
+    assert!(!p.root().join("Cargo.lock").exists());
+    assert!(p.root().join(lockfile_path).is_file());
+}
+
+#[cargo_test]
+fn config_basic_lockfile_override() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let p = make_project()
+        .file("Cargo.lock", "This is an invalid lock file!")
+        .build();
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .run();
+
+    assert!(p.root().join(lockfile_path).is_file());
+}
+
+#[cargo_test]
+fn config_symlink_in_path() {
+    if !symlink_supported() {
+        return;
+    }
+
+    let dst = "dst";
+    let src = "somedir/link";
+    let lockfile_path = format!("{src}/Cargo.lock");
+
+    let p = make_project().symlink_dir(dst, src).build();
+
+    fs::create_dir(p.root().join("dst")).unwrap();
+    assert!(p.root().join(src).is_dir());
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .run();
+
+    assert!(p.root().join(lockfile_path).is_file());
+    assert!(p.root().join(dst).join("Cargo.lock").is_file());
+}
+
+#[cargo_test]
+fn config_symlink_lockfile() {
+    if !symlink_supported() {
+        return;
+    }
+
+    let lockfile_path = "dst/Cargo.lock";
+    let src = "somedir/link";
+    let lock_body = VALID_LOCKFILE;
+
+    let p = make_project()
+        .file(lockfile_path, lock_body)
+        .symlink(lockfile_path, src)
+        .build();
+
+    assert!(p.root().join(src).is_file());
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .run();
+
+    assert!(!p.root().join("Cargo.lock").exists());
+}
+
+#[cargo_test]
+fn config_broken_symlink() {
+    if !symlink_supported() {
+        return;
+    }
+
+    let invalid_dst = "invalid_path";
+    let src = "somedir/link";
+    let lockfile_path = format!("{src}/Cargo.lock");
+
+    let p = make_project().symlink_dir(invalid_dst, src).build();
+    assert!(!p.root().join(src).is_dir());
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[ERROR] failed to create directory `[ROOT]/foo/somedir/link`
+...
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn config_loop_symlink() {
+    if !symlink_supported() {
+        return;
+    }
+
+    let loop_link = "loop";
+    let src = "somedir/link";
+    let lockfile_path = format!("{src}/Cargo.lock");
+
+    let p = make_project()
+        .symlink_dir(loop_link, src)
+        .symlink_dir(src, loop_link)
+        .build();
+    assert!(!p.root().join(src).is_dir());
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[ERROR] failed to create directory `[ROOT]/foo/somedir/link`
+...
+
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn config_add_lockfile_override() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    project()
+        .at("bar")
+        .file("Cargo.toml", LIB_TOML)
+        .file("src/main.rs", "fn main() {}")
+        .build();
+    let p = make_project()
+        .file("Cargo.lock", "This is an invalid lock file!")
+        .build();
+    p.cargo("add")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .arg("--path")
+        .arg("../bar")
+        .run();
+
+    assert!(p.root().join(lockfile_path).is_file());
+}
+
+#[cargo_test]
+fn config_clean_lockfile_override() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let p = make_project()
+        .file("Cargo.lock", "This is an invalid lock file!")
+        .build();
+    p.cargo("clean")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .arg("--package")
+        .arg("test_foo")
+        .run();
+
+    assert!(p.root().join(lockfile_path).is_file());
+}
+
+#[cargo_test]
+fn config_fix_lockfile_override() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let p = make_project()
+        .file("Cargo.lock", "This is an invalid lock file!")
+        .build();
+    p.cargo("fix")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .arg("--package")
+        .arg("test_foo")
+        .arg("--allow-no-vcs")
+        .run();
+
+    assert!(p.root().join(lockfile_path).is_file());
+}
+
+#[cargo_test]
+fn config_publish_lockfile_read() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let p = make_project().file(lockfile_path, VALID_LOCKFILE).build();
+    let registry = RegistryBuilder::new().http_api().http_index().build();
+
+    p.cargo("publish")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .replace_crates_io(registry.index_url())
+        .run();
+
+    assert!(!p.root().join("Cargo.lock").exists());
+    assert!(p.root().join(lockfile_path).is_file());
+}
+
+#[cargo_test]
+fn config_remove_lockfile_override() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let manifest = r#"
+        [package]
+
+        name = "foo"
+        version = "0.5.0"
+        authors = ["wycats@example.com"]
+        edition = "2015"
+
+        [[bin]]
+
+        name = "foo"
+
+        [dependencies]
+        test_bar = { version = "0.1.0", path = "../bar" }
+    "#;
+
+    project()
+        .at("bar")
+        .file("Cargo.toml", LIB_TOML)
+        .file("src/main.rs", "fn main() {}")
+        .build();
+
+    let p = project()
+        .file("Cargo.toml", &manifest)
+        .file("src/main.rs", "fn main() {}")
+        .file("Cargo.lock", "This is an invalid lock file!")
+        .build();
+    p.cargo("remove")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .arg("test_bar")
+        .run();
+
+    assert!(p.root().join(lockfile_path).is_file());
+}
+
+#[cargo_test]
+fn config_assert_respect_pinned_version_from_lockfile_path() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let p = project()
+        .file(
+            "Cargo.toml",
+            r#"#
+[package]
+
+name = "test_foo"
+version = "0.5.0"
+authors = ["wycats@example.com"]
+edition = "2015"
+
+[[bin]]
+
+name = "test_foo"
+
+[dependencies]
+bar = "0.1.0"
+"#,
+        )
+        .file("src/main.rs", "fn main() {}")
+        .build();
+
+    Package::new("bar", "0.1.0").publish();
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .run();
+
+    assert!(!p.root().join("Cargo.lock").exists());
+    assert!(p.root().join(lockfile_path).is_file());
+
+    let lockfile_original = fs::read_to_string(p.root().join(lockfile_path)).unwrap();
+
+    Package::new("bar", "0.1.1").publish();
+    p.cargo("package")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .run();
+
+    assert!(
+        p.root()
+            .join("target/package/test_foo-0.5.0/Cargo.lock")
+            .is_file()
+    );
+
+    let path = p.root().join("target/package/test_foo-0.5.0/Cargo.lock");
+    let contents = fs::read_to_string(path).unwrap();
+
+    assert_e2e().eq(contents, lockfile_original);
+}
+
+#[cargo_test]
+fn config_install_ignores_lock_file_path() {
+    Package::new("bar", "0.1.0")
+        .file("src/lib.rs", "not rust")
+        .publish();
+    Package::new("bar", "0.1.1").publish();
+    // Publish with lockfile containing good version of `bar` (0.1.1)
+    Package::new("foo", "0.1.0")
+        .dep("bar", "0.1")
+        .file("src/lib.rs", "")
+        .file(
+            "src/main.rs",
+            "extern crate foo; extern crate bar; fn main() {}",
+        )
+        .file(
+            "Cargo.lock",
+            r#"
+[[package]]
+name = "bar"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "foo"
+version = "0.1.0"
+dependencies = [
+ "bar 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+"#,
+        )
+        .publish();
+
+    let p = project().at("install").build();
+
+    p.cargo("install foo --locked").run();
+
+    // Create lockfile with the bad `bar` version (0.1.0) and see it ignored for install
+    project()
+        .file(
+            "Cargo.lock",
+            r#"
+[[package]]
+name = "bar"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "foo"
+version = "0.1.0"
+dependencies = [
+ "bar 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+"#,
+        )
+        .build();
+    p.cargo("install foo --locked")
+        .arg("--config")
+        .arg("resolver.lockfile-path='../foo/Cargo.lock'")
+        .run();
+
+    assert!(paths::root().join("foo/Cargo.lock").is_file());
+    assert_has_installed_exe(paths::cargo_home(), "foo");
+}
+
+#[cargo_test(nightly, reason = "-Zscript is unstable")]
+fn config_run_embed() {
+    let lockfile_path = "mylockfile/Cargo.lock";
+    let invalid_lockfile = "Cargo.lock";
+    let p = project()
+        .file("src/main.rs", "fn main() {}")
+        .file("Cargo.lock", "This is an invalid lock file!")
+        .build();
+
+    p.cargo("run")
+        .masquerade_as_nightly_cargo(&["script"])
+        .arg("-Zscript")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{lockfile_path}'"))
+        .arg("--manifest-path")
+        .arg("src/main.rs")
+        .run();
+
+    assert!(p.root().join(lockfile_path).is_file());
+
+    p.cargo("run")
+        .masquerade_as_nightly_cargo(&["script"])
+        .arg("-Zunstable-options")
+        .arg("-Zscript")
+        .arg("--config")
+        .arg(&format!("resolver.lockfile-path='{invalid_lockfile}'"))
+        .arg("--manifest-path")
+        .arg("src/main.rs")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[WARNING] `package.edition` is unspecified, defaulting to the latest edition (currently `[..]`)
+[HELP] to pin the edition, run `cargo fix --manifest-path [ROOT]/foo/src/main.rs`
+[ERROR] failed to parse lock file at: [ROOT]/foo/Cargo.lock
+...
+"#]])
+        .run();
+}
+
+#[cargo_test]
+fn config_lockfile_path_rejects_templates() {
+    let p = make_project().build();
+
+    p.cargo("generate-lockfile")
+        .arg("--config")
+        .arg("resolver.lockfile-path='{var}/Cargo.lock'")
+        .with_status(101)
+        .with_stderr_data(str![[r#"
+[ERROR] unexpected variable `var` in resolver.lockfile-path `{var}/Cargo.lock`
+
+"#]])
+        .run();
+}
+
+const VALID_LOCKFILE: &str = r#"# Test lockfile
+version = 4
+
+[[package]]
+name = "test_foo"
+version = "0.5.0"
+"#;
+
+const LIB_TOML: &str = r#"
+        [package]
+        name = "test_bar"
+        version = "0.1.0"
+        edition = "2021"
+    "#;
+
+fn make_project() -> ProjectBuilder {
+    project()
+        .file("Cargo.toml", &basic_bin_manifest("test_foo"))
+        .file("src/main.rs", "fn main() {}")
+}

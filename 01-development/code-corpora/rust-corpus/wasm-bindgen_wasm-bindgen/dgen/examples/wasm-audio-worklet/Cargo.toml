@@ -1,0 +1,34 @@
+[package]
+authors = ["The wasm-bindgen Developers"]
+edition = "2021"
+name = "wasm-audio-worklet"
+publish = false
+version = "0.0.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+console_error_panic_hook = "0.1.7"
+console_log = "1"
+js-sys = { path = "../../crates/js-sys" }
+wasm-bindgen = { path = "../../" }
+wasm-bindgen-futures = { path = "../../crates/futures" }
+
+[dependencies.web-sys]
+features = [
+  "AudioContext",
+  "AudioDestinationNode",
+  "AudioWorklet",
+  "AudioWorkletNode",
+  "AudioWorkletNodeOptions",
+  "Document",
+  "Event",
+  "HtmlInputElement",
+  "HtmlLabelElement",
+  "Window",
+]
+path = "../../crates/web-sys"
+
+[lints]
+workspace = true

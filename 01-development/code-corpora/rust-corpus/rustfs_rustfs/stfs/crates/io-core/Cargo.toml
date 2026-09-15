@@ -1,0 +1,48 @@
+# Copyright 2024 RustFS Team
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[package]
+name = "rustfs-io-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+homepage.workspace = true
+description = "Shared I/O primitives for RustFS (buffer pool, storage profiling, backpressure, deadlock detection)"
+keywords = ["io", "buffer", "pool", "rustfs", "backpressure"]
+categories = ["development-tools", "filesystem"]
+
+[lints]
+workspace = true
+
+[features]
+default = []
+hotpath = ["hotpath/hotpath", "hotpath/tokio", "rustfs-io-metrics/hotpath"]
+hotpath-alloc = ["hotpath", "hotpath/hotpath-alloc", "rustfs-io-metrics/hotpath-alloc"]
+hotpath-cpu = ["hotpath", "hotpath/hotpath-cpu", "rustfs-io-metrics/hotpath-cpu"]
+
+[dependencies]
+hotpath.workspace = true
+bytes = { workspace = true, features = ["serde"] }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["io-util", "fs", "sync", "rt-multi-thread"] }
+rustfs-io-metrics = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "fs"] }
+
+[lib]
+doctest = false
