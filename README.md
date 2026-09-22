@@ -1,7 +1,4 @@
 
-## Break This Repository!
-
-This repository automatically merges pull requests without conflicts.
 
 Please note that the `.github` directory is protected.
 
