@@ -300,8 +300,8 @@ https://docs.google.com/document/d/1Y669HJaH4areKBSFie_2k1dT045l3U2fiM34O_Y-dwQ/
 [English](README_EN.md) 
 
 # 快来领取你的免费服务器！！！
-还没有领取专属于你的服务器吗？
-快来127.0.0.1领取吧！
+还没有领取专属于你的服务器吗？  
+快来 [127.0.0.1](http://127.0.0.1) 领取吧！  
 超大带宽·超强防御·永久免费
 
 ## bbhzm
