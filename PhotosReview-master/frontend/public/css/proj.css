@@ -1,0 +1,297 @@
+/* 基本重置 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+/* 整体容器占满视口，不产生浏览器整体滚动条 */
+body {
+    height: auto;
+    min-height: 100vh;
+    /* 视口高度 */
+    display: flex;
+    flex-direction: row;
+    /* 桌面默认左右 */
+    overflow: auto;
+    /* 整体页面不滚动，内部区域可滚 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 左右两部分的公共样式 */
+.pane {
+    padding: 1.25rem;
+    min-width: 0;
+    /* 关键：允许 flex 子项水平收缩，避免出现横向滚动条 */
+}
+
+/* 左侧（主内容） 7 份 */
+.left {
+    /* background: linear-gradient(180deg, #f7fbff 0%, #e6f0ff 100%);*/
+    background-color: var(--color-bg);
+    /* 可换颜色 */
+    flex: 1 1 auto;
+    /* 7:3 比例的关键 */
+}
+
+/* 右侧（辅助） 3 份 */
+.right {
+    /* background: linear-gradient(180deg, #fff8f0 0%, #ffe6cc 100%);*/
+    background-color: var(--color-bg2);
+    flex: 0 0 auto;
+    width: 370px;
+    border-left: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* 内部示例样式（标题、卡片等） */
+h1 {
+    margin-bottom: .75rem;
+    font-size: 1.2em;
+}
+
+h3 {
+    margin-bottom: .45rem;
+    font-size: 1em;
+}
+
+.proj_name {
+    position: fixed;
+}
+
+/*
+.div_img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+}
+*/
+.div_img {
+    position: fixed;
+    top: 50%;
+    left: calc((100% - 400px) / 2);
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+
+.div_tools {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+}
+
+
+.card {
+    background: white;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.06);
+    margin-bottom: 1rem;
+}
+
+.widget {
+    background: var(--color-bg);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.112);
+    text-align: left;
+    transition: all 0.5s;
+    cursor: default;
+}
+
+.widget:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.362);
+    transform: scale(1.01);
+
+}
+
+.widget p {
+    font-size: 15px;
+    font-family: inherit;
+}
+
+.widget .p_right {
+    float: right;
+}
+
+/* 编辑面板评分选项：允许换行，避免分值较多时溢出 */
+#scoreRadios {
+    flex-wrap: wrap;
+    gap: 10px 10px;
+}
+
+#scoreRadios label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+textarea {
+    margin-top: 10px;
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 2px solid var(--color-primary);
+    border-radius: 6px;
+    color: var(--color-fg);
+    background: var(--color-bg2);
+    outline: none;
+    transition: border 0.2s;
+    font-family: inherit;
+}
+
+.button-outline {
+    padding: 8px;
+}
+
+.button-long {
+    width: 100%;
+    padding: 12px 0;
+    margin: 10px 3px;
+    background: var(--color-btn);
+    color: var(--color-btn-fg);
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    height: 45px;
+    cursor: pointer;
+    display: inline;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    gap: 8px;
+    transition: background 0.2s;
+}
+
+.button-long:hover {
+    background: #1565c0;
+}
+
+/* 小输入框 */
+.small-input {
+    width: 65px;
+    height: 40px;
+    padding: 6px;
+    border: 2px solid var(--color-primary);
+    border-radius: 6px;
+    /* 透明 */
+    background: rgba(255, 255, 255, 0);
+    color: var(--color-fg);
+    font-size: 11px;
+    outline: none;
+    transition: border 0.2s;
+    font-family: inherit;
+    text-align: center;
+}
+
+/* 中输入框 */
+.mid-input {
+    width: 100%;
+    padding: 8px 6px;
+    margin: 5px 0;
+    border: 2px solid var(--color-primary);
+    border-radius: 6px;
+    background: var(--color-input-bg);
+    color: var(--color-input-fg);
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.mid-input:focus {
+    border-color: var(--color-primary);
+}
+
+.loading_bar {
+    position: fixed;
+    border-radius: 7px;
+    top: 50%;
+    right: 50%;
+    padding: 20px 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.362);
+    background-color: var(--color-bg);
+    z-index: 999;
+}
+
+.bar {
+    width: 200px;
+    height: 13px;
+    background: #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.bar-text {
+    margin-top: 5px;
+}
+
+.fill {
+    width: 0%;
+    height: 100%;
+    background: #4b8aff;
+    transition: width .3s ease;
+}
+
+/* 响应式：窄屏（手机）时改为上下布局 */
+@media (max-width: 976px) {
+    body {
+        flex-direction: column;
+    }
+
+    .left,
+    .right {
+        width: auto;
+        flex: 0 0 auto;
+        /* 按内容高度排列 */
+    }
+
+    .left {
+        height: 50vh;
+        /* 可根据需要调整 */
+    }
+
+    .div_tools {
+        position: static;
+        margin-top: -26px;
+    }
+
+    .proj_name {
+        position: absolute;
+    }
+
+    .div_img {
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        transform: none;
+    }
+
+
+    /* 如果你希望上下时每部分根据内容高度自适应，删除上面的 height:50vh; */
+}
+
+/* 额外：当想让手机时左右的某一块默认高度自适应内容，把 height:50vh 注释掉即可 */
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
