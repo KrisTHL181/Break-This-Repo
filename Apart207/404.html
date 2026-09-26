@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 · Apart207</title>
+    <style>
+        /* ========== 设计Token：Carbon栅格 + Flutter M3配色 ========== */
+        :root {
+            /* Flutter M3 莫奈蓝（原有站点主色） */
+            --color-primary: #5C7FA8;
+            --color-primary-hover: #4A6888;
+            --color-bg: #F7FAFC;
+            --color-text-main: #2D3748;
+            --color-text-secondary: #718096;
+            --color-surface-light: #E8F0F8;
+            --color-border: #E2E8F0;
+            /* Carbon 8px基础栅格 */
+            --base-unit: 8px;
+            /* Carbon 标准动画曲线 + M3过渡时长 */
+            --curve-standard: cubic-bezier(0.2, 0, 0.2, 1);
+            --transition-fast: 200ms var(--curve-standard);
+            --transition-normal: 480ms var(--curve-standard);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "IBM Plex Sans", "Segoe UI", "PingFang SC", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        body {
+            background-color: var(--color-bg);
+            color: var(--color-text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            padding: calc(var(--base-unit) * 6) calc(var(--base-unit) * 3);
+            text-align: center;
+        }
+        .content {
+            position: relative;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(calc(var(--base-unit) * 1.5));
+            transition: all var(--transition-normal);
+        }
+        /* Carbon大数字展示样式，轻量化 */
+        .code {
+            font-size: 120px;
+            font-weight: 300;
+            color: var(--color-primary);
+            letter-spacing: calc(var(--base-unit) * 1);
+            opacity: 0.85;
+            margin-bottom: calc(var(--base-unit) * 1.5);
+        }
+        .title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: calc(var(--base-unit) * 2);
+            color: var(--color-text-main);
+        }
+        .desc {
+            font-size: 16px;
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            margin-bottom: calc(var(--base-unit) * 4.5);
+        }
+        .btn-group {
+            display: flex;
+            gap: calc(var(--base-unit) * 2);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        /* Carbon按钮规范：明确状态、圆角克制（8px，兼顾M3） */
+        .btn {
+            padding: calc(var(--base-unit) * 1.25) calc(var(--base-unit) * 3);
+            border-radius: 8px;
+            font-size: 15px;
+            text-decoration: none;
+            transition: all var(--transition-fast);
+            border: none;
+            cursor: pointer;
+        }
+        .primary {
+            background-color: var(--color-primary);
+            color: #ffffff;
+        }
+        .primary:hover {
+            background-color: var(--color-primary-hover);
+        }
+        .outline {
+            background: transparent;
+            color: var(--color-primary);
+            border: 1px solid var(--color-primary);
+        }
+        .outline:hover {
+            background-color: var(--color-surface-light);
+        }
+        /* 柔和装饰，保留M3浮动动画，不破坏Carbon克制风格 */
+        .decoration {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--color-surface-light) 0%, rgba(247,250,252,0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            animation: float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%,100% {transform: translate(-50%, -50%) scale(1); opacity:0.6;}
+            50% {transform: translate(-50%, -50%) scale(1.12); opacity:0.35;}
+        }
+        @media (max-width:480px) {
+            .code {
+                font-size: 88px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="content">
+            <div class="code">404</div>
+            <h1 class="title">页面未找到</h1>
+            <p class="desc">你访问的资源不存在或已迁移。<br>207研究所的文档与资源持续维护中。</p>
+            <div class="btn-group">
+                <a href="/" class="btn primary">返回首页</a>
+                <a href="/public/finance.html" class="btn outline">财务公开</a>
+            </div>
+        </div>
+        <div class="decoration"></div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const content = document.querySelector('.content');
+            setTimeout(() => {
+                content.style.opacity = '1';
+                content.style.transform = 'translateY(0)';
+            }, 120);
+        });
+    </script>
+</body>
+</html>
