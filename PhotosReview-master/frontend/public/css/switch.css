@@ -1,0 +1,61 @@
+.switch-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 左文字靠左，开关靠右 */
+    gap: 12px;
+    width: 100%;
+    /* 根据需要调整总体宽度 */
+    padding: 5px 0;
+}
+
+/* 左侧文字 */
+.switch-row .label-text {
+    font-size: 16px;
+    line-height: 1;
+    user-select: none;
+}
+
+/* 保留并适配原有开关样式 */
+.switch {
+    position: relative;
+    width: 50px;
+    height: 28px;
+    background-color: #999999;
+    border-radius: 28px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    flex: 0 0 auto;
+    /* 防止拉伸 */
+}
+
+.slider {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 24px;
+    height: 24px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+/* 选中状态（依然基于 input:checked + .switch） */
+input:checked+.switch {
+    background-color: var(--color-primary);
+}
+
+input:checked+.switch .slider {
+    transform: translateX(22px);
+}
+
+/* 隐藏原生checkbox（保留） */
+input {
+    display: none;
+}
+
+/* 禁用状态 */
+input:disabled+.switch {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}

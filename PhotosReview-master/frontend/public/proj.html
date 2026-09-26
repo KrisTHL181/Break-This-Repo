@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>proj - default</title>
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script src="js/theme-init.js?v=0.1"></script>
+    <link rel="stylesheet" href="css/root.css?v=0.7">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/input.css">
+    <link rel="stylesheet" href="css/switch.css">
+    <link rel="stylesheet" href="css/proj.css">
+</head>
+
+<body>
+    <div id="loading-overlay">
+        <div>
+            <span data-i18n="loading-1"></span><br>
+            <span data-i18n="loading-2"></span>
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <!-- 弹窗内容 -->
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <h3></h3>
+            <span class="close-btn" id="closeBtn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <button class="confirm-btn" id="confirmBtn" data-i18n="ok">OK</button>
+        </div>
+    </div>
+    <!-- 气泡弹窗 -->
+    <div class="bubble-container" id="bubbleContainer"></div>
+
+    <section class="pane left">
+        <h1 id="html_proj_name" class="proj_name"></h1>
+        <div style="display: none" id="loading_bar" class="loading_bar">
+            <!-- 进度条 -->
+            <div class="bar">
+                <div class="fill" id="bar-fill"></div>
+            </div>
+            <div class="bar-text" id="bar-text" data-i18n="loading">Loading</div>
+        </div>
+
+        <div class="div_img">
+            <img src="" style="width: 70%;" id="html_img">
+        </div>
+        <div class="div_tools">
+            <button class="button-outline" onclick="pageView.prevPage()">←</button>
+            <button class="button-outline" onclick="pageView.nextPage()">→</button>
+            <button class="button-outline" onclick="pageView.zoomIn()">&nbsp;+&nbsp;</button>
+            <button class="button-outline" onclick="pageView.zoomOut()">&nbsp;-&nbsp;</button>
+            <button class="button-outline" onclick="pageView.rotate()">↻</button>
+            <input type="text" id="html_goPage_1" class="small-input" data-i18n-placeholder="photoid" placeholder="Photoid"
+                style="display: inline-block;">
+            <input type="text" id="html_goPage_2" class="small-input" data-i18n-placeholder="tempid" placeholder="Tempid"
+                style="display: inline-block;">
+        </div>
+    </section>
+
+    <aside class="pane right" id="rightPane">
+        <h1><i class="fa-solid fa-square-up-right"></i> <span id="html_mode"></span><span data-i18n="mode_suffix"></span></h1>
+        <div class="widget">
+            <h3><i class="fa-solid fa-circle-info"></i> <span data-i18n="information"></span></h3>
+            <p><span data-i18n="photoid"></span>: <span class="p_right" id="html_photoid">1100</span></p>
+            <p><span data-i18n="tempid"></span>: <span class="p_right" id="html_tempid">0</span></p>
+            <p><span data-i18n="status"></span>: <span class="p_right" style="color: red;font-weight: bold;" id="html_status"></span></p>
+            <p><span data-i18n="all"></span>: <span class="p_right" id="html_all">100</span></p>
+            <p><span data-i18n="remaining"></span>: <span class="p_right" id="html_remaining">50</span></p>
+        </div>
+
+        <div class="widget">
+            <h3><i class="fa-solid fa-edit"></i> <span data-i18n="edit"></span></h3>
+            <p><span data-i18n="score"></span>: </p>
+            <div class="radio-group" id="scoreRadios" style=""></div>
+            <p><span data-i18n="note"></span>: </p>
+            <textarea data-i18n-placeholder="say_something" placeholder="说点什么吧..." id="html_note"></textarea>
+            <button class="button-long" onclick="photoList.submit()">
+                <i class="fa-solid fa-check"></i>
+                <span data-i18n="submit"></span>
+            </button>
+        </div>
+
+        <div class="widget" id="batch_widget">
+            <h3><i class="fa-solid fa-sliders"></i> <span data-i18n="batch_operation"></span></h3>
+            <p><span data-i18n="tempid_list"></span>: </p>
+            <input type="text" id="html_list" class="mid-input" data-i18n-placeholder="input_example_list" placeholder="输入示例：(0,3,4)" style="display: block;">
+            <p><span data-i18n="tempid_range"></span>: </p>
+            <input type="text" id="html_range" class="mid-input" data-i18n-placeholder="input_example_range" placeholder="输入示例： (2,7)" style="display: block;">
+        </div>
+
+        <div class="widget" id="setting_widget">
+            <h3><i class="fa-solid fa-gear" style="animation: spin 2s linear infinite;"></i> <span data-i18n="settings"></span></h3>
+            <div class="switch-row">
+                <span class="label-text" data-i18n="batch_operation_list"></span>
+                <label>
+                    <input type="checkbox" id="batchOperationList">
+                    <div class="switch">
+                        <div class="slider"></div>
+                    </div>
+                </label>
+            </div>
+            <div class="switch-row">
+                <span class="label-text" data-i18n="batch_operation_range"></span>
+                <label>
+                    <input type="checkbox" id="batchOperationRange">
+                    <div class="switch">
+                        <div class="slider"></div>
+                    </div>
+                </label>
+            </div>
+            <div class="switch-row">
+                <span class="label-text" data-i18n="lock_content"></span>
+                <label>
+                    <input type="checkbox" id="lockContent">
+                    <div class="switch">
+                        <div class="slider"></div>
+                    </div>
+                </label>
+            </div>
+            <div class="switch-row">
+                <span class="label-text" data-i18n="auto_next"></span>
+                <label>
+                    <input type="checkbox" id="autoNext">
+                    <div class="switch">
+                        <div class="slider"></div>
+                    </div>
+                </label>
+            </div>
+            <div class="switch-row">
+                <span class="label-text" data-i18n="auto_commit"></span>
+                <label>
+                    <input type="checkbox" id="autoCommit">
+                    <div class="switch">
+                        <div class="slider"></div>
+                    </div>
+                </label>
+            </div>
+            <div class="switch-row">
+                <span class="label-text" data-i18n="per_image_setting">Per-image setting</span>
+                <label>
+                    <input type="checkbox" id="adjustImgParamIndividually">
+                    <div class="switch">
+                        <div class="slider"></div>
+                    </div>
+                </label>
+            </div>
+            <p style="text-align: center;">
+                <button class="button-long" style="width: 98%;;font-size: 12px;" onclick="photoList.switchMode()"><i
+                        class="fa-solid fa-square-up-right"></i> <span data-i18n="switch_mode"></span></button>
+            </p>
+            <p style="text-align: center;">
+                <button class="button-long" style="width: 47%;;font-size: 12px;margin-top: 0;" onclick="pageView.clear()"><i
+                        class="fa-solid fa-remove"></i> <span data-i18n="clean"></span></button>
+                <button class="button-long" style="width: 47%;font-size: 12px;margin-top: 0;"
+                        onclick="saveCache.cacheImages()"><i class="fa-solid fa-archive"></i> <span data-i18n="cache_project"></span></button>
+            </p>
+            <p style="text-align: center;">
+                <button class="button-long" style="width: 47%;font-size: 12px;margin-top: 0;" id="darkToggle"><i
+                        class="fa-regular fa-moon" id="darkIcon"></i> <span data-i18n="switch_theme"></span></button>
+                <button class="button-long" style="width: 47%;font-size: 12px;margin-top: 0;" id="languageSelect">
+                    <i class="fa-solid fa-language"></i> <span data-i18n="switch_language"></span>
+                </button>
+            </p>
+        </div>
+        <p>&copy; 2025 Flare. 信号弹. <span class="click_me" onclick="go_url('https://github.com/HoDastar/PhotosReview/', 1)" style="text-decoration: underline">Click me.</span></p>
+    </aside>
+</body>
+
+</html>
+<script src="js/utils.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/modal.js"></script>
+<script src="js/view.js?v=0.1"></script>
+<script src="js/url.js"></script>
+<script src="js/proj.js"></script>
