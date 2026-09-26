@@ -1,0 +1,38 @@
+{
+  "name": "apart207",
+  "buildCommand": "python3 build.py --clean",
+  "installCommand": "sh scripts/install.sh",
+  "outputDirectory": "public",
+  "nodeVersion": "22.11.0",
+  "cloudFunctions": {
+    "includeFiles": [
+      "data/**"
+    ]
+  },
+  "headers": [
+    {
+      "source": "/assets/*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/*.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=3600"
+        }
+      ]
+    }
+  ],
+  "caches": [
+    {
+      "source": "/assets/*",
+      "cacheTtl": 31536000
+    }
+  ]
+}
