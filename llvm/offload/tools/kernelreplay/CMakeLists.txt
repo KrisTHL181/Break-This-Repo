@@ -1,0 +1,13 @@
+message(STATUS "Building the llvm-omp-kernel-replay tool")
+
+add_offload_tool(llvm-omp-kernel-replay llvm-omp-kernel-replay.cpp
+  LINK_COMPONENTS Support
+)
+
+target_include_directories(llvm-omp-kernel-replay PRIVATE
+  ${LIBOMPTARGET_INCLUDE_DIR}
+)
+target_link_libraries(llvm-omp-kernel-replay PRIVATE
+  omp
+  omptarget
+)
