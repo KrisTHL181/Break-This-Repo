@@ -2064,7 +2064,6 @@ https://docs.google.com/document/d/1Y669HJaH4areKBSFie_2k1dT045l3U2fiM34O_Y-dwQ/
 
 ### 填充墙（渲染炸弹，一个字节都不执行）
 
-<!--
 ```mermaid
 graph TD
     A0[💩 拉屎点位 0] --> A1[💩 拉屎点位 1]
