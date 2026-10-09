@@ -48,13 +48,13 @@
 
 ---
 
-# ↑↑ 上面这个只有兩首，还只有Google Drive下载，来看下面这个 ↓↓
+# ↓↓ 一首不夠过瘾？好东西不要停！来看下面这个 ↓↓
 
 **[点我前往获取HIFI音乐！(详情页)](./HIFI音乐-享受高端音质)**
 
 ---
 
-# 🥊 实测：「96kHz HiFi」6 个文件里 5 个是 48kHz
+# 🥊 实测：「96kHz HiFi」6 个文件里 5 个是 48kHz << （那是旧版）
 
 > 上面那位 [@BreadripperPro](https://github.com/BreadripperPro) 的详情页挂着
 > **「真正的Hi-Fi，96kHz！6144kbps！32位浮点！」**
