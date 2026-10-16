@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎮 骷髅打金服 限时开服 🎮</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: #0a0000;
+      animation: worldHue 8s linear infinite;
+    }
+    @keyframes worldHue {
+      from { filter: hue-rotate(0deg); }
+      to { filter: hue-rotate(360deg); }
+    }
+
+    /* ========== LED 跑马灯灯珠（四边） ========== */
+    .led-row { position: fixed; left: 0; right: 0; display: flex; justify-content: center; gap: 3px; z-index: 40; }
+    .led-col { position: fixed; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 3px; z-index: 40; }
+    .led {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: #4a0000;
+      animation: chase 1.2s linear infinite;
+    }
+    @keyframes chase {
+      0%, 100% { background: #4a0000; box-shadow: none; }
+      45% { background: #ffd700; box-shadow: 0 0 10px #ffd700, 0 0 18px #ff8c00; }
+      55% { background: #4a0000; box-shadow: none; }
+    }
+
+    /* ========== 滚动横幅（跑马灯文字） ========== */
+    .ticker {
+      position: fixed; left: 0; right: 0;
+      white-space: nowrap; overflow: hidden;
+      font-weight: 900; color: #fff;
+      line-height: 28px; font-size: 14px;
+      text-shadow: 1px 1px 0 #000;
+      z-index: 30;
+    }
+    .ticker span { display: inline-block; padding-left: 100%; animation: scrollText linear infinite; }
+    .t1 { top: 26px; background: repeating-linear-gradient(90deg, #ff0d00 0 30px, #d40000 30px 60px); animation: bgShift 3s linear infinite; }
+    .t1 span { animation-duration: 10s; }
+    .t2 { top: 54px; background: #0d0d0d; border-top: 1px solid #ffd700; }
+    .t2 span { animation-duration: 16s; color: #ffe400; text-shadow: 0 0 8px #ffd700; }
+    .t3 { top: 82px; background: repeating-linear-gradient(90deg, #0044ff 0 30px, #0022aa 30px 60px); animation: bgShift 4s linear infinite; }
+    .t3 span { animation-duration: 22s; }
+    .tb1 { bottom: 26px; background: #000; border-top: 1px solid #39ff14; }
+    .tb1 span { animation-duration: 18s; color: #39ff14; text-shadow: 0 0 8px #39ff14; }
+    .tb2 { bottom: 54px; background: repeating-linear-gradient(90deg, #ff00ff 0 30px, #7a007a 30px 60px); animation: bgShift 5s linear infinite; }
+    .tb2 span { animation-duration: 13s; color: #ffd700; }
+    @keyframes scrollText {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+    @keyframes bgShift { to { background-position: 60px 0; } }
+
+    /* ========== 竖排走字（左右侧） ========== */
+    .vticker {
+      position: fixed; top: 120px; bottom: 90px; width: 24px;
+      overflow: hidden; writing-mode: vertical-lr;
+      font-weight: 900; font-size: 15px; letter-spacing: 4px;
+      z-index: 30; padding: 4px 0;
+    }
+    .vticker span { animation: scrollV linear infinite; display: inline-block; }
+    .vt-left { left: 6px; color: #ffe400; text-shadow: 0 0 10px #ffd700; background: linear-gradient(180deg, rgba(255,0,0,.15), rgba(255,0,0,.05)); border-right: 2px solid #ff0d00; }
+    .vt-left span { animation-duration: 8s; }
+    .vt-right { right: 6px; color: #39ff14; text-shadow: 0 0 10px #39ff14; background: linear-gradient(180deg, rgba(0,255,0,.12), rgba(0,255,0,.04)); border-left: 2px solid #39ff14; }
+    .vt-right span { animation-duration: 11s; }
+    @keyframes scrollV {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(50%); }
+    }
+
+    /* ========== 光污染：彩虹扫光 + 扫描线 + 色带 + 聚光灯 ========== */
+    .light-pollution {
+      position: fixed; inset: 0; pointer-events: none; z-index: 5;
+      background: conic-gradient(from 0deg, #f0f, #0ff, #ff0, #0f0, #f0f);
+      opacity: .16;
+      animation: pollutionRotate .9s linear infinite, pulse 3s ease-in-out infinite;
+      mix-blend-mode: overlay;
+    }
+    .pollution2 {
+      position: fixed; inset: 0; pointer-events: none; z-index: 6;
+      background: radial-gradient(circle at 30% 40%, rgba(255,255,255,.28), transparent 40%),
+                  radial-gradient(circle at 75% 65%, rgba(255,255,255,.22), transparent 40%);
+      animation: strobe .25s steps(2, start) infinite;
+    }
+    @keyframes pollutionRotate { to { transform: rotate(360deg); } }
+    @keyframes strobe { 50% { opacity: .55; } }
+    @keyframes pulse { 0%,100% { opacity: .10; } 50% { opacity: .22; } }
+    .scanlines {
+      position: fixed; inset: 0; pointer-events: none; z-index: 7;
+      background: repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 2px, transparent 2px 4px);
+      animation: scanMove 1.4s linear infinite;
+    }
+    @keyframes scanMove { to { background-position: 0 8px; } }
+    .colorbars {
+      position: fixed; left: 0; right: 0; height: 8px; z-index: 28;
+      background: repeating-linear-gradient(90deg, #fff 0 12%, #ffe400 12% 24%, #00a4ff 24% 36%, #28ff28 36% 48%, #ff79ff 48% 60%, #ff0000 60% 72%, #0030ff 72% 84%, #000 84% 100%);
+      background-size: 600px 100%;
+      animation: barShift 2s linear infinite;
+      box-shadow: 0 0 14px rgba(255,255,255,.8);
+    }
+    .cb-top { top: 112px; }
+    .cb-bottom { bottom: 84px; }
+    @keyframes barShift { to { background-position: 600px 0; } }
+    /* 聚光灯扫射 */
+    .godray {
+      position: fixed; left: 50%; top: -45%; width: 90px; height: 170%;
+      z-index: 8; pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,.45), rgba(255,215,0,.22) 45%, transparent 72%);
+      filter: blur(8px); mix-blend-mode: screen;
+      transform-origin: 50% 0;
+      animation: raySweep 3.6s ease-in-out infinite;
+    }
+    @keyframes raySweep {
+      0%, 100% { transform: rotate(-20deg); opacity: .45; }
+      50% { transform: rotate(20deg); opacity: .95; }
+    }
+
+    /* ========== 背景特效 ========== */
+    .bg-fx { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .jian {
+      position: absolute; font-size: 22px; font-weight: 900;
+      animation: floatJian 6s ease-in-out infinite;
+      filter: drop-shadow(0 0 6px #ffd700);
+    }
+    @keyframes floatJian {
+      0%, 100% { transform: translateY(0) rotate(0deg); opacity: .85; }
+      50% { transform: translateY(-30px) rotate(8deg); opacity: 1; }
+    }
+    .firework {
+      position: absolute; width: 6px; height: 6px; border-radius: 50%;
+      animation: boom 2.4s ease-out infinite;
+    }
+    @keyframes boom {
+      0% { transform: scale(0); opacity: 1; box-shadow: 0 0 0 0 currentColor; }
+      60% { opacity: .9; }
+      100% { transform: scale(3); opacity: 0; box-shadow: 0 0 140px 24px currentColor; }
+    }
+    .fall-item { position: absolute; top: -60px; animation: fall linear infinite; will-change: transform; }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: .95; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: .5; }
+    }
+
+    /* ========== 主内容 ========== */
+    .content { position: relative; z-index: 10; padding: 20px; }
+
+    h1 {
+      font-size: clamp(34px, 7vw, 64px);
+      font-weight: 900;
+      background: linear-gradient(90deg, #ff0, #0ff, #f0f, #ff0, #0f0, #ff0);
+      background-size: 400% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: rainbowText 3s linear infinite;
+      margin-bottom: 12px;
+      letter-spacing: 6px;
+      filter: drop-shadow(0 0 6px #ff0) drop-shadow(0 0 18px #f0f);
+    }
+    @keyframes rainbowText { to { background-position: 400% 0; } }
+
+    .title-banner {
+      display: inline-block;
+      padding: 12px 38px;
+      font-size: clamp(16px, 3.5vw, 24px);
+      font-weight: 900; color: #fff; letter-spacing: 3px;
+      background: linear-gradient(90deg, #8b0000, #ffd700 30%, #8b0000 70%, #ffd700);
+      background-size: 300% 100%;
+      animation: goldenGlide 3s linear infinite;
+      border: 4px solid;
+      border-image: linear-gradient(90deg, #ff0, #f0f, #0ff, #ff0) 1;
+      box-shadow: 0 0 24px rgba(255, 215, 0, .9), 0 0 80px rgba(255, 120, 0, .7);
+      text-shadow: 2px 2px 0 #7a0000, 0 0 12px #fff;
+      margin-bottom: 26px;
+    }
+    @keyframes goldenGlide { to { background-position: 300% 0; } }
+
+    .boombox-text {
+      font-size: clamp(14px, 3vw, 20px);
+      font-weight: 700; color: #fff; line-height: 1.9; margin-bottom: 18px;
+      animation: wordHue 4s linear infinite;
+    }
+    @keyframes wordHue {
+      from { filter: hue-rotate(0); }
+      to { filter: hue-rotate(360deg); }
+    }
+    .boombox-text b { font-size: 1.15em; }
+    .boombox-text .red { color: #ff4444; }
+    .boombox-text .yellow { color: #ffe400; }
+    .boombox-text .green { color: #39ff14; }
+    .boombox-text .blue { color: #4da6ff; }
+    .boombox-text .pink { color: #ff69b4; }
+
+    .countdown {
+      font-size: clamp(18px, 4vw, 28px); font-weight: 900;
+      color: #39ff14; text-shadow: 0 0 12px #39ff14, 0 0 40px #39ff14;
+      margin-bottom: 30px;
+      animation: blinkFast 1s steps(2, start) infinite;
+    }
+    .countdown b {
+      color: #fff; background: #7a0000; padding: 2px 12px; border-radius: 6px;
+      margin: 0 4px; font-size: 1.2em;
+      box-shadow: 0 0 0 3px #ff0, 0 0 20px #ff0;
+    }
+    @keyframes blinkFast { 50% { opacity: .4; } }
+
+    /* ========== 按钮（究极强调动效版） ========== */
+    .btn-wrap { position: relative; display: inline-block; }
+    .btn-ring {
+      position: absolute; inset: -12px; border-radius: 18px;
+      border: 4px dashed #ff0;
+      animation: ringSpin 2.4s linear infinite;
+      pointer-events: none;
+      filter: drop-shadow(0 0 6px #ff0) drop-shadow(0 0 14px #f0f);
+    }
+    .btn-ring2 {
+      position: absolute; inset: -22px; border-radius: 26px;
+      border: 3px dotted #0ff;
+      animation: ringSpin 8s linear infinite reverse;
+      pointer-events: none;
+      filter: drop-shadow(0 0 8px #0ff);
+    }
+    @keyframes ringSpin { to { transform: rotate(360deg); } }
+    /* 声呐涟漪扩散 */
+    .sonar { position: absolute; inset: 0; border-radius: 16px; border: 3px solid rgba(255,215,0,.9); animation: sonar 2.2s ease-out infinite; pointer-events: none; }
+    .sonar.s2 { animation-delay: 1.1s; }
+    .sonar.s3 { animation-delay: 2.2s; }
+    @keyframes sonar {
+      0% { transform: scale(1); opacity: .95; }
+      100% { transform: scale(1.7); opacity: 0; }
+    }
+    /* 头顶提示箭头 */
+    .arrow-hint {
+      position: absolute; top: -46px; left: 50%; transform: translateX(-50%);
+      font-size: 22px; font-weight: 900; color: #ffe400; white-space: nowrap;
+      text-shadow: 0 0 10px #ff0, 0 0 24px #ff0;
+      animation: arrowBounce .6s ease-in-out infinite;
+    }
+    @keyframes arrowBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+    }
+
+    a.btn {
+      position: relative;
+      display: inline-block;
+      padding: 22px 70px;
+      font-size: clamp(22px, 5vw, 36px);
+      font-weight: 900; color: #fff; text-decoration: none;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #ff0040, #ff8c00 30%, #ffe400 50%, #00ff88 70%, #00a4ff);
+      background-size: 400% 400%;
+      border: 4px solid #fff;
+      text-shadow: 2px 2px 0 #000, 0 0 16px #fff;
+      letter-spacing: 5px;
+      animation: btnRainbow 1.6s ease infinite, btnPulse .8s ease-in-out infinite, btnShake 4s ease-in-out infinite;
+    }
+    a.btn:hover { transform: scale(1.08) translateY(-3px); }
+    a.btn:active {
+      transform: scale(.9) translateY(6px) !important;
+      box-shadow: 0 0 30px rgba(255,140,0,1), 0 4px 0 #a02c00;
+    }
+    @keyframes btnRainbow { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    @keyframes btnPulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(255,140,0,1), 0 0 90px rgba(255,69,0,.8), 0 0 140px rgba(255,200,0,.6), 0 10px 0 #a02c00; }
+      50% { box-shadow: 0 0 60px rgba(255,255,255,.9), 0 0 120px rgba(255,215,0,1), 0 0 180px rgba(255,0,255,.8), 0 10px 0 #a02c00; }
+    }
+    /* 周期性抽搐（强调！点我！） */
+    @keyframes btnShake {
+      0%, 82%, 100% { transform: rotate(0deg) scale(1); }
+      84% { transform: rotate(-4deg) scale(1.07); }
+      86% { transform: rotate(4deg) scale(1.07); }
+      88% { transform: rotate(-4deg) scale(1.07); }
+      90% { transform: rotate(4deg) scale(1.05); }
+      92% { transform: rotate(-3deg) scale(1.04); }
+      94% { transform: rotate(3deg) scale(1.02); }
+      96% { transform: rotate(-2deg) scale(1.01); }
+    }
+    /* 点击波纹 */
+    .click-ripple {
+      position: fixed; width: 30px; height: 30px; border-radius: 50%;
+      border: 3px solid #ffd700; pointer-events: none; z-index: 55;
+      animation: ripple 0.7s ease-out forwards;
+    }
+    @keyframes ripple {
+      from { width: 20px; height: 20px; opacity: 1; }
+      to { width: 260px; height: 260px; opacity: 0; }
+    }
+
+    .cursor-dot {
+      position: fixed; width: 18px; height: 18px; border-radius: 50%;
+      pointer-events: none; z-index: 50;
+      background: radial-gradient(circle, #fff, #ff0 40%, transparent 70%);
+      animation: trailFade .7s ease-out forwards;
+    }
+    @keyframes trailFade {
+      from { opacity: .9; transform: scale(1); }
+      to { opacity: 0; transform: scale(.1); }
+    }
+
+    /* ========== 骚扰弹窗 ========== */
+    .popup {
+      position: fixed; inset: 0; z-index: 70;
+      display: none; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.6);
+    }
+    .popup.show { display: flex; animation: popIn .22s ease-out; }
+    @keyframes popIn { from { transform: scale(.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .pop-box {
+      position: relative; width: min(92vw, 400px);
+      background: linear-gradient(180deg, #3a0a0a 0%, #1c0404 100%);
+      border: 4px solid #ffd700; border-radius: 14px;
+      padding: 24px 20px 20px; text-align: center;
+      box-shadow: 0 0 40px rgba(255,215,0,.9), 0 0 120px rgba(255,120,0,.6), inset 0 0 30px rgba(255,215,0,.12);
+      animation: boxJitter 2.5s linear infinite;
+    }
+    @keyframes boxJitter {
+      0%, 88%, 100% { transform: rotate(0deg); }
+      90% { transform: rotate(-1deg); } 92% { transform: rotate(1deg); }
+      94% { transform: rotate(-1deg); } 96% { transform: rotate(1deg); }
+    }
+    .pop-title {
+      font-size: 24px; font-weight: 900; color: #ffe400; letter-spacing: 2px;
+      text-shadow: 0 0 10px #ffd700, 0 0 30px #ff8c00;
+      animation: popTitleBlink 1s steps(2, start) infinite;
+      margin-bottom: 8px;
+    }
+    @keyframes popTitleBlink { 50% { opacity: .55; } }
+    .pop-text { color: #fff; font-size: 15px; line-height: 1.9; font-weight: 600; margin-bottom: 6px; }
+    .pop-text .hl-y { color: #ffe400; font-weight: 900; }
+    .pop-text .hl-g { color: #39ff14; font-weight: 900; }
+    .pop-text .hl-p { color: #ff69b4; font-weight: 900; }
+    .pop-close {
+      position: absolute; top: -15px; right: -15px;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle, #ff0, #f00); border: 3px solid #fff;
+      color: #fff; font-weight: 900; font-size: 18px; line-height: 1;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 14px #f00; animation: closeSpin 6s linear infinite;
+    }
+    @keyframes closeSpin { to { transform: rotate(360deg); } }
+    .pop-btn {
+      display: inline-block; margin: 12px 6px 0; padding: 12px 26px;
+      border-radius: 10px; border: 3px solid #fff;
+      font-size: 17px; font-weight: 900; color: #fff; cursor: pointer;
+      text-decoration: none; letter-spacing: 2px;
+      animation: popBtnBlink .7s ease-in-out infinite;
+    }
+    .pop-yes { background: linear-gradient(135deg, #ff4500, #ffd700); box-shadow: 0 0 18px rgba(255,140,0,.9); }
+    .pop-no  { background: linear-gradient(135deg, #333, #555); box-shadow: 0 0 10px rgba(255,255,255,.3); }
+    @keyframes popBtnBlink { 50% { filter: brightness(1.45); } }
+
+    /* 幸运转盘 */
+    .wheel-wrap { position: relative; width: 210px; height: 210px; margin: 16px auto 6px; }
+    .wheel {
+      width: 100%; height: 100%; border-radius: 50%;
+      border: 6px solid #ffd700;
+      background: conic-gradient(
+        #ff4757 0 12.5%, #ffa502 12.5% 25%, #2ed573 25% 37.5%, #3742fa 37.5% 50%,
+        #ff6b81 50% 62.5%, #eccc68 62.5% 75%, #7bed9f 75% 87.5%, #a29bfe 87.5% 100%);
+      box-shadow: 0 0 30px rgba(255,215,0,.8), inset 0 0 30px rgba(0,0,0,.35);
+      transition: transform 3.4s cubic-bezier(.15, .85, .12, 1);
+    }
+    .wheel-needle {
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent;
+      border-top: 24px solid #ff0d00; z-index: 2;
+      filter: drop-shadow(0 0 8px #ff0d00);
+    }
+    .wheel-hub {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 34px; height: 34px; border-radius: 50%;
+      background: radial-gradient(circle, #fff, #ffd700 60%, #ff8c00);
+      border: 3px solid #fff; box-shadow: 0 0 14px #ffd700; z-index: 3;
+    }
+    .wheel-result {
+      display: none; margin-top: 14px; font-size: 18px; font-weight: 900; color: #39ff14;
+      text-shadow: 0 0 10px #39ff14;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LED 跑马灯灯珠 -->
+  <div class="led-row" style="top:2px" id="ledTop"></div>
+  <div class="led-row" style="bottom:2px" id="ledBottom"></div>
+  <div class="led-col" style="left:2px" id="ledLeft"></div>
+  <div class="led-col" style="right:2px" id="ledRight"></div>
+
+  <!-- 跑马灯文字横幅 -->
+  <div class="ticker t1"><span>🔥 震撼开服！骷髅打金服 🔥 上线就送VIP15 🔥 一刀999级 🔥 装备回收秒到账 🔥 是兄弟就来砍我 🔥 充100送1000 🔥 金榜题名 考神附体 🔥</span></div>
+  <div class="ticker t2"><span>💎 广告位招租 💎 老板大气 💎 全服唯一 💎 矿洞爆神装 💎 骷髅掉元宝 💎 屠龙宝刀点击就送 💎 错过再等一年 💎 我在等一个人 他叫「点击按钮」💎</span></div>
+  <div class="ticker t3"><span>⚡ 全民打金 日入过万 ⚡ 元宝秒提现 ⚡ 装备保值 ⚡ 红名玩家全球追杀 ⚡ 开服七天乐 天天送豪礼 ⚡ 号令天下 莫敢不从 ⚡</span></div>
+  <div class="ticker tb1"><span>🎯 点击就是赚到 🎯 不点白不点 🎯 点了换神装 🎯 系统已为您锁定大奖 🎯 本次领取机会仅此一次 🎯</span></div>
+  <div class="ticker tb2"><span>🏮 锣鼓喧天 鞭炮齐鸣 红旗招展 人山人海 🏮 恭喜发财 六六大顺 八八大发 九九归一 🏮 考神附体 逢考必过 金榜题名 🏮</span></div>
+
+  <!-- 竖排走字 -->
+  <div class="vticker vt-left"><span>上线就送屠龙宝刀 · 一刀999 · 是兄弟就来砍我 · 首充翻倍 · 钻石会员免排队 · 装备永久保值 ·</span></div>
+  <div class="vticker vt-right"><span>金榜题名 · 金光闪闪 · 点击即送 · 史上最良心 · 不充钱也能玩 · 老板大气 · 全服首位认证 ·</span></div>
+
+  <!-- 彩色色带 + 聚光灯 -->
+  <div class="colorbars cb-top"></div>
+  <div class="colorbars cb-bottom"></div>
+  <div class="godray"></div>
+
+  <!-- 光污染层 -->
+  <div class="light-pollution"></div>
+  <div class="pollution2"></div>
+  <div class="scanlines"></div>
+
+  <!-- 背景特效 -->
+  <div class="bg-fx" id="bgFx"></div>
+
+  <!-- 主内容 -->
+  <div class="content">
+    <h1>💀 骷髅打金服 💀</h1>
+
+    <div class="title-banner">🏮 金榜题名 · 限时开服 · 错过再等一年 🏮</div>
+
+    <div class="boombox-text">
+      <span class="red">🎁 恭喜您被系统选中！</span><br>
+      上线就送 <b class="yellow">满级VIP</b> + <b class="green">元宝99999999</b> + <b class="blue">屠龙宝刀</b><br>
+      <b class="red">一刀999级</b> · 十刀爆神装 · 百刀封神榜<br>
+      <span class="pink">点击下方按钮，立即登入神服领取大奖！</span>
+    </div>
+
+    <div class="countdown">
+      距离开服还有 <b id="sec">10</b> 秒
+    </div>
+
+    <div class="btn-wrap">
+      <div class="sonar"></div>
+      <div class="sonar s2"></div>
+      <div class="sonar s3"></div>
+      <div class="btn-ring2"></div>
+      <div class="btn-ring"></div>
+      <div class="arrow-hint">👇 就点这里！不点不是兄弟 👇</div>
+      <a class="btn" href="https://www.bilibili.com/video/BV1GJ411x7h7" target="_blank" rel="noopener">⚔️ 点击领取 ⚔️</a>
+    </div>
+  </div>
+
+  <!-- ====== 弹窗 1：幸运转盘 ====== -->
+  <div class="popup" id="p-lottery">
+    <div class="pop-box">
+      <button class="pop-close" onclick="closePopup(this)">✕</button>
+      <div class="pop-title">🎰 幸运转盘 · 转一次不要钱 🎰</div>
+      <div class="pop-text">本服今日大奖池已就位，试试手气，<span class="hl-y">人人有奖</span>！</div>
+      <div class="wheel-wrap">
+        <div class="wheel-needle"></div>
+        <div class="wheel" id="wheel"></div>
+        <div class="wheel-hub"></div>
+      </div>
+      <div class="wheel-result" id="wheelResult"></div>
+      <div>
+        <button class="pop-btn pop-yes" id="wheelSpinBtn">🎡 开始抽奖</button>
+        <a class="pop-btn pop-yes" id="wheelGoBtn" style="display:none" onclick="closePopup2(this)">💰 立即领取奖励</a>
+        <button class="pop-btn pop-no" onclick="closePopup(this)">下次一定</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 弹窗 2：首充特惠 ====== -->
+  <div class="popup" id="p-vip">
+    <div class="pop-box">
+      <button class="pop-close" onclick="closePopup(this)">✕</button>
+      <div class="pop-title">💎 首充特惠 · 仅限今日 💎</div>
+      <div class="pop-text">
+        <span class="hl-y">尊享VIP15</span> 原价 <span class="hl-g"><s>999999元</s></span><br>
+        今日限时 <span class="hl-p">一折</span> 只需 <span class="hl-y" style="font-size:26px">0.1 元</span>！<br>
+        再送 <span class="hl-g">88888888</span> 元宝 + <span class="hl-p">骷髅限定称号</span>
+      </div>
+      <div>
+        <a class="pop-btn pop-yes" onclick="claimAndGo(this)">💳 立即充值</a>
+        <button class="pop-btn pop-no" onclick="closePopup(this)">残忍拒绝</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 弹窗 3：系统公告 ====== -->
+  <div class="popup" id="p-sys">
+    <div class="pop-box">
+      <button class="pop-close" onclick="closePopup(this)">✕</button>
+      <div class="pop-title">📢 系统公告 📢</div>
+      <div class="pop-text">
+        恭喜您成为本服第 <span class="hl-y" style="font-size:22px">88888888</span> 位幸运玩家！<br>
+        系统已为您锁定 <span class="hl-g">屠龙宝刀·金榜题名版</span><br>
+        <span class="hl-p">大奖有效期还剩 13 秒，过期作废！</span>
+      </div>
+      <div>
+        <a class="pop-btn pop-yes" onclick="claimAndGo(this)">⚡ 紧急领取</a>
+        <button class="pop-btn pop-no" onclick="closePopup(this)">我不信</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== 弹窗 4：防沉迷警告 ====== -->
+  <div class="popup" id="p-kongbu">
+    <div class="pop-box">
+      <button class="pop-close" onclick="closePopup(this)">✕</button>
+      <div class="pop-title">⚠️ 防沉迷系统提醒 ⚠️</div>
+      <div class="pop-text">
+        系统检测到您已 <span class="hl-p">连续在线 24 小时</span> 未下线！<br>
+        未成年玩家不可继续游戏…<br>
+        <span class="hl-y">但根据骨灰级玩家豁免条例，您可以：</span>
+      </div>
+      <div>
+        <button class="pop-btn pop-yes" onclick="closePopup(this)">我没玩！接着肝！</button>
+        <button class="pop-btn pop-no" onclick="closePopup(this)">我认输</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const RICK = 'https://www.bilibili.com/video/BV1GJ411x7h7';
+
+    // ===== LED 跑马灯灯珠（四边） =====
+    const rowLen = Math.floor(window.innerWidth / 9);
+    const colLen = Math.floor(window.innerHeight / 9);
+    ['ledTop', 'ledBottom'].forEach(id => {
+      const el = document.getElementById(id);
+      for (let i = 0; i < rowLen; i++) {
+        const b = document.createElement('div');
+        b.className = 'led';
+        b.style.animationDelay = (-i * 0.09) + 's';
+        el.appendChild(b);
+      }
+    });
+    ['ledLeft', 'ledRight'].forEach(id => {
+      const el = document.getElementById(id);
+      for (let i = 0; i < colLen; i++) {
+        const b = document.createElement('div');
+        b.className = 'led';
+        b.style.animationDelay = (-i * 0.09) + 's';
+        el.appendChild(b);
+      }
+    });
+
+    // ===== 掉落特效 =====
+    const fx = document.getElementById('bgFx');
+    const drops = ['🪙', '💀', '🪙', '💰', '💀', '👑', '🪙', '💎'];
+    for (let i = 0; i < 40; i++) {
+      const el = document.createElement('div');
+      el.className = 'fall-item';
+      el.textContent = drops[i % drops.length];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.fontSize = (14 + Math.random() * 28) + 'px';
+      el.style.animationDuration = (4.5 + Math.random() * 7) + 's';
+      el.style.animationDelay = (-Math.random() * 10) + 's';
+      el.style.filter = 'drop-shadow(0 0 6px #ffd700)';
+      fx.appendChild(el);
+    }
+
+    // ===== 金榜题名飘字 =====
+    const tags = ['🎓', '🥇', '🏆', '💰', '💎', '⚔️', '🧧', '🏮'];
+    for (let i = 0; i < 14; i++) {
+      const el = document.createElement('div');
+      el.className = 'jian';
+      el.textContent = tags[i % tags.length];
+      el.style.left = (2 + Math.random() * 92) + 'vw';
+      el.style.top = (8 + Math.random() * 80) + '%';
+      el.style.fontSize = (16 + Math.random() * 28) + 'px';
+      el.style.animationDelay = (-Math.random() * 6) + 's';
+      fx.appendChild(el);
+    }
+
+    // ===== 烟花 =====
+    const colors = ['#ffd700', '#ff4500', '#39ff14', '#4da6ff', '#ff69b4', '#fff'];
+    for (let i = 0; i < 30; i++) {
+      const el = document.createElement('div');
+      el.className = 'firework';
+      el.style.left = (3 + Math.random() * 94) + 'vw';
+      el.style.top = (5 + Math.random() * 70) + '%';
+      el.style.color = colors[i % colors.length];
+      el.style.animationDelay = (-Math.random() * 2.4) + 's';
+      fx.appendChild(el);
+    }
+
+    // ===== 假倒计时 =====
+    let n = 10;
+    const sec = document.getElementById('sec');
+    setInterval(() => {
+      n = n <= 1 ? 10 : n - 1;
+      sec.textContent = n;
+    }, 1000);
+
+    // ===== 鼠标光污染拖尾 =====
+    document.addEventListener('mousemove', e => {
+      const d = document.createElement('div');
+      d.className = 'cursor-dot';
+      d.style.left = (e.clientX - 9) + 'px';
+      d.style.top = (e.clientY - 9) + 'px';
+      document.body.appendChild(d);
+      setTimeout(() => d.remove(), 700);
+    });
+
+    // ===== 点击波纹 =====
+    document.addEventListener('click', e => {
+      const r = document.createElement('div');
+      r.className = 'click-ripple';
+      r.style.left = (e.clientX - 15) + 'px';
+      r.style.top = (e.clientY - 15) + 'px';
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 700);
+    });
+
+    // ===== 弹窗管理器（无限循环骚扰） =====
+    const popupQueue = ['p-lottery', 'p-vip', 'p-sys', 'p-kongbu'];
+    let popupIdx = -1;
+
+    function nextPopup() {
+      setTimeout(() => {
+        popupIdx = (popupIdx + 1) % popupQueue.length;
+        const el = document.getElementById(popupQueue[popupIdx]);
+        el.classList.add('show');
+      }, 1500 + Math.random() * 2500);
+    }
+    function closePopup(btn) {
+      btn.closest('.popup').classList.remove('show');
+      nextPopup();
+    }
+    function closePopup2(el) {
+      el.closest('.popup').classList.remove('show');
+      nextPopup();
+    }
+    function openRick() {
+      const a = document.createElement('a');
+      a.href = RICK; a.target = '_blank'; a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+    function claimAndGo(el) {
+      openRick();
+      el.closest('.popup').classList.remove('show');
+      nextPopup();
+    }
+
+    // 首弹：加载后 1 秒开始骚扰
+    setTimeout(() => { nextPopup(); }, 1000);
+
+    // ===== 幸运转盘 =====
+    const wheel = document.getElementById('wheel');
+    const wheelResult = document.getElementById('wheelResult');
+    const wheelSpinBtn = document.getElementById('wheelSpinBtn');
+    const wheelGoBtn = document.getElementById('wheelGoBtn');
+    const prizes = ['屠龙宝刀', '9999万金币', '满级VIP', '神器·骷髅戒指', '谢谢惠顾', '永久会员', '1折充值券', '再抽一次'];
+    let spinning = false;
+
+    wheelSpinBtn.addEventListener('click', () => {
+      if (spinning) return;
+      spinning = true;
+      wheelResult.style.display = 'none';
+      wheelGoBtn.style.display = 'none';
+      wheelSpinBtn.style.display = 'inline-block';
+      const seg = Math.floor(Math.random() * 8);
+      const base = 5 * 360 + seg * 45;
+      const current = parseFloat(wheel.dataset.rot || '0');
+      const target = current + 5 * 360 + seg * 45 + Math.floor(Math.random() * 3) * 360;
+      wheel.dataset.rot = target;
+      wheel.style.transform = 'rotate(' + target + 'deg)';
+      let msg = '';
+      setTimeout(() => {
+        msg = prizes[(Math.round(target / 45) + 8 * 1000) % 8];
+        if (msg === '谢谢惠顾' || msg === '再抽一次') {
+          wheelResult.style.color = '#ff8888';
+          wheelResult.textContent = '🎁 结果：' + msg + '，老板大气，再转一次吧！';
+        } else {
+          wheelResult.style.color = '#39ff14';
+          wheelResult.textContent = '🎉 恭喜抽中：' + msg + ' ！';
+          wheelGoBtn.style.display = 'inline-block';
+          wheelSpinBtn.style.display = 'none';
+        }
+        wheelResult.style.display = 'block';
+        spinning = false;
+      }, 3500);
+    });
+  </script>
+</body>
+</html>
