@@ -345,3 +345,6 @@
 	path = msquic/submodules/xdp-for-windows
 	url = https://github.com/microsoft/xdp-for-windows.git
 	branch = release/1.4
+[submodule "gtmc"]
+	path = gtmc
+	url = https://github.com/techmc-wiki/gtmc
