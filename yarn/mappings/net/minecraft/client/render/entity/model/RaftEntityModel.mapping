@@ -1,5 +1,0 @@
-CLASS net/minecraft/class_7754 net/minecraft/client/render/entity/model/RaftEntityModel
-	METHOD method_45713 addParts (Lnet/minecraft/class_5610;)V
-		ARG 0 modelPartData
-	METHOD method_45714 getTexturedModelData ()Lnet/minecraft/class_5607;
-	METHOD method_62112 getChestTexturedModelData ()Lnet/minecraft/class_5607;

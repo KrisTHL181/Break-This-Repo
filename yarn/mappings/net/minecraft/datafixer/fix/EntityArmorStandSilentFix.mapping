@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_3594 net/minecraft/datafixer/fix/EntityArmorStandSilentFix
-	METHOD method_15679 fixSilent (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
-		ARG 1 armorStandDynamic

@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_9940 net/minecraft/client/render/entity/model/ArrowEntityModel
-	METHOD method_62059 getTexturedModelData ()Lnet/minecraft/class_5607;

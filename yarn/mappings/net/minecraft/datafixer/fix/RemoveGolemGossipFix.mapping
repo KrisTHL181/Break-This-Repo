@@ -1,7 +1,0 @@
-CLASS net/minecraft/class_5429 net/minecraft/datafixer/fix/RemoveGolemGossipFix
-	METHOD method_30326 updateGossipsList (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
-		ARG 0 villagerData
-	METHOD method_30327 (Lcom/mojang/serialization/Dynamic;Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
-		ARG 1 gossipsDynamic
-	METHOD method_30328 (Lcom/mojang/serialization/Dynamic;)Z
-		ARG 0 gossipDynamic

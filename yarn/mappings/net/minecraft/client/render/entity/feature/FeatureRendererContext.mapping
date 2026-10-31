@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_3883 net/minecraft/client/render/entity/feature/FeatureRendererContext
-	METHOD method_4038 getModel ()Lnet/minecraft/class_583;

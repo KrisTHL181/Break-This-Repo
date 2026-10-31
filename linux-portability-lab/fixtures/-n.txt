@@ -1,3 +1,0 @@
-Linux filename fixture. Plain text, not executable.
-Name (JSON escaped): "-n.txt"
-Leading dash: try quoting AND ending option parsing.

@@ -1,1 +1,0 @@
-<script src="{@docRoot}/copy_on_click.js"></script>

@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_9951 net/minecraft/client/render/entity/model/Deadmau5EarsEntityModel
-	METHOD method_62109 getTexturedModelData ()Lnet/minecraft/class_5607;

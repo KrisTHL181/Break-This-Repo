@@ -1,3 +1,0 @@
-accessWidener	v2	named
-
-transitive-accessible method net/minecraft/recipe/BrewingRecipeRegistry registerPotionType (Lnet/minecraft/item/Item;)V

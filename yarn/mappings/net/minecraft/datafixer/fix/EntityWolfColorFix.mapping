@@ -1,5 +1,0 @@
-CLASS net/minecraft/class_1172 net/minecraft/datafixer/fix/EntityWolfColorFix
-	METHOD method_4988 fixCollarColor (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
-		ARG 1 wolfDynamic
-	METHOD method_4989 (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
-		ARG 0 colorDynamic

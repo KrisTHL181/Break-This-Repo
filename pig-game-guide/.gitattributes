@@ -1,7 +1,0 @@
-*.py text eol=lf
-*.command text eol=lf
-*.md text eol=lf
-*.txt text eol=lf
-*.json text eol=lf
-*.png binary
-*.npz binary

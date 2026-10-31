@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_10020 net/minecraft/client/render/entity/state/EvokerFangsEntityRenderState
-	FIELD field_53352 yaw F
-	FIELD field_53353 animationProgress F

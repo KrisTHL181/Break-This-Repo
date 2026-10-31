@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_10025 net/minecraft/client/render/entity/state/FireworkRocketEntityRenderState
-	FIELD field_53367 shotAtAngle Z
-	FIELD field_53369 stack Lnet/minecraft/class_10444;

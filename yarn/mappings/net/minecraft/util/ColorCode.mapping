@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_8805 net/minecraft/util/ColorCode
-	FIELD field_46234 CODEC Lcom/mojang/serialization/Codec;

@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_10462 net/minecraft/client/render/item/property/bool/DamagedProperty
-	FIELD field_55374 CODEC Lcom/mojang/serialization/MapCodec;

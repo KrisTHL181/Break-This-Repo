@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_1186 net/minecraft/datafixer/fix/ItemInstanceMapIdFix
-	METHOD method_5032 (Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
-		ARG 2 itemStack
