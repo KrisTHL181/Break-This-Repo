@@ -1,6 +1,0 @@
-plugins {
-	alias(libs.plugins.spotless) apply false
-	alias(libs.plugins.remote.sign) apply false
-	alias(libs.plugins.mod.publish) apply false
-	id "fabric-api.root"
-}

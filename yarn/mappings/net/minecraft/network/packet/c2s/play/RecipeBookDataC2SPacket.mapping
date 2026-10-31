@@ -1,4 +1,0 @@
-CLASS net/minecraft/class_2853 net/minecraft/network/packet/c2s/play/RecipeBookDataC2SPacket
-	FIELD comp_3246 recipeId Lnet/minecraft/class_10298;
-	FIELD field_48211 CODEC Lnet/minecraft/class_9139;
-	METHOD comp_3246 recipeId ()Lnet/minecraft/class_10298;

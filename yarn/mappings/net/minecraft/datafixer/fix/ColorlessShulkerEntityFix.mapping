@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_3592 net/minecraft/datafixer/fix/ColorlessShulkerEntityFix
-	METHOD method_15678 (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
-		ARG 0 shulkerDynamic

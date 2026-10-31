@@ -1,9 +1,0 @@
-plugins {
-	id 'fabric-api.module'
-}
-
-fabricApiModule {
-	moduleDependencies(
-		'fabric-api-base'
-	)
-}

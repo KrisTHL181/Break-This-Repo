@@ -1,1 +1,0 @@
-Please note that this version of the script is the version that we (Hyper-V) use internally for testing.  It may differ from the version available on PowerShell Gallery/TechNet to accomodate our specific usage.

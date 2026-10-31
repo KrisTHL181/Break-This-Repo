@@ -1,3 +1,0 @@
-plugins {
-	id 'fabric-api.maven-bom'
-}

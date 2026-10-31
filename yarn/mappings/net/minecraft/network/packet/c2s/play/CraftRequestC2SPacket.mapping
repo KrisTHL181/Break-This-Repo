@@ -1,8 +1,0 @@
-CLASS net/minecraft/class_2840 net/minecraft/network/packet/c2s/play/CraftRequestC2SPacket
-	FIELD comp_3243 syncId I
-	FIELD comp_3244 recipeId Lnet/minecraft/class_10298;
-	FIELD comp_3245 craftAll Z
-	FIELD field_48205 CODEC Lnet/minecraft/class_9139;
-	METHOD comp_3243 syncId ()I
-	METHOD comp_3244 recipeId ()Lnet/minecraft/class_10298;
-	METHOD comp_3245 craftAll ()Z

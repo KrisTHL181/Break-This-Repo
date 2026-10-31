@@ -1,2 +1,0 @@
-DBCS = FALSE
-

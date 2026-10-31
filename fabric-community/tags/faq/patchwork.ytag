@@ -1,7 +1,0 @@
-type: text
-
----
-
-(Neo)Forge mod is incompatible with Fabric for the foreseeable future. While there are some attempts to bring compatibility, none have succeeded.
-
-If, however, you are a developer making a mod for both platforms, Architectury might be your friend: <https://github.com/architectury/architectury-api>

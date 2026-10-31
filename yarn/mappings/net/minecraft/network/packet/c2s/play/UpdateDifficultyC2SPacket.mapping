@@ -1,4 +1,0 @@
-CLASS net/minecraft/class_4210 net/minecraft/network/packet/c2s/play/UpdateDifficultyC2SPacket
-	FIELD comp_4292 difficulty Lnet/minecraft/class_1267;
-	FIELD field_48176 CODEC Lnet/minecraft/class_9139;
-	METHOD comp_4292 difficulty ()Lnet/minecraft/class_1267;

@@ -1,9 +1,0 @@
-/Win32/
-/x64/
-/.vs/
-/ooz.vcxproj.user
-out
-.vscode
-build
-build-*/
-lib

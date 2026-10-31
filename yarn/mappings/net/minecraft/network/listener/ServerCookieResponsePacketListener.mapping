@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_9090 net/minecraft/network/listener/ServerCookieResponsePacketListener
-	METHOD method_55851 onCookieResponse (Lnet/minecraft/class_9091;)V
-		ARG 1 packet

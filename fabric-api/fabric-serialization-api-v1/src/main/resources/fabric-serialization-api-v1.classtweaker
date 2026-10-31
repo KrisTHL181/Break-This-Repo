@@ -1,3 +1,0 @@
-classTweaker	v1	official
-transitive-inject-interface	net/minecraft/world/level/storage/ValueInput	net/fabricmc/fabric/api/serialization/v1/value/FabricValueInput
-transitive-inject-interface	net/minecraft/world/level/storage/ValueOutput	net/fabricmc/fabric/api/serialization/v1/value/FabricValueOutput
