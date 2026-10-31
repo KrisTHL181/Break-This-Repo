@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_10064 net/minecraft/client/render/entity/state/ShulkerBulletEntityRenderState
-	FIELD field_53564 pitch F
-	FIELD field_53565 yaw F

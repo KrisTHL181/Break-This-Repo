@@ -1,6 +1,0 @@
-{
-    "editor.insertSpaces": false,
-    "deno.enable": true,
-    "editor.formatOnSave": true,
-    "[typescript]": {"editor.defaultFormatter": "denoland.vscode-deno"}
-}

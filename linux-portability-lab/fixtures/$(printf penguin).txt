@@ -1,3 +1,0 @@
-Linux filename fixture. Plain text, not executable.
-Name (JSON escaped): "$(printf penguin).txt"
-Looks like shell substitution, but this is only an inert text filename.

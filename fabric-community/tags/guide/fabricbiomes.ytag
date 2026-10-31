@@ -1,8 +1,0 @@
-type: text
-
----
-
-If you're getting `org.spongepowered.asm.mixin.transformer.throwables.InvalidMixinException: @Shadow field field_9391 was not located in the target class net.minecraft.world.biome.source.BiomeSource` when updated from 1.16.1:
-
-  1. exclude fabric api from all your dependencies
-  2. run gradle with the `--refresh-dependencies` flag

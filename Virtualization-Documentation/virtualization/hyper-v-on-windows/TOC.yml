@@ -1,8 +1,0 @@
-- name: Hyper-V specification and API documentation
-  items:
-  - name: Top level functional specification documentation
-    href: tlfs/tlfs.md
-  - name: API documentation
-    href: /virtualization/api/index
-  - name: Hyper-V product documentation
-    href: /windows-server/virtualization/hyper-v

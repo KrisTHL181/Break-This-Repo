@@ -1,6 +1,0 @@
-CLASS net/minecraft/class_10526 net/minecraft/client/render/model/ResolvableModel
-	METHOD method_62326 resolve (Lnet/minecraft/class_10526$class_10103;)V
-		ARG 1 resolver
-	CLASS class_10103 Resolver
-		METHOD markDependency (Lnet/minecraft/class_2960;)V
-			ARG 1 id

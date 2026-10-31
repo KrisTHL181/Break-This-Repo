@@ -1,7 +1,0 @@
-type: text
-
----
-
-Gross-Fabric Hacks is an api that is allows mod authors to do many hacky things such as mix into the jdk, fabric loader, or mixin. It also allows you to mass transform all classes loaded by KnotClassLoader and unsafely cast arrays and objects. 
-
-https://github.com/Devan-Kerman/GrossFabricHacks

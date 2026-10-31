@@ -1,8 +1,0 @@
-CLASS net/minecraft/class_8877 net/minecraft/datafixer/fix/ChoiceWriteReadFix
-	FIELD field_46773 name Ljava/lang/String;
-	FIELD field_46774 choiceName Ljava/lang/String;
-	FIELD field_46775 type Lcom/mojang/datafixers/DSL$TypeReference;
-	METHOD method_54447 transform (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
-		ARG 1 data
-	METHOD method_56641 makeRule (Lcom/mojang/datafixers/types/Type;Lcom/mojang/datafixers/types/Type;Lcom/mojang/datafixers/types/Type;Lcom/mojang/datafixers/OpticFinder;)Lcom/mojang/datafixers/TypeRewriteRule;
-		ARG 2 outputType

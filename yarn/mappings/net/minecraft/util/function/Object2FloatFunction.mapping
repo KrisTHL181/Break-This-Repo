@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_11887 net/minecraft/util/function/Object2FloatFunction
-	METHOD applyAsFloat (Ljava/lang/Object;)F
-		ARG 1 object

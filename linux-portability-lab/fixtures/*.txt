@@ -1,3 +1,0 @@
-Linux filename fixture. Plain text, not executable.
-Name (JSON escaped): "*.txt"
-The literal star resembles a shell wildcard.

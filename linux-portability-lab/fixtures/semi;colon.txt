@@ -1,3 +1,0 @@
-Linux filename fixture. Plain text, not executable.
-Name (JSON escaped): "semi;colon.txt"
-Semicolon is ordinary data when passed as a quoted argument.

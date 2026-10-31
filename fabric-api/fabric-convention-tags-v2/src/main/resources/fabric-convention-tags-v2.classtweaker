@@ -1,2 +1,0 @@
-classTweaker	v1	official
-transitive-inject-interface	net/minecraft/tags/TagKey	net/fabricmc/fabric/api/tag/FabricTagKey

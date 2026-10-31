@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_424 net/minecraft/client/gui/screen/MessageScreen
-	FIELD field_49496 textWidget Lnet/minecraft/class_8019;

@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_8895 net/minecraft/world/level/storage/ParsedSaveProperties
-	FIELD comp_2008 properties Lnet/minecraft/class_5219;
-	METHOD comp_2008 properties ()Lnet/minecraft/class_5219;

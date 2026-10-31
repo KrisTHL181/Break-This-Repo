@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_10468 net/minecraft/client/render/item/property/bool/UsingItemProperty
-	FIELD field_55380 CODEC Lcom/mojang/serialization/MapCodec;

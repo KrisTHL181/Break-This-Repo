@@ -1,4 +1,0 @@
-[no response body]
-curl exit: n/a
-curl stderr: curl: (56) CONNECT tunnel failed, response 400
-url: https://loripsum.net/api/3/medium/plain

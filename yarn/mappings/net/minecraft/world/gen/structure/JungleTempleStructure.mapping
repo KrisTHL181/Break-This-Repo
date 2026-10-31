@@ -1,2 +1,0 @@
-CLASS net/minecraft/class_3076 net/minecraft/world/gen/structure/JungleTempleStructure
-	FIELD field_37800 CODEC Lcom/mojang/serialization/MapCodec;

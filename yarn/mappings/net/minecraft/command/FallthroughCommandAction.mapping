@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_8939 net/minecraft/command/FallthroughCommandAction
-	FIELD field_47169 INSTANCE Lnet/minecraft/class_8939;
-	METHOD method_54899 getInstance ()Lnet/minecraft/class_8853;

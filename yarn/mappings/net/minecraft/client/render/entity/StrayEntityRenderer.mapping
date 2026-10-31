@@ -1,3 +1,0 @@
-CLASS net/minecraft/class_950 net/minecraft/client/render/entity/StrayEntityRenderer
-	FIELD field_4790 TEXTURE Lnet/minecraft/class_2960;
-	FIELD field_49165 OVERLAY_TEXTURE Lnet/minecraft/class_2960;

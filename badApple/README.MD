@@ -1,3 +1,0 @@
-# Bad Apple ASCII Player
-
-少女祈祷中……

@@ -1,6 +1,0 @@
-CLASS net/minecraft/class_7495 net/minecraft/network/packet/s2c/play/ServerMetadataS2CPacket
-	FIELD comp_2277 description Lnet/minecraft/class_2561;
-	FIELD comp_2278 favicon Ljava/util/Optional;
-	FIELD field_47966 CODEC Lnet/minecraft/class_9139;
-	METHOD comp_2277 description ()Lnet/minecraft/class_2561;
-	METHOD comp_2278 favicon ()Ljava/util/Optional;
