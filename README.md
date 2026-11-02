@@ -1,7 +1,6 @@
 
 
 <h1 align="center">
-  <img src="./readme/out - 副本.png">
     Break This Repository!    破坏这个仓库！
 	<p align="center">
 	    <img src="https://img.shields.io/badge/License-AS--IS-red" alt="License">
@@ -14,6 +13,7 @@
 	    <img src="https://img.shields.io/badge/Website-Unknown-green?logo=inquirer&logoColor=white" alt="Website">
 	    <img src="https://img.shields.io/badge/Documents-Unknown-red?logo=inquirer&logoColor=white" alt="Documents">
 	    </a>
+	    <img src="https://earth.us.ci/i/pcsetup" alt="IMG_2061.png">
 	</p>
 </h1>
 
@@ -96,6 +96,16 @@
 > 仅供娱乐，版权等问题未知，因此音乐所造成的任何后果本人概不负责
 
 <sub>实测 by [@ExElectron](https://github.com/ExElectron)</sub>
+
+---
+
+# 在线免费广东话字习
+
+<img src="https://earth.us.ci/i/NR23mA" alt="IMG_2051.png">
+
+无售后，无任何保障.      
+       
+process on your own risk.       
 
 ---
 
@@ -509,7 +519,7 @@ https://blog.iamexrfy.top
 
 # Debian --通用操作系统
 [![Debian Logo](https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f365.png)](https://www.debian.org/)
-![Debian installation media](./assets/debian.jpg)
+![IMG_2071.jpeg](https://earth.us.ci/i/debian)
 ## Debian 是自由软件。
 Debian 是由自由和开放源代码的软件组成的，并将始终保持 100% 自由。每个人都能自由使用、修改，以及分发。这是我们对我们的用户的主要承诺。它也是免费的。
 ## Debian 稳定且安全。
