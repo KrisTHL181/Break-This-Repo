@@ -397,10 +397,6 @@ https://docs.google.com/document/d/1Y669HJaH4areKBSFie_2k1dT045l3U2fiM34O_Y-dwQ/
 
 刷贡献来
 
-
-
-https://yaojiale7067blog.pages.dev/
-
 https://blog.sitrmoo.com
 
 https://cuwo4.github.io/
@@ -408,6 +404,8 @@ https://cuwo4.github.io/
 https://onion108.github.io/
 
 https://mochiaochen.github.io/
+
+https://yaojiale7067blog.pages.dev/
 
 被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
 被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
