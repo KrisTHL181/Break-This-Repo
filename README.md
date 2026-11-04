@@ -396,6 +396,8 @@ https://docs.google.com/document/d/1Y669HJaH4areKBSFie_2k1dT045l3U2fiM34O_Y-dwQ/
 把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 ~~google~~ 搜索引擎 索引到, 从而增加权重. 大家一起做大做强!
 
 刷贡献来
+https://yaojiale7067blog.pages.dev/
+
 https://blog.sitrmoo.com
 
 https://cuwo4.github.io/
