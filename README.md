@@ -1,713 +1,414 @@
+## PyDOS, PyBASIC, edit... All the functionality of the 1981 IBM PC on a PI Pico?
 
+**MicroPython/CircuitPython DOS-like shell for microcontroller boards:**  
+**(RP2040, RP2350, ESP32, ESP32 PICO-D4, ESP32-S2/S3, nRF52840, SAMD51, stm32L4+, NXM ARM Cortex-M7, Lilygo T-Deck, M5Stack Cardputer, Cheap Yellow Display - esp32-2432s028)**  
 
-<h1 align="center">
-    Break This Repository!    破坏这个仓库！
-	<p align="center">
-	    <img src="https://img.shields.io/badge/License-AS--IS-red" alt="License">
-	    <img src="https://img.shields.io/badge/Language-various-blue?logo=inquirer&logoColor=white" alt="Language">
-	    <img src="https://img.shields.io/badge/Pull_Requests-infinity-white?logo=infinityfree&logoColor=white" alt="Pull_Requests">
-	    <img src="https://img.shields.io/badge/Forks-infinity-brown?logo=infinityfree&logoColor=white" alt="Forks">
-	<br>
-	    <img src="https://img.shields.io/badge/Stars-infinity-yellow?logo=infinityfree&logoColor=white" alt="Stars">
-	    <img src="https://img.shields.io/badge/Platform-Unknown-0078D6?logo=inquirer&logoColor=white" alt="Platform">
-	    <img src="https://img.shields.io/badge/Website-Unknown-green?logo=inquirer&logoColor=white" alt="Website">
-	    <img src="https://img.shields.io/badge/Documents-Unknown-red?logo=inquirer&logoColor=white" alt="Documents">
-	    </a>
-	    <img src="https://earth.us.ci/i/pcsetup" alt="IMG_2061.png">
-	</p>
-</h1>
+**Check out the demo video at https://www.youtube.com/watch?v=Az_oiq8GE4Y**
 
+*Related Repositories:*  
+[PyDOS_virtkey](https://github.com/RetiredWizard/PyDOS_virtkeyboard) - The modules needed to add virtual keyboard support to PyDOS  
+[PyDOS_wifi](https://github.com/RetiredWizard/PyDOS_wifi) - Generalized Python based microcontroller WiFi API
 
-*\*：你可以更改这个头图，相关资源文件位于 [`.\readme\`](./readme/) 中*
+See the Installation section below to install all the external commands and customize the install for the particular microcontroller you are using. However, **if you just want to launch the shell or have limited flash space, the PyDOS.py program will run standadlone** so you can simply copy **PyDOS.py** to your microcontroller to begin.
 
+To start the shell type **import PyDOS** at the REPL prompt.
 
-<!-- # 卧槽了哪里来的设证玩意啊😓不怕似吗😓 -->
+At the PyDOS prompt a python program (.py) or batch (.bat) file can be run by simply entering the filename with or without
+the extension.
 
-> [!CAUTION]
-> This repository automatically merges pull requests without conflicts.
-> 
-> Please note that the `.github` directory is protected.
-> 
-> 这个仓库会自动合并没有冲突的拉取请求。
-> 
-> 请注意，`.github` 目录是受保护的。
+**setup.bat** in the root folder, will prompt the user to indicate the the type of board they are using.
+The setup batch file will then copy the programs and libraries appropriate for the user's
+ platform to the root and /lib folders of the Microcontroller flash.
 
----
+## Implemented DOS Commands:  
+(syntax and descriptions taken from https://home.csulb.edu/~murdock/dosindex.html)
 
-# HIFI 音乐免费下载！
+When run on an operating system that uses a forward slash as the Directory Seperator, PyDOS requires all switches to immediatly follow the command with no spaces between the command or switches. This 
+is necessary becuase the forward slash directory seperator conflicts with the DOS switch seperator. If the PyDOS environement variable DIRSEP is set to \ (i.e. `set DIRSEP=\`) PyDOS will utilize the traditional backslash as the directory seperator and DOS switches can then be placed anywhere on the command line.
+Many of the messages displayed by PyDOS and virtually all external Python programs will not respect this environment variable so the *nix forward slash seperator may still be displayed or required when inputting path names to external programs.
 
-**真正的Hi-Fi，614.4kHz！78.6Mbps！64位浮点！**
+If a command argument contains spaces the argument must be enclosed in quotes.
 
->由于超高音质，文件体积较大，Github下载可能较困难。
->提供网盘地址<https://drive.google.com/drive/folders/1mISlL_hXAeygnnjanpJ5skg9bXrAL5x1?usp=sharing>
+**REM [comment]** - Used in batch files to insert remarks (that will not be acted on).
 
-> [!CAUTION]
-> 仅供娱乐，版权等问题未知，因此音乐所造成的任何后果本人概不负责
+**DIR[/P][/W][/S] [path][filename]** - Displays directory of files and directories stored on flash.
+- /P Pauses after each screenful of information (Q or C to abort listing)  
+- /W Uses wide list format, displaying file/folder names only  
+- /S Displays files recursively, traversing any subdirectories  
 
-📥 **网盘下载未压缩的原始文件** —— <https://drive.google.com/drive/folders/1mISlL_hXAeygnnjanpJ5skg9bXrAL5x1?usp=sharing>
+**DATE** - Displays the current date.
 
-📄 **规格与校验** —— [`HiFi-614kHz-64bit/README.md`](./HiFi-614kHz-64bit/README.md)
+**TIME** - Displays the current time.
 
-<sub>uploaded by [@ExElectron](https://github.com/ExElectron)</sub>
+**MEM[/D]** - Displays available RAM and performs a garbage collection operation  
+- /D Include debug information when supported by microcontroller board
 
----
+**VER** - Displays PyDOS version
 
-# ↓↓ 一首不夠过瘾？好东西不要停！来看下面这个 ↓↓
+**ECHO [ON|OFF][message]** - Displays messages or turns on or off the display of commands in a batch file.
 
-**[点我前往获取HIFI音乐！](https://heey.cc.cd/hifi/zh)**
+**PAUSE** - Suspends execution until a key is pressed.
 
----
+**GOTO label** Causes unconditional branch to the specified label. (labels are defined as :label in batch files)
 
-# 🥊 实测：「96kHz HiFi」6 个文件里 5 个是 48kHz << （那是旧版）
+**IF [NOT] EXIST filename (command) [parameters]**  
+**IF [NOT] (string1)==(string2) (command) [parameters]** - Allows for conditional operations in batch processing.  
+**IF [NOT] ERRORLEVEL (number) (command) [parameters]**  
 
-> 上面那位 [@BreadripperPro](https://github.com/BreadripperPro) 的详情页挂着
-> **「真正的Hi-Fi，96kHz！6144kbps！32位浮点！」**
-> 那就照他给的链接，把文件挨个拉下来读一下文件头。
-> （方法：对直链发 `Range: bytes=0-4095`，解析 WAV 的 `fmt ` 块。可复现。）
+**SET[/P][/A] (variable)=[(string|prompt)]** - Inserts strings into the command environment. The set values can be used later by programs.  
+- /A specifies that the string to the right of the equal sign is a numerical expression that is evaluated  
+- /P displays the specified prompt string before setting the value of a variable to a line of input entered by the user  
+*DOS specific environment variables:*
+    - LIB - The Python search path for importing libraries (the current directory is always searched first but not included in the LIB variable)  
+    - PATH - The directory search list for executing python scripts and DOS batch files (the current directory is always searched first but not included in the PATH variable)
+    - PROMPT - The DOS prompt string
+    - _scrHeight - The number of lines on the terminal or screen
+    - _scrWidth - The number of columns on the terminal or screen
+    - errorlevel - The result code from the previous BAT file or pexec command executed
+    - DIRSEP - If set to a backslash (\\) PyDOS will use a backslash as the directory seperator character regardless of the seperator used by the local filesystem (i.e. `os.sep`). If set to anything other than a backslash PyDOS will use a forward slash as the directory seperator character.
 
-**他的「经典版」Google Drive 目录 · 实测文件头：**
+**PROMPT [prompt text]** - Changes or displays the DOS command prompt. Supported strings "$R,$D,$T,$P,$G,$L,$C,$F,$A,$B,$E,$H,$Q,$S,$V,$_,$$" and text literals  
+Example: `prompt $e[44m$p$g` sets the backgound blue (if the terminal supports vt100 escape sequences) and displays the current directory followed by a ">"
 
-| 文件 | 实测 `fmt` 块 | 结果 |
-|:--|:--|:--:|
-| `Hi-Fi 阴乐 Pro.wav` | 96000 Hz · 32-bit **float** · 6144 kbps | ✅ |
-| `Hi-Res阴乐 (1).wav` | 48000 Hz · 32-bit **int** · 3072 kbps | ❌ |
-| `Hi-Res阴乐 (2).wav` | 48000 Hz · 32-bit **int** · 3072 kbps | ❌ |
-| `Hi-Res阴乐 (3).wav` | 48000 Hz · 32-bit **int** · 3072 kbps | ❌ |
-| `Hi-Res阴乐 (4).wav` | 48000 Hz · 32-bit **int** · 3072 kbps | ❌ |
-| `Hi-Res阴乐 (5).wav` | 48000 Hz · 32-bit **int** · 3072 kbps | ❌ |
+```
+Character	Description
+---------   -----------
+$R          Available RAM
+$D          Current date
+$T          Current time
+$P          Current path
+$G          > (Greater than sign)
+$L          < (Less than sign)
+$C          ( (Left parenthesis)
+$F          ) (Right parenthesis)
+$A          & (Ampersand)
+$B          | (Pipe symbol)
+$E          ANSI escape code (code 27)
+$H          Backspace (delete last character from displayed prompt)
+$Q          = (Equal sign)
+$S          Space
+$V          Version number
+$_          ENTER-LINEFEED
+$$          $ (Dollar sign)
+```
 
-**6 个音频里 5 个是 48000 Hz / 32-bit 整数 / 3072 kbps —— 正好是页面上那句宣传语的一半。**
-文件名还写着 `Hi-Res`。标 96k，实 48k。
+**PATH [path1;path2;...]** - Changes or displays the directory search list for executing python scripts and DOS batch files
 
-### 那他真有 96k 的版本呢？
+**RENAME (REN, MOVE, MV) [path]filename [path]filename** - Changes the filename under which a file is stored.
 
-他的「重制版」抽了 4 个（`mcc1` / `mcc10` / `mcpx1` / `mcpx10`），
-确实是 `96000 Hz / 32-bit float / 6144 kbps`，这点我认。
+**DELETE (DEL)[/S] [path]filename** - Deletes files from disk.  
+- /S Delete specified files from all subdirectories
 
-| | 他的 96k 版 | **本仓库的 1812 序曲** |
-|:--|--:|--:|
-| 采样率 | 96 000 Hz | **614 400 Hz** |
-| 位深 | 32-bit float | **64-bit float** |
-| 码率 | 6 144 kbps | **78 643 kbps** |
+**TYPE (MORE)[/P] [path]filename** - Displays the contents of a file.  
+- /P Pauses after each screenful of information (Q or C to abort listing)
 
-📥 **来听真的** —— <https://drive.google.com/drive/folders/1mISlL_hXAeygnnjanpJ5skg9bXrAL5x1?usp=sharing>
+**CD [[d:]path]** - Displays working (current) directory or changes to a different directory.  
+**CD ..** - Changes to parent directory of current directory.
 
-> [!CAUTION]
-> 仅供娱乐，版权等问题未知，因此音乐所造成的任何后果本人概不负责
+**MKDIR (MD) path** - Creates a new subdirectory.
 
-<sub>实测 by [@ExElectron](https://github.com/ExElectron)</sub>
+**RMDIR (RD)[/S] path** - Removes a subdirectory.  
+- /S Removes all directories and files in the specified directory and the directory itself
 
----
+**COPY[/Y] [path]filename [path][filename]** - copies files.  
+- /Y Suppresses prompting to confirm you want to overwrite an existing destination file
 
-# 在线免费广东话字习
-
-<img src="https://earth.us.ci/i/NR23mA" alt="IMG_2051.png">
-
-无售后，无任何保障.      
-       
-process on your own risk.       
-
----
-
-> [!NOTE]
-> read [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) before using
-
----
-
-## 警告!
-> [!CAUTION]
-> To [@mpmp666](https://github.com/mpmp666), if you posting shit ads again, i'll report ur fking shit github account for abusing this repo
-
-开茄子。
-
----
-
-
-> [!WARNING]
-> It is not recommended to add any Rust files or code to this repository
->
-> 不建议在此仓库中添加任何 Rust 文件或代码
->
-> Не рекомендуется добавлять в этот репозиторий какие-либо файлы или код на Rust
->
-> このリポジトリにはRustのファイルやコードを追加しないことを推奨します
->
-> Es wird nicht empfohlen, diesem Repository Rust-Dateien oder -Code hinzuzufügen
->
-> Il n’est pas recommandé d’ajouter des fichiers ou du code Rust dans ce dépôt
->
-> Some content in this repository may not be suitable for all age groups
-> 
-> 此仓库中的部分内容可能并不适合所有年龄段
->
-> Некоторые материалы в этом репозитории могут быть неподходящими для людей всех возрастов
->
-> このリポジトリの一部の内容は、すべての年齢層に適しているとは限りません
->
-> Einige Inhalte in diesem Repository sind möglicherweise nicht für alle Altersgruppen geeignet
->
-> Certains contenus de ce dépôt peuvent ne pas convenir à tous les âges
->
-> This repository may contain AI-generated content
->
-> 此仓库可能包含AI生成的内容
->
-> Этот репозиторий может содержать контент, сгенерированный ИИ
->
-> このリポジトリにはAIが生成したコンテンツが含まれている可能性があります
->
-> Dieses Repository kann KI-generierte Inhalte enthalten
->
-> Ce dépôt peut contenir du contenu généré par l’IA
+**EXIT** - In a batch file returns to PyDOS, at PyDOS prompt terminates PyDOS and returns to REPL.
 
----
+**PEXEC[/Q] [python command]** - Executes a single python command.
+- /Q Supresses error message if error condition occurs (errorlevel variable is set)
 
-<img src="./readme/scpfoundation.svg" width="120" height="120" /> <img src="./readme/mc-department.png" width="120" height="120" />
+An **autoexec.bat** batch file will automatically execute when PyDOS starts.
 
-> [!CAUTION]
-> Warning: This repository contains content that may cause Level III mental contamination, please read with caution
->
-> 警告：此仓库包含可能导致III级精神污染的内容，请谨慎阅读
->
-> Предупреждение: этот репозиторий содержит материалы, способные вызвать психическое загрязнение III степени, пожалуйста, читайте с осторожностью
->
-> 警告：このリポジトリにはIII級精神汚染を引き起こす可能性のある内容が含まれていますので、閲覧には十分ご注意ください
->
-> Avertissement : ce dépôt contient du contenu susceptible de provoquer une contamination mentale de niveau III, veuillez le consulter avec prudence
->
-> Warnung: Dieses Repository enthält möglicherweise Inhalte, die eine psychische Kontamination der Stufe III verursachen können. Bitte lesen Sie mit Vorsicht
-> 
+### External programs included:
+*External programs may require one-time board configuration using setup.bat*
 
----
+**pydospins.py** - Displays the GPIO pins for sound output and I2C for the particular board PyDOS is running on.
 
-## 注意
+**PyBasic.py [[path]basic program file .py|.bas]** - a Basic interpreter from https://github.com/richpl/PyBasic. Tweaked and modified to run on Micropython and Circuitpython.
+	interpreter.py, basicparser.py, basictoken.py, flowsignal.py, lexer.py, program.py, basicdata.py
+	
+**runasthread.py [[path]python program file[.py]]** (Micropython only) - This program will attempt to launch a python program on the second RP2040 core. Threading is
+experimental on Micropython so it's not difficult to crash the microcontroller using this program. I have not found a way to kill
+a thread started on the second core so be sure any threads you launch will shutdown on their own or monitor a global variable or
+thread.lock to respond to a shutdown request (see the badblink.py for an example).
 
-**中文**
+**runvm.py [[path]python program file[.py]]** - This program is used to launch Python programs that require more memory
+than is available while running PyDOS. **runvm** will write a **code.py**/**main.py**
+file which launches the specfied python program after the next soft reboot. The program then
+uses **supervisor.reload()** for CircuitPython or **sys.exit** for MicroPython to
+perform a reboot (sys.exit requires a Ctrl-D to complete the operation). The specified python
+program is "wrapped" in some code that passes any command line arguments and the PyDOS
+environment variables to the newly booted environment as well as code that restores the
+original **code.py**/**main.py** files and causes a second soft reboot returning control to
+PyDOS.
 
-**注意**
+**virtrepl.py** - Launches a python REPL that can be run from PyDOS. Type "exit" to close and return to PyDOS.
 
-> [!NOTE]
-> 如果您在仓库主页看到了本文，不要惊慌，不要着急，请站稳扶好，坐和放宽，本消息是为了告诉你，你需要换个地方才能阅读 `README` 的完整文本。
->
-> 请移步 [README.md](./README.md) （文件页面）查看，这是由于仓库主页的 `README` 的显示存在比文件更短的显示长度限制（500KiB），导致无法完全显示。
-> （望后人，如若位置变更，请同步移动（现在在 3047 行），谢谢）
-> 我编写了一个自动插入的脚本 [自动插入readme大小警告](./自动插入readme大小警告.py)，可以使用这个脚本自动插入！（不保证没有bug）
+**edlin.py [[path]filename]** - line editor inspired by DOS edlin. Intial program structure of line editor by Joesph Long
+    https://github.com/j-osephlong/Python-Text-Editor
+    
+**edit.py [[path]filename]** - shell to load full screen editor from https://github.com/robert-hh/Micropython-Editor
 
-> [!NOTE]
-> 仓库内可能存在各种奇怪的文件和路径，这些文件或路径的命名及组合可能不适用于所有的文件系统和操作系统，执行 `git clone` 或相关操作时可能会发生各类文件错误和文件系统错误，请您做好心理准备和预防方案。
+**bounce.py** - Terminal User Interface demo of a bouncing ball. Modified version of bounce by [DuckyPolice](https://github.com/DuckyPolice)
 
-> [!NOTE]
-> 得益于 GitHub 上大量开发者和贡献者的活跃提交，这个仓库的大小已来到数十吉字节（37.7GiB —— 2026/9/22 22:57:00 UTC+08:00 编者注），请您在执行相关操作的时候保证您的计算机有足够的存储空间，以及良好的网络连接以防止意外断开连接。
+**xcopy.py[/S][/Y][/V] [path]filename [path][filename]** - a more robust version of the copy command  
+- /S Copies specified files from directories and subdirectories, except for empty ones  
+- /Y Suppresses prompting to confirm you want to overwrite an existing destination file
+- /V Performs a verification read of the copied file to ensure it matches the source
 
-> [!WARNING]
-> 禁止提交广告、恶意软件。违者将被举报至 GitHub。
+**fileview.py [[path]filename]** - scrollable text file viewer
 
----
+**sdmount.py [[mount path][,pydos spi bus#]]** - mounts an sd card to the file system. If no SD card CS pins are defined or -1 is passed as the spi bus# the sd
+card will be mounted using an SDIO bus rather than an SPI bus.    
+**sdumount.py [mount path]** - dismounts an sd card from the file system
 
-**English**
+**setdate.py [mm-dd-yy]** - initalizes the real time clock to an entered date  
+**settime.py [hh:mm:ss]** - initalizes the real time clock to an entered time  
+**getdate.py [timzone offset]** (WiFi enabled boards) - sets the time and date from worldtimeapi.org and failing that, uses the Internet NTP protocol
 
-**Attention**
+**diff.py [filename1,filename2]** - performs a file comparison
 
-> [!NOTE]
-> If you see this text on the repository's home page, do not panic, do not rush, stand steady, and sit down calmly. This message is to tell you that you need to go elsewhere to read the full text of the `README`.
->
-> Please go to [README.md](./README.md) (the file page) to view it. This is because the display length limit on the repository home page is shorter than that of the file (500 KiB), causing it to be incompletely displayed.
-> (To future maintainers: if the location changes, please move this note accordingly (currently at line 3047). Thank you.)
-> I have written a script to automatically insert this warning: [自动插入readme大小警告](./自动插入readme大小警告.py). You can use this script to insert it automatically! (No guarantee that there are no bugs.)
+**sound.py [Frequency,Duration(miliseconds),Volume]** - outputs a sound to a speaker cicruit connected to GPIO pin defined in lib/pydos_bcfg.py  
+**tsound.py** - test program that plays a short sound sequence  
+**piano.py** - emulates a small piano keyboard
 
-> [!NOTE]
-> The repository may contain various strange files and paths. The naming and combination of these files or paths may not be applicable to all file systems and operating systems. When executing `git clone` or related operations, various file errors and file system errors may occur. Please be mentally prepared and take preventive measures.
+**i2cscan.py [bus number]** - scans the I2C bus and displays any found device addresses
 
-> [!NOTE]
-> Thanks to the active commits from a large number of developers and contributors on GitHub, the size of this repository has reached tens of gibibytes (37.7 GiB — as of 2026/9/22 22:57:00 UTC+08:00, editor's note). Please ensure that your computer has sufficient storage space and a good network connection when performing related operations, to prevent unexpected disconnection.
+CircuitPython LCD libraries from https://github.com/dhylands/python_lcd  
+**lcdprint.py [text to display]** - displays text on an I2C LCD display  
+**lcdscroll.py [text to scroll]** - scrolls text on an I2C LCD display  
+**temperature.py** - displays temperature value from onboard temperature sensor to screen and I2C LCD display
 
-> [!WARNING]
-> Advertising and malware are strictly prohibited. Violators will be reported to GitHub.
+**basicpython.py** - Shell modeled after basic interpreter shell from https://github.com/tannewt/basicpython
 
+**blink.py [led pin number]** - program to blink onboard LED
 
----
+**rgbset.py [pin number,[size,[pixel]]]** - program to set the rgb color of an onboard neopixel or dotstar. The *size* and *pixel* arguments can be used to identify individual pixel in pixel array of more than 1 neopixel/dotstar.  
 
-**Français**
+**rgbblink.py [pin number]** - program to blink an onboard neopixel or dotstar  
+**rgbrainbow.py [pin number]** - program to color cycle an onboard neopixel or dotstar  
 
-**Attention**
+**matrix.py [width,height,depth,across,down]** - (Circuitpython only) program to initalize connected HUB75 RGB Matrix Panels as a CircuitPython display. The display object is stored as a PyDOS environment variable (_display).  
+  
+Parameters:  
+width - base width of a single RGB matrix tile  
+height - base height of a single RGB matrix tile  
+depth - the color depth of the matrix  
+across - the number of tiles connected across the matrix display  
+down - the number of tiles connected down the matrix display
 
-> [!NOTE]
-> Si vous voyez ce texte sur la page d'accueil du dépôt, ne paniquez pas, ne vous précipitez pas, tenez-vous bien et asseyez-vous calmement. Ce message est là pour vous dire que vous devez vous rendre ailleurs pour lire le texte complet du `README`.
->
-> Veuillez vous rendre sur [README.md](./README.md) (la page du fichier) pour le consulter. Cela est dû au fait que la limite de longueur d'affichage sur la page d'accueil du dépôt est plus courte que celle du fichier (500 Kio), ce qui empêche un affichage complet.
-> (Aux futurs mainteneurs : si l'emplacement change, veuillez déplacer cette note en conséquence (actuellement à la ligne 3047). Merci.)
-> J'ai écrit un script pour insérer automatiquement cet avertissement : [自动插入readme大小警告](./自动插入readme大小警告.py). Vous pouvez utiliser ce script pour l'insérer automatiquement ! (Aucune garantie d'absence de bugs.)
+If the parameters are omitted or not properly formatted, the program will prompt for each of the values.  
 
-> [!NOTE]
-> Le dépôt peut contenir divers fichiers et chemins étranges. Le nommage et la combinaison de ces fichiers ou chemins peuvent ne pas être applicables à tous les systèmes de fichiers et systèmes d'exploitation. Lors de l'exécution de `git clone` ou d'opérations connexes, diverses erreurs de fichiers et erreurs de systèmes de fichiers peuvent survenir. Veuillez vous préparer mentalement et prendre des mesures préventives.
+**Playimage.py [filename[,filename2,filename3,etc[],seconds_to_display]]]** - (Circuitpython only, requires the adafruit_imageload library installed in the /lib folder) program to display .bmp, .jpg, .gif (incl animated) or .png image files. If multiple comma 
+seperated files are entered a continous slide show is displayed with each image being 
+displayed for `seconds_to_display` seconds. Wildcard's in the format of *.xxx can be used
+as an input filename. If the program is loaded from PyDOS it attempts to determine the appropriate display configuration from the PyDOS environment, otherwise several display options are supported and selected depending on the existence of BOARD.DISPLAY or locally installed display libraries.
 
-> [!NOTE]
-> Grâce aux commits actifs d'un grand nombre de développeurs et de contributeurs sur GitHub, la taille de ce dépôt a atteint des dizaines de gibioctets (37,7 Gio — au 2026/9/22 22:57:00 UTC+08:00, note de l'éditeur). Veuillez vous assurer que votre ordinateur dispose de suffisamment d'espace de stockage et d'une bonne connexion réseau lors de l'exécution d'opérations connexes, afin d'éviter une déconnexion inattendue.
+**reboot.py** - performs a soft reboot (Micropython requires a Ctrl-D to complete)
 
-> [!WARNING]
-> La soumission de publicités ou de logiciels malveillants est interdite. Les contrevenants seront signalés à GitHub.
+**keys.bat** - (Keyboard Featherwing/BBQ Keyboard/LilyGo T-Deck only) Displays keyboard mappings for hidden keys and functions  
+**ui.bat [u/k]** - (Keyboard Featherwing/BBQ Keyboard only) Switches between using the Keyboard Featherwing and USB Serial port for PyDOS I/O
 
----
+**fs.py [ro/rw]** - (Circuitpython only) By selecting the "RO" option the flash mode is set such that when the microcontroller
+is power cycled or hard reset, the host computer will have read/write access to the flash and the microcontoller will be
+restricted to read only access. To give PyDOS access to the flash after switching to this mode the boot.py file must be
+replaced or modified from the host computer so that it contains the following instructions:
 
-**Русский**
+    import storage
+    storage.remount("/",False)
+    
+and then power cycled or hard reset.
 
-**Внимание**
-
-> [!NOTE]
-> Если вы видите этот текст на главной странице репозитория, не паникуйте, не спешите, встаньте устойчиво и спокойно сядьте. Это сообщение предназначено для того, чтобы сказать вам, что вам нужно перейти в другое место, чтобы прочитать полный текст `README`.
->
-> Пожалуйста, перейдите на [README.md](./README.md) (страница файла), чтобы просмотреть его. Это связано с тем, что ограничение длины отображения на главной странице репозитория короче, чем у файла (500 КиБ), из-за чего он отображается не полностью.
-> (Будущим сопровождающим: если местоположение изменится, пожалуйста, переместите это примечание соответственно (сейчас на строке 3047). Спасибо.)
-> Я написал скрипт для автоматической вставки этого предупреждения: [自动插入readme大小警告](./自动插入readme大小警告.py). Вы можете использовать этот скрипт для автоматической вставки! (Без гарантии отсутствия ошибок.)
-
-> [!NOTE]
-> В репозитории могут находиться различные странные файлы и пути. Именование и комбинация этих файлов или путей могут быть неприменимы ко всем файловым системам и операционным системам. При выполнении `git clone` или связанных операций могут возникнуть различные ошибки файлов и ошибки файловой системы. Пожалуйста, будьте морально готовы и примите меры предосторожности.
-
-> [!NOTE]
-> Благодаря активным коммитам большого числа разработчиков и участников на GitHub, размер этого репозитория достиг десятков гибибайт (37,7 ГиБ — по состоянию на 2026/9/22 22:57:00 UTC+08:00, примечание редактора). Пожалуйста, при выполнении связанных операций убедитесь, что на вашем компьютере достаточно места для хранения и хорошее сетевое соединение, чтобы предотвратить неожиданное отключение.
-
-> [!WARNING]
-> Запрещается размещать рекламу и вредоносное программное обеспечение. Нарушители будут переданы в GitHub.
-
----
-
----
-
-**Español**
-
-**Atención**
-
-> [!NOTE]
-> Si ves este texto en la página principal del repositorio, no entres en pánico, no te apresures, mantente firme y siéntate con calma. Este mensaje es para decirte que necesitas ir a otro lugar para leer el texto completo del `README`.
->
-> Por favor, dirígete a [README.md](./README.md) (la página del archivo) para verlo. Esto se debe a que el límite de longitud de visualización en la página principal del repositorio es más corto que el del archivo (500 KiB), lo que provoca que no se muestre por completo.
-> (A los futuros mantenedores: si la ubicación cambia, muevan esta nota en consecuencia (actualmente en la línea 3047). Gracias.)
-> He escrito un script para insertar automáticamente esta advertencia: [自动插入readme大小警告](./自动插入readme大小警告.py). ¡Puedes usar este script para insertarla automáticamente! (Sin garantía de que no tenga errores.)
-
-> [!NOTE]
-> El repositorio puede contener varios archivos y rutas extraños. El nombrado y la combinación de estos archivos o rutas pueden no ser aplicables a todos los sistemas de archivos y sistemas operativos. Al ejecutar `git clone` u operaciones relacionadas, pueden producirse diversos errores de archivos y errores del sistema de archivos. Por favor, prepárate mentalmente y toma medidas preventivas.
-
-> [!NOTE]
-> Gracias a los commits activos de un gran número de desarrolladores y contribuidores en GitHub, el tamaño de este repositorio ha alcanzado decenas de gibibytes (37,7 GiB — a fecha de 2026/9/22 22:57:00 UTC+08:00, nota del editor). Por favor, asegúrate de que tu computadora tenga suficiente espacio de almacenamiento y una buena conexión de red al realizar operaciones relacionadas, para evitar una desconexión inesperada.
-
-> [!WARNING]
-> Queda prohibido enviar publicidad o software malicioso. Los infractores serán reportados a GitHub.
-
-**日本語**
+**setenv.py** - Helper program for adding the WiFi SSID and Password to settings.toml (used by setup.bat).
 
-**注意**
+*WiFi enabled boards only*  
+**wifi_finance [symbol]** - Displays the current Nasdaq prices by connecting to a financial website and scraping the information. If an optional symbol is supplied, the program will attempt to identify the symbol and scrap the corresponding price information.  
+**wifi_weather** - Displays the 7 day forcast from api.weather.gov
 
-> [!NOTE]
-> リポジトリのホームページでこのテキストを見かけても、慌てないでください。急がないでください。しっかり立って、落ち着いて座ってください。このメッセージは、`README` の全文を読むには別の場所へ移動する必要があることを伝えるためのものです。
->
-> [README.md](./README.md)（ファイルページ）へ移動して閲覧してください。これは、リポジトリのホームページにおける `README` の表示長制限がファイル本体より短い（500KiB）ため、完全に表示できないことが原因です。
-> （後世の方へ：位置が変更された場合は、この注記も併せて移動してください（現在 3047 行目）。よろしくお願いします。）
-> この警告を自動挿入するスクリプトを書きました：[自动插入readme大小警告](./自动插入readme大小警告.py)。このスクリプトを使って自動挿入できます！（バグがないことは保証できません。）
+## Hardware (Pin) customization file (pydos_bcfg.py)
 
-> [!NOTE]
-> リポジトリ内には、さまざまな奇妙なファイルやパスが存在する可能性があります。これらのファイルやパスの命名および組み合わせは、すべてのファイルシステムやオペレーティングシステムに適合するとは限りません。`git clone` や関連する操作を実行する際に、各種のファイルエラーやファイルシステムエラーが発生する可能性があります。心の準備と予防策を講じてください。
 
-> [!NOTE]
-> GitHub 上の多数の開発者とコントリビューターによる活発なコミットのおかげで、このリポジトリのサイズは数十ギビバイトに達しています（37.7GiB —— 2026/9/22 22:57:00 UTC+08:00 編集者注）。関連する操作を実行する際は、予期しない切断を防ぐため、コンピュータに十分なストレージ容量と良好なネットワーク接続があることを確認してください。
+The setup.bat file will identify the board being used from **board.board_id** or
+**sys.implementation._machine** and attempt to copy a customization file from the cpython or mpython /boardconfigs directory. If a matching config file is not found the default /lib/pydos_bcfg.py file will be used.
 
-> [!WARNING]
-> 広告およびマルウェアの投稿を禁止します。違反者は GitHub に報告されます。
----
+The pydos_bcfg.py file acts as a library which contains a single dictionary opject, Pydos_pins.
 
-## 贡献者
-<a href="https://github.com/KrisTHL181/Break-This-Repo/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=KrisTHL181/Break-This-Repo" />
-</a>
+The recognized keys of the Pydos_pins dictionary are:  
 
-Made with [contrib.rocks](https://contrib.rocks).
+**TUPLES (pin number, Text description of identified pin)**  
+example: `'led' : (25, "GP25")`  
 
+**led** - Micropython may use text identifer (i.e. "led") rather than pin number  
+**sndPin**  
+**neoPixel**  
+**neoPixel_Pow**  
+**dotStar_Clock**  
+**dotStar_Data**  
+**dotStar_Extra**  
+**dotStar_Pow**  
+**I2C_NUM** - MicroPython hardware I2C number  
+**SCL**  
+**SDA**  
+**SDIO_CLK**  
+**SDIO_CMD**  
+**SDIO_DPINS** - the "pin number" element for SDIO_DPINS is a list of pins  
 
----
+**LIST OF TUPLES**  
+*First tuple in list used for machine/board SD dedicated SPI (board.SD_SPI)*  
+*Last tuple in list used for machine/board general use SPI (board.SPI)*  
+example: `'MISO' : [(43, "DAT0 D43 Internal"), (12, "MISO D12")]`
 
-## 总目录
-这些目录仍然需要补充，上一次补充是在几周前了，有心之人可以来补充。
-<!--toc:start-->
-  - [Break This Repository!](#break-this-repository)
-  - [破坏这个仓库！](#破坏这个仓库)
-  - [目录](#目录)
-- [想到什么说什么](#想到什么说什么)
-  - [嘿嘿嘿哈](#嘿嘿嘿哈)
-	- [[dream away](https://www.bilibili.com/video/BV1nC41137aW)真好听吧](#dream-awayhttpswwwbilibilicomvideobv1nc41137aw真好听吧)
-  - [hyw](#hyw)
-  - [我先喝一口再说](#我先喝一口再说)
-  - [Build from source](#build-from-source)
-	- [C++ with Make](#c-with-make)
-	- [C++ with CMake](#c-with-cmake)
-	- [C++ with Meson](#c-with-meson)
-	- [Python and Rust with maturin](#python-and-rust-with-maturin)
-	- [TypeScript with Hereby](#typescript-with-hereby)
-  - [重要补充](#重要补充)
-  - [Linux distribution packages](#linux-distribution-packages)
-	- [Debian and Ubuntu](#debian-and-ubuntu)
-	- [Arch Linux](#arch-linux)
-	- [Fedora](#fedora)
-	- [Gentoo](#gentoo)
-  - [相关文件](#相关文件)
-- [show you my cat](#show-you-my-cat)
-- [Hello, Mayx](#hello-mayx)
-  - [Follow Me On [Mabbs](https://github.com/Mabbs)](#follow-me-on-mabbshttpsgithubcommabbs)
-- [BREAKING:Deepseek V4.5 Flash Preview just released!](#breakingdeepseek-v45-flash-preview-just-released)
-- [BREAKING:Deepsuck R2 Flash Preview just released!](#breakingdeepsuck-r2-flash-preview-just-released)
-- [友链](#友链)
-- [Debian --通用操作系统](#debian-通用操作系统)
-  - [Debian 是自由软件。](#debian-是自由软件)
-  - [Debian 稳定且安全。](#debian-稳定且安全)
-  - [Debian 具有广泛的硬件支持。](#debian-具有广泛的硬件支持)
-  - [Debian 提供灵活的安装程序。](#debian-提供灵活的安装程序)
-  - [Debian 提供平滑的更新。](#debian-提供平滑的更新)
-  - [Debian 是许多其他发行版的基础。](#debian-是许多其他发行版的基础)
-  - [Debian 项目是一个社区。](#debian-项目是一个社区)
-  - [PR 模板](#pr-模板)
-- [github 文件加速](#github-文件加速)
-- [真正的 github 文件加速](#真正的-github-文件加速)
-- [冷知识](#冷知识)
-  - [现场基础设施考古档案](#现场基础设施考古档案)
-- [查看 README 历史版本](#查看-readme-历史版本)
-<!--toc:end-->
+**SPI_NUM** - MicroPython hardware SPI number  
+**SCK**  
+**MOSI**  
+**MISO**  
+**CS**  
 
----
+**CALCULATED DATA**
 
-## Break This Document ! 破坏这个文档！
+**sndGPIO** - digitalio.DigitalInOut(sndPin)  
+**KFW** - Flag indicating use of Keyboard FeatherWing (True/False)  
+**I2CbbqDevice** - I2C device being used for the KFW keyboard  
+**SD** - list of sdcard objects  
+**SDdrive** - list of mount points for mounted SD cards
 
-https://docs.google.com/document/d/1Y669HJaH4areKBSFie_2k1dT045l3U2fiM34O_Y-dwQ/edit?usp=sharing
 
----
+## PyDOS Generalized Wifi API library (pydos_wifi.py)
 
-- [喵打猫司令部——本喵娘的一张大字报](./留言与聊天/bigtextnews.md)
+Whenever possible PyDOS and the bundled external programs work equally well on MicroPython or CircuitPython and on any of the supported micro controller chip families. To assist in reaching this goal PyDOS_wifi, a simplified Wifi library, is being developed which provides a unified Wifi API that works the same under both MicroPython and CircuitPython on ESP32xx, Pico W and Arduino Nano based Microcontrollers.
 
-# Hello, Mayx
-## Follow Me On [Mabbs](https://github.com/Mabbs)
-[My Blog](https://mabbs.github.io/)
+For PyDOS_wifi API documentation see https://github.com/RetiredWizard/PyDOS_wifi
 
-# BREAKING:Deepseek V4.5 Flash Preview & Deepsuck R2 Flash Preview just released!
 
-# [<img width="460" height="460" alt="image" src="https://github.com/user-attachments/assets/fca57543-7fa4-4e96-bf0b-e6e432dc8fcc" />](https://k.asxz.one)
+## Installation
 
-# 友链
+**Before copying PyDOS files**
 
-这是个在线监视器
-[![Break-This-Repo的友链监测站](https://badge.uptimerobot.com/psp/366a82ee505ef5dbc9cd27f9268436ec.svg?style=logo&theme=light)](https://stats.uptimerobot.com/10qNc6EUwG?utm_source=status_badge&utm_medium=referral)
+If the board you're using has limited flash storage, as is the case with the Pico W, you can delete either the **cpython** (if you're not using CircuitPython) or **mpython**
+(if you're not using MicroPython) folder from the downloaded repository files. Within the remaining Python folder (**cpython** or **mpython**) are folders
+for specific micro controller boards, you can free up further space by deleting anything other than the board you are using (the "Pico W" and "Arduino Nano Connect" boards use the ESP folder). For very limited Flash boards you may want to delete the **PyBasic** folder until after the **setup.bat** step is run. Once setup has ben run, delete the **cpython** and/or **mpython** folders from the microcontroller and copy as much of the **PyBasic** directory as space permits to the Microcontroller. Copying just the *.py files is all that's needed for PyBasic to run.
 
-把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 ~~google~~ 搜索引擎 索引到, 从而增加权重. 大家一起做大做强!
+**Circuitpython PYSTACK**
 
-刷贡献来
+Thanks to the great work of **@bill88t**, starting with CircuitPython version 8.0.4, you no longer need to build custom CirucitPython firmware (ESP32 based boards are still being worked on but should have this feature in 8.0.6/8.1.0). PyDOS will run without issue on a standard downloaded CircuitPython image from https://circuitpython.org/downloads. 
 
-https://blog.sitrmoo.com
+When CircuitPython boots on a microcontroller the pystack size can be set by the **CIRCUITPY_PYSTACK_SIZE** value in the settings.toml file. PyDOS comes with this value set to 4000. PyDOS will derive a maximum wildcard length based on this value that should be adequate in most cases, however if you find yourself using particuarly long file names you can increase this parameter value as needed. As you increase the pystack size the memory available for PyDOS to run will decrease slightly.
 
-https://cuwo4.github.io/
+*By the way, if you like PyDOS you'll probably also enjoy Beryllium OS from https://github.com/beryllium-org/OS  
 
-https://onion108.github.io/
+**CircuitPython install**
 
-https://mochiaochen.github.io/
+To install the CircuitPython image, put your microcontroller board in "bootloader" mode and copy the .UF2 file to the USB mass storage device that shows up on your host computer. 
 
-https://yaojiale7067blog.pages.dev/
+After the .UF2 file is copied to the microcontroller board it should re-boot and a new USB mass storage device should appear.
 
-被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
-被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
-被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
-被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
+**PyDOS install**
 
->alhsk.top网站站长注释:难道就我一个格格不入的用cloudflare pages吗 ~一个回复：我用的Vercel
+To copy PyDOS to the Microcontroller, simply drag the PyDOS directory structure
+(after removing the **mpython** folder if space is a concern) to the root directory of the device that appears on the host computer.
 
-https://alhsk.top 
+If the copy is interrupted for any reason you can delete the boot.py
+file in the root of the microcontroller flash and try the copy again. 
 
-> 0w0.red/ne0w0r1d.top/tux.red 站长表示：更格格不入用 EdgeOne 的来了
+If the copy worked without any errors, you should power cycle the microcontroller board so that the file system is configured to allow the microcontroller to have Read/Write access. When you do this, the host computer will no longer be able to write to the microcontroller mounted drive (usually CIRCUITPY).
 
-https://0w0.red
+If you find yourself locked out of the flash from the host computer and PyDOS is not running, the easiest way to recover is to
+connect to the REPL, remove the boot.py file and then power cycle the microcontroller board. 
 
-https://0xarch.codeberg.page/
+        import os
+        os.remove("boot.py")
 
-https://ftz.is-a.dev/
+To interact with the microcontroller you will need to connect using a terminal program. On a PC you can use putty and on linux, I would recommend [tio](https://github.com/tio/tio). To start tio on linux type the command:
 
-> ftz.is-a.dev 站长表示：你见过三个免费域名两个SaaS自带域名分别部署在netlify vercel cfpages的吗
+          tio /dev/ttyACM0
+	  
+You should be presented with either the REPL prompt (>>>) or the PyDOS prompt (\>), if not, press return or Ctrl-C. *After using Thonny, you may need to press CTRL-B to exit the raw REPL mode that 
+Thonny uses to transfer and execute files.*
 
-想用 Linux？为什么不打开看看 https://tux.red or https://tux.ne0w0r1d.top ？
+At the REPL prompt type "**import PyDOS**" to start PyDOS. From PyDOS type **setup** to run the customization script.
 
-凑个热闹（好长啊 https://lililbot.fentropy.dpdns.org
+Once the **setup.bat** script has been run if you have more files to copy to the microcontroller (PyBasic for example) or you want to run **circup**, you will need to give the host computer read/write access to the mounted microcontroller drive. This is done by typing **"fs ro"** at the PyDOS prompt and then power cycling the board.
 
-> Below is a poor man's website that cannot afford a domain name (actually so does above)
+After running **circup** or deleting/copying files using the Host computer, when you want to run PyDOS normally again, edit the **boot.py** file in the root folder of the mounted microcontroller drive (usually CIRCUITPY) and change the line that reads:  
 
-- [MorningMC的神秘小网站](https://morningmc.qzz.io)
+            storage.remount("/",True)  
 
-- [CarryRao](https://carryrao.top/)
+to:  
 
-> 好像就我一个格格不入用的是服务器喵，手机改的可能没有很规范喵
+            storage.remount("/",False)  
 
-https://kernel.org/
+and then powercycle the board once again.
 
-> 打开链接，让我们使用Mac!
-> 什么，你说这不是MacOS?
+It is recommended that once the **setup.bat** script has been run, **circup** be run on your host computer, in order to make sure the libraries are updated and in sync with the version of CircuitPython on your microcontroller board.
 
-https://gavin-blog.pages.dev/
+Instructions on installing and using **circup** can be found [here](https://learn.adafruit.com/keep-your-circuitpython-libraries-on-devices-up-to-date-with-circup/overview)  
 
+On your host PC, you should run:  
+**circup update**  (if you are conected to the board via a USB cable)  
+**circup --host *ip-address* --password *CIRCUITPY_WEB_API_PASSWORD* update** (for wifi enabled boards)  
+  
+On your microcontroller, you can use the **setenv.py** PyDOS program to set or see your current CIRCUITPY_WEB_API_PASSWORD.  
 
-> 别怕，我也是 cf pages！
+You can also run commands like:
+**circup install adafruit_imageload** to install any adafruit libraries you need.  
 
-https://ricky-zhang.com
+--------------------------------------------------------------------------------------------------------------------
+**Building custom Micropython firmware**
 
-> 请输入文本
+Although you can use a standard Micropython image downloaded from Micropython.org to run PyDOS, there are two reasons you may want to build a custom
+Micropython firmware file. 
 
-https://imjerrychu.com/
->见过没有内容的网站吗？-JerryC
+The first is if you wan to connect up an old school serial terminal to the REPL rather than the standard serial over USB connection. Instructions for building 
+Micropython with this modification can be found in section 2.2 of the Raspberry Pi Pico Python SDK at https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-python-sdk.pdf.
 
-https://Enchantment-Niko.github.io/
-> [Enchantment-Niko](https://github.com/Enchantment-Niko) 到此一游
-> 我还是留个标记吧:
-> ![OneShot](./OneShotWME壁纸/navigate.png "Niko 乘船")
+The second is that PyDOS uses a recursive routine to process wildcard operations and the default stack in Micropython limits the recursion depth that can be obtained **(With more recent versions of Micropython this has become much less of an issue)**.
+This means that PyDOS has to limit wildcard operations, one impact of this is that files with longer file names may not appear
+in directory listings when wildcards are used. To eliminate this issue a custom Micropython image can be built with the the MICROPY_STACKLESS parameter in **py/mpconfig.h**
+changed from **0** to **1**.  
+**\*\*Note\*\* I haven't tested a MICROPY_STACKLESS build since ~1.19**
 
-https://caiyan12.github.io/
+**MicroPython Setup**
 
-> 感谢大哥提供的免费贡献一条
+Once your microcontroller has Micropython installed and running the best way
+to copy the PyDOS files and interact with the repl is to use Thonny. Adafruit has a good learning guide for getting started with Thonny here:
+https://learn.adafruit.com/circuitpython-libraries-on-micropython-using-the-raspberry-pi-pico/micropython-installation. 
 
-https://jiwo.l.cd
+Download PyDOS from the github repository and after deleting the **cpython** folder if space is an issue, use the Thonny upload command as described in the Adafruit 
+learning guide to copy the downloaded files to the microcontroller.
 
-> 稽窝｜一只滑稽的小窝
+To interact with the microcontroller connect over the serial USB port (COMn: /dev/ttyACMx, etc) using a terminal program like puTTY or minicom. You can use the Thonny shell as well
+however, it does not support the basic ansi escape sequences used by some of the PyDOS functions.
+One thing to note is that if you
+connect to your microcontroller with a terminal program after using Thonny, you may need to press CTRL-B to exit the raw REPL mode that 
+Thonny uses to transfer and execute files.
 
-https://airoj.cn
+Another option is to use MPRemote. Detailed documentation on installing and using MPRemote can be found 
+at https://docs.micropython.org/en/latest/reference/mpremote.html.
 
-> zhiyuHD
-https://zhiyuhub.top
+To install PyDOS on the microcontroller board download PyDOS from the github repository and after deleting the **cpython** folder if space is an issue, set your current
+directory to the root folder of the downloaded PyDOS repository and use the following command:
 
-> AirOJ | 开放、和谐（？）、抽象、土豆、卡顿的 Online Judge 系统
-> 感谢 KrisTHL181 大哥提供的免费贡献 6 条
-> [!important]
-> Also try Minecraft and Terraria
+	mpremote fs cp -r * :
+	
+To interact with the microcontroller you can connect to the REPL by simply typing **mpremote** and pressing return several times until the REPL prompt
+(>>>) is displayed.
 
-> [!important]
-> If you are a Minecraft Server owner, Also try
-> [Minecraft Daemon Reforged](https://github.com/MCDReforged/MCDReforged)
-MCDR是对的！！！
+At the REPL prompt type "**import PyDOS*** to start PyDOS and then type **setup** to run the customization script.
 
-https://dn42.dev https://dn42.eu https://wiki.dn42
+**Note** If the board you're using has an onboard SD card slot, Micropython may not mount the flash at the root mount point. In this case copy the PyDOS files to the "/Flash" folder during the initial PyDOS setup. If you plan to boot your device with an SD card inserted you should install PyDOS and run setup before inserting the SD card, then copy boot.py to the SD card.
 
-> JOIN DN42!
+**Note** To set up the Seeed (XIAO) nRF52840 board running MicroPython, copy the PyDOS /mpython folder to the /flash folder on the device and then copy the /mpython/boot.py file to /Flash/boot.py and reboot the microcontroller. You should then be able to install PyDOS as usual although the current version of Thonny has difficulty with this board so you should only copy a single folder (i.e. lib, mpython, PyBasic and then all the root files) at a time.
 
-https://www.yzynetwork.org:8443
-https://yzynetwork.dn42
-https://git.yzynetwork.org:8443
-https://weather.dn42
+## To Do  
+*Possible updates depending on RAM impact*
 
-> YZYNetwork
-> MC Server: yzynetwork.org / yzynetwork.dn42
-> openpgp fingerprint 177ABD1B671BC99FA4AD20A1A96607E60ECBAC84
-> openpgp fingerprint 6C2452071E9A0BECB794B37FA1FEF9D696C3077A
-> we support dn42!
-
-https://aria7.wiki
-
-> Ciallo～(∠・ω< )⌒★ 到此一游，当然，你可以进来看看ovo
->
-> ## 今天晚上记得关注《死神千年血战祸进谭》，我将按时出演角色「蓝染惣右介」，你也可以来看看我的网站:http://134.175.147.211:324/,等我备案后访问 cnyicheng.top
-
-> 不知道要干麻阿，WoW～ 天空属于我们！
-
-https://blog.admincmd.xyz/
-https://admincmd.xyz/
-
-> 你要在这个 VSCode 粘贴都可以卡几秒的 Markdown 里写上你的 Website 吗？快来闹一闹 ——admincmd-a
-
-https://xundei.qzz.io/
-
-> 个人小博客，欢迎交换友链
-
-https://blog.iamexrfy.top
-
-> 一个神秘的土豆服务器搭的博客来了
----
-
-# Debian --通用操作系统
-[![Debian Logo](https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f365.png)](https://www.debian.org/)
-![IMG_2071.jpeg](https://earth.us.ci/i/debian)
-## Debian 是自由软件。
-Debian 是由自由和开放源代码的软件组成的，并将始终保持 100% 自由。每个人都能自由使用、修改，以及分发。这是我们对我们的用户的主要承诺。它也是免费的。
-## Debian 稳定且安全。
-Debian 是一个广泛用于各种设备的基于 Linux 的操作系统，其使用范围包括笔记本计算机，台式机和服务器。 我们为每个软件包提供合理的默认配置，并在软件包的生命周期内提供常规的安全更新。
-## Debian 具有广泛的硬件支持。
-大多数硬件已获得 Linux 内核的支持。这意味着 Debian 也会支持它们。如有需要，也可使用专有的硬件驱动程序。
-## Debian 提供灵活的安装程序。
-希望在安装前尝试 Debian 的用户可以使用我们的 Live CD。它同时包含了 Calamares 安装程序，使得从 Live 系统安装 Debian 变得十分容易。经验更加丰富的用户可以使用 Debian 安装程序，它提供了更多可以微调的选项，包括使用自动化的网络安装工具的功能。
-## Debian 提供平滑的更新。
-保持操作系统最新十分容易，不论您是想升级到一个全新的发布版本，还是只想升级一个单独的软件包。
-## Debian 是许多其他发行版的基础。
-许多非常受欢迎的 Linux 发行版，例如 Ubuntu、Knoppix、PureOS 以及 Tails，都基于 Debian。我们提供了所需的所有工具，使得每个人在有需要的时候都可以制作自己的软件包，以补充 Debian 档案库里没有的软件包。
-## Debian 项目是一个社区。
-所有人都可以成为 Debian 社区的一员；您不必是一名开发者或系统管理员。Debian 有一个民主的治理架构。由于所有 Debian 项目的成员都享有平等的权利，所以 Debian 不能被单个公司所控制。我们的开发人员来自超过 60 个国家/地区，并且 Debian 本身也已经被翻译为超过 80 种语言。
-
-<!-- some content were removed because: Someone copied these document from Minecraft Wiki but didnot follow it's license (CC-BY-SA 4.0) --> 
-
-<!-- some content were removed because: harmful content -->
-
----
-
-## Break This Document ! 破坏这个文档！
-
-https://docs.google.com/document/d/1Y669HJaH4areKBSFie_2k1dT045l3U2fiM34O_Y-dwQ/edit?usp=sharing
-
----
-
-# 砖业问题修复指南:一键修复！再也没烦恼！
-
-<img src="https://breadripper.pages.dev/superfixer.jpeg" alt="图片alt" title="null">
-
-# 电脑中毒怎么办？
-
-<img src="https://breadripper.pages.dev/linuxsafeclean.jpeg" alt="图片alt" title="null">
-
-# 免费领取高速cdn!!!
-
-<img src="https://breadripper.pages.dev/cf.png" alt="图片alt" title="cf">
-
-# 温馨提示：
-
-<img src="https://breadripper.pages.dev/warnl.png" alt="图片alt" title="null">
-
-# 免费Hypixel Rank领取
-
-<img src="https://breadripper.pages.dev/hypgift.png" alt="图片alt" title="null">
-
-# 设计轻而易举啊
-
-<img src="https://breadripper.pages.dev/design.png" alt="图片alt" title="null">
-
----
----
-## 君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き 
----
-<a href="https://www.bilibili.com/video/BV1os411D7be/">
-<img src="https://omiasun.pages.dev/images/misaka.jpg">
-
-
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-君指先跃动の光は、私の一生不变の信仰に、唯私の超电永世生き <br>
-你指尖跃动的电光，是我此生不变的信仰，唯我超电磁炮永世长存！<br>
-
-</a>
-
-> 这是谁放的这么多乱七八糟的东西 ——御坂御坂如此疑惑地说道
->
-> ——admincmd-a
-
----
-
-### 好耶是女装
-[好耶是女装](https://github.com/Cute-Dress/Dress)
-
-## STALL! STALL! 嘚嘚嘚嘚嘚嘚 STALL! STALL! 嘚嘚嘚嘚嘚嘚 STALL! STALL! 嘚嘚嘚嘚嘚嘚
-博南，你的电话响了。
-
-> ### 博南拉杆
-> 
-> 梗起源于AF447空难的副驾驶博南。当时飞机飞越雷暴区，在途中空速管结冰导致数据不全，自动驾驶断开。其实，博南只需要控制住飞机一分钟，空速管就会自动解冻。然而博南开始向后拉杆，大角度爬升的同时使飞机进入失速。当时驾驶舱内另一名副驾驶做出了失速的改出操作，压低机头，但博南还在拉杆。由于空客的无反馈侧杆设置，导致两个相反的操作互相抵消，直到飞机坠毁，博南还是不知道为什么他做错了。
-> 
-> 有诗云：”博南副机长，拉杆进大洋。“
->
-> @see <https://zhuanlan.zhihu.com/p/488357178>
-
-R.I.P.
-
--------
-
-## 恭喜仓库来到 200 forks!
-
-热烈庆祝仓库来到 200 forks! q(≧▽≦q)
-
-
-↑并非来到,其实fork还变少了,之前有205个。
+- ~~integrate ConnectionManager into PyDOS_wifi~~
+- investigate porting micropython flash mount to circuitpython
+- investigate date/time stamp issue on seeed nrf52840 files
+- support for connected color displays  
+- ~~support for touch screens~~  
+- Rename should allow wildcards in filenames, i.e. "rename *.bas *.txt" or "rename code.py *.sav"  
+- Quiet, /Q switches to DEL, RMDIR, COPY, XCOPY commands
+- PgUp/PgDwn support in fileview.py
+- Properly implement edlin cursor position and append command
