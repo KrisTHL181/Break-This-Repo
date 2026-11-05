@@ -1,1 +1,0 @@
-@type menu.txt
