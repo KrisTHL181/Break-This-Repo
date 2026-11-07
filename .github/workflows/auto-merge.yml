@@ -1,0 +1,314 @@
+name: Auto Merge All PRs
+
+on:
+  schedule:
+    # Every 30 minutes (minimum interval GitHub Actions supports;
+    # actual runs may be delayed by a few minutes under load)
+    - cron: "*/30 * * * *"
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  pull-requests: write
+  issues: write      # needed for PR comments/labels via gh
+  contents: write
+
+concurrency:
+  group: auto-merge
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    if: github.repository == 'KrisTHL181/Break-This-Repo'
+    runs-on: ubuntu-latest
+    steps:
+      # This workflow never reads a file from the working tree - everything it needs comes
+      # from git objects (`git diff` / `merge-base` / `fetch`) and the GitHub API.
+      #
+      # `filter: blob:none` is the change that actually matters. The repository is ~3GB, but
+      # every byte of that is file CONTENT: the commits and trees for its whole history are
+      # only ~17MB. Since this job never opens a file, it never needs a blob, so the checkout
+      # stops downloading ~3GB and drops from ~100-136s to ~20s.
+      #
+      # fetch-depth: 0 is kept deliberately, at a cost of only a couple of seconds: resolving
+      # the merge base below needs the history graph. A shallow (depth=1) fetch makes
+      # `git merge-base` come back empty, and an empty changed-path list reads as "nothing
+      # protected here" - which would let a PR that deletes `.github/` merge silently.
+      #
+      # sparse-checkout: with blob:none the worktree would otherwise still materialise every
+      # file, pulling all 3GB back down blob-by-blob. NOTE: cone mode also includes every
+      # ROOT-level file (this repo has large media at the root), so the explicit non-cone
+      # '/.github/' pattern is deliberate - it lands exactly one file.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: |
+            /.github/
+          sparse-checkout-cone-mode: false
+
+      - name: Merge open PRs (skipping protected changes)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          REASON=""
+          # PRs whose merge the API rejected for a reason that will NOT clear on its own.
+          # Conflicts and races are deliberately excluded - the next cycle legitimately
+          # re-tries those. Anything collected here makes the job exit non-zero at the end,
+          # so a wedged PR shows up as a red run instead of a green one that merged nothing.
+          STUCK=""
+
+          # Paths a PR adds/modifies/deletes/renames. Computed locally so there is no
+          # 3000-file cap: the REST files endpoint pages 100 at a time and `gh api --paginate`
+          # stops at 3000 files, so a huge PR could pad a directory and hide a protected path
+          # behind the cap. `--no-renames` makes a rename surface as delete+add, so a
+          # protected path that is renamed away still appears (old path preserved) and is
+          # caught.
+          #
+          # Measured against the MERGE BASE, not against origin/main directly. Diffing the
+          # PR head straight against origin/main reports main's own commits as if the PR had
+          # made them - so a PR that merely sat still while `.github/` changed upstream looked
+          # like it was touching `.github/`, and got closed for it. (That is not theoretical:
+          # it closed PRs #204 and #135 and drew a complaint from a contributor.) Merge-base
+          # ..head is this PR's own change set, which is what the guard actually means.
+          #
+          # Must distinguish failure: on any git error this returns nonzero AND leaves
+          # CHANGED empty - a failed diff must never be mistaken for "no protected files".
+          changed_paths() {
+            CHANGED=""
+            local mb out
+            # Spelled out rather than using the `origin/main...FETCH_HEAD` shorthand on
+            # purpose: that shorthand yields an EMPTY diff when no merge base exists, and an
+            # empty list here means "no protected paths" - a fail-open. Resolving the merge
+            # base ourselves lets us fail CLOSED on the same condition instead.
+            mb=$(git merge-base origin/main FETCH_HEAD 2>/dev/null) || mb=""
+            if [ -z "$mb" ]; then
+              REASON="no merge base with origin/main (conservative skip)"
+              return 1
+            fi
+            # `-z` emits raw, NUL-separated paths, so a filename containing a tab/newline
+            # is NOT C-quoted (git diff --name-status quotes it, hiding a leading `.github`
+            # behind a `"` and thus evading the path check below). `--name-only` needs
+            # `--no-renames` so a rename surfaces as delete+add and a protected path that
+            # was renamed away still appears. stderr is discarded so git warnings cannot
+            # leak into the path list as phantom entries.
+            out=$(git diff --name-only -z --no-renames -r "$mb" FETCH_HEAD 2>/dev/null | tr '\0' '\n' | sed '/^$/d') || {
+              REASON="could not compute the changed-path list from the local diff (conservative skip)"
+              return 1
+            }
+            CHANGED="$out"
+          }
+
+          # Fetches the PR head into FETCH_HEAD and sets GUARD to one of:
+          #   protected     - genuine protected-path violation: label + close (existing behavior)
+          #   indeterminate - cannot tell (fetch/diff failure): comment + `check-failed` label,
+          #                   leave open so the next cron cycle re-checks; NEVER merge
+          #   ok            - not protected: merge
+          # Also sets REASON (why) and CHANGED (changed-path list) when computable.
+          check_pr() {
+            GUARD=""
+            REASON=""
+            CHANGED=""
+            # No --depth here, and that is load-bearing: a depth-limited fetch makes the PR
+            # head a grafted root, so `git merge-base` finds nothing and changed_paths() would
+            # have to treat every PR as unverifiable. blob:none still keeps this cheap - it
+            # transfers the branch's trees, never its file contents.
+            # --no-recurse-submodules is load-bearing as well. This repo declares ~87
+            # submodules in .gitmodules, but the checkout above leaves them uninitialized, so
+            # the default `fetch.recurseSubmodules=on-demand` walks into them, reports
+            # "Could not access submodule '<path>'", and makes `git fetch` exit 1 *after* it
+            # has already written the correct FETCH_HEAD. That read as an unverifiable head
+            # and parked PRs #567/#587/#590 on `check-failed` indefinitely. Verified on a
+            # runner: 6 of 7 pull refs exit 1 without this flag, 0 of 7 with it.
+            #
+            # stderr is captured rather than discarded. `2>/dev/null` is what hid the
+            # submodule line for hours and left this function's own wording as the only clue.
+            if ! FETCH_ERR=$(git fetch -q --no-recurse-submodules --filter=blob:none origin "pull/$1/head" 2>&1); then
+              REASON="head could not be fetched (conservative skip): $(printf '%s' "$FETCH_ERR" | tr '\n' ' ' | cut -c1-300)"
+              GUARD="indeterminate"
+              return 0
+            fi
+            if ! changed_paths; then
+              GUARD="indeterminate"
+              return 0
+            fi
+            if grep -qE '^\.github(/|$)' <<< "$CHANGED"; then
+              REASON="touches the protected \`.github/\` directory"
+              GUARD="protected"
+              return 0
+            fi
+            GUARD="ok"
+            return 0
+          }
+
+          # These five are independent, so run them concurrently: sequential `gh` calls cost
+          # a full CLI start + round trip each (~0.5-1s) and the labels almost always already
+          # exist, meaning the work is pure overhead on every single run.
+          # `|| true` keeps a "label already exists" failure from tripping `set -e` via wait.
+          for spec in \
+            "protected|B60205|Touches protected paths; auto-closed" \
+            "conflict|FBCA04|Merge conflict; resolves itself once fixed" \
+            "was-conflicted|D876E3|Had a merge conflict at some point; resolved and merged" \
+            "check-failed|6A737D|Auto-merge check failed; will re-check next cycle" \
+            "merge-blocked|5319E7|Merge rejected by the API; will not clear on its own"
+          do
+            IFS='|' read -r name color desc <<<"$spec"
+            gh label create "$name" --color "$color" --description "$desc" >/dev/null 2>&1 || true &
+          done
+          wait
+
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name' 2>/dev/null || echo main)
+          # gh's `--jq` does not accept `--arg`, so pipe to the system jq to pass the branch
+          # name as a variable (never interpolate it into the jq string). Scan a wide window,
+          # then force-include any open PR already carrying the `protected` or `check-failed`
+          # labels so a large flood cannot starve a pending enforced/flagged PR out of this run.
+          # All three lists come from ONE call: the `labels` field is now fetched alongside the
+          # rest, so the "already labelled?" checks below are answered from this snapshot
+          # instead of a `gh pr view` per PR (one gh round trip is ~0.5-1s, a jq lookup ~10ms).
+          PRS_JSON=$(gh pr list --state open --limit 1000 --json number,isDraft,baseRefName,labels)
+          PRS=$(jq -r --arg base "$DEFAULT_BRANCH" \
+                  '.[] | select(.isDraft | not) | select(.baseRefName == $base) | .number' \
+                  <<<"$PRS_JSON")
+          STARVED_PROTECTED=$(jq -r --arg base "$DEFAULT_BRANCH" \
+                  '.[] | select(.baseRefName == $base) | select(any(.labels[]; .name == "protected")) | .number' \
+                  <<<"$PRS_JSON")
+          STARVED_FAILED=$(jq -r --arg base "$DEFAULT_BRANCH" \
+                  '.[] | select(.baseRefName == $base) | select(any(.labels[]; .name == "check-failed")) | .number' \
+                  <<<"$PRS_JSON")
+          PRS=$(printf '%s\n%s\n%s\n' "$PRS" "$STARVED_PROTECTED" "$STARVED_FAILED" \
+                  | sed '/^$/d' | sort -u -n)
+          if [ -z "$PRS" ]; then
+            echo "No open PRs against the default branch '$DEFAULT_BRANCH'."
+            exit 0
+          fi
+
+          # Label membership read from the snapshot above - no network. jq compares whole
+          # names, so a label containing a comma/pipe/space cannot produce a false positive
+          # the way a `grep` over a delimited list would.
+          has_label() {  # $1 = PR number, $2 = label name
+            jq -e --argjson pr "$1" --arg l "$2" \
+              'any(.[]; .number == $pr and any(.labels[]; .name == $l))' \
+              <<<"$PRS_JSON" >/dev/null
+          }
+
+          for pr in $PRS; do
+            echo "=== PR #$pr ==="
+            check_pr "$pr"
+            case "$GUARD" in
+              protected)
+                echo "🚫 Skipping: $REASON"
+                if ! has_label "$pr" protected; then
+                  printf '%s\n' "🚫 **Auto-merge skipped: this PR $REASON.**" "" "The \`.github/\` directory is off-limits and cannot be changed via pull requests. Fix the PR and it will merge automatically." > /tmp/comment.md
+                  gh pr comment "$pr" --body-file /tmp/comment.md >/dev/null || echo "  (comment failed)"
+                  gh pr edit "$pr" --add-label protected >/dev/null || true
+                  gh pr close "$pr" >/dev/null || true
+                fi
+                ;;
+              indeterminate)
+                echo "⚠️ $REASON"
+                # Fail closed: do NOT label `protected`, do NOT close, do NOT merge this
+                # cycle. Comment once (guarded by the `check-failed` label) and let the
+                # next cron cycle re-check the PR normally.
+                if ! has_label "$pr" check-failed; then
+                  printf '%s\n' "⚠️ **Auto-merge check failed: $REASON.**" "" "I couldn't verify whether this PR touches protected paths, so it won't be merged this cycle. It will be re-checked automatically on the next cron cycle — no action needed." > /tmp/check-failed-comment.md
+                  gh pr comment "$pr" --body-file /tmp/check-failed-comment.md >/dev/null || echo "  (comment failed)"
+                  gh pr edit "$pr" --add-label check-failed >/dev/null || true
+                fi
+                ;;
+              ok)
+                HEAD_SHA=$(git rev-parse FETCH_HEAD^{commit})
+                echo "Merging at $HEAD_SHA ..."
+                # The guard just verified this PR, so `check-failed` is stale from here on:
+                # whatever the merge does next, the conflict and merge-blocked branches below
+                # set their own label. Leaving it on kept an open PR advertising a failed
+                # check after it had in fact been checked successfully - #567 still carried
+                # it even once the guard had correctly relabelled it `conflict`.
+                #
+                # Deliberately not cleared on the `protected` path: that one closes the PR,
+                # where a stale label is inert, and `protected` is the label that matters.
+                if has_label "$pr" check-failed; then
+                  gh pr edit "$pr" --remove-label check-failed >/dev/null 2>&1 || true
+                fi
+                # Capture the API's own message rather than discarding it. The old version
+                # threw stderr away, then guessed the cause from `mergeable` alone - which
+                # is how a hard 403 got reported as "head moved / transient error" and the
+                # run stayed green while merging nothing.
+                # `--include` keeps the response headers. They are the only lead left on the
+                # 403 handled below: `x-accepted-github-permissions` is GitHub naming the
+                # permission it wanted and `x-github-request-id` is what support asks for.
+                # On a successful merge the extra header text lands in MERGE_ERR, which
+                # nothing reads.
+                if MERGE_ERR=$(gh api --include -X PUT "repos/$GITHUB_REPOSITORY/pulls/$pr/merge" \
+                     -f merge_method=merge -f sha="$HEAD_SHA" 2>&1); then
+                  echo "✅ Merged PR #$pr"
+                  # Only PRs that are coming OUT of the conflict state get was-conflicted;
+                  # never-conflicted merges must stay unlabeled
+                  if has_label "$pr" conflict; then
+                    gh pr edit "$pr" --remove-label conflict >/dev/null 2>&1 || true
+                    gh pr edit "$pr" --add-label was-conflicted >/dev/null 2>&1 || true
+                  fi
+                else
+                  # Deliberately still a live call: `mergeable` is computed asynchronously by
+                  # GitHub and can read UNKNOWN from a list query, so it is only asked for
+                  # here, after a merge attempt has actually failed (the rare path).
+                  MERGEABLE=$(gh pr view "$pr" --json mergeable --jq '.mergeable')
+                  if [ "$MERGEABLE" = "CONFLICTING" ]; then
+                    echo "🔀 PR #$pr has conflicts — labeling, NOT closing. Re-resolve and it merges automatically."
+                    if ! has_label "$pr" conflict; then
+                      printf '%s\n' "🔀 **This PR has merge conflicts with \`main\`, so auto-merge can't apply it yet.**" "" "No need to reopen or do anything drastic — just [update the branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch) (merge or rebase \`main\` into it, resolving the conflict). Once it merges cleanly, it will be merged automatically." > /tmp/conflict-comment.md
+                      gh pr comment "$pr" --body-file /tmp/conflict-comment.md >/dev/null || echo "  (comment failed)"
+                      gh pr edit "$pr" --add-label conflict >/dev/null || true
+                    fi
+                  elif grep -q 'Resource not accessible by integration' <<<"$MERGE_ERR"; then
+                    # The API refused the token outright. Be exact about what is and is not
+                    # known, because the tempting explanation does NOT survive testing.
+                    #
+                    # The obvious story - "GitHub wants `workflows: write` because this PR is
+                    # behind base on a workflow file" (a rule GitHub support has described, and
+                    # one GITHUB_TOKEN can never satisfy: `workflows` is not a key the
+                    # `permissions:` block accepts) - was tested and REFUTED. Four controlled
+                    # reproductions with exactly that shape merged fine, including a 6,500-file
+                    # one from a genuine fork. So no cause is named here.
+                    #
+                    # What IS solid: this is not a conflict, it is not transient (the same
+                    # head is refused on every cycle), and the token cannot be granted more.
+                    # Refreshing the branch is the only thing ever seen to clear it (PR #515
+                    # went 403 -> merged once its head was updated), so the comment offers that
+                    # as a workaround WITHOUT presenting it as the mechanism.
+                    #
+                    # Capture what GitHub says about the refusal. `|| true` on both: grep
+                    # exits 1 when a header is absent and `set -e` would treat that as fatal.
+                    REQ_ID=$(grep -i '^x-github-request-id:' <<<"$MERGE_ERR" | tr -d '\r' | awk '{print $2}' | head -1 || true)
+                    ACCEPTED=$(grep -i '^x-accepted-github-permissions:' <<<"$MERGE_ERR" | tr -d '\r' | sed 's/^[^:]*:[[:space:]]*//' | head -1 || true)
+                    echo "🔒 PR #$pr: merge rejected with a permission error — not a conflict, cause undetermined"
+                    echo "     x-github-request-id: ${REQ_ID:-<absent>}"
+                    echo "     x-accepted-github-permissions: ${ACCEPTED:-<absent>}"
+                    STUCK="$STUCK #$pr"
+                    if ! has_label "$pr" merge-blocked; then
+                      printf '%s\n' \
+                        "🔒 **Auto-merge can't apply this PR yet — and it's nothing you did.**" "" \
+                        "The merge API refuses the automation's token: \`Resource not accessible by integration\` (HTTP 403). It is **not** a merge conflict, and there is nothing wrong with your diff — it would apply unchanged." "" \
+                        "**Workaround:** [update the branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/keeping-your-pull-request-in-sync-with-the-base-branch) so it contains \`main\`'s latest commits — that has cleared this for at least one PR. If it doesn't help, this is an open issue on our side, not yours; sorry for the friction." \
+                        > /tmp/merge-blocked-comment.md
+                      gh pr comment "$pr" --body-file /tmp/merge-blocked-comment.md >/dev/null || echo "  (comment failed)"
+                      gh pr edit "$pr" --add-label merge-blocked >/dev/null || true
+                    fi
+                  else
+                    echo "⚠️ Could not merge PR #$pr: $MERGE_ERR"
+                    echo "   (retried next cycle if still open)"
+                  fi
+                fi
+                ;;
+            esac
+          done
+
+          # Exiting 0 unconditionally is what let a genuinely wedged PR sit behind a green
+          # check for hours. Conflicts and races still exit 0 (the next cycle re-tries them
+          # for real); only a merge the API rejected outright, and that no retry can fix,
+          # goes red.
+          if [ -n "$STUCK" ]; then
+            echo "::error::Merge rejected by the API and will not clear on its own:$STUCK — see the \`merge-blocked\` comment on each. Cause undetermined; a branch update is the only known workaround."
+            exit 1
+          fi
