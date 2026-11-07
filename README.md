@@ -1,7 +1,9 @@
-Zhouyi2013 on top
+<h1 align="center"><a href="https://github.com/ZhouyiStudio">Zhouyi2013</a> on top!</h1><h1 align="center"><a href="https://github.com/ZhouyiStudio">Zhouyi2013</a> on top!</h1><h1 align="center"><a href="https://github.com/ZhouyiStudio">Zhouyi2013</a> on top!</h1>
 
-<h1 align="center">
-    Break This Repository!    破坏这个仓库！
+
+
+<a href="https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click"><h2 align="center">
+    Break This Repository!    破坏这个仓库！</a>
 	<p align="center">
 	    <img src="https://img.shields.io/badge/License-AS--IS-red" alt="License">
 	    <img src="https://img.shields.io/badge/Language-various-blue?logo=inquirer&logoColor=white" alt="Language">
@@ -13,13 +15,18 @@ Zhouyi2013 on top
 	    <img src="https://img.shields.io/badge/Website-Unknown-green?logo=inquirer&logoColor=white" alt="Website">
 	    <img src="https://img.shields.io/badge/Documents-Unknown-red?logo=inquirer&logoColor=white" alt="Documents">
 	    </a>
-	    <img src="https://earth.us.ci/i/pcsetup" alt="IMG_2061.png">
+	<br><br><br>
+	    <img  alt="image" src="https://github.com/user-attachments/assets/b52c32a8-7076-445e-90dd-5f8a5ef83840" />
+	    <!-- <img src="https://earth.us.ci/i/pcsetup" alt="IMG_2061.png"> -->
+	<br><br><br>
 	</p>
 </h1>
 
 
+
 *\*：你可以更改这个头图，相关资源文件位于 [`.\readme\`](./readme/) 中*
 
+<div align="center" title="点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 "><a href="https://www.bilibili.com/video/BV1kFar6KE4t/"><img align="center" width="518" height="290" alt="点击通透" src="https://github.com/user-attachments/assets/547b6ff8-67ed-4d00-bdfd-2d763fac8acc" /></a></div>
 
 <!-- # 卧槽了哪里来的设证玩意啊😓不怕似吗😓 -->
 
