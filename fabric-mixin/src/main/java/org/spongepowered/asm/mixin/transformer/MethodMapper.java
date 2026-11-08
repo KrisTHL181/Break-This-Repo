@@ -1,0 +1,249 @@
+/*
+ * This file is part of Mixin, licensed under the MIT License (MIT).
+ *
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
+ * Copyright (c) contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package org.spongepowered.asm.mixin.transformer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.primitives.Chars;
+import org.spongepowered.asm.logging.ILogger;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.spongepowered.asm.mixin.FabricUtil;
+import org.spongepowered.asm.mixin.MixinEnvironment;
+import org.spongepowered.asm.mixin.injection.struct.InjectionInfo;
+import org.spongepowered.asm.mixin.transformer.ClassInfo.Method;
+import org.spongepowered.asm.mixin.transformer.MixinInfo.MixinMethodNode;
+import org.spongepowered.asm.service.MixinService;
+import org.spongepowered.asm.util.Counter;
+
+import com.google.common.base.Strings;
+import org.spongepowered.asm.util.asm.MethodNodeEx;
+
+/**
+ * Maintains method remaps for a target class
+ */
+class MethodMapper {
+
+    /**
+     * Logger
+     */
+    private static final ILogger logger = MixinService.getService().getLogger("mixin");
+    
+    private static final List<String> classes = new ArrayList<String>();
+    
+    /**
+     * Method descriptor to ID map, used to ensure that remappings are globally
+     * unique 
+     */
+    private static final Map<String, Counter> methods = new HashMap<String, Counter>();
+
+    private final ClassInfo info;
+
+    /**
+     * Unique method and field indices for *this* class 
+     */
+    private int nextUniqueMethodIndex, nextUniqueFieldIndex;
+
+    public MethodMapper(MixinEnvironment env, ClassInfo info) {
+        this.info = info;
+    }
+    
+    public ClassInfo getClassInfo() {
+        return this.info;
+    }
+
+    /**
+     * Resets the counters to prepare for application, which can happen multiple times due to hotswap.
+     */
+    public void reset() {
+        this.nextUniqueMethodIndex = 0;
+        this.nextUniqueFieldIndex = 0;
+    }
+
+    /**
+     * Conforms an injector handler method
+     * 
+     * @param mixin owner mixin
+     * @param handler annotated injector handler method
+     * @param method method in target
+     */
+    public void remapHandlerMethod(MixinInfo mixin, MethodNode handler, Method method) {
+        if (!(handler instanceof MixinMethodNode) || !((MixinMethodNode)handler).isInjector()) {
+            return;
+        }
+        
+        if (method.isUnique()) {
+            MethodMapper.logger.warn("Redundant @Unique on injector method {} in {}. Injectors are implicitly unique", method, mixin);
+        }
+        
+        if (method.isRenamed()) {
+            handler.name = method.getName();
+            return;
+        }
+        
+        String handlerName = this.getHandlerName(mixin, (MixinMethodNode)handler);
+        handler.name = method.conform(handlerName);
+    }
+    
+    /**
+     * Get the name for a handler method provided a source mixin method
+     * 
+     * @param method mixin method
+     * @return conformed handler name
+     */
+    public String getHandlerName(MixinInfo mixin, MixinMethodNode method) {
+        String prefix = InjectionInfo.getInjectorPrefix(method.getInjectorAnnotation());
+        String classUID = MethodMapper.getClassUID(method.getOwner().getClassRef());
+        String mod = MethodMapper.getMixinSourceId(mixin, "");
+        String methodName = method.name;
+        if (!mod.isEmpty()) {
+            //It's common for mods to prefix their own handlers, let's account for that happening
+            if (methodName.startsWith(mod) && methodName.length() > mod.length() + 1 && Chars.contains(new char[] {'_', '$'}, methodName.charAt(mod.length()))) {
+                methodName = methodName.substring(mod.length() + 1);
+            }
+            mod += '$';
+        }
+        String methodUID = MethodMapper.getMethodUID(methodName, method.desc, !method.isSurrogate());
+        return String.format("%s$%s%s$%s%s", prefix, classUID, methodUID, mod, methodName);
+    }
+
+    /**
+     * Get a unique name for a method
+     * 
+     * @param method Method to obtain a unique name for
+     * @param sessionId Session ID, for uniqueness
+     * @param preservePrefix If true, appends the unique part, preserving any
+     *      method name prefix
+     * @return Unique method name
+     */
+    public String getUniqueName(MixinInfo mixin, MethodNode method, String sessionId, boolean preservePrefix) {
+        String uniqueIndex = Integer.toHexString(this.nextUniqueMethodIndex++);
+        String methodName = method.name;
+        if (method instanceof MethodNodeEx) {
+            String mod = MethodMapper.getMixinSourceId(mixin, "");
+            if (!mod.isEmpty()) {
+                //It's rarer for mods to prefix their @Unique methods, but let's account for it anyway
+                if (methodName.startsWith(mod) && methodName.length() > mod.length() + 1 && Chars.contains(new char[] {'_', '$'}, methodName.charAt(mod.length()))) {
+                    methodName = methodName.substring(mod.length() + 1);
+                }
+                if (preservePrefix) {
+                    methodName += '$' + mod;
+                } else {
+                    methodName = mod + '$' + methodName;
+                }
+            }
+        }
+        String pattern = preservePrefix ? "%2$s_$md$%1$s$%3$s" : "md%s$%s$%s";
+        return String.format(pattern, sessionId.substring(30), methodName, uniqueIndex);
+    }
+
+    /**
+     * Get a unique name for a field
+     * 
+     * @param field Field to obtain a unique name for
+     * @param sessionId Session ID, for uniqueness
+     * @return Unique field name
+     */
+    public String getUniqueName(MixinInfo mixin, FieldNode field, String sessionId) {
+        String uniqueIndex = Integer.toHexString(this.nextUniqueFieldIndex++);
+        return String.format("fd%s$%s%s$%s", sessionId.substring(30), MethodMapper.getMixinSourceId(mixin, "$"), field.name, uniqueIndex);
+    }
+
+    /**
+     * Get clean sourceId from mixin
+     *
+     * @param mixin mixin info
+     * @return clean source id with dollar suffix or empty string
+     */
+    private static String getMixinSourceId(MixinInfo mixin, String separator) {
+        String sourceId = mixin.getConfig().getCleanSourceId();
+        if (sourceId == null) {
+            String modId = FabricUtil.getModId(mixin.getConfig(), null);
+            if (modId == null) {
+                return "";
+            }
+            return modId + separator;
+        }
+        if (sourceId.length() > 12) {
+            sourceId = sourceId.substring(0, 12);
+        }
+        return String.format("%s%s", sourceId, separator);
+    }
+
+    /**
+     * Get a unique identifier for a class
+     * 
+     * @param classRef Class name (binary)
+     * @return unique identifier
+     */
+    private static String getClassUID(String classRef) {
+        int index = MethodMapper.classes.indexOf(classRef);
+        if (index < 0) {
+            index = MethodMapper.classes.size();
+            MethodMapper.classes.add(classRef);
+        }
+        return MethodMapper.finagle(index);
+    }
+
+    /**
+     * Get a unique identifier for a method
+     * 
+     * @param name method name
+     * @param desc method descriptor
+     * @param increment true to incrememnt the id if it already exists
+     * @return unique identifier
+     */
+    private static String getMethodUID(String name, String desc, boolean increment) {
+        String descriptor = String.format("%s%s", name, desc);
+        Counter id = MethodMapper.methods.get(descriptor);
+        if (id == null) {
+            id = new Counter();
+            MethodMapper.methods.put(descriptor, id);
+        } else if (increment) {
+            id.value++;
+        }
+        return String.format("%03x", id.value);
+    }
+
+    /**
+     * Finagle a string from an index thingummy, for science, you monster
+     * 
+     * @param index a positive number
+     * @return unique identifier string of some kind
+     */
+    private static String finagle(int index) {
+        String hex = Integer.toHexString(index);
+        StringBuilder sb = new StringBuilder();
+        for (int pos = 0; pos < hex.length(); pos++) {
+            char c = hex.charAt(pos);
+            sb.append(c += c < 0x3A ? 0x31 : 0x0A);
+        }
+        return Strings.padStart(sb.toString(), 3, 'z');
+    }
+
+}

@@ -1,0 +1,78 @@
+CLASS net/minecraft/class_8966 net/minecraft/block/spawner/TrialSpawnerData
+	FIELD field_47369 SPAWN_DATA_KEY Ljava/lang/String;
+	FIELD field_47371 players Ljava/util/Set;
+	FIELD field_47372 spawnedMobsAlive Ljava/util/Set;
+	FIELD field_47373 cooldownEnd J
+	FIELD field_47374 nextMobSpawnsAt J
+	FIELD field_47375 totalSpawnedMobs I
+	FIELD field_47376 spawnData Ljava/util/Optional;
+	FIELD field_47377 rewardLootTable Ljava/util/Optional;
+	FIELD field_47379 displayEntity Lnet/minecraft/class_1297;
+	FIELD field_47380 displayEntityRotation D
+	FIELD field_47381 lastDisplayEntityRotation D
+	FIELD field_47382 NEXT_MOB_SPAWNS_AT_KEY Ljava/lang/String;
+	FIELD field_50192 itemsToDropWhenOminous Lnet/minecraft/class_6012;
+	METHOD method_55182 reset ()V
+	METHOD method_55183 isCooldownOver (Lnet/minecraft/class_3218;)Z
+		ARG 1 world
+	METHOD method_55184 isCooldownPast (Lnet/minecraft/class_3218;FI)Z
+		ARG 1 world
+	METHOD method_55185 canSpawnMore (Lnet/minecraft/class_3218;Lnet/minecraft/class_8965;I)Z
+		ARG 1 world
+		ARG 2 config
+		ARG 3 additionalPlayers
+	METHOD method_55186 updatePlayers (Lnet/minecraft/class_3218;Lnet/minecraft/class_2338;Lnet/minecraft/class_8963;)V
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 logic
+	METHOD method_55188 getSpawnData (Lnet/minecraft/class_8963;Lnet/minecraft/class_5819;)Lnet/minecraft/class_1952;
+		ARG 1 logic
+		ARG 2 random
+	METHOD method_55190 setDisplayEntity (Lnet/minecraft/class_8963;Lnet/minecraft/class_1937;Lnet/minecraft/class_8967;)Lnet/minecraft/class_1297;
+		ARG 1 logic
+		ARG 2 world
+		ARG 3 state
+	METHOD method_55192 hasSpawnedAllMobs (Lnet/minecraft/class_8965;I)Z
+		ARG 1 config
+		ARG 2 additionalPlayers
+	METHOD method_55194 getSpawnDataNbt (Lnet/minecraft/class_8967;)Lnet/minecraft/class_2487;
+		ARG 1 state
+	METHOD method_55195 getAdditionalPlayers (Lnet/minecraft/class_2338;)I
+		ARG 1 pos
+	METHOD method_55196 (Lnet/minecraft/class_2487;Lnet/minecraft/class_1952;)V
+		ARG 1 spawnData
+	METHOD method_55197 hasSpawnData (Lnet/minecraft/class_8963;Lnet/minecraft/class_5819;)Z
+		ARG 1 logic
+		ARG 2 random
+	METHOD method_55198 isCooldownAtRepeating (Lnet/minecraft/class_3218;FI)Z
+		ARG 1 world
+	METHOD method_55200 areMobsDead ()Z
+	METHOD method_55202 getDisplayEntityRotation ()D
+	METHOD method_55204 getLastDisplayEntityRotation ()D
+	METHOD method_58713 (Lnet/minecraft/class_3218;Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_58714 getItemsToDropWhenOminous (Lnet/minecraft/class_3218;Lnet/minecraft/class_8965;Lnet/minecraft/class_2338;)Lnet/minecraft/class_6012;
+		ARG 1 world
+		ARG 2 config
+		ARG 3 pos
+	METHOD method_58715 getLootSeed (Lnet/minecraft/class_3218;Lnet/minecraft/class_2338;)J
+		ARG 0 world
+		ARG 1 pos
+	METHOD method_58716 applyTrialOmen (Lnet/minecraft/class_1657;)V
+		ARG 0 player
+	METHOD method_58717 resetAndClearMobs (Lnet/minecraft/class_8963;Lnet/minecraft/class_3218;)V
+		ARG 1 logic
+		ARG 2 world
+	METHOD method_60789 findPlayerWithOmen (Lnet/minecraft/class_3218;Ljava/util/List;)Ljava/util/Optional;
+		ARG 0 world
+		ARG 1 players
+	METHOD method_60790 (Lnet/minecraft/class_1657;)Lcom/mojang/datafixers/util/Pair;
+		ARG 0 player
+	METHOD method_61763 deactivate ()V
+	METHOD method_71409 pack ()Lnet/minecraft/class_8966$class_11350;
+	METHOD method_71410 unpack (Lnet/minecraft/class_8966$class_11350;)V
+		ARG 1 packed
+	CLASS class_11350 Packed
+		FIELD field_60376 CODEC Lcom/mojang/serialization/MapCodec;
+		METHOD method_71411 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 0 instance

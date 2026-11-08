@@ -1,0 +1,13 @@
+type: embed
+
+colour: black
+embed:
+    title: Split Sources
+
+---
+
+Split Sources provide a compile-time guarantee against calling client only Minecraft code or client only API on the server.
+
+Client-only code can be placed in `client`, and code that is common to client and server can be placed in `main`. Client-only code can refer code in `main`, but not the other way.
+
+Read more: [Split Client and Common code - Fabric Loom](https://fabricmc.net/wiki/documentation:fabric_loom#split_client_and_common_code)

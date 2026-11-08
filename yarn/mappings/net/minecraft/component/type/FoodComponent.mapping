@@ -1,0 +1,29 @@
+CLASS net/minecraft/class_4174 net/minecraft/component/type/FoodComponent
+	COMMENT Represents the components that make up the properties of a food item.
+	FIELD field_49992 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_49993 PACKET_CODEC Lnet/minecraft/class_9139;
+	METHOD <init> (IFZ)V
+		ARG 1 nutrition
+		ARG 2 saturation
+		ARG 3 canAlwaysEat
+	METHOD method_58400 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	CLASS class_4175 Builder
+		FIELD field_18620 nutrition I
+		FIELD field_18621 saturationModifier F
+		FIELD field_18623 canAlwaysEat Z
+		METHOD method_19237 saturationModifier (F)Lnet/minecraft/class_4174$class_4175;
+			COMMENT Specifies the saturation modifier of a food item.
+			COMMENT
+			COMMENT <p>This value is typically used to determine how long a player can sustain the current hunger value before the hunger is used.
+			ARG 1 saturationModifier
+				COMMENT the saturation modifier
+		METHOD method_19238 nutrition (I)Lnet/minecraft/class_4174$class_4175;
+			COMMENT Specifies the amount of hunger a food item will fill.
+			COMMENT
+			COMMENT <p>One hunger is equivalent to half of a hunger bar icon.
+			ARG 1 nutrition
+				COMMENT the amount of hunger
+		METHOD method_19240 alwaysEdible ()Lnet/minecraft/class_4174$class_4175;
+			COMMENT Specifies that a food item can be eaten when the current hunger bar is full.
+		METHOD method_19242 build ()Lnet/minecraft/class_4174;

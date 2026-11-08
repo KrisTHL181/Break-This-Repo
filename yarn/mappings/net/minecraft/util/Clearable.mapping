@@ -1,0 +1,3 @@
+CLASS net/minecraft/class_3829 net/minecraft/util/Clearable
+	COMMENT Represents an object which can be cleared.
+	METHOD method_5448 clear ()V

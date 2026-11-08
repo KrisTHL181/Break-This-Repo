@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="personal_result_title"></title>
+    <link rel="icon" href="https://xinhaodan.top/root/lzzxsyb.jpg" type="image/x-icon">
+    <script src="js/theme-init.js?v=0.1"></script>
+    <link rel="stylesheet" href="css/root.css?v=0.7">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/bar_chart.css">
+    <style>
+        .first_div {
+            height: 32vh;
+            background-color: var(--color-bg3);
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .top_title h1 {
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.336);
+            font-size: 30px;
+        }
+
+        .top_describe {
+            color: white;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding: 0 1.5rem;
+            word-break: break-word;
+            font-family: initial;
+        }
+
+        .overall {
+            width: min(92%, 760px);
+            margin: 0 auto;
+            text-align: center;
+            padding: 36px 0 45px;
+        }
+
+        .average_score_list {
+            padding: 5px;
+            text-align: center;
+            background: var(--color-bg2);
+        }
+
+        .photo_list {
+            padding: 7px 50px;
+            text-align: center;
+            background: var(--color-bg2);
+        }
+
+        .result-metric-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--color-border2);
+            border-radius: 14px;
+            overflow: hidden;
+            margin: 30px auto 0;
+            background: var(--color-bg);
+            color: var(--color-fg);
+            font-size: 17px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .result-metric-table th,
+        .result-metric-table td {
+            height: 42px;
+            padding: 10px 14px;
+            border: none;
+            text-align: center;
+            vertical-align: middle;
+            overflow-wrap: anywhere;
+        }
+
+        .result-metric-table tr:not(:first-child) th,
+        .result-metric-table tr:not(:first-child) td {
+            border-top: 1px solid var(--color-border2);
+        }
+
+        .result-metric-table th:not(:first-child),
+        .result-metric-table td:not(:first-child) {
+            border-left: 1px solid var(--color-border2);
+        }
+
+        .result-metric-label {
+            width: 20%;
+            background: var(--color-primary-light);
+            color: var(--color-fg);
+            font-weight: 700;
+        }
+
+        .result-metric-value {
+            width: 30%;
+            background: var(--color-bg);
+            color: var(--color-fg);
+            font-weight: 700;
+        }
+
+        .bar {
+            background: var(--color-chart-bar);
+        }
+
+        /* 复制自 admin.css 的 common-table 样式 */
+        .common-table {
+            width: 100%;
+            max-width: 1200px;
+            margin: 30px 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--color-border2);
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--color-bg);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .common-table thead th {
+            border: none;
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 700;
+            user-select: none;
+            background: var(--color-primary-light);
+        }
+
+        .common-table tbody tr.mark {
+            background: var(--color-chart-bg);
+        }
+
+        .common-table tbody tr:hover {
+            background: var(--color-chart-bg);
+        }
+
+        .common-table tbody td {
+            border: none;
+            border-top: 1px solid var(--color-border2);
+            padding: 12px 14px;
+            user-select: none;
+            text-align: center;
+        }
+
+        .common-table img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .common-table a,
+        .common-table a:visited,
+        .common-table a:hover,
+        .common-table a:active {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .photo_list .common-table {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .sort-btn {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 5px;
+            color: inherit;
+        }
+
+        @media (max-width: 640px) {
+            .result-metric-table {
+                font-size: 14px;
+            }
+
+            .result-metric-table th,
+            .result-metric-table td {
+                padding: 9px 6px;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            background-color: var(--color-bg2);
+            color: var(--color-fg);
+            padding: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading-overlay">
+        <div>
+            <span data-i18n="loading-1"></span><br>
+            <span data-i18n="loading-2"></span>
+        </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <!-- 弹窗内容 -->
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <h3></h3>
+            <span class="close-btn" id="closeBtn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <button class="confirm-btn" id="confirmBtn" data-i18n="ok"></button>
+        </div>
+    </div>
+    <!-- 按钮 -->
+    <button class="lang-toggle" id="languageSelect" data-i18n-title="switch_language" style="display: none">
+        <i class="fa-solid fa-language"></i>
+    </button>
+    <button class="dark-toggle" id="darkToggle" data-i18n-title="switch_theme" style="display: none">
+        <i class="fa-regular fa-moon" id="darkIcon"></i>
+    </button>
+
+    <div class="first_div">
+        <div class="top_title">
+            <h1 data-i18n="personal_result_title"></h1>
+        </div>
+        <div class="top_describe">
+            <p>Photos Review System. Designed By Flare.</p>
+        </div>
+    </div>
+    <div class="overall">
+        <h2><i class="fa fa-tachometer-alt"></i> <span data-i18n="overall_overview"></span></h2>
+        <table class="result-metric-table">
+            <tr>
+                <th class="result-metric-label" data-i18n="author"></th>
+                <td class="result-metric-value" id="html_author">--</td>
+                <th class="result-metric-label" data-i18n="photo_count"></th>
+                <td class="result-metric-value" id="html_num">--</td>
+            </tr>
+            <tr>
+                <th class="result-metric-label" data-i18n="total_score"></th>
+                <td class="result-metric-value" id="html_total">--</td>
+                <th class="result-metric-label" data-i18n="average"></th>
+                <td class="result-metric-value" id="html_average">--</td>
+            </tr>
+            <tr>
+                <th class="result-metric-label" data-i18n="full_score_rate"></th>
+                <td class="result-metric-value" id="html_full_score_rate">--</td>
+                <th class="result-metric-label" data-i18n="passing_rate"></th>
+                <td class="result-metric-value" id="html_pass_rate">--</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="average_score_list">
+        <h2><i class="fa fa-bar-chart"></i> <span data-i18n="personal_final_score_chart"></span></h2>
+        <div class="chart-container">
+            <div class="chart" id="chart">
+            </div>
+        </div>
+        <h2><i class="fa fa-bar-chart"></i> <span data-i18n="personal_preliminary_average_chart"></span></h2>
+        <div class="chart-container">
+            <div class="chart" id="chart2">
+            </div>
+        </div>
+    </div>
+
+    <div class="photo_list">
+        <h2><i class="fa fa-table"></i> <span data-i18n="photo_score_details"></span></h2>
+        <table class="common-table">
+            <thead>
+                <tr>
+                    <th data-i18n="thumbnail"></th>
+                    <th><span data-i18n="photoid"></span><br><button class="sort-btn" data-col="2"
+                                data-i18n-title="sort_toggle"><i class="fa fa-sort"></i></button></th>
+                    <th data-i18n="preliminary_score_list"></th>
+                    <th data-i18n="recheck_score_list"></th>
+                    <th data-i18n="note_list"></th>
+                    <th><span data-i18n="final_score"></span><br><button class="sort-btn" data-col="6"
+                                data-i18n-title="sort_toggle"><i class="fa fa-sort"></i></button></th>
+                    <th><span data-i18n="is_recheck"></span><br><button class="sort-btn" data-col="7"
+                                data-i18n-title="sort_toggle"><i class="fa fa-sort"></i></button></th>
+                </tr>
+            </thead>
+            <tbody id="html_photo_list">
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Flare. 信号弹. <span class="click_me" onclick="go_url('https://github.com/HoDastar/PhotosReview/', 1)" style="text-decoration: underline">Click me.</span></p>
+    </div>
+
+    <script src="js/utils.js?v=0"></script>
+    <script src="js/url.js?v=0"></script>
+    <script src="js/i18n.js?v=0"></script>
+    <script src="js/modal.js?v=0.1"></script>
+    <script src="js/bar_chart.js?v=0.4"></script>
+    <script src="js/view.js?v=0.1"></script>
+    <script>
+        const projId = getUrlGet("proj_id") || getUrlGet("projId");
+        const author = getUrlGet("author");
+        const uid = getCookie("review_uid");
+        const token = getCookie("review_token");
+
+        const roundNumber = (value, digits = 2) => {
+            const number = Number(value);
+            return Number.isFinite(number) ? Number(number.toFixed(digits)) : 0;
+        };
+        const mean = values => values.length
+            ? values.reduce((sum, value) => sum + value, 0) / values.length
+            : 0;
+        const escapeHtml = value => {
+            const element = document.createElement("div");
+            element.textContent = String(value ?? "");
+            return element.innerHTML;
+        };
+        const createList = values => values.length
+            ? values.map(value => `<span>● </span> ${escapeHtml(value)}`).join("<br>")
+            : "--";
+
+        function getReviewEntries(value, projectType, maxScore) {
+            let reviews = [];
+            if (projectType === 1 && Array.isArray(value)) {
+                reviews = [[value[1], value[2]]];
+            } else if (value && typeof value === "object" && !Array.isArray(value)) {
+                reviews = Object.values(value);
+            }
+            return reviews
+                .filter(Array.isArray)
+                .map(review => ({
+                    score: Number(review[0]),
+                    note: typeof review[1] === "string" ? review[1] : ""
+                }))
+                .filter(review => Number.isFinite(review.score)
+                    && review.score >= 0 && review.score <= maxScore);
+        }
+
+        function normalizePhoto(photo) {
+            const maxScore = Number(photo.max_score) || 0;
+            const preliminary = getReviewEntries(
+                photo.preliminary,
+                Number(photo.project_type) || 0,
+                maxScore
+            );
+            const recheck = getReviewEntries(photo.recheck, 0, maxScore);
+            const preliminaryAverage = roundNumber(mean(preliminary.map(item => item.score)), 2);
+            const rawFinalScore = Number(photo.final_score);
+            const hasFinalScore = Boolean(photo.is_recheck)
+                && Number.isFinite(rawFinalScore)
+                && rawFinalScore >= 1 && rawFinalScore <= maxScore;
+            const active = photo.is_recheck && recheck.length ? recheck : preliminary;
+            return {
+                ...photo,
+                maxScore,
+                preliminary,
+                recheck,
+                active,
+                preliminaryAverage,
+                finalScore: hasFinalScore
+                    ? roundNumber(rawFinalScore, 1)
+                    : roundNumber(preliminaryAverage, 1)
+            };
+        }
+
+        function renderChart(id, titles, values) {
+            const chart = document.getElementById(id);
+            if (!values.length || Math.max(...values) <= 0) {
+                chart.textContent = i18n.lookUp("no_score_data");
+                return;
+            }
+            drawBar(titles, values, chart);
+        }
+
+        function renderTable(photos) {
+            const body = document.getElementById("html_photo_list");
+            body.innerHTML = photos.map(photo => {
+                const projectPath = encodeURIComponent(projId);
+                const fileName = encodeURIComponent(photo.name || "");
+                const thumbnail = `${url}/data/proj/${projectPath}/thumbnail/${fileName}`;
+                const original = `${url}/data/proj/${projectPath}/img/${fileName}`;
+                const notes = photo.active.map(item => item.note.trim()).filter(Boolean);
+                return `<tr>
+                    <td><img src="${thumbnail}" alt="${escapeHtml(photo.photoid)} ${escapeHtml(i18n.lookUp("thumbnail"))}" loading="lazy"><br>
+                        <a href="${original}" target="_blank" rel="noopener noreferrer">${escapeHtml(i18n.lookUp("view_original"))}</a></td>
+                    <td>${escapeHtml(photo.photoid)}</td>
+                    <td>${createList(photo.preliminary.map(item => item.score))}</td>
+                    <td>${createList(photo.recheck.map(item => item.score))}</td>
+                    <td>${createList(notes)}</td>
+                    <td>${photo.finalScore}</td>
+                    <td data-sort-value="${photo.is_recheck ? 1 : 0}">${escapeHtml(i18n.lookUp(photo.is_recheck ? "yes" : "no"))}</td>
+                </tr>`;
+            }).join("");
+        }
+
+        function renderResult(data) {
+            const photos = Array.isArray(data.photos) ? data.photos.map(normalizePhoto) : [];
+            const scores = photos.map(photo => photo.finalScore);
+            const maxScore = photos[0]?.maxScore || 0;
+            const total = scores.reduce((sum, score) => sum + score, 0);
+            const fullScoreCount = maxScore > 0
+                ? scores.filter(score => score === maxScore).length
+                : 0;
+            const passingScore = roundNumber(maxScore * 0.6, 1);
+            const passingCount = maxScore > 0
+                ? scores.filter(score => score >= passingScore).length
+                : 0;
+            document.getElementById("html_author").textContent = photos[0]?.author || author;
+            document.getElementById("html_num").textContent = photos.length;
+            document.getElementById("html_total").textContent = roundNumber(total);
+            document.getElementById("html_average").textContent = roundNumber(mean(scores));
+            document.getElementById("html_full_score_rate").textContent = photos.length
+                ? `${roundNumber(fullScoreCount * 100 / photos.length, 1)}%`
+                : "0%";
+            document.getElementById("html_pass_rate").textContent = photos.length
+                ? `${roundNumber(passingCount * 100 / photos.length, 1)}%`
+                : "0%";
+            const titles = photos.map(photo => String(photo.photoid));
+            renderChart("chart", titles, scores);
+            renderChart("chart2", titles, photos.map(photo => photo.preliminaryAverage));
+            renderTable(photos);
+        }
+
+        async function showResultError(message) {
+            const messageKeys = {
+                "5": "personal_login_expired",
+                "14": "personal_project_not_found",
+                "34": "personal_result_unavailable",
+                "35": "personal_author_not_found"
+            };
+            const messageKey = messageKeys[String(message)];
+            const detail = messageKey
+                ? i18n.lookUp(messageKey)
+                : `${i18n.lookUp("result_load_failed")} (${i18n.lookUp("error_code")}: ${message})`;
+            await openModal(i18n.lookUp("error"), detail);
+        }
+
+        async function fetchResultByAuthor() {
+            const apiUrl = `${url}/api/result/fetch_result_by_author`
+                + `?projId=${encodeURIComponent(projId)}`
+                + `&author=${encodeURIComponent(author)}`
+                + `&uid=${encodeURIComponent(uid)}`
+                + `&token=${encodeURIComponent(token)}`;
+            const response = await getApi(apiUrl);
+            if (!response.result || !response.data) {
+                await showResultError(response.message);
+                return;
+            }
+            renderResult(response.data);
+        }
+
+        async function loadWebsiteInfo() {
+            const info = await getApi(url + "/api/system/get_website_info");
+            if (info?.result && info.data) {
+                const infoObj = info.data;
+                if (infoObj.website_icon) {
+                    const link = document.createElement("link");
+                    link.rel = "icon";
+                    link.href = infoObj.website_icon;
+                    document.head.appendChild(link);
+                }
+                document.querySelectorAll("[data-config]").forEach(element => {
+                    const key = element.getAttribute("data-config");
+                    if (key === "website_name") element.innerText = infoObj.website_name;
+                    if (key === "website_url") {
+                        element.addEventListener("click", () => window.location.href = url);
+                    }
+                });
+                document.title = `${i18n.lookUp("personal_result_title")} - ${infoObj.website_name}`;
+            } else {
+                setTimeout(loadWebsiteInfo, 500);
+            }
+        }
+
+        document.querySelectorAll(".sort-btn").forEach(button => {
+            button.addEventListener("click", () => {
+                const body = button.closest("table").querySelector("tbody");
+                const column = Number(button.dataset.col) - 1;
+                const ascending = button.dataset.asc !== "true";
+                button.dataset.asc = String(ascending);
+                Array.from(body.querySelectorAll("tr"))
+                    .sort((left, right) => {
+                        const leftCell = left.children[column];
+                        const rightCell = right.children[column];
+                        const a = Number.parseFloat(leftCell.dataset.sortValue ?? leftCell.textContent) || 0;
+                        const b = Number.parseFloat(rightCell.dataset.sortValue ?? rightCell.textContent) || 0;
+                        return ascending ? a - b : b - a;
+                    })
+                    .forEach(row => body.appendChild(row));
+            });
+        });
+
+        (async () => {
+            await i18n.init();
+            const language = localStorage.getItem("lang")
+                || (navigator.language.startsWith("zh") ? "zh" : "en");
+            localStorage.setItem("lang", language);
+            document.documentElement.lang = language;
+            await loadWebsiteInfo();
+            if (!projId || !author) {
+                await openModal(i18n.lookUp("error"), i18n.lookUp("missing_personal_result_params"));
+                return;
+            }
+            if (!uid || !token) {
+                await openModal(i18n.lookUp("error"), i18n.lookUp("personal_login_expired"));
+                return;
+            }
+            await fetchResultByAuthor();
+        })();
+    </script>
+</body>
+</html>

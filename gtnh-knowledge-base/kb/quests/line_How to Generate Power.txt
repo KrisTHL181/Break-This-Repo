@@ -1,0 +1,685 @@
+# 任务线: How to Generate Power
+### [2822] §5§lAbsorbing Magic Energy to Produce EU HV
+The HV Version.
+  - [提交] gregtech:gt.blockmachines:1129
+  > 奖励: Thaumcraft:ItemShard:6 x24 | dreamcraft:CoinTechnicianII | dreamcraft:CoinDarkWizardII
+
+### [2823] §5§lAbsorbing Magic Energy to Produce EU MV
+The MV version.
+  - [提交] gregtech:gt.blockmachines:1128
+  > 奖励: Thaumcraft:ItemShard:6 x16 | dreamcraft:CoinTechnicianI x3 | dreamcraft:CoinDarkWizardI x3
+
+### [2824] §6§lAbsorbing Magic Energy to Produce EU LV
+These produce power by absorbing magic energy from nodes, dragon eggs, creeper eggs, etc.
+  - [提交] gregtech:gt.blockmachines:1127
+  > 奖励: Thaumcraft:ItemShard:6 x8 | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [2825] §5§lAbsorbing Magic Energy to Produce EU EV
+The EV Version.
+  - [提交] gregtech:gt.blockmachines:1130
+  > 奖励: Thaumcraft:ItemShard:6 x32 | dreamcraft:CoinTechnicianII x3 | dreamcraft:CoinDarkWizardII x3
+
+### [2792] Acid Trip
+This is the HV version. Will people really use this? Each stack of Redstone Dust is worth around 580k EU, so look at your storage and see what you have.
+  - [提交] gregtech:gt.blockmachines:12727
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistI x5
+
+### [-7154632998014096877] Advanced Xeninol
+It's here that you might find yourself with some useful stuff alongside power. Xenon, which has become very useful in the EBF thanks to noble gas changes in its recipes, and Advanced Nitinol? If you don't already have a Quantum Anomaly setup for it, you can use this. Who knows what'll come in the future?  These recipes are the same 0.144 ratio ones that you've seen before and, since they're just before the final step, they will bottleneck you on the path to compact reactor setups. The one to focus on is Advanced Nitinol, which is the second last recipe, and where you'll need 9.216, or 10 Mk3 reactors to sustain a Celestial Tungsten compact at the end. If you build a compact here, however, you can feed 6 compacts as long as everything that comes before this is fast enough.
+  - [可选提交] miscutils:itemCellPlasmaXenon
+  - [提交] miscutils:itemCellPlasmaAdvancedNitinol
+
+### [198] §d§lAlternate Nuclear Fuel: Tiberium
+They're the same as uranium but produce half as much heat. Given that there's no reactor designs floating around, and the fact that you need to go to Ross128ba, a T5 rocket (LuV) planet to get the tiberium, I'm gonna say they're probably not worth it. If you disagree, make a design and show it to people, 'kay?
+  - [提交] gregtech:gt.rodTiberium
+
+### [-5802810217373252190] AMERICA!!!!!!!!!
+The name §oAmericium§r is similar to §oEuropium§r; both are named after the continents where they were discovered. The USA smashed particles together to initiate proper controlled fusion reactions that allow us to continue this immense powergen chain. This is Americium Plasma, remember that!  This is actually the plasma that is probably the best choice for XL Plasma Turbines as a 1-recipe powergen setup. However, compared to Helium and Tin Plasma's previous state, it loses out a lot on speed on a mk3 compact, because it doesn't have the 192x/128x parallels, not to mention its recipe time is already 8x as long as Tin for the same amount of plasma.  It will also demand huge amount of Pu-241 for a UEV/UIV base to be sustained, but this fusion chain greatly reduces the amount needed, even if both inputs actually need Pu-241.  This step takes more than half the time of the final step, so it's one of the major bottlenecks: if you upgrade the final step to a compact, you would need 37 mk3 reactors to match speed here.
+  - [可选提交] gregtech:gt.metaitem.01:31103
+  - [勾选确认]
+
+### [-6752762253121630907] Boronic Fusion
+This plasma needs Helium Plasma to be crafted. That's right, this entire powergen chain builds on top of Helium Plasma!  The Boron Plasma step is much slower than the Helium one, so if you match the number of reactors and their tier, you will end up with a large excess of Helium Plasma. As you know, it's very useful for power in Large Plasma Turbines, so you could use this excess to power all the other reactors. As you scale up, however, this alone will probably not be enough.  You will need 3.75 reactors with this recipe to feed 1 reactor with the next step.
+  - [可选提交] gregtech:gt.metaitem.01:31009
+  - [勾选确认]
+
+### [-6653872471765810391] Calcium Bottlenecking
+Craft yourself some bone-strengthening Calcium in plasma form.  This step is almost twice as fast as the Boron one, so you only need half the reactors, plus one, or the tier above the reactors on the Boron side. It would normally be a lot slower, but the next step needs only a small amount of Calcium.  Keep in mind that, at the end of each of the three fusion chains, the plasma amount gets multiplied, which means that most of your bottlenecks will be near the end of the entire setup, if you're going for Celestial Tungsten Plasma.  You will need 2.13 reactors with this recipe to feed 1 reactor with the next step.
+  - [可选提交] gregtech:gt.metaitem.01:31026
+  - [勾选确认]
+
+### [-8021583113396239664] Celestial Tungsten Plasma - The Mk3 Finale
+This is the end of the mk3 fusion chain, and the three chains altogether. After 14 fusion recipes on top of Helium Plasma, you hold in your tanks the elusive Celestial Tungsten Plasma, whose fuel value of 720M makes it immune to XL Plasma penalties all the way to spacetime!  Upscaling plasma powergen up to endgame, and the Dyson Swarm, is most likely reliant on either this or Americium Plasma, which is 1-step but not as powerful on a per-reactor basis. This can net you above 8 billion EU per tick, for every Mk3 compact that you have running Celestial Tungsten at 64 parallels, with Infinity turbines. Upscaling this is not so difficult, if you keep in mind which recipes will bottleneck you the most, as long as you have the resources for it.  There are no plasmas that build off Celestial Tungsten Plasma just yet, but it's possible that some might be added in the future, especially for GT++ materials such as Dragonblood. Congratulations on finishing this fusion chain! May the power be with you.
+  - [提交] miscutils:itemCellPlasmaCelestialTungsten x64
+  > 奖励: Thaumcraft:ItemResource:18
+
+### [1332] §6§lCompressed Solar LV
+The power of the sun x10. This solar panel works like 10 regular ones, but costs only 8. How is this possible? Magic! NOTE: They give out GT EU. NO TRANSFORMER NEEDED!
+  - [可选提交] gregtech:gt.blockmachines:2729 x8, dreamcraft:ReinforcedAluminiumIronPlate
+  - [提交] EMT:EMTSolars
+  > 奖励: Thaumcraft:ItemLootBag:1 | enhancedlootbags:lootbag:4
+
+### [2766] §9§lDeep Earth Heating Pump
+With the power of §cgeothermal energy§r, the Deep Earth Heating Pump can heat up Coolant or boil Distilled Water to create an energy source from the Earth's core.  By using a Heat Exchanger, you can convert the Hot Coolant into steam and use it in your turbines.  Alternatively, you can make it output Superheated Steam directly, but only at 66% of the efficiency the hot coolant can achieve
+  - [可选提交] gregtech:gt.blockframes:81 x15, gregtech:gt.blockcasings:11
+  - [提交] gregtech:gt.blockmachines:12729
+
+### [1870] §6§lDiesel Power
+The MV Combustion Generator burns Light Fuel faster than the LV version, but you can also automate Diesel and burn that instead, since it's even more powerful. It is arguably the easiest and most efficient way to generate lots of power for automation at this stage, and it'll last you a couple more tiers if you upgrade it as you go.  Additionally, Diesel can be used as fuel for the Copterpack, a good jetpack that makes it much easier to move around, inside and outside of your base. It's heavily recommended that you make one, if you have Diesel.  [note]This will also unlock new quests in the Armors and Jetpacks tab.[/note]
+  - [提交] gregtech:gt.blockmachines:1111
+  > 奖励: gregtech:gt.metaitem.01:30707 x32 | gregtech:gt.metaitem.01:30708 x16 | gregtech:gt.metaitem.01:30709 x8 | dreamcraft:CoinTechnicianI x5
+
+### [1336] §6§lDouble Compressed Solar
+100EU/t for 64x1EU/t Solars? Sounds like a good deal. Get one of these. They can be Infused as well.
+  - [提交] EMT:EMTSolars:1
+  > 奖励: bq_standard:choice
+
+### [1740] §8§lDo You Hear That Engine Revving?
+Your old and trusty combustion engines don't quite cut it anymore, not to mention they're polluting the place. If you want to keep burning liquids, you need to build a better engine. This multiblock can produce 1A of EV voltage by default and 3A if you supply it with oxygen. However, this power doesn't come for free - you need to supply the machine with small amounts of lubricant constantly (and oxygen if you want to boost both its efficiency and output).  You will also require 3 Input Hatches, a Muffler, and a Dynamo Hatch. Their tiers are up to you.  Cetane Boosted Diesel and High Octane Gasoline (HOG) are excellent fuel sources for this engine.  You will need to keep the area in front of the engine clear so it can pull enough air - not even torches.
+  - [提交] gregtech:gt.blockmachines:15533
+  - [可选提交] gregtech:gt.blockframes:473 x21, gregtech:gt.blockcasings8 x19, gregtech:gt.blockcasings4:2 x13, gregtech:gt.blockcasings4:13 x8, gregtech:gt.blockcasings2:4 x4, gregtech:gt.blockmachines:91
+  > 奖励: gregtech:gt.metaitem.01:11028 x24 | enhancedlootbags:lootbag:7 x3 | gregtech:gt.metaitem.01:30998 x64 | dreamcraft:CoinTechnicianII x7
+
+### [1334] §6§lEssentia Generator: Auram
+This Generator is quite tricky. It requires Auram Essentia, that isn't that common, but its output is nice.
+  - [提交] EMT:EssentiaGenerators:2
+  > 奖励: bq_standard:choice
+
+### [1333] §6§lEssentia Generator: Potentia
+Aren't you tired of voiding all that useless potentia essentia? Well here's the solution: A generator that consumes potentia and outputs GT EU NO TRANSFORMER NEEDED!
+  - [提交] EMT:EssentiaGenerators
+  > 奖励: bq_standard:choice
+
+### [1339] §6§lEssentia Generator: Ignis
+So, you got rid of the Potentia, maybe you don't want Ignis, but Potentia? Get this one to be able to burn Ignis.
+  - [提交] EMT:EssentiaGenerators:1
+  > 奖励: bq_standard:choice
+
+### [1340] §6§lEssentia Generator: Arbor
+When using magical plants to get Praecantatio Essentia, you'll end up with a couple dozen of Arbor Essentia jars. But no worries! This generator runs on Arbor! Awesome!
+  - [提交] EMT:EssentiaGenerators:3
+  > 奖励: bq_standard:choice
+
+### [1342] §6§lEssentia Generator: Lucrum
+This highly-warped, high-power Essentia generator is a lifesaver, when you run out of energy. Just toss some gold into your Arcane Furnace and burn the Lucrum you get.
+  - [提交] EMT:EssentiaGenerators:5
+  > 奖励: bq_standard:choice
+
+### [1341] §6§lEssentia Generator: Aer
+Sugarcanes to power...? This generator runs on Aer Essentia, it might not be as powerful as its counterparts, but its fuel is cheap.
+  - [提交] EMT:EssentiaGenerators:4
+  > 奖励: bq_standard:choice
+
+### [2787] §5§lEven Better Diesel
+In HV, you unlock yet another generator, but also Cetane-Boosted Diesel. After a bunch of reactions, you can get a superpowered combustion fuel that is worth §a1M EU per bucket§r and run it for quite a while on these improved generators. You will also unlock the Distillation Tower here, so you might get even more fuel that you can burn in these generators.  Unfortunately, the next fuel, unlocked in EV, doesn't come from Diesel. It's a completely different processing line, should you wish to tackle it later.
+  - [提交] gregtech:gt.blockmachines:1112
+  > 奖励: gregtech:gt.metaitem.01:30707 x32 | gregtech:gt.metaitem.01:30708 x16 | gregtech:gt.metaitem.01:30709 x8 | dreamcraft:CoinTechnicianII
+
+### [1337] Even More Infused
+You can infuse double or triple compressed solars as well.
+  - [勾选确认]
+
+### [1893] §6§lFluid Regulator
+Turbines require precise amounts of fluids or else they will [warn]explode[/warn]. Use the fluid regulator on the pipe attached to the input bus to control the rate of fluids into the turbine. To raise the fluid limit, look at the right side of the regulator and:  1L - Right-click with an empty hand 16L - Right-click with a screwdriver 256L - Right-click with a screwdriver while sneaking  To lower the fluid limit, do the same while looking at the left side. [note]If you shift-right-click on it you can use the interface which is more precise.[/note]  Use the GTNH Power Planner linked below to find what to set it to, after deciding on a fuel. At GTNH, we do the math for you! For this at least.  [url]https://docs.google.com/spreadsheets/d/1FTFdfmY_UWbTbFOyNzARKeI90pbHvPBH6M3JHJmaC-E/edit?usp=dsharing[/url]
+  - [提交] gregtech:gt.metaitem.01:32662
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinChemistII x2 | dreamcraft:CoinTechnicianII x2
+
+### [-5166715817697893279] Force Plasma - The Mk1 Ending
+Once you have the two plasmas from before, fuse them together into a new one, Neon Plasma. If you were to use this directly, you could get Neon! There are other, more useful materials to get later in this process, so keep a lookout for those.  However, this is not the final plasma in mk1 recipes. To get it, you need to do the last activation step, which exists in all three chains, and involves adding a non-plasma related material, of the appropriate GT tier, to obtain the powergen plasma. The material you need here is Arcanite, one you probably have used before. This step requires you to preferably automate it with ABS, and have a steady supply of Thorium 232.  If you look at the last recipe, you'll see it's 144L Neon Plasma input to 1000L Force Plasma output. This multiplying makes it so that step, and all final steps, are the slowest ones. You will need 0.144 Neon Plasma reactors for every Force Plasma reactor, which means that 1 Neon reactor feeds nearly 7 Force reactors (6.9444... reactors, more precisely).  Once you get Force Plasma, this is the end of the mk1 fusion chain. Force Plasma is a 150M fuel value plasma, which means it has a 53.5% penalty with Infinity Catalyst in XL Plasma Generators. This is better than Helium Plasma with its 86.1% penalty but still not great for power generation. You probably don't need this in ZPM, but it'll be a stepping stone for your future progression.
+  - [可选提交] miscutils:itemCellPlasmaNeon
+  - [提交] miscutils:itemCellPlasmaForce x64
+
+### [1894] §8§lGas Turbine
+A Large Gas Turbine is more fuel-efficient than singleblock turbines, and can have lower pollution output with upgraded mufflers.  You will also need a Muffler and Dynamo Hatch to complete the multiblock. Don't forget to use a Fluid Regulator, to control the flow rate into the multi! It can usually be an LV Fluid Regulator, since the optimal flow is much lower here than in Steam Turbines.  Each turbine material has a specific fuel efficiency (the higher, the more EU you get from the same amount of fuel), and the multi only reaches this efficiency if the fuel flow into it matches the optimal flow.  If you go beyond the optimal flow, you will get a higher EU/t value, but less fuel efficiency, and the maximum EU/t value depends on the turbine type and its Overflow Efficiency tier. For this type of turbine, tier 1 reaches the max at 150% of optimal flow to produce 112% of the EU/t, tier 2 reaches the max at 300% of optimal flow to produce 180% of the EU/t and tier 3 reaches the max at 450% of optimal flow to produce 252% of the EU/t. The closer you get to this maximum, the more fuel efficiency you're throwing away.  For the best turbine materials, see the spreadsheet and Large Turbine Calculator.
+  - [提交] gregtech:gt.blockmachines:15527
+  - [可选提交] gregtech:gt.blockframes:306 x14, gregtech:gt.blockcasings11 x12, gregtech:gt.blockcasings4:10 x10, gregtech:gt.blockmachines:91
+
+### [2798] §9§lGeothermal Power EV
+Turns lava into power, at very inefficient rates. Also, seems to produce way more pollution than it says. They also require you to be 2 tiers above the output amount, so, yeah.  [note]Wasn't geothermal supposed to be environmentally friendly?[/note]
+  - [提交] gregtech:gt.blockmachines:830
+
+### [2799] §d§lGeothermal Power IV
+The IV version. Almost certainly produces more pollution than it says.
+  - [提交] gregtech:gt.blockmachines:831
+
+### [2800] §2§l§nGeothermal Power LuV
+The LuV version. Even if you use it with an Everburn Urn, would it even be useful?
+  - [提交] gregtech:gt.blockmachines:832
+
+### [2793] §8§lHallucinogenics Not Included
+This is the EV version. I hope you're not using this for primary power gen? At least, it has a pretty good efficiency of 88% for an EV singleblock, and it's better than voiding the fluids that can be used as fuel here.
+  - [提交] gregtech:gt.blockmachines:12728
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII
+
+### [-6186301913252184525] §9§l§nHarnessing Chaos
+You've mastered antimatter production, but raw antimatter alone won't run your machines. To turn that potential into unparalleled power, it's time to [warn]harness the chaos[/warn] itself!  [quest]Introducing the Shielded Lagrangian Annihilation Matrix![/quest]  The SLAM creates raw energy by reacting the Semi-Stable Antimatter with normal matter in a controlled environment.  Every cycle, the generator will react all antimatter and matter in hatches instantly, converting it all into energy directly. The EU output is based on the equal amounts of antimatter and matter annihilated. Therefore, imbalance between the amounts will waste your precious energy.  Depending on the matter used to annihilate, the antimatter amount gets an exponent applied to it, directly increasing the amount of energy produced from 1L of antimatter - this means the more you annihilate in one go, the more efficient it is!  The maximum EU for a cycle is limited by the capacity of all laser source hatches on the structure (limited to 64), even on wireless mode.  [note]It can't output more than 9.22e18 EU in a cycle, or just below 43 16M UXV Laser Sources (If you're crazy enough for it)[/note]  The Formula and the exponents for each of the possible matters are:  Generated EU = (§3Antimatter§r^§6exponent§r) * 1,000,000,000,000  Molten Copper - §61.00§r Molten Superconductor Base UIV - §61.02§r Molten Superconductor Base UMV - §61.03§r
+  - [提交] gregtech:gt.blockmachines:32028
+  - [可选提交] bartworks:BW_TieredGlass:8 x1008, GoodGenerator:magneticFluxCasing x4122, GoodGenerator:gravityStabilizationCasing x2418, GoodGenerator:protomatterActivationCoil x32, GoodGenerator:antimatterAnnihilationMatrix x600, gregtech:gt.blockframes:327 x293, gregtech:gt.blockcasings9:1 x209
+
+### [2786] §5§lHow Many Forests Did You Cut Down to Power This?
+This is the HV version, with the lowest efficiency so far of 85%. You can offset that by just generating more Benzene, alongside Phenol and Toluene in a Distillation Tower, or use Naphtha instead... You have many options at this point, surely enough to fight the increasing power demands of your automation.  Benzene doesn't get upgraded in HV, only in EV. You'll be able to make Nitrobenzene when you're there, and burn it in some turbines bigger than this one.
+  - [提交] gregtech:gt.blockmachines:1117
+  > 奖励: miscutils:nitrobenzene x8 | dreamcraft:CoinTechnicianII
+
+### [1403] §5§lHV Steam Turbine
+Using Steam as your single power source in HV is pretty difficult. Your fuel automation will have to be very fast, your pipes will have to be very big and the final efficiency of HV Steam Turbines is 66%, much lower than the other generators' 85%.  This is best used with an efficient furnace, like the GT++ Advanced Furnaces, to power something specific like a farm. Powering your entire automation in your path to an EV, using only these, is a nightmare. If you want more efficiency out of your Steam, consider building a Large Steam Turbine.
+  - [提交] gregtech:gt.blockmachines:1122
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII
+
+### [-6008922449644892285] §9§lI'll teach you... how to Praise the Sun!
+TL;DR: The casing amount in this quest is for the best Solar Tower, which generates around 2 LuV amps and is a major Stainless Steel, Titanium and HV circuit sink, amongst other things.  Have you ever laid eyes upon a solar panel? You might have built a few of them here. What do they all have in common, I ask you... they generate either Steam or EU directly from sunlight, and that is not efficient. There's something that everybody forgot!  Singleblock solar panels are best to insert anywhere that has sun, and provide constant power to a machine. However, EU storage and transport are easy here, so why not build something better? Instead of generating energy directly, send those warm beams of sunlight into a central structure with circles of Solar Reflectors, and bask in the eternal power of the biggest fusion reactor in the Solar System!  (If you end up making a bigger one, don't come arguing to me about this. Be quiet.)  The whole idea is that the energy of the Sun's rays is directed towards a fluid that can retain the energy, a Solar Salt that does it far better than water. The Solar Tower transfers heat to all the fluid inside it, but watch out! If there's too much cold Solar Salt inside, it will drain away all the heat and slow down the entire process.  In more detail, the Solar Tower has a heat value that ranges from 0 to 100000, and it only heats up Solar Salt at 30000 or above. The amount of heat gained per cycle depends on the number of Reflectors, but also the current heat value: this process is optimal at exactly half the maximum, so 50000 heat. To get a perfect tower setup, you have to slowly feed cold Solar Salt to maintain this heat value, taking away just enough heat to keep it there. I'll let you figure out what the flow rate is, given that it depends on how many Reflectors you have.  From there, generate Steam or SH Steam by heat-exchanging in the same way as Hot Coolant does it. If you want this setup to truly be optimal, do place it in your personal dimension for permanent daylight.
+  - [可选提交] miscutils:gtplusplus.blockspecialcasings.1:6 x229, miscutils:gtplusplus.blockspecialcasings.1:8 x60, miscutils:gtplusplus.blockspecialcasings.1:7 x66, miscutils:gtplusplus.blockcasings.2:11 x60, gregtech:gt.blockmachines:864 x340
+  - [提交] gregtech:gt.blockmachines:863
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x30
+
+### [2967] §d§lIncomplete Combustion
+A chemical fuel engine for LuV? Well, if you are a crazy fan of diesel or benzene, you will love it.  This engine accepts all diesel, gas and also rocket fuel, although the Rocketdyne burns the latter more efficiently. It also needs Combustion Promoter to keep it running.  This engine consumes all fuel and combustion promoter in its input hatches per second and outputs power depending on the amount of fuel consumed, and its fuel value.  Its efficiency is determined by the Combustion Promoter/Fuel ratio. If the ratio is larger (there is more promoter), the efficiency will be higher. The max efficiency is 150%, but you cannot achieve this value without inputting an infinite amount of promoter. Expect efficiencies around 130% for high fuel value fuels like High-Octane Gasoline, unless you spend a LOT of promoter.  e.g. You input 100mB/s of HOG and 1000mB/s of combustion promoter. The efficiency is 149% and the sum of the HOG fuel value is 250000 EU. The output power will be 250,000 * 149% / 20 = 18625 EU/t.
+  - [提交] gregtech:gt.blockmachines:15535
+  - [可选提交] gregtech:gt.blockcasings4:2 x115, gregtech:gt.blockframes:473 x72, gregtech:gt.blockcasings8 x39, gregtech:gt.blockcasings4:13 x20, gregtech:gt.blockcasings2:14 x12, gregtech:gt.blockcasings4:3 x10, gregtech:gt.blockmachines:91
+  > 奖励: gregtech:gt.metaitem.01:30998 x32 | gregtech:gt.metaitem.98:14 x32
+
+### [1335] Infused Solars
+Compressed Solar Panels can be infused with Aspects for certain additional features. Check them out and choose one of them.
+  - [提交] EMT:EMTSolars:3, EMT:EMTSolars:12, EMT:EMTSolars2:2, EMT:EMTSolars:9, EMT:EMTSolars:6, EMT:EMTSolars:15
+  > 奖励: bq_standard:choice
+
+### [2828] §5§lIt's 'Super' Heated Steam
+So that means it produces §otwice§r as much power! You can get this steam through the LHE, the SOFC Mk II or the Titanium/Tungstensteel Boilers. It gets converted to normal steam as the output at a 1:1 ratio, so make sure to have a non-HP one to take advantage of that. In total, an HP Steam Turbine and a regular one combined produce 3x the EU with Superheated Steam that normal Steam would produce.
+  - [提交] gregtech:gt.blockmachines:15525
+  - [可选提交] gregtech:gt.blockframes:28 x14, gregtech:gt.blockcasings2:14 x12, gregtech:gt.blockcasings4:11 x11
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x6
+
+### [2803] §8§lKinetic Power EV
+This is the EV version, it works the same.
+  - [提交] compactkineticgenerators:BlockCkg:8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2804] §9§lKinetic Power IV
+This is the IV version.
+  - [提交] compactkineticgenerators:BlockCkg:9
+
+### [2805] §d§lKinetic Power LuV
+This is the LuV version.
+  - [提交] compactkineticgenerators:BlockCkg:10
+
+### [2806] §b§lKinetic Power ZPM
+This is the ZPM version.
+  - [提交] compactkineticgenerators:BlockCkg:11
+
+### [2813] §b§lKinetic Water Power ZPM
+This is the ZPM version.
+  - [提交] compactkineticgenerators:BlockCkg:7
+
+### [2809] §9§lKinetic Water Power IV
+This is the IV version.
+  - [提交] compactkineticgenerators:BlockCkg:5
+
+### [2811] §d§lKinetic Water Power LuV
+This is the LuV version.
+  - [提交] compactkineticgenerators:BlockCkg:6
+
+### [2807] §8§lKinetic Water Power EV
+This is the EV version, it works the same.
+  - [提交] compactkineticgenerators:BlockCkg:4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2812] §d§lKinetic Wind Power LuV
+This is the LuV version.
+  - [提交] compactkineticgenerators:BlockCkg:2
+
+### [2814] §b§lKinetic Wind Power ZPM
+This is the ZPM version.
+  - [提交] compactkineticgenerators:BlockCkg:3
+
+### [2808] §8§lKinetic Wind Power EV
+This is the EV version, it works the same.
+  - [提交] compactkineticgenerators:BlockCkg
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2810] §9§lKinetic Wind Power IV
+This is the IV version.
+  - [提交] compactkineticgenerators:BlockCkg:1
+
+### [1905] §8§lLarge Heat Exchanger - Fermat's Last
+The Large Heat Exchanger is a powergen multi that accepts a non-direct fuel, and doesn't output EU. What is it for, then? §7To heat up water with hot liquids, that's what!§r  Effectively, it's a Steam Boiler that uses fluids instead of solids, but it's more complicated. The three sources of energy are Lava, Hot Coolant, and Hot Solar Salt. The salt is the most powerful, but hardest to get. Lava can be automated from Everburn Urns or a myriad of other options, Hot Coolant usually comes from Fluid Nukes, and Hot Solar Salt is produced in the Solar Tower.  For Lava, the LHE outputs §d160 L of Steam for every 1 L of Lava, up to 1000 L/s of Lava input§r (§a4000 EU/t§r at 100% turbine efficiency). For Hot Coolant, the LHE outputs §d400 L of Steam for every 1 L of Hot Coolant, up to 800 L/s of input§r (§a8000 EU/t§r at 100% turbine efficiency). For Hot Solar Salt, the LHE outputs §d2000 L of Steam for every 1 L of Hot Solar Salt, up to 160 L/s of input§r (§a8000 EU/t§r at 100% turbine efficiency).  §cIf you go above these input rates, the output becomes Superheated Steam, which needs to pass through a Large HP Steam Turbine before the regular Large Steam Turbine.§r The maximum input rate here is twice of what was before and the conversion rates are now §d1:80 for Lava§r, §d1:200 for Hot Coolant§r, and §d1:1000 for Hot Solar Salt§r. The energy output at 100% turbine efficiency is §a12000 EU/t§r for Lava, §a24000 EU/t§r for Hot Coolant, and §a24000 EU/t§r for Hot Solar Salt.  §6§lVery powerful, but complicated, and needs turbines!§r  For more information, visit [url]https://wiki.gtnewhorizons.com/wiki/Large_Heat_Exchanger[/url] or [url]https://wiki.gtnewhorizons.com/wiki/Fluid_Reactor[/url].
+  - [提交] gregtech:gt.blockmachines:1154
+  - [可选提交] gregtech:gt.blockcasings4:2 x20
+  - [可选提交] gregtech:gt.blockcasings2:14 x2
+  > 奖励: enhancedlootbags:lootbag:7 x2
+
+### [2948] §b§lLarge Naquadah Reactor
+The multi block version of the naquadah reactor, but it is completely different from the single block ones.  It uses liquid naquadah or excited nuclear liquid as fuel, and outputs the depleted fuel. You can see the liquid fuel information in NEI.  It consumes 2400 L/s liquid air when running, otherwise it will keep consuming your fuel without outputting power.  [warn]It will explode with more than one type of fuel in its hatches.[/warn]  You can input in coolant to increase efficiency. IC2 Coolant: 1.05x Super Coolant: 1.5x Cryotheum: 2.75x Tachyon Rich Temporal Fluid: 5.00x  You can also input boosters to increase power. Molten Caesium: 2x Molten Uranium-235: 3x Molten Naquadah: 4x Molten Atomic Separation Catalyst: 16x Spatially Enlarged Fluid: 64x Note: It will consume more fuel to match the output power, unlike coolant which directly increases the power. The boosters work like 'parallels' for your reactor.  It also supports §9Tec§1Tech§r's Multi-Amp Dynamo hatches and laser hatches.  [note]PS: This generator can produce up to 664 billion EU/t with the best coolant, boosters and fuel available.[/note]
+  - [提交] gregtech:gt.blockmachines:15537
+  - [可选提交] gregtech:gt.blockcasings13:15 x140, GoodGenerator:MAR_Casing x81, GoodGenerator:radiationProtectionSteelFrame x32
+
+### [-8084303837458271711] Marie Curium?
+It's like cured meat... no, not at all, many sacrifices were made on the path to understanding radioactivity, may they be remembered forever. This goes to you, Marie and Pierre Curie.  This is the only non-plasma produced in a fusion reaction in this entire chain. That's not the important part, though: the important part is that [warn]this is one of the bottlenecks of the chain.[/warn] For every reactor running the final recipe, you will need around 0.144 reactors of this, so you won't make it to a compact at the end with just one mk1 reactor. Expect to follow the count of the second-to-last recipe, the Advanced Nitinol one.
+  - [可选提交] miscutils:itemCellCurium
+  - [勾选确认]
+
+### [2829] §8§lMore Advanced Reactors
+Fluid Nukes, Vac Nukes and Wrench Reactors (lol), are more advanced versions of the normal one.  Fluid means you build it differently (with the parts on the right, it's a 5x5 cube surrounding the normal one), with the goal of producing as much hot coolant (cycle in non-hot) as possible, to use that to produce power. It doesn't produce power on its own, but more overall. Send it to the LHE to get SH steam out of it, then go through an HP steam turbine, then a normal steam turbine.  Vac nukes remove heat by sending it to coolant cells instead of coolant. Any cell in a cardinal direction will receive the heat instead of the reactor. Use a vacuum freezer to restore the Helium/NaK cells' durability.  Wrench reactors are when you fill the reactor with fuel rods, turn it on, and wrench it to reset its heat state before it explodes. If you can automate it, you deserve a medal!  If you still don't know what a MOX one is, it produces more power the higher the temperature, so you try to keep it heat neutral, and as hot as possible. Of course, this can cause things nearby to, well, §omelt.§r You use MOX or Naquadria fuel cells work for this. You can also get more Plutonium out of MOX than Uranium.  A breeder reactor is when you set up a reactor to get an item out of it rather than power, like Lutetium from Thorium, Plutonium from MOX, etc. Look at the depleted x fuel rod list in NEI or on the wiki to see more.  [note]Since Fluid Nukes are liable to explode if you run out of coolant, make sure you set up a cutoff tied to the temperature or amount of coolant with redstone.[/note]
+  - [提交] IC2:blockReactorAccessHatch, IC2:blockReactorRedstonePort, IC2:blockReactorFluidPort x2, IC2:blockreactorvessel x94
+  - [提交] IC2:itemCellEmpty:9 x16
+  > 奖励: bartworks:gt.bwMetaGeneratedgemExquisite:20 x16 | IC2:itemCellEmpty:9 x16 | enhancedlootbags:lootbag:7
+
+### [89] §6§lMV Steam Turbine
+Having moved up to MV, you can continue using Steam. However, it's not a great idea to stay here, and other fuel types will be more useful to you instead. This is because Steam Turbine efficiency drops quickly with every tier (this one is only 75%), and the Steam itself needs big pipes to carry it around, compared to Benzene or Diesel.  That said, if you want to keep using this, then it's a good idea to build a Large Bronze Boiler or, later on, a Large Steel Boiler. You will need lots of solid fuel, probably Charcoal, so make sure you automate it! Definitely do not forget the water.
+  - [提交] gregtech:gt.blockmachines:1121
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [2962] Naquadah Based Fuel MkII
+2 300 000 EU/t lasting 3.5s per liter. A good way of getting more power out of your naquadah fuels, if you can supply the materials.  You might require the Mega Chemical Reactor if attempting this in ZPM.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10041
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10041
+
+### [2961] Naquadah Based Fuel MkI
+975 000 EU/t lasting 3 seconds per liter of fuel. Possibly a viable alternative for Plasma Power?  Prepare a robust naquadah line if you seek the power of the Naquadah Fuels.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10039
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10039
+
+### [2963] Naquadah Based Fuel MkIII
+9,511,000 EU/t lasting 4s per liter. Prepare to make a lot of this, as all subsequent tiers of Naquadah Fuel start from Mk III until you unlock the UXV MKIV recipe.  The alternate recipe can ease the logistical demand, but sourcing the chromatic glass might prove problematic until later.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10046
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10046
+
+### [2964] Naquadah Based Fuel MkIV
+88 540 000 EU/t lasting 5s per liter. Now the Naquadah Fuels are starting to get really good. Look into depleting Excited Thorium Fuel to source the praseodymium required.  The alternate recipe will require a Dimensionally Transcendent Plasma Forge, but can further ease the entire supply chain.  Here might also be a good time to start thinking about using Molten Neutronium to improve the yield of High Density materials.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10048
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10048
+
+### [2965] Naquadah Based Fuel MkV
+399 576 000 EU/t at 8s per liter. Sourcing the infinity dust and heavy radox might prove problematic until later.  The alternate recipe requires mellion & creon but you get 50% extra output for a little bit of transcendent metal.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10050
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10050
+
+### [-5931115528477845082] Naquadah Based Fuel MkVI
+2 077 795 200 EU/t at 12s per liter. A truly immense amount of power, with a hefty cost. You will need a lot of infrastructure to run the refinery, but doing so will reward you with trillions of EU/t.  The astral titanium and celestial tungsten for alternate recipe can be sourced from laser engravers or the Plasma Fuel Line.  The tritanium can be sourced using fusion reactors, or by mining in the Deep Dark.  The shirabon will require an immense amount of fusion reactors and DTPFs to sustain.  After Eye of Harmony, condensed raw stellar plasma can be used to improve the yield for even more power.  You will also want to consider the Tachyon Rich Temporal Fluid to get the most out of the Mark VI.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10116
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10116
+
+### [2959] §4§l§nNaquadah Fuel Refinery
+The §5§lNaquadah Fuel Refinery§r is used to make MkIII+ Naquadah Fuel.  The machine's overclocking ability is limited by the coil tier. Recipes can overclock up to the tier of the installed coil: Tier 1 coils allow 1 overclock above recipe tier, Tier 4 coils allow 4 overclocks above recipe tier.  Additionally, each tier of coil gives §6§l4 * Tier§r parallels.  It also supports §9Tec§1Tech§r's Multi-Amp energy hatches and laser hatches.
+  - [提交] gregtech:gt.blockmachines:15536
+  - [可选提交] GoodGenerator:FRF_Casings x483, GoodGenerator:fieldRestrictingGlass x192, gregtech:gt.blockcasings8:5 x124, GoodGenerator:FRF_Coil_1 x72, GoodGenerator:radiationProtectionSteelFrame x64
+
+### [-5612826465399047400] Niobiumization
+Do you remember Niobium-Titanium? This time, it's just Niobium! Just kidding, Titanium's coming up in a special form...  Both this and the Zinc Plasma recipe are very fast, so you won't need more than 1 reactor unless your scale is very large. Upgrade later as needed, use a mk2 or even mk3 for now.
+  - [可选提交] gregtech:gt.metaitem.01:31047
+  - [勾选确认]
+
+### [2956] Nuclear Based Fuel (Th)
+Cheapest one, with 2,200EU/t output lasting 25s per mB.  It is also the source of praseodymium, which will be used for naquadah fuel.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10007
+  > 奖励: bq_standard:choice
+
+### [2958] Nuclear Based Fuel (Pu)
+Provides 32,400EU/t output lasting 7.5s per mB.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10011
+  > 奖励: bq_standard:choice
+
+### [2957] Nuclear Based Fuel (U)
+Provides 12,960EU/t output lasting 5s per mB.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10003
+  > 奖励: bq_standard:choice
+
+### [490] §d§lObscenely Dangerous Nuclear Fuel: The Core
+For the truly insane mad scientists out there. Or people who can read a website (not guaranteed, trust me!). You HAVE to use coolant cells with it if you want power or to have it not explode after 1s.
+  - [提交] gregtech:gt.rodNaquadah32
+
+### [2779] §d§lPocket Plasma EV
+Assuming you don't want to set up something crazy every time you move your miners, you'll need some kind of SB to power them. This is one of the good options. You can just teleport the fuel instead.  [note]You may note that the efficiency goes up rather than down as it goes up in tiers. Enjoy this small comfort, the multis are still way better.[/note]
+  - [提交] gregtech:gt.blockmachines:1196
+
+### [2780] §d§lPocket Plasma IV
+This is the IV version.
+  - [提交] gregtech:gt.blockmachines:1197
+
+### [2781] §b§lPocket Plasma LuV
+This is the LuV version.
+  - [提交] gregtech:gt.blockmachines:1198
+
+### [2783] §2§l§nPocket Plasma UV
+This is the UV version.
+  - [提交] gregtech:gt.blockmachines:10753
+
+### [2782] §b§lPocket Plasma ZPM
+This is the ZPM version.
+  - [提交] gregtech:gt.blockmachines:10752
+
+### [216] §9§lPortable Clean Energy IV
+This is the IV version.
+  - [提交] gregtech:gt.blockmachines:1191
+  > 奖励: gregtech:gt.metaitem.01:23326 x16 | dreamcraft:CoinTechnicianII x2
+
+### [2794] §8§lPortable Clean Energy EV
+As long as you don't hold the fuel, that is. Very useful for your Mining rigs, the efficiency on these goes way up as they increase in tier. Though they require more Enriched Naquadah each tier (and Naquadria at ZPM).  [note]The fuel is radioactive, dummy.[/note]
+  - [提交] gregtech:gt.blockmachines:1190
+  > 奖励: gregtech:gt.metaitem.01:26326 x16 | dreamcraft:CoinTechnicianII
+
+### [2795] §d§lPortable Clean Energy LuV
+This is the LuV version.
+  - [提交] gregtech:gt.blockmachines:1192
+  > 奖励: gregtech:gt.metaitem.02:22326 x16
+
+### [2796] §b§lPortable Clean Energy ZPM
+This is the ZPM version. It uses Naquadria now.
+  - [提交] gregtech:gt.blockmachines:1188
+  > 奖励: gregtech:gt.metaitem.01:26327 x16
+
+### [2797] §2§l§nPortable Clean Energy UV
+This is the UV version.
+  - [提交] gregtech:gt.blockmachines:1189
+  > 奖励: gregtech:gt.metaitem.01:23327 x16
+
+### [1004] §a§lPower of the Sun 1x1 MV
+Put those 128 EU panels on a block to make them placeable in the world.
+  - [可选提交] gregtech:gt.metaitem.01:32753, gregtech:gt.metaitem.01:32528, gregtech:gt.metaitem.01:32651, gregtech:gt.blockmachines:12
+  - [提交] gregtech:gt.blockmachines:2734
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1007] §9§lPower of the Sun 1x1 HV
+Put those 512 EU panels on a block to make them placeable in the world.
+  - [可选提交] gregtech:gt.metaitem.01:32754, gregtech:gt.metaitem.01:32538, gregtech:gt.metaitem.01:32652, gregtech:gt.blockmachines:13
+  - [提交] gregtech:gt.blockmachines:2735
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [937] §6§lPower of the Sun 1x1 LV
+Put those 32 EU panels on a block to make them placeable in the world. Use an MV assembler to combine the panel with an LV hull, a battery, and a robot arm. Now this panel will clean itself!
+  - [可选提交] gregtech:gt.metaitem.01:32752, gregtech:gt.metaitem.01:32518, gregtech:gt.metaitem.01:32650, gregtech:gt.blockmachines:11
+  - [提交] gregtech:gt.blockmachines:2733
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [1719] §9§lPower of the Sun 1x1 EV
+Put those 2048 EU panels on a block to make them placeable in the world.
+  - [可选提交] gregtech:gt.metaitem.01:32755, gregtech:gt.metaitem.01:32540, gregtech:gt.metaitem.01:32653, gregtech:gt.blockmachines:14
+  - [提交] gregtech:gt.blockmachines:2736
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1721] §d§lPower of the Sun 1x1 IV
+Put those 8192 EU panels on a block to make them placeable in the world.
+  - [可选提交] gregtech:gt.metaitem.01:32756, gregtech:gt.metaitem.01:32545, gregtech:gt.metaitem.01:32654, gregtech:gt.blockmachines:15
+  - [提交] gregtech:gt.blockmachines:2737
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [2775] §d§lPower of the Sun 1x1 LuV
+This is the block version that doesn't need cleaning.
+  - [提交] gregtech:gt.blockmachines:2738
+
+### [2778] §2§l§nPower of the Sun 1x1 ZPM
+This is the block version that doesn't need cleaning.
+  - [提交] gregtech:gt.blockmachines:2739
+
+### [1672] §9§lPower of the Sun at EV Level
+The next solar panel you can make is the EV one. It generates 2048 EU/t.
+  - [可选提交] gregtech:gt.metaitem.01:20318 x2, gregtech:gt.metaitem.01:17362 x4, gregtech:gt.metaitem.01:17100 x2
+  - [可选提交] gregtech:gt.metaitem.01:32754, gregtech:gt.metaitem.03:32035 x4, gregtech:gt.metaitem.03:32051 x2, gregtech:gt.metaitem.01:17599 x2, gregtech:gt.metaitem.01:19856 x4, gregtech:gt.metaitem.01:32706 x4 (ore:circuitMaster), dreamcraft:IrradiantReinforcedTungstenSteelPlate x2, gregtech:gt.blockmachines:2380 x6
+  - [提交] gregtech:gt.metaitem.01:32755
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1006] §9§lPower of the Sun at HV Level
+The next solar panel you can make is the HV one. It generates 512 EU/t. First you need to produce enriched sunnarium by mixing irradiated uranium and sunnarium.
+  - [可选提交] AdvancedSolarPanel:asp_crafting_items:3 x2, gregtech:gt.metaitem.01:17339 x4, gregtech:gt.metaitem.01:17098 x2
+  - [可选提交] gregtech:gt.metaitem.01:32753, gregtech:gt.metaitem.03:32034 x4, gregtech:gt.metaitem.03:32065 x2, gregtech:gt.metaitem.01:17981 x2, gregtech:gt.metaitem.01:32705 x4 (ore:circuitElite), dreamcraft:IrradiantReinforcedTungstenPlate x2, gregtech:gt.blockmachines:2360 x4
+  - [提交] gregtech:gt.metaitem.01:32754
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1720] §d§lPower of the Sun at IV Level
+The next solar panel you can make is the IV one. It generates 8192 EU/t. This is probably the last tier it's worth it to make solars, unless you just really like them.
+  - [可选提交] AdvancedSolarPanel:asp_crafting_items:1 x2, gregtech:gt.metaitem.01:17358 x2, gregtech:gt.metaitem.01:17346 x4
+  - [可选提交] gregtech:gt.metaitem.01:32755, gregtech:gt.metaitem.03:32035 x4, gregtech:gt.metaitem.03:32034 x4, gregtech:gt.metaitem.03:32053 x2, gregtech:gt.metaitem.01:18599 x2, gregtech:gt.metaitem.01:20856 x4, gregtech:gt.metaitem.03:32088 x4 (ore:circuitUltimate), dreamcraft:IrradiantReinforcedChromePlate x2, gregtech:gt.blockmachines:2400 x6
+  - [提交] gregtech:gt.metaitem.01:32756
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [936] §6§lPower of the Sun at LV Level
+The next solar panel you can make is the LV one. It generates 32 EU/t.
+  - [可选提交] gregtech:gt.metaitem.01:32751, gregtech:gt.metaitem.03:32034 x4, gregtech:gt.metaitem.01:17473 x2, IC2:itemPartCircuitAdv x2 (ore:circuitAdvanced), dreamcraft:IrradiantReinforcedAluminiumPlate x2, gregtech:gt.blockmachines:2320 x4
+  - [提交] gregtech:gt.metaitem.01:32752
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2774] §d§lPower of the Sun at LuV Level
+The LuV solar panel generates 32768 EU/t.
+  - [提交] gregtech:gt.metaitem.01:32757
+
+### [1003] §a§lPower of the Sun at MV Level
+The next solar panel you can make is the MV one. It gives 128 EU/t. You'll need to make some sunnarium first though.
+  - [可选提交] gregtech:gt.metaitem.01:17341 x2, AdvancedSolarPanel:asp_crafting_items x2
+  - [可选提交] gregtech:gt.metaitem.01:32752, gregtech:gt.metaitem.03:32034 x4, gregtech:gt.metaitem.03:32063 x2, gregtech:gt.metaitem.01:17470 x2, gregtech:gt.metaitem.01:32704 x2 (ore:circuitData), dreamcraft:IrradiantReinforcedTitaniumPlate x2, gregtech:gt.blockmachines:2340 x4
+  - [提交] gregtech:gt.metaitem.01:32753
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2777] §4§l§nPower of the Sun at UV Level
+The UV solar panel generates 524288 EU/t.
+  - [提交] gregtech:gt.metaitem.01:32759
+
+### [2776] §2§l§nPower of the Sun at ZPM Level
+The ZPM solar panel generates 131072 EU/t.
+  - [提交] gregtech:gt.metaitem.01:32758
+
+### [2788] §2§lPutting the 'Semi' Back Into Generators LV
+You've probably collected a ton of Creosote and have little to use it on. To fix that, build a Semifluid Generator and use it alongside Steam as a secondary power source! Singleblock generators will only use fuel if there is EU demand, so you might end up with a filled Creosote buffer if you aren't consuming enough EU.  To extract the Creosote from your Coke Ovens, you can use a Coke Oven Hatch and some fluid pipes of your choice.  There are other options to burn Creosote, like the Railcraft Liquid Boilers, but this is much cheaper and easier to set up, while still being efficient with Creosote (6x as efficient as Combustion Generators).
+  - [提交] gregtech:gt.blockmachines:837
+  > 奖励: gregtech:gt.metaitem.01:30741 x4 | dreamcraft:CoinTechnician x20
+
+### [2790] §5§lPutting the 'Semi' Back Into Generators HV
+If you've built Distillation Towers to improve your Oil or Benzene processing line, you might have ended up with some extra fuels that are semifluids, such as Heavy Fuel or Creosote. If you've accumulated them so much that they've started voiding, you can instead make an HV Semifluid Generator and get free power out of them!  The Creosote from one DT that is processing Wood Tar is enough to power the DT itself, depending on the fuel efficiency. One HV generator is just enough to power it.
+  - [提交] gregtech:gt.blockmachines:839
+  > 奖励: gregtech:gt.metaitem.01:30741 x4 | dreamcraft:CoinTechnicianII
+
+### [2789] §6§lPutting the 'Semi' Back Into Generators MV
+If you're still burning Creosote for power, you can get MV amps out of it with these machines. It won't last long, and definitely isn't a good main power source, but it'll give you some EU for your trouble.  Alternatively, Heavy Fuel? It has the same EU per bucket as Benzene, 360k, and is the only semifluid with more than 100k per bucket. If you have it, and are not consuming enough for Diesel, you can use it this way.
+  - [提交] gregtech:gt.blockmachines:838
+  > 奖励: gregtech:gt.metaitem.01:30741 x4 | dreamcraft:CoinTechnicianI x5
+
+### [2815] §d§lQuadruple Compressed Solar
+4,096 Solars! Puts out 10000-32768 EU/t.
+  - [提交] EMT:EMTSolars3
+
+### [2816] §b§lQuintuple Compressed Solar
+32,768 Solars! Puts out 100,000-131,072 EU/t.
+  - [提交] EMT:EMTSolars3:7
+
+### [2802] §9§lRadioisotope Thermoelectric Generator
+Runs for a reaaaally long time. Outputs an amount based on the fuel pellet given.  241Am: 16 EU, 69875 days 90Sr: 30 EU, 62640 days 238Pu: 64 EU, 42982 days 210Po: 480 EU, 34560 days
+  - [提交] gregtech:gt.blockmachines:869
+
+### [2801] §8§lRadioisotope Thermoelectric Generator
+Runs forever on the fuel you give it. Puts out 1 EU/t, but doubles for each one added, up to 32 EU/t. Might be useful for a farm?
+  - [提交] IC2:blockGenerator:6, IC2:itemRTGPellet x6
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII
+
+### [2294] §8§lRocket Engine EV
+The Rocket Engine is a very dirty device which generates power out of rocket fuels at 80% efficiency, and produces 250 to 2000 pollution/s.  [note]There are 4 Rocket Fuels. Follow the Space Race tab quests to see how to make the rest. Expect to need more than one (probably several) Chemical Plants if you want to automate production.[/note]
+  - [提交] gregtech:gt.blockmachines:793
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2784] §9§lRocket Engine IV
+This is the IV version. It has 70% efficiency, and produces 500 to 4000 pollution/s.
+  - [提交] gregtech:gt.blockmachines:794
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2785] §d§lRocket Engine LuV
+This is the LuV version. It has 60% efficiency, and produces 750 to 6000 pollution/s.
+  - [提交] gregtech:gt.blockmachines:795
+
+### [-4721119019196807237] Runite Plasma - The Mk2 Conclusion
+To complete this chain, you need to activate the Astral Titanium Plasma you have with a special material, also a GT++ one, called Titansteel. This is a considerable powersink, which is why the input amount is so low at 2L, and it forces you to dedicate an ABS at UV tier to feed one mk2 reactor running the Runite plasma recipe. If you decide to upscale this setup, the best option is to simply build a mega ABS, where you can also use EBF coils to save some EU, and in turn make the powergen chain more efficient.  Runite Plasma has a 350M fuel value, which leaves it free to run on Trinium XLs without penalty, whereas Tin Plasma has a 74.5% penalty on the same turbines due to having less than half the fuel value. If you want to upscale your plasma powergen to great numbers, this is an option, but the mk3 chain is probably the one to choose.  The same ratio of 0.144 to 1 reactors also applies here.
+  - [提交] miscutils:itemCellPlasmaRunite x64
+
+### [-5840241591017037228] §9§l§n"Semi-Stable" doing a lot of work in here
+A cell of antimatter! Contained in a cell made of matter! Surely this is safe.  Antimatter is exactly what you may imagine, the opposite of matter, for every atom in the universe, an "anti atom" exists, and when both meet...  They annihilate themselves, releasing a lot of energy!  But how could you capture this energy?
+  - [可选提交] gregtech:gt.metaitem.01:30158
+  - [勾选确认]
+
+### [2818] §4§l§nSeptuple Compressed Solar
+2,097,152 Solars! Puts out 10,000,000-33,554,432 EU/t.
+  - [提交] EMT:EMTSolars4:5
+
+### [2817] §2§l§nSextuple Compressed Solar
+262,144 Solars! Puts out 1,000,000-2,097,152 EU/t.
+  - [提交] EMT:EMTSolars3:14
+
+### [2826] §8§lSolid-Oxide Fuel Cell Mk II
+It's the same as the previous, but more/better. It takes less time to heat up, but it chews through fuel pretty fast too. It still isn't as good as an LGT for power produced over time, but it can produce power faster. As long as you use it with the HP Steam Turbine.  It can produce 1A+ of LuV if you set it up right.
+  - [可选提交] kekztech:kekztech_gdcceramicelectrolyteunit_block x3, gregtech:gt.blockglass1:10 x6, gregtech:gt.blockcasings4 x29, gregtech:gt.blockmachines:90
+  - [提交] gregtech:gt.blockmachines:13102
+  > 奖励: gregtech:gt.metaitem.01:30686 x16 | enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x10
+
+### [2827] §8§lSolid-Oxide Fuel Cell Mk I
+It uses Gas fuels to produce power and Steam at the same time, while also generating 0 pollution. If the other generators were being problematic, this is the best solution.  It produces §a4 HV amps per tick§r at a nice fuel efficiency, while consuming 100 L of Oxygen per second. It will heat up over time until it reaches 100% efficiency, at which point it starts outputting Steam as well. You can then use Steam Turbines, singleblocks or multiblocks, to generate even more power.  With these two things combined, it's more powerful than the Large Gas Turbine that you can build at the start. Only when you unlock better materials for that, will it generate more power than the SOFC Mk I.
+  - [可选提交] kekztech:kekztech_yszceramicelectrolyteunit_block x3, gregtech:gt.blockglass1:10 x6, gregtech:gt.blockcasings4:1 x29, gregtech:gt.blockmachines:90
+  - [提交] gregtech:gt.blockmachines:13101
+  > 奖励: gregtech:gt.metaitem.01:30686 x16 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x5
+
+### [191] §8§lStandard Nuclear Fuel: Uranium
+Just "regular" uranium fuel, nothing special about it. It produces 5x the power, and 4x the heat of thorium, while lasting 2/5 the time.  Most fuel rods are basically this, but slightly modified. You generally get this from Mars and its moons, but you can get a little from centrifuging thorium if you want.  BTW, one of the reactor types 'pulses' the reactor to turn it off once it gets too hot. You can pack in the rods and then cool it off for a while to get higher efficiency out of each rod. Try it if you like explosions.
+  - [提交] gregtech:gt.rodUranium
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII
+
+### [1896] §9§lStandard Nuclear Fuel II: Naquadah
+These are...not worth it. Go do something else with your enriched naquadah, like putting it in a naq gen if you want power. They work §oexactly§r the same as uranium other than materials cost/output.  [note]PS: You can get Nq+ from both centrifuging Nq dust or processing the ore.[/note]  [note]And why are they Naquadah rods when they're made of Enriched Naquadah?[/note]
+  - [提交] gregtech:gt.rodNaquadah
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x5
+
+### [1869] §6§lThe Church of Benzene's Holy Altar
+The MV Gas Turbine pairs excellently with Benzene, now that you can actually make it. Look at the "Bio for the Masses" tab for more details on how to go about it, or just check NEI. Benzene is renewable from trees, and it's a powerful source of EU that can keep you going for several tiers as long as you upgrade it with the new multiblocks you unlock over time.  It's a good idea to switch off Steam, since you need big pipes to carry that around and the fuel efficiency on Steam Turbines is lower. Instead, make a Pyrolyse Oven or an Advanced Coke Oven to make Charcoal faster, extract Benzene from it and run it through a few of these Gas Turbines.
+  - [提交] gregtech:gt.blockmachines:1116
+  > 奖励: gregtech:gt.metaitem.01:30686 x16 | dreamcraft:CoinTechnicianI x5
+
+### [2762] §9§lThis is Not How You Get Into Space
+This produces power out of Rocket Fuels. To see how to make them, look at the Space Race tab. These are specifically GT++ Rocket Fuels, and automating them for powergen in this multi will also provide you with endless fuel for your space travels.  The math regarding the Rocketdyne is complicated. Looking at the controller's tooltip helps, but the main gist of it is like this: provide Carbon Dioxide and make sure it doesn't run out, choose the EU/t you want to get, calculate the amount of fuel you need for the fuel you will use, and then provide enough Liquid Hydrogen to boost the multi, according to the EU/t value.  You will always want to have the Rocketdyne boosted, for several reasons. Assuming you have at least a buffered IV Dynamo Hatch, outputting close to the maximum on that hatch will lower the fuel efficiency, but not if it's boosted. Additionally, this multi doesn't consume fuel continuously, but with intervals of 1 second between consuming and not consuming, while generating power all the same. Boosting this consumption results in huge fuel efficiency, combined with the high fuel values of the Rocket Fuels.  [warn]Beware, letting the dynamo overfill can lead to an explosion! Be sure you have a place to output the energy.[/warn]
+  - [可选提交] miscutils:gtplusplus.blockcasings.3:1 x8, gregtech:gt.blockmachines:861 x8, miscutils:gtplusplus.blockcasings.4:11
+  - [提交] gregtech:gt.blockmachines:996
+
+### [-5875748521763021702] This is your Kryptonite!
+Here's the special Titanium I promised you. GT++ materials enter the fray here, both with this and the Titansteel you need to add to that to make what comes next!  That step only comes after fusing Niobium and Zinc into Krypton Plasma. You get a rarer noble gas here than before, the next one will be Xenon. This recipe matches in speed with the next one, which uses Krypton to make Astral Titanium Plasma, by adding in the final plasma of the previous chain, Force Plasma! That's right, each chain needs everything from before to continue.  Once you have Astral Titanium Plasma, you can move on to the final mk2 step.
+  - [可选提交] miscutils:itemCellPlasmaKrypton
+  - [提交] miscutils:itemCellPlasmaAstralTitanium
+
+### [2960] Tier 2 Coil
+It will unlock 2 MkIV fuel recipes and MkV fuel recipe.
+  - [提交] GoodGenerator:FRF_Coil_2 x72
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10048
+
+### [2966] Tier 3 Coil
+For an overclock, MKVI fuel and alternative MKV fuel recipe. Wait, you are going to overclock a UXV recipe?
+  - [提交] GoodGenerator:FRF_Coil_3 x72
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10050
+
+### [-5155982425555565036] Tier 4 Coil
+This upgrade will allow you to create fuel even faster than before and with an alternative recipe for MKVI fuel! ...but do you really need it?
+  - [提交] GoodGenerator:FRF_Coil_4 x72
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:10116
+
+### [2819] §6§lToss Your Magic Junk in Here LV
+And receive power in return. Especially good with Nether Stars if you've got a bunch. Or practically any magic material item (not crafted stuff mostly).
+  - [提交] gregtech:gt.blockmachines:1123
+  > 奖励: Thaumcraft:ItemShard:6 x8 | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [2820] §5§lToss Your Magic Junk in Here MV
+The MV version.
+  - [提交] gregtech:gt.blockmachines:1124
+  > 奖励: Thaumcraft:ItemShard:6 x16 | dreamcraft:CoinTechnicianI x3 | dreamcraft:CoinDarkWizardI x3
+
+### [2821] §5§lToss Your Magic Junk in Here HV
+The HV Version.
+  - [提交] gregtech:gt.blockmachines:1125
+  > 奖励: Thaumcraft:ItemShard:6 x24 | dreamcraft:CoinTechnicianII | dreamcraft:CoinDarkWizardII
+
+### [192] §8§lTricky Nuclear Fuel: MOX
+Under normal conditions, produces the same amount of power as uranium, but MOX produces more power the more you let the reactor heat up. Try to come up with a heat-neutral design as close to the limit as possible to take advantage of this. It lasts 1/2 the time, and produces more heat once the reactor is over 50%. A fuel for all the engineers out there.  [note]You'll need to run a uranium reactor for a while to get some plutonium if you don't have another way to get it. Remember that there's more than 1 type![/note]  [warn]Make sure to test in creative and/or use protection against explosions![/warn]
+  - [提交] gregtech:gt.rodMOX
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII
+
+### [1897] §b§lTricky Nuclear Fuel II: Naquadria
+They're so not worth it I'm just going to give you back the materials. Like naquadah, they're the same as MOX other than materials.  [note]PS: You can get Nq* from both centrifuging Nq or Nq+ dust, processing the ores, or thermal centrifuging the depleted Nq+ rods.[/note]
+  - [提交] gregtech:gt.rodNaquadria
+  > 奖励: gregtech:gt.metaitem.01:2327 x3 | gregtech:gt.metaitem.01:11316 x8 | gregtech:gt.metaitem.01:11085 | dreamcraft:CoinTechnicianII x5
+
+### [1338] §9§lTriple Compressed Solar
+Triple Compressed Solars. Yes, that's right. They are a bit more expensive than their lower counterparts, 512 Solars in total. But they give out 1,000 GT EU per tick and have no need to be cleaned. How so? Magic.
+  - [提交] EMT:EMTSolars:2
+  > 奖励: bq_standard:choice
+
+### [-5852276776698153963] §2§l§nTurbine Housing
+At UV you unlock the ability to automatically refill turbines with rotors.  XL turbines do it by default much earlier...
+  - [提交] gregtech:gt.blockmachines:31025
+  > 奖励: dreamcraft:CoinTechnicianIII x5 | enhancedlootbags:lootbag:43
+
+### [3038] §b§lUHT Resistant Mesh
+§o*Slaps UHT Resistant Mesh* This bad boy can withstand so much heat!§r  You should probably automate this if you want to build and use the Dyson Swarm multiblock.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11002, gregtech:gt.metaitem.01:2010
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11501, miscutils:itemDustTantalumCarbide x4
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11502 x5
+  - [可选提交] bartworks:gt.bwMetaGeneratednugget:11503 x45
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11503 x5
+  - [可选提交] gtnhintergalactic:item.DysonSwarmParts:4, gtnhintergalactic:item.DysonSwarmParts:5
+  - [可选提交] gtnhintergalactic:item.DysonSwarmParts:1 x4, gtnhintergalactic:item.DysonSwarmParts:2 x4
+  - [提交] gtnhintergalactic:item.DysonSwarmParts:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x5 | dreamcraft:CoinChemistIII x5
+
+### [-5758255961960012806] Welcome to the Plasma Chain
+Hello there! If you've unlocked fusion, you can start this questline, but keep in mind that it's divided into three segments (the three fusion chains): one for each tier of Fusion Reactor, from Mk1 to Mk3.  There are more fine details surrounding plasma power generation you can access by using the following Wiki link: [url]https://wiki.gtnewhorizons.com/wiki/Fusion_Reactor[/url]  These quests follow the process of creating some truly powerful plasmas that are useful for power generation at the beginning of endgame, when you've scaled up your setup to a Compact Fusion Reactor and XL Plasma Turbines. As you might have seen before, those huge turbines can go very fast with good materials, like Trinium or Infinity, but they will apply EU/t penalties according to the fuel value of the plasma used. This means that Helium and Tin Plasma are both much weaker there than they were in Large Plasma Turbines.  The end product of this whole process is Celestial Tungsten Plasma, which has no penalties even at Spacetime and can somewhat match what Helium Plasma would have produced, per compact reactor. The last step is the slowest, but, if there are no other bottlenecks, you can expect around §2§lover 8 billion EU/t§r assuming a single compact doing the last step with huge infinity turbines in a plasma XL.  However, getting there won't be easy. This whole process uses 15 fusion recipes in total, and a lot more material automation than any of the simple fusion setups. This questline will help explain what is simple, not simple, or possibly a bottleneck. If you complete this, you will be sustained in powergen until the Dyson Swarm, or whatever other option appears later on, and it will continue being useful later on!
+  - [勾选确认]
+  > 奖励: IC2:itemCellEmpty x64
+
+### [-5247155466511128476] §8§lWell, It Doesn't Produce Any Pollution...
+This is a multiblock acid generator available at EV and above. It takes in volatile acids and bases to produce energy through a highly exothermic chemical reaction. These include hydroxides of various alkali metals, giving your LNE a boost of efficiency from 150% up to 500%! Using higher-tier bases also has a reduced rate of consumption, but producing them at a passive rate may prove to be a challenge.  However, you can't just get away with burning acids like that! Burning any acids will produce Toxic Residue based on the fuel value and liters burnt for each tick. Acids with a higher fuel value will produce more Toxic Residue per liter, but overall they still produce less residue than acids with a lower fuel value for the same amount of EU. When Toxic Residue gets too high, the engine will EXPLODE! (As compensation, the engine supports TecTech Dynamo Hatches)  How do you avoid that, then? Firstly, the Toxic Residue will naturally decay. The rate of decay is based on the existing amount of Toxic Residue and also acts every tick. However, it is not very fast, so you will want to boost it. This is done through robot arms as they can help clean the surface of the LNE. Using higher-tier robot arms and multiple robot arms can help clean it faster, though be careful as they may be consumed! The rate of decay and the overall capacity of Toxic Residue is based on the tier of your multiblock, which are unlocked at EV, IV and LuV respectively. Using alkali to boost your multiblock also does not affect the rate of Toxic Residue build-up, so make sure to select the highest tier you can get! Finally, Toxic Residue increases randomly, so you can use a Toxic Residue Sensor Hatch to help detect a sudden increase and automate your engine accordingly.
+  - [提交] gregtech:gt.blockmachines:31088
+  - [可选提交] gregtech:gt.blockcasings12:5 x41, gregtech:gt.blockframes:473 x34, gregtech:gt.blockcasings8:1 x15, gregtech:gt.blockmachines:3019
+  > 奖励: gregtech:gt.metaitem.01:32652 x2 | IC2:itemCellEmpty:18 x8
+
+### [783] §5§lWe Need Big Toys
+All your little turbines take up too much space? Are you running out of water? It's time to solve these problems. This Large Steam Turbine can help you produce a tremendous amount of energy. It will also distill water for you, so you can use the same water again inside your Large Boiler. Don't forget to make a rotor for the turbine and put inside the controller, otherwise this multiblock won't do anything.  Each turbine has a specific optimal flow, the Steam flow that gives the highest fuel efficiency, the value shown on the turbine's tooltip. This is the flow you want to match, and you can use a Fluid Regulator as a cover to make it exactly what you want, but you can go beyond this flow to get an even higher EU/t value, at a loss of fuel efficiency. You can make turbines in 4 different sizes, with larger turbines producing more EU/t, but with varying amounts of fuel efficiency. Generally, Large is the best due to having the highest fuel efficiency and a good optimal flow rate  When using turbines, be careful of flow rates. To find the optimal flow rate, you divide the optimal energy flow rate listed on the turbine, by the energy value for the plasma. You can also use the Large Turbine Calculator (there's a link on the main spreadsheet, which is linked to in discord), or scan the multiblock's controller while feeding it a minimal amount of plasma to see what the optimal flow is. Make sure to use a Fluid Regulator set to this flow rate for highest fuel efficiency, or go beyond it to get more EU/t at a cost to efficiency, with Steam Turbines being the worst at retaining efficiency beyond the optimal flow.  If you go beyond the optimal flow, you will get a higher EU/t value, but less fuel efficiency, and the maximum EU/t value depends on the turbine type and its Overflow Efficiency tier. For this type of turbine, tier 1 reaches the max at 150% of optimal flow to produce 112% of the EU/t, tier 2 reaches the max at 200% of optimal flow to produce 133% of the EU/t and tier 3 reaches the max at 250% of optimal flow to produce 156% of the EU/t. The closer you get to this maximum, the more fuel efficiency you're throwing away. Don't exceed your dynamo hatch's maximum EU/t output, though, or you will have problems!  Use NEI with the appropriate long rod to find assembler recipes that will work for you. Or the spreadsheet. Long magnalium for small turbines, long titanium for normal turbines, etc.  Pre-moon, the best rotors are Shadow Metal or Vibrant Alloy.  Post-moon, the best HV rotors are Shadow Metal or Oriharukon (this is IV-tier). Luckily, turbines are now fully functional with multi-amp dynamos, so give those a try if you need extra amps!  For additional choices, see the spreadsheet and Large Turbine Calculator.
+  - [提交] gregtech:gt.blockmachines:15524
+  - [可选提交] gregtech:gt.metatool.01:170
+  - [可选提交] gregtech:gt.blockframes:32 x14, gregtech:gt.blockcasings2:13 x12, gregtech:gt.blockcasings4:9 x11
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1481] §9§lWhat Was That? I Can't Hear You Over the Engine!
+The Extreme Combustion Engine is an upgrade to the Large Combustion Engine, the IV version that needs Tungstensteel instead of Titanium. The structure is essentially the same, and it's almost a 1:1 ratio between the two materials, so this is a good generator when you've accumulated several stacks of Tungstensteel.  The caveat is that it only accepts High Octane Gasoline. This is the last and most powerful type of combustion fluid made from Oil, and it has the longest processing line of them all. As a reward, it has an excellent §a2.5M EU per bucket§r, and you can burn it here alongside some Liquid Oxygen for almost §a4 IV amps per tick.  §cThe Liquid Oxygen is very important, because it greatly boosts the speed of the multi and the fuel efficiency as well.§r It needs 40 L/s, so you will need more than one Vacuum Freezer to supply it continuously: for an ECE that is always running, you will need a double Vacuum Freezer, 1 EV and 1 HV. You can run fewer freezers if you overclock them, if the ECE isn't working all the time or if you upgrade to a Cryogenic Freezer,
+  - [提交] gregtech:gt.blockmachines:15534
+  - [可选提交] gregtech:gt.blockframes:473 x32, gregtech:gt.blockcasings4 x31, gregtech:gt.blockcasings8 x30, gregtech:gt.blockcasings8:1 x20, gregtech:gt.blockcasings3:15 x12, gregtech:gt.blockcasings8:4 x12, gregtech:gt.blockcasings2:3 x6, gregtech:gt.blockcasings4:12 x5, gregtech:gt.blockmachines:91
+  > 奖励: gregtech:gt.metaitem.01:11316 x24 | enhancedlootbags:lootbag:8 x3 | gregtech:gt.metaitem.01:30998 x64 | dreamcraft:CoinTechnicianII x20
+
+### [2596] §5§l§nWho Needs UV Solars When You Have Magic
+16,777,216 Solars!!! This single block can produce a maximum of 600m EU/t when in aqua form, that's balanced right... right?
+  - [提交] EMT:EMTSolars4:12
+  - [可选提交] EMT:EMTSolars5:1
+
+### [-7393385288067338253] §d§lXL Turbo Gas Turbine
+The ultimate gas inhaler in GTNH. Check the XL Steam Turbine quest above for an explanation of the mechanics shared across all turbines.  [warn]This turbine does not accept Benzene.[/warn] To use it with your Benzene setup, you have to upgrade it to Nitrobenzene. Further changes will be made to this turbine to favor more high-tier gases, instead of spamming Benzene, Methane or other trivial options.
+  - [提交] gregtech:gt.blockmachines:15522
+  - [可选提交] miscutils:gtplusplus.blockspecialcasings.1:3 x345, bartworks:BW_TieredGlass x104, gregtech:gt.blockframes:306 x80, gregtech:gt.blockcasings2:13 x76, gregtech:gt.blockcasings.cyclotron_coils x20, miscutils:gtplusplus.blockspecialcasings.1 x16, gregtech:gt.blockcasings2:3 x7, gregtech:gt.blockmachines:91 x4
+
+### [-4842153805905438157] §9§lXL Turbo HP Steam Turbine
+High pressure, superheated loads of energy. Check the XL Steam Turbine quest above for an explanation of the mechanics shared across all turbines.  This XL Turbine is exactly the same as the XL Steam Turbine in the way it upgrades from the regular multi: the only accepted fluid is Superheated Steam, and nothing else works. They are meant to be built together, since any steam setups you might have at this point will surely be using the two.
+  - [提交] gregtech:gt.blockmachines:15520
+  - [可选提交] miscutils:gtplusplus.blockspecialcasings.1:2 x439, gregtech:gt.blockcasings2:14 x100, bartworks:BW_TieredGlass x36, gregtech:gt.blockframes:28 x34, gregtech:gt.blockcasings.cyclotron_coils x20, miscutils:gtplusplus.blockspecialcasings.1 x16
+
+### [-7251205103661839761] §b§lXL Turbo Plasma Turbine
+Is plasma flow making the turbines spin? No, it's just water into steam into water, all recycled inside, 12 times over. Check the XL Steam Turbine quest above for an explanation of the mechanics shared across all turbines.  This turbine, unlike the others, has very important differences to the regular multi that you have to keep in mind. Given that plasma power is so easy to upscale with the use of compact reactors, XL Plasma Turbines would have to follow suit and bring progression's EU numbers to ridiculous degrees, off one single plasma. However, this XL now applies an EU/t penalty to its production by comparing the fuel value of the plasma it processes with the rotor material it has inside.  See [url]https://i.imgur.com/vifsk0P.png[/url] for various combinations of plasmas and materials. Mk1 plasmas are in green, Mk2 in yellow and Mk3 in red. The bottom 3 are the final plasmas of the fusion chains.  The formula is a bit complicated, but here are some important values:  -> Helium Plasma receives a huge penalty of 86.1% even with Infinity Catalyst, whereas Tin's penalty is only 53.5%, which means that the number of reactors and XLs with this material is twice the expected amount if using Tin Plasma; -> Trinium changes these numbers to 92.4% and 74.5%, respectively; -> Infinity further increases the penalty to 97.4% and 91.1%; -> Spacetime sets these values to 98.3% and 94.4%.  This means that, at the UHV/UEV stage, you will no longer be able to rely on these two plasmas with your XLs. For 1-recipe plasmas, your best option is the mk3 Americium Plasma, which has an insignificant 0.8% penalty with Infinity. If you want faster powergen than that, check out the complete fusion chain that ends at Celestial Tungsten Plasma, which has no penalties in the XL Plasma Turbine and has total EU/t numbers compared to Helium's old ones. Check below for quests regarding the fusion chains.
+  - [提交] gregtech:gt.blockmachines:15523
+  - [可选提交] miscutils:gtplusplus.blockspecialcasings.1:4 x351, gregtech:gt.blockcasings5:5 x100, gregtech:gt.blockcasings2:15 x72, bartworks:BW_TieredGlass x36, gregtech:gt.blockframes:316 x32, miscutils:gtplusplus.blockspecialcasings.1 x16, gregtech:gt.blockcasings2:3 x7
+
+### [-6562319546724824113] §b§lXL Turbo SC Steam Turbine
+The most dense steam available. Check the XL Steam Turbine quest above for an explanation of the mechanics shared across all turbines.  This turbine has unexpected bugs related to the integer limit, when using the best turbine materials in the pack. There might also be other limitations when trying to move billions of SC Steam per tick from one place to another. Be wary of bugs when trying to use this XL turbine with endgame turbine materials.
+  - [提交] gregtech:gt.blockmachines:15521
+  - [可选提交] miscutils:gtplusplus.blockspecialcasings.1:15 x439, gregtech:gt.blockcasings11:7 x100, bartworks:BW_TieredGlass x36, gregtech:gt.blockframes:324 x34, gregtech:gt.blockcasings.cyclotron_coils x20, miscutils:gtplusplus.blockspecialcasings.1 x16
+
+### [-4981735154459347867] §8§lXL Turbo Steam Turbine
+The first of the XL Turbines. Because this is the first, this quest will include an explanation for the mechanics shared across all XL Turbines.  Each XL Turbine can hold 12 turbine items inside, but its total speed is 16x higher than the regular multiblock equivalent. Make sure all the turbine items inside are of the same material, and also that you can provide enough input to match the flow rate that the multi needs! If you need even more speed, you can enable Loose Mode with a screwdriver on the controller, which can greatly increase turbines' flow rate while decreasing the efficiency.  These huge turbines also support TecTech hatches, so you can use multi-amp dynamos with a much higher output amount than normal, or even laser outputs later on to sustain the hundreds of millions of EU/t that the strongest turbines can produce.  Each of the 5 turbines takes in the same fuels as their smaller counterparts, with some exceptions that will be mentioned in the respective quest. This XL Steam Turbine only consumes Steam, as expected.  [note]Glass can be any tier.[/note]
+  - [提交] gregtech:gt.blockmachines:15519
+  - [可选提交] miscutils:gtplusplus.blockspecialcasings.1:1 x439, gregtech:gt.blockcasings2:13 x100, bartworks:BW_TieredGlass x36, gregtech:gt.blockframes:305 x34, gregtech:gt.blockcasings.cyclotron_coils x20, miscutils:gtplusplus.blockspecialcasings.1 x16
+
+### [2791] §8§lYou Haven't Learned How to Separate Fluids Yet? Seriously?
+This multi follows the same logic as the Large Combustion Engine, but it uses semifluids instead. If you have the need to burn any of those for power, like Heavy Fuel for example, you can put this together.  [note]Check the Large Combustion Engine quest for more details.[/note]
+  - [可选提交] gregtech:gt.blockcasings2:3 x2, gregtech:gt.blockcasings4:13 x8, gregtech:gt.blockcasings4:2 x19, gregtech:gt.blockmachines:90
+  - [提交] gregtech:gt.blockmachines:31026
+  > 奖励: gregtech:gt.metaitem.01:30741 x16 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x5
+
+### [-7026708278772253011] Zzzincing...
+Do you know how much Zinc you have in your body? Very little, but it's important. Now imagine it's all plasma!  This is a very fast recipe, like Niobium Plasma. The only caveat is that it uses Tritium (not Trinium), a rare isotope of Hydrogen that you can obtain from Deuterium, a less rare isotope. You can pump it directly from Neptune, through the Space Elevator or simply by centrifuging the Deuterium you already automated for Helium Plasma.
+  - [可选提交] gregtech:gt.metaitem.01:31036
+  - [勾选确认]
+

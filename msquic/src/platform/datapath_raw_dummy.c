@@ -1,0 +1,328 @@
+/*++
+
+    Copyright (c) Microsoft Corporation.
+    Licensed under the MIT License.
+
+Abstract:
+
+    QUIC Datapath Implementation (User Mode)
+
+--*/
+
+#include "datapath_raw.h"
+#include "platform_internal.h"
+
+uint32_t
+CxPlatGetRawSocketSize(void) {
+    return sizeof(CXPLAT_SOCKET_RAW);
+}
+
+CXPLAT_SOCKET*
+CxPlatRawToSocket(_In_ CXPLAT_SOCKET_RAW* Socket) {
+    return (CXPLAT_SOCKET*)((unsigned char*)Socket + sizeof(CXPLAT_SOCKET_RAW) - sizeof(CXPLAT_SOCKET));
+}
+
+CXPLAT_SOCKET_RAW*
+CxPlatSocketToRaw(_In_ CXPLAT_SOCKET* Socket) {
+    return (CXPLAT_SOCKET_RAW*)((unsigned char*)Socket - sizeof(CXPLAT_SOCKET_RAW) + sizeof(CXPLAT_SOCKET));
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+RawSocketCreateUdp(
+    _In_ CXPLAT_DATAPATH_RAW* DataPath,
+    _In_ const CXPLAT_UDP_CONFIG* Config,
+    _Inout_ CXPLAT_SOCKET_RAW* NewSocket
+    )
+{
+    UNREFERENCED_PARAMETER(DataPath);
+    UNREFERENCED_PARAMETER(Config);
+    UNREFERENCED_PARAMETER(NewSocket);
+    return QUIC_STATUS_NOT_SUPPORTED;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+RawSocketDelete(
+    _In_ CXPLAT_SOCKET_RAW* Socket
+    )
+{
+    UNREFERENCED_PARAMETER(Socket);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+RawDataPathInitialize(
+    _In_ uint32_t ClientRecvContextLength,
+    _In_opt_ const CXPLAT_DATAPATH* ParentDataPath,
+    _In_ CXPLAT_WORKER_POOL* WorkerPool,
+    _In_ const CXPLAT_DATAPATH_INIT_CONFIG* InitConfig,
+    _Outptr_result_maybenull_ CXPLAT_DATAPATH_RAW** DataPath
+    )
+{
+    UNREFERENCED_PARAMETER(ClientRecvContextLength);
+    UNREFERENCED_PARAMETER(ParentDataPath);
+    UNREFERENCED_PARAMETER(WorkerPool);
+    UNREFERENCED_PARAMETER(InitConfig);
+    *DataPath = NULL;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+RawDataPathUninitialize(
+    _In_ CXPLAT_DATAPATH_RAW* Datapath
+    )
+{
+    UNREFERENCED_PARAMETER(Datapath);
+}
+
+BOOLEAN
+CxPlatDpRawIsRawDatapathOnly(
+    _In_opt_ const CXPLAT_DATAPATH_RAW* RawDataPath
+    )
+{
+    UNREFERENCED_PARAMETER(RawDataPath);
+    return FALSE; // Dummy raw datapath is never raw-only.
+}
+
+void
+CxPlatDpRawEnableRawDatapathOnly(
+    _In_ CXPLAT_DATAPATH_RAW* RawDataPath
+    )
+{
+    UNREFERENCED_PARAMETER(RawDataPath);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+RawDataPathUpdatePollingIdleTimeout(
+    _In_ CXPLAT_DATAPATH_RAW* Datapath,
+    _In_ uint32_t PollingIdleTimeoutUs
+    )
+{
+    UNREFERENCED_PARAMETER(Datapath);
+    UNREFERENCED_PARAMETER(PollingIdleTimeoutUs);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+CxPlatDpRawApplyMapConfigs(
+    _In_ CXPLAT_DATAPATH_RAW* RawDataPath,
+    _In_reads_(MapConfigCount) const CXPLAT_XDP_MAP_CONFIG* MapConfigs,
+    _In_ uint32_t MapConfigCount
+    )
+{
+    //
+    // Stub for platforms without XDP support.
+    //
+    UNREFERENCED_PARAMETER(RawDataPath);
+    UNREFERENCED_PARAMETER(MapConfigs);
+    UNREFERENCED_PARAMETER(MapConfigCount);
+    return QUIC_STATUS_NOT_SUPPORTED;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+CxPlatDpRawCleanupMapConfigs(
+    _In_ CXPLAT_DATAPATH_RAW* RawDataPath
+    )
+{
+    UNREFERENCED_PARAMETER(RawDataPath);
+}
+
+uint32_t
+CxPlatDpRawGetTotalRuleCount(
+    _In_ const CXPLAT_DATAPATH_RAW* RawDataPath
+    )
+{
+    UNREFERENCED_PARAMETER(RawDataPath);
+    return 0;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+CXPLAT_DATAPATH_FEATURES
+RawDataPathGetSupportedFeatures(
+    _In_ CXPLAT_DATAPATH_RAW* Datapath
+    )
+{
+    UNREFERENCED_PARAMETER(Datapath);
+    return CXPLAT_DATAPATH_FEATURE_NONE;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+BOOLEAN
+RawDataPathIsPaddingPreferred(
+    _In_ CXPLAT_DATAPATH* Datapath
+    )
+{
+    UNREFERENCED_PARAMETER(Datapath);
+    return FALSE;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+RawSocketUpdateQeo(
+    _In_ CXPLAT_SOCKET_RAW* Socket,
+    _In_reads_(OffloadCount)
+        const CXPLAT_QEO_CONNECTION* Offloads,
+    _In_ uint32_t OffloadCount
+    )
+{
+    UNREFERENCED_PARAMETER(Socket);
+    UNREFERENCED_PARAMETER(Offloads);
+    UNREFERENCED_PARAMETER(OffloadCount);
+    return QUIC_STATUS_NOT_SUPPORTED;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+uint16_t
+RawSocketGetLocalMtu(
+    _In_ CXPLAT_ROUTE* Route
+    )
+{
+    UNREFERENCED_PARAMETER(Route);
+    return 1500;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+RawRecvDataReturn(
+    _In_ CXPLAT_RECV_DATA* RecvDataChain
+    )
+{
+    UNREFERENCED_PARAMETER(RecvDataChain);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+_Success_(return != NULL)
+CXPLAT_SEND_DATA*
+RawSendDataAlloc(
+    _Inout_ CXPLAT_SEND_CONFIG* Config
+    )
+{
+    UNREFERENCED_PARAMETER(Config);
+    return NULL;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+RawSendDataFree(
+    _In_ CXPLAT_SEND_DATA* SendData
+    )
+{
+    UNREFERENCED_PARAMETER(SendData);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+_Success_(return != NULL)
+QUIC_BUFFER*
+RawSendDataAllocBuffer(
+    _In_ CXPLAT_SEND_DATA* SendData,
+    _In_ uint16_t MaxBufferLength
+    )
+{
+    UNREFERENCED_PARAMETER(SendData);
+    UNREFERENCED_PARAMETER(MaxBufferLength);
+    return NULL;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+RawSendDataFreeBuffer(
+    _In_ CXPLAT_SEND_DATA* SendData,
+    _In_ QUIC_BUFFER* Buffer
+    )
+{
+    UNREFERENCED_PARAMETER(SendData);
+    UNREFERENCED_PARAMETER(Buffer);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+BOOLEAN
+RawSendDataIsFull(
+    _In_ CXPLAT_SEND_DATA* SendData
+    )
+{
+    UNREFERENCED_PARAMETER(SendData);
+    return FALSE;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+QUIC_STATUS
+RawSocketSend(
+    _In_ CXPLAT_SOCKET_RAW* Socket,
+    _In_ const CXPLAT_ROUTE* Route,
+    _In_ CXPLAT_SEND_DATA* SendData
+    )
+{
+    UNREFERENCED_PARAMETER(Socket);
+    UNREFERENCED_PARAMETER(Route);
+    UNREFERENCED_PARAMETER(SendData);
+    return QUIC_STATUS_NOT_SUPPORTED;
+}
+
+void
+RawResolveRouteComplete(
+    _In_ void* Context,
+    _Inout_ CXPLAT_ROUTE* Route,
+    _In_reads_bytes_(6) const uint8_t* PhysicalAddress,
+    _In_ uint8_t PathId
+    )
+{
+    UNREFERENCED_PARAMETER(Context);
+    UNREFERENCED_PARAMETER(Route);
+    UNREFERENCED_PARAMETER(PhysicalAddress);
+    UNREFERENCED_PARAMETER(PathId);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+RawResolveRoute(
+    _In_ CXPLAT_SOCKET_RAW* Sock,
+    _Inout_ CXPLAT_ROUTE* Route,
+    _In_ uint8_t PathId,
+    _In_ void* Context,
+    _In_ CXPLAT_ROUTE_RESOLUTION_CALLBACK_HANDLER Callback
+    )
+{
+    UNREFERENCED_PARAMETER(Sock);
+    UNREFERENCED_PARAMETER(Route);
+    UNREFERENCED_PARAMETER(PathId);
+    UNREFERENCED_PARAMETER(Context);
+    UNREFERENCED_PARAMETER(Callback);
+    return QUIC_STATUS_NOT_SUPPORTED;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+RawUpdateRoute(
+    _Inout_ CXPLAT_ROUTE* DstRoute,
+    _In_ CXPLAT_ROUTE* SrcRoute
+    )
+{
+    UNREFERENCED_PARAMETER(DstRoute);
+    UNREFERENCED_PARAMETER(SrcRoute);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+CxPlatDataPathRssConfigGet(
+    _In_ uint32_t InterfaceIndex,
+    _Outptr_ _At_(*RssConfig, __drv_allocatesMem(Mem))
+        CXPLAT_RSS_CONFIG** RssConfig
+    )
+{
+    UNREFERENCED_PARAMETER(InterfaceIndex);
+    UNREFERENCED_PARAMETER(RssConfig);
+    return QUIC_STATUS_NOT_SUPPORTED;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+CxPlatDataPathRssConfigFree(
+    _In_ CXPLAT_RSS_CONFIG* RssConfig
+    )
+{
+    UNREFERENCED_PARAMETER(RssConfig);
+    CXPLAT_FRE_ASSERTMSG(FALSE, "CxPlatDataPathRssConfigFree not supported");
+}

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang }}" data-theme="auto">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="{{ description }}">
+  <meta name="author" content="{{ site.author }}">
+  <title>{% if title and title != site.short_title %}{{ title }} · {{ site.short_title }}{% else %}{{ site.title }}{% endif %}</title>
+
+  
+  <link rel="icon" type="image/svg+xml" href="{{ relative_root }}assets/ico.svg">
+  <link rel="preload" href="{{ relative_root }}assets/css/style.css" as="style">
+  <link rel="preload" href="{{ relative_root }}assets/ico.svg" as="image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
+  <link rel="stylesheet" href="{{ relative_root }}assets/css/style.css">
+  <link rel="stylesheet" href="{{ relative_root }}assets/css/pygments.css">
+
+  
+  {% if mathjax %}
+  <script>
+    window.MathJax = {
+      loader: { load: ['[tex]/mhchem'] },
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        packages: { '[+]': ['mhchem'] }
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+    }
+  </script>
+  {% endif %}
+</head>
+<body data-base-path="{{ relative_root }}">
+  
+  <a href="#main-content" class="skip-link">跳转到主内容</a>
+
+  
+  <header class="site-header">
+    <div class="container header-inner">
+      
+      <a href="{{ relative_root }}index.html" class="site-brand">
+        <img src="{{ relative_root }}assets/ico.svg" alt="{{ site.short_title }}" class="site-logo">
+        <div class="site-titles">
+          <span class="site-title-main">{{ site.short_title }}</span>
+          <span class="site-title-sub">{{ site.class }}</span>
+        </div>
+      </a>
+
+      
+      <nav class="site-nav" id="siteNav">
+        {% for item in navigation %}
+        <div class="nav-item {% if item.children %}has-children{% endif %}">
+          <a href="{{ relative_root }}{{ item.path }}" class="nav-link {% if current_path == item.path %}active{% endif %}">
+            {{ item.title }}
+            {% if item.children %}<span class="nav-caret">▾</span>{% endif %}
+          </a>
+          {% if item.children %}
+          <div class="nav-dropdown">
+            {% for child in item.children %}
+            {% if child.children %}
+            <div class="nav-dropdown-group has-children">
+              <a href="{{ relative_root }}{{ child.path }}" class="nav-dropdown-link {% if current_path == child.path %}active{% endif %}">
+                {{ child.title }}<span class="nav-caret">▸</span>
+              </a>
+              <div class="nav-dropdown-submenu">
+                {% for grandchild in child.children %}
+                <a href="{{ relative_root }}{{ grandchild.path }}" class="nav-dropdown-link {% if current_path == grandchild.path %}active{% endif %}">
+                  {{ grandchild.title }}
+                </a>
+                {% endfor %}
+              </div>
+            </div>
+            {% else %}
+            <a href="{{ relative_root }}{{ child.path }}" class="nav-dropdown-link {% if current_path == child.path %}active{% endif %}">
+              {{ child.title }}
+            </a>
+            {% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </nav>
+
+      
+      <div class="header-actions">
+        
+        <button class="icon-btn" id="searchBtn" aria-label="搜索" title="搜索 (Ctrl+K)">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+
+        
+        <button class="icon-btn" id="themeToggle" aria-label="切换主题" title="切换浅色/深色模式">
+          <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <div class="header-auth" id="headerAuth">
+          <a href="{{ relative_root }}login.html" class="btn btn-sm btn-outline" id="loginBtn">登录</a>
+          <a href="{{ relative_root }}register.html" class="btn btn-sm btn-primary" id="registerBtn">注册</a>
+        </div>
+
+        <div class="header-user" id="headerUser" style="display:none">
+          <button class="icon-btn" id="userMenuBtn" aria-label="用户菜单" aria-haspopup="true">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </button>
+          <div class="user-dropdown" id="userDropdown" style="display:none">
+            <a href="{{ relative_root }}dashboard.html" class="user-dropdown-link">仪表盘</a>
+            <hr class="user-dropdown-divider">
+            <a href="javascript:void(0)" class="user-dropdown-link" id="logoutLink">退出登录</a>
+          </div>
+        </div>
+
+        <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  
+  <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+  <nav class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav-header">
+      <span class="mobile-nav-title">导航菜单</span>
+      <button class="icon-btn" id="mobileNavClose" aria-label="关闭">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="mobile-nav-body">
+      {% for item in navigation %}
+      <div class="mobile-nav-item">
+        <a href="{{ relative_root }}{{ item.path }}" class="mobile-nav-link {% if current_path == item.path %}active{% endif %}">
+          {{ item.title }}
+        </a>
+        {% if item.children %}
+        <div class="mobile-nav-children">
+          {% for child in item.children %}
+          <a href="{{ relative_root }}{{ child.path }}" class="mobile-nav-child-link {% if current_path == child.path %}active{% endif %}">
+            {{ child.title }}
+          </a>
+          {% if child.children %}
+          <div class="mobile-nav-grandchildren">
+            {% for grandchild in child.children %}
+            <a href="{{ relative_root }}{{ grandchild.path }}" class="mobile-nav-grandchild-link {% if current_path == grandchild.path %}active{% endif %}">
+              {{ grandchild.title }}
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </nav>
+
+  
+  <div class="search-modal" id="searchModal">
+    <div class="search-modal-backdrop" id="searchBackdrop"></div>
+    <div class="search-modal-box">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-input-icon">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="搜索论文、页面、关键词..." autocomplete="off">
+        <kbd class="search-kbd">ESC</kbd>
+      </div>
+      <div class="search-results" id="searchResults">
+        <div class="search-placeholder">输入关键词开始搜索，或按 <kbd>↑</kbd> <kbd>↓</kbd> 选择结果</div>
+      </div>
+    </div>
+  </div>
+
+  
+  <main class="site-main" id="main-content">
+    <div class="container">
+      
+      <nav class="breadcrumb" aria-label="面包屑导航">
+        <a href="{{ relative_root }}index.html">首页</a>
+        {% if title and title != site.short_title %}
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-current">{{ title }}</span>
+        {% endif %}
+      </nav>
+
+      
+      <div class="page-actions" role="toolbar" aria-label="页面操作">
+        <span class="page-actions-label">页面操作：</span>
+        {% set md_download_path = relative_root + 'downloads/' + current_path | replace('.html', '.md') %}
+        <a href="{{ md_download_path }}" class="btn-icon" download aria-label="下载 Markdown 源文件" title="下载 Markdown 源文件">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>下载 MD</span>
+        </a>
+        {% set pdf_download_path = relative_root + 'downloads/' + current_path | replace('.html', '.pdf') %}
+        <a href="{{ pdf_download_path }}" class="btn-icon" download aria-label="导出为 PDF" title="导出为 PDF">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 9V2h12v7"></path>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          <span>导出 PDF</span>
+        </a>
+        <button type="button" class="btn-icon" id="hyphensToggle" aria-label="切换英文连字符断词" aria-pressed="true" title="切换英文连字符断词">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 7h6M14 7h6M4 12h16M4 17h8M16 17h4"></path>
+          </svg>
+          <span>连字符：开</span>
+        </button>
+      </div>
+
+      
+      <article class="content-page">
+        {% if title and title != site.short_title %}
+        <header class="page-header">
+          <h1 class="page-title">{{ title }}</h1>
+          {% if page_date or author or tags %}
+          <div class="page-meta">
+            {% if author %}
+            <span class="page-author">{{ author }}</span>
+            {% endif %}
+            {% if page_date %}
+            <span class="page-date">{{ page_date }}</span>
+            {% endif %}
+            {% if tags %}
+            <span class="page-tags">
+              {% for tag in tags %}
+              <span class="tag">{{ tag }}</span>
+              {% endfor %}
+            </span>
+            {% endif %}
+          </div>
+          {% endif %}
+        </header>
+        {% endif %}
+
+        <div class="markdown-body">
+          {{ content }}
+        </div>
+      </article>
+    </div>
+  </main>
+
+  
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="{{ relative_root }}assets/ico.svg" alt="" class="footer-logo">
+        <div>
+          <div class="footer-title">{{ site.title }}</div>
+          <div class="footer-subtitle">{{ site.subtitle }}</div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>导航</h4>
+          {% for item in navigation %}
+          <a href="{{ relative_root }}{{ item.path }}">{{ item.title }}</a>
+          {% endfor %}
+        </div>
+        <div class="footer-col">
+          <h4>联系</h4>
+          <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+          <span>{{ site.class }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <span>© {{ current_year }} {{ site.title }}. 致力于推动基础科学发展。</span>
+        <span class="footer-icp">
+          <a href="https://icp.gov.moe/?keyword=20260896" target="_blank" rel="noopener">萌ICP备20260896号 [待定中]</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  
+  <script src="{{ relative_root }}assets/js/auth.js" defer></script>
+  <script src="{{ relative_root }}assets/js/main.js" defer></script>
+  <script src="{{ relative_root }}assets/js/search.js" defer></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var token = localStorage.getItem('apart207_token');
+    var user = null;
+    try { user = JSON.parse(localStorage.getItem('apart207_user')); } catch(e) {}
+    if (token && user) {
+      document.getElementById('headerAuth').style.display = 'none';
+      document.getElementById('headerUser').style.display = 'flex';
+    }
+    var userBtn = document.getElementById('userMenuBtn');
+    var userDropdown = document.getElementById('userDropdown');
+    if (userBtn) {
+      userBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+      });
+      document.addEventListener('click', function() { userDropdown.style.display = 'none'; });
+    }
+    var logoutLink = document.getElementById('logoutLink');
+    if (logoutLink) {
+      logoutLink.addEventListener('click', async function() {
+        try { await fetch('/api/auth/logout', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } }); } catch(e) {}
+        localStorage.removeItem('apart207_token');
+        localStorage.removeItem('apart207_user');
+        window.location.reload();
+      });
+    }
+  });
+  </script>
+</body>
+</html>

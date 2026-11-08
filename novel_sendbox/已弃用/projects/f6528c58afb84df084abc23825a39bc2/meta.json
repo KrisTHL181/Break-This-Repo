@@ -1,0 +1,15 @@
+{
+  "id": "f6528c58afb84df084abc23825a39bc2",
+  "title": "测试暂停",
+  "genre": "测试",
+  "created_at": "2026-08-17T09:11:34.118039",
+  "current_chapter": 0,
+  "current_scene": "",
+  "focus_characters": [],
+  "multithread": false,
+  "word_count_target": {
+    "min": 2000,
+    "max": 3000
+  },
+  "foreshadows_enabled": false
+}

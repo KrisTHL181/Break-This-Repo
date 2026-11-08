@@ -1,0 +1,8 @@
+type: text
+
+---
+
+Anything inheriting directly from `Entity` must:
+1) Create a custom entity spawn packet for overriding `Entity.createSpawnPacket`, because `ClientPlayNetworkHandler.onEntitySpawn` is hardcoded to only support vanilla Non-LivingEntity
+or
+2) Inject into `ClientPlayerNetworkHandler.onEntitySpawn` and do handle the packet there.

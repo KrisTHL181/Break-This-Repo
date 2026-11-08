@@ -1,0 +1,241 @@
+CLASS net/minecraft/class_9334 net/minecraft/component/DataComponentTypes
+	FIELD field_49627 DEFAULT_ITEM_COMPONENTS Lnet/minecraft/class_9323;
+	FIELD field_51518 CACHE Lnet/minecraft/class_9684;
+	FIELD field_56132 TROPICAL_FISH_PATTERN_COLOR Lnet/minecraft/class_9331;
+	FIELD field_56133 MOOSHROOM_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56134 RABBIT_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56135 PIG_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56136 FROG_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56137 HORSE_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56138 PAINTING_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56139 LLAMA_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56140 AXOLOTL_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56141 CAT_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56142 CAT_COLLAR Lnet/minecraft/class_9331;
+	FIELD field_56143 SHEEP_COLOR Lnet/minecraft/class_9331;
+	FIELD field_56144 SHULKER_COLOR Lnet/minecraft/class_9331;
+	FIELD field_56145 VILLAGER_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56146 WOLF_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56147 WOLF_COLLAR Lnet/minecraft/class_9331;
+	FIELD field_56148 FOX_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56149 SALMON_SIZE Lnet/minecraft/class_9331;
+	FIELD field_56150 PARROT_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56151 TROPICAL_FISH_PATTERN Lnet/minecraft/class_9331;
+	FIELD field_56152 TROPICAL_FISH_BASE_COLOR Lnet/minecraft/class_9331;
+	FIELD field_56508 COW_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_56595 CHICKEN_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_57109 WOLF_SOUND_VARIANT Lnet/minecraft/class_9331;
+	FIELD field_64474 ZOMBIE_NAUTILUS_VARIANT Lnet/minecraft/class_9331;
+	METHOD method_57884 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57885 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57886 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57887 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57888 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57889 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57890 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57891 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57892 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57893 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57895 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57896 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57897 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57898 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57899 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57900 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57901 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57902 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57903 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57904 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57905 getDefault (Lnet/minecraft/class_2378;)Lnet/minecraft/class_9331;
+		ARG 0 registry
+	METHOD method_57906 register (Ljava/lang/String;Ljava/util/function/UnaryOperator;)Lnet/minecraft/class_9331;
+		ARG 0 id
+		ARG 1 builderOperator
+	METHOD method_57907 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57908 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57910 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57911 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57912 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57913 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57914 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57915 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57916 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57917 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57918 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57919 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57920 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57921 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57922 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57923 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57924 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57925 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57926 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57927 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57928 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57929 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57930 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57931 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_57932 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_58564 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_58565 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_58566 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_58568 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_58569 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_58570 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_58763 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_60914 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_62712 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_62713 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_62987 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_62988 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_62989 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_62990 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_64098 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_64099 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_64100 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_64101 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_64260 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66550 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66551 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66878 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66879 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66880 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66881 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66882 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66883 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66884 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66885 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66886 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66887 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66888 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66889 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66890 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66891 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66892 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66893 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66894 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66895 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66896 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66897 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_66898 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67295 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67296 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67297 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67298 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67299 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67300 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67476 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_67554 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_68171 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_75508 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_75509 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_75510 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_75511 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_75512 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_75513 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_76571 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder
+	METHOD method_76767 (Lnet/minecraft/class_9331$class_9332;)Lnet/minecraft/class_9331$class_9332;
+		ARG 0 builder

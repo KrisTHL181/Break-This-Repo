@@ -1,0 +1,55 @@
+CLASS net/minecraft/class_542 net/minecraft/client/RunArgs
+	FIELD field_3277 directories Lnet/minecraft/class_542$class_544;
+	FIELD field_3278 network Lnet/minecraft/class_542$class_547;
+	FIELD field_3279 windowSettings Lnet/minecraft/class_543;
+	FIELD field_3280 game Lnet/minecraft/class_542$class_545;
+	FIELD field_44553 quickPlay Lnet/minecraft/class_542$class_8495;
+	METHOD <init> (Lnet/minecraft/class_542$class_547;Lnet/minecraft/class_543;Lnet/minecraft/class_542$class_544;Lnet/minecraft/class_542$class_545;Lnet/minecraft/class_542$class_8495;)V
+		ARG 1 network
+		ARG 2 windowSettings
+		ARG 3 dirs
+		ARG 4 game
+		ARG 5 quickPlay
+	CLASS class_544 Directories
+		FIELD field_3287 runDir Ljava/io/File;
+		FIELD field_3288 assetIndex Ljava/lang/String;
+		FIELD field_3289 assetDir Ljava/io/File;
+		FIELD field_3290 resourcePackDir Ljava/io/File;
+		METHOD <init> (Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/lang/String;)V
+			ARG 1 runDir
+			ARG 2 resPackDir
+			ARG 3 assetDir
+			ARG 4 assetIndex
+		METHOD method_45701 getAssetDir ()Ljava/nio/file/Path;
+	CLASS class_545 Game
+		FIELD field_3291 versionType Ljava/lang/String;
+		FIELD field_3292 demo Z
+		FIELD field_3293 version Ljava/lang/String;
+		FIELD field_25061 multiplayerDisabled Z
+		FIELD field_25062 onlineChatDisabled Z
+		FIELD field_54272 tracyEnabled Z
+		FIELD field_57923 renderDebugLabels Z
+		FIELD field_61660 offlineDeveloperMode Z
+		METHOD <init> (ZLjava/lang/String;Ljava/lang/String;ZZZZZ)V
+			ARG 1 demo
+			ARG 2 version
+			ARG 3 versionType
+			ARG 4 multiplayerDisabled
+			ARG 5 onlineChatDisabled
+			ARG 6 tracyEnabled
+			ARG 7 renderDebugLabels
+			ARG 8 offlineDeveloperMode
+	CLASS class_547 Network
+		FIELD field_3296 netProxy Ljava/net/Proxy;
+		FIELD field_3299 session Lnet/minecraft/class_320;
+		METHOD <init> (Lnet/minecraft/class_320;Ljava/net/Proxy;)V
+			ARG 1 session
+	CLASS class_8495 QuickPlay
+		METHOD method_51257 isEnabled ()Z
+	CLASS class_11392 DisabledQuickPlay
+	CLASS class_11393 MultiplayerQuickPlay
+	CLASS class_11394 RealmsQuickPlay
+	CLASS class_11395 SingleplayerQuickPlay
+	CLASS class_11396 QuickPlayVariant
+		FIELD field_60574 DEFAULT Lnet/minecraft/class_542$class_11396;
+		METHOD method_71645 isEnabled ()Z

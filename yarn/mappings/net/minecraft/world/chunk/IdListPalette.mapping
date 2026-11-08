@@ -1,0 +1,6 @@
+CLASS net/minecraft/class_2816 net/minecraft/world/chunk/IdListPalette
+	COMMENT A palette that directly stores the raw ID of entries to the palette
+	COMMENT container storage.
+	FIELD field_12828 idList Lnet/minecraft/class_2359;
+	METHOD <init> (Lnet/minecraft/class_2359;)V
+		ARG 1 idList

@@ -1,0 +1,10 @@
+CLASS net/minecraft/class_3285 net/minecraft/resource/ResourcePackProvider
+	COMMENT A resource pack provider provides {@link ResourcePackProfile}s, usually to
+	COMMENT {@link ResourcePackManager}s.
+	METHOD method_14453 register (Ljava/util/function/Consumer;)V
+		COMMENT Register resource pack profiles created with the {@code factory} to the
+		COMMENT {@code profileAdder}.
+		COMMENT
+		COMMENT @see ResourcePackProfile
+		ARG 1 profileAdder
+			COMMENT the profile adder that accepts created resource pack profiles

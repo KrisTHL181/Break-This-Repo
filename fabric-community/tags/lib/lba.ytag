@@ -1,0 +1,7 @@
+type: text
+
+---
+
+LibBlockAttributes is an api that allows block to provide attributes for themselves, allows items to be managed, and also allows fluids to be managed.
+
+https://github.com/AlexIIL/LibBlockAttributes

@@ -1,0 +1,81 @@
+CLASS net/minecraft/class_8673 net/minecraft/client/network/ClientCommonNetworkHandler
+	FIELD field_45588 client Lnet/minecraft/class_310;
+	FIELD field_45589 connection Lnet/minecraft/class_2535;
+	FIELD field_45590 serverInfo Lnet/minecraft/class_642;
+	FIELD field_45591 brand Ljava/lang/String;
+	FIELD field_45592 worldSession Lnet/minecraft/class_7975;
+	FIELD field_45593 postDisconnectScreen Lnet/minecraft/class_437;
+	FIELD field_45594 LOST_CONNECTION_TEXT Lnet/minecraft/class_2561;
+	FIELD field_45595 queuedPackets Ljava/util/List;
+	FIELD field_45944 LOGGER Lorg/slf4j/Logger;
+	FIELD field_48399 serverCookies Ljava/util/Map;
+	FIELD field_51516 transferring Z
+	FIELD field_52154 customReportDetails Ljava/util/Map;
+	FIELD field_52155 serverLinks Lnet/minecraft/class_9782;
+	FIELD field_62019 seenPlayers Ljava/util/Map;
+	FIELD field_62020 seenInsecureChatWarning Z
+	METHOD <init> (Lnet/minecraft/class_310;Lnet/minecraft/class_2535;Lnet/minecraft/class_8675;)V
+		ARG 1 client
+		ARG 2 connection
+		ARG 3 connectionState
+	METHOD method_11152 onCustomPayload (Lnet/minecraft/class_8710;)V
+		ARG 1 payload
+	METHOD method_52773 getParsedResourcePackUrl (Ljava/lang/String;)Ljava/net/URL;
+		ARG 0 url
+	METHOD method_52778 getPrompt (Lnet/minecraft/class_2561;Lnet/minecraft/class_2561;)Lnet/minecraft/class_2561;
+		ARG 0 requirementPrompt
+		ARG 1 customPrompt
+	METHOD method_52779 send (Lnet/minecraft/class_2596;Ljava/util/function/BooleanSupplier;Ljava/time/Duration;)V
+		ARG 1 packet
+		ARG 2 sendCondition
+		ARG 3 expiry
+	METHOD method_52786 createDisconnectedScreen (Lnet/minecraft/class_9812;)Lnet/minecraft/class_437;
+		ARG 1 info
+	METHOD method_52787 sendPacket (Lnet/minecraft/class_2596;)V
+		ARG 1 packet
+	METHOD method_52789 sendQueuedPackets ()V
+	METHOD method_52790 getBrand ()Ljava/lang/String;
+	METHOD method_55511 (Ljava/util/UUID;)V
+		ARG 1 id
+	METHOD method_55609 createConfirmServerResourcePackScreen (Ljava/util/UUID;Ljava/net/URL;Ljava/lang/String;ZLnet/minecraft/class_2561;)Lnet/minecraft/class_437;
+		ARG 1 id
+		ARG 2 url
+		ARG 3 hash
+		ARG 4 required
+		ARG 5 prompt
+	METHOD method_60880 (Lnet/minecraft/class_9782$class_9783;)Ljava/util/List;
+		ARG 0 bugReportEntry
+	METHOD method_60882 savePacketErrorReport (Lnet/minecraft/class_2596;Ljava/lang/Throwable;)Ljava/util/Optional;
+		ARG 1 packet
+		ARG 2 exception
+	METHOD method_71924 showDialog (Lnet/minecraft/class_6880;Lnet/minecraft/class_11513;Lnet/minecraft/class_437;)V
+		ARG 1 dialog
+		ARG 2 networkAccess
+		ARG 3 previousScreen
+	METHOD method_72016 getServerLinks ()Lnet/minecraft/class_9782;
+	METHOD method_72017 createDialogNetworkAccess ()Lnet/minecraft/class_11513;
+	METHOD method_72018 clearDialog ()V
+	METHOD method_72154 showDialog (Lnet/minecraft/class_6880;Lnet/minecraft/class_437;)V
+		ARG 1 dialog
+		ARG 2 previousScreen
+	CLASS class_8137 QueuedPacket
+	CLASS class_9058 ConfirmServerResourcePackScreen
+		FIELD field_47682 packs Ljava/util/List;
+		FIELD field_47683 parent Lnet/minecraft/class_437;
+		METHOD <init> (Lnet/minecraft/class_8673;Lnet/minecraft/class_310;Lnet/minecraft/class_437;Ljava/util/List;ZLnet/minecraft/class_2561;)V
+			ARG 2 client
+			ARG 3 parent
+			ARG 4 pack
+			ARG 5 required
+			ARG 6 prompt
+		METHOD method_55612 (Lnet/minecraft/class_310;Lnet/minecraft/class_437;ZLjava/util/List;Lnet/minecraft/class_8673;Z)V
+			ARG 5 confirmed
+		METHOD method_55613 add (Lnet/minecraft/class_310;Ljava/util/UUID;Ljava/net/URL;Ljava/lang/String;ZLnet/minecraft/class_2561;)Lnet/minecraft/class_8673$class_9058;
+			ARG 1 client
+			ARG 2 id
+			ARG 3 url
+			ARG 4 hash
+			ARG 5 required
+			ARG 6 prompt
+		CLASS class_9059 Pack
+	CLASS class_11740 CommonDialogNetworkAccess

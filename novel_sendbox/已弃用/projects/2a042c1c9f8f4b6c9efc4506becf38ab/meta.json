@@ -1,0 +1,15 @@
+{
+  "id": "2a042c1c9f8f4b6c9efc4506becf38ab",
+  "title": "新建项目",
+  "genre": "",
+  "created_at": "2026-08-19T17:06:40.494357",
+  "current_chapter": 0,
+  "current_scene": "",
+  "focus_characters": [],
+  "multithread": false,
+  "word_count_target": {
+    "min": 2000,
+    "max": 3000
+  },
+  "foreshadows_enabled": false
+}

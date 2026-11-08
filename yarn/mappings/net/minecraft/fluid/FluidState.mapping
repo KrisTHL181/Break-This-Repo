@@ -1,0 +1,64 @@
+CLASS net/minecraft/class_3610 net/minecraft/fluid/FluidState
+	FIELD field_25018 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_31727 MAX_AMOUNT I
+	FIELD field_31728 MAX_FLUID_LEVEL I
+	METHOD <init> (Lnet/minecraft/class_3611;Lit/unimi/dsi/fastutil/objects/Reference2ObjectArrayMap;Lcom/mojang/serialization/MapCodec;)V
+		ARG 1 fluid
+		ARG 2 propertyMap
+		ARG 3 codec
+	METHOD method_15756 canFlowTo (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;)Z
+		ARG 1 world
+		ARG 2 pos
+	METHOD method_15757 onRandomTick (Lnet/minecraft/class_3218;Lnet/minecraft/class_2338;Lnet/minecraft/class_5819;)V
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 random
+	METHOD method_15758 getVelocity (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;)Lnet/minecraft/class_243;
+		ARG 1 world
+		ARG 2 pos
+	METHOD method_15759 getBlockState ()Lnet/minecraft/class_2680;
+	METHOD method_15760 getBlastResistance ()F
+	METHOD method_15761 getLevel ()I
+	METHOD method_15763 getHeight (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;)F
+		ARG 1 world
+		ARG 2 pos
+	METHOD method_15764 canBeReplacedWith (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;Lnet/minecraft/class_3611;Lnet/minecraft/class_2350;)Z
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 fluid
+		ARG 4 direction
+	METHOD method_15766 getParticle ()Lnet/minecraft/class_2394;
+	METHOD method_15767 isIn (Lnet/minecraft/class_6862;)Z
+		ARG 1 tag
+	METHOD method_15768 randomDisplayTick (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_5819;)V
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 random
+	METHOD method_15769 isEmpty ()Z
+	METHOD method_15770 onScheduledTick (Lnet/minecraft/class_3218;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 state
+	METHOD method_15771 isStill ()Z
+	METHOD method_15772 getFluid ()Lnet/minecraft/class_3611;
+	METHOD method_15773 hasRandomTicks ()Z
+	METHOD method_17776 getShape (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;)Lnet/minecraft/class_265;
+		ARG 1 world
+		ARG 2 pos
+	METHOD method_20785 getHeight ()F
+	METHOD method_33659 isEqualAndStill (Lnet/minecraft/class_3611;)Z
+		ARG 1 fluid
+	METHOD method_39360 isOf (Lnet/minecraft/class_3611;)Z
+		ARG 1 fluid
+	METHOD method_40179 isIn (Lnet/minecraft/class_6885;)Z
+		ARG 1 fluids
+	METHOD method_40180 getRegistryEntry ()Lnet/minecraft/class_6880;
+	METHOD method_40181 streamTags ()Ljava/util/stream/Stream;
+	METHOD method_66789 getCollisionBox (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;)Lnet/minecraft/class_238;
+		ARG 1 world
+		ARG 2 pos
+	METHOD method_67695 onEntityCollision (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_1297;Lnet/minecraft/class_10774;)V
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 entity
+		ARG 4 handler

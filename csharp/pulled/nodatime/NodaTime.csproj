@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Upstream ships a packaging-oriented .csproj (netstandard2.0 + net8.0, signed with a strong
+    name key, package validation, an analyzer PackageReference). This is a *vendored copy*, so the
+    build file here is deliberately reduced to the one thing that matters: compile the sources
+    into a working net8.0 library, with no restore traffic and no signing key.
+
+    Consequence, stated plainly: this project is not published as a NuGet package and does not
+    carry upstream's strong name. See PROVENANCE.md.
+  -->
+  <PropertyGroup>
+    <AssemblyName>NodaTime</AssemblyName>
+    <RootNamespace>NodaTime</RootNamespace>
+    <Nullable>enable</Nullable>
+    <SignAssembly>false</SignAssembly>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);CS0618;CS8981;CA1303;CA5350;CA5351;CA5394;CA1307;CA1310;SYSLIB0021;SYSLIB0022;SYSLIB0023</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TimeZones/Tzdb.nzd" LogicalName="NodaTime.TimeZones.Tzdb.nzd" />
+  </ItemGroup>
+
+</Project>

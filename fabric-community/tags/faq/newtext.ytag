@@ -1,0 +1,16 @@
+type: text
+
+---
+
+Minecraft 1.19 changed how text components work. They are now created with methods on the `Text` interface instead of constructors of subclasses.
+
+Here are the transformations for the basic text types:
+`new LiteralText(...)` -> `Text.literal(...)`
+`new TranslatableText(...)` -> `Text.translatable(...)`
+`new KeybindText(...)` -> `Text.keybind(...)`
+`new SelectorText(...)` -> `Text.selector(...)`
+`new ScoreText(...)` -> `Text.score(...)`
+`Text.EMPTY` -> `Text.empty()`
+
+Nbt text was reworked largely. It's now one method (`Text.nbt(...)`) that takes a `NbtDataSource` as an argument. 
+`NbtDataSource` has implementations  for all the different sources that were previously subclasses of `NbtText`.

@@ -1,0 +1,18 @@
+CLASS net/minecraft/class_2578 net/minecraft/text/ScoreTextContent
+	FIELD comp_3078 name Lcom/mojang/datafixers/util/Either;
+	FIELD comp_3079 objective Ljava/lang/String;
+	FIELD field_46626 INNER_CODEC Lcom/mojang/serialization/MapCodec;
+	FIELD field_46627 CODEC Lcom/mojang/serialization/MapCodec;
+	METHOD <init> (Lcom/mojang/datafixers/util/Either;Ljava/lang/String;)V
+		ARG 2 objective
+	METHOD comp_3078 name ()Lcom/mojang/datafixers/util/Either;
+	METHOD comp_3079 objective ()Ljava/lang/String;
+	METHOD equals (Ljava/lang/Object;)Z
+		ARG 1 o
+	METHOD method_27699 getScoreHolder (Lnet/minecraft/class_2168;)Lnet/minecraft/class_9015;
+		ARG 1 source
+	METHOD method_27700 getScore (Lnet/minecraft/class_9015;Lnet/minecraft/class_2168;)Lnet/minecraft/class_5250;
+		ARG 1 scoreHolder
+		ARG 2 source
+	METHOD method_54233 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance

@@ -1,0 +1,58 @@
+CLASS net/minecraft/class_8052 net/minecraft/item/SmithingTemplateItem
+	FIELD field_41958 EMPTY_SLOT_SWORD_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41959 EMPTY_SLOT_SHOVEL_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41960 EMPTY_SLOT_PICKAXE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41961 EMPTY_SLOT_INGOT_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41962 EMPTY_SLOT_REDSTONE_DUST_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41963 EMPTY_SLOT_QUARTZ_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41964 EMPTY_SLOT_EMERALD_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41965 EMPTY_SLOT_DIAMOND_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41966 EMPTY_SLOT_LAPIS_LAZULI_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41967 appliesToText Lnet/minecraft/class_2561;
+	FIELD field_41968 ingredientsText Lnet/minecraft/class_2561;
+	FIELD field_41970 baseSlotDescriptionText Lnet/minecraft/class_2561;
+	FIELD field_41971 additionsSlotDescriptionText Lnet/minecraft/class_2561;
+	FIELD field_41972 emptyBaseSlotTextures Ljava/util/List;
+	FIELD field_41973 emptyAdditionsSlotTextures Ljava/util/List;
+	FIELD field_41974 TITLE_FORMATTING Lnet/minecraft/class_124;
+	FIELD field_41975 DESCRIPTION_FORMATTING Lnet/minecraft/class_124;
+	FIELD field_41977 INGREDIENTS_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41978 APPLIES_TO_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41980 ARMOR_TRIM_APPLIES_TO_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41981 ARMOR_TRIM_INGREDIENTS_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41982 ARMOR_TRIM_BASE_SLOT_DESCRIPTION_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41983 ARMOR_TRIM_ADDITIONS_SLOT_DESCRIPTION_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41984 NETHERITE_UPGRADE_APPLIES_TO_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41985 NETHERITE_UPGRADE_INGREDIENTS_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41986 NETHERITE_UPGRADE_BASE_SLOT_DESCRIPTION_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41987 NETHERITE_UPGRADE_ADDITIONS_SLOT_DESCRIPTION_TEXT Lnet/minecraft/class_2561;
+	FIELD field_41988 EMPTY_ARMOR_SLOT_HELMET_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41989 EMPTY_ARMOR_SLOT_CHESTPLATE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41990 EMPTY_ARMOR_SLOT_LEGGINGS_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41991 EMPTY_ARMOR_SLOT_BOOTS_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41992 EMPTY_SLOT_HOE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_41993 EMPTY_SLOT_AXE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_42472 EMPTY_SLOT_AMETHYST_SHARD_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_52584 SMITHING_TEMPLATE_TEXT Lnet/minecraft/class_2561;
+	FIELD field_63396 EMPTY_SLOT_SPEAR_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_63397 EMPTY_SLOT_NAUTILUS_ARMOR_TEXTURE Lnet/minecraft/class_2960;
+	METHOD <init> (Lnet/minecraft/class_2561;Lnet/minecraft/class_2561;Lnet/minecraft/class_2561;Lnet/minecraft/class_2561;Ljava/util/List;Ljava/util/List;Lnet/minecraft/class_1792$class_1793;)V
+		ARG 1 appliesToText
+		ARG 2 ingredientsText
+		ARG 3 baseSlotDescriptionText
+		ARG 4 additionsSlotDescriptionText
+		ARG 5 emptyBaseSlotTextures
+		ARG 6 emptyAdditionsSlotTextures
+		ARG 7 settings
+	METHOD method_48413 getEmptyAdditionsSlotTextures ()Ljava/util/List;
+	METHOD method_48414 getArmorTrimEmptyBaseSlotTextures ()Ljava/util/List;
+	METHOD method_48415 getArmorTrimEmptyAdditionsSlotTextures ()Ljava/util/List;
+	METHOD method_48416 getNetheriteUpgradeEmptyBaseSlotTextures ()Ljava/util/List;
+	METHOD method_48417 getNetheriteUpgradeEmptyAdditionsSlotTextures ()Ljava/util/List;
+	METHOD method_48418 of (Lnet/minecraft/class_1792$class_1793;)Lnet/minecraft/class_8052;
+		ARG 0 settings
+	METHOD method_48420 createNetheriteUpgrade (Lnet/minecraft/class_1792$class_1793;)Lnet/minecraft/class_8052;
+		ARG 0 settings
+	METHOD method_48421 getBaseSlotDescription ()Lnet/minecraft/class_2561;
+	METHOD method_48422 getAdditionsSlotDescription ()Lnet/minecraft/class_2561;
+	METHOD method_48423 getEmptyBaseSlotTextures ()Ljava/util/List;

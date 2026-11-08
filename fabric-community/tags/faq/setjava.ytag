@@ -1,0 +1,35 @@
+type: text
+
+---
+
+To change the Java version you're developing for, you need to set the version in several places. This uses Java 21 as an example.
+```diff
+// build.gradle
+tasks.withType(JavaCompile).configureEach {
++	  it.options.release = 21
+}
+
+java {
++   sourceCompatibility = JavaVersion.VERSION_21
++   targetCompatibility = JavaVersion.VERSION_21
+}
+```
+```diff
+// modid.mixins.json
+// Also in modid.client.mixins.json if you're using split sources
+{
++   "compatibilityLevel": "JAVA_21"
+}
+```
+```diff
+// fabric.mod.json
+{
+    "depends": {
++       "java": ">=21"
+    }
+}
+```
+Finally, in IntelliJ:
+File | Project Structure | Project Settings | Project | SDK -> Set to a Java 21 JDK
+File | Project Structure | Project Settings | Project | Language level -> Set to SDK default (or 21)
+File | Settings | Build, Execution, Deployment | Build Tools | Gradle -> Set Gradle JVM to Project SDK (or a Java 21 JDK)

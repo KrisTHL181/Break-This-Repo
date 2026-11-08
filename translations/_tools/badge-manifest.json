@@ -1,0 +1,366 @@
+[
+  {
+    "code": "aa",
+    "native": "Afaraf",
+    "en": "Afar",
+    "group": "paleo",
+    "bytes": 1118
+  },
+  {
+    "code": "ab",
+    "native": "аԥсшәа",
+    "en": "Abkhaz",
+    "group": "paleo",
+    "bytes": 1118
+  },
+  {
+    "code": "ae",
+    "native": "avesta",
+    "en": "Avestan",
+    "group": "paleo",
+    "bytes": 1118
+  },
+  {
+    "code": "af",
+    "native": "Afrikaans",
+    "en": "Afrikaans",
+    "group": "germanic",
+    "bytes": 1127
+  },
+  {
+    "code": "an",
+    "native": "aragonés",
+    "en": "Aragonese",
+    "group": "romance",
+    "bytes": 1124
+  },
+  {
+    "code": "ar",
+    "native": "العربية",
+    "en": "Arabic",
+    "group": "semitic",
+    "bytes": 1121
+  },
+  {
+    "code": "av",
+    "native": "авар мацӀ",
+    "en": "Avaric",
+    "group": "paleo",
+    "bytes": 1127
+  },
+  {
+    "code": "bh",
+    "native": "भोजपुरी",
+    "en": "Bihari",
+    "group": "indic",
+    "bytes": 1121
+  },
+  {
+    "code": "bs",
+    "native": "bosanski jezik",
+    "en": "Bosnian",
+    "group": "slavic",
+    "bytes": 1143
+  },
+  {
+    "code": "ca",
+    "native": "Català",
+    "en": "Catalan",
+    "group": "romance",
+    "bytes": 1118
+  },
+  {
+    "code": "ch",
+    "native": "Chamoru",
+    "en": "Chamorro",
+    "group": "celtic",
+    "bytes": 1121
+  },
+  {
+    "code": "co",
+    "native": "corsu",
+    "en": "Corsican",
+    "group": "romance",
+    "bytes": 1112
+  },
+  {
+    "code": "cs",
+    "native": "čeština",
+    "en": "Czech",
+    "group": "slavic",
+    "bytes": 1121
+  },
+  {
+    "code": "da",
+    "native": "dansk",
+    "en": "Danish",
+    "group": "germanic",
+    "bytes": 1112
+  },
+  {
+    "code": "de",
+    "native": "Deutsch",
+    "en": "German",
+    "group": "germanic",
+    "bytes": 1121
+  },
+  {
+    "code": "el",
+    "native": "Ελληνικά",
+    "en": "Greek",
+    "group": "other",
+    "bytes": 1124
+  },
+  {
+    "code": "en",
+    "native": "English",
+    "en": "English",
+    "group": "germanic",
+    "bytes": 1121
+  },
+  {
+    "code": "es",
+    "native": "Español",
+    "en": "Spanish",
+    "group": "romance",
+    "bytes": 1121
+  },
+  {
+    "code": "et",
+    "native": "eesti",
+    "en": "Estonian",
+    "group": "uralic",
+    "bytes": 1112
+  },
+  {
+    "code": "fi",
+    "native": "suomi",
+    "en": "Finnish",
+    "group": "uralic",
+    "bytes": 1112
+  },
+  {
+    "code": "fo",
+    "native": "føroyskt",
+    "en": "Faroese",
+    "group": "germanic",
+    "bytes": 1124
+  },
+  {
+    "code": "fr",
+    "native": "Français",
+    "en": "French",
+    "group": "romance",
+    "bytes": 1124
+  },
+  {
+    "code": "fy",
+    "native": "Frysk",
+    "en": "Western Frisian",
+    "group": "germanic",
+    "bytes": 1112
+  },
+  {
+    "code": "gl",
+    "native": "Galego",
+    "en": "Galician",
+    "group": "romance",
+    "bytes": 1118
+  },
+  {
+    "code": "he",
+    "native": "עברית",
+    "en": "Hebrew",
+    "group": "semitic",
+    "bytes": 1112
+  },
+  {
+    "code": "hi",
+    "native": "हिन्दी",
+    "en": "Hindi",
+    "group": "indic",
+    "bytes": 1118
+  },
+  {
+    "code": "hr",
+    "native": "Hrvatski",
+    "en": "Croatian",
+    "group": "slavic",
+    "bytes": 1124
+  },
+  {
+    "code": "hu",
+    "native": "magyar",
+    "en": "Hungarian",
+    "group": "uralic",
+    "bytes": 1118
+  },
+  {
+    "code": "is",
+    "native": "Íslenska",
+    "en": "Icelandic",
+    "group": "germanic",
+    "bytes": 1124
+  },
+  {
+    "code": "it",
+    "native": "Italiano",
+    "en": "Italian",
+    "group": "romance",
+    "bytes": 1124
+  },
+  {
+    "code": "ja",
+    "native": "日本語",
+    "en": "Japanese",
+    "group": "sea",
+    "bytes": 1106
+  },
+  {
+    "code": "ko",
+    "native": "한국어",
+    "en": "Korean",
+    "group": "sea",
+    "bytes": 1106
+  },
+  {
+    "code": "lb",
+    "native": "Lëtzebuergesch",
+    "en": "Luxembourgish",
+    "group": "germanic",
+    "bytes": 1143
+  },
+  {
+    "code": "lt",
+    "native": "lietuvių kalba",
+    "en": "Lithuanian",
+    "group": "other",
+    "bytes": 1143
+  },
+  {
+    "code": "lv",
+    "native": "latviešu valoda",
+    "en": "Latvian",
+    "group": "other",
+    "bytes": 1146
+  },
+  {
+    "code": "mk",
+    "native": "македонски јазик",
+    "en": "Macedonian",
+    "group": "slavic",
+    "bytes": 1149
+  },
+  {
+    "code": "nb",
+    "native": "Norsk bokmål",
+    "en": "Norwegian Bokmål",
+    "group": "germanic",
+    "bytes": 1137
+  },
+  {
+    "code": "nl",
+    "native": "Nederlands",
+    "en": "Dutch",
+    "group": "germanic",
+    "bytes": 1130
+  },
+  {
+    "code": "nn",
+    "native": "Norsk nynorsk",
+    "en": "Norwegian Nynorsk",
+    "group": "germanic",
+    "bytes": 1140
+  },
+  {
+    "code": "no",
+    "native": "Norsk",
+    "en": "Norwegian",
+    "group": "germanic",
+    "bytes": 1112
+  },
+  {
+    "code": "oc",
+    "native": "occitan",
+    "en": "Occitan",
+    "group": "romance",
+    "bytes": 1121
+  },
+  {
+    "code": "pl",
+    "native": "polski",
+    "en": "Polish",
+    "group": "other",
+    "bytes": 1118
+  },
+  {
+    "code": "pt",
+    "native": "Português",
+    "en": "Portuguese",
+    "group": "romance",
+    "bytes": 1127
+  },
+  {
+    "code": "rm",
+    "native": "rumantsch grischun",
+    "en": "Romansh",
+    "group": "romance",
+    "bytes": 1155
+  },
+  {
+    "code": "ru",
+    "native": "Русский",
+    "en": "Russian",
+    "group": "slavic",
+    "bytes": 1121
+  },
+  {
+    "code": "sk",
+    "native": "slovenčina",
+    "en": "Slovak",
+    "group": "slavic",
+    "bytes": 1130
+  },
+  {
+    "code": "sl",
+    "native": "slovenščina",
+    "en": "Slovenian",
+    "group": "slavic",
+    "bytes": 1134
+  },
+  {
+    "code": "sr",
+    "native": "српски језик",
+    "en": "Serbian",
+    "group": "slavic",
+    "bytes": 1137
+  },
+  {
+    "code": "sv",
+    "native": "Svenska",
+    "en": "Swedish",
+    "group": "germanic",
+    "bytes": 1121
+  },
+  {
+    "code": "th",
+    "native": "ไทย",
+    "en": "Thai",
+    "group": "sea",
+    "bytes": 1106
+  },
+  {
+    "code": "tr",
+    "native": "Türkçe",
+    "en": "Turkish",
+    "group": "turkic",
+    "bytes": 1118
+  },
+  {
+    "code": "uk",
+    "native": "Українська",
+    "en": "Ukrainian",
+    "group": "slavic",
+    "bytes": 1130
+  }
+]

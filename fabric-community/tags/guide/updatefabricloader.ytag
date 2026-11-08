@@ -1,0 +1,11 @@
+type: embed
+
+colour: blurple
+embed:
+    title: Updating Fabric Loader
+
+---
+
+You need to update Fabric Loader. It is not Fabric API. If you're using a third party launcher, this can be done from the instance's settings. If you're using Minecraft Launcher, see the following guide:
+
+https://fabricmc.net/wiki/player:tutorials:update_mcl

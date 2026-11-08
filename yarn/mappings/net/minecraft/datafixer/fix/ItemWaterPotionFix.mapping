@@ -1,0 +1,3 @@
+CLASS net/minecraft/class_1190 net/minecraft/datafixer/fix/ItemWaterPotionFix
+	METHOD method_5048 (Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
+		ARG 2 itemStackTyped

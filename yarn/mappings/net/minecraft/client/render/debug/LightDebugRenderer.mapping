@@ -1,0 +1,25 @@
+CLASS net/minecraft/class_8520 net/minecraft/client/render/debug/LightDebugRenderer
+	FIELD field_44675 UPDATE_INTERVAL Ljava/time/Duration;
+	FIELD field_44676 RADIUS I
+	FIELD field_44677 READY_SHAPE_COLOR I
+	FIELD field_44678 DEFAULT_SHAPE_COLOR I
+	FIELD field_44679 client Lnet/minecraft/class_310;
+	FIELD field_44680 lightType Lnet/minecraft/class_1944;
+	FIELD field_44681 lastUpdateTime Ljava/time/Instant;
+	FIELD field_44682 data Lnet/minecraft/class_8520$class_8521;
+	METHOD <init> (Lnet/minecraft/class_310;Lnet/minecraft/class_1944;)V
+		ARG 1 client
+		ARG 2 lightType
+	METHOD method_51457 drawFaces (Lnet/minecraft/class_251;Lnet/minecraft/class_4076;I)V
+	METHOD method_51458 drawEdges (Lnet/minecraft/class_251;Lnet/minecraft/class_4076;I)V
+	METHOD method_51459 drawEdge (IIIIIII)V
+	METHOD method_51460 drawFace (Lnet/minecraft/class_2350;IIII)V
+	CLASS class_8521 Data
+		FIELD field_44684 readyShape Lnet/minecraft/class_251;
+		FIELD field_44685 shape Lnet/minecraft/class_251;
+		FIELD field_44686 minSectionPos Lnet/minecraft/class_4076;
+		METHOD <init> (Lnet/minecraft/class_3568;Lnet/minecraft/class_4076;ILnet/minecraft/class_1944;)V
+			ARG 1 lightingProvider
+			ARG 2 sectionPos
+			ARG 3 radius
+			ARG 4 lightType

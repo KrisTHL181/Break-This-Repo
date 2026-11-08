@@ -1,0 +1,145 @@
+CLASS net/minecraft/class_259 net/minecraft/util/shape/VoxelShapes
+	FIELD field_1384 EMPTY Lnet/minecraft/class_265;
+	FIELD field_1385 FULL_CUBE Lnet/minecraft/class_265;
+	FIELD field_17669 UNBOUNDED Lnet/minecraft/class_265;
+	FIELD field_31880 MIN_SIZE D
+	FIELD field_55842 BLOCK_CENTER Lnet/minecraft/class_243;
+	METHOD method_1069 createListPair (ILit/unimi/dsi/fastutil/doubles/DoubleList;Lit/unimi/dsi/fastutil/doubles/DoubleList;ZZ)Lnet/minecraft/class_255;
+		ARG 0 size
+		ARG 1 first
+		ARG 2 second
+		ARG 3 includeFirst
+		ARG 4 includeSecond
+	METHOD method_1070 (Lnet/minecraft/class_247;Lnet/minecraft/class_251;IILnet/minecraft/class_251;IIIII)Z
+		ARG 7 z1
+		ARG 8 z2
+		ARG 9 index3
+	METHOD method_1071 matchesAnywhere (Lnet/minecraft/class_255;Lnet/minecraft/class_255;Lnet/minecraft/class_255;Lnet/minecraft/class_251;Lnet/minecraft/class_251;Lnet/minecraft/class_247;)Z
+		ARG 0 mergedX
+		ARG 1 mergedY
+		ARG 2 mergedZ
+		ARG 3 shape1
+		ARG 4 shape2
+		ARG 5 predicate
+	METHOD method_1072 combineAndSimplify (Lnet/minecraft/class_265;Lnet/minecraft/class_265;Lnet/minecraft/class_247;)Lnet/minecraft/class_265;
+		ARG 0 first
+		ARG 1 second
+		ARG 2 function
+	METHOD method_1073 empty ()Lnet/minecraft/class_265;
+	METHOD method_1074 matchesAnywhere (Lnet/minecraft/class_265;Lnet/minecraft/class_265;Lnet/minecraft/class_247;)Z
+		ARG 0 shape1
+		ARG 1 shape2
+		ARG 2 predicate
+	METHOD method_1075 (Lnet/minecraft/class_255;Lnet/minecraft/class_255;Lnet/minecraft/class_247;Lnet/minecraft/class_251;Lnet/minecraft/class_251;III)Z
+		ARG 5 x1
+		ARG 6 x2
+		ARG 7 index1
+	METHOD method_1076 (Lnet/minecraft/class_255;Lnet/minecraft/class_247;Lnet/minecraft/class_251;ILnet/minecraft/class_251;IIII)Z
+		ARG 6 y1
+		ARG 7 y2
+		ARG 8 index2
+	METHOD method_1077 fullCube ()Lnet/minecraft/class_265;
+	METHOD method_1078 cuboid (Lnet/minecraft/class_238;)Lnet/minecraft/class_265;
+		ARG 0 box
+	METHOD method_1079 lcm (II)J
+		ARG 0 a
+		ARG 1 b
+	METHOD method_1080 adjacentSidesCoverSquare (Lnet/minecraft/class_265;Lnet/minecraft/class_265;Lnet/minecraft/class_2350;)Z
+		ARG 0 one
+		ARG 1 two
+		ARG 2 direction
+	METHOD method_1081 cuboid (DDDDDD)Lnet/minecraft/class_265;
+		ARG 0 minX
+		ARG 2 minY
+		ARG 4 minZ
+		ARG 6 maxX
+		ARG 8 maxY
+		ARG 10 maxZ
+	METHOD method_1082 combine (Lnet/minecraft/class_265;Lnet/minecraft/class_265;Lnet/minecraft/class_247;)Lnet/minecraft/class_265;
+		ARG 0 one
+		ARG 1 two
+		ARG 2 function
+	METHOD method_1083 isSideCovered (Lnet/minecraft/class_265;Lnet/minecraft/class_265;Lnet/minecraft/class_2350;)Z
+		ARG 0 shape
+		ARG 1 neighbor
+		ARG 2 direction
+	METHOD method_1084 union (Lnet/minecraft/class_265;Lnet/minecraft/class_265;)Lnet/minecraft/class_265;
+		ARG 0 first
+		ARG 1 second
+	METHOD method_1085 calculateMaxOffset (Lnet/minecraft/class_2350$class_2351;Lnet/minecraft/class_238;Ljava/lang/Iterable;D)D
+		ARG 0 axis
+		ARG 1 box
+		ARG 2 shapes
+		ARG 3 maxDist
+	METHOD method_1086 findRequiredBitResolution (DD)I
+		ARG 0 min
+		ARG 2 max
+	METHOD method_17786 union (Lnet/minecraft/class_265;[Lnet/minecraft/class_265;)Lnet/minecraft/class_265;
+		ARG 0 first
+		ARG 1 others
+	METHOD method_20713 unionCoversFullCube (Lnet/minecraft/class_265;Lnet/minecraft/class_265;)Z
+		ARG 0 one
+		ARG 1 two
+	METHOD method_31943 cuboidUnchecked (DDDDDD)Lnet/minecraft/class_265;
+		ARG 0 minX
+		ARG 2 minY
+		ARG 4 minZ
+		ARG 6 maxX
+		ARG 8 maxY
+		ARG 10 maxZ
+	METHOD method_66494 createHorizontalAxisShapeMap (Lnet/minecraft/class_265;)Ljava/util/Map;
+		ARG 0 shape
+	METHOD method_66495 createHorizontalAxisShapeMap (Lnet/minecraft/class_265;Lnet/minecraft/class_243;)Ljava/util/Map;
+		ARG 0 shape
+		ARG 1 anchor
+	METHOD method_66496 transform (Lnet/minecraft/class_265;Lnet/minecraft/class_4990;)Lnet/minecraft/class_265;
+		ARG 0 shape
+		ARG 1 transformation
+	METHOD method_66497 transform (Lnet/minecraft/class_265;Lnet/minecraft/class_4990;Lnet/minecraft/class_243;)Lnet/minecraft/class_265;
+		ARG 0 shape
+		ARG 1 transformation
+		ARG 2 anchor
+	METHOD method_66498 transform (Lit/unimi/dsi/fastutil/doubles/DoubleList;ZDD)Lit/unimi/dsi/fastutil/doubles/DoubleList;
+		ARG 0 pointPositions
+		ARG 1 flip
+		ARG 2 component
+		ARG 4 anchor
+	METHOD method_66499 createAxisShapeMap (Lnet/minecraft/class_265;)Ljava/util/Map;
+		ARG 0 shape
+	METHOD method_66500 createAxisShapeMap (Lnet/minecraft/class_265;Lnet/minecraft/class_243;)Ljava/util/Map;
+		ARG 0 shape
+		ARG 1 anchor
+	METHOD method_66501 createHorizontalFacingShapeMap (Lnet/minecraft/class_265;)Ljava/util/Map;
+		ARG 0 shape
+	METHOD method_66502 createHorizontalFacingShapeMap (Lnet/minecraft/class_265;Lnet/minecraft/class_4990;Lnet/minecraft/class_243;)Ljava/util/Map;
+		ARG 0 shape
+		ARG 1 transformation
+		ARG 2 anchor
+	METHOD method_66503 equal (Lnet/minecraft/class_265;Lnet/minecraft/class_265;)Z
+		ARG 0 shape1
+		ARG 1 shape2
+	METHOD method_66504 createFacingShapeMap (Lnet/minecraft/class_265;)Ljava/util/Map;
+		ARG 0 shape
+	METHOD method_66505 createFacingShapeMap (Lnet/minecraft/class_265;Lnet/minecraft/class_4990;Lnet/minecraft/class_243;)Ljava/util/Map;
+		ARG 0 shape
+		ARG 1 transformation
+		ARG 2 anchor
+	METHOD method_66506 createBlockFaceHorizontalFacingShapeMap (Lnet/minecraft/class_265;)Ljava/util/Map;
+		ARG 0 shape
+	METHOD method_76593 createHorizontalFacingShapeMap (Lnet/minecraft/class_265;Lnet/minecraft/class_4990;)Ljava/util/Map;
+		ARG 0 shape
+		ARG 1 transformation
+	METHOD method_76594 createBlockFaceHorizontalFacingShapeMap (Lnet/minecraft/class_265;Lnet/minecraft/class_4990;)Ljava/util/Map;
+		ARG 0 shape
+		ARG 1 transformation
+	METHOD method_76595 createFacingShapeMap (Lnet/minecraft/class_265;Lnet/minecraft/class_243;)Ljava/util/Map;
+		ARG 0 shape
+		ARG 1 anchor
+	CLASS class_260 BoxConsumer
+		METHOD consume (DDDDDD)V
+			ARG 1 minX
+			ARG 3 minY
+			ARG 5 minZ
+			ARG 7 maxX
+			ARG 9 maxY
+			ARG 11 maxZ

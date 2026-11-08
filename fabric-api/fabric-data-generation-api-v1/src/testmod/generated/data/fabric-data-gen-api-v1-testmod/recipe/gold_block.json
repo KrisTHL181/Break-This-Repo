@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "fabric:type": "fabric:any",
+      "ingredients": [
+        "minecraft:golden_pickaxe",
+        "minecraft:golden_shovel"
+      ]
+    }
+  ],
+  "result": {
+    "id": "minecraft:gold_block"
+  }
+}

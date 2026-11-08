@@ -1,0 +1,14 @@
+type: embed
+
+colour: fabric
+embed:
+    title: Rule 8
+---
+
+> 8️⃣  Do not upload jar and other executable files, as well as archives containing them
+
+Do not upload `.jar`, `.exe`, Gradle scripts, or any other executable files (or archives containing them) directly to the server. Minecraft mods execute code on your machine and are a frequent vector for malware and account theft.
+
+- Upload your source code to GitHub or a similar repository.
+- Never download compiled mods from Discord, even from friends.
+- Contact moderators immediately if anyone from this server DMs you to test a mod or modpack.

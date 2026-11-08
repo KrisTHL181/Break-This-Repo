@@ -1,0 +1,202 @@
+plugins {
+	id 'java'
+	id 'maven-publish'
+	id "checkstyle"
+	id "com.gradleup.shadow" version "8.3.0"
+	id "com.diffplug.spotless" version "6.20.0"
+	id "de.undercouch.download" version "5.6.0"
+	id "me.modmuss50.remotesign" version "0.4.0"
+}
+
+version = '1.1.2'
+
+def ENV = System.getenv()
+version = version + (ENV.GITHUB_ACTIONS ? "" : "+local")
+
+repositories {
+	maven {
+		name = 'Fabric'
+		url = 'https://maven.fabricmc.net/'
+	}
+    mavenCentral()
+}
+
+def nativeLibVersion = "0.1.3"
+def nativeLibDistributions = [
+		"windows-ARM64", "windows-Win32", "windows-x64", "macos-x86_64_arm64"
+]
+
+dependencies {
+	implementation ('org.sharegov:mjson:1.4.1') {
+		transitive false
+	}
+	nativeLibDistributions.each {
+		implementation "net.fabricmc.fabric-installer-native-lib:${it}:${nativeLibVersion}"
+	}
+
+	testImplementation 'junit:junit:4.13.2'
+}
+
+base {
+	archivesName = "fabric-installer"
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_1_8
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+
+	if (JavaVersion.current().isJava9Compatible()) {
+		it.options.release = 8
+	}
+}
+
+checkstyle {
+	configFile = project.file("checkstyle.xml")
+	toolVersion = "8.45"
+}
+
+shadowJar {
+	manifest {
+		attributes 'Implementation-Title': 'FabricInstaller',
+				'Implementation-Version': project.version,
+				'Main-Class': 'net.fabricmc.installer.Main'
+	}
+
+	minimize()
+	archiveClassifier.set(null)
+	exclude('icon.ico')
+}
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+tasks.register('serverJar', ShadowJar) {
+	manifest {
+		attributes 'Implementation-Title': 'FabricInstaller',
+			'Implementation-Version': project.version,
+			'Main-Class': 'net.fabricmc.installer.ServerLauncher',
+			'Enable-Native-Access': 'ALL-UNNAMED'
+	}
+
+	minimize()
+	exclude('icon.ico')
+	exclude('*.png')
+	exclude('natives/*')
+
+	archiveClassifier = "server"
+	from sourceSets.main.output
+	configurations = [project.configurations.compileClasspath]
+}
+assemble.dependsOn serverJar
+
+def bootstrapVersion = "0.7.0"
+def bootstrapArch = "i686"
+
+tasks.register('downloadBootstrap', Download) {
+	src "https://maven.fabricmc.net/net/fabricmc/fabric-installer-native-bootstrap/windows-${bootstrapArch}/${bootstrapVersion}/windows-${bootstrapArch}-${bootstrapVersion}.exe"
+	dest layout.buildDirectory
+	overwrite false
+}
+
+remoteSign {
+	requestUrl = ENV.SIGNING_SERVER
+	pgpAuthKey = ENV.SIGNING_PGP_KEY
+	jarAuthKey = ENV.SIGNING_JAR_KEY
+
+	useDummyForTesting = !providers.environmentVariable("SIGNING_SERVER").present
+
+	sign (shadowJar)
+
+	afterEvaluate {
+		sign publishing.publications.maven
+	}
+}
+
+tasks.register('nativeExe', FileOutput) {
+	dependsOn shadowJar
+	dependsOn downloadBootstrap
+	dependsOn signShadowJar
+	output = file("${projectDir}/build/libs/${base.archivesName.get()}-${project.version}.exe")
+	outputs.upToDateWhen { false }
+
+	doFirst {
+		output.delete()
+	}
+
+	doLast {
+		output.createNewFile()
+		output.setBytes downloadBootstrap.outputFiles.first().readBytes()
+
+		output.append signShadowJar.output.get().getAsFile().readBytes()
+	}
+}
+build.dependsOn nativeExe
+
+jar {
+	enabled = false
+
+	manifest {
+		attributes('Enable-Native-Access': 'ALL-UNNAMED')
+	}
+}
+
+spotless {
+	java {
+		licenseHeaderFile(rootProject.file("HEADER"))
+	}
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId project.group
+			artifactId base.archivesName.get()
+			version project.version
+
+			artifact (signShadowJar.output) {
+				classifier null
+				builtBy shadowJar
+			}
+
+			artifact (nativeExe.output) {
+				builtBy nativeExe
+			}
+
+			// No point in signing as it is designed to get modified
+			artifact (serverJar) {
+				classifier "server"
+			}
+		}
+	}
+	repositories {
+		maven {
+			if (ENV.MAVEN_URL) {
+				url ENV.MAVEN_URL
+				credentials {
+					username ENV.MAVEN_USERNAME
+					password ENV.MAVEN_PASSWORD
+				}
+			}
+		}
+	}
+}
+
+// A task to ensure that the version being released has not already been released.
+tasks.register('checkVersion') {
+	doFirst {
+		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-installer/maven-metadata.xml").text
+		def metadata = new groovy.xml.XmlSlurper().parseText(xml)
+		def versions = metadata.versioning.versions.version*.text();
+		if (versions.contains(version)) {
+			throw new RuntimeException("${version} has already been released!")
+		}
+	}
+}
+
+publish.mustRunAfter checkVersion
+
+class FileOutput extends DefaultTask {
+	@OutputFile
+	File output
+}

@@ -1,0 +1,21 @@
+unpick v4
+
+group int nbt_type_id
+	net.minecraft.nbt.NbtElement.END_TYPE
+	net.minecraft.nbt.NbtElement.BYTE_TYPE
+	net.minecraft.nbt.NbtElement.SHORT_TYPE
+	net.minecraft.nbt.NbtElement.INT_TYPE
+	net.minecraft.nbt.NbtElement.LONG_TYPE
+	net.minecraft.nbt.NbtElement.FLOAT_TYPE
+	net.minecraft.nbt.NbtElement.DOUBLE_TYPE
+	net.minecraft.nbt.NbtElement.BYTE_ARRAY_TYPE
+	net.minecraft.nbt.NbtElement.STRING_TYPE
+	net.minecraft.nbt.NbtElement.LIST_TYPE
+	net.minecraft.nbt.NbtElement.COMPOUND_TYPE
+	net.minecraft.nbt.NbtElement.INT_ARRAY_TYPE
+	net.minecraft.nbt.NbtElement.LONG_ARRAY_TYPE
+
+target_method net.minecraft.nbt.NbtElement getType ()B
+	return nbt_type_id
+target_method net.minecraft.nbt.NbtTypes byId (I)Lnet/minecraft/nbt/NbtType;
+	param 0 nbt_type_id

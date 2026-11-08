@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Admin</title>
+    <script src="js/theme-init.js?v=0.1"></script>
+    <link rel="stylesheet" href="css/root.css?v=0.7">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/input.css">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+
+<body>
+<div id="loading-overlay">
+    <div>
+        <span data-i18n="loading-1"></span><br>
+        <span data-i18n="loading-2"></span>
+    </div>
+</div>
+<!-- 遮罩层 -->
+<div class="modal-overlay" id="modalOverlay"></div>
+<!-- 弹窗内容 -->
+<div class="modal" id="modal">
+    <div class="modal-header">
+        <h3></h3>
+        <span class="close-btn" id="closeBtn">&times;</span>
+    </div>
+    <div class="modal-body">
+        <p></p>
+    </div>
+    <div class="modal-footer">
+        <button class="confirm-btn" id="confirmBtn">OK</button>
+    </div>
+</div>
+<div class="modal review-data-modal" id="reviewDataModal">
+    <div class="modal-header">
+        <h3 id="reviewDataModalTitle"></h3>
+        <span class="close-btn" id="reviewDataCloseBtn">&times;</span>
+    </div>
+    <div class="modal-body">
+        <div id="reviewDataModalBody"></div>
+    </div>
+    <div class="modal-footer">
+        <button class="confirm-btn" id="reviewDataConfirmBtn">OK</button>
+    </div>
+</div>
+<div class="modal user-op-modal" id="userOpModal">
+    <div class="modal-header">
+        <h3 id="userOpModalTitle">Manage User</h3>
+        <span class="close-btn" id="userOpCloseBtn">&times;</span>
+    </div>
+    <div class="modal-body">
+        <div id="userOpModalBody">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="confirm-btn" id="userOpConfirmBtn">OK</button>
+    </div>
+</div>
+<!-- 气泡弹窗 -->
+<div class="bubble-container" id="bubbleContainer"></div>
+<header class="nav">
+    <h1 data-config="website_url" style="cursor: pointer"><span data-config="website_name"></span> <span
+            data-i18n="nav_title">Backend System</span></h1>
+    <div class="nav-buttons">
+        <div class="button-circle" onclick='go_url("/", 1)' data-i18n-title="home"><i class="fa-solid fa-home"></i></div>
+        <div class="button-circle" onclick='signout()' data-i18n-title="sign_out"><i class="fa-solid fa-right-to-bracket"></i></div>
+        <div class="button-circle" onclick='go_url("alter_password.html", 0)' data-i18n-title="alter_password"><i class='fa-solid fa-key'></i></div>
+        <div class="nav-user" id="uidEl"></div>
+    </div>
+</header>
+
+<main class="main">
+    <div class="panel">
+        <aside class="toolbar">
+            <button class="panel-btn selected" data-page="projList"><i class="fa-solid fa-tools"></i> <span
+                    data-i18n="project_list">Project List</span></button>
+            <button class="panel-btn" data-page="createProj"><i class="fa-solid fa-add"></i> <span
+                    data-i18n="create_project">Create project</span></button>
+            <button class="panel-btn" data-page="manageUser"><i class="fa-solid fa-users-gear"></i> <span
+                    data-i18n="manage_user">Manage User</span></button>
+            <button class="panel-btn" data-page="viewProgress"><i class="fa-solid fa-chart-line"></i> <span
+                    data-i18n="view_progress">View Progress</span></button>
+            <button class="panel-btn" data-page="outputData"><i class="fa-solid fa-file-export"></i> <span
+                    data-i18n="output">Output</span></button>
+            <button class="panel-btn" data-page="inputData"><i class="fa-solid fa-file-import"></i> <span
+                    data-i18n="input">Input</span></button>
+            <button class="panel-btn" data-page="systemSettings"><i class="fa-solid fa-gear"></i> <span data-i18n="settings"></span></button>
+            <div class="icon-toggle-group">
+                <button class="icon-toggle" id="darkToggle" data-i18n-title="switch_theme">
+                    <i class="fa-regular fa-moon" id="darkIcon"></i>
+                </button>
+                <button class="icon-toggle" id="languageSelect" data-i18n-title="switch_language">
+                    <i class="fa-solid fa-language"></i>
+                </button>
+            </div>
+        </aside>
+
+        <section class="viewer" id="projList">
+            <h2><i class="fa-solid fa-tools"></i> <span data-i18n="project_list">Project List</span></h2>
+            <div id="projListContainer" class="projListContainer">
+                <fieldset>
+                    <h3><i class="fa-solid fa-tools"></i>Example_1</h3>
+                    <div class="project-list">
+                        <li><h4><i class="fa-solid fa-folder"></i>Review</h4></li>
+                        <li><h4><i class="fa-solid fa-list-check"></i>Pending</h4></li>
+                        <li><h4><i class="fa-regular fa-clock"></i>2025-08-07</h4></li>
+                        <li><h4><i class="fa-solid fa-display"></i>Show</h4></li>
+                    </div>
+
+                    <div>
+                        <button>Manage Project</button>
+                        <button>Manage Photos</button>
+                        <button style="color: red">Delete</button>
+                    </div>
+                </fieldset>
+            </div>
+        </section>
+
+        <section class="viewer" id="createProj" style="display: none;">
+            <h2><i class="fa-solid fa-plus"></i> <span data-i18n="create_project">Create Project</span></h2>
+
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title" data-i18n="project_name">Project Name</div>
+                    <div class="desc" data-i18n="description_input_project_name"></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" name="input_project_name"
+                           data-i18n-placeholder="input_project_name" maxlength="100"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="project_type">Project type</span></div>
+                    <div class="desc" data-i18n="description_project_type"></div>
+                </div>
+                <div class="form-control">
+                    <div class="radio-card-group">
+                        <label class="radio-card">
+                            <input type="radio" name="review_type" value="0" checked/>
+                            <span data-i18n="review_review_type">Review</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="review_type" value="1"/>
+                            <span data-i18n="screening_review_type">Screening</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="set_project_max_score"></span></div>
+                    <div class="desc" data-i18n="description_set_project_max_score"></div>
+                </div>
+                <div class="form-control">
+                    <input type="number" class="text-input" name="input_project_max_score" min="3" max="10" value="3" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="project_thumbnail">Project thumbnail</span></div>
+                    <div class="desc" data-i18n="description_project_thumbnail"></div>
+                </div>
+                <div class="form-control">
+                    <div class="file-upload">
+                        <input type="file" id="imgInputCreateThumbnail" accept=".jpg,.jpeg,.png,.webp"/>
+                        <label for="imgInputCreateThumbnail" class="file-btn">
+                            <i class="fa-solid fa-file"></i> <span data-i18n="choose_an_image">Choose an Image</span>
+                        </label>
+                        <div class="file-display" id="imgInputCreateThumbnailDisplay">
+                            <span data-i18n="you_havent_chosen">You haven't chosen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button class="button-common" id="cleanCreateProj" data-i18n="clean">Clean</button>
+                <button class="button-common" id="submitCreateProj" data-i18n="submit">Submit</button>
+            </div>
+        </section>
+
+        <section class="viewer" id="systemSettings" style="display: none;">
+            <h2><i class="fa-solid fa-gear"></i> <span data-i18n="settings"></span></h2>
+
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title" data-i18n="set_system_name"></div>
+                    <div class="desc" data-i18n="description_set_system_name"></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" id="systemWebsiteName" maxlength="100" placeholder="请输入系统名称"/>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title" data-i18n="set_system_icon"></div>
+                    <div class="desc" data-i18n="description_icon"></div>
+                </div>
+                <div class="form-control">
+                    <div class="file-upload">
+                        <input type="file" id="systemWebsiteIcon" accept=".jpg,.jpeg,.png,.webp"/>
+                        <label for="systemWebsiteIcon" class="file-btn">
+                            <i class="fa-solid fa-file"></i> <span data-i18n="choose_an_image"></span>
+                        </label>
+                        <div class="file-display" id="systemWebsiteIconDisplay">
+                            <span data-i18n="you_havent_chosen"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-submit">
+                <button class="button-common" id="saveSystemSettings" data-i18n="save"></button>
+            </div>
+        </section>
+
+        <section class="viewer" id="manageProj" style="display: none;">
+            <h2><i class="fa-solid fa-folder-open"></i> <span data-i18n="manage_project">Manage Project</span></h2>
+
+            <h3 class="subtitle"><span data-i18n="project_info"></span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="desc"><span data-i18n="project_name">Project Name</span></div>
+                    <div class="title"><span id="manageProjName">Example_1</span></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="desc"><span data-i18n="total">Total</span></div>
+                    <div class="title"><span id="manageTotal">999</span></div>
+                </div>
+            </div>
+
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="modification_project">Modification Project</span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title" data-i18n="project_name">Project Name</div>
+                    <div class="desc" data-i18n="description_input_project_name"></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" name="input_project_name"
+                           data-i18n-placeholder="input_project_name" maxlength="100"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="project_thumbnail">Project thumbnail</span></div>
+                    <div class="desc" data-i18n="description_project_thumbnail_2"></div>
+                </div>
+                <div class="form-control">
+                    <div class="file-upload">
+                        <input type="file" id="imgInputManageThumbnail" accept=".jpg,.jpeg,.png,.webp"/>
+                        <label for="imgInputManageThumbnail" class="file-btn">
+                            <i class="fa-solid fa-file"></i> <span data-i18n="choose_an_image">Choose an Image</span>
+                        </label>
+                        <div class="file-display" id="imgInputManageThumbnailDisplay">
+                            <span data-i18n="you_havent_chosen">You haven't chosen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="project_status">Project Status</span></div>
+                    <div class="desc" data-i18n="description_project_status"></div>
+                </div>
+                <div class="form-control">
+                    <div class="radio-card-group">
+                        <label class="radio-card">
+                            <input type="radio" name="review_status" value="0"/>
+                            <span data-i18n="pending"></span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="review_status" value="1"/>
+                            <span data-i18n="progress"></span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="review_status" value="2"/>
+                            <span data-i18n="finished"></span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="review_status" value="3"/>
+                            <span data-i18n="rechecking"></span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="review_status" value="4"/>
+                            <span data-i18n="end"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="show_hide">Show / Hide</span></div>
+                    <div class="desc" data-i18n="description_show_hide"></div>
+                </div>
+                <div class="form-control">
+                    <div class="radio-card-group">
+                        <label class="radio-card">
+                            <input type="radio" name="review_display" value="1"/>
+                            <span data-i18n="show">Show</span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="review_display" value="0"/>
+                            <span data-i18n="hide">Hide</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button class="button-common" id="cancelManageProj" data-i18n="cancel">Cancel</button>
+                <button class="button-common" id="saveManageProj" data-i18n="save">Save</button>
+            </div>
+
+        </section>
+
+        <section class="viewer" id="manageGallery" style="display: none;">
+            <h2><i class="fa-solid fa-images"></i> <span data-i18n="manage_photos">Manage Photos</span></h2>
+
+            <h3 class="subtitle"><span data-i18n="upload"></span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="author">Author</span></div>
+                    <div class="desc"><span data-i18n="description_input_author">Please input the author of photos.</span></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" name="input_author"
+                           data-i18n-placeholder="input_author" maxlength="100"/>
+                </div>
+            </div>
+
+            <input type="file" id="imgInputUpload" accept=".jpg,.jpeg,.png,.webp" class="files-pool-input" multiple hidden/>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="photos_pool">Photos Pool</span></div>
+                    <div class="desc"><span data-i18n="description_choose_photos">Select a series of photos by this author to upload.</span></div>
+                </div>
+                <div class="form-control">
+                    <div class="file-btn" id="selectImagesToPool">
+                        <i class="fa-solid fa-file"></i>
+                        <span data-i18n="choose_images"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="files-pool" id="filePool">
+
+            </div>
+            <div class="form-submit">
+                <button class="button-common" id="cleanPhotosPool"><span data-i18n="clean">Clean</span></button>
+                <button class="button-common" id="uploadPhotosPool"><span data-i18n="upload">Upload</span></button>
+            </div>
+
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="manage_photos">Manage Photos</span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="desc"><span data-i18n="total">Total</span></div>
+                    <div class="title"><span id="photosTotal">999</span></div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="author"></span></div>
+                    <div class="desc"><span data-i18n="description_input_author_manage_photos">Filter photos by author.</span></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" name="input_author_manage_photos"
+                           data-i18n-placeholder="input_author" maxlength="100"/>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button class="button-common" id="filterManagePhotos"><span data-i18n="filter">Filter</span></button>
+            </div>
+            <!--
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="batch_delete">Batch Delete</span></div>
+                    <div class="desc"><span data-i18n="description_batch_delete"></span></div>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button class="button-common del" id="deleteSelectedPhotos"><span data-i18n="delete">Delete</span></button>
+            </div>
+            -->
+            <table class="common-table form-manage-photos">
+                <thead>
+                    <tr>
+                        <th>
+                            <label class="checkbox">
+                                <input type="checkbox" id="selectCurrentManagePhotosPage"><span class="box"></span>Photoid
+                            </label>
+                        </th>
+                        <th><span data-i18n="thumbnail"></span></th>
+                        <th><span data-i18n="author"></span></th>
+                        <th><span data-i18n="operation"></span></th>
+                    </tr>
+                </thead>
+                <tbody id="managePhotosTableBody">
+                </tbody>
+            </table>
+            <div class="manage-photos-pagination" id="managePhotosPagination">
+                <button type="button" class="page-control" id="managePhotosPrevPage">&lt;</button>
+                <div class="page-number-list" id="managePhotosPageNumbers"></div>
+                <button type="button" class="page-control" id="managePhotosNextPage">&gt;</button>
+                <select class="page-size-select" id="managePhotosPageSize">
+                    <option value="10" data-i18n="10_items_per_page"></option>
+                    <option value="20" data-i18n="20_items_per_page"></option>
+                    <option value="50" data-i18n="50_items_per_page"></option>
+                </select>
+                <button type="button" class="button-square common refresh" id="refreshManagePhotos">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="refresh">Refresh</span>
+                </button>
+            </div>
+            <div class="selected-photo-actions">
+                <div class="selected-photo-actions__title" data-i18n="actions_on_selected_items">Actions on selected items:</div>
+                <div class="selected-photo-actions__buttons">
+                    <button type="button" class="button-square del" id="deleteSelectedPhotos">
+                        <i class="fa-solid fa-trash"></i>
+                        <span data-i18n="delete">Delete</span>
+                    </button>
+                    <button type="button" class="button-square common" id="downloadSelectedPhotos">
+                        <i class="fa-solid fa-download"></i>
+                        <span data-i18n="download">Download</span>
+                    </button>
+                </div>
+            </div>
+
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="preliminary_task"></span></h3>
+            <table class="common-table">
+                <thead>
+                <tr>
+                    <th>UID</th>
+                    <th><span data-i18n="first"></span></th>
+                    <th><span data-i18n="last"></span></th>
+                    <th><span data-i18n="operation"></span></th>
+                </tr>
+                </thead>
+                <tbody id="distributionContainer">
+                    <tr>
+                        <td class="text-edit"><input class="text-input on-distribution" placeholder="UID" /></td>
+                        <td class="text-edit"><input class="text-input on-distribution" data-i18n-placeholder="first" /></td>
+                        <td class="text-edit"><input class="text-input on-distribution" data-i18n-placeholder="last" /></td>
+                        <td>
+                            <span class="btn edit"><i class="fa-solid fa-circle-plus"></i></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-edit">10010</td>
+                        <td class="text-edit">0</td>
+                        <td class="text-edit">999</td>
+                        <td>
+                            <span class="btn del"><i class="fa-solid fa-trash"></i></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3 class="subtitle"><span data-i18n="recheck_task"></span></h3>
+            <table class="common-table">
+                <thead>
+                <tr>
+                    <th>UID</th>
+                    <th><span data-i18n="operation"></span></th>
+                </tr>
+                </thead>
+                <tbody id="recheckDistributionContainer">
+                <tr>
+                    <td class="text-edit"><input class="text-input on-distribution" placeholder="UID" /></td>
+                    <td>
+                        <span class="btn edit"><i class="fa-solid fa-circle-plus"></i></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-edit">10010</td>
+                    <td>
+                        <span class="btn del"><i class="fa-solid fa-trash"></i></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="form-submit">
+                <button class="button-common" id="cancelManageDist" data-i18n="cancel">Cancel</button>
+                <button class="button-common" id="saveManageDist" data-i18n="save">Save</button>
+            </div>
+
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="quick_actions">Quick Actions</span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="delete_score">Delete Score</span></div>
+                    <div class="desc"><span data-i18n="description_delete_user_scores">Delete all scores of the user in this project.</span></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" id="deleteScoreUid" maxlength="10"
+                           inputmode="numeric" placeholder="UID"/>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button type="button" class="button-common" id="deleteUserScores" data-i18n="submit"></button>
+            </div>
+
+        </section>
+
+        <section class="viewer" id="viewResults" style="display: none;">
+            <h2><i class="fa-solid fa-square-poll-vertical"></i> <span data-i18n="view_results"></span></h2>
+
+            <h3 class="subtitle"><span data-i18n="preliminary_results"></span></h3>
+            <div class="result-fetch-toolbar">
+                <button type="button" class="button-common" id="fetchPreliminaryResult">
+                    <i class="fa-solid fa-cloud-arrow-down"></i>
+                    <span data-i18n="fetch_results"></span>
+                </button>
+                <div class="result-fetch-time">
+                    <span data-i18n="last_fetched"></span>
+                    <strong id="preliminaryResultTime" data-i18n="not_fetched"></strong>
+                </div>
+            </div>
+            <table class="result-metric-table">
+                <tbody>
+                <tr>
+                    <td class="result-metric-label" data-i18n="project_name"></td>
+                    <td class="result-metric-value result-metric-project" id="resultProjectName">--</td>
+                    <td class="result-metric-label" data-i18n="scored_total"></td>
+                    <td class="result-metric-value" id="resultScoredTotal">--</td>
+                </tr>
+                <tr>
+                    <td class="result-metric-label" data-i18n="preliminary_average"></td>
+                    <td class="result-metric-value" id="resultPreliminaryAverage">--</td>
+                    <td class="result-metric-label" data-i18n="preliminary_median"></td>
+                    <td class="result-metric-value" id="resultPreliminaryMedian">--</td>
+                </tr>
+                <tr>
+                    <td class="result-metric-label" data-i18n="dispute_count"></td>
+                    <td class="result-metric-value" id="resultDisputeCount">--</td>
+                    <td class="result-metric-label" data-i18n="dispute_rate"></td>
+                    <td class="result-metric-value" id="resultDisputeRate">--</td>
+                </tr>
+                </tbody>
+            </table>
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="dispute_list"></span></h3>
+            <table class="common-table form-manage-photos" id="disputePhotosTable">
+                <thead>
+                <tr>
+                    <th data-sort-key="photoid" aria-sort="none" tabindex="0">
+                        <label class="checkbox">
+                            <input type="checkbox" id="selectCurrentDisputePhotosPage"><span class="box"></span><span data-i18n="photoid"></span>
+                        </label>
+                    </th>
+                    <th><span data-i18n="thumbnail"></span></th>
+                    <th data-sort-key="disputeIndex" aria-sort="none" tabindex="0"><span data-i18n="dispute_index"></span></th>
+                    <th data-sort-key="disputeReasons" aria-sort="none" tabindex="0"><span data-i18n="dispute_reasons"></span></th>
+                    <th data-sort-key="recheck" aria-sort="descending" tabindex="0"><span data-i18n="recheck_status"></span></th>
+                    <th><span data-i18n="operation"></span></th>
+                </tr>
+                </thead>
+                <tbody id="disputePhotosTableBody">
+                <tr class="result-placeholder-row">
+                    <td colspan="6" data-i18n="no_result_data"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="manage-photos-pagination" id="disputePhotosPagination">
+                <button type="button" class="page-control" id="disputePhotosPrevPage">&lt;</button>
+                <div class="page-number-list" id="disputePhotosPageNumbers"></div>
+                <button type="button" class="page-control" id="disputePhotosNextPage">&gt;</button>
+                <select class="page-size-select" id="disputePhotosPageSize">
+                    <option value="10" data-i18n="10_items_per_page"></option>
+                    <option value="20" data-i18n="20_items_per_page"></option>
+                    <option value="50" data-i18n="50_items_per_page"></option>
+                </select>
+                <button type="button" class="button-square common refresh" id="refreshDisputePhotos">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span data-i18n="refresh"></span>
+                </button>
+            </div>
+            <div class="selected-photo-actions">
+                <div class="selected-photo-actions__title" data-i18n="actions_on_selected_items"></div>
+                <div class="selected-photo-actions__buttons">
+                    <button type="button" class="button-square common" id="includeSelectedDisputePhotos">
+                        <i class="fa-solid fa-circle-plus"></i>
+                        <span data-i18n="include_in_recheck"></span>
+                    </button>
+                    <button type="button" class="button-square del" id="removeSelectedDisputePhotos">
+                        <i class="fa-solid fa-circle-minus"></i>
+                        <span data-i18n="remove_from_recheck"></span>
+                    </button>
+                </div>
+            </div>
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="generate"></span></h3>
+            <div class="result-fetch-toolbar">
+                <button type="button" class="button-common" id="buildFinalResult">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span data-i18n="build_final_result"></span>
+                </button>
+                <button type="button" class="button-common" id="previewFinalResult">
+                    <i class="fa-solid fa-eye"></i>
+                    <span data-i18n="preview"></span>
+                </button>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title" data-i18n="export_photos_by_score_range"></div>
+                    <div class="desc" data-i18n="description_export_photos_by_score_range"></div>
+                </div>
+                <div class="form-control score-range-controls">
+                    <label class="score-range-field" for="exportPhotosMinScore">
+                        <span data-i18n="minimum_score"></span>
+                        <input type="number" class="text-input" id="exportPhotosMinScore"
+                               min="1" max="3" step="0.1" value="1"/>
+                    </label>
+                    <label class="score-range-field" for="exportPhotosMaxScore">
+                        <span data-i18n="maximum_score"></span>
+                        <input type="number" class="text-input" id="exportPhotosMaxScore"
+                               min="1" max="3" step="0.1" value="3"/>
+                    </label>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button type="button" class="button-common" id="exportPhotosByScoreRange">
+                    <i class="fa-solid fa-file-zipper"></i>
+                    <span data-i18n="download"></span>
+                </button>
+            </div>
+            <form id="personalResultPreviewForm">
+                <div class="form-row">
+                    <div class="form-label">
+                        <div class="title" data-i18n="personal_result_preview"></div>
+                        <div class="desc" data-i18n="description_personal_result_preview"></div>
+                    </div>
+                    <div class="form-control">
+                        <input type="text" class="text-input" id="personalResultAuthor"
+                               data-i18n-placeholder="input_author" maxlength="100"/>
+                    </div>
+                </div>
+                <div class="form-submit">
+                    <button type="submit" class="button-common" id="previewPersonalResult">
+                        <i class="fa-solid fa-eye"></i>
+                        <span data-i18n="preview"></span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <section class="viewer" id="manageUser" style="display: none;">
+            <h2><i class="fa-solid fa-users-gear"></i> <span data-i18n="manage_user">Manage User</span></h2>
+
+            <h3 class="subtitle"><span data-i18n="register"></span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title">UID</div>
+                    <div class="desc" data-i18n="description_input_uid"></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" name="input_manage_user_uid" maxlength="10" placeholder="UID"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="allname"></span></div>
+                    <div class="desc" data-i18n="description_input_allname"></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" name="input_manage_user_allname" data-i18n-placeholder="input_allname" maxlength="10"/>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title"><span data-i18n="user_role"></span></div>
+                    <div class="desc" data-i18n="description_user_role"></div>
+                </div>
+                <div class="form-control">
+                    <div class="radio-card-group">
+                        <label class="radio-card">
+                            <input type="radio" name="register_user_status" value="0"/>
+                            <span data-i18n="admin_user"></span>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="register_user_status" value="1" checked/>
+                            <span data-i18n="normal_user"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button class="button-common" id="submitRegisterUser" data-i18n="register">Register</button>
+            </div>
+
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="user_list"></span></h3>
+            <table class="common-table form-manage-user">
+                <thead>
+                <tr>
+                    <th>UID</th>
+                    <th><span data-i18n="allname"></span></th>
+                    <th><span data-i18n="user_role"></span></th>
+                    <th><span data-i18n="operation"></span></th>
+                </tr>
+                </thead>
+                <tbody id="manageUserTableBody"></tbody>
+            </table>
+        </section>
+
+        <section class="viewer" id="viewProgress" style="display: none;">
+            <h2><i class="fa-solid fa-chart-line"></i> <span data-i18n="view_progress"></span></h2>
+
+            <h3 class="subtitle"><span data-i18n="all_progress"></span></h3>
+            <div id="allUserProgressList" class="progress-list"></div>
+            <div class="form-submit">
+                <button class="button-common" id="refreshAllProgress" data-i18n="refresh"></button>
+            </div>
+            <hr>
+            <h3 class="subtitle"><span data-i18n="project_progress"></span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title" data-i18n="project_name"></div>
+                    <div class="desc" data-i18n="input_project_name_for_query"></div>
+                </div>
+                <div class="form-control">
+                    <input type="text" class="text-input" id="progressProjName" data-i18n-placeholder="input_project_name_for_query"/>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button class="button-common" id="queryProjProgress" data-i18n="query"></button>
+                <button class="button-common" id="clearProjProgress" data-i18n="clean"></button>
+            </div>
+            <div id="singleProjProgressList" class="progress-list"></div>
+        </section>
+
+        <section class="viewer" id="inputData" style="display: none;">
+            <h2><i class="fa-solid fa-file-import"></i> <span data-i18n="input">Input</span></h2>
+
+            <h3 class="subtitle"><span data-i18n="import_project">Import Project</span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <label class="title" for="inputProjectArchive" data-i18n="project_archive">Project Archive</label>
+                    <div class="desc" data-i18n="description_import_project"></div>
+                </div>
+                <div class="form-control">
+                    <div class="file-upload">
+                        <input type="file" id="inputProjectArchive" accept=".zip,application/zip"/>
+                        <label for="inputProjectArchive" class="file-btn">
+                            <i class="fa-solid fa-file-zipper"></i>
+                            <span data-i18n="choose_a_zip">Choose a ZIP Archive</span>
+                        </label>
+                        <div class="file-display" id="inputProjectArchiveDisplay">
+                            <span data-i18n="you_havent_chosen">You haven't chosen</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button type="button" class="button-common" id="inputProjectData">
+                    <span data-i18n="import_project">Import Project</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="viewer" id="outputData" style="display: none;">
+            <h2><i class="fa-solid fa-file-export"></i> <span data-i18n="output">Output</span></h2>
+
+            <h3 class="subtitle"><span data-i18n="output_project_data"></span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <label class="title" for="outputProjectSelect" data-i18n="select_project"></label>
+                    <div class="desc" data-i18n="description_output_project_data"></div>
+                </div>
+                <div class="form-control">
+                    <select class="text-input output-project-select" id="outputProjectSelect"></select>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button type="button" class="button-common" id="downloadProjectData">
+                    <i class="fa-solid fa-file-zipper"></i>
+                    <span data-i18n="download"></span>
+                </button>
+            </div>
+
+            <!--
+            <hr>
+
+            <h3 class="subtitle"><span data-i18n="output_all_project_data"></span></h3>
+            <div class="form-row">
+                <div class="form-label">
+                    <div class="title" data-i18n="all_project_data"></div>
+                    <div class="desc" data-i18n="description_output_all_project_data"></div>
+                </div>
+            </div>
+            <div class="form-submit">
+                <button type="button" class="button-common" id="downloadAllProjectData">
+                    <i class="fa-solid fa-file-zipper"></i>
+                    <span data-i18n="download"></span>
+                </button>
+            </div>
+            -->
+        </section>
+    </div>
+</main>
+</body>
+
+</html>
+<script src="js/utils.js"></script>
+<script src="./js/i18n.js"></script>
+<script src="./js/url.js"></script>
+<script src="./js/modal.js"></script>
+<script src="./js/view.js?v=0.1"></script>
+<script src="./js/admin-create.js"></script>
+<script src="./js/admin-manage-proj.js"></script>
+<script src="js/admin-manage-gallery.js"></script>
+<script src="js/admin-output.js"></script>
+<script src="js/admin-input.js"></script>
+<script src="js/admin-result.js"></script>
+<script src="./js/admin-user.js"></script>
+<script src="./js/admin-settings.js"></script>
+<script src="./js/admin-progress.js"></script>
+<script src="./js/admin.js"></script>

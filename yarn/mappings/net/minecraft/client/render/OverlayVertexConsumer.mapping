@@ -1,0 +1,14 @@
+CLASS net/minecraft/class_4583 net/minecraft/client/render/OverlayVertexConsumer
+	FIELD field_20866 delegate Lnet/minecraft/class_4588;
+	FIELD field_20870 x F
+	FIELD field_20871 y F
+	FIELD field_20872 z F
+	FIELD field_21053 inverseTextureMatrix Lorg/joml/Matrix4f;
+	FIELD field_21054 inverseNormalMatrix Lorg/joml/Matrix3f;
+	FIELD field_41091 textureScale F
+	FIELD field_52096 normal Lorg/joml/Vector3f;
+	FIELD field_52097 pos Lorg/joml/Vector3f;
+	METHOD <init> (Lnet/minecraft/class_4588;Lnet/minecraft/class_4587$class_4665;F)V
+		ARG 1 delegate
+		ARG 2 matrix
+		ARG 3 textureScale

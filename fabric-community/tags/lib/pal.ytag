@@ -1,0 +1,7 @@
+type: text
+
+---
+
+PlayerAbilityLib is an api that allows mods to change the player abilities such as flying or creative mode, and is intended to be used to make sure no incompatibilities exist between mods who modify player abilities.
+
+https://github.com/Ladysnake/PlayerAbilityLib

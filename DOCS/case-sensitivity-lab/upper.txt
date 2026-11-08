@@ -1,0 +1,4 @@
+This file uses a lowercase basename.
+
+On a case-sensitive filesystem it is a different path from `UPPER.txt` in the
+same directory. Some case-insensitive checkouts will report a collision.

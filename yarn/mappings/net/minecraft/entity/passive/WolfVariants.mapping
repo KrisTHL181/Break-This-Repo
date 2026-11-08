@@ -1,0 +1,23 @@
+CLASS net/minecraft/class_9347 net/minecraft/entity/passive/WolfVariants
+	FIELD field_51588 DEFAULT Lnet/minecraft/class_5321;
+	METHOD method_58066 of (Ljava/lang/String;)Lnet/minecraft/class_5321;
+		ARG 0 id
+	METHOD method_58068 bootstrap (Lnet/minecraft/class_7891;)V
+		ARG 0 registry
+	METHOD method_58069 register (Lnet/minecraft/class_7891;Lnet/minecraft/class_5321;Ljava/lang/String;Lnet/minecraft/class_5321;)V
+		ARG 0 registry
+		ARG 1 key
+		ARG 2 textureName
+		ARG 3 biome
+	METHOD method_58170 register (Lnet/minecraft/class_7891;Lnet/minecraft/class_5321;Ljava/lang/String;Lnet/minecraft/class_6862;)V
+		ARG 0 registry
+		ARG 1 key
+		ARG 2 textureName
+		ARG 3 biomeTag
+	METHOD method_58171 register (Lnet/minecraft/class_7891;Lnet/minecraft/class_5321;Ljava/lang/String;Lnet/minecraft/class_10702;)V
+		ARG 0 registry
+		ARG 1 key
+		ARG 2 textureName
+		ARG 3 spawnConditions
+	METHOD method_67140 createSpawnConditions (Lnet/minecraft/class_6885;)Lnet/minecraft/class_10702;
+		ARG 0 requiredBiomes

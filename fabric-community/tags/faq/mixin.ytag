@@ -1,0 +1,14 @@
+type: text
+
+---
+
+Mixin is a trait/mixin and bytecode weaving framework for Java using ASM written by Mumfrey, primarily used in Fabric mods for modifying existing game code.
+
+Mixin Wiki: <https://github.com/SpongePowered/Mixin/wiki>
+Javadoc: <http://jenkins.liteloader.com/view/Other/job/Mixin/javadoc/index.html>
+MixinExtras Wiki: <https://github.com/LlamaLad7/MixinExtras/wiki/>
+
+See also:
+`!!mcdev` - An IntelliJ plugin which adds useful helpers and inspections for using mixin
+`!!spongecord` - The Sponge Discord server, with official support for Mixin in the `#mixin` channel
+<#807617700734042122> - The Fabric Discord support channel for Mixins, with a pinned introduction message

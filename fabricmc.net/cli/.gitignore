@@ -1,0 +1,16 @@
+# Ignore everything
+/*
+
+!/.vscode
+!main.ts
+!/commands
+!Makefile
+!bundle.ts
+!fontgen.ts
+!test.ts
+!utils.ts
+!deno.json
+!deno.lock
+!package.json
+!README.md
+!LICENSE

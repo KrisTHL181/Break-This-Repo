@@ -1,0 +1,55 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "第 1 号拉屎点位",
+        "marker-color": "#a0522d",
+        "marker-size": "large",
+        "description": "第一个被 BTR-114514 污染的坐标"
+      },
+      "geometry": { "type": "Point", "coordinates": [116.4074, 39.9042] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "第 2 号拉屎点位",
+        "marker-color": "#a0522d",
+        "marker-size": "large",
+        "description": "第二个被 BTR-114514 污染的坐标"
+      },
+      "geometry": { "type": "Point", "coordinates": [139.6917, 35.6895] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "第 3 号拉屎点位",
+        "marker-color": "#a0522d",
+        "marker-size": "large",
+        "description": "第三个被 BTR-114514 污染的坐标"
+      },
+      "geometry": { "type": "Point", "coordinates": [151.2093, -33.8688] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "第 4 号拉屎点位",
+        "marker-color": "#a0522d",
+        "marker-size": "large",
+        "description": "第四个被 BTR-114514 污染的坐标"
+      },
+      "geometry": { "type": "Point", "coordinates": [-74.0060, 40.7128] }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "第 5 号拉屎点位",
+        "marker-color": "#a0522d",
+        "marker-size": "large",
+        "description": "第五个被 BTR-114514 污染的坐标"
+      },
+      "geometry": { "type": "Point", "coordinates": [-0.1276, 51.5074] }
+    }
+  ]
+}

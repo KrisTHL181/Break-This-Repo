@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <script src="js/theme-init.js?v=0.1"></script>
+    <link rel="stylesheet" href="css/root.css?v=0.7">
+    <link rel="stylesheet" href="css/bar_chart.css?v=0.1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/modal.css">
+    <style>
+        html,
+        body {
+            height: auto; min-height: 100%;
+        }
+        .first_div {
+            min-height: 32vh;
+            background-color: var(--color-bg3);
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .top_title h1 {
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.336);
+            font-size: 30px;
+        }
+        .top_describe {
+            color: white;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            padding: 0 1.5rem;
+            word-break: break-word;
+            font-family: initial;
+        }
+        .overall {
+            width: min(92%, 760px);
+            margin: 0 auto;
+            text-align: center;
+            padding: 36px 0 45px;
+        }
+        .score_list {
+            padding: 5px;
+            text-align: center;
+            background: var(--color-bg2);
+        }
+        .result-metric-table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--color-border2);
+            border-radius: 14px;
+            overflow: hidden;
+            margin: 30px auto 0;
+            background: var(--color-bg);
+            color: var(--color-fg);
+            font-size: 17px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+        .result-metric-table th,
+        .result-metric-table td {
+            height: 42px;
+            padding: 10px 14px;
+            border: none;
+            text-align: center;
+            vertical-align: middle;
+            overflow-wrap: anywhere;
+        }
+        .result-metric-table tr:not(:first-child) th,
+        .result-metric-table tr:not(:first-child) td { border-top: 1px solid var(--color-border2); }
+        .result-metric-table th:not(:first-child),
+        .result-metric-table td:not(:first-child) { border-left: 1px solid var(--color-border2); }
+        .result-metric-label {
+            width: 20%;
+            background: var(--color-primary-light);
+            color: var(--color-fg);
+            font-weight: 700;
+        }
+        .result-metric-value {
+            width: 30%;
+            background: var(--color-bg);
+            color: var(--color-fg);
+            font-weight: 700;
+        }
+        .result-metric-project { line-height: 1.35; }
+        /* 重写为直方图 */
+        .avg-line {
+            display: none;
+        }
+
+        .avg-lable {
+            display: none;
+        }
+
+        .bar-container {
+            margin: 0;
+        }
+
+        .bar-container.gap {
+            margin: 0 10px;
+        }
+
+        .bar {
+            border-radius: 0;
+            background: var(--color--primary-strong);
+            width: 55px;
+            border: 1px solid var(--color-border2);
+        }
+
+        .chart {
+            justify-content: center;
+        }
+        .rank_table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px auto 0;
+        }
+        .rank_table th, .rank_table td {
+            padding: 10px 15px;
+            border: 1px solid var(--color-border2);
+            text-align: center;
+        }
+        .rank_table th { background-color: var(--color-primary-light); color: var(--color-fg); }
+        .rank_table tr:nth-child(even) td { background-color: var(--row-even); }
+        .rank_table tr:nth-child(odd) td { background-color: var(--row-odd); }
+        .rank_table th:nth-child(1), .rank_table td:nth-child(1) { width: 20%; }
+        .rank_table th:nth-child(2), .rank_table td:nth-child(2) { width: 55%; }
+        .rank_table th:nth-child(3), .rank_table td:nth-child(3) { width: 25%; }
+        .empty-state { color: var(--color-fg); opacity: 0.75; }
+        .footer {
+            text-align: center;
+            background-color: var(--color-bg2);
+            color: var(--color-fg);
+            padding: 30px;
+        }
+        @media (max-width: 640px) {
+            .result-metric-table { font-size: 14px; }
+            .result-metric-table th, .result-metric-table td,
+            .rank_table th, .rank_table td { padding: 9px 6px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay">
+        <div>
+            <span data-i18n="loading-1"></span><br>
+            <span data-i18n="loading-2"></span>
+        </div>
+    </div>
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <h3></h3>
+            <span class="close-btn" id="closeBtn">&times;</span>
+        </div>
+        <div class="modal-body"><p></p></div>
+        <div class="modal-footer"><button class="confirm-btn" id="confirmBtn">OK</button></div>
+    </div>
+    <button class="lang-toggle" id="languageSelect" data-i18n-title="switch_language" style="display: none">
+        <i class="fa-solid fa-language"></i>
+    </button>
+    <button class="dark-toggle" id="darkToggle" data-i18n-title="switch_theme" style="display: none">
+        <i class="fa-regular fa-moon" id="darkIcon"></i>
+    </button>
+    <div class="first_div">
+        <div class="top_title"><h1 data-i18n="overall_result_title"></h1></div>
+        <div class="top_describe"><p>Photos Review System. Designed By Flare.</p></div>
+    </div>
+    <section class="overall">
+        <h2><i class="fa fa-tachometer-alt"></i> <span data-i18n="overall_overview"></span></h2>
+        <table class="result-metric-table">
+            <tr>
+                <th class="result-metric-label" data-i18n="project_name"></th>
+                <td class="result-metric-value result-metric-project" id="html_proj_name">--</td>
+                <th class="result-metric-label" data-i18n="total"></th>
+                <td class="result-metric-value" id="html_num">--</td>
+            </tr>
+            <tr>
+                <th class="result-metric-label" data-i18n="overall_average"></th>
+                <td class="result-metric-value" id="html_average">--</td>
+                <th class="result-metric-label" data-i18n="overall_median"></th>
+                <td class="result-metric-value" id="html_median">--</td>
+            </tr>
+            <tr>
+                <th class="result-metric-label" data-i18n="full_score_rate"></th>
+                <td class="result-metric-value" id="html_full_score_rate">--</td>
+                <th class="result-metric-label" data-i18n="passing_rate"></th>
+                <td class="result-metric-value" id="html_pass_rate">--</td>
+            </tr>
+            <tr>
+                <th class="result-metric-label" data-i18n="dispute_count"></th>
+                <td class="result-metric-value" id="html_dispute_count">--</td>
+                <th class="result-metric-label" data-i18n="dispute_rate"></th>
+                <td class="result-metric-value" id="html_dispute_rate">--</td>
+            </tr>
+        </table>
+    </section>
+    <section class="score_list">
+        <h2><i class="fa fa-chart-column"></i> <span data-i18n="score_histogram"></span></h2>
+        <div class="chart-container"><div class="chart" id="scoreHistogram"></div></div>
+    </section>
+    <section class="score_list">
+        <h2><i class="fa fa-chart-column"></i> <span data-i18n="dispute_reason_histogram"></span></h2>
+        <div class="chart-container"><div class="chart" id="disputeReasonHistogram"></div></div>
+    </section>
+    <section class="overall">
+        <h2><i class="fa-solid fa-ranking-star"></i> <span data-i18n="average_score_ranking"></span></h2>
+        <table class="rank_table">
+            <thead><tr><th data-i18n="rank"></th><th data-i18n="author"></th><th data-i18n="value"></th></tr></thead>
+            <tbody id="html_rank_average"></tbody>
+        </table>
+    </section>
+    <section class="overall">
+        <h2><i class="fa-solid fa-ranking-star"></i> <span data-i18n="total_score_ranking"></span></h2>
+        <table class="rank_table">
+            <thead><tr><th data-i18n="rank"></th><th data-i18n="author"></th><th data-i18n="value"></th></tr></thead>
+            <tbody id="html_rank_total"></tbody>
+        </table>
+    </section>
+    <div class="footer">
+        <p>&copy; 2025 Flare. 信号弹. <span class="click_me" onclick="go_url('https://github.com/HoDastar/PhotosReview/', 1)" style="text-decoration: underline">Click me.</span></p>
+    </div>
+
+    <script src="js/utils.js?v=0"></script>
+    <script src="js/url.js?v=0"></script>
+    <script src="js/i18n.js?v=0"></script>
+    <script src="js/modal.js?v=0.1"></script>
+    <script src="js/bar_chart.js?v=0.2"></script>
+    <script src="js/view.js?v=0.1"></script>
+    <script>
+        let uid = getCookie('review_uid');
+        let token = getCookie('review_token');
+
+        // 检查登录情况（2分钟一次）
+        async function check_login() {
+            // 获取结果
+            let login_result = await getApi(url + `/api/user/check_token?uid=${uid}&token=${token}`);
+            if (!login_result.result) {
+                await openModal(
+                    i18n.lookUp("modal_content_fail")[12].title,
+                    i18n.lookUp("modal_content_fail")[12].message
+                );
+                document.body.innerHTML = '';
+                window.location.href = "./loginout.html";
+                return false;
+            }
+            setTimeout(() => {
+                check_login();
+            }, 2000 * 60);
+        }
+        const projId = getUrlGet("proj_id") || getUrlGet("projId");
+
+        function setText(id, value) {
+            document.getElementById(id).textContent = value ?? "--";
+        }
+
+        function formatPercent(value) {
+            return Number.isFinite(Number(value)) ? `${Number(value)}%` : "--";
+        }
+
+        function createScoreHistogramTitles(length) {
+            return Array.from({ length }, (_, index) => {
+                const lowerBound = 1 + index * 0.2;
+                return index === length - 1
+                    ? lowerBound.toFixed(1)
+                    : `${lowerBound.toFixed(1)}-${(lowerBound + 0.1).toFixed(1)}`;
+            });
+        }
+
+        function renderHistogram(targetId, titles, values) {
+            const target = document.getElementById(targetId);
+            const normalizedValues = Array.isArray(values)
+                ? values.map(value => Number.isFinite(Number(value)) ? Number(value) : 0)
+                : [];
+            if (!normalizedValues.length || !normalizedValues.some(value => value > 0)) {
+                target.innerHTML = "";
+                const empty = document.createElement("p");
+                empty.className = "empty-state";
+                empty.textContent = i18n.lookUp("no_chart_data");
+                target.appendChild(empty);
+                return;
+            }
+            drawBar(titles, normalizedValues, target, [1], targetId);
+        }
+
+        function renderRanking(targetId, authors) {
+            const target = document.getElementById(targetId);
+            target.innerHTML = "";
+            if (!Array.isArray(authors) || authors.length === 0) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 3;
+                cell.className = "empty-state";
+                cell.textContent = i18n.lookUp("no_ranking_data");
+                row.appendChild(cell);
+                target.appendChild(row);
+                return;
+            }
+            authors.forEach((item, index) => {
+                const entry = item && typeof item === "object" ? Object.entries(item)[0] : null;
+                if (!entry) return;
+                const row = document.createElement("tr");
+                [index + 1, entry[0], entry[1]].forEach(value => {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
+                target.appendChild(row);
+            });
+        }
+
+        function renderResult(data) {
+            const metrics = data.metrics || {};
+            setText("html_proj_name", data.projectName);
+            setText("html_num", metrics.totalPhotos);
+            setText("html_average", metrics.overallAverage);
+            setText("html_median", metrics.overallMedian);
+            setText("html_full_score_rate", formatPercent(metrics.fullScoreRate));
+            setText("html_pass_rate", formatPercent(metrics.passingRate));
+            setText("html_dispute_count", metrics.disputeCount);
+            setText("html_dispute_rate", formatPercent(metrics.disputeRate));
+
+            const scoreHistogram = Array.isArray(data.scoreHistogram) ? data.scoreHistogram : [];
+            renderHistogram("scoreHistogram", createScoreHistogramTitles(scoreHistogram.length), scoreHistogram);
+            renderHistogram("disputeReasonHistogram", [
+                i18n.lookUp("dispute_reason_large_dispersion"),
+                i18n.lookUp("dispute_reason_large_range"),
+                i18n.lookUp("dispute_reason_polarization"),
+                i18n.lookUp("dispute_reason_outlier")
+            ], data.disputeReasonHistogram);
+            renderRanking("html_rank_average", data.topAverageAuthors);
+            renderRanking("html_rank_total", data.topSumAuthors);
+        }
+
+        async function showResultError(message) {
+            if (String(message) === "29") {
+                await openModal(i18n.lookUp("error"), i18n.lookUp("no_final_result"));
+                return;
+            }
+            const code = Number.parseInt(message, 10);
+            const modalMessages = i18n.lookUp("modal_content_fail");
+            const detail = Array.isArray(modalMessages) && Number.isInteger(code) ? modalMessages[code] : null;
+            await openModal(
+                detail?.title || i18n.lookUp("error"),
+                detail?.message || i18n.lookUp("result_load_failed")
+            );
+        }
+
+        async function fetchResult() {
+            const apiUrl = `${window.location.origin}/api/result/fetch_result?projId=${encodeURIComponent(projId)}&uid=${uid}&token=${token}`;
+            const response = await getApi(apiUrl);
+            if (!response.result || !response.data) {
+                await showResultError(response.message);
+                return;
+            }
+            renderResult(response.data);
+        }
+
+        async function loadWebsiteInfo() {
+            const info = await getApi(url + "/api/system/get_website_info");
+            if (info) {
+                const infoObj = info.data;
+
+                const link = document.createElement("link");
+                link.rel = "icon";
+                link.href = infoObj.website_icon;
+                document.head.appendChild(link);
+
+                document.querySelectorAll("[data-config]").forEach(el => {
+                    const key = el.getAttribute("data-config");
+                    if (key === "website_name") {
+                        el.innerText = infoObj.website_name;
+                    }
+                    if (key === "website_url") {
+                        el.addEventListener("click", () => {
+                            window.location.href = url;
+                        });
+                    }
+                });
+
+                document.getElementsByTagName("title")[0].innerText = i18n.lookUp("overall_result_title") + ' - ' + infoObj.website_name;
+
+            } else {
+                setTimeout(() => {
+                    loadWebsiteInfo()
+                }, 500);
+            }
+        }
+
+        (async () => {
+            await i18n.init();
+            await loadWebsiteInfo();
+            check_login();
+            const language = localStorage.getItem("lang") || (navigator.language.startsWith("zh") ? "zh" : "en");
+            document.documentElement.lang = language;
+            if (!projId) {
+                await openModal(i18n.lookUp("error"), i18n.lookUp("missing_project_id"));
+                return;
+            }
+            await fetchResult();
+        })();
+    </script>
+</body>
+</html>

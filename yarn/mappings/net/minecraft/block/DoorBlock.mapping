@@ -1,0 +1,35 @@
+CLASS net/minecraft/class_2323 net/minecraft/block/DoorBlock
+	FIELD field_10938 FACING Lnet/minecraft/class_2754;
+	FIELD field_10940 POWERED Lnet/minecraft/class_2746;
+	FIELD field_10941 HINGE Lnet/minecraft/class_2754;
+	FIELD field_10945 OPEN Lnet/minecraft/class_2746;
+	FIELD field_10946 HALF Lnet/minecraft/class_2754;
+	FIELD field_42757 blockSetType Lnet/minecraft/class_8177;
+	FIELD field_46337 CODEC Lcom/mojang/serialization/MapCodec;
+	FIELD field_55753 SHAPES_BY_DIRECTION Ljava/util/Map;
+	METHOD <init> (Lnet/minecraft/class_8177;Lnet/minecraft/class_4970$class_2251;)V
+		ARG 1 type
+		ARG 2 settings
+	METHOD method_10033 setOpen (Lnet/minecraft/class_1297;Lnet/minecraft/class_1937;Lnet/minecraft/class_2680;Lnet/minecraft/class_2338;Z)V
+		ARG 1 entity
+		ARG 2 world
+		ARG 3 state
+		ARG 4 pos
+		ARG 5 open
+	METHOD method_10035 getHinge (Lnet/minecraft/class_1750;)Lnet/minecraft/class_2750;
+		ARG 1 ctx
+	METHOD method_10036 playOpenCloseSound (Lnet/minecraft/class_1297;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Z)V
+		ARG 1 entity
+		ARG 2 world
+		ARG 3 pos
+		ARG 4 open
+	METHOD method_24795 canOpenByHand (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;)Z
+		ARG 0 world
+		ARG 1 pos
+	METHOD method_24796 canOpenByHand (Lnet/minecraft/class_2680;)Z
+		ARG 0 state
+	METHOD method_30841 isOpen (Lnet/minecraft/class_2680;)Z
+		ARG 1 state
+	METHOD method_51169 getBlockSetType ()Lnet/minecraft/class_8177;
+	METHOD method_54010 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance

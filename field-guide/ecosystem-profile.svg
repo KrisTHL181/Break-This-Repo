@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 640" font-family="'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif">
+  <defs>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#bfe3f2"/>
+      <stop offset="1" stop-color="#7db8d4"/>
+    </linearGradient>
+    <linearGradient id="deep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5e8fa8"/>
+      <stop offset="1" stop-color="#3d6376"/>
+    </linearGradient>
+    <linearGradient id="sediment" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c9b18a"/>
+      <stop offset="1" stop-color="#8f7a55"/>
+    </linearGradient>
+    <linearGradient id="dark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2b2b31"/>
+      <stop offset="1" stop-color="#141418"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#e8a13a"/>
+    </marker>
+  </defs>
+
+  <!-- 背景 -->
+  <rect width="920" height="640" fill="#f7f4ec"/>
+
+  <!-- 标题 -->
+  <text x="460" y="34" text-anchor="middle" font-size="21" font-weight="bold" fill="#2b2b31">Break-This-Repo 群系生态剖面图</text>
+  <text x="460" y="54" text-anchor="middle" font-size="11" fill="#6b6b70">Ecosystem Profile · 观测快照 2026-09-29 · 31 天 / 16.2 GB / 水位已超 500 KiB</text>
+
+  <!-- 能量层：无冲突自动合并流 -->
+  <rect x="60" y="70" width="800" height="42" rx="8" fill="#fdf3dc" stroke="#e8a13a" stroke-width="1.5"/>
+  <circle cx="95" cy="91" r="13" fill="#f6c445"/>
+  <text x="95" y="95" text-anchor="middle" font-size="12">⚡</text>
+  <text x="130" y="96" font-size="13" font-weight="bold" fill="#8a6116">无冲突自动合并流 Auto-Merge Current —— 本群系唯一能量来源</text>
+
+  <!-- 光照区（README 渲染区） -->
+  <rect x="60" y="122" width="800" height="128" fill="url(#water)"/>
+  <rect x="60" y="122" width="800" height="22" fill="#a8d4e8" opacity="0.8"/>
+  <text x="72" y="137" font-size="11" font-weight="bold" fill="#2f5a70">光照区 · README 首页渲染层（上限 500 KiB，物种竞争最激烈）</text>
+
+  <!-- 友链藤蔓 -->
+  <path d="M 90 240 C 110 200, 140 235, 160 195 C 180 158, 210 200, 230 165" fill="none" stroke="#4e8d4e" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="160" cy="195" r="4" fill="#6fbf6f"/>
+  <circle cx="230" cy="165" r="4" fill="#6fbf6f"/>
+  <text x="100" y="160" font-size="11" fill="#2f5a70">🌿 友链藤蔓</text>
+  <text x="100" y="173" font-size="9" fill="#41728a">Linchus amicus · LC</text>
+
+  <!-- 广告兽（警示） -->
+  <path d="M 300 235 L 322 196 L 344 235 Z" fill="#d9534f" opacity="0.85"/>
+  <text x="322" y="229" text-anchor="middle" font-size="12" fill="#fff" font-weight="bold">!</text>
+  <text x="290" y="186" font-size="11" fill="#2f5a70">🚨 入侵广告兽 CR</text>
+
+  <!-- AI 檄文鸟 -->
+  <ellipse cx="470" cy="200" rx="16" ry="11" fill="#7a68b0"/>
+  <path d="M 486 196 L 500 191 L 486 205 Z" fill="#7a68b0"/>
+  <text x="440" y="172" font-size="11" fill="#2f5a70">🐦 AI 檄文鸟 LC</text>
+  <text x="440" y="222" font-size="9" fill="#41728a">凌晨 2:41 鸣叫：「不是…而是…」</text>
+
+  <!-- 报春花 -->
+  <line x1="640" y1="240" x2="640" y2="215" stroke="#4e8d4e" stroke-width="3"/>
+  <circle cx="640" cy="210" r="7" fill="#f2a3c0"/>
+  <circle cx="640" cy="210" r="2.5" fill="#f6e26b"/>
+  <text x="600" y="190" font-size="11" fill="#2f5a70">🌸 警报关东报春花</text>
+  <text x="600" y="203" font-size="9" fill="#41728a">花期 ≈ 第 3047 行</text>
+
+  <!-- 御批螨（寄生标注） -->
+  <text x="740" y="200" font-size="10" fill="#8a6116">🦠 御批螨</text>
+  <text x="740" y="213" font-size="9" fill="#a8823a">「朕准了」</text>
+
+  <!-- 中层：工具与迁徙带 -->
+  <rect x="60" y="250" width="800" height="120" fill="url(#water)" opacity="0.75"/>
+  <text x="72" y="268" font-size="11" font-weight="bold" fill="#2f5a70">中层 · 迁徙与拟态带</text>
+
+  <!-- 翻译候鸟迁徙 -->
+  <line x1="100" y1="300" x2="560" y2="300" stroke="#e8a13a" stroke-width="2.5" marker-end="url(#arrow)" stroke-dasharray="7 5"/>
+  <text x="100" y="288" font-size="11" fill="#2f5a70">🕊️ 翻译候鸟大迁徙 · 52 / 184 地区（28%）</text>
+  <text x="100" y="318" font-size="9" fill="#41728a">Translatus infinitus · VU · 留下 lang-xx.svg 羽毛</text>
+
+  <!-- 拟态鹤 -->
+  <ellipse cx="700" cy="310" rx="26" ry="13" fill="#e9e4d8" stroke="#b8ad93" stroke-width="1.5"/>
+  <line x1="724" y1="306" x2="742" y2="300" stroke="#b8ad93" stroke-width="2"/>
+  <circle cx="744" cy="299" r="2.5" fill="#b8ad93"/>
+  <text x="650" y="338" font-size="11" fill="#2f5a70">🦢 清理拟态鹤</text>
+  <text x="650" y="351" font-size="9" fill="#41728a">宣称节省 2604 MB / 实际 0.00091 MB</text>
+
+  <!-- 静默饮水者 -->
+  <circle cx="380" cy="345" r="9" fill="#9db8c9"/>
+  <path d="M 370 357 Q 380 364 390 357" fill="none" stroke="#9db8c9" stroke-width="2"/>
+  <text x="345" y="375" font-size="10" fill="#41728a">💧 静默饮水者（喝了不存在的水）</text>
+
+  <!-- 深层：沉积与分解 -->
+  <rect x="60" y="370" width="800" height="110" fill="url(#deep)" opacity="0.9"/>
+  <text x="72" y="390" font-size="11" font-weight="bold" fill="#d5e6ef">深层 · 鲸落与分解带</text>
+
+  <!-- 巨鲸骨架 -->
+  <path d="M 130 450 Q 220 415, 330 450 Q 220 470, 130 450 Z" fill="#203a4a"/>
+  <line x1="160" y1="446" x2="160" y2="428" stroke="#203a4a" stroke-width="3"/>
+  <line x1="200" y1="449" x2="200" y2="432" stroke="#203a4a" stroke-width="3"/>
+  <line x1="240" y1="450" x2="240" y2="434" stroke="#203a4a" stroke-width="3"/>
+  <line x1="280" y1="449" x2="280" y2="431" stroke="#203a4a" stroke-width="3"/>
+  <text x="130" y="412" font-size="11" fill="#d5e6ef">🐋 巨源码鲸遗骸 · OpenJDK 25.0.3（≈1,277 万行）</text>
+
+  <!-- 归档分解者 -->
+  <path d="M 560 462 L 574 434 L 588 462 Z" fill="#c98d5a"/>
+  <rect x="571" y="462" width="6" height="12" fill="#e8dcc8"/>
+  <path d="M 620 466 L 632 442 L 644 466 Z" fill="#c98d5a"/>
+  <rect x="630" y="466" width="5" height="10" fill="#e8dcc8"/>
+  <text x="560" y="430" font-size="11" fill="#d5e6ef">🍄 归档分解者</text>
+  <text x="560" y="500" font-size="9" fill="#a9c4d4">将死去的历史 README 分解为 readme-archive/ 化石层</text>
+
+  <!-- 化石层 -->
+  <rect x="60" y="480" width="800" height="90" fill="url(#sediment)"/>
+  <text x="72" y="500" font-size="11" font-weight="bold" fill="#5a4a2e">化石层 · 不再参与光照竞争</text>
+  <!-- 地层线 -->
+  <path d="M 60 522 q 60 -8 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" fill="none" stroke="#7a6647" stroke-width="1.5" opacity="0.6"/>
+  <path d="M 60 545 q 60 8 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" fill="none" stroke="#7a6647" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- 四库全书 -->
+  <rect x="100" y="524" width="180" height="14" rx="3" fill="#6d5a3a"/>
+  <text x="105" y="535" font-size="9" fill="#efe6d4">📜 古典沉积层《四库全书·三国史辨误》</text>
+
+  <!-- 基础设施石 -->
+  <path d="M 560 558 L 585 528 L 625 522 L 648 545 L 640 566 Z" fill="#9a938a" stroke="#6f6a63" stroke-width="1.5"/>
+  <rect x="596" y="530" width="26" height="12" rx="2" fill="#e8c34a"/>
+  <text x="600" y="540" font-size="7" fill="#5a4a2e">勿动</text>
+  <text x="545" y="512" font-size="10" fill="#5a4a2e">🪨 基础设施石（已驯化）</text>
+
+  <!-- 暗层 -->
+  <rect x="60" y="570" width="800" height="52" fill="url(#dark)"/>
+  <text x="72" y="591" font-size="11" font-weight="bold" fill="#8f8f96">基底 · .git 对象暗层</text>
+  <text x="72" y="608" font-size="9" fill="#6f6f76">16,210,294 KB 的历史从未消失，它们只是沉入了黑暗 · 生态剖面由 field-guide/ 维护</text>
+
+  <!-- 图例边框 -->
+  <rect x="60" y="70" width="800" height="552" fill="none" stroke="#2b2b31" stroke-width="1.5" opacity="0.35"/>
+</svg>

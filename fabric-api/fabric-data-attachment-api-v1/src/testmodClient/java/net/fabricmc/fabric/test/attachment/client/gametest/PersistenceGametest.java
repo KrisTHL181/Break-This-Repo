@@ -1,0 +1,144 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.test.attachment.client.gametest;
+
+import static net.fabricmc.fabric.test.attachment.AttachmentTestMod.PERSISTENT;
+
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.client.gui.screens.worldselection.WorldCreationUiState;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.ImposterProtoChunk;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.ProtoChunk;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
+
+import net.fabricmc.fabric.api.attachment.v1.AttachmentTarget;
+import net.fabricmc.fabric.api.attachment.v1.AttachmentType;
+import net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest;
+import net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext;
+import net.fabricmc.fabric.api.client.gametest.v1.context.TestSingleplayerContext;
+import net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldSave;
+import net.fabricmc.fabric.test.attachment.AttachmentTestMod;
+
+public class PersistenceGametest implements FabricClientGameTest {
+	public static final Logger LOGGER = LoggerFactory.getLogger("data-attachment-persistence-gametest");
+	public static final ChunkPos FAR_CHUNK_POS = new ChunkPos(300, 0);
+
+	private static <T> void assertAttached(
+			AttachmentTarget target, AttachmentType<T> type, T expected,
+			String message
+	) {
+		if (!Objects.equals(expected, Objects.requireNonNull(target).getAttached(type))) {
+			throw new AssertionError(message);
+		}
+	}
+
+	@Override
+	public void runTest(ClientGameTestContext context) {
+		TestWorldSave save;
+
+		LOGGER.info("First launch");
+		try (TestSingleplayerContext spContext = context.worldBuilder()
+				.setUseConsistentSettings(false)
+				.adjustSettings(worldCreator -> worldCreator.setGameMode(WorldCreationUiState.SelectedGameMode.CREATIVE))
+				.create()) {
+			save = spContext.getWorldSave();
+			spContext.getConnection().waitForChunksDownload();
+
+			spContext.getServer().runOnServer(server -> {
+				ServerLevel level = spContext.getConnection().getServerLevel();
+				LevelChunk originChunk = level.getChunk(0, 0);
+
+				assertAttached(
+						originChunk,
+						AttachmentTestMod.FEATURE_ATTACHMENT,
+						"feature_data",
+						"Feature did not write attachment to ProtoChunk"
+				);
+
+				// setting up persistent attachments for second run
+				server.globalAttachments().setAttached(PERSISTENT, "global_data");
+				spContext.getConnection().getServerPlayer().setAttached(PERSISTENT, "player_data");
+				level.setAttached(PERSISTENT, "level_data");
+				originChunk.setAttached(PERSISTENT, "chunk_data");
+
+				ProtoChunk farChunk = (ProtoChunk) level.getChunkSource()
+						.getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z(), ChunkStatus.STRUCTURE_STARTS, true);
+				farChunk.setAttached(PERSISTENT, "protochunk_data");
+				LOGGER.info("Set persistent attachments");
+			});
+		}
+
+		LOGGER.info("Second launch");
+
+		// second launch
+		try (TestSingleplayerContext spContext = save.open()) {
+			spContext.getConnection().waitForChunksDownload();
+
+			LOGGER.info("Testing persistent attachments");
+			spContext.getServer().runOnServer(server -> {
+				ServerLevel level = spContext.getConnection().getServerLevel();
+				LevelChunk originChunk = level.getChunk(0, 0);
+
+				assertAttached(server.globalAttachments(), PERSISTENT, "global_data", "Global attachment did not persist");
+				assertAttached(spContext.getConnection().getServerPlayer(), PERSISTENT, "player_data", "Player attachment did not persist");
+				assertAttached(level, PERSISTENT, "level_data", "Level attachment did not persist");
+				assertAttached(originChunk, PERSISTENT, "chunk_data", "LevelChunk attachment did not persist");
+
+				ImposterProtoChunk imposterProtoChunk = (ImposterProtoChunk) level.getChunkSource()
+						.getChunk(0, 0, ChunkStatus.EMPTY, true);
+				assertAttached(
+						imposterProtoChunk, PERSISTENT, "chunk_data",
+						"Attachment is not accessible through ImposterProtoChunk"
+				);
+
+				ChunkAccess farChunk = level.getChunkSource()
+						.getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z(), ChunkStatus.EMPTY, true);
+
+				if (farChunk instanceof ImposterProtoChunk) {
+					LOGGER.warn("Far chunk already generated, can't test persistence in ProtoChunk.");
+				}
+
+				assertAttached(farChunk, PERSISTENT, "protochunk_data", "ProtoChunk attachment did not persist");
+			});
+
+			LOGGER.info("Testing ProtoChunk transfer");
+			// load far chunk
+			spContext.getServer().runCommand("tp @p 4800 ~ 0");
+			spContext.getConnection().waitForChunksDownload();
+
+			spContext.getServer().runOnServer(server -> {
+				LevelChunk farChunk = server.overworld().getChunk(FAR_CHUNK_POS.x(), FAR_CHUNK_POS.z());
+
+				assertAttached(
+						farChunk,
+						PERSISTENT,
+						"protochunk_data",
+						"ProtoChunk attachment was not transferred to LevelChunk"
+				);
+			});
+
+			LOGGER.info("Done");
+		}
+	}
+}

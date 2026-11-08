@@ -1,0 +1,13 @@
+CLASS net/minecraft/class_347 net/minecraft/client/gui/widget/LockButtonWidget
+	FIELD field_2131 locked Z
+	METHOD <init> (IILnet/minecraft/class_4185$class_4241;)V
+		ARG 1 x
+		ARG 2 y
+		ARG 3 action
+	METHOD method_1895 setLocked (Z)V
+		ARG 1 locked
+	METHOD method_1896 isLocked ()Z
+	CLASS class_348 Icon
+		FIELD field_45362 texture Lnet/minecraft/class_2960;
+		METHOD <init> (Ljava/lang/String;ILnet/minecraft/class_2960;)V
+			ARG 3 texture

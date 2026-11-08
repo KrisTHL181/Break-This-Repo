@@ -1,0 +1,10 @@
+type: embed
+
+colour: yellow
+embed:
+    title: Migrate Mappings
+
+---
+
+Loom allows semi-automatic updating of the mappings used in a Java codebase.
+Read more: [Migrating Mappings](<https://docs.fabricmc.net/develop/migrating-mappings>)

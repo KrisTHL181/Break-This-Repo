@@ -1,0 +1,14 @@
+CLASS net/minecraft/class_1919 net/minecraft/server/world/BlockEvent
+	FIELD comp_60 pos Lnet/minecraft/class_2338;
+	FIELD comp_61 block Lnet/minecraft/class_2248;
+	FIELD comp_62 type I
+	FIELD comp_63 data I
+	METHOD <init> (Lnet/minecraft/class_2338;Lnet/minecraft/class_2248;II)V
+		ARG 1 pos
+		ARG 2 block
+		ARG 3 type
+		ARG 4 data
+	METHOD comp_60 pos ()Lnet/minecraft/class_2338;
+	METHOD comp_61 block ()Lnet/minecraft/class_2248;
+	METHOD comp_62 type ()I
+	METHOD comp_63 data ()I

@@ -1,0 +1,18 @@
+CLASS net/minecraft/class_6895 net/minecraft/registry/RegistryCodecs
+	COMMENT A utility class for serialization of registries using codecs.
+	METHOD method_40340 entryList (Lnet/minecraft/class_5321;)Lcom/mojang/serialization/Codec;
+		ARG 0 registryRef
+	METHOD method_40341 entryList (Lnet/minecraft/class_5321;Lcom/mojang/serialization/Codec;)Lcom/mojang/serialization/Codec;
+		ARG 0 registryRef
+		ARG 1 elementCodec
+	METHOD method_40343 entryList (Lnet/minecraft/class_5321;Lcom/mojang/serialization/Codec;Z)Lcom/mojang/serialization/Codec;
+		ARG 0 registryRef
+		ARG 1 elementCodec
+		ARG 2 alwaysSerializeAsList
+			COMMENT whether to always serialize the list as a list
+			COMMENT instead of serializing as one entry if the length is {@code 0}
+	METHOD method_40349 entryList (Lnet/minecraft/class_5321;Z)Lcom/mojang/serialization/Codec;
+		ARG 0 registryRef
+		ARG 1 alwaysSerializeAsList
+			COMMENT whether to always serialize the list as a list
+			COMMENT instead of serializing as one entry if the length is {@code 0}

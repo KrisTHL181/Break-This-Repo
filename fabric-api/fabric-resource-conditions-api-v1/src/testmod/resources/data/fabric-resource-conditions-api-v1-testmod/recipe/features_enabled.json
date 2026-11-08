@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:blue_dye"
+  ],
+  "result": {
+    "id": "minecraft:diamond"
+  },
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:features_enabled",
+      "features": [
+        "minecraft:vanilla",
+        "minecraft:redstone_experiments"
+      ]
+    }
+  ]
+}

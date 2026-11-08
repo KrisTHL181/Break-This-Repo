@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MCP Android Server</string>
+    <string name="home_title">MCP Server</string>
+    <string name="settings_title">设置</string>
+    <string name="logs_title">日志</string>
+    <string name="server_status">服务器状态</string>
+    <string name="start_server">启动服务</string>
+    <string name="stop_server">停止服务</string>
+    <string name="shizuku_status">Shizuku 状态</string>
+    <string name="adb_mode">ADB 模式</string>
+    <string name="permission_status">权限状态</string>
+    <string name="device_info">设备信息</string>
+    <string name="connected_clients">已连接客户端</string>
+    <string name="quick_actions">快速操作</string>
+    <string name="transport_mode">传输模式</string>
+    <string name="server_port">服务器端口</string>
+    <string name="auth_enabled">启用认证</string>
+    <string name="auth_token">认证 Token</string>
+    <string name="blocked_commands">阻止的命令</string>
+    <string name="log_level">日志级别</string>
+    <string name="about">关于</string>
+    <string name="version">版本</string>
+    <string name="mcp_protocol_version">MCP 协议版本</string>
+</resources>

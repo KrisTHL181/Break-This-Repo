@@ -1,0 +1,59 @@
+package com.micaftic.morpher.core.model;
+
+import java.util.Locale;
+import java.util.Objects;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
+
+/** Immutable identity for a Cloud asset and its cacheable content revision. */
+public record CloudAssetIdentity(String instance, String tenant, String assetId,
+                                 String revision, String contentHash) {
+    public CloudAssetIdentity {
+        instance = segment(instance, "instance");
+        tenant = segment(tenant, "tenant");
+        assetId = segment(assetId, "assetId");
+        revision = segment(revision, "revision");
+        contentHash = Objects.requireNonNull(contentHash, "contentHash").trim().toLowerCase(Locale.ROOT);
+        if (!contentHash.matches("[0-9a-f]{64}")) {
+            throw new IllegalArgumentException("contentHash must be a SHA-256 hex digest");
+        }
+    }
+
+    public String cacheKey() {
+        return instance + "/" + tenant + "/" + assetId + "/" + revision + "/" + contentHash;
+    }
+
+    public ModelRef modelRef() {
+        return ModelRef.of(ModelSourceType.CLOUD, instance + "/" + tenant,
+                assetId + "@" + revision + "#" + contentHash);
+    }
+
+    /**
+     * Produces a filesystem-safe runtime key for legacy String-based model APIs.
+     * It deliberately differs from the raw asset ID so Cloud imports cannot
+     * overwrite or alias a user's local model with the same name.
+     */
+    public String runtimeModelId() {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                    .digest(cacheKey().getBytes(StandardCharsets.UTF_8));
+            return "cloud_" + HexFormat.of().formatHex(digest);
+        } catch (NoSuchAlgorithmException impossible) {
+            throw new IllegalStateException("SHA-256 is unavailable", impossible);
+        }
+    }
+
+    public static boolean isRuntimeModelId(String modelId) {
+        return modelId != null && modelId.matches("cloud_[0-9a-f]{64}");
+    }
+
+    private static String segment(String value, String name) {
+        String normalized = Objects.requireNonNull(value, name).trim();
+        if (normalized.isEmpty() || normalized.indexOf(':') >= 0 || normalized.indexOf('/') >= 0) {
+            throw new IllegalArgumentException(name + " must be a non-empty path-safe segment");
+        }
+        return normalized;
+    }
+}

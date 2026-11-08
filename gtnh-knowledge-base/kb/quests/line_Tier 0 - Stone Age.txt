@@ -1,0 +1,418 @@
+# 任务线: Tier 0 - Stone Age
+### [1508] §a§lA Better Crafting Table
+Tired of your stuff falling out of your crafting table every time you walk away? This fancy table from Tinker's Construct has slots to hold the items in your recipe.  You can also use it to upgrade tools with modifiers like Redstone for additional speed and Lapis for fortune/looting!  When it's placed next to a vanilla chest, it will even show the chest's inventory in the crafting window. Single or double vanilla chests only, please.  Cut it again for a sleek, low profile version.
+  - [提交] TConstruct:CraftingStation
+  > 奖励: harvestcraft:plumjellysandwichItem x4 | dreamcraft:CoinSmith x10
+
+### [-4916213553338882423] §a§lA Better Furnace!
+Build a Blast Furnace!  Enjoy faster smelting for your metals!  [warn]Will not process all items that a regular furnace will. Check NEI for more detail.[/warn]
+  - [提交] etfuturum:blast_furnace
+  > 奖励: minecraft:iron_ingot x6
+
+### [489] §a§lA Better Lunch Bag
+Your lunch bag is now abused and rather old so it's time to get something better. Let's craft a lunch box which can hold way more food.
+  - [合成] SpiceOfLife:lunchbox
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x5 | dreamcraft:CoinTechnician x5
+
+### [1476] §a§lAll the Finest Cuts of Meat
+This knife is not going to work for slaughtering the hundreds of animals you will need for food and materials. Make yourself a GregTech Butchery Knife. It stops the explosions, and kills the cows much faster, not to mention has Looting on it. Later when you get Stainless Steel, you can make a new one that will kill cows in one hit.  Note that the GT Tool damage is based on tinkers mining level.
+  - [提交] gregtech:gt.metatool.01:36
+  > 奖励: minecraft:spawn_egg:54 | minecraft:spawn_egg:50 | minecraft:leather x8 | minecraft:beef x5 | dreamcraft:CoinSmith x5 | dreamcraft:CoinSurvivor x5 | dreamcraft:CoinFarmer x3
+
+### [482] §a§lAnimal Farms
+Trying to get some leather or wool? You'd probably need to spend a lot of time hunting animals and traveling around, or you could simply make a farm to get a decent amount of leather, wool, and meat close to home. Make sure you don't put too many animals in the pen or they will overcrowd and kill each other. This happens to villagers as well.  Animals will prioritize moving towards grass blocks over any other blocks, and if there's no grass blocks around, they prefer lit blocks over dark blocks. You can encourage animals to stay in pens, or at least not crowd the edges, by removing grass from around both sides of the fence and under it, and by placing a torch in the center of the pen. For sheep that need the grass to eat, which reduces time to mature and replaces sheared wool instantly, place it in the center of a cleared out area with a border of non-grass.  Also, large quantities can cause server lag, especially if they are bumping into each other a lot. So if you are in multiplayer, make sure you limit animals to no more than roughly one per block for small entities like chickens and one per two blocks for large entities like cows.  As an alternative, most animal and mob drops can be obtained from less laggy CropsNH farms.
+  - [提交] minecraft:leather x100, minecraft:beef x100
+  - [提交] minecraft:wool x100 (ore:blockWool), harvestcraft:muttonrawItem x100
+  - [提交] minecraft:porkchop x100
+  - [提交] minecraft:chicken x100, minecraft:feather x100
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x20
+
+### [29] §a§lAnother Fuel Source
+Lignite and regular coal are the fuel sources you'll definitely need. The latter can be turned into coal coke, which is a superior fuel source to smelt your first large batch of ore.  Lignite you can toss in a boiler once you have one.
+  - [提交] gregtech:gt.metaitem.01:8538 x16
+  > 奖励: gregtech:gt.metaitem.02:32243 | dreamcraft:CoinAdventure x5
+
+### [1852] §a§lAround and Around She Goes...
+...But she'll never stop because you'll always have something to grind. You can use a hopper to keep the windmill full of items to process. Just remember to retrieve them from the dispensers.
+  - [提交] bartworks:BW_CombinedRotor
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestry x15
+
+### [-5032588939817468648] §a§lAutomated Coke Oven
+Now that you're able to create bronze pipes, you can finally create the Coke Oven Hatch! This hatch allows you to finally automate the Coke Oven.  Each hatch can be switched between: Item Input, Item Output, & Fluid Output by right-clicking it with a screwdriver. From there, you can use pipes to transport the items or fluid to wherever it needs to go.  Make two using the bronze pipes you just crafted and you can have a third for free.   [note]This hatch will auto-output.[/note]
+  - [可选提交] dreamcraft:CokeOvenBrick x12, minecraft:hopper x2, minecraft:chest x2, gregtech:gt.blockmachines:5122 x2
+  - [合成] gregtech:gt.blockmachines:237 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [18] §a§lBasic Processing
+Most things are unavailable at the moment, so let's begin with something simple. Take some of your cobblestone and smelt it into regular stone. Since this modpack is evil, you'll need to use wood for that. How much fun is that?!
+  - [提交] minecraft:stone x25
+  > 奖励: bq_standard:choice
+
+### [32] §a§lBook Parts
+After you found a way to move water around, you had another brilliant idea: Paper! Paper is no longer made with sugarcane, you'll need wood pulp instead. You'll need a lot of wood to craft wood pulp, so better grab your axe and go chop some trees.
+  - [合成] gregtech:gt.metaitem.01:2809 x64 (ore:dustWood)
+  - [合成] minecraft:paper x16
+  > 奖励: TConstruct:blankPattern | dreamcraft:CoinTechnician x10
+
+### [945] §a§lChad - A Better Way to Make Paper
+Making paper out of wood pulp and water can be tedious and difficult. Why not use a mortar to grind the sugar cane into chad and press it with two stone slabs to paper? Later on you can use the chemical bath for an even better ratio.
+  - [提交] gregtech:gt.metatool.01:24 (ore:craftingToolMortar), minecraft:reeds x45
+  - [合成] minecraft:stone_slab x20
+  - [合成] gregtech:gt.metaitem.01:2879 x30
+  - [合成] minecraft:paper x20
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x5
+
+### [1831] §a§lCircle Shapes Give Me Comfort
+To build a Windmill you will need a Dispenser, but that item is locked behind the next Tier. Go and find one in a Witchery Circle. They look like small versions of Stonehenge.  Look for the main quest in Multiblock Goals.
+  - [提交] minecraft:dispenser
+  > 奖励: gregtech:gt.metaitem.02:31032 | dreamcraft:CoinAdventureI
+
+### [21] §a§lClay: The Gathering
+While bored, you thought that it might be a good idea to take up pottery. You should go and find some clay, the riverbanks should have some.
+  - [提交] minecraft:clay_ball x128
+  > 奖励: bq_standard:choice | minecraft:clay_ball x10 | dreamcraft:CoinAdventure x10
+
+### [-4864680771139843687] §a§lCoins! Coins! Coins!
+Finally, a use for all of these coins!  The §5§lVending Machine§r is a unique multiblock that allows you to exchange coins for valuable resources. You will progressively unlock new trades as you complete quests. Quests that unlock Vending Machine trades upon completion will show this information under the section labeled "§lAssociated Vending Machine Exchanges§r".  Alternatively you can click "§2U§r" on the Vending Machine in NEI to see all available trades and what quests they are unlocked by. If an item can be traded for it will show up when clicking "§2R§r" under the Vending Machine tab.  You can put your coins directly into the input and they will appear in the internal storage. Additional inputs §3(including non-consumable)§r should be placed here as well. There is also a button for ejecting the coins if you need to reclaim them. Breaking the Vending Machine will not cause the coins to fall out or get deleted, they will be there when you replace it.  You can also share coins between a team. Using the §3/gtnhteam§r command you can team with other players and switch at will between using either your personal wallet, or your team wallet. Additionally, while in a team you can purchase VM items on behalf of a teammate.  [warn]Be aware, some trades have much longer timeout periods between claims![/warn]
+  - [提交] gregtech:gt.blockmachines:2741, vendingmachine:casing x5
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [728] §a§lCompact Drawers
+They are very compact and add some fanciness to your glorious dirt base.
+  - [合成] StorageDrawers:halfDrawers2 x4, StorageDrawers:halfDrawers4 x4
+  > 奖励: harvestcraft:loadedbakedpotatoItem x2 | dreamcraft:CoinTechnician x5
+
+### [30] §a§lCopper
+Copper ingots can be created by smelting copper, chalcopyrite, or malachite ore.
+  - [提交] gregtech:gt.metaitem.01:11035 x48 (ore:ingotAnyCopper)
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10
+
+### [825] §a§lCopper Ore
+Can be found between Y 5-60 either as "Copper Ore" or "Chalcopyrite". Most of the time you'll find it together with "Iron" and "Pyrite".  To see where an ore can be found, click the raw ore in NEI, and it will show you more details. Works with small ores too.
+  - [提交] gregtech:gt.metaitem.03:5855 x32, gregtech:gt.metaitem.03:5032 x32, gregtech:gt.metaitem.03:5834 x32, gregtech:gt.metaitem.03:5035 x16
+  - [提交] gregtech:gt.blockores2:855 x32, gregtech:gt.blockores2:32 x32, gregtech:gt.blockores2:834 x32, gregtech:gt.blockores2:35 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x5
+
+### [28] §a§lCopper Sky, Iron Curtain
+With your newly acquired fuel source, you are now ready to process more advanced materials than stone or clay; Iron or Copper, for example. Just in case you don't know, they spawn in rather large veins. Use the following quests to locate the most important veins.
+  - [勾选确认]
+  > 奖励: harvestcraft:sweetpotatopieItem
+
+### [43] §a§lCotton, Cotton and More Cotton
+You've found out that cotton is very useful, it can be used to make string, wool, and some other useful items too. Make a small cotton plantation to get tons of it.
+  - [提交] Natura:barleyFood:3 x5, minecraft:string x3
+  > 奖励: Natura:barley.seed:1 x10 | dreamcraft:CoinFarmer x10
+
+### [42] §a§lCow Tipper
+Before you had to kill some pigs and sheep to complete quests. Now it's time to kill some cows and hopefully get some leather. If you are lucky and get a cow trophy you may never need to kill another cow in the future.
+  - [击杀] target=Cow n=
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x10
+
+### [481] §a§lCreosote
+I guess you already turned some wood into charcoal and wonder what to do with all this creosote? Well, you can burn it in a normal Furnace to cook your food or anything else, or you can make some torches with it. You can save up on the Coal variants, while at the same time keeping the Coke Oven running for the items you really need.  You can use an Iron or Clay Bucket to pick up the Creosote, either through the icon in the machine's interface, or by right-clicking the Coke Oven with an empty bucket in hand.  You will eventually want to automate Coke Ovens, and that's when you can use it to generate power. This is mostly LV content, but the singleblock option is the GT++ Semifluid Generator, whereas the multiblock option is the Railcraft Liquid Fueled Boiler. You'll unlock the quests for these when the time comes.
+  - [提交] Railcraft:fluid.creosote.bucket, IguanaTweaksTConstruct:clayBucketCreosote
+  > 奖励: bq_standard:choice
+
+### [1504] §a§lDivine Rod of the Gods?
+The Ore Finder Wand reduces the tedium of locating needed veins. If you're not sure how to craft Magnetic Iron Rod for it, check its Shapeless Crafting tab in NEI.  Once you put an ore sample into the wand, it will tell you if this ore is nearby. When you get close to the target, you will hear the sound, and the wand will tilt down to the point of being upside-down if there's a lot of target ore nearby.  Use NEI to figure out which ore is the best for your search. If you don't have the needed ore, some basic ones can be purchased in the Vending Machine.  Open the wand's inventory with Shift+RMB when looking at the ground. Put the sample ore into the slot. The rod has a 60-block range both up and down, so it can miss a vein that is located very low or if you are above the sea level.  The rod appears to work based on the GT's Material system, so anything of the same material will work. That includes crushed ores, dusts, ingots, gems, rods, you name it. For things that don't belong to a particular Material, the rod appears to search only for that exact block - for instance, you won't detect small ores with the usual ore block.  If the detected ore is a part of a vein, you will see a discovery message in the chat, and the vein will be automatically logged into the visual prospecting tab of your journey map.  The wand also works from inventory and hotbar, so you don't need to be actively holding it, but you get style points if you do.  The ore in the wand is stored with the player, not the wand. In other words, remove the ore if you want to give the wand to your teammate.  The Ore Finder Wand doesn't work in space! The vast cosmic energies of the sun interfere with its inner workings! Or the devs want you to use something more complicated than a stick. You choose.
+  - [可选提交] minecraft:stick x2 (ore:woodStick), gregtech:gt.metaitem.01:23354 x2, gregtech:gt.metaitem.01:23032, minecraft:redstone x2, gregtech:gt.metaitem.01:28086
+  - [提交] ifu:ifu_buildingKit:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x5
+
+### [41] §a§lDon't Burn Your Fingers!
+You have decided it's time to make some tasty pizza, but your fingers got burned badly. Reading an ancient cookbook you discovered a pair of magical items that would allow you to carry anything hot, even lava in a bucket.  §5The gloves have to be placed in the Baubles ring slots. Order does not matter.  §rFor the protection effect, the hot item has to be in your active slot. I wonder if there is some way to carry more than a few buckets at a time?
+  - [可选提交] minecraft:leather x6, minecraft:string x6, harvestcraft:wovencottonItem x6
+  - [合成] dreamcraft:OvenGlove, dreamcraft:OvenGlove:1
+  > 奖励: IguanaTweaksTConstruct:clayBucketFired x2 | dreamcraft:CoinTechnician x10
+
+### [-8191827436027574183] §a§lDo You Really Need Them All?
+There are many more backpacks: Coiners, thaumaturges, trackmans...  [note]Hint: Scroll to the Bottom[/note]
+  - [合成] Forestry:coinBag
+  - [合成] MagicBees:backpack.thaumaturgeT1
+  - [合成] Railcraft:backpack.trackman.t1
+  - [合成] Railcraft:backpack.iceman.t1
+  - [合成] Railcraft:backpack.apothecary.t1
+  - [勾选确认]
+  > 奖励: bq_standard:choice | minecraft:iron_helmet | minecraft:iron_chestplate | minecraft:iron_leggings | minecraft:iron_boots | dreamcraft:CoinTechnician x10
+
+### [693] §a§lFallen From the Sky
+You may have noticed big meteors everywhere, and maybe wondered if they're useful somehow? Well, they are, but not just yet. I'll give you a reward for collecting some now.  Inside the meteor you can find a skystone chest containing some processor press plates. Save them for later, you can't do AE2 without them. Though you can also just make them yourself in EV. Plus the chest is nice, and can be placed underneath blocks and still opened.  If all surface meteors have been raided, put some skystone in your Ore Finder to find underground ones, or wait until you can make a Meteorite Compass to find them.
+  - [提交] appliedenergistics2:tile.BlockSkyStone x256, appliedenergistics2:tile.BlockSkyChest
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x5 | dreamcraft:CoinDarkWizard x5
+
+### [27] §a§lFinally, Some Powerful Fuel
+Now that you have a coke oven, you can start producing charcoal. The more, the better. Creosote is produced at the same time, and the Coke Oven will stop when it's full of either one, which means you can't just leave the Creosote there. Refer to the Creosote quest from before to learn what to do with it.
+  - [提交] minecraft:coal:1 x4
+  > 奖励: bq_standard:choice
+
+### [22] §a§lFinite Water!?
+Finite water is a problem, that's for sure. Last night, you had an idea. If you can drink cacti, you should also be able to make water out of 8 cacti and use that for most recipes that require water. How cool is that? So what about another trade? 10 wood for... 3 cacti so you can set up a farm. Deal?  To automate the farm, place a string next to the cactus and a sand on top of the string. Now when the cactus grows, it will automatically break! You can stack this horizontally and vertically to make a very efficient cactus farm. Use water to redirect the cactus to a convenient pickup location or to above a hopper.  First player to make a base running off of only cactus water gets a cape!
+  - [提交] minecraft:log x10 (ore:logWood)
+  > 奖励: minecraft:cactus x3
+
+### [26] §a§lForming Press v0.1
+As you may have noticed, you cannot turn clay into bricks directly. Well, to be fair, it wasn't a good recipe anyway. You'll probably end up with something bread-shaped.  In order to make bricks, you need a form. Get yourself a knife by putting flint above a stick on the crafting grid. With a knife, you can cut a brick sized piece out and craft a blank pattern. It's as easy as that.
+  - [可选提交] gregtech:gt.metatool.01:34
+  - [提交] dreamcraft:WoodenBrickForm
+  > 奖励: dreamcraft:CoinTechnician x10
+
+### [483] §a§lGardener
+If you were wondering: Why do I never get seeds when destroying grass? Because.  Use your new mattock on the grass blocks that do not have water anywhere nearby to find some seeds.
+  - [提交] TConstruct:metalPattern:3, TConstruct:metalPattern:4, TConstruct:metalPattern:1
+  - [提交] TConstruct:mattock
+  > 奖励: gregtech:gt.metaitem.01:11300 x3 | dreamcraft:ZincGravelOre x2 | enhancedlootbags:lootbag:1 | dreamcraft:CoinSmith x5 | dreamcraft:CoinFarmer x5
+
+### [24] §a§lGetting (Char)coal
+Now you can make the bricks for your first multiblock structure. 108 bricks to be exact. Good that you just collected a lot of resources! What a coincidence...  The bricks you'll need are somewhat special. Make sure to craft the correct ones. With that done, let's build a coke oven to get some charcoal or coal coke! It may be useful to note that the oven doesn't automatically output its fluid contents. Later you will unlock a special hatch to change that.
+  - [可选提交] dreamcraft:UnfiredCokeOvenBrick x108
+  - [可选提交] dreamcraft:CokeOvenBrick x108, minecraft:furnace
+  - [合成] gregtech:gt.blockmachines:236, gregtech:gt.blockcasings12 x25
+  > 奖励: gregtech:gt.metaitem.02:32243 x2 | dreamcraft:CoinTechnician x10
+
+### [37] §a§lGetting Iron
+Iron can be found in multiple veins, and there are many types of ores that will smelt down into iron ingots such as magnetite, brown / yellow limonite, banded iron, roasted iron, and granitic / basaltic mineral sand.  §lIron-Rich Veins: §rMagnetite veins (Y 60-180) Chalcopyrite veins (Y 5-60)  Gold veins (Y 30-60) Limonite veins (Y 10-40)  [note]You can use NEI to see information for all of the ore veins in the game![/note]
+  - [提交] minecraft:iron_ingot x72
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10
+
+### [2402] §a§lGot a Flat Tire?
+The crowbar is the GT tool used to remove a cover off of a machine, pipe, or wire. Covers can be decorative, functional like pumps and conveyors, or for safety, like putting a wooden plank over your steam pipes so they don't burn you.  Sorry, it only comes in blue!  Yes, we know there are also red crowbars, but they are from Railcraft and generally inferior. Better ignore them.
+  - [合成] gregtech:gt.metatool.01:20
+  > 奖励: harvestcraft:friedriceItem x3 | dreamcraft:CoinTechnician x5
+
+### [20] §a§lGravel: The Gathering
+You think it would be a good idea to collect more gravel in order to provide yourself with flint for the journey ahead. Try searching near water.
+  - [提交] minecraft:gravel x128
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x5
+
+### [36] §a§lImportant Tools
+In order to craft even basic machines, you'll need new tools. Most of them can be replaced by machines later. For now, you should become familiar with each of their recipes, as you will need a lot of these tools, starting today.  Your new tools can also be used to make Railcraft water tanks, a very useful multiblock considering the finite water feature.  There are also electric versions of the tools, you can upgrade later if you want. Also, there are many versions of the tools, they generally follow the same rules as tinkers parts in terms of how good they are, similarly to turbines. You can look at the spreadsheet for more info on GT tool stats.  For this quest, you can use whatever materials you want. The gem version of the saw is crafted differently to metal versions. Higher tier tools need steel or tungstensteel rods instead of sticks.  [note]If you want to know the recipe for a tool using your specific material, be sure to take advantage of the magnifying glass icon at the top of the list of tools seen from viewing the recipe in NEI so you can search for the material easily. (Try it out using Iron for these quests!)[/note]
+  - [合成] gregtech:gt.metatool.01:12
+  - [合成] gregtech:gt.metatool.01:16
+  - [合成] gregtech:gt.metatool.01:18
+  - [合成] gregtech:gt.metatool.01:22
+  - [合成] gregtech:gt.metatool.01:10
+  > 奖励: dreamcraft:CoinTechnician x5 | harvestcraft:zucchinibakeItem x2
+
+### [826] §a§lIron Ore
+With iron tools, you are able to mine most of the Overworld ores. You've probably already found iron or magnetite, given how common it is. So bring me some ores and make some iron ingots out of them.  To see where an ore can be found, click the raw ore in NEI, and it will show you more details. Works with small ores too.
+  - [提交] gregtech:gt.metaitem.03:5917 x16, gregtech:gt.metaitem.03:5032 x16, gregtech:gt.metaitem.03:5870 x16, gregtech:gt.metaitem.03:5931 x16, gregtech:gt.metaitem.03:5930 x16
+  - [提交] gregtech:gt.blockores2:917 x16, gregtech:gt.blockores2:32 x16, gregtech:gt.blockores2:870 x16, gregtech:gt.blockores2:931 x16, gregtech:gt.blockores2:930 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x5
+
+### [2876] §a§lLoot Games
+It looks like you've found a secret room hidden...not so deep within the earth. Pretty close to the surface, actually. You can find these all over the place, and have a chance at sweet sweet loot if you're good at simon says. It counts the highest level you completed, so you can fail the other rounds on purpose to go faster if you don't think you can do better. BTW, cheaters go to minecraft hell, where all the blocks have hardness -1.  If you fail with Minesweeper, it blows up. Be sure to make room for escape!  Make sure that no water or oil is flowing into the room because of worldgen, or it will kill you and destroy your grave because of 'cheating'. This is a bug.
+  - [勾选确认]
+  > 奖励: minecraft:skull:3 | gregtech:gt.metaitem.01:2817
+
+### [19] §a§lMacerator v0.1 Alpha
+This fancy little device works (almost...) like a macerator. Some people say it's even better, since it does not require power, yay! You only need to craft one for this quest, but you probably should make some more if you can...  [note]The mortar lets you make flint much, much more efficiently - you only need one gravel instead of three. Many tools and stations you'll make in the future will also open up better crafting recipes for things you can already make as well. If you need something but are hard up on resources, use NEI to check the recipes for that item - you may have options you didn't before.[/note]
+  - [合成] gregtech:gt.metatool.01:24 (ore:craftingToolMortar)
+  > 奖励: dreamcraft:CoinTechnician x10
+
+### [38] §a§lMaking Better Tools
+With zinc and copper, you can create a material with a higher melting temperature - Brass - which can be used to cast better tools.  For that, you need a smeltery. See the Multiblock Goals tab for details. You can also grab some extra blocks from some villages, but they don't count towards the quest.  Alternatively, there are also one-time-use clay casts available.  You can then use your fancy bronze to make better tools with a higher mining level.  Remember, you need to use the pickaxe a bit to gather mining XP if you want the full mining level on your bronze pickaxe. Certain tool upgrades can give that directly if you have an upgrade slot available.
+  - [可选提交] TConstruct:metalPattern:2
+  - [可选提交] TConstruct:metalPattern:3
+  - [提交] TConstruct:pickaxeHead:14
+  - [提交] TConstruct:shovelHead:14
+  > 奖励: gregtech:gt.metaitem.02:32243 x2 | dreamcraft:CoinSmith x5 | dreamcraft:CoinTechnician x5
+
+### [35] §a§lMaking Bronze
+Now that you've found copper and tin, you should make yourself some bronze. Use your macer... mortar to grind up some copper and tin ingots, and mix them together!
+  - [可选提交] gregtech:gt.metaitem.01:2300 x32 (ore:dustBronze)
+  - [提交] gregtech:gt.metaitem.01:11300 x32 (ore:ingotBronze)
+  > 奖励: harvestcraft:curryItem | dreamcraft:CoinChemist x10 | dreamcraft:CoinTechnician x10
+
+### [480] §a§lMalachite
+Another copper source is "malachite" which can be found between Y 10-40. This vein contains more iron ore variants like "brown limonite", "yellow limonite" and "banded iron ore".  To see where an ore can be found, click the raw ore in NEI, and it will show you more details. Works with small ores too.
+  - [提交] gregtech:gt.metaitem.03:5930 x32, gregtech:gt.metaitem.03:5931 x32, gregtech:gt.metaitem.03:5917 x32, gregtech:gt.metaitem.03:5871 x16
+  - [提交] gregtech:gt.blockores2:930 x32, gregtech:gt.blockores2:931 x32, gregtech:gt.blockores2:917 x32, gregtech:gt.blockores2:871 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x5
+
+### [2737] §a§lMore Food, More Hearts
+So, food is great, right? But what's even greater is eating tons of it! Too boring and pointless you say? Well, what if I told you, that you can get extra hearts just by expanding your palate. You get 1 point for every half shank of hunger from a food eaten, and after 50 points, you get 1 extra heart! Now you have a reason to make all those Pam's foods. Each food contributes its shank-value once. Eating something from a lunch box counts as if you took it out and ate it manually.  If you want to see what foods you've eaten, you can use the Food Journal, but it's clunky. Realistically, you want to use NEI to both see foods eaten and not eaten. You can search for 'not yet eaten' to see foods left, and 'assisted' to see foods eaten. You need to have started diminishing returns first to see this.  If it doesn't work, go to NEI options at bottom-left when the inventory is open, then click on Inventory, and change Search Mode to Regex. Then restart your client and try searching again.§r  There are also two commands:  /foodlist size Tells you the overall progress, and the progress to the next heart.  /foodlist sync <PlayerName> Sync your food progression with the server if it gets out of sync.
+  - [勾选确认]
+  > 奖励: harvestcraft:friedchickenItem
+
+### [487] §a§lNeed More Space?
+As you might know: tanned leather is more resistant and good enough for a backpack. Let's get a digger's backpack and a miner's backpack. Each pack holds different items. So use both for your first true back-packed mining experience.  Some tips: - You can change a backpack's mode with Sneak + Right Click while holding it. Default mode picks up items from the ground, Resupply mode fills matching stacks in your inventory from the backpack, and Locked mode prevents the backpack from accepting items.  - You can hover over a backpack in your inventory and press the "Activate item in inventory" hotkey (G by default) to open it directly. This does not work while the backpack is in your hotbar.  - While holding a backpack, you can use Sneak + Right Click on a chest, drawer, or any other block face that accepts items to transfer the backpack's contents into that inventory. This can be used to empty backpacks quickly.
+  - [可选提交] minecraft:leather x4, Backpack:tannedLeather, harvestcraft:wovencottonItem x2, minecraft:stone x2
+  - [合成] Forestry:diggerBag
+  - [可选提交] minecraft:leather x4, Backpack:tannedLeather, harvestcraft:wovencottonItem x2, minecraft:iron_ingot x2
+  - [合成] Forestry:minerBag
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x5
+
+### [1864] §a§lNo Self-Healing Tools Here...Yet
+In this pack you have to first gain expertise in Thaumcraft to craft the Tinker's Construct Ball of Moss. Go and become a dangerous wizard, and you'll gain the power needed to craft the Ball of Moss and make your tools heal themselves. Of course, you need to get to the Twilight Forest and get some aluminium ingots before you can begin. The Ball of Moss is in the GTNH tab of the Thaumonomicon, and requires infusion. There are many other great things in the Thaumonomicon, but be wary of warp.  Have a beer to prepare for your long journey.
+  - [勾选确认]
+  > 奖励: gregtech:gt.metaitem.02:32119 x2
+
+### [1866] §a§lOptions For Finding Zinc
+The primary way of getting Zinc early on is via small chunks for Zinc Gravel Ore that can be found on the surface  If you're having trouble finding Zinc Gravel due to an unlucky world seed or playing on an old server, there are alternative ways made available for you to obtain it:  1. Search for Small Zinc Ore in the overworld 2. Use the recipe with XP buckets in a crafting table 3. Buy the Zinc Gravel Ore in the Vending Machine (Unlocked later in this tab!)  [note]Once you reach LV, you can get Zinc from processing various ores like Antimony, Sphalerite, Tetrahedrite and Tin. You will also be able to macerate the gravel ore for twice the product so save what you can until then![/note]
+  - [勾选确认]
+  > 奖励: gregtech:gt.metaitem.01:2036
+
+### [2721] §a§lPersonally, I Prefer Pepsi™
+You may have noticed that you can make more than just Charcoal in a Coke Oven, you can also make Coke.  You want to save all of your Coke for making Steel in your Bricked Blast Furnace (BBF) later on. As for everything else, check NEI for the uses of each Coal variant, since there are many.  [note]Once you get to the Steam Age, you can compress your Sugar and Cactus Coke for higher efficiency just like regular Coal and Charcoal.[/note]
+  - [可选提交] minecraft:coal x8, minecraft:log x8, minecraft:cactus x8, minecraft:reeds x8
+  - [提交] Railcraft:fuel.coke x8, minecraft:coal:1 x8, miscutils:itemCactusCharcoal x8, miscutils:itemSugarCharcoal x8
+  - [提交] miscutils:itemCactusCoke x8, miscutils:itemSugarCoke x8
+  > 奖励: miscutils:itemCactusCoke x4 | miscutils:itemSugarCoke x4 | enhancedlootbags:lootbag:1 | dreamcraft:CoinFarmer x5
+
+### [947] §a§lPunji Sticks
+An early game protection moat can be made out of punji sticks. It hurts all mobs/players and additionally gives a slowness II potion effect. Make a trench around your base and put the punji sticks inside.
+  - [可选提交] minecraft:string x20, minecraft:stick x20, minecraft:reeds x50
+  - [合成] TConstruct:trap.punji x20
+  > 奖励: BiomesOPlenty:saplings:2 x10 | dreamcraft:CoinTechnician x5
+
+### [1546] §a§lRare Ores
+Did you look for days to find Diamonds, Redstone, Tantalite, Certus Quartz, or Mica?  Well for a few mixes you can use different ores like Coal for Diamond Vein or Quartzite Ore for Certus Quartz Vein. Mica ore mix can be found if you have Cassiterite Ore, but not the Cassiterite Sand.  Tetrahedrite in the nether can be found with copper ore.
+  - [勾选确认]
+  > 奖励: bq_standard:choice
+
+### [15] §a§lReady, Set, Go!
+You probably should have a home by now. A steady supply of food is a fundamental requirement at all times. Take this journal to keep track of the things you've eaten. You will have to travel far in this tier, better be prepared!
+  - [勾选确认]
+  > 奖励: SpiceOfLife:lunchbag | SpiceOfLife:bookfoodjournal
+
+### [494] §a§lRedstone
+If you didn't find any Redstone veins yet, it is quite important to look for one now. Try your luck at Y 5-40.
+  - [提交] gregtech:gt.metaitem.03:5810 x64, gregtech:gt.metaitem.03:5502 x32, gregtech:gt.metaitem.03:5826 x16
+  - [提交] gregtech:gt.blockores2:810 x64, gregtech:gt.blockores2:502 x32, gregtech:gt.blockores2:826 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10
+
+### [535] §a§lRedstone, Early Game Processing
+Are you wondering how to process raw redstone ore without a macerator?  Use the hammer in the crafting table to get some crushed redstone ore from your raw redstone ore. After that, use the hammer in the crafting table again to get some impure redstone dust.  Lastly, fill a cauldron with water and drop the whole stack of dust into it, either manually or by pressing Ctrl+Q. The cauldron can handle the entire stack with the same amount of water. You will get pure redstone dust for your redstone needs.  §3You could also take the hammer with you on your mining trip and break the redstone ore with it directly to get crushed redstone ore, thus skipping the raw redstone ore.
+  - [提交] minecraft:cauldron
+  - [可选提交] minecraft:water_bucket
+  - [可选提交] gregtech:gt.metaitem.01:5810 x64
+  - [可选提交] gregtech:gt.metaitem.01:3810 x64
+  - [提交] minecraft:redstone x64
+  > 奖励: bq_standard:choice
+
+### [1129] §a§lRedstone? Haste!
+Mining and digging can be soooo slow. Get some redstone on your pick, shovel, or axe to make it faster. You can use a Tool Station or a Crafting Station to upgrade your tools.
+  - [提交] minecraft:redstone x128
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [17] §a§lSand: The Gathering
+In a strange vision you saw a big structure which would allow you to make charcoal. Finally some torches! According to your calculations, you will need a lot of sand for that.
+  - [提交] minecraft:sand x128 (ore:sand)
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10
+
+### [492] §a§lSheep Hairdresser
+Killing sheep to get the wool is so inefficient. Making some shears would make sense if you need more wool.
+  - [可选提交] gregtech:gt.metaitem.01:17032 x2 (ore:plateIron), gregtech:gt.metaitem.01:28032 (ore:ringIron), gregtech:gt.metaitem.01:27032 (ore:screwIron), minecraft:stick x2 (ore:stickWood)
+  - [提交] minecraft:shears
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x5
+
+### [491] §a§lSleeping Outside
+Carrying the bed with you all the time looks very funny. Why don't you craft a sleeping bag to stay outside without placing a bed and changing your spawn point? This way if you die, you'll be right at home!
+  - [可选提交] minecraft:wool x3 (ore:blockWool), minecraft:carpet x3, Backpack:tannedLeather x3
+  - [合成] sleepingbag:sleepingBag
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x5 | dreamcraft:CoinTechnician x5
+
+### [23] §a§lSomething to Carry Liquids
+You tried to move water with your bare hands, which didn't work at all. Luckily, you remember how to make a bucket out of clay dust.  Put it in a mortar to get small clay dust which can be crafted to clay dust.
+  - [合成] IguanaTweaksTConstruct:clayBucketUnfired
+  - [提交] IguanaTweaksTConstruct:clayBucketFired
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [1851] §a§lStick a Finger in the Air
+But you really do care. Trying to find a good place to locate a windmill? You could just build one and see, or try this fancy windsock.  Paper rotors are great in low winds. Wool rotors are cheap. Leather rotors are durable.  Don't leave the rotors in the windmill when you aren't using it, it will use up durability.
+  - [提交] bartworks:BW_SimpleWindMeter
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestry x5
+
+### [-6697627242772387263] §a§lSustainable Paper
+Now that you got your first paper, it's time for a better way to get more. With paperbark you can do just that.  Once grown you can obtain paper by right-clicking the logs of the tree. The bark regrows in due time.
+  - [提交] harvestcraft:pampaperbarkSapling
+  > 奖励: bq_standard:choice
+
+### [486] §a§lTanned Leather
+You have found a way to make leather more durable and resistant by further processing it. Make some bound leather from four pieces of leather, some strings and woven cotton. Now you only have to hang it on a drying rack and wait about 10 minutes to get some tanned leather. Stockpile some for later.
+  - [可选提交] minecraft:leather x4, minecraft:string x4, harvestcraft:wovencottonItem
+  - [可选提交] TConstruct:Armor.DryingRack
+  - [可选提交] Backpack:boundLeather
+  - [提交] Backpack:tannedLeather
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x5
+
+### [-7957069611279940583] §a§lThe power of prospecting!
+At the top of your map screen (J by default) there are multiple tabs, some of them will be very useful and will save you a ton of searching!  GT Oreveins - this tab will keep track of the veins for you, to save a vein to map right-click a naturally generated ore (some tools can't right-click) GT Underground fluids - this will help you later (MV) TC Nodes - this tab will keep track of thaumcraft nodes for you (you need to scan them first)  [note]Small Ores are not part of veins and thus do not uncover a vein on the map. However veins generate extra small ores related to the vein in their chunks, so they can still be useful in your search (though not all small ores are related to a nearby vein so don't be fooled).[/note]  [note]Another great interaction is that you can use the NEI search bar in highlight mode (double-click it) and then go to the map screen to get the matching uncovered ore veins highlighted![/note]
+  - [勾选确认]
+  > 奖励: harvestcraft:herbbutterparsnipsItem
+
+### [31] §a§lTin
+Tin ingots can be created by smelting Tin, Cassiterite, or Cassiterite Sand ore. Tin and Cassiterite ores are only found at high altitudes, but Cassiterite Sand ore is plentiful near the surface.  If you get lucky and find a high altitude Tin/Cassiterite vein, save one of the Cassiterite ore to find a Mica vein later on using the ore finder wand.
+  - [提交] gregtech:gt.metaitem.01:11057 x16 (ore:ingotTin)
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10
+
+### [33] §a§lTinker-Time
+While using your wooden tools is fun in terms of killing pigs and cows, they are not long-lasting and can't be repaired. Plus Infernals laugh at your attempts to kill them. You discovered how to craft tools that can be repaired and upgraded, but for that you definitely need a more advanced crafting technique.  [note]If you don't have access to oak wood for creating your Part Builder, you can shapelessly craft yours into the oak variant for purposes of completing this quest[/note]
+  - [合成] TConstruct:ToolStationBlock:1 (ore:tconstructPartBuilder), TConstruct:ToolStationBlock:10 (ore:tconstructStencilTable), TConstruct:ToolStationBlock (ore:tconstructToolStation), TConstruct:ToolStationBlock:5 (ore:tconstructPatternChest)
+  > 奖励: TConstruct:blankPattern x2 | TConstruct:manualBook | dreamcraft:CoinTechnician x10
+
+### [2720] §a§lToo Many Leaves
+Want to clear out shrubbery but don't want to pull out leaves by hand? Need to find that last log hidden in the middle of a bunch of leaves?  Try an Iron Scythe! When used, it clears out a 5x5x5 area of leaves, crops, flowers, or grass. Excellent for tearing through Sacred Oak leaves or dense shrubbery in certain biomes. Later when you have a Cutting Machine you can upgrade to a Diamond Scythe with a 7x7x7 area of effect, or use Amethyst for 9x9x9 to FLEX.  The lower tiers break leaves instantly but don't seem to have the 3x3x3 range for some reason.
+  - [提交] BiomesOPlenty:scytheIron
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x5 | dreamcraft:CoinSmith x5
+
+### [474] §a§lUpgrade 2.0
+Find iron, copper and tin ore. Very funny... How can you mine these with just a flint pickaxe?  I have an idea; bring me some of the stone you mined with your flint pickaxe and I will give you a better tool head in exchange.  Remember that you can level it up again either with monster heads or by mining.  §3In the future, you can also level up the mining level on your tool by adding either a diamond or emerald to it in exchange for a modifier slot: - Diamonds will give +500 durability (on the first addition) and +1 mining level (Lvl 5 max) - Emeralds will give +50% durability (on the first addition) and +1 mining level (Lvl 4 max).§r [warn]Replacing the tool head will reset the mining level bonuses attained from these gems.[/warn]
+  - [提交] minecraft:cobblestone x256
+  > 奖励: bq_standard:choice | TConstruct:pickaxeHead:2
+
+### [1738] §a§lWhen All You Have is a Hammer...
+...the whole world looks like a nail.   When looking for good tool materials, see "GregTech Material Tools" tab in NEI. Remember that NEI bookmarks are your friends.  The GT tools each have special uses.  §lScrewdriver§r - Used on covers to change their behavior or on machines to change their input mode.  §lWrench§r - Used to change the output direction on a GT machine, or to break it. Can also disconnect/connect pipes or enable their built in shutter.  §lCrowbar§r - Remove covers from machines or pipes.  §lWire cutters§r - Connecting/disconnecting/breaking wires/cables.  §lSoft mallet§r - Turning machines on/off.  §lHammer§r - Prospecting for ores in a limited way in front of you, smashing ore blocks into crushed ores, and muffling machine sounds.  §lPlunger§r - Drain fluids from a machine or tank  [note]On a side note, Tin Pipes need a Steel Wrench to dismantle, so don't place them randomly, and pay attention to material levels![/note]
+  - [勾选确认]
+
+### [1790] §a§lWooden Door
+For your new House you need some wooden doors. Well, the recipe is really hard and needs iron/copper and a lot of wood.  You can choose two more doors as a reward if you like.
+  - [可选提交] minecraft:planks x4 (ore:plankWood), minecraft:trapdoor (ore:trapdoorWood), gregtech:gt.metaitem.01:27032, gregtech:gt.metaitem.01:28032
+  - [提交] minecraft:wooden_door (ore:doorWood)
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [498] §a§lXP Usage?!
+Exploring some dungeons or fighting mobs probably gave you a lot of XP. Better use it to get iron, copper, tin, or other useful dusts before you die.  Place your tank on the ground and a drain on top. Now you can fill it with XP.  By the way, you discovered that while the seared tank doesn't hold much, it doesn't lose contents when broken, and full tanks can stack. I wonder if that information is useful...
+  - [提交] TConstruct:LavaTank, OpenBlocks:xpdrain, minecraft:bucket x2
+  > 奖励: minecraft:experience_bottle x6 | minecraft:bucket | OpenBlocks:infoBook | dreamcraft:CoinTechnician x5 | dreamcraft:CoinDarkWizard x5
+
+### [485] §a§lYou Need MOOOOOOORE Wood
+It's time to feed your new coke oven with some wood to get more charcoal. You're looking for the most efficient way to plant trees. Try to find some spruce saplings and some jungle saplings. Both can be planted in a 2x2 grid to get bigger trees.  The Rainforest Oak is also a great source of wood, and only needs one sapling. Be warned though, this tree is §lmuch taller§r than the Jungle or Spruce trees  [warn]Warning label: Do not put your pets in the microwave to dry them. And do not plant any of these rewards in the middle of your base.[/warn]
+  - [提交] minecraft:sapling:1 x4, minecraft:sapling:3 x4
+  - [提交] miscutils:blockRainforestOakSapling
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x5 | dreamcraft:CoinForestry x5 | dreamcraft:CoinAdventure x5
+
+### [488] §a§lYou Need Them All!
+There are many more backpacks: Hunter, builder, forester...
+  - [合成] Forestry:foresterBag
+  - [合成] Forestry:hunterBag
+  - [合成] Forestry:builderBag
+  > 奖励: bq_standard:choice | minecraft:leather_helmet | minecraft:leather_chestplate | minecraft:leather_leggings | minecraft:leather_boots | dreamcraft:CoinTechnician x5
+
+### [-9128088765873917748] §a§lYour First Flint Sword
+It's time to upgrade your wooden sword a little.  You only need one stick, one bone, and one flint to create the new weapon. However, it's recommended that you gather extra flint since it can be used to repair the sword.  You won't be able to kill a Wither with it now, but you can upgrade and improve this tool later.
+  - [可选提交] minecraft:flint, minecraft:bone, minecraft:stick
+  - [可选提交] TConstruct:swordBlade:3, TConstruct:wideGuard:5
+  - [提交] TConstruct:broadsword
+  > 奖励: minecraft:flint x10 | TConstruct:blankPattern x2 | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [472] §a§lYour First Tool
+When your tinkers tables are ready, you can craft your first §oreal§r tool. If you didn't find a village yet to grab some parts from the chest, you can only craft flint tools.  Let's start with a pickaxe, an axe, and a shovel.  Keep in mind that most of the original tool parts from Tinker's Construct are not shown in NEI. That doesn't mean that you can't craft them - use the tooltips on patterns and molds as guidance.  Your new tools are weak at first, but the more you use them the better they will get. You get a modifier slot after some levels, needing more as you level it up. They will level up to level 99 if you play long enough, with 20 modifier slots. Tool parts can be replaced for a bit of level XP, however the tool must be fully repaired first.  You need to level up the mining level each time you replace the parts to unleash the full power of the pickaxe. Stone->Copper for this pickaxe. If you manage to get a Zombie, Skeleton, or Creeper head, you can use it to skip the level-up process. This doesn't use up a modifier level, but does change the look until you change the pickaxe part out.  Item=Usable when mining level is X or less Zombie=1 Skeleton=2 Creeper=4 Wither Skeleton=7 Nether Star=8  You could use a paper binding to add an extra modifier, but you will also get modifiers with tool levels.
+  - [可选提交] TConstruct:blankPattern x4
+  - [可选提交] TConstruct:woodPattern:2, TConstruct:woodPattern:4, TConstruct:woodPattern:9, TConstruct:woodPattern:3
+  - [可选提交] minecraft:flint x3, minecraft:planks (ore:plankWood)
+  - [可选提交] TConstruct:pickaxeHead:3, TConstruct:shovelHead:3, TConstruct:hatchetHead:3, TConstruct:binding, minecraft:stick x3
+  - [提交] TConstruct:pickaxe, TConstruct:hatchet, TConstruct:shovel
+  > 奖励: bq_standard:choice | minecraft:flint x10 | TConstruct:blankPattern x2 | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [40] §a§lYou Shall Proceed
+As you've gathered and crafted all materials and tools you need for your basic steam machinery, you may now proceed to the next tier. Keep in mind that you'll need mountains of resources in order to craft even the simplest things, so you probably should stock up on all ores in this tier. But that's up to you.  As a special reward, you get a pair of Holo Glasses to look inside your inventories. Place it into the mask slot, and use the keybind to turn it on.  [note]Tip: If you double-click the NEI search field the resulting highlighted search also applies to what you can see with your Holo Glasses![/note]
+  - [可选提交] gregtech:gt.metaitem.01:17300 x5 (ore:plateBronze)
+  - [可选提交] dreamcraft:WoodenBrickForm
+  - [可选提交] dreamcraft:UnfiredClayBrick x8
+  - [可选提交] minecraft:brick x8
+  - [可选提交] minecraft:brick_block x2
+  - [可选提交] gregtech:gt.metaitem.01:17032 x7 (ore:plateIron), minecraft:furnace, etfuturum:blast_furnace
+  - [合成] gregtech:gt.blockmachines:100
+  > 奖励: bq_standard:choice | holoinventory:Hologlasses | dreamcraft:CoinTechnician x20
+

@@ -1,0 +1,32 @@
+CLASS net/minecraft/class_10322 net/minecraft/block/PaleMossCarpetBlock
+	FIELD field_54755 CODEC Lcom/mojang/serialization/MapCodec;
+	FIELD field_54756 BOTTOM Lnet/minecraft/class_2746;
+	FIELD field_54757 NORTH Lnet/minecraft/class_2754;
+	FIELD field_54758 EAST Lnet/minecraft/class_2754;
+	FIELD field_54759 SOUTH Lnet/minecraft/class_2754;
+	FIELD field_54760 WEST Lnet/minecraft/class_2754;
+	FIELD field_55778 WALL_SHAPE_PROPERTIES_BY_DIRECTION Ljava/util/Map;
+	FIELD field_55779 shapeFunction Ljava/util/function/Function;
+	METHOD method_64790 createUpperState (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;Ljava/util/function/BooleanSupplier;)Lnet/minecraft/class_2680;
+		ARG 0 world
+		ARG 1 pos
+	METHOD method_64791 canGrowOnFace (Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;Lnet/minecraft/class_2350;)Z
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 direction
+	METHOD method_64792 placeAt (Lnet/minecraft/class_1936;Lnet/minecraft/class_2338;Lnet/minecraft/class_5819;I)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 random
+		ARG 3 flags
+	METHOD method_64793 updateState (Lnet/minecraft/class_2680;Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;Z)Lnet/minecraft/class_2680;
+		ARG 0 state
+		ARG 1 world
+		ARG 2 pos
+	METHOD method_64795 getWallShape (Lnet/minecraft/class_2350;)Lnet/minecraft/class_2754;
+		ARG 0 face
+	METHOD method_64799 hasAnyShape (Lnet/minecraft/class_2680;)Z
+		ARG 0 state
+	METHOD method_66452 (Ljava/util/Map;Ljava/util/Map;Lnet/minecraft/class_2680;)Lnet/minecraft/class_265;
+		ARG 2 state
+	METHOD method_66453 createShapeFunction ()Ljava/util/function/Function;

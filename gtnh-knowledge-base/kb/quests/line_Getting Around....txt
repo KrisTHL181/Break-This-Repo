@@ -1,0 +1,346 @@
+# 任务线: Getting Around...
+### [653] Advanced Electric Jetpack
+The advanced electric jetpack is an upgraded version of the electric jetpack. While worn in the chest armor slot and charged with EU, it allows the player to fly. It provides no armor protection, but will charge tools being used in the same manner as the advanced lappack from its 3,000,000 EU internal storage.  The advanced electric jetpack is limited to a maximum flying height of Y-256.  [note]To turn it on, hit the fly key listed under gravisuite. You can then use space to fly up. To activate hover, hit the IC2 mode key while holding space. Will also recharge tools.[/note]
+  - [可选提交] IC2:itemArmorJetpackElectric:32767, IC2:itemArmorAlloyChestplate, IC2:itemPartCarbonPlate x2, gregtech:gt.metaitem.01:17028 x2, gregtech:gt.blockmachines:1641 x2, gregtech:gt.metaitem.01:32704 (ore:circuitData)
+  - [提交] GraviSuite:advJetpack:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-9191592960624051857] Alternative to blasting off!?
+Are you sick and tired of using the rocket to blast off every time and want an alternative and faster method? The EnderIO Telepad is a 3x3x1 structure that when powered with RF will teleport the player to a set coordinate.  To set the Coordinate you will need a Coordinate selector tool to mark an area by shift-right-clicking to mark. Then shift-right-click the middle of the EnderIO Telepad pad to set the desired location.  Then stand on the pad and click teleport to be sent in style.
+  - [提交] EnderIO:blockTelePad x9, EnderIO:itemCoordSelector
+
+### [1344] Angel Wings
+Since you have access to better materials than cardboard now, you wanted to make wings. Angel wings.
+  - [提交] EMT:ThaumiumWing
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI
+
+### [1355] Angel Wings - Ultra Force!
+From ore to ingot, from nano to quantum, as you progress, your technology level increases, so should your wings as well.
+  - [提交] EMT:QuantumWing:32767
+  > 奖励: bq_standard:choice | IC2:itemOreIridium x4 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-8541989652632873807] Basic Flight Potion
+Tired of jetpacks? Want normal flight with no strings attached? Look no further!  Using your brand new MV Assembler and a Chicken Trophy, you can craft a basic Potion of Flight from Blood Magic, giving you 7 minutes of Creative flight with 8 uses before you have to make a new one.  [note]Chicken Trophies are a rare drop from killing chickens.[/note]  [note]Once you unlock Blood Magic, you can craft your own Flight Potion Flasks with a duration of up to 19 minutes, and refill them with any Filling Agent in an Alchemic Chemistry set.[/note]
+  - [可选提交] OpenBlocks:trophy, minecraft:feather
+  - [提交] AWWayofTime:alchemyFlask
+  > 奖励: minecraft:spawn_egg:93 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinTechnician x25
+
+### [2260] Better Boots with a little pizzazz
+Electric Boots of the Traveller grant you a 2% Vis Discount along with all the benefits of the regular Boots of the Traveller.  In addition, they come with a wide variety of new features thanks to our amazing magic devs:  - Configurable Jump Boost: You can choose between 0%, 25%, 50%, 75%, or a 100% jump boost.  - Configurable Speed Boost: Similar to the jump boost, you can adjust the speed boost percentage to your preference.  - Flight Inertia: When toggled on, this feature cancels inertia while flying, allowing for precise movement even when traveling at high speeds.  - Omnidirectional Movement: This toggle lets you decide whether your speed boost applies in all directions or only while running straight ahead.  [note]None of these keybinds are set by default. The easiest way to configure them is to go into Options -> Controls, turn on the "Category" button, and type "Thaumic Boots." Then, assign keys for the features as needed.[/note]  [note]If you want to advance in the dark arts you can also make them voidwalker boots.[/note]
+  - [提交] EMT:ElectricBootsTraveller:32767, thaumicboots:item.ItemElectricVoid:32767
+  > 奖励: enhancedlootbags:lootbag:9 x3 | dreamcraft:CoinDarkWizardI
+
+### [672] Boat Shape?
+Really? Yes for the more advanced boats you need a new shape form.  You need to make an Extruder first to progress further.
+  - [可选提交] dreamcraft:ShapeBoat
+  - [提交] dreamcraft:ExtruderShapeBoat
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [1186] Boost Your Speed
+If you decide to not use a locomotive and drive with one or two carts only, you can use some booster tracks. Activate them with a lever or a redstone torch. You can also use them to slow down, especially when doing corners!
+  - [提交] minecraft:golden_rail x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [1810] Boost Your Speed v2
+High speed transition and booster tracks get your carts moving at really ridiculous speeds. Do not use normal track without several transition tracks or else your cart will explode. Do not try turning at high speed or, you guessed it, your cart will explode.
+  - [提交] Railcraft:track x16, Railcraft:track:26865 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [670] Carbon Fiber Boat
+Unlike all other boats, this amazing carbon fiber canoe is COMPLETELY INDESTRUCTIBLE!* This means that you can smash it into as many beaches, lily pads and alligators as you like, the carbon fiber canoe won't take a scratch!  Warning: We are not held responsible for any damage caused by riding the carbon fiber canoe into a lava lake or the Void.  *Therefore, warranty is NOT included.
+  - [提交] IC2:itemBoat
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [1379] Cart With Chunkloader
+When transporting oil from long distances, a train is going to need a chunk loader. Craft one, and I'll give you a second one for free.  [note]This quest might not be completable in MP?[/note]
+  - [提交] Railcraft:cart.anchor
+  > 奖励: Railcraft:cart.anchor | dreamcraft:CoinChunkloaderTierI x4 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [-8363388332321311391] Chaos Locator
+This device is fashioned to greatly accelerate the hunt for chaos shards, by teleporting you straight to them!   Simply enter any number from -1000 to 1000 in the coordinate fields, click the button and you will be teleported directly to a chaos island, even across dimensions.  How convenient!  [note]You will still have to fight the chaos guardian though, this isn't a cosmic superweapon.[/note]
+  - [提交] gregtech:gt.Item_Chaos_Locator
+
+### [-5457259343752885948] Charm of Dislocation
+They have limited durability. So either put them on a pedestal to avoid durability loss, or use a thaumic restorer.
+  - [提交] DraconicEvolution:teleporterMKI
+
+### [649] Coal Steam Jetpack
+Your coal jetpack needs coal and water to produce steam. After a short warm-up period you can go and take it for a ride. Keep in mind you will need your glider to make a soft landing.  Put your jetpack on your back and hit Shift and the adventure backpack's action-key to start it.  Max flying height for this jetpack is Y-185.  Vertical velocity decreases linearly with height after overcoming optimal height - 135 for jetpack and 100 for copter.
+  - [可选提交] Railcraft:machine.beta:5, adventurebackpack:backpackComponent:2 x2, gregtech:gt.blockmachines:5130 x2, gregtech:gt.metaitem.01:17019 x2, gregtech:gt.metaitem.01:27305, gregtech:gt.metaitem.01:32601
+  - [提交] adventurebackpack:coalJetpack
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [650] Copterpack, More 'Hover' than 'Jet'
+The copterpack is the first jetpack with a hover mode. It uses several different types of fuels to power it.  Buckets of creosote, lava, oil, diesel, cetane, ethanol, and fuel will work.  Equip your copterpack, then hold the sneak key and press the Adventure Backpack action key. You can also switch between hover and normal mode.  Max flying height is limited to Y-200.  Vertical velocity decreases linearly with height after overcoming optimal height - 135 for jetpack and 100 for copter.  [note]Dropped items will be pushed away from you, just like a helicopter pushes things away, so be careful in the End, or by cliffsides.[/note]
+  - [可选提交] gregtech:gt.metaitem.02:31305, IC2:itemRecipePart:12 x4, gregtech:gt.metaitem.01:27305 x3
+  - [可选提交] adventurebackpack:backpackComponent:6
+  - [可选提交] gregtech:gt.blockmachines:1111, gregtech:gt.blockmachines:5133, gregtech:gt.metaitem.01:32641 x2, gregtech:gt.metaitem.01:17305 x5 (ore:plateSteel)
+  - [可选提交] adventurebackpack:backpackComponent:5
+  - [可选提交] adventurebackpack:backpackComponent:6, adventurebackpack:backpackComponent:5, gregtech:gt.metaitem.01:32601, adventurebackpack:backpackComponent:2, gregtech:gt.blockmachines:5130 x3, gregtech:gt.metaitem.01:27500 x2
+  - [提交] adventurebackpack:copterPack
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [676] Crowbar
+The crowbar comes in a Railcraft (and thaumcraft versions of RC) and a gregtech variant. It is used to manipulate machines from railcraft, remove plates and any other covers (pumps, conveyor modules, etc.) from gregtech pipes and machines as well as breaking certain objects faster, such as tracks. This tool is also used to access certain inventories from Railcraft.  Hold a crowbar and shift-right-click to attach carts. Click the starting cart then continue to click to add more carts to the link. Carts will act slower the more connections are made.  The crowbar can be used as a weapon, though it costs twice as much durability on attack (just like any other non weapon tool...).
+  - [提交] Railcraft:tool.crowbar
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [2461] 'Easy' Teleportation
+They may be a pain to craft, but teleposers are very useful for teleporting. Use the Teleposition Focus to set the first Teleposer location and put it in the second. Apply a redstone signal, and it'll teleport you at the cost of LP. It can also move items or entities, with the size increasing with better foci.
+  - [提交] minecraft:lever x2, AWWayofTime:telepositionFocus x2, AWWayofTime:blockTeleposer x2
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x3
+
+### [671] Electric Boat
+The electric boat works mostly like a vanilla boat, chugging through the water at a decent pace. It will hopefully drop itself once you crash, which is slightly nicer than the usual sticks. That's all well and good, but what if we utilize the electric engine? Wearing an energy storage device in your chestplate slot, like a batpack or energypack, will cause the boat to drain energy from it and propel you forward at supersonic speed! Doing this will consume about 100 EU per block traveled, so even a decent batpack won't last long!
+  - [可选提交] dreamcraft:ElectricBoatHull
+  - [提交] IC2:itemBoat:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [1190] Electric Feeder Unit
+To get your tracks electrified you need an electric feeding unit, shunting wires and some support frames. You can use an MFE or a transformer to get GT energy into the feeder unit.
+  - [提交] Railcraft:machine.epsilon
+  - [提交] Railcraft:machine.delta x8, Railcraft:frame x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [651] Electric Jetpack
+Your first electrical jetpack, It can be charged in any LV machine. You need to hit the IC2 mode-switch key to toggle between normal mode and hover mode while holding down the jump key. When descending, remember to shut off hover mode or else you'll drain your jetpack.  The only limitation is that you can't fly higher than Y-185.  For charging on the go, you can craft a charging crystal from ic2 charging components. You have to take the backpack out of the armor slot and put it in your hotbar and activate the charger by sneak-clicking.  Later on GT++ charge packs are belts that can charge everything in your inventory including armor. Check NEI for the recipe.  Finally, the GT++ wireless charger will charge everything in your inventory, including the jetpack, from your base at long ranges. A quest is unlocked once you finish your nanosuit. Just remember when you are off world or in the Nether that your jetpack isn't charging!
+  - [可选提交] IC2:itemArmorBatpack:27, gregtech:gt.metaitem.02:18306 x2, gregtech:gt.metaitem.01:32602 x2, GraviSuite:itemSimpleItem:6 x2, IC2:itemPartCircuitAdv (ore:circuitAdvanced), gregtech:gt.blockmachines:1382
+  - [提交] IC2:itemArmorJetpackElectric:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1185] Electric Locomotive
+Electric Locomotives are much better than steam ones. You need electric rail for it.
+  - [提交] Railcraft:cart.loco.electric
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [647] Electrotine Jetpack
+Your glider gets you to the ground safely but it does not have any method to get up. After you researched electrotine you discovered that it is powerful enough for your first jetpack.  A diamond chestplate surrounded with 4 electrotine batteries is powerful enough to bring you up into the air.  It does not have a hover mode so you better take your glider with you.  Hint: This jetpack can't fly higher than Y-128.
+  - [可选提交] minecraft:diamond_chestplate, ProjRed|Expansion:projectred.expansion.emptybattery x4, IC2:itemPartCircuit x2 (ore:circuitBasic), gregtech:gt.blockmachines:1422, gregtech:gt.metaitem.01:17811
+  - [提交] ProjRed|Expansion:projectred.expansion.jetpack:6400
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [-7236257860167570143] Enhanced Charm of Dislocation
+Very powerful.
+  - [提交] DraconicEvolution:teleporterMKII
+
+### [2899] Flippers
+Maybe you were lucky and found some Flippers in a loot chest or dungeon.  Flippers allow the player to swim at the same speed as walking. The only problem is that it has 0 armor protection.  If you're doing underwater construction, or digging out some clay or gravel, you may find them useful.
+  - [提交] BiomesOPlenty:flippers
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x2
+
+### [1182] Fluid Loader and Unloader
+If you plan to automate the oil transport from your oil field far away, you need a fluid loader and unloader. A locking track will stop the train as long as oil is loaded or unloaded.  [note]PS: You should probably use the Long Distance Fluid Pipeline once you can make it in LV unless you really love trains.[/note]  Full details on how to use these may require online research (GTNH changes the recipes, not normal Railcraft functionality), but here is a simple list of things to do:  1. Make a loop of track from your base to the oil well. 2. Place a locking track near the well, and put a fluid loader two blocks above it. The track should be in Locking Mode - use a crowbar to change it. 3. Use the tank car on the filter in the loader and set it to Immediate mode. 4. Connect the well to the loader as normal. 5. Put a fluid unloader under a locking track at your base, and set it the same as the loader. 6. Automate the locomotive similarly - a fluid loader above a steam locomotive set to manual and filtered to the locomotive.  Either you got it working, you need to do more research, you realized it moves 32 buckets a trip and decided to just walk, or you can go to Discord and ask why anyone would build a train.  Item loaders also exist, but the main use for them may be to refuel your locomotive.
+  - [提交] Railcraft:machine.gamma:4, Railcraft:machine.gamma:5
+  - [提交] Railcraft:track:20176 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [2066] Flying Like a Eag - I Mean Raven
+This cloak is a nice substitute for the Glider. There are plenty of other magical items worth a look in the Witching Gadgets tab. If you want to toggle gliding with a key - configure binding for "Hotkey for activating some worn items" in control settings.
+  - [提交] WitchingGadgets:item.WG_Cloak:4
+  > 奖励: dreamcraft:CoinDarkWizardI x5
+
+### [2060] Flying Like....Mary Poppins?
+The Thaumostatic Harness grants you flight, using up Potentia from a jar. The speed isn't great though, so perhaps further research will yield some results.
+  - [提交] Thaumcraft:HoverHarness
+  > 奖励: enhancedlootbags:lootbag:9
+
+### [2061] Flying With the Greatest of Ease
+Ahh, that's better. With this girdle you can really fly around like a true wizard. It does take a little extra potentia to use though, so keep an eye on your flying time.
+  - [提交] Thaumcraft:ItemGirdleHover
+  > 奖励: enhancedlootbags:lootbag:9
+
+### [652] Fueled Jetpack
+This jetpack uses IC2 biogas and can fly up to Y-245. You can switch between hover and normal mode using the IC2 mode-switch key.  An empty jetpack can be (re-)fueled in a fluid tank filled with biogas.
+  - [可选提交] gregtech:gt.metaitem.02:18306 x2, BuildCraft|Factory:tankBlock x2, IC2:reactorCoolantSix:1, adventurebackpack:backpackComponent:5, GraviSuite:itemSimpleItem:6 x2, IC2:itemPartCircuitAdv (ore:circuitAdvanced)
+  - [提交] IC2:itemArmorJetpack:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [645] Glider Wings
+If for some reason you want to be able to jump down a cliff without getting the message "Player X fell from a high place", a great idea would be to find a way to slow your fall. The store was out of feather falling potions, so make a hang glider instead.
+  - [可选提交] minecraft:leather x10, Backpack:tannedLeather x2, gregtech:gt.metaitem.01:23305 x4
+  - [可选提交] OpenBlocks:generic x2, gregtech:gt.metaitem.01:17305 (ore:plateSteel), gregtech:gt.metaitem.01:27305 x4
+  - [提交] OpenBlocks:hangglider
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [-7733034115414850723] Indestructible Vessel
+In light of your thaumaturgical research, you have come to the conclusion that Greatwood is, in fact, a great material for constructing a resilient boat. Utilizing this material to its fullest potential has allowed you to construct a boat that is slightly faster and will never break on collision.
+  - [提交] ThaumicHorizons:boatGreatwood
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinAdventure x15
+
+### [669] Inflatable Boot
+I meant to say boat... The inflatable boat is the first boat that doesn't break on impact with a solid block.
+  - [提交] adventurebackpack:backpackComponent:7
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x15 | dreamcraft:CoinTechnician x15
+
+### [874] Jetpack v.0.1 Alpha
+Do you like flying? Ok then, make a slimy bouncepad and enjoy the view.
+  - [可选提交] TConstruct:slime.gel x3, TConstruct:slime.gel:1, TConstruct:slime.channel x2
+  - [合成] TConstruct:slime.pad
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [-4660293697819101110] Let's Go Lava Surfing!
+The Thaumium Boat is an upgraded version of your Greatwood Boat. The experience you have gained from manufacturing boats made of magical materials allows you to create a boat that can go even faster. Additionally, the Thaumium coating allows it to sail not only in rivers but also lava streams! Take it with you on your vacation in the Nether and enjoy.
+  - [提交] ThaumicHorizons:boatThaumium
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinAdventure x25
+
+### [1183] Locomotive 0.1 Alpha
+The furnace cart is a cheap locomotive. Click with coal or charcoal on the cart and it will start moving.  This is a curiosity, and probably you will use the steam locomotive from the next quest for an actual train.
+  - [提交] minecraft:furnace_minecart
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10 | dreamcraft:CoinTechnician x10
+
+### [2063] Long Distance Power Delivery
+No mage wants to be restricted to short flying times. With this spire from the Automagy discipline you can transmit magical energy directly to your flying harness. To get the correct Thaumium block, compress 9 ingots to get the GT Thaumium block and then chisel that block to get the correct type.  This multiblock requires centi-vis to operate. You can use 2-6 Thaumostatic Pylons, with additional pylons extending the range. Provide the construct Aer centi-vis to operate, and it will accept Potentia essentia to transfer to flyers. The construct will also accept Aer and Volatus essentia to increase the range and rate of transfer, respectively. Right-click the sides of the controller to control which type of essentia each side will accept.
+  - [提交] Automagy:blockThaumostaticPylon:1, Automagy:blockThaumostaticPylon x2, minecraft:quartz_block:1, Thaumcraft:blockCosmeticSolid:4
+  > 奖励: enhancedlootbags:lootbag:10
+
+### [677] Minecart
+After you craft your first cart the journey can begin...  Well, not really. You will need some kind of tracks first.  [note]We here at QuestBook, Inc. do not guarantee the usefulness of minecarts or trains in any way. Especially since you can mine out a vein in a single session once you have a hammer and backpacks.[/note]  [warn]WARNING: Unprotected carts can be knocked off their rails by lightning. Cover the area with blocks to prevent carts from disappearing.[/warn]  [warn]Also, make sure to keep your cart in one chunk, or use chunkloaders covering the whole area the cart works within. Loading/unloading chunks may cause carts to disappear or duplicate.[/warn]  [note]You should only make these if you want to have fun with them, as anything they can do is better done by other methods, including the Long Distance Fluid Pipeline. Excessive minecart and train use on servers may cause lag and you may be asked to switch later anyway.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:23032 x2 (ore:stickAnyIron), gregtech:gt.metaitem.01:28032 x4 (ore:ringAnyIron)
+  - [可选提交] gregtech:gt.metaitem.01:32100 x2
+  - [可选提交] gregtech:gt.metaitem.01:17032 x3 (ore:plateAnyIron)
+  - [合成] minecraft:minecart
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10 | dreamcraft:CoinTechnician x10
+
+### [1181] Minecart with Tank, Workbench or Furnace
+Want to transport oil or other fluids, have a portable crafting table or a portable chest? Then you need to craft some minecarts with tanks, chests or crafting tables.
+  - [提交] Railcraft:cart.tank
+  - [提交] Railcraft:cart.work
+  - [提交] minecraft:chest_minecart
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10 | dreamcraft:CoinTechnician x10
+
+### [-7440565615906063856] Planar Gateways
+A planar gateway from Thaumic Horizons lets you travel to a pocket dimension. Setting up multiple gateways (up to 4) to the pocket dimension even allows for travel to other dimensions!
+  - [提交] ThaumicHorizons:slotTH, ThaumicHorizons:keystoneTH
+  > 奖励: ThaumicHorizons:keystoneTH
+
+### [648] Refill Your Jetpack
+GREAT.... you now have an empty jetpack. You need 25 electrotine dust to completely fill it. Let's craft an electrotine generator and a charging bench to use the power of electrotine.  You will very quickly discover that, while it is fast and cheap, it's empty in the blink of an eye. Despite this, it is useful in combination with the hang glider to get into the air and to get away from hairy situations.
+  - [提交] ProjRed|Expansion:projectred.expansion.machine1:1, ProjRed|Expansion:projectred.expansion.machine2:6, ProjRed|Core:projectred.core.part:56 x25
+  - [提交] ProjRed|Expansion:projectred.expansion.jetpack
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [-7756273166616703872] Relocator
+The relocator allows for teleportation to previously marked locations, even between dimensions.  [note]Uses quite a lot of power so a GraviChestPlate or other energy sources are recommended.[/note]
+  - [提交] GraviSuite:relocator:1
+
+### [666] Row, Row, Row Your Boat
+You live close to the water and don't have a boat? Man, get it together.  You need wooden planks, slabs and a knife to craft one. (This is also quest id 666, be careful, something is going on.)  [note]We here at QuestBook, Inc. do not guarantee the usefulness of boats. The standard worldgen does not include oceans, so their usefulness is heavily curtailed. There are lots of rivers, but horses might be more useful if not on a server.[/note]
+  - [合成] minecraft:boat
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10 | dreamcraft:CoinTechnician x10
+
+### [668] Rubber Boat
+The rubber dinghy requires only a few rubber plates. Like the vanilla wooden boat, it will break and dismantle whenever it hits a surface, however instead of returning sticks and planks, it will return a damaged rubber dinghy, which can be re-crafted with two pieces of rubber back into a usable rubber dinghy!
+  - [提交] IC2:itemBoat:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x15 | dreamcraft:CoinTechnician x15
+
+### [1345] Secret-Angel-Assasin
+Infusing your Wings with nano technology seems to be the next step, to further improve them and combine magic and technology.
+  - [提交] EMT:NanosuitWing:32767
+  > 奖励: bq_standard:choice | IC2:itemPartCarbonPlate x4 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinTechnicianI x5
+
+### [1985] So Much Nicer Than Ladders
+Elevators are great for fast transportation vertically in your base. Leaving a tinted elevator will stop at the same color elevator. Use some Malisis doors for a nice "real" elevator effect. The rotating elevator will turn the player as they go up or down to face a specific direction. Handy if your elevator shaft is on one side at a floor and a different side at another floor.
+  - [提交] OpenBlocks:elevator
+  > 奖励: bq_standard:choice
+
+### [-6611206590732952517] Spare Battery
+The Electric Jetpack may be useful for flight, but it doesn't seem to last very long.   If only there was an integrated upgradable battery pack you could keep on your player to extend its range...  Oh wait, there is!  The §5§lCharge Pack§r can be used as a battery pack for charging items both in your hotbar and armor equip to your person. Simply place it in the belt bauble slot and it should be fully functional! The HV one should serve you nicely for now.  [note]You can upgrade the Charge Pack as you unlock items that require higher voltages for charging. The Charge Pack will charge anything of-tier or lower- but not higher.[/note]
+  - [可选提交] miscutils:itemPlateTantalumCarbide x8, gregtech:gt.metaitem.01:28028 x12, gregtech:gt.blockmachines:1423 x6, IC2:itemPartCircuitAdv x4 (ore:circuitAdvanced), gregtech:gt.metaitem.01:32538 x4, gregtech:gt.metaitem.01:32692 x4, miscutils:itemCellTantalumCarbide x4
+  - [提交] miscutils:GTPP.BattPack.03.name:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x8
+
+### [-9078433263530968349] Speed up with the Sash
+The Sashes from Botania improves your speed passively along with a jump boost and provide Step assist all while fitting in your belt slot, how convenient is that?  You will need a method of powering them with either the mana tablet or the mana mirror linked to a pool.  The Soujourner Sash provides the basic speed boost, jump boost and step assist while the Globetrotter provides double the jump height and speed boost.  The Planestrider is special since it provides a slowly increasing speed boost as long as you are moving. You can even reach up to 11 times the Soujourner Sash speed boost!  [note]You only need to make one Sash to complete the quest.[/note]
+  - [提交] Botania:travelBelt, Botania:speedUpBelt, Botania:superTravelBelt
+  > 奖励: Botania:manaTablet
+
+### [1184] Steam Locomotive
+The steam locomotive is much better than the furnace cart. You can control the speed and the direction the locomotive will move. You need to put water and coal inside to make steam to power the locomotive.  You can use a water tank or other water source to refill this locomotive by placing a Fluid Loader above it at a stop. The loader can be placed either directly above the track, or a block higher to give you clearance when riding the train. (You can't actually ride a train unless you sit in a normal minecart.)  This locomotive runs on any fuel you can burn in a steam boiler, perhaps you will want to use compressed coal blocks or similar. You can use an Item Loader to refuel it.  Once you have stable electricity in MV, you will likely move to the Electric Locomotive.
+  - [提交] Railcraft:cart.loco.steam.solid
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [1779] Step Assistant
+The Piston Boots are a bouncy pair of shoes for adventurers.  It functions as a piece of armor for the foot slot that gives a fun jump boost! They let the wearer jump up to THREE blocks in height and increase run speed. They also grant a Step-Up enchantment to allow the wearer to step up a single block without jumping while sprinting. You can repair them with leather using an anvil.  Basically, make them ASAP.
+  - [可选提交] minecraft:leather_boots, Backpack:tannedLeather x2, gregtech:gt.metaitem.01:17880 x2, minecraft:piston x2, gregtech:gt.metaitem.01:27300
+  - [提交] adventurebackpack:pistonBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinSurvivor x10
+
+### [675] Switch Lever
+The switch lever is the manual version of the switch motor, requiring a player to operate it instead of a redstone signal.  It is used in various signaling systems, mainly to change the way switch tracks and wye tracks work.
+  - [提交] Railcraft:signal:4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [-8863044341591625965] Teleporter
+The IndustrialCraft2 Teleporter allows for teleportation between 2 connected teleporters. It requires energy storing block right next to it due to the massive power demand.  [note]The energy required is determined by the distance between the teleporters and amount of items in the inventory.[/note]  [note]The teleporter is quite buggy according to the official wiki.[/note]
+  - [提交] IC2:blockMachine2, IC2:itemFreq
+
+### [133] The Power of Endermen
+Elevators are nice, but they're limited to vertical teleportation, and their range is also highly limited. Travel anchors don't have a limitation on angle, you can teleport from one anchor to any other within 128 blocks. You do this by looking at the anchor you wish to travel to and pressing the shift button. You can also name them and even set them as private if you like. They have a 2s cooldown.
+  - [提交] EnderIO:blockTravelAnchor
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinTechnicianI x5
+
+### [866] The Transcontinental Railroad
+All the different mining veins that have been found seem to be really far apart. One way to shorten the travel time is to create a railroad from your base to the different mines. Sadly this requires a large amount of both iron and creosote. Let's not forget to place the last symbolic rivet on one of your new train lines.
+  - [提交] minecraft:rail x512, Railcraft:track:32363 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x20 | dreamcraft:CoinTechnician x20
+
+### [1187] The Transcontinental Railroad - High-Speed
+Did you ever dream of driving in a railcart at high speeds? Well your dreams can come true with the high speed tracks. Be careful though; you need to lower the speed when your rails change direction or when the track ends.
+  - [提交] Railcraft:track:816 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [1188] The Transcontinental Railroad - Creeper-Proof
+Railroads in the nether are dangerous. The reinforced tracks are blast proof. Hopefully you're blast proof too?  You can move 25% faster than with normal tracks.  NEI doesn't show the right recipe on the first page. Go through the recipes a bit to find the right one.
+  - [提交] Railcraft:track x64
+  - [提交] Railcraft:track x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [1189] The Transcontinental Railroad - Electric
+Electrical tracks are used together with your electric locomotive. You need to power the rails with energy.  NEI doesn't show the right recipe on the first page. Go through the recipes a bit to find the right one.  [note]Alternatively you can use the search bar to search for a specific name, in this case electric tracks![/note]
+  - [提交] Railcraft:track x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [667] Trainspotting
+The wooden tracks can be made without any machine, though always check NEI for assembler recipes for discounts. Functionally equivalent to normal rails, but with a lower maximum speed (for safety reasons).  [note]Hint: You can use your wooden rails for Steve's Carts farms.[/note]
+  - [可选提交] minecraft:wooden_slab x60 (ore:slabWood)
+  - [可选提交] Railcraft:part.tie x20
+  - [可选提交] minecraft:stick x4 (ore:stickWood), gregtech:gt.metaitem.01:23032 x4
+  - [可选提交] Railcraft:part.rail:2 x8
+  - [可选提交] Railcraft:part.railbed x4
+  - [合成] Railcraft:track:736 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10 | dreamcraft:CoinTechnician x10
+
+### [1509] Travelocity!
+A staff of traveling can get you really moving around your base. Hold shift and right-click to teleport in that direction. If you've got travel anchors, just right-clicking will send you to them. The range is 16 blocks for normal TP, 128 to an anchor.
+  - [提交] EnderIO:itemTravelStaff:32767
+  > 奖励: EnderIO:blockTravelAnchor | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSmithI x5
+
+### [3293] Travelocity²
+Why walk when you can teleport? This upgrade to the staff of traveling can move you even further, even faster, and will never run out of energy.  Right-click:  * If targeting a travel anchor: teleport to it, 2048 range  * If looking at a block: teleport to it, 512 range  * If no block in range: teleport forward, 64 range  * If looking at a block within 4 range: teleport to the other side of a wall, 16 range  * No cooldown  Shift-right-click:  * Same as right-click, but ignoring travel anchors  * Travel anchors will be hidden from view while holding shift  [note]Tip: You won't be able to see travel anchors that are far away, but can still teleport to them if they are in range and chunk-loaded. Try using JourneyMap waypoints to mark anchors![/note]  [note]Note: The right-click and shift-right-click actions are fully configurable. Check the EnderIO Staff Settings configs! Config action values:  0: Do nothing  1: Teleport to look / forward  2: Teleport to anchor  3: Teleport to anchor, or to look / forward if no anchor[/note]
+  - [提交] EnderIO:itemTeleportStaff
+
+### [2261] Walk all over you
+Nanosuit Boots of the Traveller provide all the benefits of the Nanosuit, plus a massive speed boost, higher jump, and improved Vis Discount. These are the perfect boots for the master magical engineer.  [note]If you want to advance in the dark arts you can also make them voidwalker boots.[/note]
+  - [提交] EMT:NanoBootsTraveller:32767, thaumicboots:item.ItemNanoVoid:32767
+  > 奖励: enhancedlootbags:lootbag:11 | dreamcraft:CoinDarkWizardII
+
+### [2262] Walking across the stars
+Quantum Boots of the Traveller, for when you really need to run as fast as the wind. Might cause you some problems standing still!  [note]If you want to advance in the dark arts you can also make them voidwalker boots.[/note]
+  - [提交] EMT:QuantumBootsTraveller:32767, thaumicboots:item.ItemQuantumVoid:32767
+  > 奖励: enhancedlootbags:lootbag:11 x3 | dreamcraft:CoinDarkWizardII x2
+
+### [674] Wooden Rail Variants
+The wooden junction, wye and switch tracks need an assembling machine to craft. They allow you to join and switch to tracks going to different locations.  NEI doesn't show the right recipe on the first page. Go through the recipes a bit to find the right one.
+  - [提交] Railcraft:track:736 x4, Railcraft:track:19986 x4, Railcraft:track:736 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x15 | dreamcraft:CoinTechnician x15
+
+### [2062] Working While Flying?
+With these devices you can now fly and work at the same time without penalty. They can be found in the Witching Gadgets tab of the book. You'll need a Swiftness potion for this device.
+  - [提交] WitchingGadgets:item.WG_Baubles:3
+  > 奖励: enhancedlootbags:lootbag:9
+
+### [1343] Works like in anime!
+You want to fly. Badly. So go and ductape wings!
+  - [提交] EMT:FeatherWing
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizard x2
+

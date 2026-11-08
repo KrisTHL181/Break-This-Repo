@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WPA": {
+      "commandName": "Executable",
+      "executablePath": "%localappdata%\\Microsoft\\WindowsApps\\wpa.exe",
+      "commandLineArgs": "-nodefault -addsearchdir $(SolutionDir)..\\..\\artifacts\\bin\\quictrace\\$(Configuration)",
+      "nativeDebugging": false
+    }
+  }
+}

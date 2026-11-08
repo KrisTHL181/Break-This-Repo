@@ -1,0 +1,32 @@
+CLASS net/minecraft/class_1704 net/minecraft/screen/BeaconScreenHandler
+	FIELD field_17287 payment Lnet/minecraft/class_1263;
+	FIELD field_17288 paymentSlot Lnet/minecraft/class_1704$class_1705;
+	FIELD field_17289 context Lnet/minecraft/class_3914;
+	FIELD field_17290 propertyDelegate Lnet/minecraft/class_3913;
+	FIELD field_30756 PAYMENT_SLOT_ID I
+	FIELD field_30757 BEACON_INVENTORY_SIZE I
+	FIELD field_30758 PROPERTY_COUNT I
+	FIELD field_30759 INVENTORY_START I
+	FIELD field_30760 INVENTORY_END I
+	FIELD field_30761 HOTBAR_START I
+	FIELD field_30762 HOTBAR_END I
+	METHOD <init> (ILnet/minecraft/class_1263;)V
+		ARG 1 syncId
+		ARG 2 inventory
+	METHOD <init> (ILnet/minecraft/class_1263;Lnet/minecraft/class_3913;Lnet/minecraft/class_3914;)V
+		ARG 1 syncId
+		ARG 2 inventory
+		ARG 3 propertyDelegate
+		ARG 4 context
+	METHOD method_17372 setEffects (Ljava/util/Optional;Ljava/util/Optional;)V
+		ARG 1 primary
+		ARG 2 secondary
+	METHOD method_17373 getProperties ()I
+	METHOD method_17374 getPrimaryEffect ()Lnet/minecraft/class_6880;
+	METHOD method_17375 getSecondaryEffect ()Lnet/minecraft/class_6880;
+	METHOD method_17376 hasPayment ()Z
+	METHOD method_53173 getRawIdForStatusEffect (Lnet/minecraft/class_6880;)I
+		ARG 0 effect
+	METHOD method_53174 getStatusEffectForRawId (I)Lnet/minecraft/class_6880;
+		ARG 0 id
+	CLASS class_1705 PaymentSlot

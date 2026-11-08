@@ -1,0 +1,46 @@
+CLASS net/minecraft/class_4284 net/minecraft/datafixer/DataFixTypes
+	FIELD field_19222 typeReference Lcom/mojang/datafixers/DSL$TypeReference;
+	FIELD field_42975 REQUIRED_TYPES Ljava/util/Set;
+	METHOD <init> (Ljava/lang/String;ILcom/mojang/datafixers/DSL$TypeReference;)V
+		ARG 3 typeReference
+	METHOD method_48128 update (Lcom/mojang/datafixers/DataFixer;Lcom/mojang/serialization/Dynamic;I)Lcom/mojang/serialization/Dynamic;
+		COMMENT {@return {@code dynamic} updated from {@code oldVersion} to the current version}
+		ARG 1 dataFixer
+		ARG 2 dynamic
+		ARG 3 oldVersion
+	METHOD method_48129 update (Lcom/mojang/datafixers/DataFixer;Lcom/mojang/serialization/Dynamic;II)Lcom/mojang/serialization/Dynamic;
+		COMMENT {@return {@code dynamic} updated from {@code oldVersion} to {@code newVersion}}
+		ARG 1 dataFixer
+		ARG 2 dynamic
+		ARG 3 oldVersion
+		ARG 4 newVersion
+	METHOD method_48130 update (Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/class_2487;I)Lnet/minecraft/class_2487;
+		COMMENT {@return {@code nbt} updated from {@code oldVersion} to the current version}
+		COMMENT
+		COMMENT @see net.minecraft.nbt.NbtHelper#getDataVersion
+		ARG 1 dataFixer
+		ARG 2 nbt
+		ARG 3 oldVersion
+	METHOD method_48131 update (Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/class_2487;II)Lnet/minecraft/class_2487;
+		COMMENT {@return {@code nbt} updated from {@code oldVersion} to {@code newVersion}}
+		COMMENT
+		COMMENT @see net.minecraft.nbt.NbtHelper#getDataVersion
+		ARG 1 dataFixer
+		ARG 2 nbt
+		ARG 3 oldVersion
+		ARG 4 newVersion
+	METHOD method_48132 getSaveVersionId ()I
+	METHOD method_53711 createDataFixingCodec (Lcom/mojang/serialization/Codec;Lcom/mojang/datafixers/DataFixer;I)Lcom/mojang/serialization/Codec;
+		ARG 1 baseCodec
+		ARG 2 dataFixer
+		ARG 3 currentDataVersion
+	CLASS 1
+		METHOD decode (Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;
+			ARG 1 ops
+			ARG 2 input
+		METHOD encode (Ljava/lang/Object;Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;
+			ARG 1 input
+			ARG 2 ops
+			ARG 3 prefix
+		METHOD method_53712 (Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;
+			ARG 1 encoded

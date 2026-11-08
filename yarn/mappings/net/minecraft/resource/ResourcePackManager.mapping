@@ -1,0 +1,38 @@
+CLASS net/minecraft/class_3283 net/minecraft/resource/ResourcePackManager
+	COMMENT A resource pack manager manages a list of {@link ResourcePackProfile}s and
+	COMMENT builds {@linkplain #createResourcePacks() a list of resource packs} when the
+	COMMENT resource manager reloads.
+	FIELD field_14225 enabled Ljava/util/List;
+	FIELD field_14226 profiles Ljava/util/Map;
+	FIELD field_14227 providers Ljava/util/Set;
+	METHOD <init> ([Lnet/minecraft/class_3285;)V
+		ARG 1 providers
+	METHOD method_14441 getProfiles ()Ljava/util/Collection;
+	METHOD method_14444 getEnabledProfiles ()Ljava/util/Collection;
+	METHOD method_14445 scanPacks ()V
+	METHOD method_14447 setEnabledProfiles (Ljava/util/Collection;)V
+		ARG 1 enabled
+	METHOD method_14449 getProfile (Ljava/lang/String;)Lnet/minecraft/class_3288;
+		ARG 1 id
+	METHOD method_29206 getIds ()Ljava/util/Collection;
+	METHOD method_29207 hasProfile (Ljava/lang/String;)Z
+		ARG 1 id
+	METHOD method_29208 buildEnabledProfiles (Ljava/util/Collection;)Ljava/util/List;
+		ARG 1 enabledNames
+	METHOD method_29209 streamProfilesById (Ljava/util/Collection;)Ljava/util/stream/Stream;
+		ARG 1 ids
+	METHOD method_29210 getEnabledIds ()Ljava/util/Collection;
+	METHOD method_29211 createResourcePacks ()Ljava/util/List;
+	METHOD method_29212 providePackProfiles ()Ljava/util/Map;
+	METHOD method_29484 (Ljava/util/Map;Lnet/minecraft/class_3288;)V
+		ARG 1 profile
+	METHOD method_45278 getRequestedFeatures ()Lnet/minecraft/class_7699;
+	METHOD method_49427 enable (Ljava/lang/String;)Z
+		ARG 1 profile
+	METHOD method_49428 disable (Ljava/lang/String;)Z
+		ARG 1 profile
+	METHOD method_59808 (Lnet/minecraft/class_3288;)Ljava/lang/String;
+		ARG 0 profile
+	METHOD method_59809 listPacks (Ljava/util/Collection;)Ljava/lang/String;
+		ARG 0 profiles
+	METHOD method_63566 hasOptionalProfilesEnabled ()Z

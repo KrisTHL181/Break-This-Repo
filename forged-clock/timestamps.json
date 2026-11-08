@@ -1,0 +1,515 @@
+{
+  "generated": "2026-09-23T13:05:25Z",
+  "subject": {
+    "repo": "KrisTHL181/Break-This-Repo",
+    "head": "2a721a3026d85c0764c4cf4854c49e8cc8e985e5",
+    "reachable_commits": 153426,
+    "first_parent_commits": 705,
+    "collected_at": "2026-09-23T13:05:15Z",
+    "method": "git clone --bare --filter=tree:0 --single-branch --branch main (commits only; no trees, no blobs)"
+  },
+  "graph": {
+    "reachable_commits": 153426,
+    "first_parent_commits": 705,
+    "imported_commits": 152721,
+    "distinct_author_names": 3928,
+    "distinct_author_emails": 4074,
+    "distinct_committer_emails": 816,
+    "import_ratio": 0.9954
+  },
+  "author_dates": {
+    "commits": 153426,
+    "earliest_author_date": "1971-09-01T01:30:01Z",
+    "latest_author_date": "2077-01-01T09:00:00Z",
+    "span_years": 105.34,
+    "years": {
+      "1971": 1,
+      "2000": 3,
+      "2001": 347,
+      "2002": 1233,
+      "2003": 1311,
+      "2004": 1169,
+      "2005": 1036,
+      "2006": 2682,
+      "2007": 4067,
+      "2008": 5234,
+      "2009": 4812,
+      "2010": 5213,
+      "2011": 9444,
+      "2012": 12261,
+      "2013": 11059,
+      "2014": 9179,
+      "2015": 8840,
+      "2016": 6210,
+      "2017": 5879,
+      "2018": 3204,
+      "2019": 3623,
+      "2020": 4752,
+      "2021": 4490,
+      "2022": 8298,
+      "2023": 9502,
+      "2024": 12827,
+      "2025": 8116,
+      "2026": 8633,
+      "2077": 1
+    },
+    "hours_in_author_local_time": {
+      "0": 7350,
+      "1": 5374,
+      "2": 5040,
+      "3": 3166,
+      "4": 2431,
+      "5": 2135,
+      "6": 1911,
+      "7": 2385,
+      "8": 3516,
+      "9": 5107,
+      "10": 6787,
+      "11": 7338,
+      "12": 7769,
+      "13": 8271,
+      "14": 8897,
+      "15": 8804,
+      "16": 8755,
+      "17": 8601,
+      "18": 8308,
+      "19": 7839,
+      "20": 8225,
+      "21": 8776,
+      "22": 8605,
+      "23": 8036
+    },
+    "hours_in_utc": {
+      "0": 5828,
+      "1": 4910,
+      "2": 5105,
+      "3": 3337,
+      "4": 2637,
+      "5": 2887,
+      "6": 3118,
+      "7": 4012,
+      "8": 5482,
+      "9": 6712,
+      "10": 6904,
+      "11": 6766,
+      "12": 7229,
+      "13": 7735,
+      "14": 8360,
+      "15": 7917,
+      "16": 8149,
+      "17": 8125,
+      "18": 8122,
+      "19": 8220,
+      "20": 8295,
+      "21": 8302,
+      "22": 8062,
+      "23": 7212
+    },
+    "utc_offsets": {
+      "-540": 52,
+      "-480": 1768,
+      "-420": 3962,
+      "-360": 538,
+      "-300": 2551,
+      "-240": 3184,
+      "-180": 5378,
+      "-150": 1,
+      "-120": 13,
+      "0": 47982,
+      "60": 31462,
+      "120": 42471,
+      "180": 2204,
+      "240": 64,
+      "300": 12,
+      "330": 1066,
+      "360": 86,
+      "420": 226,
+      "450": 1,
+      "480": 9021,
+      "540": 473,
+      "570": 140,
+      "600": 301,
+      "630": 54,
+      "660": 402,
+      "720": 8,
+      "780": 6
+    }
+  },
+  "committer_dates": {
+    "earliest": "1971-09-01T01:30:01Z",
+    "latest": "2077-01-01T09:00:00Z",
+    "utc_offsets": {
+      "-540": 64,
+      "-480": 1251,
+      "-420": 3279,
+      "-360": 225,
+      "-300": 1979,
+      "-240": 2623,
+      "-180": 5896,
+      "-120": 2,
+      "0": 50694,
+      "60": 32409,
+      "120": 44116,
+      "180": 2118,
+      "240": 1,
+      "300": 2,
+      "330": 565,
+      "360": 62,
+      "420": 122,
+      "450": 1,
+      "480": 7049,
+      "540": 314,
+      "570": 176,
+      "600": 224,
+      "630": 90,
+      "660": 164
+    }
+  },
+  "author_minus_committer": {
+    "identical": 65094,
+    "differing": 88332,
+    "median_abs_seconds": 146376,
+    "max_abs_seconds": 657875420
+  },
+  "anachronisms": {
+    "before_git_existed_2005_04_03": 4382,
+    "before_unix_epoch_1970": 0,
+    "in_the_future": 1,
+    "earliest_examples": [
+      {
+        "sha": "d4f8e8866887",
+        "date": "1971-09-01 09:00:01 +0730",
+        "author": "526awd",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "03fb314acfa4",
+        "date": "2000-01-01 09:00:00 +0000",
+        "author": "Vesselin Bontchev",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "9aeeeb63f7e1",
+        "date": "2000-12-20 00:02:47 +0000",
+        "author": "Fabrice Bellard",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "77bb6835ba75",
+        "date": "2000-12-20 00:02:47 +0000",
+        "author": "(no author)",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "254056c4ab61",
+        "date": "2001-01-01 01:08:20 +0100",
+        "author": "Luca Barbato",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "3089828607ba",
+        "date": "2001-07-19 20:40:31 +0000",
+        "author": "Fabrice Bellard",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "1b58d58ddaf8",
+        "date": "2001-07-19 20:46:37 +0000",
+        "author": "Fabrice Bellard",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "de6d9b6404bf",
+        "date": "2001-07-22 14:18:56 +0000",
+        "author": "Fabrice Bellard",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "85f07f223de9",
+        "date": "2001-07-22 14:37:44 +0000",
+        "author": "Fabrice Bellard",
+        "subject": "(see commit)"
+      },
+      {
+        "sha": "d78647e8b4ae",
+        "date": "2001-07-23 18:58:11 +0000",
+        "author": "Fabrice Bellard",
+        "subject": "(see commit)"
+      }
+    ]
+  },
+  "first_parent_only": {
+    "commits": 705,
+    "earliest_author_date": "2026-08-29T23:53:20Z",
+    "latest_author_date": "2026-09-23T10:13:39Z",
+    "span_years": 0.07,
+    "years": {
+      "2026": 705
+    },
+    "hours_in_author_local_time": {
+      "0": 16,
+      "1": 109,
+      "2": 16,
+      "3": 24,
+      "4": 36,
+      "5": 40,
+      "6": 40,
+      "7": 26,
+      "8": 25,
+      "9": 27,
+      "10": 52,
+      "11": 47,
+      "12": 52,
+      "13": 36,
+      "14": 27,
+      "15": 30,
+      "16": 56,
+      "17": 8,
+      "18": 8,
+      "19": 4,
+      "20": 2,
+      "21": 9,
+      "22": 8,
+      "23": 7
+    },
+    "hours_in_utc": {
+      "0": 15,
+      "1": 109,
+      "2": 17,
+      "3": 20,
+      "4": 36,
+      "5": 40,
+      "6": 41,
+      "7": 24,
+      "8": 25,
+      "9": 26,
+      "10": 51,
+      "11": 47,
+      "12": 52,
+      "13": 39,
+      "14": 27,
+      "15": 31,
+      "16": 57,
+      "17": 9,
+      "18": 8,
+      "19": 8,
+      "20": 2,
+      "21": 6,
+      "22": 7,
+      "23": 8
+    },
+    "utc_offsets": {
+      "0": 689,
+      "480": 16
+    }
+  },
+  "top_authors": [
+    {
+      "name": "Michael Niedermayer",
+      "commits": 30246,
+      "first": "2001-10-11T22:35:45Z",
+      "last": "2026-09-18T23:56:43Z",
+      "span_years": 24.94,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "dotnet-maestro[bot]",
+      "commits": 15528,
+      "first": "2022-12-22T09:54:14Z",
+      "last": "2026-09-21T04:44:52Z",
+      "span_years": 3.75,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Andreas Rheinhardt",
+      "commits": 7887,
+      "first": "2018-11-04T04:48:40Z",
+      "last": "2026-08-31T16:05:27Z",
+      "span_years": 7.82,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Anton Khirnov",
+      "commits": 5833,
+      "first": "2008-05-22T22:00:21Z",
+      "last": "2026-03-14T19:29:36Z",
+      "span_years": 17.81,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Paul B Mahol",
+      "commits": 5817,
+      "first": "2011-11-30T00:32:23Z",
+      "last": "2025-05-22T21:21:24Z",
+      "span_years": 13.48,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "James Almer",
+      "commits": 5125,
+      "first": "2012-11-29T16:12:33Z",
+      "last": "2026-09-17T14:02:06Z",
+      "span_years": 13.8,
+      "modal_offset_min": -180
+    },
+    {
+      "name": "Diego Biurrun",
+      "commits": 4681,
+      "first": "2004-08-19T19:01:40Z",
+      "last": "2019-02-03T11:59:57Z",
+      "span_years": 14.46,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Stefano Sabatini",
+      "commits": 3756,
+      "first": "2007-04-25T09:32:45Z",
+      "last": "2024-07-06T12:10:49Z",
+      "span_years": 17.2,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Clément Bœsch",
+      "commits": 2753,
+      "first": "2011-01-10T11:36:11Z",
+      "last": "2024-01-07T17:44:12Z",
+      "span_years": 12.99,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Martin Storsjö",
+      "commits": 2645,
+      "first": "2006-12-08T13:25:37Z",
+      "last": "2026-09-07T08:12:49Z",
+      "span_years": 19.75,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Justin Ruggles",
+      "commits": 2172,
+      "first": "2005-05-05T14:10:52Z",
+      "last": "2025-03-21T18:00:38Z",
+      "span_years": 19.88,
+      "modal_offset_min": -240
+    },
+    {
+      "name": "Carl Eugen Hoyos",
+      "commits": 2169,
+      "first": "2007-02-13T08:21:47Z",
+      "last": "2026-01-04T20:50:53Z",
+      "span_years": 18.89,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Baptiste Coudurier",
+      "commits": 1947,
+      "first": "2006-01-23T06:40:08Z",
+      "last": "2025-10-28T17:59:01Z",
+      "span_years": 19.76,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Måns Rullgård",
+      "commits": 1706,
+      "first": "2002-10-06T23:06:06Z",
+      "last": "2011-08-01T17:21:04Z",
+      "span_years": 8.82,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Ronald S. Bultje",
+      "commits": 1631,
+      "first": "2004-03-13T23:04:37Z",
+      "last": "2025-08-20T16:56:54Z",
+      "span_years": 21.44,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Reimar Döffinger",
+      "commits": 1479,
+      "first": "2004-08-10T20:23:58Z",
+      "last": "2024-03-12T22:06:49Z",
+      "span_years": 19.59,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Lynne",
+      "commits": 1402,
+      "first": "2019-03-06T11:01:01Z",
+      "last": "2026-09-21T02:49:31Z",
+      "span_years": 7.54,
+      "modal_offset_min": 60
+    },
+    {
+      "name": "Luca Barbato",
+      "commits": 1388,
+      "first": "2001-01-01T00:08:20Z",
+      "last": "2019-02-12T12:53:04Z",
+      "span_years": 18.12,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Niklas Haas",
+      "commits": 1346,
+      "first": "2015-02-27T20:31:38Z",
+      "last": "2026-09-16T18:25:27Z",
+      "span_years": 11.55,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Marton Balint",
+      "commits": 1282,
+      "first": "2011-02-19T16:33:15Z",
+      "last": "2026-06-15T22:53:35Z",
+      "span_years": 15.32,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Vittorio Giovara",
+      "commits": 1144,
+      "first": "2013-01-23T11:26:59Z",
+      "last": "2025-07-23T21:42:14Z",
+      "span_years": 12.5,
+      "modal_offset_min": 60
+    },
+    {
+      "name": "github-actions[bot]",
+      "commits": 1138,
+      "first": "2022-02-19T12:03:17Z",
+      "last": "2026-09-23T10:13:39Z",
+      "span_years": 4.59,
+      "modal_offset_min": 0
+    },
+    {
+      "name": "Nicolas George",
+      "commits": 1110,
+      "first": "2007-05-02T13:49:08Z",
+      "last": "2026-07-27T14:07:38Z",
+      "span_years": 19.24,
+      "modal_offset_min": 120
+    },
+    {
+      "name": "Mans Rullgard",
+      "commits": 1088,
+      "first": "2010-04-20T23:09:00Z",
+      "last": "2013-01-24T04:24:53Z",
+      "span_years": 2.76,
+      "modal_offset_min": 60
+    },
+    {
+      "name": "Aurelien Jacobs",
+      "commits": 1036,
+      "first": "2003-12-13T02:14:18Z",
+      "last": "2018-03-01T18:30:42Z",
+      "span_years": 14.22,
+      "modal_offset_min": 0
+    }
+  ],
+  "widest_personal_spans": [],
+  "punch_card_flatness": {
+    "hour_slots_in_utc": 24,
+    "min_commits_per_hour": 2637,
+    "max_commits_per_hour": 8360,
+    "zero_hours": []
+  }
+}

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Elysia.Core</AssemblyName>
+    <RootNamespace>Elysia.Core</RootNamespace>
+    <Description>Value-type arenas, generation-checked handles and cyclic object graphs.</Description>
+  </PropertyGroup>
+
+</Project>

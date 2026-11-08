@@ -1,0 +1,22 @@
+CLASS net/minecraft/class_8769 net/minecraft/client/gui/screen/report/UsernameReportScreen
+	FIELD field_46037 TITLE_TEXT Lnet/minecraft/class_2561;
+	FIELD field_46039 commentsBox Lnet/minecraft/class_7529;
+	METHOD <init> (Lnet/minecraft/class_437;Lnet/minecraft/class_7574;Ljava/util/UUID;Ljava/lang/String;)V
+		ARG 1 parent
+		ARG 2 context
+		ARG 3 reportedPlayerUuid
+		ARG 4 username
+	METHOD <init> (Lnet/minecraft/class_437;Lnet/minecraft/class_7574;Lnet/minecraft/class_8773;)V
+		ARG 1 parent
+		ARG 2 context
+		ARG 3 report
+	METHOD <init> (Lnet/minecraft/class_437;Lnet/minecraft/class_7574;Lnet/minecraft/class_8773$class_8774;)V
+		ARG 1 parent
+		ARG 2 context
+		ARG 3 reportBuilder
+	METHOD method_61148 (Lnet/minecraft/class_7847;)V
+		ARG 0 positioner
+	METHOD method_61149 (Ljava/lang/String;)V
+		ARG 1 comments
+	METHOD method_61150 (Lnet/minecraft/class_7847;)V
+		ARG 0 positioner

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTNH 知识库 · 细胞图谱</title>
+<meta name="description" content="GT New Horizons 整合包与中文维基的本地知识库：6305 篇图鉴、3805 个任务、20 万条条目连接。">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='%230b0f14' stroke='%2334d399' stroke-width='2'/><circle cx='16' cy='16' r='4' fill='%2334d399'/></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand" data-nav="home" title="回到首页">
+    <span class="brand-cell"><i></i></span>
+    <span class="brand-text">
+      <b>GTNH 知识库</b>
+      <small id="brandSub">细胞图谱</small>
+    </span>
+  </div>
+
+  <div class="searchbox" id="searchBox">
+    <span class="s-ico">⌕</span>
+    <input id="searchInput" type="search" autocomplete="off" spellcheck="false"
+           placeholder="搜索词条 / 材料 / 机器 / 配方 …  ( / 聚焦，Ctrl+K)">
+    <span class="s-hint" id="searchHint">Enter</span>
+    <div class="suggest" id="suggest" hidden></div>
+  </div>
+
+  <nav class="topnav">
+    <button class="tbtn" data-nav="graph" title="图谱">图谱</button>
+    <button class="tbtn" data-nav="quests" title="任务书">任务</button>
+    <button class="tbtn" data-nav="index" title="总索引">索引</button>
+    <button class="tbtn" data-nav="items" title="物品名">物品</button>
+    <button class="tbtn icon" id="randomBtn" title="随机条目">⚄</button>
+    <button class="tbtn icon" id="themeBtn" title="深浅色">◐</button>
+  </nav>
+</header>
+
+<div class="shell">
+
+  <aside class="sidebar" id="sidebar">
+    <section class="side-block">
+      <h3>导航</h3>
+      <ul class="navlist">
+        <li><a data-nav="home">主页 <em>Home</em></a></li>
+        <li><a data-nav="graph">全局图谱 <em>Graph</em></a></li>
+        <li><a data-nav="quests">任务书 <em id="qlCount">—</em></a></li>
+        <li><a data-nav="index">总索引 <em id="piCount">—</em></a></li>
+        <li><a data-nav="items">物品名表 <em id="itCount">—</em></a></li>
+      </ul>
+    </section>
+
+    <section class="side-block">
+      <h3>按类别浏览</h3>
+      <ul class="navlist groups" id="groupList"></ul>
+    </section>
+
+    <section class="side-block">
+      <h3>任务线 <span class="mini">Tier 主线优先</span></h3>
+      <ul class="navlist quests" id="questLineList"></ul>
+    </section>
+
+    <section class="side-block footer">
+      <p class="tiny" id="sideStats">加载中…</p>
+    </section>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="loading">正在唤醒知识库…</div>
+  </main>
+
+  <aside class="rail" id="rail">
+    <section class="rail-block">
+      <h3>局部图谱</h3>
+      <div class="graph-mini" id="miniGraph">
+        <canvas id="miniCanvas"></canvas>
+        <div class="mini-hint" id="miniHint">打开任意词条后显示其连接</div>
+      </div>
+      <div class="mini-actions">
+        <button id="expandGraph" class="btn tiny">展开一层</button>
+        <button id="openFullGraph" class="btn tiny ghost">全屏图谱</button>
+      </div>
+    </section>
+
+    <section class="rail-block">
+      <h3>关联条目 <span class="mini" id="neighCount"></span></h3>
+      <ul class="linklist" id="neighList"><li class="muted">—</li></ul>
+    </section>
+
+    <section class="rail-block">
+      <h3>被引用 <span class="mini" id="blCount"></span></h3>
+      <ul class="linklist" id="backList"><li class="muted">—</li></ul>
+    </section>
+
+    <section class="rail-block">
+      <h3>元信息</h3>
+      <dl class="meta-dl" id="metaDl"></dl>
+    </section>
+  </aside>
+
+</div>
+
+<footer class="footbar">
+  <span id="footLeft">GTNH 知识库 · 本地网站</span>
+  <span id="footRight"></span>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="/js/core.js"></script>
+<script src="/js/graph.js"></script>
+<script src="/js/markdown.js"></script>
+<script src="/js/views.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

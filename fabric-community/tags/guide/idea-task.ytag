@@ -1,0 +1,9 @@
+type: text
+
+---
+
+To fix what `./gradlew idea` did:
+ - close the project in idea (File -> Close Project)
+ - delete the .ipr, .iws, .iml files and the .idea directory
+ - select "Import Project" in the IDEA main menu and select the build.gradle in your project
+ - don't do `./gradlew idea` anymore, instead use the Reimport All Gradle Projects button in the Gradle tab inside of IDEA

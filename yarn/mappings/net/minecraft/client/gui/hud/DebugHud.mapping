@@ -1,0 +1,63 @@
+CLASS net/minecraft/class_340 net/minecraft/client/gui/hud/DebugHud
+	FIELD field_2079 client Lnet/minecraft/class_310;
+	FIELD field_2080 chunkFuture Ljava/util/concurrent/CompletableFuture;
+	FIELD field_2081 textRenderer Lnet/minecraft/class_327;
+	FIELD field_2084 chunk Lnet/minecraft/class_2818;
+	FIELD field_2085 pos Lnet/minecraft/class_1923;
+	FIELD field_45910 renderingChart Lnet/minecraft/class_8757;
+	FIELD field_45911 pingChart Lnet/minecraft/class_8758;
+	FIELD field_45912 packetSizeChart Lnet/minecraft/class_8756;
+	FIELD field_45913 tickChart Lnet/minecraft/class_8759;
+	FIELD field_45989 renderingChartVisible Z
+	FIELD field_45990 renderingAndTickChartsVisible Z
+	FIELD field_45991 packetSizeAndPingChartsVisible Z
+	FIELD field_45992 frameNanosLog Lnet/minecraft/class_9191;
+	FIELD field_45993 tickNanosLog Lnet/minecraft/class_9191;
+	FIELD field_45994 pingLog Lnet/minecraft/class_9191;
+	FIELD field_45995 packetSizeLog Lnet/minecraft/class_9191;
+	FIELD field_48931 receivedDebugSamples Ljava/util/Map;
+	FIELD field_52772 pieChart Lnet/minecraft/class_9931;
+	FIELD field_56578 debugCrosshairBuffer Lcom/mojang/blaze3d/buffers/GpuBuffer;
+	FIELD field_57921 debugCrosshairIndexBuffer Lcom/mojang/blaze3d/systems/RenderSystem$class_5590;
+	FIELD field_59832 DEBUG_CROSSHAIR_SCALE F
+	METHOD <init> (Lnet/minecraft/class_310;)V
+		ARG 1 client
+	METHOD method_1834 getChunk ()Lnet/minecraft/class_2818;
+	METHOD method_1836 getClientChunk ()Lnet/minecraft/class_2818;
+	METHOD method_1840 getWorld ()Lnet/minecraft/class_1937;
+	METHOD method_1841 (Lnet/minecraft/class_1132;)Ljava/util/Optional;
+		ARG 1 server
+	METHOD method_1842 resetChunk ()V
+	METHOD method_1846 render (Lnet/minecraft/class_332;)V
+		ARG 1 context
+	METHOD method_20541 (Lnet/minecraft/class_9259;)Lnet/minecraft/class_2818;
+		ARG 0 chunk
+	METHOD method_20603 getServerWorld ()Lnet/minecraft/class_3218;
+	METHOD method_51745 drawText (Lnet/minecraft/class_332;Ljava/util/List;Z)V
+		ARG 1 context
+		ARG 2 text
+		ARG 3 left
+	METHOD method_53534 pushToFrameLog (J)V
+		ARG 1 value
+	METHOD method_53536 shouldShowDebugHud ()Z
+	METHOD method_53537 shouldShowRenderingChart ()Z
+	METHOD method_53538 shouldShowPacketSizeAndPingCharts ()Z
+	METHOD method_53540 togglePacketSizeAndPingCharts ()V
+	METHOD method_53541 toggleRenderingAndTickCharts ()V
+	METHOD method_53542 toggleRenderingChart ()V
+	METHOD method_53543 getPingLog ()Lnet/minecraft/class_9191;
+	METHOD method_53544 getPacketSizeLog ()Lnet/minecraft/class_9191;
+	METHOD method_53545 clear ()V
+	METHOD method_56577 getTickNanosLog ()Lnet/minecraft/class_9191;
+	METHOD method_56828 set ([JLnet/minecraft/class_9192;)V
+		ARG 1 values
+		ARG 2 type
+	METHOD method_56829 shouldRenderTickCharts ()Z
+	METHOD method_61981 getPieChart ()Lnet/minecraft/class_9931;
+	METHOD method_67545 renderDebugCrosshair (Lnet/minecraft/class_4184;)V
+		ARG 1 camera
+	CLASS 1
+		METHOD method_72742 (Lnet/minecraft/class_2960;)Ljava/util/Collection;
+			ARG 0 sectionLines
+		METHOD method_72746 (Lnet/minecraft/class_2960;)Ljava/util/Collection;
+			ARG 0 sectionLines

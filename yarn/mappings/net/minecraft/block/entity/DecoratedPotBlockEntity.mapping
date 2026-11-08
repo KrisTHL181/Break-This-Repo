@@ -1,0 +1,22 @@
+CLASS net/minecraft/class_8172 net/minecraft/block/entity/DecoratedPotBlockEntity
+	FIELD field_42782 SHERDS_NBT_KEY Ljava/lang/String;
+	FIELD field_44706 sherds Lnet/minecraft/class_8526;
+	FIELD field_46659 ITEM_NBT_KEY Ljava/lang/String;
+	FIELD field_46661 lastWobbleTime J
+	FIELD field_46662 lastWobbleType Lnet/minecraft/class_8172$class_8837;
+	FIELD field_46663 stack Lnet/minecraft/class_1799;
+	FIELD field_47156 lootTableId Lnet/minecraft/class_5321;
+	FIELD field_47157 lootTableSeed J
+	METHOD <init> (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 pos
+		ARG 2 state
+	METHOD method_49204 getHorizontalFacing ()Lnet/minecraft/class_2350;
+	METHOD method_51511 getSherds ()Lnet/minecraft/class_8526;
+	METHOD method_52577 getStackWith (Lnet/minecraft/class_8526;)Lnet/minecraft/class_1799;
+		ARG 0 sherds
+	METHOD method_54301 wobble (Lnet/minecraft/class_8172$class_8837;)V
+		ARG 1 wobbleType
+	CLASS class_8837 WobbleType
+		FIELD field_46666 lengthInTicks I
+		METHOD <init> (Ljava/lang/String;II)V
+			ARG 3 lengthInTicks

@@ -1,0 +1,2 @@
+CLASS net/minecraft/class_2735 net/minecraft/network/packet/s2c/play/UpdateSelectedSlotS2CPacket
+	FIELD field_47974 CODEC Lnet/minecraft/class_9139;

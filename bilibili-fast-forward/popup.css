@@ -1,0 +1,156 @@
+:root {
+  --pink: #fb7299;
+  --pink-dark: #e45c86;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  width: 300px;
+  margin: 0;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #333;
+  background: #fafafa;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #fb7299, #ff9db8);
+  color: #fff;
+}
+
+.header .logo {
+  width: 24px;
+  height: 24px;
+}
+
+.header h1 {
+  font-size: 15px;
+  margin: 0;
+  font-weight: 600;
+}
+
+main {
+  padding: 14px 16px 16px;
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 6px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#seconds {
+  width: 90px;
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+}
+
+#seconds:focus {
+  border-color: var(--pink);
+}
+
+.unit {
+  font-size: 12px;
+  color: #999;
+}
+
+.recorder {
+  padding: 8px 10px;
+  border: 1.5px dashed #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+  color: #333;
+  cursor: pointer;
+  background: #fff;
+  outline: none;
+  user-select: none;
+}
+
+.recorder:hover {
+  border-color: var(--pink);
+}
+
+.recorder:focus {
+  border-style: solid;
+  border-color: var(--pink);
+  color: var(--pink);
+  box-shadow: 0 0 0 2px rgba(251, 114, 153, 0.15);
+}
+
+.hint {
+  font-size: 11px;
+  color: #999;
+  margin: 6px 0 0;
+  line-height: 1.6;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+button {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--pink);
+  color: #fff;
+}
+
+button.primary:hover {
+  background: var(--pink-dark);
+}
+
+button.secondary {
+  background: #fff;
+  color: #666;
+  border: 1px solid #ddd;
+}
+
+button.secondary:hover {
+  border-color: var(--pink);
+  color: var(--pink);
+}
+
+.status {
+  min-height: 18px;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.status.ok {
+  color: #2e9e5b;
+}
+
+.status.err {
+  color: #e5484d;
+}

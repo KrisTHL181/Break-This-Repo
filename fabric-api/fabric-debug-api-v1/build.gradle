@@ -1,0 +1,15 @@
+plugins {
+	id 'fabric-api.module'
+}
+
+fabricApiModule {
+	moduleDependencies(
+		'fabric-api-base'
+	)
+
+	testDependencies()
+}
+
+loom {
+	accessWidenerPath = file("src/main/resources/fabric-debug-api-v1.accesswidener")
+}

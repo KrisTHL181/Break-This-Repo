@@ -1,0 +1,22 @@
+CLASS net/minecraft/class_4968 net/minecraft/sound/BiomeMoodSound
+	FIELD comp_4989 sound Lnet/minecraft/class_6880;
+	FIELD comp_4992 offset D
+	FIELD field_23146 CAVE Lnet/minecraft/class_4968;
+	FIELD field_24674 CODEC Lcom/mojang/serialization/Codec;
+	METHOD <init> (Lnet/minecraft/class_6880;IID)V
+		ARG 1 sound
+		ARG 2 cultivationTicks
+		ARG 3 spawnRange
+		ARG 4 extraDistance
+	METHOD comp_4989 sound ()Lnet/minecraft/class_6880;
+	METHOD comp_4992 offset ()D
+	METHOD method_75266 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	METHOD method_75267 (Lnet/minecraft/class_4968;)Ljava/lang/Double;
+		ARG 0 sound
+	METHOD method_75268 (Lnet/minecraft/class_4968;)Ljava/lang/Integer;
+		ARG 0 sound
+	METHOD method_75269 (Lnet/minecraft/class_4968;)Ljava/lang/Integer;
+		ARG 0 sound
+	METHOD method_75270 (Lnet/minecraft/class_4968;)Lnet/minecraft/class_6880;
+		ARG 0 sound

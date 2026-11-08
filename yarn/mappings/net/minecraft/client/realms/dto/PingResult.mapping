@@ -1,0 +1,5 @@
+CLASS net/minecraft/class_4873 net/minecraft/client/realms/dto/PingResult
+	FIELD comp_5005 pingResults Ljava/util/List;
+	FIELD comp_5006 worldIds Ljava/util/List;
+	METHOD comp_5005 pingResults ()Ljava/util/List;
+	METHOD comp_5006 worldIds ()Ljava/util/List;

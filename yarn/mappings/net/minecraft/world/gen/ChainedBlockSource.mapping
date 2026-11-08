@@ -1,0 +1,3 @@
+CLASS net/minecraft/class_6582 net/minecraft/world/gen/ChainedBlockSource
+	FIELD comp_437 samplers [Lnet/minecraft/class_6568$class_6569;
+	METHOD comp_437 samplers ()[Lnet/minecraft/class_6568$class_6569;

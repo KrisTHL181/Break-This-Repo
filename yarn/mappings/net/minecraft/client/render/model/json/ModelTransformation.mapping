@@ -1,0 +1,38 @@
+CLASS net/minecraft/class_809 net/minecraft/client/render/model/json/ModelTransformation
+	FIELD comp_3368 thirdPersonLeftHand Lnet/minecraft/class_804;
+	FIELD comp_3369 thirdPersonRightHand Lnet/minecraft/class_804;
+	FIELD comp_3370 firstPersonLeftHand Lnet/minecraft/class_804;
+	FIELD comp_3371 firstPersonRightHand Lnet/minecraft/class_804;
+	FIELD comp_3372 head Lnet/minecraft/class_804;
+	FIELD comp_3373 gui Lnet/minecraft/class_804;
+	FIELD comp_3374 ground Lnet/minecraft/class_804;
+	FIELD comp_3375 fixed Lnet/minecraft/class_804;
+	FIELD field_4301 NONE Lnet/minecraft/class_809;
+	METHOD <init> (Lnet/minecraft/class_804;Lnet/minecraft/class_804;Lnet/minecraft/class_804;Lnet/minecraft/class_804;Lnet/minecraft/class_804;Lnet/minecraft/class_804;Lnet/minecraft/class_804;Lnet/minecraft/class_804;Lnet/minecraft/class_804;)V
+		ARG 1 thirdPersonLeftHand
+		ARG 2 thirdPersonRightHand
+		ARG 3 firstPersonLeftHand
+		ARG 4 firstPersonRightHand
+		ARG 5 head
+		ARG 6 gui
+		ARG 7 ground
+		ARG 8 fixed
+	METHOD comp_3368 thirdPersonLeftHand ()Lnet/minecraft/class_804;
+	METHOD comp_3369 thirdPersonRightHand ()Lnet/minecraft/class_804;
+	METHOD comp_3370 firstPersonLeftHand ()Lnet/minecraft/class_804;
+	METHOD comp_3371 firstPersonRightHand ()Lnet/minecraft/class_804;
+	METHOD comp_3372 head ()Lnet/minecraft/class_804;
+	METHOD comp_3373 gui ()Lnet/minecraft/class_804;
+	METHOD comp_3374 ground ()Lnet/minecraft/class_804;
+	METHOD comp_3375 fixed ()Lnet/minecraft/class_804;
+	METHOD method_3503 getTransformation (Lnet/minecraft/class_811;)Lnet/minecraft/class_804;
+		ARG 1 renderMode
+	CLASS class_810 Deserializer
+		METHOD deserialize (Lcom/google/gson/JsonElement;Ljava/lang/reflect/Type;Lcom/google/gson/JsonDeserializationContext;)Ljava/lang/Object;
+			ARG 1 functionJson
+			ARG 2 unused
+			ARG 3 context
+		METHOD method_3504 parseModelTransformation (Lcom/google/gson/JsonDeserializationContext;Lcom/google/gson/JsonObject;Lnet/minecraft/class_811;)Lnet/minecraft/class_804;
+			ARG 1 ctx
+			ARG 2 json
+			ARG 3 displayContext

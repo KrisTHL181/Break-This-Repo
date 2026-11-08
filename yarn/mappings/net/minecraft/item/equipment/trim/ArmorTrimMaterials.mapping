@@ -1,0 +1,13 @@
+CLASS net/minecraft/class_8055 net/minecraft/item/equipment/trim/ArmorTrimMaterials
+	METHOD method_48440 get (Lnet/minecraft/class_7225$class_7874;Lnet/minecraft/class_1799;)Ljava/util/Optional;
+		ARG 0 registries
+		ARG 1 stack
+	METHOD method_48441 of (Ljava/lang/String;)Lnet/minecraft/class_5321;
+		ARG 0 id
+	METHOD method_48442 bootstrap (Lnet/minecraft/class_7891;)V
+		ARG 0 registry
+	METHOD method_48443 register (Lnet/minecraft/class_7891;Lnet/minecraft/class_5321;Lnet/minecraft/class_2583;Lnet/minecraft/class_10714;)V
+		ARG 0 registry
+		ARG 1 key
+		ARG 2 style
+		ARG 3 assets

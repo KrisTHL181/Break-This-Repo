@@ -1,0 +1,33 @@
+CLASS net/minecraft/class_1322 net/minecraft/entity/attribute/EntityAttributeModifier
+	FIELD comp_2449 value D
+	FIELD field_46247 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_49232 MAP_CODEC Lcom/mojang/serialization/MapCodec;
+	FIELD field_49233 PACKET_CODEC Lnet/minecraft/class_9139;
+	METHOD comp_2449 value ()D
+	METHOD equals (Ljava/lang/Object;)Z
+		ARG 1 o
+	METHOD method_60718 idMatches (Lnet/minecraft/class_2960;)Z
+		ARG 1 id
+	METHOD method_60719 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	CLASS class_1323 Operation
+		COMMENT Represents an operation which can be applied to an attribute modifier.
+		FIELD field_6328 Lnet/minecraft/class_1322$class_1323;
+			COMMENT Adds to the base value of an attribute.
+		FIELD field_6329 id I
+		FIELD field_6330 Lnet/minecraft/class_1322$class_1323;
+			COMMENT Multiplies the base value of the attribute.
+			COMMENT
+			COMMENT <p>Is applied after addition.
+		FIELD field_6331 Lnet/minecraft/class_1322$class_1323;
+			COMMENT Multiplies the total value of the attribute.
+			COMMENT
+			COMMENT <p>The total value is equal to the sum of all additions and base multiplications applied by an attribute modifier.
+		FIELD field_45742 CODEC Lcom/mojang/serialization/Codec;
+		FIELD field_45743 name Ljava/lang/String;
+		FIELD field_48325 ID_TO_VALUE Ljava/util/function/IntFunction;
+		FIELD field_48326 PACKET_CODEC Lnet/minecraft/class_9139;
+		METHOD <init> (Ljava/lang/String;ILjava/lang/String;I)V
+			ARG 3 name
+			ARG 4 id
+		METHOD method_56082 getId ()I

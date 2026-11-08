@@ -1,0 +1,180 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.impl.client.model.loading;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jetbrains.annotations.UnmodifiableView;
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.BlockState;
+
+import net.fabricmc.fabric.api.client.model.loading.v1.CompositeBlockStateModel;
+import net.fabricmc.fabric.api.client.renderer.v1.mesh.QuadEmitter;
+
+public class CompositeBlockStateModelImpl implements CompositeBlockStateModel {
+	private final BlockStateModel[] models;
+	@UnmodifiableView
+	private final List<BlockStateModel> modelsView;
+	private final @BakedQuad.MaterialFlags int materialFlags;
+
+	public CompositeBlockStateModelImpl(BlockStateModel[] models) {
+		this.models = models;
+		modelsView = Arrays.asList(models);
+
+		@BakedQuad.MaterialFlags int materialFlags = 0;
+
+		for (BlockStateModel model : this.models) {
+			materialFlags |= model.materialFlags();
+		}
+
+		this.materialFlags = materialFlags;
+	}
+
+	public static CompositeBlockStateModelImpl of(List<BlockStateModel> models) {
+		if (models.isEmpty()) {
+			throw new IllegalArgumentException("Models list must not be empty");
+		}
+
+		for (BlockStateModel model : models) Objects.requireNonNull(model, "Model cannot be null");
+		return new CompositeBlockStateModelImpl(models.toArray(BlockStateModel[]::new));
+	}
+
+	@Override
+	@Unmodifiable
+	public List<BlockStateModel> models() {
+		return modelsView;
+	}
+
+	@Override
+	public void collectParts(RandomSource random, List<BlockStateModelPart> parts) {
+		long seed = random.nextLong();
+
+		for (BlockStateModel model : models) {
+			random.setSeed(seed);
+			model.collectParts(random, parts);
+		}
+	}
+
+	@Override
+	public void emitQuads(QuadEmitter emitter, BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
+		long seed = random.nextLong();
+
+		for (BlockStateModel model : models) {
+			random.setSeed(seed);
+			model.emitQuads(emitter, level, pos, state, random, cullTest);
+		}
+	}
+
+	@Override
+	@Nullable
+	public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
+		int count = models.length;
+		long seed = random.nextLong();
+
+		if (count == 1) {
+			random.setSeed(seed);
+			return models[0].createGeometryKey(level, pos, state, random);
+		} else {
+			List<Object> subkeys = new ArrayList<>(count);
+
+			for (BlockStateModel submodel : models) {
+				random.setSeed(seed);
+				Object subkey = submodel.createGeometryKey(level, pos, state, random);
+
+				if (subkey == null) {
+					return null;
+				}
+
+				subkeys.add(subkey);
+			}
+
+			record Key(List<Object> subkeys) {
+			}
+
+			return new Key(subkeys);
+		}
+	}
+
+	@Override
+	public Material.Baked particleMaterial() {
+		return models[0].particleMaterial();
+	}
+
+	@Override
+	public Material.Baked particleMaterial(BlockAndTintGetter level, BlockPos pos, BlockState state) {
+		return models[0].particleMaterial(level, pos, state);
+	}
+
+	@Override
+	public @BakedQuad.MaterialFlags int materialFlags() {
+		return materialFlags;
+	}
+
+	public record Unbaked(@Unmodifiable List<BlockStateModel.Unbaked> models) implements CompositeBlockStateModel.Unbaked {
+		public static final MapCodec<Unbaked> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+				ExtraCodecs.nonEmptyList(BlockStateModel.Unbaked.CODEC.listOf()).fieldOf("models").forGetter(Unbaked::models)
+		).apply(instance, Unbaked::new));
+
+		public static Unbaked of(List<BlockStateModel.Unbaked> models) {
+			if (models.isEmpty()) {
+				throw new IllegalArgumentException("Models list must not be empty");
+			}
+
+			for (BlockStateModel.Unbaked model : models) Objects.requireNonNull(model, "Model cannot be null");
+			return new Unbaked(List.copyOf(models));
+		}
+
+		@Override
+		public MapCodec<Unbaked> codec() {
+			return CODEC;
+		}
+
+		@Override
+		public BlockStateModel bake(ModelBaker baker) {
+			BlockStateModel[] bakedModels = new BlockStateModel[models.size()];
+
+			for (int i = 0; i < models.size(); i++) {
+				bakedModels[i] = models.get(i).bake(baker);
+			}
+
+			return new CompositeBlockStateModelImpl(bakedModels);
+		}
+
+		@Override
+		public void resolveDependencies(Resolver resolver) {
+			models.forEach(model -> model.resolveDependencies(resolver));
+		}
+	}
+}

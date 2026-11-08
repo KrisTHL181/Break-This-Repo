@@ -1,9 +1,8 @@
-<h1 align="center"><a href="https://github.com/ZhouyiStudio">Zhouyi2013</a> on top!</h1><h1 align="center"><a href="https://github.com/ZhouyiStudio">Zhouyi2013</a> on top!</h1><h1 align="center"><a href="https://github.com/ZhouyiStudio">Zhouyi2013</a> on top!</h1>
 
 
-
-<a href="https://www.bilibili.com/video/BV1GJ411x7h7/?spm_id_from=333.337.search-card.all.click"><h2 align="center">
-    Break This Repository!    破坏这个仓库！</a>
+<h1 align="center">
+  <img src="./readme/out - 副本.png">
+    Break This Repository!    破坏这个仓库！
 	<p align="center">
 	    <img src="https://img.shields.io/badge/License-AS--IS-red" alt="License">
 	    <img src="https://img.shields.io/badge/Language-various-blue?logo=inquirer&logoColor=white" alt="Language">
@@ -15,18 +14,12 @@
 	    <img src="https://img.shields.io/badge/Website-Unknown-green?logo=inquirer&logoColor=white" alt="Website">
 	    <img src="https://img.shields.io/badge/Documents-Unknown-red?logo=inquirer&logoColor=white" alt="Documents">
 	    </a>
-	<br><br><br>
-	    <img  alt="image" src="https://github.com/user-attachments/assets/b52c32a8-7076-445e-90dd-5f8a5ef83840" />
-	    <!-- <img src="https://earth.us.ci/i/pcsetup" alt="IMG_2061.png"> -->
-	<br><br><br>
 	</p>
 </h1>
 
 
-
 *\*：你可以更改这个头图，相关资源文件位于 [`.\readme\`](./readme/) 中*
 
-<div align="center" title="点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 点击通透 "><a href="https://www.bilibili.com/video/BV1kFar6KE4t/"><img align="center" width="518" height="290" alt="点击通透" src="https://github.com/user-attachments/assets/547b6ff8-67ed-4d00-bdfd-2d763fac8acc" /></a></div>
 
 <!-- # 卧槽了哪里来的设证玩意啊😓不怕似吗😓 -->
 
@@ -61,7 +54,7 @@
 
 # ↓↓ 一首不夠过瘾？好东西不要停！来看下面这个 ↓↓
 
-**[点我前往获取HIFI音乐！](https://heey.cc.cd/hifi/zh)**
+**[点我前往获取HIFI音乐！(详情页)](./HIFI音乐-享受高端音质)**
 
 ---
 
@@ -103,16 +96,6 @@
 > 仅供娱乐，版权等问题未知，因此音乐所造成的任何后果本人概不负责
 
 <sub>实测 by [@ExElectron](https://github.com/ExElectron)</sub>
-
----
-
-# 在线免费广东话字习
-
-<img src="https://earth.us.ci/i/NR23mA" alt="IMG_2051.png">
-
-无售后，无任何保障.      
-       
-process on your own risk.       
 
 ---
 
@@ -204,7 +187,7 @@ process on your own risk.
 > 仓库内可能存在各种奇怪的文件和路径，这些文件或路径的命名及组合可能不适用于所有的文件系统和操作系统，执行 `git clone` 或相关操作时可能会发生各类文件错误和文件系统错误，请您做好心理准备和预防方案。
 
 > [!NOTE]
-> 得益于 GitHub 上大量开发者和贡献者的活跃提交，这个仓库的大小已来到数十吉字节（37.7GiB —— 2026/9/22 22:57:00 UTC+08:00 编者注），请您在执行相关操作的时候保证您的计算机有足够的存储空间，以及良好的网络连接以防止意外断开连接。
+> 得益于 GitHub 上大量开发者和贡献者的活跃提交，这个仓库的大小已来到数十吉比特（37.7GiB —— 2026/9/22 22:57:00 UTC+08:00 编者注），请您在执行相关操作的时候保证您的计算机有足够的存储空间，以及良好的网络连接以防止意外断开连接。
 
 > [!WARNING]
 > 禁止提交广告、恶意软件。违者将被举报至 GitHub。
@@ -403,7 +386,6 @@ https://docs.google.com/document/d/1Y669HJaH4areKBSFie_2k1dT045l3U2fiM34O_Y-dwQ/
 把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 ~~google~~ 搜索引擎 索引到, 从而增加权重. 大家一起做大做强!
 
 刷贡献来
-
 https://blog.sitrmoo.com
 
 https://cuwo4.github.io/
@@ -411,8 +393,6 @@ https://cuwo4.github.io/
 https://onion108.github.io/
 
 https://mochiaochen.github.io/
-
-https://yaojiale7067blog.pages.dev/
 
 被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
 被ai大人统治了喵，全ai博客喵[lksme.dpdns.org]
@@ -529,7 +509,7 @@ https://blog.iamexrfy.top
 
 # Debian --通用操作系统
 [![Debian Logo](https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f365.png)](https://www.debian.org/)
-![IMG_2071.jpeg](https://earth.us.ci/i/debian)
+![Debian installation media](./assets/debian.jpg)
 ## Debian 是自由软件。
 Debian 是由自由和开放源代码的软件组成的，并将始终保持 100% 自由。每个人都能自由使用、修改，以及分发。这是我们对我们的用户的主要承诺。它也是免费的。
 ## Debian 稳定且安全。

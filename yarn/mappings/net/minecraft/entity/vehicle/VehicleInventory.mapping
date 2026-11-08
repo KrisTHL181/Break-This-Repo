@@ -1,0 +1,41 @@
+CLASS net/minecraft/class_7265 net/minecraft/entity/vehicle/VehicleInventory
+	METHOD method_5829 getBoundingBox ()Lnet/minecraft/class_238;
+	METHOD method_31481 isRemoved ()Z
+	METHOD method_42273 resetInventory ()V
+	METHOD method_42274 setLootTableSeed (J)V
+		ARG 1 lootTableSeed
+	METHOD method_42275 setLootTable (Lnet/minecraft/class_5321;)V
+		ARG 1 lootTable
+	METHOD method_42276 getLootTable ()Lnet/minecraft/class_5321;
+	METHOD method_42277 getLootTableSeed ()J
+	METHOD method_42278 getInventory ()Lnet/minecraft/class_2371;
+	METHOD method_42283 onBroken (Lnet/minecraft/class_1282;Lnet/minecraft/class_3218;Lnet/minecraft/class_1297;)V
+		ARG 1 source
+		ARG 2 world
+		ARG 3 vehicle
+	METHOD method_42284 open (Lnet/minecraft/class_1657;)Lnet/minecraft/class_1269;
+		ARG 1 player
+	METHOD method_42285 readInventoryFromData (Lnet/minecraft/class_11368;)V
+		ARG 1 view
+	METHOD method_42286 removeInventoryStack (II)Lnet/minecraft/class_1799;
+		ARG 1 slot
+		ARG 2 amount
+	METHOD method_42287 setInventoryStack (ILnet/minecraft/class_1799;)V
+		ARG 1 slot
+		ARG 2 stack
+	METHOD method_42288 writeInventoryToData (Lnet/minecraft/class_11372;)V
+		ARG 1 view
+	METHOD method_42289 removeInventoryStack (I)Lnet/minecraft/class_1799;
+		ARG 1 slot
+	METHOD method_42290 getInventoryStack (I)Lnet/minecraft/class_1799;
+		ARG 1 slot
+	METHOD method_42291 generateInventoryLoot (Lnet/minecraft/class_1657;)V
+		ARG 1 player
+	METHOD method_42292 getInventoryStackReference (I)Lnet/minecraft/class_5630;
+		ARG 1 slot
+	METHOD method_42293 clearInventory ()V
+	METHOD method_42294 canPlayerAccess (Lnet/minecraft/class_1657;)Z
+		ARG 1 player
+	METHOD method_42295 isInventoryEmpty ()Z
+	METHOD method_73183 getEntityWorld ()Lnet/minecraft/class_1937;
+	METHOD method_73189 getEntityPos ()Lnet/minecraft/class_243;

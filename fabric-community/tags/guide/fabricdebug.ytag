@@ -1,0 +1,13 @@
+type: embed
+
+colour: #FF0000
+embed:
+    title: Enabling Debug Logs for Fabric
+
+---
+
+Add `-Dfabric.log.level=debug` to the VM arguments when running in a development environment.
+
+**How to access the VM arguments in an IDE (Only works with imported run configurations, not on gradle run configurations):**
+IntelliJ: Click the dropdown for the run configurations, then `Edit Configurations`. Click on the configuration you want to add the argument to, then add the argument above to the `VM Arguments` field.
+Eclipse: Click the dropdown for the runs, then `Run Configurations`. Select the run you want to edit, then click on the arguments tab. Add your argument to the `Program Arguments` section.

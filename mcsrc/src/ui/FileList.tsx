@@ -1,0 +1,326 @@
+// oxlint-disable typescript/no-base-to-string
+import { Tree, Dropdown, message } from 'antd';
+import type { TreeDataNode, TreeProps, MenuProps } from 'antd';
+import { CaretDownFilled } from '@ant-design/icons';
+import { combineLatest, from, map, Observable, of, shareReplay, switchMap, startWith } from 'rxjs';
+import { classesList } from '../logic/JarFile';
+import { useObservable } from '../utils/UseObservable';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import type { Key } from 'antd/es/table/interface';
+import { openCodeTab } from '../logic/tabs';
+import { minecraftJar, type MinecraftJar } from '../logic/MinecraftApi';
+import { decompileClass, getDecompilerOptions } from '../logic/Decompiler';
+import { selectedFile, referencesQuery } from '../logic/State';
+import { autoJarIndex, compactPackages, displayLambdas } from '../logic/Settings';
+import { setOptions } from '../workers/decompile/client';
+import { jarIndex, type ClassData } from '../workers/jar-index/client';
+import { ClassDataIcon, JavaIcon, PackageIcon } from './intellij-icons';
+import { DEFAULT_VERSION, vineflowerVersionToPermalinkVersion } from '../logic/vineflower/versions';
+import { classNameFromClassFilePath, dottedClassNameFromClassName, isClassFilePath, toClassName, withoutClassExtension, type ClassFilePath } from '../utils/Names';
+
+const classData: Observable<Map<string, ClassData> | null> = combineLatest([
+    jarIndex,
+    autoJarIndex.observable
+]).pipe(
+    switchMap(([jarIndex, enabled]) => enabled ? from(jarIndex.getClassData()).pipe(
+        map(classes => {
+            const map = new Map<string, ClassData>();
+            for (const data of classes) {
+                map.set(data.className, data);
+            }
+            return map;
+        }),
+        startWith(null)
+    ) : of(null)),
+    shareReplay(1)
+);
+
+const fileTree: Observable<TreeDataNode[]> = combineLatest([
+    classesList,
+    classData,
+    compactPackages.observable
+]).pipe(
+    map(([classNames, classData, compact]) => {
+        const dirs = new Map<string, TreeDataNode[]>();
+        dirs.set('', []);
+
+        for (const classPath of classNames) {
+            if (classPath.includes('$')) continue;
+
+            const className = classNameFromClassFilePath(classPath);
+            const i = className.lastIndexOf('/');
+            const dirPath = className.slice(0, i);
+
+            if (!dirs.has(dirPath)) {
+                const parts = dirPath.split('/');
+                parts.forEach((p, i) => {
+                    const parent = parts.slice(0, i).join('/');
+                    const current = parent === '' ? p : `${parent}/${p}`;
+
+                    if (!dirs.has(current)) {
+                        dirs.set(current, []);
+                        dirs.get(parent)!.push({
+                            title: p,
+                            key: current,
+                            icon: <PackageIcon style={{ fontSize: '16px' }} />,
+                            children: [],
+                            isLeaf: false,
+                        });
+                    };
+                });
+            };
+
+            const data = classData?.get(className);
+            dirs.get(dirPath)!.push({
+                title: className.slice(i + 1),
+                key: classPath,
+                isLeaf: true,
+                icon: data
+                    ? <ClassDataIcon data={data} style={{ fontSize: '16px' }} />
+                    : <JavaIcon style={{ fontSize: '16px' }} />,
+            });
+        }
+
+        function traverse(dir: string, parent: TreeDataNode) {
+            const nodes = dirs.get(dir)!;
+
+            if (compact && nodes.length === 1 && !nodes[0].isLeaf) {
+                const node = nodes[0];
+                parent.title = `${parent.title?.toString()}/${node.title?.toString()}`;
+                traverse(node.key as string, parent);
+            } else {
+                for (const node of nodes) {
+                    parent.children!.push(node);
+
+                    if (!node.isLeaf) {
+                        traverse(node.key as string, node);
+                    };
+                }
+            }
+
+            parent.children!.sort((a, b) => {
+                if (a.isLeaf && !b.isLeaf) return +1;
+                if (!a.isLeaf && b.isLeaf) return -1;
+                return a.title! < b.title! ? -1 : +1;
+            });
+        }
+
+        const root: TreeDataNode[] = [];
+        traverse('', { title: '', key: '', children: root });
+
+        return root;
+    }),
+    shareReplay(1)
+);
+
+const selectedFileKeys = selectedFile.pipe(
+    map(file => file ? [file] : [])
+);
+
+function getPathKeys(filePath: string): Key[] {
+    const parts = filePath.split('/').slice(0, -1);
+    const result: string[] = [];
+    for (let i = 0; i < parts.length; i++) {
+        result.push(parts.slice(0, i + 1).join('/'));
+    }
+    return result;
+}
+
+const handleCopyContent = async (path: ClassFilePath, jar: MinecraftJar) => {
+    try {
+        message.loading({ content: 'Decompiling...', key: 'copy-content' });
+        await setOptions(getDecompilerOptions(displayLambdas.value));
+        const result = await decompileClass(classNameFromClassFilePath(path), jar.jar);
+        await navigator.clipboard.writeText(result.source);
+        message.success({ content: 'Content copied to clipboard', key: 'copy-content' });
+    } catch (e) {
+        console.error(e);
+        message.error({ content: 'Failed to copy content', key: 'copy-content' });
+    }
+};
+
+interface ContextMenuInfo {
+    x: number;
+    y: number;
+    key: string;
+    isLeaf: boolean;
+}
+
+const getMenuItems = (
+    contextMenu: ContextMenuInfo | null,
+    handleCopyItem: (path: ClassFilePath) => void,
+    jar: MinecraftJar | undefined
+): MenuProps['items'] => {
+    if (!contextMenu) return [];
+
+    const path = contextMenu.key;
+    const isFile = isClassFilePath(path);
+    const packagePath = isFile ? dottedClassNameFromClassName(classNameFromClassFilePath(path)) : withoutClassExtension(path);
+    const filename = path.split('/').pop() || '';
+    const linkPath = withoutClassExtension(path);
+    const link = jar ? `https://mcsrc.dev/${vineflowerVersionToPermalinkVersion(DEFAULT_VERSION)}/${jar.version}/${linkPath}` : '';
+
+    const renderLabel = (title: string, value: string) => (
+        <div style={{ display: 'flex', gap: '24px', justifyContent: 'space-between', alignItems: 'center', minWidth: '300px' }}>
+            <span style={{ whiteSpace: 'nowrap' }}>{title}</span>
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginLeft: 'auto' }}>
+                <span style={{
+                    color: 'rgba(255, 255, 255, 0.45)',
+                    fontSize: '12px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '250px'
+                }} title={value}>
+                    {value}
+                </span>
+            </div>
+        </div>
+    );
+
+    return [
+        {
+            key: 'copy-package-path',
+            label: renderLabel('Copy Package Path', packagePath),
+            onClick: () => {
+                void navigator.clipboard.writeText(packagePath);
+                message.success('Package Path copied');
+            }
+        },
+        {
+            key: 'copy-path',
+            label: renderLabel('Copy Path', path),
+            onClick: () => {
+                void navigator.clipboard.writeText(path);
+                message.success('Path copied');
+            }
+        },
+        {
+            key: 'copy-filename',
+            label: renderLabel('Copy Filename', filename),
+            onClick: () => {
+                void navigator.clipboard.writeText(filename);
+                message.success('Filename copied');
+            }
+        },
+        {
+            key: 'copy-link',
+            label: renderLabel('Copy Link', link),
+            onClick: () => {
+                if (link) {
+                    void navigator.clipboard.writeText(link);
+                    message.success('Link copied');
+                }
+            },
+            disabled: !link || !isFile
+        },
+        {
+            key: 'copy-content',
+            label: 'Copy File Content',
+            onClick: () => {
+                if (isFile) handleCopyItem(path);
+            },
+            disabled: !isFile
+        },
+        {
+            key: 'find-all-references',
+            label: 'Find All References',
+            onClick: () => {
+                referencesQuery.next(toClassName(path));
+            },
+            disabled: !isFile
+        },
+    ];
+};
+
+const FileList = () => {
+    const [expandedKeys, setExpandedKeys] = useState<Key[]>();
+    const [contextMenu, setContextMenu] = useState<ContextMenuInfo | null>(null);
+
+    const jar = useObservable(minecraftJar);
+    const selectedKeys = useObservable(selectedFileKeys);
+    const classes = useObservable(classesList);
+    const onSelect: TreeProps['onSelect'] = useCallback((selectedKeys: Key[]) => {
+        if (selectedKeys.length === 0) return;
+        const key = selectedKeys[0];
+        if (typeof key !== "string" || !isClassFilePath(key) || !classes.includes(key)) return;
+        openCodeTab(key);
+    }, [classes]);
+
+    const treeData = useObservable(fileTree);
+
+    useEffect(() => {
+        if (expandedKeys === undefined) {
+            if (selectedKeys?.[0]) {
+                setExpandedKeys(getPathKeys(selectedKeys[0] as string));
+            } else {
+                setExpandedKeys(['net', 'net/minecraft']);
+            }
+        }
+    }, [expandedKeys, selectedKeys]);
+
+    useEffect(() => {
+        if (selectedKeys?.[0] && expandedKeys !== undefined) {
+            const pathKeys = getPathKeys(selectedKeys[0] as string);
+            const newKeys = [...new Set([...expandedKeys, ...pathKeys])];
+            if (newKeys.length !== expandedKeys.length) {
+                setExpandedKeys(newKeys);
+            }
+        }
+    }, [selectedKeys, expandedKeys]);
+
+    useEffect(() => {
+        const closeMenu = () => setContextMenu(null);
+        document.addEventListener('click', closeMenu);
+        return () => document.removeEventListener('click', closeMenu);
+    }, []);
+
+    const onRightClick: TreeProps['onRightClick'] = useCallback(({ event, node }: any) => {
+        setContextMenu({
+            x: event.clientX,
+            y: event.clientY,
+            key: node.key as string,
+            isLeaf: !!node.isLeaf
+        });
+    }, []);
+
+    const menuItems = useMemo(() => getMenuItems(contextMenu, (path) => {
+        if (jar) {
+            void handleCopyContent(path, jar);
+        }
+    }, jar), [contextMenu, jar]);
+
+    return (
+        <>
+            <Tree.DirectoryTree
+                showLine
+                motion={0}
+                switcherIcon={({ expanded }) => (
+                    <CaretDownFilled className={expanded ? "file-tree-switcher-icon" : "file-tree-switcher-icon file-tree-switcher-icon-collapsed"} />
+                )}
+                selectedKeys={selectedKeys}
+                onSelect={onSelect}
+                treeData={treeData}
+                expandedKeys={expandedKeys ?? []}
+                onExpand={setExpandedKeys}
+                onRightClick={onRightClick}
+                titleRender={(nodeData) => (
+                    <span style={{ userSelect: "none" }}>{nodeData.title?.toString()}</span>
+                )}
+            />
+            {contextMenu && (
+                <div key={contextMenu.key + contextMenu.x + contextMenu.y} style={{ position: 'fixed', left: contextMenu.x, top: contextMenu.y, zIndex: 1000 }}>
+                    <Dropdown
+                        menu={{ items: menuItems }}
+                        open={true}
+                        trigger={['click']}
+                    >
+                        <span />
+                    </Dropdown>
+                </div>
+            )}
+        </>
+    );
+};
+
+export default FileList;

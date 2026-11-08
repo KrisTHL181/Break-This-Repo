@@ -1,0 +1,146 @@
+CLASS net/minecraft/class_1676 net/minecraft/entity/projectile/ProjectileEntity
+	FIELD field_23740 leftOwner Z
+	FIELD field_28646 shot Z
+	FIELD field_51621 lastDeflectedEntity Lnet/minecraft/class_1297;
+	FIELD field_57742 DEFAULT_LEFT_OWNER Z
+	FIELD field_57743 DEFAULT_SHOT Z
+	FIELD field_60558 owner Lnet/minecraft/class_10583;
+	FIELD field_63116 checkedForLeftOwner Z
+	METHOD method_7432 setOwner (Lnet/minecraft/class_1297;)V
+		ARG 1 owner
+	METHOD method_7454 onEntityHit (Lnet/minecraft/class_3966;)V
+		ARG 1 entityHitResult
+	METHOD method_7485 setVelocity (DDDFF)V
+		COMMENT Sets velocity and updates rotation accordingly.
+		COMMENT
+		COMMENT <p>The velocity and rotation will be set to the same direction.
+		COMMENT
+		COMMENT <p>The direction is calculated as follows: Based on the direction vector
+		COMMENT {@code (x, y, z)}, a random vector is added, then multiplied by the
+		COMMENT {@code speed}.
+		ARG 1 x
+			COMMENT the X component of the direction vector
+		ARG 3 y
+			COMMENT the Y component of the direction vector
+		ARG 5 z
+			COMMENT the Z component of the direction vector
+		ARG 7 power
+			COMMENT the speed
+		ARG 8 uncertainty
+			COMMENT the fuzziness added to the direction; player usages have 1.0 and other
+			COMMENT mobs/tools have higher values; some mobs have difficulty-adjusted
+			COMMENT values
+	METHOD method_7488 onCollision (Lnet/minecraft/class_239;)V
+		ARG 1 hitResult
+	METHOD method_24919 setVelocity (Lnet/minecraft/class_1297;FFFFF)V
+		COMMENT Sets velocity and updates rotation accordingly.
+		ARG 1 shooter
+			COMMENT the entity who shot this projectile; used to add the shooter's velocity
+			COMMENT to this projectile
+		ARG 2 pitch
+			COMMENT the pitch
+		ARG 3 yaw
+			COMMENT the yaw
+		ARG 4 roll
+			COMMENT the roll
+		ARG 5 speed
+			COMMENT the speed
+		ARG 6 divergence
+			COMMENT the fuzziness added to the direction; player usages have 1.0 and other
+			COMMENT mobs/tools have higher values; some mobs have difficulty-adjusted
+			COMMENT values
+	METHOD method_24920 onBlockHit (Lnet/minecraft/class_3965;)V
+		ARG 1 blockHitResult
+	METHOD method_26958 canHit (Lnet/minecraft/class_1297;)Z
+		ARG 1 entity
+	METHOD method_26960 updateRotation (FF)F
+		ARG 0 lastRot
+		ARG 1 newRot
+	METHOD method_26961 tickLeftOwner ()V
+	METHOD method_26962 updateRotation ()V
+	METHOD method_34714 isOwner (Lnet/minecraft/class_1297;)Z
+		ARG 1 entity
+	METHOD method_37225 getEffectCause ()Lnet/minecraft/class_1297;
+		COMMENT {@return the cause entity of any effect applied by this projectile} If this
+		COMMENT projectile has an owner, the effect is attributed to the owner; otherwise, it
+		COMMENT is attributed to this projectile itself.
+	METHOD method_54457 canBreakBlocks (Lnet/minecraft/class_3218;)Z
+		ARG 1 world
+	METHOD method_58645 calculateVelocity (DDDFF)Lnet/minecraft/class_243;
+		ARG 1 x
+		ARG 3 y
+		ARG 5 z
+		ARG 7 power
+		ARG 8 uncertainty
+	METHOD method_59525 onDeflected (Z)V
+	METHOD method_59859 deflect (Lnet/minecraft/class_9109;Lnet/minecraft/class_1297;Lnet/minecraft/class_10583;Z)Z
+		ARG 1 deflection
+		ARG 2 deflector
+		ARG 4 fromAttack
+	METHOD method_59860 hitOrDeflect (Lnet/minecraft/class_239;)Lnet/minecraft/class_9109;
+		ARG 1 hitResult
+	METHOD method_59959 getKnockback (Lnet/minecraft/class_1309;Lnet/minecraft/class_1282;)Lit/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair;
+		ARG 1 target
+		ARG 2 source
+	METHOD method_61544 onBroken (Lnet/minecraft/class_1792;)V
+		ARG 1 item
+	METHOD method_61545 (DDDFFLnet/minecraft/class_1676;)V
+		ARG 8 entity
+	METHOD method_61546 triggerProjectileSpawned (Lnet/minecraft/class_3218;Lnet/minecraft/class_1799;)V
+		ARG 1 world
+		ARG 2 projectileStack
+	METHOD method_61547 (Lnet/minecraft/class_1309;FFFLnet/minecraft/class_1676;)V
+		ARG 4 entity
+	METHOD method_61548 spawnWithVelocity (Lnet/minecraft/class_1676$class_9876;Lnet/minecraft/class_3218;Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;DDDFF)Lnet/minecraft/class_1676;
+		ARG 0 creator
+		ARG 1 world
+		ARG 2 projectileStack
+		ARG 3 shooter
+		ARG 4 velocityX
+		ARG 6 velocityY
+		ARG 8 velocityZ
+		ARG 10 power
+		ARG 11 divergence
+	METHOD method_61549 spawnWithVelocity (Lnet/minecraft/class_1676$class_9876;Lnet/minecraft/class_3218;Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;FFF)Lnet/minecraft/class_1676;
+		ARG 0 creator
+		ARG 1 world
+		ARG 2 projectileStack
+		ARG 3 shooter
+		ARG 4 roll
+		ARG 5 power
+		ARG 6 divergence
+	METHOD method_61550 (Lnet/minecraft/class_1676;DDDFFLnet/minecraft/class_1676;)V
+		ARG 9 entity
+	METHOD method_61551 spawn (Lnet/minecraft/class_1676;Lnet/minecraft/class_3218;Lnet/minecraft/class_1799;)Lnet/minecraft/class_1676;
+		ARG 0 projectile
+		ARG 1 world
+		ARG 2 projectileStack
+	METHOD method_61552 spawnWithVelocity (Lnet/minecraft/class_1676;Lnet/minecraft/class_3218;Lnet/minecraft/class_1799;DDDFF)Lnet/minecraft/class_1676;
+		ARG 0 projectile
+		ARG 1 world
+		ARG 2 projectileStack
+		ARG 3 velocityX
+		ARG 5 velocityY
+		ARG 7 velocityZ
+		ARG 9 power
+		ARG 10 divergence
+	METHOD method_61553 spawn (Lnet/minecraft/class_1676;Lnet/minecraft/class_3218;Lnet/minecraft/class_1799;Ljava/util/function/Consumer;)Lnet/minecraft/class_1676;
+		ARG 0 projectile
+		ARG 1 world
+		ARG 2 projectileStack
+		ARG 3 beforeSpawn
+	METHOD method_61554 (Lnet/minecraft/class_1676;)V
+		ARG 0 entity
+	METHOD method_61556 (Lnet/minecraft/class_1792;)V
+		ARG 0 item
+	METHOD method_62823 deflectsAgainstWorldBorder ()Z
+	METHOD method_71623 setOwner (Lnet/minecraft/class_10583;)V
+		ARG 1 owner
+	METHOD method_74959 (Lnet/minecraft/class_238;Lnet/minecraft/class_1297;)Z
+		ARG 1 entity
+	METHOD method_74960 hasLeftOwner ()Z
+	CLASS class_9876 ProjectileCreator
+		METHOD create (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;Lnet/minecraft/class_1799;)Lnet/minecraft/class_1676;
+			ARG 1 world
+			ARG 2 shooter
+			ARG 3 stack

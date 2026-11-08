@@ -1,0 +1,159 @@
+import { expect, Page } from '@playwright/test';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export async function waitForDecompiledContent(page: Page, expectedText: string) {
+    await expect(async () => {
+        const decompiling = page.getByText('Decompiling...');
+        await expect(decompiling).toBeHidden();
+    }).toPass();
+
+    const editor = page.getByRole("code").nth(0);
+    await expect(editor).toContainText(expectedText);
+}
+
+export async function selectMinecraftVersion(page: Page, version: string, selectorIndex = 0) {
+    const selector = page.locator('button:has(.anticon-down)').nth(selectorIndex);
+    await selector.click();
+
+    const listbox = page.getByRole('listbox', { name: 'Minecraft versions' });
+    await expect(listbox).toBeVisible();
+    await listbox.getByRole('option').filter({ hasText: version }).click();
+}
+
+export async function waitForBlockingModalToClose(page: Page) {
+    const aboutModal = page.locator('.ant-modal-wrap').filter({ hasText: 'About mcsrc.dev' });
+    await expect(aboutModal).toBeHidden();
+}
+
+async function setupNetworkMocking(page: Page) {
+    const testVersions = {
+        versions: [
+            {
+                id: "26.1-mock-3",
+                type: "snapshot",
+                url: "http://localhost:4173/test-data/dummy3-manifest.json",
+                releaseTime: "2026-02-11T09:31:23+00:00"
+            },
+            {
+                id: "26.1-mock-2",
+                type: "snapshot",
+                url: "http://localhost:4173/test-data/dummy2-manifest.json",
+                releaseTime: "2026-02-03T12:46:52+00:00"
+            },
+            {
+                id: "26.1-mock-1",
+                type: "snapshot",
+                url: "http://localhost:4173/test-data/dummy1-manifest.json",
+                releaseTime: "2026-01-13T12:47:34+00:00"
+            },
+            {
+                id: "19w36a",
+                type: "snapshot",
+                url: "http://localhost:4173/test-data/dummy4-manifest.json",
+                releaseTime: "2019-09-04T12:00:00+00:00"
+            }
+        ]
+    };
+
+    await page.route('https://piston-meta.mojang.com/mc/game/version_manifest_v2.json', async (route) => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(testVersions)
+        });
+    });
+
+    for (let i = 1; i <= 3; i++) {
+        await page.route(`http://localhost:4173/test-data/dummy${i}-manifest.json`, async (route) => {
+            await route.fulfill({
+                status: 200,
+                contentType: 'application/json',
+                body: JSON.stringify({
+                    id: `26.1-mock-${i}`,
+                    downloads: {
+                        client: {
+                            url: `http://localhost:4173/test-data/dummy${i}.jar`
+                        }
+                    }
+                })
+            });
+        });
+
+        await page.route(`http://localhost:4173/test-data/dummy${i}.jar`, async (route) => {
+            const jarPath = path.join(__dirname, `../java/build/libs/dummy${i}.jar`);
+            const jarBuffer = fs.readFileSync(jarPath);
+            await route.fulfill({
+                status: 200,
+                contentType: 'application/java-archive',
+                body: jarBuffer
+            });
+        });
+    }
+
+    await page.route('http://localhost:4173/test-data/dummy4-manifest.json', async (route) => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                id: '19w36a',
+                downloads: {
+                    client: {
+                        sha1: 'dummy4-client',
+                        url: 'http://localhost:4173/test-data/dummy4.jar'
+                    },
+                    client_mappings: {
+                        sha1: 'dummy4-mappings',
+                        url: 'http://localhost:4173/test-data/dummy4.txt'
+                    }
+                }
+            })
+        });
+    });
+
+    await page.route('http://localhost:4173/test-data/dummy4.jar', async (route) => {
+        const jarPath = path.join(__dirname, '../java/build/libs/dummy4.jar');
+        const jarBuffer = fs.readFileSync(jarPath);
+        await route.fulfill({
+            status: 200,
+            contentType: 'application/java-archive',
+            body: jarBuffer
+        });
+    });
+
+    await page.route('http://localhost:4173/test-data/dummy4.txt', async (route) => {
+        await route.fulfill({
+            status: 200,
+            contentType: 'text/plain',
+            body: 'net.minecraft.ChatFormatting -> a.b:\n'
+        });
+    });
+}
+
+export async function setupTest(page: Page) {
+    await setupNetworkMocking(page);
+    await page.addLocatorHandler(page.getByText('About mcsrc.dev'), async () => {
+        const eulaCheckbox = page.getByRole('checkbox', { name: /I agree to the Minecraft/ });
+
+        if (await eulaCheckbox.isVisible()) {
+            await eulaCheckbox.check();
+        } else {
+            await page.keyboard.press('Escape');
+        }
+
+        await waitForBlockingModalToClose(page);
+    });
+    const isWebKit = page.context().browser()?.browserType().name() === 'webkit';
+    await page.addInitScript((preferWasm) => {
+        localStorage.setItem('setting_eula', 'true');
+        localStorage.setItem('setting_show_snapshot_versions', 'true');
+        localStorage.setItem('setting_favorite_minecraft_versions', '[]');
+        if (!preferWasm) {
+            // Use JS runtime to avoid WASM compatibility issues in WebKit
+            localStorage.setItem('setting_prefer_wasm_decompiler', 'false');
+        }
+    }, !isWebKit);
+}

@@ -1,0 +1,9 @@
+type: embed
+
+colour: blurple
+embed:
+    title: MaLiLib dependency
+
+---
+
+Litematica, Item Scroller, MiniHUD, and Tweakeroo all require MaLiLib to run. If your game is crashing on launch and you have any of those mods but not MaLiLib, you need it. You can download it [from CurseForge](https://www.curseforge.com/minecraft/mc-mods/malilib)

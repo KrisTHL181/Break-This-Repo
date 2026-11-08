@@ -1,0 +1,23 @@
+{
+  "name": "apart207",
+  "version": "1.0.0",
+  "description": "廉中自然科学局第207研究所官网",
+  "private": true,
+  "workspaces": [
+    "games/paiwawa-main"
+  ],
+  "scripts": {
+    "build": "python build.py",
+    "build:clean": "python build.py --clean",
+    "dev": "python build.py && node scripts/dev-server.js",
+    "preview": "node scripts/dev-server.js",
+    "sync": "node scripts/sync-data.js",
+    "setup:founders": "node scripts/setup-founders.js",
+    "game": "npm run dev --workspace=paiwawa-photo-game",
+    "game:build": "npm run build --workspace=paiwawa-photo-game",
+    "game:preview": "npm run preview --workspace=paiwawa-photo-game"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

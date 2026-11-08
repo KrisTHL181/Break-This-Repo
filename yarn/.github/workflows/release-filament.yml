@@ -1,0 +1,16 @@
+name: Release Filament
+on: [workflow_dispatch] # Manual trigger
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'microsoft'
+      - uses: actions/checkout@v4
+      - run: ./gradlew :filament:build :filament:publish --stacktrace --no-configuration-cache
+        env:
+          MAVEN_URL: ${{ secrets.MAVEN_URL }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}

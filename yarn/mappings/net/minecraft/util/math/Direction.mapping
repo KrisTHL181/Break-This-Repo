@@ -1,0 +1,190 @@
+CLASS net/minecraft/class_2350 net/minecraft/util/math/Direction
+	COMMENT An enum representing 6 cardinal directions in Minecraft.
+	COMMENT
+	COMMENT <p>In Minecraft, the X axis determines the east-west direction, the Y axis determines
+	COMMENT the up-down direction, and the Z axis determines the south-north direction (note
+	COMMENT that positive-Z direction is south, not north).
+	FIELD field_11030 horizontalQuarterTurns I
+	FIELD field_11031 oppositeIndex I
+	FIELD field_11032 index I
+	FIELD field_11038 VALUES [Lnet/minecraft/class_2350;
+	FIELD field_11040 ALL [Lnet/minecraft/class_2350;
+	FIELD field_11041 HORIZONTAL [Lnet/minecraft/class_2350;
+	FIELD field_11042 vec3i Lnet/minecraft/class_2382;
+	FIELD field_11044 direction Lnet/minecraft/class_2350$class_2352;
+	FIELD field_11046 id Ljava/lang/String;
+	FIELD field_11047 axis Lnet/minecraft/class_2350$class_2351;
+	FIELD field_29502 CODEC Lnet/minecraft/class_3542$class_7292;
+	FIELD field_35088 VERTICAL_CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_48449 INDEX_TO_VALUE_FUNCTION Ljava/util/function/IntFunction;
+	FIELD field_48450 PACKET_CODEC Lnet/minecraft/class_9139;
+	FIELD field_53685 doubleVector Lnet/minecraft/class_243;
+	FIELD field_57037 INDEX_CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_57038 HORIZONTAL_QUARTER_TURNS_CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_57039 floatVector Lorg/joml/Vector3fc;
+	FIELD field_61964 YXZ Lcom/google/common/collect/ImmutableList;
+	FIELD field_61965 YZX Lcom/google/common/collect/ImmutableList;
+	METHOD <init> (Ljava/lang/String;IIIILjava/lang/String;Lnet/minecraft/class_2350$class_2352;Lnet/minecraft/class_2350$class_2351;Lnet/minecraft/class_2382;)V
+		ARG 3 index
+		ARG 4 oppositeIndex
+		ARG 5 horizontalQuarterTurns
+		ARG 6 id
+		ARG 7 direction
+		ARG 8 axis
+		ARG 9 vector
+	METHOD method_10139 fromHorizontalQuarterTurns (I)Lnet/minecraft/class_2350;
+		ARG 0 quarterTurns
+	METHOD method_10140 (Lnet/minecraft/class_2350;)I
+		ARG 0 direction
+	METHOD method_10141 (Lnet/minecraft/class_2350;)I
+		ARG 0 direction
+	METHOD method_10142 getFacing (DDD)Lnet/minecraft/class_2350;
+		ARG 0 x
+		ARG 2 y
+		ARG 4 z
+	METHOD method_10143 byIndex (I)Lnet/minecraft/class_2350;
+		ARG 0 index
+	METHOD method_10144 getPositiveHorizontalDegrees ()F
+	METHOD method_10145 listClosest (Lnet/minecraft/class_2350;Lnet/minecraft/class_2350;Lnet/minecraft/class_2350;)[Lnet/minecraft/class_2350;
+		COMMENT Helper function that returns the 3 directions given, followed by the 3 opposite given in opposite order.
+		ARG 0 first
+		ARG 1 second
+		ARG 2 third
+	METHOD method_10146 getIndex ()I
+	METHOD method_10147 getFacing (FFF)Lnet/minecraft/class_2350;
+		ARG 0 x
+		ARG 1 y
+		ARG 2 z
+	METHOD method_10148 getOffsetX ()I
+	METHOD method_10150 fromHorizontalDegrees (D)Lnet/minecraft/class_2350;
+		ARG 0 angle
+	METHOD method_10151 getId ()Ljava/lang/String;
+	METHOD method_10153 getOpposite ()Lnet/minecraft/class_2350;
+	METHOD method_10155 (Lnet/minecraft/class_2350;)Z
+		ARG 0 direction
+	METHOD method_10156 get (Lnet/minecraft/class_2350$class_2352;Lnet/minecraft/class_2350$class_2351;)Lnet/minecraft/class_2350;
+		ARG 0 direction
+		ARG 1 axis
+	METHOD method_10159 getEntityFacingOrder (Lnet/minecraft/class_1297;)[Lnet/minecraft/class_2350;
+		ARG 0 entity
+	METHOD method_10160 rotateYCounterclockwise ()Lnet/minecraft/class_2350;
+	METHOD method_10161 getHorizontalQuarterTurns ()I
+	METHOD method_10162 random (Lnet/minecraft/class_5819;)Lnet/minecraft/class_2350;
+		ARG 0 random
+	METHOD method_10164 getOffsetY ()I
+	METHOD method_10165 getOffsetZ ()I
+	METHOD method_10166 getAxis ()Lnet/minecraft/class_2350$class_2351;
+	METHOD method_10168 byId (Ljava/lang/String;)Lnet/minecraft/class_2350;
+		COMMENT {@return a direction with the given {@code name}, or {@code null} if there is
+		COMMENT no such direction}
+		ARG 0 id
+	METHOD method_10169 from (Lnet/minecraft/class_2350$class_2351;Lnet/minecraft/class_2350$class_2352;)Lnet/minecraft/class_2350;
+		ARG 0 axis
+		ARG 1 direction
+	METHOD method_10170 rotateYClockwise ()Lnet/minecraft/class_2350;
+	METHOD method_10171 getDirection ()Lnet/minecraft/class_2350$class_2352;
+	METHOD method_23224 getRotationQuaternion ()Lorg/joml/Quaternionf;
+	METHOD method_23225 transform (Lorg/joml/Matrix4fc;Lnet/minecraft/class_2350;)Lnet/minecraft/class_2350;
+		ARG 0 matrix
+		ARG 1 direction
+	METHOD method_23955 getUnitVector ()Lorg/joml/Vector3f;
+	METHOD method_30928 pointsTo (F)Z
+		COMMENT {@return whether the given yaw points to the direction}
+		COMMENT
+		COMMENT @implNote This returns whether the yaw can make an acute angle with the direction.
+		COMMENT
+		COMMENT <p>This always returns {@code false} for vertical directions.
+		ARG 1 yaw
+	METHOD method_32801 getLookDirectionForAxis (Lnet/minecraft/class_1297;Lnet/minecraft/class_2350$class_2351;)Lnet/minecraft/class_2350;
+		ARG 0 entity
+		ARG 1 axis
+	METHOD method_35833 rotateClockwise (Lnet/minecraft/class_2350$class_2351;)Lnet/minecraft/class_2350;
+		ARG 1 axis
+	METHOD method_35834 rotateCounterclockwise (Lnet/minecraft/class_2350$class_2351;)Lnet/minecraft/class_2350;
+		ARG 1 axis
+	METHOD method_35835 rotateXClockwise ()Lnet/minecraft/class_2350;
+	METHOD method_35836 rotateXCounterclockwise ()Lnet/minecraft/class_2350;
+	METHOD method_35837 rotateZClockwise ()Lnet/minecraft/class_2350;
+	METHOD method_35838 rotateZCounterclockwise ()Lnet/minecraft/class_2350;
+	METHOD method_38940 validateVertical (Lnet/minecraft/class_2350;)Lcom/mojang/serialization/DataResult;
+		ARG 0 direction
+	METHOD method_42013 stream ()Ljava/util/stream/Stream;
+	METHOD method_42014 shuffle (Lnet/minecraft/class_5819;)Ljava/util/Collection;
+		COMMENT {@return a shuffled collection of all directions}
+		ARG 0 random
+	METHOD method_58251 getFacing (Lnet/minecraft/class_243;)Lnet/minecraft/class_2350;
+		ARG 0 vec
+	METHOD method_62672 fromVector (IIILnet/minecraft/class_2350;)Lnet/minecraft/class_2350;
+		COMMENT {@return the closest direction of the vector, or {@code fallback} for zero vector}
+		ARG 0 x
+		ARG 1 y
+		ARG 2 z
+		ARG 3 fallback
+	METHOD method_62673 getHorizontalDegreesOrThrow (Lnet/minecraft/class_2350;)F
+		ARG 0 direction
+	METHOD method_62674 fromVector (Lnet/minecraft/class_2382;Lnet/minecraft/class_2350;)Lnet/minecraft/class_2350;
+		ARG 0 vec
+		ARG 1 fallback
+	METHOD method_62675 getVector ()Lnet/minecraft/class_2382;
+	METHOD method_62676 getDoubleVector ()Lnet/minecraft/class_243;
+	METHOD method_68070 (Lnet/minecraft/class_2350;)Ljava/lang/Byte;
+		ARG 0 direction
+	METHOD method_68071 (Lnet/minecraft/class_2350;)Ljava/lang/Byte;
+		ARG 0 direction
+	METHOD method_68072 getFloatVector ()Lorg/joml/Vector3fc;
+	METHOD method_73163 getCollisionOrder (Lnet/minecraft/class_243;)Lcom/google/common/collect/ImmutableList;
+	CLASS class_2351 Axis
+		FIELD field_11053 id Ljava/lang/String;
+		FIELD field_23780 VALUES [Lnet/minecraft/class_2350$class_2351;
+		FIELD field_25065 CODEC Lnet/minecraft/class_3542$class_7292;
+		METHOD <init> (Ljava/lang/String;ILjava/lang/String;)V
+			ARG 3 id
+		METHOD method_10172 choose (DDD)D
+			ARG 1 x
+			ARG 3 y
+			ARG 5 z
+		METHOD method_10173 choose (III)I
+			ARG 1 x
+			ARG 2 y
+			ARG 3 z
+		METHOD method_10174 getId ()Ljava/lang/String;
+		METHOD method_10176 test (Lnet/minecraft/class_2350;)Z
+		METHOD method_10177 fromId (Ljava/lang/String;)Lnet/minecraft/class_2350$class_2351;
+			ARG 0 id
+		METHOD method_10178 isVertical ()Z
+		METHOD method_10179 isHorizontal ()Z
+		METHOD method_10180 getType ()Lnet/minecraft/class_2350$class_2353;
+		METHOD method_16699 pickRandomAxis (Lnet/minecraft/class_5819;)Lnet/minecraft/class_2350$class_2351;
+			ARG 0 random
+		METHOD method_64922 getPositiveDirection ()Lnet/minecraft/class_2350;
+		METHOD method_64923 getNegativeDirection ()Lnet/minecraft/class_2350;
+		METHOD method_64924 getDirections ()[Lnet/minecraft/class_2350;
+		METHOD method_66548 choose (ZZZ)Z
+			ARG 1 x
+			ARG 2 y
+			ARG 3 z
+	CLASS class_2352 AxisDirection
+		FIELD field_11057 description Ljava/lang/String;
+		FIELD field_11059 offset I
+		METHOD <init> (Ljava/lang/String;IILjava/lang/String;)V
+			ARG 3 offset
+			ARG 4 description
+		METHOD method_10181 offset ()I
+		METHOD method_26424 getOpposite ()Lnet/minecraft/class_2350$class_2352;
+		METHOD method_35839 getDescription ()Ljava/lang/String;
+	CLASS class_2353 Type
+		FIELD field_11061 facingArray [Lnet/minecraft/class_2350;
+		FIELD field_11065 axisArray [Lnet/minecraft/class_2350$class_2351;
+		METHOD <init> (Ljava/lang/String;I[Lnet/minecraft/class_2350;[Lnet/minecraft/class_2350$class_2351;)V
+			ARG 3 facingArray
+			ARG 4 axisArray
+		METHOD method_10183 random (Lnet/minecraft/class_5819;)Lnet/minecraft/class_2350;
+			ARG 1 random
+		METHOD method_29716 stream ()Ljava/util/stream/Stream;
+		METHOD method_33465 randomAxis (Lnet/minecraft/class_5819;)Lnet/minecraft/class_2350$class_2351;
+			ARG 1 random
+		METHOD method_43342 getShuffled (Lnet/minecraft/class_5819;)Ljava/util/List;
+			ARG 1 random
+		METHOD method_57092 getFacingCount ()I
+		METHOD test (Ljava/lang/Object;)Z
+			ARG 1 direction

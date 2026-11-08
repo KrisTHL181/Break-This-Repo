@@ -1,0 +1,5 @@
+CLASS net/minecraft/class_2745 net/minecraft/block/enums/ChestType
+	FIELD field_12572 name Ljava/lang/String;
+	METHOD <init> (Ljava/lang/String;ILjava/lang/String;)V
+		ARG 3 name
+	METHOD method_11824 getOpposite ()Lnet/minecraft/class_2745;

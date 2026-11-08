@@ -1,0 +1,118 @@
+name: DotNet Language Interop Tests
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+    - release/*
+  pull_request:
+    branches:
+    - main
+    - release/*
+
+concurrency:
+  # Cancel any workflow currently in progress for the same PR.
+  # Allow running concurrently with any other commits.
+  group: dotnet-test-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+permissions: read-all
+
+jobs:
+  build-darwin-frameworks:
+    name: Build All Darwin Frameworks
+    strategy:
+      matrix:
+        tls: ["quictls", "openssl"]
+    uses: ./.github/workflows/build-reuse-darwin-framework.yml
+    with:
+      config: 'Debug'
+      repo: ${{ github.repository }}
+      tls: ${{ matrix.tls }}
+
+  build-linux:
+    name: Ubuntu
+    needs: []
+    strategy:
+      fail-fast: false
+      matrix:
+        vec: [
+          { plat: "linux", os: "ubuntu-22.04", arch: "x64", tls: "quictls" },
+          { plat: "linux", os: "ubuntu-24.04", arch: "x64", tls: "quictls" },
+          { plat: "linux", os: "ubuntu-22.04", arch: "x64", tls: "openssl" },
+          { plat: "linux", os: "ubuntu-24.04", arch: "x64", tls: "openssl" },
+        ]
+    uses: ./.github/workflows/build-reuse-unix.yml
+    with:
+      config: 'Debug'
+      plat: ${{ matrix.vec.plat }}
+      os: ${{ matrix.vec.os }}
+      arch: ${{ matrix.vec.arch }}
+      tls: ${{ matrix.vec.tls }}
+      repo: ${{ github.repository }}
+
+  build-windows:
+    name: Windows
+    needs: []
+    strategy:
+      fail-fast: false
+      matrix:
+        vec: [
+          { plat: "windows", os: "windows-2022", arch: "x64", tls: "quictls" },
+          { plat: "windows", os: "windows-2022", arch: "x64", tls: "openssl" },
+        ]
+    uses: ./.github/workflows/build-reuse-win.yml
+    with:
+      config: 'Debug'
+      plat: ${{ matrix.vec.plat }}
+      os: ${{ matrix.vec.os }}
+      arch: ${{ matrix.vec.arch }}
+      tls: ${{ matrix.vec.tls }}
+      repo: ${{ github.repository }}
+
+  dotnet-test:
+    name: DotNet Test
+    needs: [build-windows, build-linux, build-darwin-frameworks]
+    strategy:
+      fail-fast: false
+      matrix:
+        vec: [
+          { plat: "windows", os: "windows-2022", arch: "x64", tls: "quictls" },
+          { plat: "linux", os: "ubuntu-22.04", arch: "x64", tls: "quictls" },
+          { plat: "linux", os: "ubuntu-24.04", arch: "x64", tls: "quictls" },
+          { plat: "linux", os: "ubuntu-22.04", arch: "x64", tls: "openssl" },
+          { plat: "linux", os: "ubuntu-24.04", arch: "x64", tls: "openssl" },
+          { plat: "macos", os: "macos-15", arch: "universal", tls: "quictls" },
+          { plat: "macos", os: "macos-15", arch: "universal", tls: "openssl" },
+        ]
+    runs-on: ${{ matrix.vec.os }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - name: Prepare Machine
+      shell: pwsh
+      run: scripts/prepare-machine.ps1 -ForTest
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: Debug-${{ matrix.vec.plat }}-${{ matrix.vec.os }}-${{ matrix.vec.arch }}-${{ matrix.vec.tls }}
+        path: artifacts
+    - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+      with:
+        dotnet-version: 10.0.x
+    - name: Run Lang Interop
+      shell: pwsh
+      run: scripts/DotNetTest.ps1 -Config Debug -Arch ${{ matrix.vec.arch }} -Tls ${{ matrix.vec.tls }} -DomainName "google.com"
+
+  Complete:
+    name: DotNet Test Complete
+    if: always()
+    needs: [dotnet-test]
+    runs-on: ubuntu-latest
+    permissions: {} # No need for any permissions.
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@b5b5b37504aa4183270bd3d855c52a67f212be35 # v1.3.0
+      with:
+        jobs: ${{ toJSON(needs) }}

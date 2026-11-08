@@ -1,0 +1,5 @@
+type: text
+
+---
+
+Exporting your mod as a JAR: run in a terminal from the same directory as the mod project directory `./gradlew build` on GNU/Linux and Mac, or `gradlew build` on Windows. Alternatively, in IntelliJ IDEA, open the Gradle tab on the right and execute `build` under `tasks`. The JARs should appear in `${projectDir}/build/libs`. Use the one with the shortest name outside development.

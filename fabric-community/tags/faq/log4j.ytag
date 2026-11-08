@@ -1,0 +1,11 @@
+type: text
+
+---
+
+To protect from the critical Log4j RCE vulnerability (CVE-2021-44228, CVE-2021-45046), both the server owner and the users must take some actions.
+
+**Fabric Servers**: 
+Update to 1.18.1 if possible, or update Fabric Loader to 0.12.12.
+
+**Fabric Clients**:
+If you are using the official launcher or MultiMC, restarting the game and the launcher should be enough. If not, you can update the Fabric Loader version to 0.12.12.

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>关注洛天依喵，关注洛天依谢谢喵</title>
+<meta name="description" content="关注洛天依喵，关注洛天依谢谢喵！一键跳转洛天依哔哩哔哩主页。" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%B5%3C/text%3E%3C/svg%3E" />
+<!-- 播放器样式（在上一层目录） -->
+<link rel="stylesheet" href="../player.css" />
+<style>
+  :root {
+    --ink: #eaf2ff;
+    --ink-dim: #b9cbe8;
+    --sky: #7cc4ff;
+    --violet: #b39cff;
+    --pink: #ff9ed2;
+    --bili: #00aeec;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    min-height: 100%;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100svh;
+    color: var(--ink);
+    font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Noto Sans SC", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background-color: #0b1030;
+    overflow-x: hidden;
+  }
+
+  /* ============ 背景：你给的图 ============ */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background-image: url("assets/luotianyi.jpg");
+    background-size: cover;
+    background-position: 50% 38%;
+    background-repeat: no-repeat;
+    transform: scale(1.04);
+    animation: bgDrift 26s ease-in-out infinite alternate;
+  }
+
+  /* 压暗 / 染色，让文字更好读 */
+  .bg-tint {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(120% 90% at 50% 10%, rgba(10, 16, 48, 0.10) 0%, rgba(8, 12, 38, 0.55) 62%, rgba(5, 8, 26, 0.86) 100%),
+      linear-gradient(180deg, rgba(9, 14, 42, 0.55) 0%, rgba(9, 14, 42, 0.16) 34%, rgba(6, 10, 32, 0.72) 100%);
+    backdrop-filter: saturate(115%);
+  }
+
+  .bg-grain {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.35;
+    background-image:
+      radial-gradient(1.6px 1.6px at 20% 30%, rgba(255,255,255,.55), transparent 60%),
+      radial-gradient(1.4px 1.4px at 72% 18%, rgba(174,225,255,.6), transparent 60%),
+      radial-gradient(1.8px 1.8px at 44% 72%, rgba(255,255,255,.4), transparent 60%),
+      radial-gradient(1.3px 1.3px at 86% 62%, rgba(255,214,244,.5), transparent 60%),
+      radial-gradient(1.5px 1.5px at 12% 82%, rgba(178,214,255,.45), transparent 60%);
+    animation: sparkle 9s ease-in-out infinite alternate;
+  }
+
+  /* ============ 漂浮音符 ============ */
+  .notes {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .notes span {
+    position: absolute;
+    bottom: -8vh;
+    font-size: clamp(18px, 3vw, 34px);
+    color: rgba(226, 240, 255, 0.7);
+    text-shadow: 0 0 18px rgba(120, 190, 255, 0.75);
+    animation: floatUp linear infinite;
+  }
+  .notes span:nth-child(1) { left: 8%;  animation-duration: 16s; animation-delay: 0s;    font-size: 26px; }
+  .notes span:nth-child(2) { left: 22%; animation-duration: 21s; animation-delay: 3s;    font-size: 34px; }
+  .notes span:nth-child(3) { left: 37%; animation-duration: 18s; animation-delay: 7s;    font-size: 22px; }
+  .notes span:nth-child(4) { left: 55%; animation-duration: 24s; animation-delay: 1.5s;  font-size: 30px; }
+  .notes span:nth-child(5) { left: 70%; animation-duration: 19s; animation-delay: 9s;    font-size: 24px; }
+  .notes span:nth-child(6) { left: 84%; animation-duration: 23s; animation-delay: 5s;    font-size: 32px; }
+  .notes span:nth-child(7) { left: 93%; animation-duration: 17s; animation-delay: 12s;   font-size: 20px; }
+
+  /* ============ 布局 ============ */
+  .page {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(20px, 3.4vh, 40px);
+    padding: clamp(28px, 6vh, 72px) clamp(18px, 5vw, 56px);
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: clamp(12px, 1.5vw, 15px);
+    letter-spacing: 0.14em;
+    color: #dcebff;
+    background: rgba(16, 26, 62, 0.42);
+    border: 1px solid rgba(160, 205, 255, 0.35);
+    box-shadow: 0 8px 30px rgba(4, 10, 34, 0.5), inset 0 1px 0 rgba(255,255,255,.12);
+    backdrop-filter: blur(10px) saturate(130%);
+  }
+  .badge i {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #7ef0c8;
+    box-shadow: 0 0 12px #7ef0c8;
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 20ch;
+    font-size: clamp(30px, 6.4vw, 86px);
+    line-height: 1.18;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    text-wrap: balance;
+    background: linear-gradient(100deg, #ffffff 0%, #cbe6ff 26%, #a9c6ff 50%, #d7b8ff 72%, #ffd0ee 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 26px rgba(6, 14, 44, 0.85)) drop-shadow(0 0 44px rgba(120, 170, 255, 0.45));
+    animation: titleIn 0.9s cubic-bezier(.2,.8,.25,1) both;
+  }
+
+  .subtitle {
+    margin: 0;
+    max-width: 44ch;
+    font-size: clamp(13px, 1.7vw, 19px);
+    line-height: 1.85;
+    color: var(--ink-dim);
+    text-shadow: 0 2px 14px rgba(4, 10, 34, 0.9);
+    animation: fadeUp 0.9s 0.15s cubic-bezier(.2,.8,.25,1) both;
+  }
+
+  /* ============ 按钮 ============ */
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    animation: fadeUp 0.9s 0.28s cubic-bezier(.2,.8,.25,1) both;
+  }
+
+  .btn {
+    --glow: rgba(0, 174, 236, 0.55);
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: clamp(14px, 1.6vh, 18px) clamp(24px, 3vw, 40px);
+    border-radius: 999px;
+    font-size: clamp(15px, 1.9vw, 21px);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: #04122a;
+    background: linear-gradient(135deg, #ffffff 0%, #cdeaff 38%, #7fd4ff 100%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 14px 38px rgba(0, 122, 190, 0.45), 0 0 0 0 var(--glow), inset 0 1px 0 rgba(255,255,255,.9);
+    transition: transform .22s cubic-bezier(.2,.8,.25,1), box-shadow .22s ease, filter .22s ease;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn svg { width: 1.15em; height: 1.15em; flex: none; }
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.85) 48%, transparent 66%);
+    transform: translateX(-120%);
+    animation: sheen 4.6s ease-in-out infinite;
+    z-index: -1;
+  }
+  .btn:hover, .btn:focus-visible {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 20px 46px rgba(0, 140, 210, 0.55), 0 0 0 8px rgba(124, 196, 255, 0.18), inset 0 1px 0 rgba(255,255,255,.9);
+    filter: brightness(1.03);
+    outline: none;
+  }
+  .btn:active { transform: translateY(-1px) scale(0.995); }
+
+  .btn-ghost {
+    color: #e6f1ff;
+    background: rgba(14, 24, 58, 0.42);
+    border: 1px solid rgba(165, 205, 255, 0.38);
+    box-shadow: 0 10px 30px rgba(4, 10, 34, 0.5), inset 0 1px 0 rgba(255,255,255,.1);
+    backdrop-filter: blur(10px) saturate(130%);
+    font-weight: 700;
+  }
+  .btn-ghost::after { display: none; }
+  .btn-ghost:hover, .btn-ghost:focus-visible {
+    box-shadow: 0 16px 36px rgba(4, 10, 34, 0.55), 0 0 0 6px rgba(124, 196, 255, 0.14);
+    background: rgba(22, 36, 82, 0.55);
+  }
+
+  /* ============ 底部 ============ */
+  .foot {
+    position: relative;
+    z-index: 1;
+    padding: 0 clamp(16px, 4vw, 40px) clamp(18px, 4vh, 34px);
+    text-align: center;
+    font-size: clamp(11px, 1.3vw, 13px);
+    line-height: 1.9;
+    color: rgba(196, 214, 240, 0.72);
+    text-shadow: 0 2px 12px rgba(4, 10, 34, 0.9);
+  }
+  .foot a { color: rgba(206, 232, 255, 0.9); text-decoration: none; border-bottom: 1px dotted rgba(206, 232, 255, 0.5); }
+  .foot a:hover { color: #fff; }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translate(-50%, 150%);
+    z-index: 20;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #04122a;
+    background: linear-gradient(135deg, #fff, #a9e4ff);
+    box-shadow: 0 16px 40px rgba(0, 90, 150, 0.5);
+    transition: transform .35s cubic-bezier(.2,.8,.25,1), opacity .35s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+  /* ============ 动画 ============ */
+  @keyframes bgDrift {
+    from { transform: scale(1.04) translate3d(0, 0, 0); }
+    to   { transform: scale(1.11) translate3d(-1.4%, -1.2%, 0); }
+  }
+  @keyframes sparkle { from { opacity: .22; } to { opacity: .5; } }
+  @keyframes pulse   { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.8); } }
+  @keyframes floatUp {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+    12%  { opacity: .85; }
+    85%  { opacity: .45; }
+    100% { transform: translateY(-118vh) rotate(24deg); opacity: 0; }
+  }
+  @keyframes titleIn {
+    from { opacity: 0; transform: translateY(22px) scale(.97); filter: blur(10px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+  }
+  @keyframes sheen {
+    0%, 55% { transform: translateX(-120%); }
+    80%, 100% { transform: translateX(120%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .bg { transform: none; }
+  }
+
+  @media (max-width: 560px) {
+    .page { justify-content: center; gap: 18px; }
+    .actions { flex-direction: column; width: 100%; }
+    .btn { width: 100%; justify-content: center; }
+    h1 { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true"></div>
+<div class="bg-tint" aria-hidden="true"></div>
+<div class="bg-grain" aria-hidden="true"></div>
+<div class="notes" aria-hidden="true">
+  <span>♪</span><span>♫</span><span>♩</span><span>♬</span><span>♪</span><span>♫</span><span>♩</span>
+</div>
+
+<main class="page">
+  <p class="badge"><i></i>MANVERSE × 洛天依 · LUO TIANYI</p>
+
+  <h1>关注洛天依喵，<br />关注洛天依谢谢喵</h1>
+
+  <p class="subtitle">
+    世界第一吃货殿下&nbsp;·&nbsp;VOCALOID 中文虚拟歌姬<br />
+    点一下下面的按钮，去 B 站给她一个关注吧～<br />
+    底下还有播放器，能直接听 <strong>LOU\music</strong> 里的歌 ♪
+  </p>
+
+  <div class="actions">
+    <a class="btn"
+       id="biliBtn"
+       href="https://space.bilibili.com/36081646"
+       target="_blank"
+       rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+        <path d="M18.223 3.086a1.25 1.25 0 0 0-1.768 0L14.37 5.17h-4.74L7.545 3.086A1.25 1.25 0 1 0 5.777 4.854L6.63 5.707A5.5 5.5 0 0 0 3 10.5v5A5.5 5.5 0 0 0 8.5 21h7a5.5 5.5 0 0 0 5.5-5.5v-5a5.5 5.5 0 0 0-3.63-4.793l.853-.853a1.25 1.25 0 0 0 0-1.768ZM8.5 8h7a2.5 2.5 0 0 1 2.5 2.5v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 6 15.5v-5A2.5 2.5 0 0 1 8.5 8Zm0 2.25a1.25 1.25 0 0 0 0 2.5 1.25 1.25 0 0 0 0-2.5Zm7 0a1.25 1.25 0 0 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/>
+      </svg>
+      前往洛天依的哔哩哔哩主页
+    </a>
+
+    <a class="btn btn-ghost" href="https://www.bilibili.com/" target="_blank" rel="noopener noreferrer">
+      先打开 B 站
+    </a>
+  </div>
+</main>
+
+<footer class="foot">
+  本页为粉丝向二次创作演示页，背景图来自 <strong>MANVERSE × 洛天依</strong> 宣传物料，版权归原作者所有。<br />
+  洛天依 bilibili 个人空间：<a href="https://space.bilibili.com/36081646" target="_blank" rel="noopener noreferrer">space.bilibili.com/36081646</a>
+</footer>
+
+<div class="toast" id="toast">正在前往洛天依的 B 站主页喵～</div>
+
+<!-- 播放器挂载点：具体的播放条 / 歌单面板由 player.js 注入 -->
+<div id="playerRoot"></div>
+
+<script src="../player.js"></script>
+<script>
+  // 离线歌单：双击打开 index.html（没有服务器）时用，由 ../scan-music.ps1 生成。
+  // 仓库里不含这个文件，不存在就跳过 —— 直接交给播放器走 /api/tracks。
+  (function () {
+    try {
+      var x = new XMLHttpRequest();
+      x.open('GET', 'music-list.js', false);
+      x.send(null);
+      if (x.status === 200 || (x.status === 0 && x.responseText)) {
+        (new Function(x.responseText))();
+      }
+    } catch (e) { /* 没有这个文件，正常 */ }
+  })();
+</script>
+
+<script>
+  (function () {
+    var btn = document.getElementById('biliBtn');
+    var toast = document.getElementById('toast');
+    var timer = null;
+
+    function showToast() {
+      toast.classList.add('show');
+      clearTimeout(timer);
+      timer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+    }
+
+    btn.addEventListener('click', function (e) {
+      showToast();
+      // 微信等内置浏览器可能拦截新窗口，兜底用当前窗口跳转
+      var win = window.open(btn.href, '_blank', 'noopener');
+      if (!win) { e.preventDefault(); window.location.href = btn.href; }
+    });
+  })();
+</script>
+</body>
+</html>

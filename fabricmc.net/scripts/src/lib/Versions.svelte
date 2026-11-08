@@ -1,0 +1,90 @@
+<script lang="ts">
+    import { minecraftIsUnobfuscated } from "./template/minecraft";
+    import {
+        getGameVersions,
+        getYarnVersions,
+        getLoaderVersions,
+        getApiVersions,
+        isApiVersionvalidForMcVersion
+    } from "./Api";
+
+    let minecraftVersion: string | undefined;
+    let yarnVersion: string;
+    let loaderVersion: string;
+    let apiVersion: string;
+
+    let gameVersions = getGameVersions().then((versions) => {
+        minecraftVersion = versions.find((v) => v.stable)!.version
+        const latestVersion = versions[0];
+        return versions.filter((v) => v.stable || v == latestVersion).map((v) => v.version);
+    });
+
+    const loaderVersions = getLoaderVersions().then((versions) => {
+        loaderVersion = versions.find((v) => v.stable)!.version
+        return versions;
+    });
+
+    const yarnVersions = getYarnVersions()
+    const apiVersions = getApiVersions();
+
+    $: yarnVersions.then(versions => yarnVersion = versions.find(v => v.gameVersion == minecraftVersion)?.version || "unknown")
+    $: apiVersions.then(versions => apiVersion = versions.filter(v => isApiVersionvalidForMcVersion(v, minecraftVersion)).pop()!)
+    $: isUnobfuscated = minecraftIsUnobfuscated(minecraftVersion || "1.99");
+</script>
+
+{#await gameVersions}
+    <p>Loading versions...</p>
+{:then gameVersions}
+		<h2>Latest Versions</h2>
+		<p>Select a Minecraft version to get the recommended versions of Fabric Loader, Yarn, and Fabric API for your <code>gradle.properties</code> file.</p>
+    <p>
+        Minecraft Version:
+        <select bind:value={minecraftVersion} style="min-width: 200px">
+            {#each gameVersions as version}
+                <option value={version}>{version}</option>
+            {/each}
+        </select>
+    </p>
+
+    <div style="margin-bottom: 15px;">
+<pre><code>minecraft_version={minecraftVersion}
+{#if !isUnobfuscated}yarn_mappings={yarnVersion}
+{/if}loader_version={loaderVersion}
+loom_version=1.18-SNAPSHOT
+
+{#if apiVersion}
+# Fabric API
+fabric_api_version={apiVersion}
+{:else}
+# No Fabric API version available
+# fabric_api_version=
+{/if}</code></pre>
+
+				<p><strong>Important Note:</strong> In some cases, such as snapshots or special releases, the <code>fabric-api</code> version might not align perfectly with your Minecraft version.</p>
+				<p>If you encounter issues, double-check the latest release of Fabric API on <a href="https://modrinth.com/mod/fabric-api">Modrinth</a> or <a href="https://minecraft.curseforge.com/projects/fabric/files">CurseForge</a>.</p> 
+      </div>
+{:catch error}
+    <p style="color: red">Error: {error.message}</p>
+    <p>
+        For support please visit one of our
+        <a href="/discuss/">community discussion</a>
+        groups.
+    </p>
+{/await}
+
+<hr />
+
+<h2>Loom</h2>
+
+<p>The recommended loom version is <strong>1.18-SNAPSHOT</strong>. This is usually defined near the top of your build.gradle file.</p>
+
+<style>
+    .copy-code {
+      display: inline-block;
+      width: 100%;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      user-select: all;
+    }
+  </style>

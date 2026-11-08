@@ -1,0 +1,543 @@
+# 任务线: Novice Thaumaturgy
+### [1912] 3 Plus 4, Carry the 2...
+When doing infusions, it's always good to know how close you are in stability. The Arcane Abacus will tell you at a quick glance how stable your infusion altar is, and any asymmetries present.   For now, you can have one in exchange for a few types of common infusion stabilization blocks- but if you need to replace it, it will cost you some circuits!
+  - [提交] minecraft:skull, minecraft:skull:4, minecraft:skull:2, Thaumcraft:blockCrystal:6, thaumicbases:quicksilverBlock
+  > 奖励: WitchingGadgets:item.WG_Material:7 | Thaumcraft:ItemLootBag:1 | enhancedlootbags:lootbag:9
+
+### [2046] A Better Fluid Pipe
+Now that you have lead you can convert your bronze pipes to potin pipes with higher capacities.
+  - [提交] gregtech:gt.blockmachines:30727
+  > 奖励: enhancedlootbags:lootbag:4 x3
+
+### [-5563376651650091647] Adding More Functions
+One such improvement is the Advanced Redcrystal.  It allows you to set a threshold with your wand to define how strong a signal needs to be in order to pass through. This can come in handy when checking fill level of tanks or power storage.  [note]One caveat for redstone experts: The Advanced Redcrystal checks the signal strength in the block it is in, not in the previous block like a comparator would.[/note]
+  - [提交] Automagy:blockRedcrystalDense
+  > 奖励: Automagy:blockRedcrystalDense
+
+### [234] A "Greater" Wand
+While doing all your research and mining of these infused stones, you had an idea how to use the wood of a Greatwood tree to make a new wand. Actually, it turned out to be pretty simple, but you lacked one important thing back then: vis! The vis makes sure the wood doesn't lose its magical conductivity while forming the rod.
+  - [提交] Thaumcraft:WandRod
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5
+
+### [-7122426930826890446] Alleviating Warp
+When you get poisoned or withered a bit of milk solves the problem. Why not create something akin to milk, but for Warp effects?  Briar gives a bit of an answer to that. These two block tall plants, which require good light to grow, will produce Briar Seed Bags when harvested. Those can be combined with sugar and a suitable container in an Arcane Workbench to create Rosehip Syrup.  Rosehip Syrup stacks up to 16 and can be used the same as milk, also removing some (though not all) Warp effects as well as Flux Flue and Flux Phage.  The plant has a strange life cycle where the seed pods will first appear as yellow dots, turn pink as they start to mature, then §odisappear§r, only to return fully matured. Still, if it works, it works.
+  - [提交] thaumicbases:briar
+  - [提交] thaumicbases:rosehipSyrup
+  > 奖励: Thaumcraft:ItemEssence x4 | minecraft:sugar x4
+
+### [236] A More Powerful "Scale"
+The naga scales are weak, they can only hold a very limited amount of vis. You need a better, more powerful component to store vis in your wand. You've heard rumors about an evil wizard in the Twilight Forest. Maybe he has... something... that can be used?
+  - [提交] dreamcraft:LichBone x2
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [255] An Alternative to Torches
+And lava! It's an excellent magical light source. You can use it under your crucible, too! But not your witchery stuff. :(
+  - [提交] Thaumcraft:ItemResource:1 x5
+  > 奖励: Thaumcraft:ItemResource:1 | enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5
+
+### [302] A New Way to "Farm" Resources
+While regular plants are mostly used to make food, these magical plants (courtesy of Thaumic Bases) will grow you some good ol' resources!  Specifically, you have the ability to create Redlon (for Redstone), Metalleat (for Iron). Lucrite (for Gold), and Lazullia (for Lapis Lazuli).  There's also the fabled "Rainbow Cacti", which should help those who like to build with various colors...
+  - [提交] thaumicbases:redlonSeeds
+  - [提交] thaumicbases:metalleatSeeds
+  - [提交] thaumicbases:lucriteSeeds
+  - [提交] thaumicbases:lazulliaSeeds
+  - [可选提交] thaumicbases:rainbowCactus
+  > 奖励: thaumicbases:redlonSeeds | thaumicbases:metalleatSeeds | thaumicbases:lucriteSeeds | thaumicbases:lazulliaSeeds | dreamcraft:CoinDarkWizardI x5
+
+### [-6442987415315414167] A Pechuliar Merchant
+During your travels, you've heard about a forest filled to the brim with magic. In that forest, there is a rumor about an interesting little fellow who can trade magical artifacts, including infused shards! Supposedly, they scour the world for gems and gold, but are cold to wanderers who have no valuables to their name.  You wonder if you can find this merchant and obtain their wares. If only there was a tool that could help find this... §5§o"Magical Forest"§r.  [note]Note: This quest accepts meeting any type of Pech, not just Pech Foragers.[/note]
+  - [bq_standard:meeting]
+  > 奖励: Thaumcraft:ItemLootBag:2 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1837] Ardite and Cobalt Mining
+Ironwood is a much harder and durable material than you imagined at first. Making Tools and Armor gives them unique features. With a pickaxe, you can mine ores up to Cobalt level, meaning you can harvest Ardite and Cobalt without an EBF.
+  - [可选提交] minecraft:stick x2, TwilightForest:item.ironwoodIngot x2, gregtech:gt.metaitem.01:17338
+  - [提交] TwilightForest:item.ironwoodPick
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinSmith x25 | dreamcraft:CoinTechnician x25
+
+### [227] A Table to Work On
+Now you need something on which to craft magical items. It probably needs to be a little magical itself. Let's see what the book says.  §3I should probably take this time to read all the stuff in the Thaumonomicon I don't know about while I'm at it, instead of posting on Discord and looking stupid.
+  - [可选提交] Thaumcraft:blockTable
+  - [提交] Thaumcraft:blockTable:15
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5
+
+### [242] Balanced Shards sdrahS decnalaB
+By combining all six primal aspects in a crucible, you are able to make balanced shards. They can be ground up into "Salis Mundus", an absolutely crucial thing to have, trust me!
+  - [提交] Thaumcraft:ItemShard:6 x10
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [235] Better Screws
+Unfortunately, your aluminium screws don't work with the greatwood rod. Somehow, the wood seems to repel the material. Luckily, you already have a blast furnace, so you can get a better material than aluminium.
+  - [提交] gregtech:gt.metaitem.01:27306 x4
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinTechnicianI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1106] Blub Blub Blub.....
+The brewing stand is really important for brewing the various potions like night vision, healing, haste and jump. Toxic potions or splash potions can be created too. You'll also need it to make a brewery.  With your basic wand you can finally create one. The recipes can be found on the GTNH page in the Thaumonomicon.
+  - [提交] minecraft:brewing_stand
+  > 奖励: enhancedlootbags:lootbag:9 | minecraft:glowstone_dust x16 | minecraft:redstone x16 | minecraft:nether_wart x16 | minecraft:potion x16 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinChemistI x5
+
+### [1997] Boots Are Made For Walking
+And swimming. These boots of the traveller will make you a blur as you go around the world. You'll need to research infusion before you can make these.  §3There are also Electric versions with greater discounts in the Getting Around... tab.
+  - [提交] Thaumcraft:BootsTraveller
+
+### [2146] BRRRRAAAAAAAIIIIIIINNNNNNNSSSSS
+Automagy is a little subtle about what the "smort" mage needs to do next. Make some crystalline brains and scan them to unlock the next stage. You'll want to use the zombie brains you've been collecting from dangerous Furious zombies spawned by Eerie nodes.
+  - [可选提交] Thaumcraft:ItemZombieBrain x6
+  - [提交] Automagy:crystalBrain, Automagy:crystalBrain:1, Automagy:crystalBrain:2, Automagy:crystalBrain:3, Automagy:crystalBrain:4, Automagy:crystalBrain:5
+  > 奖励: Automagy:crystalBrain | Automagy:crystalBrain:1 | Automagy:crystalBrain:2 | Automagy:crystalBrain:3 | Automagy:crystalBrain:4 | Automagy:crystalBrain:5
+
+### [2065] Clothes Make the Magical Man or Woman
+The Witching Gadgets Spinning Wheel will unlock a few materials and items. Hopefully without that creep Rumpelstiltskin! Make sure you get the WG Spinning Wheel and not the Witchery version.
+  - [提交] WitchingGadgets:WG_WoodenDevice
+  > 奖励: WitchingGadgets:item.WG_Material:5 x4
+
+### [-7975621830681627535] Comparing at a Distance
+Comparators are wonderfully useful devices, but their need to be directly next to whatever they are comparing is quite limiting. If you could do so remotely that would free you from one major constraint.  Remote Comparators allow you to do just that. Sneak-right-click with a crystalline eye to bind the block you want to watch, and place the eye in a remote comparator to start monitoring the block remotely.  Given the extra distance, though the range of the remote comparator is quite limited, you should expect the §otiniest§r amount of signal lag compared to a direct comparator. You're doubtful that is ever going to be a limiting factor, though.
+  - [提交] Automagy:blockRemoteComparator, Automagy:crystalEye
+  > 奖励: Automagy:blockRedcrystal x4
+
+### [-7497528900357426935] Counting Items
+The Remote Comparator makes it significantly easier to get comparator signals out of whatever block you want, but looking at your storage chests you can't help but see no reason to bother. So what if they're nearly full? You want to know what they're nearly full §oof§r.  Tally Boxes can be pointed at a container - either directly or, using a Remote Comparator, remotely - and given a Runic Whitelist that specifies conditions where you want a Tally Box to send a redstone signal. Quantity, metadata and NBT matching are options, as is using a basic name filter.  Note that the redstone side is always opposite the reading side, and Remote Comparators must be placed on top of Tally Boxes to work together, meaning redstone is always output on the down face in that case.  [note]Runic Whitelists don't let you use NEI ghost items to set their filters, unfortunately.[/note]
+  - [提交] Automagy:blockTally
+  > 奖励: enhancedlootbags:lootbag:9
+
+### [243] Crystal Clusters
+You, as a Thaumaturge, like shiny things. And what could be more shiny than a cluster made of those shards? You totally should get one of each.
+  - [提交] Thaumcraft:blockCrystal, Thaumcraft:blockCrystal:1, Thaumcraft:blockCrystal:2, Thaumcraft:blockCrystal:3, Thaumcraft:blockCrystal:4, Thaumcraft:blockCrystal:5
+  > 奖励: dreamcraft:CoinDarkWizardI x5
+
+### [1103] Cursed Earth
+You can kill the powered-up monsters that spawn on the cursed earth, or just sleep and despawn them. Use a shovel with the silk touch enchantment to dig up the cursed earth blocks. You can use these blocks to make a mob spawner, or place one under a vanilla spawner to let it run even when you're not around.  When setting up a mob spawner in the Nether using Cursed Earth, poor design can cause huge TPS issues.  Make sure the Cursed Earth is not attached to anything from the Nether. For example, you can place it on top of marble, but the marble cannot touch anything in the nether (netherrack, brick, etc.), and must be floating in the air. Also, limit the Cursed Earth to 1 chunk max, with 2 block buffer to the chunk edge, including a wall.
+  - [提交] ExtraUtilities:cursedearthside x16
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5
+
+### [1101] Division Sigil
+Find a sigil in a chest? Get one from the Wither? You've heard about a ritual to activate it.  You need an enchantment table, 8 redstone dust, a weapon, and an animal you want to sacrifice. Catching and holding it with a Golden Lasso would be the easiest way. Check in LV for the Golden Lasso quest if you haven't completed it yet.  Place your enchantment table on a grass field and surround it with redstone dust. At midnight, place the animal on or near the table and kill it. You can check with the sigil if it's time yet by right-clicking it on the enchantment table. Of course you also need to have your sigil on you.  Beware! Your actions will have consequences.
+  - [可选提交] ExtraUtilities:divisionSigil
+  - [可选提交] minecraft:enchanting_table, minecraft:redstone x8, ExtraUtilities:golden_lasso
+  - [提交] ExtraUtilities:divisionSigil
+  > 奖励: minecraft:torch x16 | ExtraUtilities:unstableingot:1 | enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinTechnicianI x5 | dreamcraft:CoinSurvivorI x5
+
+### [1002] Enchanted Earth
+Enchanted Earth makes saplings and seeds planted on it grow faster. When stacked on top of each other it has a chance to add ticks to the block above accumulating all the way to the top. This will randomly speed up growth a bit.
+  - [提交] MagicBees:magicbees.enchantedEarth x4
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinFarmer x25 | dreamcraft:CoinDarkWizard x25
+
+### [1100] Enchanting Table 1.0
+Finally, with your new wand with 50 stored vis you're able to build your own enchantment table. The recipe can be found on the GTNH Tab in the Thaumonomicon.
+  - [提交] minecraft:enchanting_table
+  > 奖励: minecraft:bookshelf x8 | enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5
+
+### [240] Essentia Cooking
+In order to get essentia, you need to dissolve items. Obviously, you only want to dissolve those items you don't really need, and only those with essentia you need to craft things.  Make sure you keep your furnace as empty as possible. If it fills up with essentia, it can cause a large TPS drop.
+  - [提交] Thaumcraft:blockStoneDevice
+  > 奖励: bq_standard:choice | dreamcraft:CoinCookI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [254] Essentia Filtering
+This nifty little device will filter essentia out of an Alchemical Crucible or Alchemical Boiler. Once it has received a single unit of any type, it will only accept this type until it is completely empty. You can place more than one on top of an alchemical furnace, and you should. Try to have one per essentia type in the item you're melting on a furnace.  You should lock the type with a Label, or every time it fills again, it's likely to be a different type, and gum up your pipes.
+  - [提交] Thaumcraft:blockMetalDevice:1
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinCook x25 | dreamcraft:CoinDarkWizard x25
+
+### [-6939546665296547760] Essentia Storage
+At long last, you have all the tools to smelt items into Essentia, keep it stable, and store it for later use.  The last step was creating Warded Jars, relatively simple creations that keep Essentia in a quasi-liquid state, which makes it easier to keep Essentia from turning into Flux. Unlike phials, which must hold 8 Essentia exactly to keep it stable, Warded Jars can store anywhere from 1 to 64 Essentia.  These Warded Jars are safe to pick up and carry around, which you suspect will not be the case for most objects storing much more Essentia than these jars do. Right-click them with a label to filter that jar to a specific type of Essentia. Use a preset label if the jar is still empty.  Sneak-right-click with an empty hand to remove a label from a jar, or void the Essentia it contains if it doesn't have a label. Voiding Essentia from jars will not generate Flux, because... magic, I guess. It's very convenient, so just politely don't question it too much.
+  - [提交] Thaumcraft:blockJar x8
+  - [提交] Thaumcraft:ItemResource:13 x8
+  > 奖励: Thaumcraft:blockJar x8
+
+### [2067] Everything Fuzzy? Try Some Lenses
+Now that you have Goggles of Revealing, Thaumic Horizons offers various lenses with handy uses. This one will grant night vision. Try out some of the others.
+  - [提交] ThaumicHorizons:lensFire
+  > 奖励: ThaumicHorizons:lensCase
+
+### [238] Fuuuuuu...(sion)!
+Your arcane table does a great job with infusing primal vis into items while crafting. However, you feel that there must be more. What if you could infuse items with all kinds of magic aspects? The possibilities are endless...
+  - [提交] Thaumcraft:blockStoneDevice:2, Thaumcraft:blockStoneDevice:1 x7, Thaumcraft:blockCosmeticSolid:7 x4, Thaumcraft:blockCosmeticSolid:6 x4
+  > 奖励: Thaumcraft:ItemLootBag:1 | bq_standard:choice | dreamcraft:CoinDarkWizardII
+
+### [233] Getting Shards
+However you obtained them, you've collected a variety of Infused Shards. Now on how to use them...
+  - [提交] Thaumcraft:ItemShard:1 x16, Thaumcraft:ItemShard:2 x16, Thaumcraft:ItemShard:3 x16, Thaumcraft:ItemShard x16, Thaumcraft:ItemShard:5 x16, Thaumcraft:ItemShard:4 x16
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5
+
+### [2147] Gimme gimme gimme
+The Avarice Pearl is the next object Automagy requires you to interact with in order to unlock the next section. Make an Avarice Pearl, throw some stuff on the ground, and throw Avarice Pearls at them by right-clicking quickly over and over to get a Shattered (ha ha) Pearl to unlock a few more research items.
+  - [可选提交] Automagy:avaricePearl
+  - [提交] Automagy:horizontal
+  > 奖励: Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [877] Gold-Banded Greatwood Scepter
+A scepter is crafted from a wand core, a primal charm, three wand caps, a twilight forest monster mob drop, and some screws. Any sort of core or cap may be used, but the caps must match each other. A scepter cannot hold a focus, but holds 150 percent as much vis as a wand with the same core, and gives an additional 10 percent discount for costs, beyond any discounts from its caps or the user's worn equipment.  This is ideal for all your crafting needs and to progress further!  [note]There are multiple ways to get enough vis capacity to craft the scepter. If you are not yet able to make it, maybe first work on Fusion and make yourself some boots with better discounts.[/note]
+  - [提交] Thaumcraft:ItemResource:15, Thaumcraft:WandRod, dreamcraft:LichBone x2, gregtech:gt.metaitem.01:27306 x2, Thaumcraft:WandCap:1 x3
+  > 奖励: Thaumcraft:ItemResource:15 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [2050] Greedy Chest
+The Greedy Chest from Automagy looks to have some interesting uses. It also gates a pretty important device for a magician...
+  - [提交] Automagy:blockGreedyChest
+  > 奖励: Thaumcraft:ItemLootBag
+
+### [-6377301388234701261] Growing Auram
+One Essentia you might have a hard time gathering is Auram. Maybe you've gotten some from Ethereal Essence, which is dropped by the flying balls of light that rarely show up in the Nether, or some from Nodes. But that is hardly a good supply. The Aurelia plant can resolve this.  When a full moon is visible overhead, Aurelia flowers will open up their petals presumably to feed off of the light. Significant for you is that they will occasionally shed these petals, which can be collected off the ground as a dense source of Auram Essentia.  You should make sure the ground near the flower is level and clear, so you'll be able to collect the petals later. The flower itself is simply planted on grass, not farmland, so no need to have a water source nearby either.  [note]Gaia Wart is also a growable source of Auram Essentia. It has a quest in the Green Revolution quest tab.[/note]
+  - [提交] thaumicbases:aurelia
+  > 奖励: thaumicbases:resource:5
+
+### [-6516225634758235386] Growing Glowstone the Magical Way
+There are many plants that can provide you with Glowstone Dust. But the best one might just be Glieonia. This magical plant, once matured, can be harvested for two Glowstone Dust directly.
+  - [提交] thaumicbases:glieoniaSeed
+  > 奖励: Forestry:fertilizerCompound x16
+
+### [-5722547895249924043] Growing your own Knowledge!
+Ever thought to yourself "man, why does everything have to use primal aspects so much?" Well now you won't have to worry about that anymore!  Meet the Rosa Mysteria. When the sprout is planted on a Crystal Block, it will use that block's essence to grow into an Aspect Shard of the same type! These shards can then be thrown into your Cauldron or Alchemical Furnace, or used as Knowledge Fragments to gain Research Points. Even Mixed Crystals can be used as a catalyst!  [warn]Warning: Planting Rosa Mysteria on Tainted Crystal Blocks will lead to unf§ko§rrs§ke§re§kn   §rco§kn§rs§ke§rq§kue§rnc§ke§r§ks.§r[/warn]
+  - [可选提交] thaumicbases:crystalBlock:5, thaumicbases:crystalBlock:4, thaumicbases:crystalBlock:2, thaumicbases:crystalBlock:1, thaumicbases:crystalBlock:3, thaumicbases:crystalBlock
+  - [可选提交] thaumicbases:crystalBlock:7, thaumicbases:crystalBlock:6
+  - [提交] thaumicbases:knoseSeed
+  > 奖励: Thaumcraft:blockCrystal:6 | thaumicbases:knoseSeed x3 | dreamcraft:CoinDarkWizardI x5
+
+### [1998] I Can See Everything
+With your new wand, you can make Goggles of Revealing. You can now see nodes clearly, more so than with the thaumometer, but all the time! Additionally, the goggles give you a 5 percent vis discount.  Simple lens upgrades will grant you various seeing abilities as well.  Later you can make more advanced goggles and even integrate the goggles into advanced armors.  With TC Node Tracker, it makes remembering nodes trivial. The default key is I. You can select from the list of nodes you have scanned, and an in-world arrow will show you the way. You can also sort the list.
+  - [提交] Thaumcraft:ItemGoggles
+  > 奖励: Thaumcraft:blockCustomPlant:5 x2
+
+### [290] Improved Armor: Samurai Style
+Time to get some decent armor. With this, those infernal monsters won't be as much of a pain as they are now.
+  - [提交] Thaumcraft:ItemHelmetFortress, Thaumcraft:ItemChestplateFortress, Thaumcraft:ItemLeggingsFortress, Thaumcraft:BootsTraveller
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [232] Improving Your Wand
+Your wand does a great job in storing and releasing vis as you please. However, those iron caps are... §oweak§r. They also make crafting harder. Maybe you should try to improve it with caps made out of a more valuable material. Like... gold, perhaps?  [note]You'll want the discount from these gold caps to make your next wand![/note]
+  - [提交] Thaumcraft:WandCap:1 x2
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5
+
+### [2259] Infinite Bats! Wait, What??
+Tired of the constant chirping from the thousands of bats drawn to your world-bending activities? Use this handy device to attract them to a central location where they can be...disposed. The Corporeal Attractor can be configured to attract or repel mobs, and the redstone strength applied divided by two determines the range.  You can use Soul Molds to filter the mobs the Attractor draws in or pushes away. This gives you some idea for automating...
+  - [提交] ThaumicTinkerer:magnet:1
+  > 奖励: enhancedlootbags:lootbag:9 | ThaumicTinkerer:soulMould | dreamcraft:CoinDarkWizardI x5
+
+### [-7017820600167427633] Infinite Durability
+Pipe some liquid Instrumentum into this bad boy and you can repair anything with Vanilla durability!  §3[note]Doesn't work on Blood Magic potions, TiC tools, GT tools and tools with charge. Every point of Instrumentum equals eight points of durability.[/note]
+  - [提交] ThaumicTinkerer:repairer
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5
+
+### [258] Infinite... Lava?
+Well, it does need some ignis centi-vis, but hey, it's free. Also, expensive.
+  - [提交] ThaumicExploration:everburnUrn
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5
+
+### [259] Infinite Water!
+The struggle is over. You've finally discovered a way to get infinite amounts of water.
+  - [提交] ThaumicExploration:everfullUrn
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5
+
+### [229] Infused Stones
+This whole place here is filled with magic. No matter where you look at, it's just everywhere. You wonder what happens to regular stone if it's exposed to large amounts of magic for such a long time. Maybe it's time to go mining?  There are 3 veins. There's amber and cinnabar in each. They aren't super useful, but make sure to keep hold of some at least.  Even when you find these infused stones, they won't drop the infused shards you desperately need. Rather, you have to process the raw ores themselves. The easiest way to do that is to throw these raw ores in your Forge Hammer.  Later when you have a Sifter, you can sift purified ores for more shards. An autoclave can also turn shard dust into a shard. Maybe there's a magical way to do the same thing?
+  - [提交] gregtech:gt.metaitem.03:5543 x16, gregtech:gt.metaitem.03:5541 x16, gregtech:gt.metaitem.03:5540 x16, gregtech:gt.metaitem.03:5542 x16, gregtech:gt.metaitem.03:5545 x16, gregtech:gt.metaitem.03:5544 x16, gregtech:gt.metaitem.03:5514 x16, gregtech:gt.metaitem.03:5826 x16
+  - [提交] gregtech:gt.blockores2:543 x16, gregtech:gt.blockores2:541 x16, gregtech:gt.blockores2:540 x16, gregtech:gt.blockores2:542 x16, gregtech:gt.blockores2:545 x16, gregtech:gt.blockores2:544 x16, gregtech:gt.blockores2:514 x16, gregtech:gt.blockores2:826 x16
+  > 奖励: Thaumcraft:ItemLootBag x2 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [798] Iron Capped Greatwood Wand
+Making a gold capped greatwood wand requires 30 vis, but your old wand's limit is 25. So first create an iron or copper capped greatwood wand reload it with 50 vis and then later on in the next quest create a gold capped greatwood wand.  §3You can always press the NEI 'U' command on the caps, the core, or the boss ingredient to find the correct GT:NH recipe for the wands.
+  - [勾选确认]
+  > 奖励: Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1158] Ironwood
+Ironwood is much harder and more durable than rubber. Ideal for a soft mallet. Collect some liveroot underground from some roots, macerate it and mix the powder with iron and gold to create a new magical material.  You can make some unique armor with this material.
+  - [可选提交] TwilightForest:item.liveRoot x9
+  - [可选提交] gregtech:gt.metaitem.01:2832 x9, gregtech:gt.metaitem.01:2032 x9, gregtech:gt.metaitem.01:86 x9
+  - [可选提交] gregtech:gt.metaitem.01:2338 x18
+  - [提交] TwilightForest:item.ironwoodIngot x18
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinChemist x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinSmith x25 | dreamcraft:CoinTechnician x25
+
+### [2886] It's Called the Thaumatorium, OK?
+This device will allow automating the crucible. Check the research to the far right of the crucible for details.
+  - [提交] Thaumcraft:blockMetalDevice:9 x2, Thaumcraft:blockMetalDevice
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1461] Just Tell Me What to Scan Already!
+Don't want to guess at what has what aspect? Just want to get to work? Then scan this stuff. The first set should be scanned in order. If any of them don't work, try scanning something else first (especially the third set).  Watering Can Torch Coal Grass Block Trapdoor Chest Glass Block Bleached Bone Block Chicken Soul Sand Paper Rotten Flesh Wheat Flint Obsidian  Ash Cloud Any Dye Wool Spider Eye Snowball Milk Bucket Vanilla Hoe Vanilla Pickaxe Arrow Vanilla Armor Quicksilver Fence Gate Iron Nugget Gold Zombie Brain Ender Pearl Slimeball Tainted Anything. Try overfilling your cauldron to create flux goo to make the slimes (not in your base) Ethereal Essence (any Aspect) from wisps  Obzinite Ingot Platinum Metallic Powder Fine Copper Wire Magnetite Dust Thorium Dust A Pig Netherrack Gold Armor Bed Lead (not the metal) Ghast Tear Clock Crystal Matrix Ingot  The last 5 aspects might only be obtainable by combining aspects or by creating a node that has them. You can combine:  Cognito + Ordo Cognito + Vitium Vacuos + Motus Lux + Primordium Humanus + Iter  Note that the above list is for aspects, you may need to scan things like the Nether Portal to unlock certain researches.
+  - [勾选确认]
+
+### [-6318031316370662851] Keeping Out the Riff-Raff
+You're starting to get tired of having to build everything like some kind of fortress just to make sure no unwanted guests come in. Sure, that's just the nature of living in a world where infinite hoards of restless undead haunt every other dark corner, but is having a secure entryway that isn't conveniently door-shaped too much to ask?  Not anymore. Paving Stone of Warding, assuming nothing sits on top of it, will project a two block tall invisible force-field above itself that block non-player mobs from passing through, at least the common riff-raff. As a bonus spiders cannot climb the force-field, so no need for overhangs to keep them out too.  That said, since the force-field cannot tell an arrow fired by you from one fired §oat you§r, mundane objects will still pass through regardless. And the force-field does as much to block line of sight as the term §oinvisible§r would suggest.  Of course, you're not concerned about that part. Being able to shoot things with your crossbow while they can't reach you is very much in §oyour§r favor, all told.
+  - [提交] Thaumcraft:blockCosmeticSolid:3 x4
+  > 奖励: Thaumcraft:blockCosmeticSolid:3 x4
+
+### [1996] K-Mart Special
+Every point of vis is critical, so make yourself some magical robes to help conserve how much you use. Later you can make even better robes. They don't offer much in protection, so remember to change before going to hunt!
+  - [提交] Thaumcraft:ItemChestplateRobe, Thaumcraft:ItemLeggingsRobe, Thaumcraft:ItemBootsRobe
+  > 奖励: Thaumcraft:blockCustomPlant:5 x4
+
+### [2059] Knightmetal
+Knightmetal ingots are loot taken from Goblin Knight Strongholds. They can be made into Diamond-tier armor. You can take Armor Shards dropped by helmet crabs and turn them into Knightmetal ingots.
+  - [提交] TwilightForest:item.armorShards x9
+
+### [610] Lead, Galena, Silver and Cryolite
+You can't find Lead in the Overworld or the Nether. So it's time to explore the mysterious Twilight Forest a bit and find a Cryolite vein at Y 5-40.  You can get Lead, Silver, Cryolite for Aluminium production and Galena, which is more lead, in the vein.  There is some Silver in small ores in the OW and Nether, but this is a better source.
+  - [提交] gregtech:gt.blockores2:830 x32, gregtech:gt.blockores2:54 x32, gregtech:gt.blockores2:89 x32, gregtech:gt.blockores2:699 x16
+  - [提交] gregtech:gt.metaitem.03:5830 x32, gregtech:gt.metaitem.03:5054 x32, gregtech:gt.metaitem.03:5089 x32, gregtech:gt.metaitem.03:5699 x16
+  > 奖励: Thaumcraft:ItemLootBag:1 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1838] Low on Sticks?
+If you stay in the Twilight Forest for more than a few minutes you'll find Canopy Trees. This big tree generates a lot of logs for your Coke Ovens and some roots when planted which give sticks. Be careful that no building or chest right beside or above the tree otherwise the tree replaces it. You might find a use for this, to sinfully get above a ceiling you really shouldn't.
+  - [提交] TwilightForest:tile.TFSapling:1 x16, TwilightForest:item.critter x4, TwilightForest:tile.TFLog:1 x64
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinForestry x25 | dreamcraft:CoinDarkWizard x25
+
+### [-5921518077477245102] Magical Plants
+Now that you've made a crucible you can create a bunch of unique Thaumcraft plants. Some of these are incredibly useful so you'll want to take a close look.  The research for most of these can be found under Thaumic Bases, starting with "Thaumic Nature".  [note]Aside from these, there are more plant types unlocked in the future as you continue to progress.[/note]
+  - [勾选确认]
+  > 奖励: minecraft:dye:15 x32
+
+### [1070] Magic Feather
+In order to understand where you are, and where you §owant§r to be, you'll need a map. This is a magical place, so why not a magical map? The main part is a Magic Map Focus.  First, go find some Raven feathers. You can get them by killing Ravens. They like to hang out near the obsidian pillars.  Then you need some Torchberries (found underground) and some Glowstone dust.
+  - [可选提交] TwilightForest:item.tfFeather, TwilightForest:item.torchberries, minecraft:glowstone_dust
+  - [提交] TwilightForest:item.magicMapFocus
+  > 奖励: dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinAdventure x25
+
+### [1071] Magic Map
+For the magic map you need the magic map focus and a paper stack, made from a stack of paper.  It will fill in the area near you, and reveal boss locations. You need to kill these to get access to the rest of the Twilight Forest. Start with the Naga.  You can see what to do next in the TF achievement tab. There's also quests for the boss kills on the kill all the things tab. You can only get one map every 24 hours, so be careful with it.  §4Only use the map in the Twilight Forest, using the map in any other dimension will lag the server!
+  - [提交] TwilightForest:item.magicMapFocus, TConstruct:materials
+  > 奖励: TwilightForest:item.emptyMagicMap | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinAdventure x25
+
+### [-5362928539393889721] More Health
+No matter how much of a crack shot you become it doesn't help when your twitchy fingers shoot your crossbow before your eyes can notice the tell-tale red lines on one particular type of spider's body. Usually incredible amounts of pain follow...  With your new wand you are able to craft Red Heart Canisters. A total of ten of them can be put in their own dedicated inventory slot, increasing your maximum health by one heart per.  It might not be enough, but if it ends up making the difference between standing upright and standing horizontally in a box, you'll be thankful you made these things.
+  - [提交] TConstruct:heartCanister:2
+  > 奖励: TConstruct:heartCanister
+
+### [-4762573495702958200] Need More Sugar?
+With Briar starting to consume you might also want to increase your sugar production.  Sweeds are planted on grass, not farmland, and will spread to propagate themselves. Once fully matured they can be harvested for sugar as well as sugar cane.
+  - [提交] thaumicbases:sweedSeeds
+  > 奖励: enhancedlootbags:lootbag:9
+
+### [256] Not Coal
+Way better. More than Lignite even. It even speeds up the dissolving of items in an alchemical furnace & can be used in the BBF.
+  - [提交] Thaumcraft:ItemResource x2
+  > 奖励: Thaumcraft:ItemResource | enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5
+
+### [241] Not For Soup
+At least not for edible soup, but for essentia slurry. Get yourself a cauldron and give it a solid whack with your wand. Place some netherrack 2 blocks under the crucible and set it on fire with some flint and steel. Lastly you need to fill it with water. This one works with pipes, so you can automate that.  Now you can do crucible recipes!  Just don't put in too much or, well, Bad Things will happen.
+  - [可选提交] minecraft:cauldron
+  - [提交] Thaumcraft:blockMetalDevice
+  > 奖励: minecraft:netherrack | minecraft:flint_and_steel | Thaumcraft:ItemLootBag | dreamcraft:CoinCookI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [251] Not Just For Decoration
+Sure, they look pretty, but they serve a much more important purpose: Channeling vast amounts of vis and essentia. Your first uses will be an infusion setup and an alchemical furnace.
+  - [提交] Thaumcraft:blockCosmeticSolid:6 x72
+  > 奖励: enhancedlootbags:lootbag:9 x2 | dreamcraft:CoinDarkWizard x25
+
+### [879] Primal Charm
+With your new 50 vis wand you are able to make a Scepter which holds up to 75 vis. First you need some primal charms which cost 50 vis to craft.
+  - [可选提交] Thaumcraft:blockCrystal, Thaumcraft:blockCrystal:1, Thaumcraft:blockCrystal:2, Thaumcraft:blockCrystal:3, Thaumcraft:blockCrystal:4, Thaumcraft:blockCrystal:5, Thaumcraft:blockCrystal:6, gregtech:gt.metaitem.01:28351 x2
+  - [提交] Thaumcraft:ItemResource:15
+  > 奖励: Thaumcraft:blockCrystal:6 x4 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1286] Primal Shrooms
+Primal shrooms allow you to refill wands easier before you can move nodes to your base.  Go and find some Vishrooms in a magical forest biome. Try using a Nature's Compass. Or buy some using coins if no biome is close to your location.  1 pumpkin and 4 tiny piles of stone dust are the perfect combo to make these.  Whenever they're fully grown, you can break them to get some vis orbs to drop, just like enemies do. You do need to be holding the wand to collect it though. For these to grow, they will need a certain light level.
+  - [可选提交] Thaumcraft:blockCustomPlant:5 x4
+  - [提交] thaumicbases:ashroom x4
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:blockCustomPlant:5 x4 | minecraft:nether_wart x8 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinChemist x25
+
+### [-6644822685919168427] Pushing Back the Taint
+So how do you actually destroy tainted land?  These Ethereal Blooms will remove Tainted Lands within a small area around themselves, which in turn kills off any Fibrous Tendrils. They cannot cleanse Tainted Nodes, nor will they necessarily return tainted biomes back to what they were before, but they will provide a barrier.  The Shimmerleaf they are made from have a recipe in an LV Assembling Machine if you're having a hard time finding them around Silverwood trees. There is also a CropsNH version of them.
+  - [提交] Thaumcraft:blockCustomPlant:4
+
+### [257] Save the Squids, We Must
+A very convenient way to make PETA activists happy and get ink at the same time.  Hint: The essentia in those roses might be useful...
+  - [提交] ForbiddenMagic:UmbralBush
+  > 奖励: gregtech:gt.metaitem.02:32414 x16 | dreamcraft:CoinDarkWizard x25
+
+### [-5247534164092041732] Scanning Made Easy
+We get it; The early-game of Thaumcraft requires a lot of research and you don't want to throw every one of your 1000 items on the ground and scan them for aspects. That's why we added 2 cool QoL features which makes this tedious task very quick and easy.  1. You don't actually have to throw the item on the ground. You can scan it directly from your inventory! Simply hover your Thaumometer over the item you want to scan, and after a short duration it will be scanned.  2. You've probably accumulated dozens of double chests full of junk that you don't want to sift through and scan, so there's a second feature now: Scanning entire chests! Simply shift right-click while hovering over a chest with your thaumometer and it'll scan EVERY item inside of the chest. Though before you can do so you have to learn a bit more about deconstruction in the Thaumonomicon.  [note]Hint: To unlock the research to scan entire chests, go to your Thaumonomicon, open "Basic Information" (the first tab), and complete this research path: Research -> Research Expertise -> Deconstruction Table -> Container Scanning.[/note]
+  - [勾选确认]
+  > 奖励: Thaumcraft:ItemLootBag
+
+### [1096] Scribing Tool
+To unlock research you need a scribing tool and paper. To do the research, you need a scribing tool and the research note you made in the research table, so you should probably make two tools.  Note: Thaumcraft Research Tweaks has reworked the research table GUI. Aspects are now combined with drag & drop between aspects in the GUI. You can also right-click while dragging the aspect instead of dropping; the same works with the hexes. All the new features are described in your Thaumonomicon, make sure to check out the 'Research', 'Research Expertise', 'Research Mastery' and 'Research Duplication' pages.
+  - [提交] Thaumcraft:blockTable x2
+  - [提交] Thaumcraft:ItemInkwell x2, minecraft:paper x16
+  > 奖励: minecraft:paper x64 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5
+
+### [225] Searching for Answers
+Last night you had a dream. A dimension, so strange and different, almost... magical? Like the saplings you found. You decided to go there and look for answers.  First, place water in a 2x2 grid, with 12 flowers surrounding it. Then toss in a portal crystal to open it up. And no, a diamond is not enough.  §3You should be able to use any vanilla flower.
+  - [可选提交] dreamcraft:TwilightCrystal
+  - [到达] 
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [226] See the Unseen
+Everything is made of 6 primal aspects. Those aspects can be combined to form compound aspects, but in the end, there are only 6, kinda like the infused shards you found. You noticed that those shards start to vibrate when you bring them next to something that is made of the respective aspect. Maybe you can create a device to actually "scan" items, and reveal their compounds? This could be very useful later on.
+  - [提交] Thaumcraft:ItemThaumometer
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5
+
+### [-5367828810714122460] Shadow Metal
+Shadow Metal is an extremely useful metal in the early game. It can be easily made via the crucible and refined once you unlock the vacuum freezer.   Its high durability makes it a fantastic candidate for handheld tools, prospector scanners, turbines, and even wand caps later down the line.  Start off by making 5 ores, and doubling that using a macerator.  [note]Hint: You can find the research early on in the Maleficia section of the Thaumonomicon[/note]
+  - [可选提交] TaintedMagic:BlockShadowOre x5
+  - [提交] gregtech:gt.metaitem.01:11368 x10
+  > 奖励: enhancedlootbags:lootbag:9
+
+### [1104] Silky Jewel
+Silky jewels add silk touch to your tinkers tool, making them useful for collecting GT ores intact. You can also use them for other purposes, like obtaining cursed earth or grass blocks if needed.  The recipe can be found on the GTNH page after researching the enchantment table.
+  - [提交] TConstruct:materials:26
+  > 奖励: minecraft:gold_block | minecraft:diamond | enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizardI x5
+
+### [-6167478518452759927] Solid, Directional Redstone
+Redstone Dust is a wonderful substance, but it has several limitations that only true Minecrafters can handle.  Luckily, with a bit of magic the dust crystallizes and becomes much easier to handle.  Redcrystal can be placed directly against a wall or ceiling, and also allows you to use a wand to toggle whether a given side sends/receives any redstone signals. This allows for nice and compact builds in places regular redstone couldn't even exist in the first place.  Maybe it is possible to improve these redcrystals further to allow them to manipulate or process the signal they're receiving in some way...
+  - [提交] Automagy:blockRedcrystal
+  > 奖励: Automagy:blockRedcrystal x4
+
+### [2042] So Thirsty 
+Just listening to this tank gulp water makes me thirsty. If placed next to a water source block, it is a decent water source. It also supports several upgrades to speed and capacity. Try out this glyph near your cows, and get a tank full of milk for all your cheese and butter needs.
+  - [提交] Automagy:blockThirstyTank
+  > 奖励: Automagy:glyph:9
+
+### [1613] §5§lSource of Nickel
+Your Electric Blast Furnace needs Nickel. Now that you've reached the Twilight Forest, it's time to get some. The Nickel Vein that contains it is located at Y 10-40. In MV, you'll need tons of Nickel for Cupronickel, so stock up.  You can get some Cobalt out of Cobaltite through the side processes such as washing or thermal centrifuging. To electrolyze it, you'll need an MV electrolyzer though. Or you can EBF it after your EBF is done. Remember that the Sulfur Dioxide you get is based on your muffler tier. This is probably easier than searching in the Nether for Cobalt.  §3You can also find small quantities of Pentlandite ore in the Overworld if you care.
+  - [提交] gregtech:gt.blockores2:906 x32, gregtech:gt.blockores2:34 x32, gregtech:gt.blockores2:827 x32, gregtech:gt.blockores2:909 x16
+  - [提交] gregtech:gt.metaitem.03:5906 x32, gregtech:gt.metaitem.03:5034 x32, gregtech:gt.metaitem.03:5827 x32, gregtech:gt.metaitem.03:5909 x16
+  > 奖励: harvestcraft:epicbaconItem | harvestcraft:supremepizzaItem | bq_standard:choice | dreamcraft:CoinAdventure x15
+
+### [1159] Steeleaf
+If you locate a labyrinth you may find steeleaf in chests inside. This is the best material for a soft mallet for now, however a unique armor out of steeleaf can be made too.
+  - [提交] TwilightForest:item.steeleafIngot x9
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5
+
+### [237] "Stores 50 Vis" Wand
+With gold caps you avoid the downsides of iron. So best to upgrade to a Gold Banded Greatwood Wand!  You could also consider making your Greatwood Wand with enchanted cloth caps instead. That gives you an extra 5% discount!  With this Greatwood Wand you are more powerful than ever!  [note]You only need two caps of one listed type to complete the quest.[/note]
+  - [提交] Thaumcraft:WandCap:1 x2, TaintedMagic:ItemWandCap:1 x2
+  > 奖励: minecraft:spawn_egg:95 x4 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1368] Stuck in the Twilight Forest?
+If you're in the Twilight Forest and your portal gets broken, you're kinda stuck. Every 24h you're able to exchange some materials to get a new portal crystal to escape.  §3Also consider making an extra yourself and sticking it in a chest on the TF side, just in case.
+  - [提交] TwilightForest:item.tfFeather x2, TwilightForest:item.critter x4, TwilightForest:item.torchberries x16, TwilightForest:tile.TFLog:1 x64
+  > 奖励: dreamcraft:TwilightCrystal
+
+### [-7526210071214077051] Taint Warnings
+Now that you have started using Vis in the form of Essentia, a warning about Taint.  Vis in the state of Essentia is unstable if not stored properly. Left alone too long, or emptied out of the Crucible, Essentia will break down. But not into Vis. Rather, it will turn into Flux.  Flux manifests as a liquid or a gas, but is, itself, only a nuisance. Thaumaturges exposed to the stuff can end up getting Flux Flue, a condition which makes it harder to channel Vis, but it is only temporary.  Larger concentrations of Flux will solidify into Thaumic Slimes, bizarre creatures that try to merge with each other to grow larger. They can be dangerous, but are no less susceptible to crossbow bolts than most things.  However, if too much flux is allowed to linger for too long, it will corrupt the land and solidify into tendrils. This is a manifestation of the blight called Taint. Fibrous Tendrils (as well as condensed blocks thereof) spread the Tainted Lands, feeding on the magic it twists. Nodes are especially vulnerable, becoming Tainted themselves if exposed to this twisted magic.  Destroying the tendrils stops the spread, but unless §oall§r are destroyed this is only temporary. A more effective solution is to destroy the Tainted Land itself, as outside this specific biome tendrils quickly starve and die off.  If you are §oexceedingly§r careless with your Crucible you can, in fact, create Tainted Lands. So you would be wise to try wasting as little Essentia as possible, and clean up any you do waste.
+  - [勾选确认]
+
+### [-8328732283052969449] Thaumic Dendrology
+Thaumcraft saplings can be quite useful early on, now that you have access to infusion you can create them. Each type has a special trait:  §6§lGolden Oak§r - Drops Golden Apples as opposed to regular Apples.  §c§lNether§r - Creates a miniature nether biome upon placement that can spawn mobs- be careful! Placing the leaves from this tree on top of a block will cause that block to turn into its nether counterpart.  §d§lEnder§r - Creates a miniature end biome upon placement that can also spawn mobs. Placing the leaves from this tree on top of a block will cause that block to turn into its end counterpart. (§3A great source of Endstone§r)  §b§lPeaceful§r - Gathers passive creatures underneath its leaves. The types of animals attracted depends on the biome its planted in.
+  - [提交] thaumicbases:goldenOakSapling
+  - [提交] thaumicbases:goldenOakSapling:2
+  - [提交] thaumicbases:goldenOakSapling:3
+  - [提交] thaumicbases:goldenOakSapling:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5
+
+### [-8670597739683462194] Thauminite Helmet
+If you improve your Thaumium to Thauminite, you can make this very stylish helmet! Also comes with a very useful 5% vis discount while equipped.  Maybe this new material is useful for wands too?
+  - [可选提交] thaumicbases:resource:1 x5
+  - [提交] thaumicbases:thauminiteHelmet
+  > 奖励: thaumicbases:resource:1 x5
+
+### [1177] Thaumium Cooking
+Now it's time to 'cook' your first thaumium ingots. After first researching it, you need iron ingots and praecantatio essentia to make it.
+  - [可选提交] minecraft:iron_ingot x16
+  - [提交] Thaumcraft:ItemResource:2 x16
+  > 奖励: Thaumcraft:ItemEssence:1 x4 | Thaumcraft:ItemLootBag | dreamcraft:CoinChemistI x5 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [-7667095339224259942] The Burden of Knowledge
+Have you made too many mistakes and researched yourself into a corner by getting too much warp with no way to get rid of it? Do you wish you could just start everything over? The [warn]Potion of Blissful Oblivion[/warn] is the solution you are looking for.  At the cost of your knowledge of [warn]all research, all discovered aspects, all knowledge points in the Research Table, and everything scanned with a Thaumometer[/warn], all of your warp will be removed. It won't do anything about warp from armor, so you might still get minor warp events if you're wearing any warpy armor. Be absolutely certain you know what you are doing before you drink this.  Keep in mind that there are better alternatives for dealing with warp (which you can see in the Adept Thaumaturgy tab). This is just the cheapest one.  [note]It's also a rather decent source of Strontio.[/note]
+  - [提交] WarpTheory:item.warptheory.oblivionpotion
+  > 奖励: Thaumcraft:ItemLootBag | Thaumcraft:ItemResource:9 x8 | dreamcraft:CoinDarkWizard x5
+
+### [245] The Choice...
+By now, you should've collected a few (or a lot) of locations for aura nodes to get vis from. You might also have noticed that you're probably low on a certain aspect, like ordo or ignis. Well, good news. In exchange for some crystal clusters, I will give you one of my old nodes. They're all pale, but they'll still help you out. You may only choose one, so think twice before you make your decision.
+  - [提交] Thaumcraft:ItemShard:6 x6
+
+### [250] The Choice: Aer
+In exchange for 6 clusters, I will give you this node. May it serve you well. Oh, don't place it too close to another node, or it might start to drain vis...
+  - [提交] Thaumcraft:blockCrystal x6
+  > 奖励: Thaumcraft:BlockJarNodeItem | dreamcraft:CoinDarkWizardII
+
+### [249] The Choice: Aqua
+In exchange for 6 clusters, I will give you this node. May it serve you well. Oh, don't place it too close to another node, or it might start to drain vis...
+  - [提交] Thaumcraft:blockCrystal:2 x6
+  > 奖励: Thaumcraft:BlockJarNodeItem | dreamcraft:CoinDarkWizardII
+
+### [244] The Choice: Ignis
+In exchange for 6 clusters, I will give you this node. May it serve you well. Oh, don't place it too close to another node, or it might start to drain vis...
+  - [提交] Thaumcraft:blockCrystal:1 x6
+  > 奖励: Thaumcraft:BlockJarNodeItem | dreamcraft:CoinDarkWizardII
+
+### [248] The Choice: Ordo
+In exchange for 6 clusters, I will give you this node. May it serve you well. Oh, don't place it too close to another node, or it might start to drain vis...
+  - [提交] Thaumcraft:blockCrystal:4 x6
+  > 奖励: Thaumcraft:BlockJarNodeItem | dreamcraft:CoinDarkWizardII
+
+### [247] The Choice: Perditio
+In exchange for 6 clusters, I will give you this node. May it serve you well. Oh, don't place it too close to another node, or it might start to drain vis...
+  - [提交] Thaumcraft:blockCrystal:5 x6
+  > 奖励: Thaumcraft:BlockJarNodeItem | dreamcraft:CoinDarkWizardII
+
+### [246] The Choice: Terra
+In exchange for 6 clusters, I will give you this node. May it serve you well. Oh, don't place it too close to another node, or it might start to drain vis...
+  - [提交] Thaumcraft:blockCrystal:3 x6
+  > 奖励: Thaumcraft:BlockJarNodeItem | dreamcraft:CoinDarkWizardII
+
+### [1565] The Night's Not Dark Anymore
+Hardcore darkness is a pain, but now the night will be bright. Or at least, your perception will be that it is, mobs can still spawn! Be careful, the mobs aren't any weaker.  If you want, you can make a longer-lasting potion out of the Potion of Night Vision. Also, you should probably make them in batches of 3 so you don't waste materials.
+  - [可选提交] minecraft:potion, minecraft:nether_wart
+  - [可选提交] minecraft:potion:16
+  - [可选提交] minecraft:potion:16, minecraft:golden_carrot
+  - [提交] minecraft:potion:8198
+  > 奖励: enhancedlootbags:lootbag:9 | minecraft:nether_wart x8 | minecraft:potion x8 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinChemistI x5
+
+### [252] This is the End...
+...of your apprenticeship. You have mastered all 6 primal aspects, you mastered the weak and strong infusion of essentia and vis, and you've already made your adept wand. But be warned, young one. The further you progress, the more darkness, and evil will tempt you to follow the forbidden ways of magic. I have seen things... weather changing, random teleportation, or even a Wither tearing its way into our universe right next to someone. Be careful, my friend...
+  - [勾选确认]
+
+### [-8372294931943888805] Timewood Tree
+The Timewood Clock is a special block that can be obtained in The Twilight Forest. It can be used to accelerate vanilla crops in a 16 block radius, making farms significantly faster and more efficient.  To get one, you must explore inside the massive Twilight Forest trees and search the loot chests hidden within them. There is a small chance to find a Tree of Time sapling. The clock generates hidden inside the tree after it grows. [warn] After growing the tree, you will need a Silk Touch tool to obtain the Timewood Clock itself.[/warn] [note] If you break it without Silk Touch, it will instead drop several vanilla gold clocks.[/note]
+  - [可选提交] minecraft:clock
+  - [提交] TwilightForest:tile.TFMagicLogSpecial
+  > 奖励: dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x3
+
+### [231] Tome of Knowledge
+All the things you've discovered so far, you need to write them down. But you're lazy, and you have a wand, so why not try a magical way to "write down" your research? You wonder if you could enchant a book with your wand, so that it will keep track of your progress... You should try that on a bookshelf!
+  - [提交] Thaumcraft:ItemThaumonomicon
+  > 奖励: Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5
+
+### [-5271180655444922868] Tube Madness
+So you want to move essentia from your Alchemical furnace to your warded Jars without getting it all gunked up with different essentia types?  Well you came to the right place, with the use of buffered tubes and your handy wand you can move your essentia in tubes to fill all your jars without having to manually break and replace one jar at a time.  To create a simple setup place the buffered tubes in a main line from your Arcane Alembic with tubes coming out of the main buffered tube line. These standard tubes will then go directly into a warded jar. To get the essentia to flow correctly into the buffered tubes, shift-right-click the output side of the buffered tube with your wand until it is red. This will change the band to a red band which will limit the suction of the Essentia.  The Essentia will be forced from the buffered tube to a normal tube then into your Warded jars. Chain your buffered tubes as needed until all your Warded Jars will fit. §4 Note: This system will get gunked up with essentia if any of your Warded Jars are full!  §rIf you would like more information please check out the guide 'A Thaumaturge Guide to Laying Pipe' by xlstadal for more in-depth Thaumcraft 4 Tube knowledge.  §9§n[url]https://docs.google.com/document/d/1fMvJ5HbeOdy4UgBMe47cggis02idxWoMDgK81SgowEo[/url]§r
+  - [提交] Thaumcraft:blockTube:4 x4
+  > 奖励: bq_standard:choice
+
+### [253] Turning Liquids Into Essentia
+What a simple idea. So many people waste tons of buckets just to get aqua from water, or sano from milk. Why didn't they just dissolve the liquid itself? Idiots...
+  - [提交] Automagy:blockBoiler
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinCook x25 | dreamcraft:CoinDarkWizard x25
+
+### [-8049119362564896392] Understanding Wand Progression
+More advanced Thaumcraft recipes require larger and larger amounts of vis that your initial wands can't handle. You need to progress bit by bit to increase your capabilities. The progression is two-fold:  First, you need to craft more advanced wands, the Greatwood Wand is next. And secondly, you need to improve your crafting discounts. They reduce the vis cost of crafts and thus also let you craft higher vis recipes.  In your progression you will need to rely on both aspects. Better wands and higher discounts. However, as you progress, there are many different ways on how to proceed. Some ways focus more on discounts, others more on wands. Therefore, the questbook can only give you some general advice.  For example, when making a new wand type, it is always cheapest to first make it with iron caps and then try to improve it afterwards. One way you can improve your wand is by swapping the cores & caps for higher tiers as you unlock them §3(see "Substitution" research)§r. However, if you are able to obtain enough discounts you can directly make the wand with gold caps or better, skipping the iron capped wand altogether.  But before all these options really open up, let us work on that Greatwood Wand!
+  - [勾选确认]
+
+### [1778] Warp Warnings
+Thaumcraft offers considerable power from its devices and tools. But power comes with a price.... That price is represented by Warp: A corruption of the character's mind and soul, inflicting progressively more dire effects upon them.  While the effects of warp can range from annoying to deadly, accumulating enough of it can also grant you access to greater power... at the cost of increasing madness, and attention from dark powers. At least, others may call it madness... but is it truly insanity, when the voices in your head grant useful knowledge?  Warp Theory adds a bunch of new Warp Effects to the Player. Be very careful because you don't want to spawn a Wither in your base.  [note]If you're still early on in your thaumcraft journey, Warp shouldn't be something that scares you away from progressing further. You'll only stumble upon dangerous warp effects once you've done a lot of research. If you still wanna play it safe, make sure to avoid research that's labeled with "§5Forbidden Knowledge§r" [/note]  5 warp: Message 10 warp: Fake Explosion 15 warp: Coin, Pumpkin 20 warp: Lay Eggs, Spawn Phantoms 25 warp: Fake Creeper, Fake Rain 30 warp: GregTech Fake Sounds, Spawn Bats 35 warp: Blood, Fake Enderman 40 warp: Spawn Friendly Creeper 45 warp: Jump Boost, Nausea 50 warp: Insomnia, Vis Drain, Strange Noise 55 warp: Thunderstorm 60 warp: Spawn Fire Bats 65 warp: Blindness, Poison 70 warp: Livestock Rain 75 warp: Spawn Doppelganger 80 warp: Spawn Endermen, Wither Potion 85 warp: Wind 90 warp: Ender Pearl 95 warp: Blaze Fireball 100 warp: Litmus Paper, Junk, Call from the Deep 110 warp: Obsidian 120 warp: Lightning 125 warp: Inventory Swap 130 warp: Random Teleport 140 warp: Acceleration 150 warp: Fake Wither, Inventory Scramble 160 warp: Countdown Bomb 170 warp: Mushrooms 175 warp: Snow 180 warp: Decay 190 warp: Swamp 200 warp: Spawn Wither
+  - [勾选确认]
+  > 奖励: bq_standard:choice
+
+### [1995] What Are You, a Seamstress?
+Enchanted Fabric is the key material to fancy robes and wizard's clothing.
+  - [提交] Thaumcraft:ItemResource:7 x18
+  > 奖励: Thaumcraft:ItemResource:7 x8
+
+### [1369] Where'd I Put That Amber?
+Every Thaumcraft Infused Stone vein has a bit of amber ore in it. I'm sure you have a bunch by now.
+  - [提交] Thaumcraft:ItemResource:6 x16
+  > 奖励: Thaumcraft:ItemResource:1 | enhancedlootbags:lootbag:9 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinDarkWizard x25
+
+### [224] Witchy (Wo)man
+If you've made the spinning wheel and done the research, you can make these.  The vis discount is very useful both to craft more efficiently and to ease your wand progression. Maybe you should look around for more discounts?
+  - [提交] WitchingGadgets:item.WG_AdvancedRobeChest, WitchingGadgets:item.WG_AdvancedRobeLegs
+  > 奖励: Thaumcraft:blockCustomPlant:5 x4
+
+### [239] Yet Another Brick in the Wall...
+A magical one this time. You're on your way to infusion which needs 8 of these. Another 4 will be needed for the alchemical furnace.  §3Yes, you need an MV PLE, deal with it.
+  - [提交] Thaumcraft:blockCosmeticSolid:7 x12
+  > 奖励: enhancedlootbags:lootbag:9 | dreamcraft:CoinDarkWizard x25
+
+### [230] Your First Wand
+You're sure that this place will give you all the answers you're looking for! To continue, you need something to handle the magic energy called "vis". Guess it's time to craft your first wand.  If you haven't started on defeating the TF bosses yet, you'll need to do so to proceed. All wands require some kind of TF boss drop, with better wands needing later boss's drops. Once you've defeated them once, you can buy a spawn egg (only usable in the TF) or use the trophy+salis mundus to make more of the drop.  §3You should look for wand recipes in NEI. Not all of them are correct in the Thaumonomicon.
+  - [可选提交] Forestry:oakStick
+  - [可选提交] Thaumcraft:WandCap x2
+  - [可选提交] TwilightForest:item.nagaScale x2
+  - [可选提交] gregtech:gt.metaitem.01:27019 x4
+  - [提交] Thaumcraft:WandCasting
+  > 奖励: minecraft:spawn_egg:98 x2 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinDarkWizardI x5
+

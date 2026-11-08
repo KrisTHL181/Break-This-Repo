@@ -1,0 +1,12 @@
+CLASS net/minecraft/class_838 net/minecraft/client/render/block/entity/StructureBlockBlockEntityRenderer
+	METHOD method_3585 renderInvisibleBlocks (Lnet/minecraft/class_11955;Lnet/minecraft/class_2338;Lnet/minecraft/class_2382;)V
+		ARG 1 state
+		ARG 2 pos
+		ARG 3 size
+	METHOD method_61047 renderStructureVoids (Lnet/minecraft/class_11955;Lnet/minecraft/class_2338;Lnet/minecraft/class_2382;)V
+		ARG 1 state
+		ARG 2 pos
+		ARG 3 size
+	METHOD method_74357 updateStructureBoxRenderState (Lnet/minecraft/class_2586;Lnet/minecraft/class_11955;)V
+		ARG 0 blockEntity
+		ARG 1 state

@@ -1,0 +1,7 @@
+type: text
+
+---
+
+LibMultiPart is a library that adds support for multi-blocks or blocks with multiple parts such as pipes and wires
+
+https://github.com/AlexIIL/LibMultiPart

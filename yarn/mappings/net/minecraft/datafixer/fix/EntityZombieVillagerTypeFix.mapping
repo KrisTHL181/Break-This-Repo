@@ -1,0 +1,6 @@
+CLASS net/minecraft/class_1174 net/minecraft/datafixer/fix/EntityZombieVillagerTypeFix
+	FIELD field_29883 TYPE_COUNT I
+	METHOD method_4990 fixZombieType (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
+		ARG 1 zombieDynamic
+	METHOD method_4991 clampType (I)I
+		ARG 1 type

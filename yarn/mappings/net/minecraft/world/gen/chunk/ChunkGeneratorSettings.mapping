@@ -1,0 +1,52 @@
+CLASS net/minecraft/class_5284 net/minecraft/world/gen/chunk/ChunkGeneratorSettings
+	FIELD comp_474 generationShapeConfig Lnet/minecraft/class_5309;
+	FIELD comp_475 defaultBlock Lnet/minecraft/class_2680;
+	FIELD comp_476 defaultFluid Lnet/minecraft/class_2680;
+	FIELD comp_478 surfaceRule Lnet/minecraft/class_6686$class_6708;
+	FIELD comp_479 seaLevel I
+	FIELD comp_480 mobGenerationDisabled Z
+	FIELD comp_481 aquifers Z
+	FIELD comp_482 oreVeins Z
+	FIELD comp_483 usesLegacyRandom Z
+	FIELD field_24780 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_24781 REGISTRY_CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_26355 OVERWORLD Lnet/minecraft/class_5321;
+	FIELD field_26356 AMPLIFIED Lnet/minecraft/class_5321;
+	FIELD field_26357 NETHER Lnet/minecraft/class_5321;
+	FIELD field_26358 END Lnet/minecraft/class_5321;
+	FIELD field_26359 CAVES Lnet/minecraft/class_5321;
+	FIELD field_26360 FLOATING_ISLANDS Lnet/minecraft/class_5321;
+	FIELD field_35051 LARGE_BIOMES Lnet/minecraft/class_5321;
+	METHOD <init> (Lnet/minecraft/class_5309;Lnet/minecraft/class_2680;Lnet/minecraft/class_2680;Lnet/minecraft/class_6953;Lnet/minecraft/class_6686$class_6708;Ljava/util/List;IZZZZ)V
+		ARG 5 surfaceRule
+	METHOD comp_474 generationShapeConfig ()Lnet/minecraft/class_5309;
+	METHOD comp_475 defaultBlock ()Lnet/minecraft/class_2680;
+	METHOD comp_476 defaultFluid ()Lnet/minecraft/class_2680;
+	METHOD comp_478 surfaceRule ()Lnet/minecraft/class_6686$class_6708;
+	METHOD comp_479 seaLevel ()I
+	METHOD comp_480 mobGenerationDisabled ()Z
+		COMMENT Whether entities will be generated during chunk population.
+		COMMENT
+		COMMENT <p>It does not control whether spawns will occur during gameplay.
+	METHOD comp_481 aquifers ()Z
+	METHOD comp_482 oreVeins ()Z
+	METHOD comp_483 usesLegacyRandom ()Z
+	METHOD method_28558 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	METHOD method_30641 createNetherSettings (Lnet/minecraft/class_7891;)Lnet/minecraft/class_5284;
+		ARG 0 registerable
+	METHOD method_30642 createEndSettings (Lnet/minecraft/class_7891;)Lnet/minecraft/class_5284;
+		ARG 0 registerable
+	METHOD method_30643 createSurfaceSettings (Lnet/minecraft/class_7891;ZZ)Lnet/minecraft/class_5284;
+		ARG 0 registerable
+		ARG 1 amplified
+		ARG 2 largeBiomes
+	METHOD method_31111 bootstrap (Lnet/minecraft/class_7891;)V
+		ARG 0 chunkGenerationSettingsRegisterable
+	METHOD method_33757 hasAquifers ()Z
+	METHOD method_38999 getRandomProvider ()Lnet/minecraft/class_2919$class_6675;
+	METHOD method_39901 createCavesSettings (Lnet/minecraft/class_7891;)Lnet/minecraft/class_5284;
+		ARG 0 registerable
+	METHOD method_39902 createFloatingIslandsSettings (Lnet/minecraft/class_7891;)Lnet/minecraft/class_5284;
+		ARG 0 registerable
+	METHOD method_44323 createMissingSettings ()Lnet/minecraft/class_5284;

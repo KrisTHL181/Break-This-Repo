@@ -1,0 +1,129 @@
+# 任务线: Endgame Goals
+### [-4808900285548959726] §4§l§nA Minor Roadblock
+MAX circuits huh... Is it really almost over?
+  - [提交] gregtech:gt.metaitem.01:32047, gregtech:gt.blockmachines:269
+
+### [-8011652819512948101] §4§l§nAn Offering To The Gods
+Another Stargate recipe, another trophy. You know the drill by now: submit two legacy Stargates' worth of materials and receive one cute little trophy.   [note]Our journey reaches its latest stop, entering the era of refinement.  The year is 2025, and the game has become more refined than ever before. So refined, in fact, that we may have added a little too much quality of life and accidentally earned this Stargate the nickname "EZ Gate." Easy is relative, of course; it was still a Stargate, after all.  The Matter Manipulator has transformed base building and infrastructure expansion, allowing entire structures to be planned, copied, and moved, while NEI autocrafting has made early progression considerably faster. Et Futurum has brought Netherite and Prismarine to the pack alongside their new processing lines. At the end of progression, the T4 Nano Forge has provided a much needed alternative to endless T3 spam, while the EoH pity system has made its worst streaks of RNG more manageable.  Automation has continued to improve, and years of accumulated knowledge have transformed problems that once took entire teams months to solve into well-understood production challenges. Outside the pack, the community has created countless calculators, planners, visualizers, and specialized programs for automation, base design, optimization, or simply for fun.  The results have been difficult to ignore. More Stargates have been completed during this period than in any previous era, with the recorded gate count on Discord passing 1,000 before the release of 2.9.  A team composed of some of the pack's most talented and experienced players completed a full Stargate run in only 22 days, 16 hours, and 45 minutes on January 26, 2026, setting a new speedrun record. §aPxx500§r and §aAdam§r achieved the first documented Gatelympics (quintuple) gate during that very same speedrun.   On the solo end of things, the very first singleplayer GTNH: Gods (triple) gate was achieved by §aSintken§r on July 2, 2025 and the second was achieved shortly after by §aLordPeverell§r on July 24, 2025.  P.S.: Here's the list as usual: -Matter Manipulator -Spinmatron -Large Hadron Collider -LATEX -Nanochip Assembly Complex -Bose-Einstein Condensate Line -Exo-Foundry -Solar Factory -Nano Forge T4 -EoH pity system -Super Stock Replenisher[/note]  §2P.S. In case you were wondering, 2.7 was the last version where you needed to craft two Stargates in order to qualify for a completed run. This requirement was brought down to one Stargate in 2.8, but for purposes of this quest you will be making the equivalent of two since the recipe didn't change between versions.   Sorry Questmasters :P§r
+  - [提交] dreamcraft:HeavenlyGatePlate x676, dreamcraft:HeavenlyChevron x638, dreamcraft:HeavenlyFramePart x2652, SGCraft:sgCoreCrystal x2, SGCraft:sgControllerCrystal, gregtech:gt.metaitem.01:32023 x924, gregtech:gt.metaitem.01:32043 x248, gregtech:gt.metaitem.01:32039 x280, gregtech:gt.metaitem.01:32047 x1122, GoodGenerator:compactFusionCoil:3 x88, gregtech:gt.blockmetal9:10 x1482, GalacticraftAmunRa:tile.baseBlockRock:14 x890, gregtech:gt.metaitem.03:6143 x922, gregtech:gt.metaitem.03:6585 x1248, gregtech:gt.metaitem.03:4143 x56, gregtech:gt.blockmachines:15410 x8, gregtech:gt.blockmachines:14006 x4, appliedenergistics2:item.ItemExtremeStorageCell.Universe x2, ae2fc:fluid_storage.Universe x4, gtnhintergalactic:item.MiningDrone:12 x4, tectech:gt.godforgecasing:4 x32, tectech:gt.godforgecasing:7 x136, appliedenergistics2:tile.BlockSingularityCraftingStorage x8, gregtech:gt.blockmachines:15445 x8, tectech:item.tm.itemAstralArrayFabricator x12, gregtech:gt.metaitem.03:32758 x8, gregtech:gt.metaitem.01:32146 x90, EnderIO:blockCapBank x64, OpenComputers:keyboard x16, gregtech:gt.metaitem.01:32416 x8
+  > 奖励: minecraft:paper:4
+
+### [-5622946374684694237] §4§l§nAssembling on Space Steroids
+Has 64 parallels and consumes ~30b EU/t per module, expensive to run but absolutely worth it.
+  - [提交] gregtech:gt.blockmachines:14006
+
+### [-7609661066826096144] §c§l§n§4§l§nA Universe In Your Drives
+AE storage has finally caught up with the materials you are throwing at it. These cells are much more practical than their cheaper single item or single fluid counterparts, though they are also much more expensive.  [note]You will need them for upcoming crafts, too![/note]
+  - [提交] appliedenergistics2:item.ItemExtremeStorageCell.Universe, ae2fc:fluid_storage.Universe
+
+### [-4851697106472398149] §4§l§nFabricating Solar Systems... in Parallel
+As you've noticed, UXV components are extremely expensive compared to the amount of Universium you can currently produce.  The Astral Array Fabricator allows you to run EOH recipes in parallel. You can review the math in the second page of the tooltip.  For a direct answer, you can use this spreadsheet: [url]https://docs.google.com/spreadsheets/d/1FTFdfmY_UWbTbFOyNzARKeI90pbHvPBH6M3JHJmaC-E/edit?usp=sharing[/url]  [warn]Be aware that the EOH will use Raw Stellar Plasma instead of Hydrogen and Helium if you use Astral Arrays.[/warn]  [note]Make sure you are generating enough power.[/note]
+  - [提交] tectech:item.tm.itemAstralArrayFabricator
+
+### [-7324646234246780509] §4§l§nHumongous Hatch
+At last... salvation from the egregious EoH hatch input limitations!  This will reduce the waiting time between cycles to a fraction of what it was before. 
+  - [提交] gregtech:gt.blockmachines:12799
+
+### [-9109670310876526455] §4§l§nIt Gets to a Point
+You are not done with wafers. Ok well, now you are, kind of.  Infinite Wafers are the final tier of raw wafer, forged directly in the God Forge. Who knew silicon could hold up for this long?  Yocto Power ICs are used in Magmatter Nanites, MAX circuits, and UXV Energy Hatches.  [note]You'll need a UXV Laser Engraver to cut these.  Yocto Power ICs need to be coated in Quark Gluon Plasma in an Exo-Foundry, overclocked to reach the MAX voltage required. This step cannot be done in a Mass Solidifier.[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32276
+  - [可选提交] gregtech:gt.metaitem.03:32272
+  - [提交] gregtech:gt.metaitem.03:32273 x2
+
+### [-8388822354727836883] §4§l§nMAX Circuits
+Planck-Scale Circuits, the final circuits in the pack... for now. These MAX circuits are needed for high end UXV parts and the Stargate.  [note]You will need your Quantum NAC to get started  Did you know that Planck-Scale Manifolds, despite being classified as a circuit internally, do not contribute to the calibration of a Special NAC. Planck-Scale Circuits do, however.[/note]  [warn]Whoever told you these rumors is lying to you, these circuits will NEVER be removed... or will they?[/warn]
+  - [提交] dreamcraft:PlanckCircuit
+
+### [-8516845557300310927] §6§l§nMaybe Change Your Mind
+Has gem progression gone too far?
+  - [提交] gregtech:gt.metaitem.02:30192
+
+### [-5662664545508156018] §4§l§nRule of Threes
+The final external structural upgrade to the Forge requires the most advanced understanding of graviton shards and their applications in extreme environments. With this, the last 4 module slots of the Forge of the Gods are available to construct, ascending your operation to unseen heights of technological mastery.  [note]Adding a third and final ring to your Godforge allows for 4 additional modules, as well as allowing you to pick all three paths in the split paths part of the upgrade tree, allowing for a fully upgraded Godforge.[/note]  [note]Usage of a third ring requires the END upgrade.[/note]
+  - [提交] tectech:gt.godforgecasing:7 x397
+  - [可选提交] tectech:gt.godforgecasing:3 x3726, tectech:gt.godforgecasing x1736, tectech:gt.godforgecasing:1 x312, tectech:gt.godforgecasing:2 x14, tectech:tile.spatiallyTranscendentGravitationalLens x101
+
+### [-4884820751170895114] §6§l§nSee You Next Time!
+Still want more? Consider doing another run! Maybe even with some restrictions if you want to spice it up a bit. Check the first quest chapter for some recommendations!  There's also roles to be earned for completing the pack two or even three times if you want an extra incentive.  [note]This quest and “The Factory Must Grow!” are mutually exclusive; completing one will lock the other.  If you are going for 100% questbook completion, don't panic, finishing either quest still allows the tab to receive a green check (much like the previous XOR quests).[/note]
+  - [勾选确认]
+  > 奖励: gregtech:gt.metaitem.01:32416 x8192 | dreamcraft:Nothing
+
+### [-7454595483869697856] §4§l§nSimulating a Solar System
+Almost as expensive as the real one, right? Not to worry, this stargate and the current are only just the beginning.  [note]Our journey reaches the current end, entering the UXV, aka EOH era.  The year is 2023, and the game continues to be pushed further and further. The EOH exists now, along with machine parts up to UXV. Multiblocks have gained endless amounts of quality of life, including sub 1-tick OC, batch mode, void protection, and numerous AE2 additions like Crafting Input Buses, Stocking Hatches, Level Maintainers and more. Automation has never been easier, yet the goal has never been placed farther. Naquadah Fuel now has many tiers and can compete into the late-game, even competing with (now fixed) Dyson, but outclassed by the huge amount of power a maximized EOH can make (12.8 TEU/t!).  Initially the stargate recipe seemed impossible, requiring months of runtime on hundreds of maximized EOHs, requiring some adjustments to be more realistic to attain. After this was changed, the race began again, this time between §aJohny709§r and §aGDCloud§r. §aJohny§r burned out towards the end, and §aGDCloud§r was surpassed by a silent contender, §aStarStack§r, being the first to conquer this challenge on the §a26th of June, 2023§r.  Beyond just the first, this era marked the beginning of the Group Run Era, with large runs such as §aBallers Run§r (setting this era into motion), §aBee Run§r (affecting wide change on the NH project and its management as a whole), and §aCell Run 2§r (the fastest ever Stargate run at the time, only 73 days, popularizing many automation techniques like Level Maintained lines).  Additionally, this version saw the first player achieve GTNH Gods, reaching Stargate in a 3rd run, earned by §aGDCloud§r as a part of §aCell Run 2§r on the §a23rd of June, 2024§r. Later this Stargate would see three others reach this goal, §aRamspace§r on the §a29th of September, 2024§r, and §aStaffiX§r and §aserenibyss§r in a group run on the §a17th of November, 2024§r.  P.S.: Here's the list as usual: -Many new processing multiblocks like HILE, Fluid Shaper, Industrial Autoclave, etc. -Forge of the Gods, Black Hole Compressor, Antimatter power generation, Precise Assembler T4 -DTPF Convergence, Component Assembly Line tiered bonuses, Mega Vac Subspace Cooling, MK5 fusion skips for Metastable Oganesson -Wireless Data Hatches, Wireless Optical Hatches, Uncertainty Resolution -Artificial Universe Cells, smart blocking mode[/note]
+  - [提交] dreamcraft:HarmonicGatePlate x640, dreamcraft:HarmonicChevron x414, dreamcraft:HarmonicFramePart x1642, dreamcraft:StargateCrystalAncients x2, dreamcraft:QuantumCircuit x106, gregtech:gt.metaitem.01:32023 x540, gregtech:gt.metaitem.01:32043 x106, gregtech:gt.metaitem.01:32039 x24, gregtech:gt.metaitem.01:32047 x952, GoodGenerator:compactFusionCoil:3 x76, gregtech:gt.blockmetal9:7 x1196, gregtech:gt.blockmetal9:4 x456, bartworks:bw.werkstoffblocks.01:10112 x8, gregtech:gt.metaitem.01:22583 x4, gregtech:gt.metaitem.03:4586 x12, gregtech:gt.metaitem.03:4139 x8, gregtech:gt.blockmachines:15410 x12, tectech:gt.stabilisation_field_generator:8 x12, tectech:gt.spacetime_compression_field_generator:8 x16, gregtech:gt.metaitem.01:32594 x8, EnderIO:blockCapBank x32
+  > 奖励: minecraft:paper:4
+
+### [2574] §6§l§nStargate Base
+We need one of these to form the base of the stargate.
+  - [提交] SGCraft:stargateBase
+
+### [2576] §6§l§nStargate Chevron
+This is required in order to make the stargate work between dimensions, provided you get a second stargate to dial...
+  - [提交] dreamcraft:StargateChevron
+  - [提交] SGCraft:sgChevronUpgrade
+
+### [2575] §6§l§nStargate Chevron Block
+You'll need 7 of these to construct a full stargate.
+  - [提交] SGCraft:stargateRing:1 x7
+
+### [2597] §6§l§nStargate Command
+Okay so if you actually want to use the stargate you'll need these to power it and dial it up.
+  - [提交] SGCraft:rfPowerUnit, SGCraft:stargateController
+
+### [-6081001806696611432] §6§l§nStargate Frame Part
+The framework of the Stargate. You wouldn't want it held together with glue, would you?  Right, maybe you would...
+  - [提交] dreamcraft:StargateMaterialMesh
+  - [提交] dreamcraft:StargateFramePart
+
+### [2573] §6§l§nStargate Ring Block
+You'll need 8 of these to construct a full stargate.
+  - [提交] SGCraft:stargateRing x8
+
+### [-4771673826714237961] §4§l§nStrings Upon Strings Upon Strings Upon-
+Computation has gone too far! We've gone too small! Why does it look so cool! These Planck-Scale Manifolds are incomprehensible to the human mind! Good thing we have GREGOS to comprehend them for us!  [note]Planck-Scale Manifolds are manufactured in the NAC, and act as circuits.[/note]  [warn]Do not put these in your mouth.[/warn]
+  - [可选提交] gregtech:gt.metaitem.03:32278
+  - [勾选确认]
+  > 奖励: minecraft:string
+
+### [-5759848961423993121] §4§l§nT3 Exo-Foundry
+Now that you have your hands on Eternity you can upgrade your §nExo-Foundry§r to the final tier!  The §6§lCelestial Magnetic Chassis§r will allow your Foundry to have a maximum of four modules installed, unlocking the most powerful combinations.  [note]Checkout the Wiki if you need ideas on which modules to choose [url]https://wiki.gtnewhorizons.com/wiki/Exo-Foundry[/url][/note]
+  - [提交] gregtech:gt.foundrycasings:3 x260
+
+### [2572] §6§l§nThe Door to Heaven?
+You'll need a lot of these to make a full stargate...
+  - [提交] dreamcraft:StargateShieldingFoil
+
+### [-8971549008568708105] §6§l§nThe Factory Must Grow!
+A single stargate pair wasn't enough for you?  Well then, time to build a network.  Welcome to the post-stargate tier!   Now that you successfully managed to make a stargate, what about crafting them in industrial quantities? Try to craft 5 pairs of gates in the least amount of time, then come in #screenshot-brag and post your time to see where your infrastructure stands in the community!  [note]This quest and “See You Next Time!” are mutually exclusive; completing one will lock the other.  If you are going for 100% questbook completion, don't panic, finishing either quest still allows the tab to receive a green check (much like the previous XOR quests).[/note]  §dEnjoy your round of Minesweeper!
+  - [提交] SGCraft:stargateRing x80, SGCraft:stargateRing:1 x70, SGCraft:stargateBase x10, SGCraft:rfPowerUnit x10, SGCraft:sgIrisUpgrade x10, SGCraft:sgChevronUpgrade x10, SGCraft:stargateController x10
+  > 奖励: tectech:Eye of Harmony Renderer | lootgames:ms_activator
+
+### [-6509950608256890330] §4§l§nTier 13 (UXV)
+Welcome to the final tier of NH (for now).  We hope you enjoy your stay, though be prepared for a lot of waiting.  Now that you have a reliable way to make MHDCSM, it would be wise to upgrade your EOHs to T9 for the Universium boost.  Have fun crafting the Stargate!  [warn]This tier is far from complete. Expect changes.[/warn]
+  - [提交] gregtech:gt.blockmachines:11233
+
+### [-4955703947876357502] §6§l§nUNLIMITED COMPUTATION
+So many circuits. Maybe that Assembly Complex should have stayed in the drafts...
+  - [提交] eternalsingularity:combined_singularity:10
+
+### [-7040323210494210782] §4§l§nUXV Energy Hatch
+The final energy hatch. You should make these wireless as soon as possible.
+  - [提交] gregtech:gt.blockmachines:11303
+
+### [2598] §6§l§nWhat, How?
+Congratulations, with this final quest, you'll have beaten the hardest challenge in GregTech: New Horizons yet!   The whole GT:NH Team thanks you for your time spent on this modpack. You are now part of the top 0.5% of our community!  Now that you made one gate, take this second gate and link them together! (Unless you want to craft the second yourself of course).  Don't hesitate to share your base in #screenshot-brag channel of our Discord server, claim your stargate role, and if you have any feedback on the endgame progression, we will gladly appreciate it!  I guess now it's time for you to go outside, touch grass, or... continue onwards?
+  - [提交] SGCraft:stargateRing x8, SGCraft:stargateRing:1 x7, SGCraft:stargateBase, SGCraft:rfPowerUnit, SGCraft:stargateController, SGCraft:sgChevronUpgrade, SGCraft:sgIrisUpgrade
+  > 奖励: SGCraft:stargateRing x16 | SGCraft:stargateRing:1 x14 | SGCraft:stargateBase x2 | SGCraft:rfPowerUnit x2 | SGCraft:sgIrisUpgrade x2 | SGCraft:sgChevronUpgrade x2 | SGCraft:stargateController x2
+
+### [2594] §6§l§nYou'll Only Need a Few of These
+It may not actually store any energy, but you still need to make them, okay?
+  - [提交] SGCraft:ic2Capacitor
+
+### [3296] §4§l§nYou Made It!
+May Dreammaster have mercy on your soul. You have reached the highest craftable tier in the game!
+  - [提交] gregtech:gt.metaitem.01:32023, gregtech:gt.metaitem.01:32027, gregtech:gt.metaitem.01:32031, gregtech:gt.metaitem.01:32035, gregtech:gt.metaitem.01:32039, gregtech:gt.metaitem.01:32043
+
+### [-8646551172440344443] §4§l§nYour Lord and Saviour, UXV CoAL
+You want to rush this as soon as possible.  Every L of Universium matters.
+  - [提交] GoodGenerator:componentAssemblylineCasing:12 x43
+

@@ -1,0 +1,4 @@
+CLASS net/minecraft/class_2901 net/minecraft/network/packet/s2c/login/LoginSuccessS2CPacket
+	FIELD comp_2363 profile Lcom/mojang/authlib/GameProfile;
+	FIELD field_48233 CODEC Lnet/minecraft/class_9139;
+	METHOD comp_2363 profile ()Lcom/mojang/authlib/GameProfile;

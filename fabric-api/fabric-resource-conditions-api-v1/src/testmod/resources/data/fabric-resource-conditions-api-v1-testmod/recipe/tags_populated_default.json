@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:diamond"
+  ],
+  "result": {
+    "id": "minecraft:dirt"
+  },
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:tags_populated",
+      "values": [
+        "fabric-resource-conditions-api-v1-testmod:test_condition"
+      ]
+    }
+  ]
+}

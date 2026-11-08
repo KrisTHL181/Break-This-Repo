@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "café.txt"
+Combining acute accent (U+0301): looks similar, has different bytes.

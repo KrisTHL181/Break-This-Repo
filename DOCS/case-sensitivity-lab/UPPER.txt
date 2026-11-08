@@ -1,0 +1,4 @@
+This file uses an uppercase basename.
+
+On a case-sensitive filesystem it is a different path from `upper.txt` in the
+same directory. That distinction is the experiment.

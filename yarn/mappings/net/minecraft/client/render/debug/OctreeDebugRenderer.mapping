@@ -1,0 +1,9 @@
+CLASS net/minecraft/class_10161 net/minecraft/client/render/debug/OctreeDebugRenderer
+	FIELD field_53963 client Lnet/minecraft/class_310;
+	METHOD <init> (Lnet/minecraft/class_310;)V
+		ARG 1 client
+	METHOD method_62980 getColorComponent (JF)F
+		ARG 0 size
+		ARG 2 gradient
+	METHOD method_62983 renderNode (Lnet/minecraft/class_10143$class_10147;IZLorg/apache/commons/lang3/mutable/MutableInt;Z)V
+		ARG 1 node

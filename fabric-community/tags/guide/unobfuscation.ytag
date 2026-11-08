@@ -1,0 +1,13 @@
+type: embed
+
+colour: black
+embed:
+    title: Unobfuscation
+
+---
+
+Historically, Minecraft: Java Edition has made use of obfuscation, which led to the development of obfuscation maps that Fabric Loom uses for modding. There were two choices: either Fabric's own Yarn mappings, or the official Mojang mappings.
+
+Mojang have recently announced [they're removing code obfuscation from Minecraft: Java Edition](https://www.minecraft.net/en-us/article/removing-obfuscation-in-java-edition), and the Fabric Project followed up with [its plan for handling this change](https://fabricmc.net/2025/10/31/obfuscation.html). If you plan to update your mod to this version, you will need to move to Mojang's obfuscation mappings first before updating. All new mods now default to Mojang Mappings.
+
+All Fabric projects, including [Fabric API](https://github.com/FabricMC/fabric/pull/4960), [Fabric Loader](https://github.com/FabricMC/fabric-loader/pull/1095), [Fabric Loom](https://github.com/FabricMC/fabric-loom/issues/1422), and the [Fabric Docs](https://github.com/FabricMC/fabric-docs/pull/391) are currently being migrated from Yarn to Mojang Mappings and the new unobfuscated game. Please be patient during this transition period, and make use of tools like [mappings.dev](https://mappings.dev/), [Linkie](https://linkie.shedaniel.dev/mappings?namespace=yarn&translateMode=ns&translateAs=mojang_raw&search=), [Ravel](https://docs.fabricmc.net/develop/migrating-mappings/ravel), and [Loom's migrateMappings](https://docs.fabricmc.net/develop/migrating-mappings/loom) as we transition into this new era of modding.

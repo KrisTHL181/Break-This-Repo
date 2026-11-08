@@ -1,0 +1,52 @@
+CLASS net/minecraft/class_2991 net/minecraft/server/function/CommandFunctionManager
+	COMMENT The command function manager implements execution of functions, like that from
+	COMMENT the {@code function} command.
+	FIELD field_13412 LOAD_TAG_ID Lnet/minecraft/class_2960;
+	FIELD field_13417 TICK_TAG_ID Lnet/minecraft/class_2960;
+	FIELD field_13418 tickFunctions Ljava/util/List;
+		COMMENT A list of {@code minecraft:tick} tag functions to run on every tick. Set up on
+		COMMENT load, this is more efficient than polling the tag from the {@link #loader}
+		COMMENT every tick.
+	FIELD field_13419 server Lnet/minecraft/server/MinecraftServer;
+	FIELD field_13422 justLoaded Z
+		COMMENT Whether this command function manager has just {@linkplain #load(FunctionLoader)
+		COMMENT loaded} and should run all functions in the {@code minecraft:load} function tag.
+	FIELD field_25333 loader Lnet/minecraft/class_5349;
+		COMMENT The source of functions for this command function manager.
+	FIELD field_47181 LOGGER Lorg/slf4j/Logger;
+	METHOD <init> (Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/class_5349;)V
+		ARG 1 server
+		ARG 2 loader
+	METHOD method_12899 getScheduledCommandSource ()Lnet/minecraft/class_2168;
+		COMMENT {@return the command source to execute scheduled functions} Scheduled functions
+		COMMENT are those from the {@code /schedule} command and those from the {@code
+		COMMENT minecraft:tick} tag.
+		COMMENT
+		COMMENT <p>This command source {@linkplain ServerCommandSource#hasPermissionLevel(int)
+		COMMENT has permission level 2} and is {@linkplain ServerCommandSource#withSilent()
+		COMMENT silent} compared to the server's {@linkplain MinecraftServer#getCommandSource()
+		COMMENT command source}.
+	METHOD method_12900 getDispatcher ()Lcom/mojang/brigadier/CommandDispatcher;
+	METHOD method_12904 execute (Lnet/minecraft/class_2158;Lnet/minecraft/class_2168;)V
+		COMMENT Executes a function.
+		ARG 1 function
+			COMMENT the function
+		ARG 2 source
+	METHOD method_12905 getFunction (Lnet/minecraft/class_2960;)Ljava/util/Optional;
+		ARG 1 id
+	METHOD method_18699 tick ()V
+	METHOD method_29460 executeAll (Ljava/util/Collection;Lnet/minecraft/class_2960;)V
+		ARG 1 functions
+		ARG 2 label
+	METHOD method_29461 setFunctions (Lnet/minecraft/class_5349;)V
+		COMMENT Sets the functions that this command function manager will use in executions.
+		ARG 1 loader
+			COMMENT the new loader functions will be taken from
+	METHOD method_29462 getTag (Lnet/minecraft/class_2960;)Ljava/util/List;
+		ARG 1 id
+	METHOD method_29463 getAllFunctions ()Ljava/lang/Iterable;
+	METHOD method_29464 getFunctionTags ()Ljava/lang/Iterable;
+	METHOD method_29773 load (Lnet/minecraft/class_5349;)V
+		ARG 1 loader
+	METHOD method_54252 (Lnet/minecraft/class_8868;Lnet/minecraft/class_2168;Lnet/minecraft/class_8854;)V
+		ARG 2 context

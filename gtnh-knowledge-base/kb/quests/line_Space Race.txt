@@ -1,0 +1,813 @@
+# 任务线: Space Race
+### [856] §9§l1,1-Dimethylhydrazine
+Use your Formaldehyde to make 1,1-Dimethylhydrazine. You need to combine it with some Hydrazine and Hydrogen along with a Formaldehyde Catalyst in a Chemical Plant.
+  - [可选提交] miscutils:Hydrazine x2, miscutils:Formaldehyde x2, gregtech:gt.metaitem.01:30001 x4, miscutils:item.BasicGenericChemItem:13
+  - [提交] gregtech:gt.metaitem.01:30654 x2
+  > 奖励: miscutils:Hydrazine x16 | enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [2690] §9§l2-Ethylanthrahydroquinone
+To make this complicated sounding chemical, combine the similarly named 2-Ethylanthraquinone and Hydrogen along with an Orange Catalyst in the Chemical Plant.  [note]You need Palladium to make the Catalyst, so keep that in mind.[/note]
+  - [可选提交] miscutils:2Ethylanthraquinone x5, gregtech:gt.metaitem.01:30001 x10, miscutils:item.BasicGenericChemItem:3
+  - [提交] miscutils:2Ethylanthrahydroquinone x5
+  > 奖励: gregtech:gt.metaitem.01:2052 x2 | dreamcraft:CoinTechnicianII
+
+### [2691] §9§l2-Ethylanthraquinone
+Does anyone else wonder why these chemicals have numbers in the name? No? Just me? Moving on, to make it, combine Phthalic Anhydride and Ethylbenzene in the Chemical Plant to make 2-Ethylanthraquinone.  BTW the other recipe that makes this is used later in the processing chain. You can loop the 2-Ethylanthraquinone so you don't have to make more if you don't want to scale up.  [note]You need Palladium for the next quest.[/note]
+  - [可选提交] miscutils:itemDustPhthalicAnhydride x75 (ore:dustPhthalicAnhydride), miscutils:Ethylbenzene x5
+  - [提交] miscutils:2Ethylanthraquinone x5
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [-6913291740074859566] §9§lA Better Rocket Fuel
+If you want to go further than Mars you need a better rocket fuel. From here on out, there is only one choice: the ExxonMobil Chemical Plant. If you don't have one yet, you should have a look at it. It has 4 separate tiering systems and might be a bit overwhelming at first.   [note]Check out the quest for the Chemical Plant in the [quest]Multiblock Goals[/quest] quest tab for more information.[/note]  §6If you already automated one of the upcoming rocket fuels, simply hold 64 cells of it to skip all quests leading up to it!
+  - [勾选确认]
+
+### [-8825008741784511339] A Better Way To Generate Oxygen
+This is an all-in-one solution to generate oxygen. Just provide power (continuous) and Seeds (once).
+  - [提交] GalacticraftAmunRa:tile.machines4:1
+  > 奖励: enhancedlootbags:lootbag:23 | dreamcraft:CoinTechnicianII x2
+
+### [831] Advanced Wafers
+The advanced wafer is used for more advanced machines such as the advanced solar panel or the Avaritia dire crafting table. It is also used in the creation of a space station.
+  - [可选提交] gregtech:gt.metaitem.03:32034 x8, dreamcraft:ReinforcedGlassLense
+  - [提交] GalacticraftCore:item.basicItem:14 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1465] Airlocks
+An airlock is an airtight door used to provide a passage between enclosed rooms and between an enclosed room and outer space. It is made from Air Lock Frames and one Air Lock Controller.  The airlock will keep air inside the room while it is closed. But when the airlock is open, the room is no longer sealed and oxygen gear must be worn until the airlock is closed. In environments with extreme temperatures, Thermal Padding must also be worn.
+  - [提交] GalacticraftCore:tile.airLockFrame:1 x2, GalacticraftCore:tile.airLockFrame x10
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [214] A Reward
+You have really come a long way to get here! However, getting to the moon is just the start of your journey, as you'll have access to even more powerful and awesome stuff. You have proven yourself worthy, and mastered the challenges to get here.   §lCongratulations!§r  Pick one of the reward choices below.
+  - [提交] GalacticraftCore:tile.moonBlock:14
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureII x5 | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinTechnicianII
+
+### [1068] Are You Prepared?
+Are you prepared for the Moon?  If you die on the moon you will be returned to earth without your stuff. A Soulbind enchantment will keep an item with you when you die.
+  - [可选提交] EnderIO:blockEnchanter, EnderIO:itemMaterial:8, minecraft:writable_book
+  - [提交] minecraft:enchanted_book
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII | dreamcraft:CoinTechnicianII
+
+### [1450] Astro Miner
+The Astro Miner is an automatic mining vehicle which moves around, makes tunnels, mines up everything it finds, and brings it all back to a base station where it docks. It is not player-rideable, so don't try and climb inside it!  It's not very fast or efficient, and it seems to discard half or more of the ore it attempts to collect. Only consider using it if you want the huge amount of planet blocks it picks up.[/note]
+  - [可选提交] GalaxySpace:item.RocketControlComputer:102, GalacticraftCore:item.heavyPlating x3, GalacticraftMars:item.null:3, GalacticraftMars:item.itemBasicAsteroids x3, GalacticraftMars:item.orionDrive x4, GalacticraftCore:item.basicItem:14 x2, gregtech:gt.metaitem.01:32603 x2, IronChest:BlockIronChest:1 x2, GalacticraftMars:tile.beamReceiver, GalacticraftMars:item.itemBasicAsteroids:8, GalacticraftCore:item.steelPole x2
+  - [提交] GalacticraftMars:item.itemAstroMiner
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1451] Astro Miner Base
+To construct the dock, place 8 Astro Miner Base blocks in a cube, 2 blocks high, 2 blocks wide and 2 blocks deep. When the last of the base blocks is placed, it should automatically convert into an Astro Miner Base.
+  - [可选提交] gregtech:gt.blockframes:81 x2, GalacticraftMars:item.itemBasicAsteroids:6 x4, GalacticraftMars:item.null:5 x4, GalacticraftMars:item.itemBasicAsteroids:8 x4, IronChest:BlockIronChest:4 x2, GalacticraftCore:tile.machineTiered x2
+  - [提交] GalacticraftMars:tile.minerBase x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1447] Astro Miner Schematic
+The astro miner needs a schematic.
+  - [提交] GalacticraftMars:item.schematic:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-7352238207613032698] A T0 Rocket? What?
+You can't use this rocket to go to any planet or moon §oand§r it's the most expensive one - a bad deal? Not quite! The Shuttle Rocket is used to create and access a §1§lMothership§r.  The Shuttle Rocket needs the same fuel as the T8 Rocket.
+  - [提交] GalacticraftAmunRa:item.itemShuttle:32767
+  > 奖励: dreamcraft:CoinSpaceIV x3 | dreamcraft:CoinTechnicianIV x3 | gregtech:gt.metaitem.03:32095 x16
+
+### [1469] Bacterial Sludge
+Bacterial Sludge is a fluid block that generates naturally on Mars.  It generates in the giant underground caves in Mars in small amounts.  Collect it to produce mutagen for bees mutation in gendustry.
+  - [提交] gregtech:gt.metaitem.98:1 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1437] Bigger Oxygen Tanks
+The Medium oxygen tank is an oxygen storage tank that can hold up to 2000 units of air.
+  - [可选提交] GalacticraftCore:tile.oxygenPipe x2, GalacticraftCore:item.meteoricIronIngot:1 x14, gregtech:gt.metaitem.01:32405 x2
+  - [提交] GalacticraftCore:item.oxygenTankMedFull:2000 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1431] Booster
+The distance between Mars and Earth is much larger than to the Moon, so the rocket needs boosters to reach it.
+  - [可选提交] GalacticraftCore:item.meteoricIronIngot:1 x6, GalacticraftCore:item.heavyPlating x8, GalacticraftCore:item.airVent x2, GalacticraftCore:item.fuelCanisterPartial:1 x2
+  - [提交] GalacticraftCore:item.engine:1 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1731] Booster Tier 2
+The distance between Planets and Moons is much larger now so the rocket needs bigger boosters to reach it.
+  - [可选提交] dreamcraft:LedoxCompressedPlate x12, GalacticraftCore:item.engine:1 x4, GalacticraftMars:item.itemBasicAsteroids x16, GalaxySpace:item.CompressedSDHD120 x4
+  - [提交] dreamcraft:Tier2Booster x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x2
+
+### [2704] Booster Tier 3
+The distance you need to travel is much larger now, so the rocket needs bigger boosters to reach it.
+  - [可选提交] dreamcraft:MytrylCompressedPlate x24, dreamcraft:Tier2Booster x8, dreamcraft:HeavyDutyPlateTier5 x32, GalaxySpace:item.CompressedSDHD120 x8
+  - [提交] dreamcraft:Tier3Booster x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV
+
+### [2709] Booster Tier 4
+The distance to other solar systems is quite literally Astronomical, so you'll need even bigger boosters to reach them.
+  - [可选提交] dreamcraft:BlackPlutoniumCompressedPlate x30, dreamcraft:Tier3Booster x10, dreamcraft:HeavyDutyPlateTier7 x40, GalaxySpace:item.CompressedSDHD120 x10
+  - [提交] dreamcraft:Tier4Booster x10
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV x2
+
+### [817] Buggy Seat
+The buggy seat is part of the Moon lander.
+  - [提交] GalacticraftCore:item.buggymat:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-4765124701548164912] Can I Build A Mothership For My Father?
+The §1§lMothership§r is a Space Station which you can move to a different celestial body (even stars!). It is the only way to get to the outermost system, the Amun-Ra system. That system has six planets and moons you can access. The most important one is Seth, where you can find §aRaw Tengam Ore§r.
+  - [可选提交] GalacticraftAmunRa:tile.machines1:2, gregtech:gt.blockcasings8:5 x256, gtnhintergalactic:item.DysonSwarmParts:3 x64, gregtech:gt.metaitem.01:32678 x8, dreamcraft:CircuitUHV x32 (ore:circuitInfinite)
+  - [勾选确认]
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIV x5 | dreamcraft:CoinTechnicianIV x5
+
+### [205] Cargo Rocket: For the Fun
+No need to fly to distant planets on your own, just to grab ores.  [note]Usefulness level: Doubtful.[/note]
+  - [可选提交] GalaxySpace:item.RocketControlComputer:101, GalacticraftCore:item.noseCone, GalacticraftCore:item.basicItem:14, GalacticraftMars:item.null:3 x8, GalacticraftCore:item.rocketFins x2, GalaxySpace:item.ModuleSmallFuelCanister x3, IronChest:BlockIronChest:3, GalacticraftCore:item.engine
+  - [提交] GalacticraftMars:item.spaceshipTier2:11
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1449] Cargo Rocket Schematic
+The Cargo Rocket has the capability to transport solid items between dimensions, and is a perfect way to transport items between dimensions without relying on ender chests.  This rocket can be loaded with 2000L of Rocket Fuel. The safe fuel level is 80 percent.  You can fill up the right slots with chests to increase the storage space to 36 and 54 slots.
+  - [提交] GalacticraftMars:item.schematic:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1470] Cavernous Vine
+Cavernous Vine is a poisonous plant that grows naturally in the Mars underground. It grows from the ceiling down to the floor in the huge caves flooded with Bacterial Sludge, emits light and can trap mobs in it.  Any mob that touches this plant will be poisoned, dragged up and lose health down to 1 health point (half a heart) while trapped in this plant. Mobs that are immune to poison, like Zombies and Skeletons, will not lose health.  They grow from the bottom face of a solid block down to 1 block away from the floor.  Cavernous vines can be broken by hand without taking damage or being poisoned but they will drop nothing. They can be obtained as an item using shears. Even picks with Silk Touch enchant will not obtain anything.  Once obtained, they can be replanted elsewhere and regrow, like cactus.  [note]That said, they're still useless.[/note]
+  - [勾选确认]
+
+### [1530] Ceres Dungeon
+Go get the schematics for tier 4 rockets.  This will open the Planets Venus and Mercury and the Jupiter Moon Io.
+  - [提交] GalaxySpace:ceresblocks:2 x16
+  - [提交] GalaxySpace:item.Tier4Key
+  - [提交] GalaxySpace:item.SchematicTier4
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureIII | dreamcraft:CoinTechnicianIII
+
+### [-8306054735867726258] §9§lCetane Boosted Diesel
+The other option is Cetane-Boosted Diesel.   You will need to mix either Diesel or Bio Diesel with Tetranitromethane. Check out the related quests in [quest]Tier 3 - HV[/quest] or [quest]Working with Oil[/quest] tabs for more information.
+  - [提交] gregtech:gt.metaitem.01:30709 x24
+  > 奖励: gregtech:gt.metaitem.01:30639 | dreamcraft:CoinTechnicianII
+
+### [2688] §5§lCN3H7O3 (Purple) Rocket Fuel
+Combine Monomethylhydrazine and Nitric Acid in a Chemical Plant. Make sure to upgrade your casings to Tungstensteel.
+  - [可选提交] miscutils:Monomethylhydrazine x2, gregtech:gt.metaitem.01:30653
+  - [提交] miscutils:RocketFuelMixC x2
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistIII
+
+### [2685] §9§lCoal Tar Distilling
+The next tier of rocket fuel is Dense Hydrazine. To start, let's make Phthalic Acid.  There are two ways to make Phthalic Acid. One is explored here, the other in the IV quest tab. However, we don't just need the Coal Tar for that, we also need it for Anthracene!  In order to distill Coal Tar, you need to get some first. To do so, run Charcoal, Lignite, Coal, or Coal Coke though either the Industrial Coke Oven or the Pyrolyse Oven.  Since you need multiple products, use a Distillery Tower to get them all. Everything other than Naphtha is used to make Rocket Fuels.
+  - [可选提交] miscutils:CoalTar x24
+  - [提交] miscutils:CoalTarOil x10, miscutils:Ethylbenzene x3, miscutils:Anthracene, miscutils:Kerosene x8
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [2686] §4§lDense Hydrazine
+Mix Hydrazine and Methanol in a Titanium Chemical Plant to make Dense Hydrazine for your Tier 3 and 4 Rockets.
+  - [可选提交] miscutils:Hydrazine x4, gregtech:gt.metaitem.01:30673 x6
+  - [提交] miscutils:RocketFuelMixD x10
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistIII
+
+### [809] Dire Crafting Table
+The Avaritia 9x9 dire crafting table...is no longer used to make rockets :(. But you can still make it, if you want solars, kinetics, or whatnot. First of all you need 81 crafting tables to make a double compressed crafting table, a few HV components, wafers and a crystal matrix. And yes, you do need that many nether stars.
+  - [可选提交] minecraft:crafting_table x81
+  - [可选提交] Avaritia:Triple_Craft
+  - [可选提交] gregtech:gt.metaitem.01:17500 x144, dreamcraft:StainlessSteelBars x36
+  - [可选提交] minecraft:nether_star x18, Avaritia:Resource x36
+  - [可选提交] Avaritia:Resource:1 x9
+  - [可选提交] Avaritia:Crystal_Matrix
+  - [可选提交] GalacticraftCore:item.basicItem:14 x2, gregtech:gt.metaitem.01:32642 x2, gregtech:gt.metaitem.01:32652 x2, gregtech:gt.metaitem.01:32705 (ore:circuitElite)
+  - [提交] Avaritia:Dire_Crafting
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-6419188510011851715] Does It Contain A Black Hole?
+The Artificial Gravity Generator allows you to change the gravity around it to your liking. The Artificial Gravity Disruptor disables that behavior for whoever has it equipped and enabled.  [note]Surely this can't be used with malicious intent...[/note]
+  - [提交] GalacticraftAmunRa:tile.machines3:1, GalacticraftAmunRa:item.baseItem:30
+
+### [-5127090567145017193] Don't Tell Me I Need To Read A Paper Map!
+The Mothership Navigation Console is used to select the Mothership's destination.
+  - [提交] GalacticraftAmunRa:tile.machines1:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV x3
+
+### [2752] Enceladus Dungeon
+Go get the schematic for tier 6 rockets.  This will open the Moons from Neptune.
+  - [提交] GalaxySpace:enceladusblocks:2 x16
+  - [提交] GalaxySpace:item.Tier6Key
+  - [提交] GalaxySpace:item.SchematicTier6
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureIII x5 | dreamcraft:CoinTechnicianIII x5
+
+### [1732] EVA Equipment
+Who wants to trudge around on the surface when you can fly? Upgrade your chestplate with a jetpack and fly around Venus.
+  - [可选提交] GalaxySpace:item.spacesuit_plate, IC2:itemArmorJetpackElectric:1
+  - [提交] GalaxySpace:item.spacesuit_jetplate:100
+  > 奖励: GalacticraftMars:item.itemBasicAsteroids | dreamcraft:CoinAdventureIII | enhancedlootbags:lootbag:8
+
+### [2703] Extra Large Fuel Canisters
+Every rocket needs fuel storage canisters. For the tier 7 rocket you need to craft two large and two extra large canisters.
+  - [可选提交] dreamcraft:LargeFuelCanister x4, dreamcraft:MytrylDualCompressedPlates x2, dreamcraft:MysteriousCrystalDualCompressedPlates x2, gregtech:gt.metaitem.01:27084 x8
+  - [提交] dreamcraft:ExtraLargeFuelCanister x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV
+
+### [-8282566777789973916] Fancy Stripes!
+An engine is required to accelerate your Mothership. There are two different tiers of engines and bases, and you can attach between 1-10 engine bases to a single engine in a §nhorizontal line§r. Each additional base additively increases thrust. You may use multiple engines if desired, but their bases must be separate, and all engines should face the same direction for maximum efficiency. The engine and its bases will combine into a single clickable entity that can be filled with fuel.  The Mothership determines its fuel consumption and total travel time based on the available thrust and the distance being traveled. However, the Mothership will not allow departure if the travel time exceeds one in-game day, meaning you must have sufficient thrust to reach your destination.  The minimum configurations required to reach the Ra system using each engine tier are listed below:  A §5Rocket Engine Jet§r (T1) will produce §22MN§r of thrust per §5Rocket Engine Base§r and require §32L/t§r of §6Naquadah Based Fuel MK-II§r during travel. At minimum, to make it to the Ra system you will need §n9§r Rocket Engine Bases and 92,440L of fuel.  An §5Ion Thruster Jet§r (T2) will produce §225MN§r of thrust per §5Ion Thruster Base§r and require both §31L/t§r of §6Xenon§r and §c10EU/t§r of power during travel. At minimum, to make it to the Ra system you will need §n7§r Ion Thruster Bases, 20,970L of Xenon, and 31,970EU.  Note that for both configurations, when starting from the Overworld, you must first stop at Proxima Centauri to refuel before continuing on to the Ra system.  [note]It's highly recommended to go with the T1 route since the required materials are much cheaper![/note]
+  - [提交] GalacticraftAmunRa:tile.machines2, GalacticraftAmunRa:tile.msBoosters1 x9
+  - [提交] GalacticraftAmunRa:tile.machines2:1, GalacticraftAmunRa:tile.msBoosters1:1 x7
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIV x2 | dreamcraft:CoinTechnicianIV x2
+
+### [1426] Find Some Meteoric Iron
+To reach tier two planets like Mars or its moons, Phobos and Deimos you need a better rocket. Your next goal is Tier two rocket plates which need Meteoric Iron.  You will find small meteoric iron ore under the surface. Use an HV miner or multiblock miner to get extra fortune on small ores. Small meteoric iron is only from Y 50-70, so try to find tall hills.  You can also just mine the fallen meteors on the surface. Use your ears to listen to their impacts.
+  - [提交] gregtech:gt.metaitem.01:5340 x32, gregtech:gt.metaitem.01:3340 x32, gregtech:gt.metaitem.03:5340 x16, gregtech:gt.metaitem.01:2340 x16
+  > 奖励: enhancedlootbags:lootbag:6 | GalacticraftCore:item.oxygenTankLightFull | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinAdventureII x2
+
+### [857] §9§lFormaldehyde
+Combining Oxygen and Methanol along with a Formaldehyde Catalyst in a Chemical Plant produces some Formaldehyde.
+  - [可选提交] miscutils:item.BasicGenericChemItem:13, gregtech:gt.metaitem.01:30013 x32, gregtech:gt.metaitem.01:30673 x32
+  - [提交] miscutils:Formaldehyde x32
+  > 奖励: gregtech:gt.metaitem.01:30673 x32 | enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [2395] §9§lFormaldehyde Catalyst
+Time for the last tier of Rocket Fuel. First, make some Formaldehyde. It will require a catalyst. You can make it by mixing Iron and Vanadium, and placing the mix into a carrier.
+  - [可选提交] gregtech:gt.metaitem.01:2032 x16 (ore:dustIron), gregtech:gt.metaitem.01:2029 (ore:dustVanadium)
+  - [可选提交] miscutils:itemDustFormaldehydeCatalyst x4
+  - [提交] miscutils:item.BasicGenericChemItem:13
+  > 奖励: miscutils:itemDustFormaldehydeCatalyst x32 | enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [818] Frequency Module
+The frequency Module will help you hear sounds properly while in space (it's also used with the telemetry unit so that your buddies can keep track of you from your base, if you are playing with friends). You need it in your inventory and in the Moon lander.
+  - [提交] GalacticraftCore:item.basicItem:19 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1436] Fueling Your Buggy
+The moon buggy needs fuel to work. Build a 3x3 fueling pad, connect it with a fuel loader, and place the buggy on top.
+  - [可选提交] GalacticraftCore:item.basicItem:9 x9, IC2:itemPartAlloy x9, Railcraft:cube:2 x9
+  - [提交] GalacticraftCore:tile.landingPad:1 x9
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [821] Gas 'Er Up
+To pump fuel into your rocket you need a fuel loader. Place it next to any side of the launch pad. The green side is for energy, while the yellow is for fuel. Pipe it in if you don't want to lose your cells.  You can also power it with batteries, if you're worried about it draining your power, or don't want to set up the infrastructure.  [note]Rockets keep their fuel in them on landing now, so you don't need to take this with you anymore unless you want to go to multiple places in one trip. Or you didn't fill it all the way or something.[/note]
+  - [可选提交] GalacticraftCore:item.basicItem:9 x2, GalacticraftCore:item.basicItem:8 x2, gregtech:gt.metaitem.01:32602, gregtech:gt.metaitem.01:32612, gregtech:gt.blockmachines:5132, GalacticraftCore:item.basicItem:13, gregtech:gt.metaitem.01:32405
+  - [提交] GalacticraftCore:tile.fuelLoader
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1472] Grapple
+The Grapple is a grappling hook and rope which can be thrown by a player, and then used to swing the player in the direction it was thrown. Useful for reaching places that are otherwise too high to jump to, or traveling around the Asteroids. [note](Or just, you know, fly.)[/note]  Right-click to aim the Grapple at a block you want to reach, similar to aiming a Bow. Release the right-click - similar to firing an arrow from a bow - to grapple yourself in that direction.  For best results, aim the Grapple at a point 1 or 2 blocks higher than the point you want to reach.  If there is no safe platform to land at that point, you can fall back down and you will take fall damage, so it takes some skill to use the Grapple safely.  Take care using the Grapple near a Nether Portal, End Portal or at a low height (less than Y30) on a Space Station. There can be strange consequences if it crosses into another dimension.
+  - [可选提交] TGregworks:tGregToolPartArrowHead:1573, dreamcraft:MeteoricIronString x3, gregtech:gt.metaitem.02:24341
+  - [提交] GalacticraftMars:item.grapple
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1734] Gravity Boots
+These boots will help you fall faster in low gravity environments. Or not. Maybe. Give them a try.
+  - [提交] GalaxySpace:item.spacesuit_gravityboots
+  > 奖励: dreamcraft:CoinAdventureIII | dreamcraft:CoinSpaceIII | enhancedlootbags:lootbag:8 x2
+
+### [147] §2§lH8N4C2O4 (Green) Rocket Fuel
+Combine your Nitrogen Tetroxide and 1,1-Dimethylhydrazine in a Laurenium (Tier 7) Chemical Plant to make the green rocket fuel.  This is the final Rocket Fuel. With this, you can go anywhere. If you have the right rocket, of course.
+  - [可选提交] gregtech:gt.metaitem.01:30654 x2, miscutils:NitrogenTetroxide x2
+  - [提交] miscutils:RocketFuelMixA x5
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinChemistIV
+
+### [1727] Heavy Duty Nose Cone Tier 3
+Every rocket needs a nose cone. Tier 5 rocket needs a heavy nose cone tier 3.
+  - [可选提交] GalacticraftMars:item.heavyNoseCone, dreamcraft:HeavyDutyPlateTier5 x4, gregtech:gt.metaitem.01:27316 x2
+  - [提交] dreamcraft:HeavyDutyNoseConeTier3
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x2
+
+### [2707] Heavy Duty Nose Cone Tier 4
+Every rocket needs a nose cone. Tier 7 rocket needs a heavy nose cone tier 4.
+  - [可选提交] dreamcraft:HeavyDutyNoseConeTier3, dreamcraft:HeavyDutyPlateTier7 x4, gregtech:gt.metaitem.01:27325 x2
+  - [提交] dreamcraft:HeavyDutyNoseConeTier4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV
+
+### [1728] Heavy Duty Rocket Engine Tier 3
+Every rocket needs a rocket engine. A heavy one tier 3 is needed in the tier 5 and 6 rockets.
+  - [可选提交] dreamcraft:HeavyDutyPlateTier5 x20, dreamcraft:Tier2Booster x8, GalacticraftMars:item.itemBasicAsteroids:1 x8
+  - [提交] dreamcraft:HeavyDutyRocketEngineTier3 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x2
+
+### [2705] Heavy Duty Rocket Engine Tier 4
+Every rocket needs a rocket engine. A heavy one tier 3 is needed in the tier 7 and 8 rockets.
+  - [可选提交] dreamcraft:HeavyDutyPlateTier7 x30, dreamcraft:Tier3Booster x12, dreamcraft:HeavyDutyRocketEngineTier3 x12
+  - [提交] dreamcraft:HeavyDutyRocketEngineTier4 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV
+
+### [1729] Heavy Duty Rocket Fins Tier 3
+Every rocket needs a few rocket fins. Tier 5 rockets need heavy ones Tier 3.
+  - [可选提交] GalaxySpace:item.CompressedSDHD120 x6, dreamcraft:HeavyDutyPlateTier5 x24, dreamcraft:HeavyDutyPlateTier4 x12
+  - [提交] dreamcraft:HeavyDutyRocketFinsTier3 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x2
+
+### [2706] Heavy Duty Rocket Fins Tier 4
+Every rocket needs a few rocket fins. Tier 7 rockets need heavy ones Tier 4.
+  - [可选提交] GalaxySpace:item.CompressedSDHD120 x8, dreamcraft:HeavyDutyPlateTier7 x32, dreamcraft:HeavyDutyPlateTier6 x16
+  - [提交] dreamcraft:HeavyDutyRocketFinsTier4 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV
+
+### [1458] Heavy Rocket Engine
+Every rocket needs a rocket engine. A heavy one is needed in the tier 3 and 4 rockets.
+  - [可选提交] GalacticraftMars:item.itemBasicAsteroids x5, GalacticraftCore:item.engine:1 x2, GalacticraftCore:item.engine x2
+  - [提交] GalacticraftMars:item.itemBasicAsteroids:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1459] Heavy Rocket Fins
+Every rocket needs a few rocket fins. Tier 3 rockets need heavy ones.
+  - [可选提交] GalacticraftMars:item.null:3 x8, GalacticraftMars:item.itemBasicAsteroids x16
+  - [提交] GalacticraftMars:item.itemBasicAsteroids:2 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1457] Heavy Rocket Nose Cone
+Every rocket needs a nose cone. Tier 3 rocket needs a heavy nose cone.
+  - [可选提交] GalacticraftCore:item.noseCone, GalacticraftMars:item.itemBasicAsteroids x4, gregtech:gt.metaitem.01:27028 x2
+  - [提交] GalacticraftMars:item.heavyNoseCone
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1742] §6§lHelium 3 and Saltwater on Moon
+The Moon is rich in Helium 3 because the Sun has been embedding it in the upper layer of moon by the solar wind over billions of years.  Salt water is also available in smaller quantities. You can get chlorine out of it. You will want plenty of chlorine for processing Rutile to get Titanium.  There are more planets and moons with gas and fluids underneath the surface. Bring along a multiblock fluid drill to recover these fluids.
+  - [提交] gregtech:gt.metaitem.01:30005 x64, gregtech:gt.metaitem.01:30692 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2848] How Do I Charge This Stuff?
+Given the number of people asking about this and the incompatibility it has with §oso§r many methods, here's a quest to tell you what §owill§r work.  [note]You only need to make one.[/note]  Also keep in mind that the energy storage ones can have EU put in, if you just wanna charge, unlike the solars (also the solar wind ones don't work for some reason). The higher tier ones charge faster (advanced solars just point at the sun to get 100% power during daylight instead of only at noonish, but hybrids are indeed faster. Also hybrids don't crash the game just by placing them anymore!)
+  - [提交] GalacticraftCore:tile.machineTiered, GalacticraftCore:tile.machineTiered:8, GalaxySpace:storagemoduleT3, GalacticraftCore:tile.solar, GalacticraftCore:tile.solar:4, GalaxySpace:solarPanel
+  > 奖励: bq_standard:choice | enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianIII | dreamcraft:CoinSpaceIII
+
+### [2692] §9§lHow Do You Even Pronounce This?
+To make Phthalic Anhydride, use a dehydrator.
+  - [可选提交] gregtech:gt.metaitem.01:30595 x5
+  - [提交] miscutils:itemDustPhthalicAnhydride x75 (ore:dustPhthalicAnhydride)
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [2394] §9§lHydrazine
+Hydrazine is made from Ammonia and Hydrogen Peroxide.
+  - [可选提交] gregtech:gt.metaitem.01:30659 x2, miscutils:HydrogenPeroxide:32767
+  - [提交] miscutils:Hydrazine
+  > 奖励: gregtech:gt.metaitem.01:30659 x16 | dreamcraft:CoinTechnicianII
+
+### [2396] §9§lHydrogen Peroxide
+To make Hydrogen Peroxide you combine Oxygen (or Air), 2-Ethylanthrahydroquinone, and Anthracene in a Chemical Plant.  [note]You can fully recycle the 2-Ethylanthraquinone, so don't make a bunch of it.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:30013 x10, miscutils:2Ethylanthrahydroquinone x5, gregtech:gt.Volumetric_Flask
+  - [提交] miscutils:HydrogenPeroxide x5
+  > 奖励: gregtech:gt.metaitem.01:2836 x64 | dreamcraft:CoinTechnicianII
+
+### [1723] Io Dungeon
+Go get the schematics for tier 5 rockets. Watch out for lava!  This will open the Moons from Saturn and Uranus.
+  - [提交] GalaxySpace:ioblocks:3 x16
+  - [提交] GalaxySpace:item.Tier5Key
+  - [提交] GalaxySpace:item.SchematicTier5
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureIII | dreamcraft:CoinTechnicianIII
+
+### [1733] Journey to the Bottom of a Molten Ocean
+Venus is hot, so hot it can melt lead. On top of that the atmosphere is so thick, 90x the Overworld, that it will crush you. Not to mention the Sulfuric Acid! You will need to construct a special suit to survive on Venus without dying instantly.  [note]Some armors can now also survive this atmosphere. It will say so in their tooltip.[/note]
+  - [提交] GalaxySpace:item.spacesuit_helmet, GalaxySpace:item.spacesuit_plate, GalaxySpace:item.spacesuit_leg, GalaxySpace:item.spacesuit_boots
+  > 奖励: GalacticraftMars:item.itemBasicAsteroids | gregtech:gt.metaitem.01:2372 x4 | enhancedlootbags:lootbag:8 x4 | dreamcraft:CoinTechnicianIII x2 | dreamcraft:CoinAdventureIII x2 | dreamcraft:CoinSpaceIII x2
+
+### [1730] Large Fuel Canisters
+Every rocket needs fuel storage canisters. For the tier 5 rocket you need to craft two medium and two large canisters.
+  - [可选提交] dreamcraft:MediumFuelCanister x4, dreamcraft:IceDualCompressedPlates x2, dreamcraft:QuantinumDualCompressedPlates x2, gregtech:gt.metaitem.01:27030 x8
+  - [提交] dreamcraft:LargeFuelCanister x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x2
+
+### [1468] Large Oxygen Tanks
+The Heavy oxygen tank is an oxygen storage tank that can hold up to 4000 units of air.
+  - [可选提交] GalacticraftCore:tile.oxygenPipe x2, GalacticraftMars:item.null:5 x14, gregtech:gt.metaitem.01:32406 x2
+  - [提交] GalacticraftCore:item.oxygenTankHeavyFull:3000 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [204] Load and Unload the Rocket
+What use has an automated rocket, if you can't load and unload it with automation?
+  - [提交] GalacticraftCore:tile.cargo:4, GalacticraftCore:tile.cargo
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1371] LOX and Bagels
+The LOX canister is an alternate solution to refilling your oxygen tanks.  To make liquid oxygen you need to put an oxygen cell into a vacuum freezer to get a cell of liquid oxygen. Transfer this liquid oxygen into a tank, and then into a LOX canister.  To refill your oxygen tanks just put the tank and the LOX canister in the oxygen compressor to transfer oxygen, or use an oxygen collector.  Each LOX canister can fill 4 Heavy Oxygen Tanks, 6 Medium Oxygen Tanks, or 12 Light Oxygen Tanks.  So much Greggy!
+  - [可选提交] gregtech:gt.metaitem.01:30013
+  - [可选提交] GalacticraftCore:item.oilCanisterPartial:1001
+  - [提交] GalacticraftMars:item.canisterPartialLOX:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1446] Mars Dungeon
+The Mars dungeon works the same as last time, so go find it!  If you need the schematics for the astro miner or the cargo rocket, kill another Boss Monster and exchange the schematics. Before you journey home make sure you fulfill the quest requirements in the EV tab.
+  - [提交] GalacticraftMars:tile.mars:7 x16
+  - [提交] GalacticraftMars:item.key
+  - [提交] GalacticraftMars:item.schematic
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII | dreamcraft:CoinAdventureII x5 | enhancedlootbags:lootbag:23
+
+### [1432] Mars Lander
+The Mars lander is required for a soft landing. Put the Moon lander on a Parachute and surround it with airbags - that will do the trick. You hope.  Hint: Sometimes you can't loot or break the lander. Try to retrieve the contents with a hopper underneath. To prevent this, make sure to wait until you come to a full and complete stop, like when at a stop sign. Everyone does that, right?
+  - [可选提交] GalaxySpace:item.ModuleLander, GalacticraftCore:item.parachute, GalacticraftCore:item.canvas x3, gregtech:gt.metaitem.01:29086 x4
+  - [提交] GalaxySpace:item.ModuleLander2
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1460] Medium Fuel Canister
+Every rocket needs fuel storage canisters. For the tier 3 rocket you need to craft two small and two medium canisters.
+  - [可选提交] dreamcraft:DeshDualCompressedPlates x2, dreamcraft:TitaniumDualCompressedPlates x2, gregtech:gt.metaitem.01:27028 x8
+  - [提交] dreamcraft:MediumFuelCanister x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [2687] §9§lMonomethylhydrazine
+For Tier 5 and 6 rockets you'll need to make CN3H7O3 (Purple) Rocket Fuel.   To start, make some Monomethylhydrazine.
+  - [可选提交] gregtech:gt.metaitem.01:30001 x4, miscutils:Hydrazine x2, gregtech:gt.metaitem.01:2010 x2
+  - [提交] miscutils:Monomethylhydrazine x2
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1072] Moon Arrival
+I have a small present for you: a Talisman of Remedium which is very useful to persevere during the dark nights with all these monsters.  First you have to prove you can survive on the moon by yourself. After mining some moon turf, dirt, and rock, you can have it.  Make sure you check back in the HV questline for necessary ores you should gather while here.
+  - [提交] minecraft:quartz x32, minecraft:coal x4, minecraft:glowstone_dust x4, minecraft:ghast_tear x2, minecraft:ender_eye
+  - [到达] 
+  - [提交] GalacticraftCore:tile.moonBlock:5 x512, GalacticraftCore:tile.moonBlock:3 x512, GalacticraftCore:tile.moonBlock:4 x512
+  > 奖励: enhancedlootbags:lootbag:6 | ThaumicTinkerer:cleansingTalisman | dreamcraft:CoinSpaceII | dreamcraft:CoinAdventureII
+
+### [1435] Moon Buggy Schematic
+The moon buggy needs a schematic. Place it in the NASA workbench and unlock it on the last tab.  [note]If you've made the chip in an older version, you can turn it back into a schematic in a PLE.[/note]
+  - [提交] GalacticraftCore:item.schematic
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1445] Moon Day and Night time
+The Moon's day-night cycle is 2h 40min long, equaling 8 Overworld days and it is linked to the Moon phases seen on the Overworld. The daytime on the moon lasts from a full moon to the next new moon (4 Overworld days, equaling 1h 20min) and, logically, the nighttime lasts from the new moon to the next full moon.  Since the 1st Overworld night is full moon, you can safely land within the 1st 4 Overworld days, and then the next 4 Overworld days are more dangerous since hostile mobs will be able to spawn in the dark, and so on. If you miscount, the moon phases can tell you when it is daytime or nighttime on the moon. Full moon is the start of the moon day, new (or dark) moon is the start of the moon night.  During the nighttime, the environment light levels get very low, allowing hostile mobs to spawn on the surface.
+  - [勾选确认]
+
+### [1433] Moon Dungeon
+While looking around for meteoric iron you might find a moon dungeon. The entrance looks like a deep hole. Go and kill the Boss Monster. It will drop the key for the chest in the next room with the schematics for tier 2 rockets.  Kill the Boss Monster again in a different dungeon if you want an extra tier 2 schematic to exchange for a moon buggy schematic.  Place the schematic in the NASA Workbench and unlock it on the last tab. This will unlock it for your character, so you can move the workbench if you want.  [note]All dungeons work the same, just with a different boss. Also, sometimes the boss room or chest room doesn't generate, you'll need to find another dungeon.[/note]
+  - [提交] GalacticraftCore:tile.moonBlock:14
+  - [提交] GalacticraftCore:item.key
+  - [提交] GalacticraftCore:item.schematic:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureII x2 | dreamcraft:CoinTechnicianII x2
+
+### [816] Moon Lander
+The Moon lander is required for a soft landing. You will need an additional frequency module for hearing things on planets, and a second seat for a Moon buggy you may build later.
+  - [可选提交] GalacticraftCore:item.basicItem:6, GalacticraftCore:item.steelPole x2, GalacticraftCore:item.basicItem:9 x3, GalacticraftCore:item.buggymat:1, GalacticraftCore:item.engine, GalacticraftCore:item.basicItem:19
+  - [提交] GalaxySpace:item.ModuleLander
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII | dreamcraft:CoinTechnicianII
+
+### [1434] Moon Patrol
+Moving faster on the Moon or other planets surface will be fun. I'm sure it will be totally safe.
+  - [可选提交] GalaxySpace:item.RocketControlComputer:100, GalacticraftCore:item.buggymat x4, GalacticraftCore:item.buggymat:1, GalacticraftCore:item.heavyPlating x11, GalacticraftCore:item.meteoricIronIngot:1 x5, gregtech:gt.metaitem.01:23306 x4, gregtech:gt.metaitem.01:27306 x8
+  - [提交] GalacticraftCore:item.buggy
+  - [提交] GalacticraftCore:item.basicItem:19
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII | dreamcraft:CoinTechnicianII
+
+### [2694] §9§lNaphthalene
+To make Naphthalene, combine your Coal Tar Oil with Sulfuric Acid to get Sulfuric Coal Tar Oil, then distill it to get Naphthalene. Seems easy? It gets harder.
+  - [可选提交] gregtech:gt.metaitem.01:30720, miscutils:CoalTarOil
+  - [可选提交] miscutils:SulfuricCoalTarOil x2
+  - [提交] miscutils:Naphthalene x2
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [2744] NASA Workbench
+The NASA Workbench is used to craft your rockets and other related vehicles. Build it to start your journey into space.  [note]Hint: Check out the nether star recipe which uses null catalyst and salis mundus. Null catalyst can be duplicated by adding magma cream, blaze powder and a tiny pile of nether star dust.[/note]  [note]Also, if you're having trouble getting the wither skulls, you can make a Cleaver or the Skullfire Sword to help with that.[/note]  [warn]For ALL Rocket Quests: If you forget to complete a part quest before crafting the rocket, you can simply hold the completed rocket and those quests will autocomplete, no need to make duplicate parts.[/warn]
+  - [提交] GalacticraftCore:tile.rocketWorkbench
+  > 奖励: dreamcraft:CoinSpaceII | dreamcraft:CoinTechnicianII
+
+### [1473] Nice and Comfortable - in Space!
+These thermal clothes will keep you nice and warm even in the coldest depths of outer space. Tier 3+ planets pretty much all require these.  [note]You'll also need some PBI.[/note]
+  - [可选提交] GalacticraftMars:item.itemBasicAsteroids:7 x24, dreamcraft:TungstenString x216, gregtech:gt.metaitem.01:29028 x192
+  - [可选提交] GalaxySpace:item.ThermalClothT2 x24
+  - [提交] GalaxySpace:item.ThermalPaddingT2, GalaxySpace:item.ThermalPaddingT2:1, GalaxySpace:item.ThermalPaddingT2:2, GalaxySpace:item.ThermalPaddingT2:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinSmithII x5
+
+### [2293] §9§lNitrogen Tetroxide
+Another ingredient for the final rocket fuel is Nitrogen Tetroxide. Combine some Copper Dust and Nitric Acid along with an Orange Metal Catalyst in the Chemical Plant. 
+  - [可选提交] gregtech:gt.metaitem.01:2035 x2, gregtech:gt.metaitem.01:30653 x4, miscutils:item.BasicGenericChemItem:3
+  - [提交] miscutils:NitrogenTetroxide x2
+  > 奖励: gregtech:gt.metaitem.01:30653 x32 | enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [-5074117915743852125] No Boss Needed! How Sad!
+To get this schematic you don't need to defeat any boss. You will still need to invest some time.  After researching a T8 Rocket Schematic you are able to build the Shuttle Schematic in the Assembly Line.
+  - [提交] GalacticraftAmunRa:item.schematic
+  > 奖励: dreamcraft:CoinSpaceIV x2 | dreamcraft:CoinTechnicianIV x2 | dreamcraft:HeavyDutyPlateTier8 x8
+
+### [1440] Oxygen Bubble Distributor
+The Oxygen Bubble Distributor takes oxygen from the Oxygen Collector, and makes an oxygen bubble providing an area to safely breathe in without needing Oxygen Gear. The bubble is a sphere surrounding the distributor and will go through walls (or any block). Alternatively, you can use an Oxygen Sealer (which needs compressed Desh Plates) to contain oxygen inside a room.
+  - [可选提交] GalacticraftCore:item.basicItem:9 x2, GalacticraftCore:item.basicItem:8 x2, gregtech:gt.metaitem.01:32602, GalacticraftCore:item.airVent x2, GalacticraftCore:item.airFan x2
+  - [提交] GalacticraftCore:tile.distributor
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [828] Oxygen Collector
+The oxygen collector is a block that gathers oxygen from leaves and farm plants to use in an oxygen bubble distributor, oxygen sealer, oxygen compressor, and other oxygen-reliant machines. If you plan to build a Moon base, which needs a continuous oxygen supply, you will need to build one.
+  - [可选提交] GalacticraftCore:item.oxygenConcentrator, gregtech:gt.metaitem.01:32602, GalacticraftCore:item.airFan, GalacticraftCore:item.airVent, GalacticraftCore:item.basicItem:8 x2, GalacticraftCore:item.basicItem:9 x2, gregtech:gt.blockmachines:1587
+  - [提交] GalacticraftCore:tile.oxygenCollector
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [829] Oxygen Compressor
+The oxygen compressor is used to fill empty or depleted oxygen tanks. Connect an oxygen pipe to the blue ring input side and a power source to the gray square input side. Place an oxygen tank in the bottom right slot and it will take oxygen from the input and place it into the tank.
+  - [可选提交] GalacticraftCore:item.oxygenConcentrator, gregtech:gt.metaitem.01:32602, GalacticraftCore:item.oilCanisterPartial:1001, gregtech:gt.metaitem.01:32642, GalacticraftCore:item.basicItem:9 x2, GalacticraftCore:item.basicItem:10, GalacticraftCore:item.basicItem:8 x2
+  - [提交] GalacticraftCore:tile.oxygenCompressor
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [822] Oxygen Gear
+Oxygen gear is used to attach oxygen tanks to the oxygen mask. This is absolutely vital for any astronaut.
+  - [提交] GalacticraftCore:item.oxygenGear
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [823] Oxygen Mask
+The oxygen mask is part of the system used to breathe on planets without oxygen, the others being oxygen gear and oxygen tanks.
+  - [提交] GalacticraftCore:item.oxygenMask
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1467] Oxygen Sealer
+The Oxygen Sealer is a machine that fills a room with oxygen (although the oxygen is generally not visible) up to around 800-1000 blocks (the amount stacks with multiple sealers within close proximity) allowing the user to breathe without Oxygen Gear. Unlike the Oxygen Bubble Distributor, the Oxygen Sealer confines the oxygen to the room it is in. The sealer must be supplied with power and sufficient oxygen. See Oxygen Collector for supplying oxygen.  The sealer will only work in a room that is completely sealed off from outer space. This can be achieved with either a completely closed off room, or with an Air Lock. The sealer must have nothing above it to block its vents. It is designed to check for a proper seal about every 5 seconds, so be sure to give it time to seal.  Each sealer requires at least 320 air points per second to work continuously or it will fail.
+  - [提交] GalacticraftCore:tile.sealer
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [824] Oxygen Tanks
+The Light oxygen tank is an oxygen storage tank that can hold up to 1000 units of air. It is used to provide a portable source of oxygen while in areas that do not have an oxygen source of their own.  Usage: Up to two oxygen tanks can be worn at a time. To wear any type of oxygen tank, open your inventory and click on the Galacticraft tab at the top of the menu. Here you will see the available spots for your various types of equipment. Simply place your tank(s) in one of the slots with a gray picture of an oxygen tank. Other types of oxygen tanks include the medium oxygen tank, which holds twice the amount of oxygen as a light tank, and the heavy oxygen tank, which holds three times the amount of a light tank.
+  - [提交] GalacticraftCore:item.oxygenTankLightFull:1000 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [830] Parachute
+A parachute is used to prevent death upon re-entry into the Overworld's atmosphere. The parachute is an essential part of your journey to space. You should never journey into space without it. There will even be a warning if you try to launch without one on you.  Use the assembler to save materials.
+  - [提交] GalacticraftCore:item.parachute, GalacticraftCore:item.parachute:1, GalacticraftCore:item.parachute:2, GalacticraftCore:item.parachute:3, GalacticraftCore:item.parachute:4, GalacticraftCore:item.parachute:5, GalacticraftCore:item.parachute:6, GalacticraftCore:item.parachute:7, GalacticraftCore:item.parachute:8, GalacticraftCore:item.parachute:9, GalacticraftCore:item.parachute:10, GalacticraftCore:item.parachute:11, GalacticraftCore:item.parachute:12, GalacticraftCore:item.parachute:13, GalacticraftCore:item.parachute:14, GalacticraftCore:item.parachute:15
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1439] Permanent Oxygen Systems
+You decided to have a longer stay on the moon and look for a permanent oxygen setup to refill your outdoor gear and building a small Base.  Don't forget to bring repair stuff for your tools and armor! Dream 2018!
+  - [提交] minecraft:cobblestone x128, minecraft:glass x64, GalacticraftCore:tile.oxygenCollector, GalacticraftCore:tile.oxygenCompressor, GalacticraftCore:tile.distributor, GalacticraftCore:tile.oxygenPipe x10, minecraft:leaves x64 (ore:treeLeaves), minecraft:log x16 (ore:logWood), gregtech:gt.metaitem.01:32538 x2
+  > 奖励: enhancedlootbags:lootbag:6 | GalacticraftCore:item.oxygenTankLightFull | dreamcraft:CoinSpaceII | dreamcraft:CoinSurvivorII
+
+### [2693] §9§lPhthalic Acid, The Cool Kids' Way
+Make Phthalic Acid out of Naphthalene and Lithium in a Chemical Reactor.  Ironically, you can't make this out of Naphtha.
+  - [可选提交] miscutils:Naphthalene x4, gregtech:gt.metaitem.01:2006 x10
+  - [提交] gregtech:gt.metaitem.01:30595 x5
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinChemistII
+
+### [2708] Pluto Dungeon
+Go get the final schematic, for the tier 8 rocket. You can also find the draconic core schematic here!  This will open a lot of planets outside of our solar system such as Barnarda.
+  - [提交] GalaxySpace:plutoblocks:6 x16
+  - [提交] GalaxySpace:item.Tier8Key
+  - [提交] GalaxySpace:item.SchematicTier8
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureIV x5 | dreamcraft:CoinTechnicianIV x5
+
+### [2750] Proteus Dungeon
+Go get the schematics for tier 7 rockets.  This will open the planet Pluto and the Kuiper Belt.
+  - [提交] GalaxySpace:proteusblocks:3 x16
+  - [提交] GalaxySpace:item.Tier7Key
+  - [提交] GalaxySpace:item.SchematicTier7
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureIV | dreamcraft:CoinTechnicianIV
+
+### [1430] Recycle Your Rocket and Save the Environment
+Why not recycle your old Tier 1 rocket to get components for your new tier 2 rocket? Put your old rocket in an arc furnace to get back lots of materials.  Make sure you don't need it anymore first!
+  - [提交] gregtech:gt.metaitem.01:32462 x36, gregtech:gt.metaitem.01:11305 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [815] Rocket Engine
+Every rocket needs a rocket engine. Better craft two, because the Moon lander also needs one.
+  - [可选提交] GalacticraftCore:item.oilCanisterPartial:1001 x2, gregtech:gt.metaitem.01:32731 x2, gregtech:gt.blockcasings3:14 x2, GalaxySpace:item.CompressedSDHD120 x4, GalacticraftCore:item.heavyPlating x8
+  - [提交] GalacticraftCore:item.engine x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [814] Rocket Fins
+Every rocket needs a few rocket fins.
+  - [可选提交] GalacticraftCore:item.basicItem:9 x8, GalacticraftCore:item.heavyPlating x16
+  - [提交] GalacticraftCore:item.rocketFins x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [827] §9§lRocket Fuel
+For every flight the rocket needs some fuel. So refine some fuel for your rocket. This quest chain will guide you through the progression of rocket fuels.  For your T1 & T2 rockets you have 2 options. You can either use Cetane-Boosted Diesel or make RP-1 rocket fuel.  For the moon, a full rocket leaving from the Overworld should have enough fuel left to make it back, but you might want to take extra just in case.  [note]Rocket Fuel usage is not based on the destination nor the type of fuel used. Rather, it is based on the tier of the rocket, with higher tiers both storing more fuel, and consuming less. Also, the gravity of the planet affects how much fuel is used, with lower gravity locations using less fuel to launch.[/note]
+  - [勾选确认]
+
+### [820] Rocket Launch Pad
+Every rocket needs a launch pad. Build a 3x3 launch pad and place your rocket on top of it.  Storms and other events that affect entities can knock your rocket off (but not lightning warp anymore), so make sure to not leave it alone.  [warn]Before liftoff, make sure you clear the airspace above you![/warn]  Be sure to check out [url]https://wiki.gtnewhorizons.com/wiki/Moon_Travel_Checklist[/url] for a Departure Checklist!  [note]Also note that they emit pollution, lots of it. So either put it far from your base, or use a scrubber while launching. You probably won't have to worry until T4 or so though.[/note]
+  - [可选提交] GalacticraftCore:item.basicItem:11 x9, IC2:itemPartAlloy x9, minecraft:iron_block x9
+  - [提交] GalacticraftCore:tile.landingPad x9
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII | enhancedlootbags:lootbag:22
+
+### [813] Rocket Nose Cone
+Every rocket needs a nose cone.
+  - [可选提交] ProjRed|Illumination:projectred.illumination.cagelamp2.inv:14, GalacticraftCore:item.heavyPlating x4
+  - [提交] GalacticraftCore:item.noseCone
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [810] Rocket Tier 1
+After hours of hard work and a few stacks of TNT your first rocket is finally ready. But before you can go to the Moon you need to actually craft it.  [note]If you've crafted the rocket with a chest, there's a crafting table recipe that will turn it into the normal rocket that completes this quest. Check NEI.[/note]  [note]Holding the rocket in your hand will unlock all pre-requisite quests in addition to this one. This also works for all of the following rockets.[/note]
+  - [可选提交] GalacticraftCore:item.noseCone, GalacticraftCore:item.heavyPlating x8, GalacticraftCore:item.rocketFins x4, GalacticraftCore:item.engine
+  - [可选提交] GalaxySpace:item.RocketControlComputer:1, GalaxySpace:item.ModuleLander, GalaxySpace:item.ModuleSmallFuelCanister x2
+  - [提交] GalacticraftCore:item.spaceship
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2 | enhancedlootbags:lootbag:22
+
+### [1429] Rocket Tier 2
+After hours of hard work and tons of stacks of iTNT your second rocket is finally ready. But before you can go to Mars you need to craft a few more things.
+  - [可选提交] GalacticraftCore:item.noseCone, GalacticraftMars:item.null:3 x10, GalacticraftCore:item.rocketFins x4, GalacticraftCore:item.engine:1 x2, GalacticraftCore:item.engine x2
+  - [可选提交] GalaxySpace:item.RocketControlComputer:2, GalaxySpace:item.ModuleLander2, GalaxySpace:item.ModuleSmallFuelCanister x3
+  - [提交] GalacticraftMars:item.spaceshipTier2
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinTechnicianII x5 | enhancedlootbags:lootbag:23
+
+### [1454] Rocket Tier 3
+After days of hard work and a hundred tons of stacks of iTNT your third rocket is finally ready.  You need to use Dense Hydrazine Rocket Fuel or better to fuel it.
+  - [提交] GalacticraftMars:item.itemTier3Rocket
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII | dreamcraft:CoinTechnicianIII
+
+### [1535] Rocket Tier 4
+After weeks of hard work and a thousand stacks of iTNT your fourth rocket is finally ready.  You need to use Dense Hydrazine Rocket Fuel.
+  - [提交] GalaxySpace:item.Tier4Rocket
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII x2 | dreamcraft:CoinTechnicianIII x2
+
+### [1726] Rocket Tier 5
+After a month of hard work and ten thousand stacks of iTNT your fifth rocket is finally ready.  You need to use CN3H7O3 (Purple) Rocket Fuel or better to fuel it.
+  - [提交] GalaxySpace:item.Tier5Rocket
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII x5 | dreamcraft:CoinTechnicianIII x5
+
+### [2640] Rocket Tier 6
+After building this, you can visit more planets.  You need to use CN3H7O3 (Purple) Rocket Fuel or better to fuel it.  §cIf you want to make this rocket in ZPM, you'll need to use the GT++ Assembler multi.§r
+  - [提交] GalaxySpace:item.Tier6Rocket
+
+### [2642] Rocket Tier 7
+You can now visit the planets on the edge of the solar system with this rocket.  You need to use H8N4C2O4 (Green) Rocket Fuel to fuel it.
+  - [提交] GalaxySpace:item.Tier7Rocket
+
+### [2644] Rocket Tier 8
+You can travel to other solar systems with this, the T8 rocket.  What, you visited other star systems before? There, was, uh, like, a nebula you couldn't go past to these ones. That makes sense, right?  You need to use H8N4C2O4 (Green) Rocket Fuel to fuel it.
+  - [提交] GalaxySpace:item.Tier8Rocket
+
+### [2684] §9§lRP-1 Rocket Fuel
+One option to fuel your T1 and T2 rocket is RP-1 Rocket Fuel. First, you'll need either Diesel or Coal Tar. Coal Tar is the better option in the long run, since you'll need the other products of distilling it to make other rocket fuels, but for now you can use Diesel.  [note]If you're using Diesel, you need 20 cells, if using Coal Tar, you need 30. Unless you use a DT, in which case it doesn't divide evenly anymore.[/note]  Distill it in the Distillery to get Kerosene, then distill it again to get RP-1. You'll need a Chemical Plant for the last step.  RP-1 Rocket Fuel is a T4 240 EU/t recipe, so you'll need to make the Chemical Plant out of Stainless Steel and HV Machine Casings.  Since there is no oxygen in space, you will also need an oxidizer. But since the Galacticraft rocket can only take one fluid we have simplified that a bit. Just combine Liquid Oxygen and RP-1 to make the fully functional RP-1 Rocket Fuel.  If you're confused about how to use/make the Chemical Plant, refer to the manual with the same name or the quest in the GT++ quest tab.  [note]PS: You can also use Rocket Fuels for power in Rocket Engines, or the Rocketdyne F-1A Engine multi.[/note]
+  - [可选提交] miscutils:Kerosene x12
+  - [可选提交] miscutils:RP1Fuel x9, gregtech:gt.metaitem.01:30493 x36
+  - [提交] miscutils:RocketFuelMixB x27
+  > 奖励: miscutils:RocketFuelMixB | dreamcraft:CoinTechnicianII
+
+### [1743] §6§lSalt Water and Chlorobenzene on Mars
+Mars is rich in Salt Water and Chlorobenzene. If you run low on chlorine you can electrolyze the fluids.
+  - [提交] gregtech:gt.metaitem.01:30692 x64, gregtech:gt.metaitem.01:30605 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII | dreamcraft:CoinAdventureII | dreamcraft:CoinTechnicianII
+
+### [2695] §9§lSerious Upgrades
+So if you thought 'hey, the purple stuff wasn't that bad, why not make the green?', well, first of all, you may need professional help. Second, you're going to need to be in ZPM to make the casings you need, full stop. You need a ZPM ABS for the components, so come back once you've made a ZPM Energy Hatch.  You can probably figure most of it out on your own, but keep in mind that some of the materials need to be created in the ABS, solidified, macerated, and then used in another ABS recipe. The examples here are Hastelloy-N for Lafium Compound and, Rhenium for Laurenium. Rhenium itself is made with a nonstandard ABS recipe. You also need Dysprosium which requires either making Rare Earth (III) or going to the Toxic Everglades. You'll also need either Rare Earth (II) or Rare Earth (III) for Ytterbium unless, again, you visit the Everglades for it. [warn]The Everglades ore veins might be very hard to find, due to their rarity.[/warn] You could also get Ytterbium from Almandine Ore if you are willing to try GT++ Milling and Froth Flotation.  Have fun with that!  [note]You'll almost certainly need more than this, but the exact amount, as always, depends on your hatches and buses.[/note]
+  - [提交] miscutils:gtplusplus.blockspecialcasings.2:2 x70
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinTechnicianIII
+
+### [-5843632203454110643] Shuttle Nose Cone
+This Rocket Cone doesn't have the spiky thing like the others have. Is this good or bad? I don't know, I'm only here to tell you what to do. So go build one Shuttle Nose Cone! Otherwise I will revoke your license to progress!
+  - [提交] GalacticraftAmunRa:item.baseItem:16
+  > 奖励: dreamcraft:CoinTechnicianIV x2 | gregtech:gt.metaitem.01:17765 x16
+
+### [1463] Sleeping in Space
+The Cryogenic Chamber is used to sleep on other planets and skip long nighttimes. It can be used at any time, even during the daytime, and in any dimension, including the Overworld.  Using the chamber during the daytime will skip the time to the next sunrise, except on the Asteroids dimension where the Sun is always locked on West.  Once the player has used the Cryogenic Chamber, there is a 300 second cooldown before they can use it again. Breaking and replacing the chamber, or trying to use a different chamber, will not reset the cooldown unless the player dies.  The chamber does not require energy to work.
+  - [可选提交] GraviSuite:itemSimpleItem:2, CarpentersBlocks:itemCarpentersBed, GalacticraftMars:item.itemBasicAsteroids x4, GalacticraftMars:item.null:3 x2, minecraft:clock
+  - [提交] GalacticraftMars:tile.marsMachine:4
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1471] Slimeling
+The Slimeling is a utility mob that spawns from Slimeling Eggs found on the surface of Mars. It shares some features from vanilla wolves and mules: it can be tamed and attacks mobs that threaten its owners, and can be equipped with a special chest to transport items.  As an allied mob, Slimelings will actively help and follow the player-owner and will attempt to protect them. They can also have a neutral behavior, that is, they can attack if provoked or hurt by non-owners.  Items that you can feed Slimelings with:  Boat Cooked fish Gunpowder Gold ingot Redstone repeater Wooden door  Slimelings can be equipped by their owners with a Slimeling Inventory Bag to transport items.  To complete this quest get any one of the eggs - note you may need a Heavy Duty Pickaxe.
+  - [提交] GalacticraftMars:tile.slimelingEgg, GalacticraftMars:tile.slimelingEgg:1, GalacticraftMars:tile.slimelingEgg:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinTechnicianII x2
+
+### [819] Small Fuel Canister
+Every rocket needs fuel storage canisters. For the tier 1 rocket you need to craft two of them.
+  - [提交] GalaxySpace:item.ModuleSmallFuelCanister x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [3037] Space Pumping
+At some point you may have wondered: There are these enormous gas planets in the solar system - could there be a way to "harvest" them? Indeed there is. By constructing the "Planetary Gas Siphon" multiblock, you are able to pump from the infinite supply of gas found on Jupiter, Saturn, Uranus, and Neptune. You just need to build a space station around a gas planet to get close enough to reach the gas without falling into it.  Different gases can be extracted by pumping at different depths which is controlled by a Programmed Circuit. You need to supply (64 * depth) Mining Pipes to reach the selected depth.  While operational, the multiblock needs §3d*4^(T+2)§r EU/t where T is the tier of the space station and d is the depth.  You do not need a minimum tier of coil to siphon particular gas types, but you will get a §2§l10%§r speed boost per coil tier.  You probably also want a good overview of what you can get with your Planetary Gas Siphon, and the tiers of the gas giants. So here we go:  Jupiter (Tier 3) 1 Hydrogen - 15000 L/s 2 Helium - 500 L/s 3 Nitrogen - 300 L/s 4 Oxygen - 200 L/s  Saturn (Tier 5) 1 Hydrogen - 18000 L/s 2 Helium - 800 L/s 3 Oxygen - 500 L/s 4 Liquid Oxygen - 150 L/s  Uranus (Tier 5) 1 Deuterium - 5000 L/s 2 Neon - 450 L/s 3 Argon - 250 L/s 4 Krypton - 100 L/s  Neptune (Tier 6) 1 Tritium - 3000 L/s 2 Helium-3 - 500 L/s 3 Ammonia - 400 L/s 4 Xenon - 350 L/s
+  - [提交] gregtech:gt.blockmachines:15559
+  - [可选提交] gtnhintergalactic:gassiphoncasing x184, gregtech:gt.blockframes:316 x93, gregtech:gt.blockcasings5 x12, bartworks:bw.werkstoffblockscasingadvanced.01:88 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinTechnicianII x5 | dreamcraft:CoinAdventureII x5
+
+### [1067] Space Station
+You can build a space station if you want. You can add up to four spin thrusters to your station to rotate it.  Days on space stations last longer than on the overworld, so you can generate more solar power.  §oYou can build space stations here:§r §21§r. Moon - §9T1 §22§r. Mars - §9T2 §23§r. Jupiter - §9T3 §24§r. Venus - §9T4 §25§r. Saturn - §9T5 §26§r. Uranus - §9T5 §27§r. Neptune - §9T6§r  Each §2Retrieval Task§r in this quest corresponds (in order) to the resources you will need in order to §2build a space station§r at one of the planets listed above. The "§9T#§r" afterwards refers to the §9tier of rocket§r you will need to get there.  [note]You will need to complete at least one task to complete this quest![/note]  [warn]It is likely that you will lose your rocket when flying back to Earth or another space station. Make sure you have an alternative way to return (some form of teleportation) or use another planet/moon as proxy (if you get an error while doing so, you spawn on the planet/moon and can launch your rocket again).[/warn]
+  - [提交] GalacticraftCore:tile.gcBlockCore:4 x231, minecraft:glass_pane x6, IC2:itemPartCircuitAdv x4 (ore:circuitAdvanced), gregtech:gt.blockmachines:13
+  - [提交] GalaxySpace:metalsblock:9 x231, minecraft:glass_pane x6, IC2:itemPartCircuitAdv x4 (ore:circuitAdvanced), gregtech:gt.blockmachines:13
+  - [提交] GalaxySpace:metalsblock:5 x231, minecraft:glass_pane x6, dreamcraft:CircuitEV x4 (ore:circuitData), gregtech:gt.blockmachines:14
+  - [提交] GalaxySpace:metalsblock:6 x231, minecraft:glass_pane x6, dreamcraft:CircuitIV x4 (ore:circuitElite), gregtech:gt.blockmachines:15
+  - [提交] GalaxySpace:metalsblock:4 x231, minecraft:glass_pane x6, dreamcraft:CircuitLuV x4 (ore:circuitMaster), gregtech:gt.blockmachines:16
+  - [提交] GalaxySpace:metalsblock:8 x231, minecraft:glass_pane x6, dreamcraft:CircuitLuV x4 (ore:circuitMaster), gregtech:gt.blockmachines:16
+  - [提交] GalaxySpace:metalsblock:1 x231, minecraft:glass_pane x6, dreamcraft:CircuitZPM x4 (ore:circuitUltimate), gregtech:gt.blockmachines:17
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1441] Space Torches
+Normal torches won't work in space, only in the area within the oxygen bubble.  One solution is glowstone torches. You can also use other mods' lights and lamps. You'll probably want 3-5 stacks for mining veins, unless you just use a singleblock or multiblock miner.  Another option is to use nightvision and a magnum torch or GregTech monster repellator to keep mobs away. These do not work on the official servers, instead claim and unclaim chunks.
+  - [提交] GalacticraftCore:tile.glowstoneTorch x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-7583790943377787116] steve@mothership:~$
+This block can be used to configure the Mothership's name and icon, who is allowed to land on it and who is allowed to access the Navigation Console and the Thrusters.
+  - [提交] GalacticraftAmunRa:tile.machines1:3
+
+### [2723] Super Large Oxygen Tanks
+The Super Heavy oxygen tank is an oxygen storage tank that can hold up to 8000 units of air.
+  - [可选提交] GalacticraftCore:tile.oxygenPipe x2, dreamcraft:TitaniumDualCompressedPlates x14, gregtech:gt.metaitem.01:32411 x2
+  - [提交] GalacticraftCore:item.oxygenTankSuperHeavyFull:4000 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1466] Temperature Control
+The Ambient Thermal Controller is an item for use in the Oxygen Sealer to provide thermal protection in sealed spaces.  An Ambient Thermal Controller is useful in the dimensions too cold or too hot for players to survive without Thermal Padding.  It can be placed in the 3rd slot next to the energy and oxygen slots in a working Oxygen Sealer. Once the Ambient Thermal Controller is in the sealer, it will heat or cool the output oxygen according to the local environment, and then the player can safely take the thermal padding off in the sealed room. Though there's absolutely no reason to do so.
+  - [提交] GalacticraftCore:item.basicItem:20
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-6186734719426077723] The Legs On The Shuttle Rocket Go Step, Step, Step...
+The Shuttle Legs are very useful, as they allow the Shuttle Rocket to land without any aid. I highly recommend you build them! §mYou don't have a choice anyway.
+  - [提交] GalacticraftAmunRa:item.baseItem:14 x2
+  > 奖励: dreamcraft:CoinTechnicianIV x2 | gregtech:gt.metaitem.01:17765 x16
+
+### [1462] Thermal Cloth
+Thermal Padding is a set of garments made out of an advanced insulating material. The garments are able to keep a player from freezing to death in the cold environments of Outer Space. They are also able to keep the player from suffering heat exhaustion in an overly hot environment.  The temperature indicator on the Life Support HUD will show if the player is becoming too hot or too cold - as the temperature approaches dangerous levels, an "Invalid Thermal Protection" warning will be shown. On Mars and the Asteroids, simply wearing a full set of Thermal Padding should be enough to fix this.  [note]You'll also need some Silicone Rubber.[/note]
+  - [可选提交] harvestcraft:wovencottonItem x192, gregtech:gt.metaitem.01:29019 x192, dreamcraft:MeteoricIronString x216
+  - [可选提交] GalacticraftMars:item.itemBasicAsteroids:7 x24
+  - [提交] GalacticraftMars:item.thermalPadding, GalacticraftMars:item.thermalPadding:1, GalacticraftMars:item.thermalPadding:2, GalacticraftMars:item.thermalPadding:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithIII | dreamcraft:CoinTechnicianIII
+
+### [811] Tier 1 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [812] Tier 1 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 37 of these plates out of compressed aluminium plates, compressed bronze plates and compressed steel plates.
+  - [可选提交] GalacticraftCore:item.basicItem:8 x37, GalacticraftCore:item.basicItem:9 x37, GalacticraftCore:item.basicItem:10 x37, gregtech:gt.metaitem.01:11306 x19
+  - [可选提交] gregtech:gt.metaitem.01:32462 x37
+  - [提交] GalacticraftCore:item.heavyPlating x37
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII | dreamcraft:CoinTechnicianII
+
+### [1428] Tier 2 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1427] Tier 2 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 11 tier 2 heavy duty plates out of tier 1 plates and meteoric iron plates.  You'll need to make a couple of tungstensteel ingots to make these plates. You can process end stone or end stone dust, or macerate moon blocks to get some.
+  - [可选提交] GalacticraftCore:item.heavyPlating x11, gregtech:gt.metaitem.01:17340 x22, gregtech:gt.metaitem.01:11316 x6
+  - [可选提交] gregtech:gt.metaitem.01:32463 x11
+  - [提交] GalacticraftMars:item.null:3 x11
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1448] Tier 3 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1453] Tier 3 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 38 tier 3 heavy duty plates out of tier 2 plates and desh plates.
+  - [可选提交] GalacticraftMars:item.null:3 x38, gregtech:gt.metaitem.01:17884 x152, gregtech:gt.metaitem.01:11085 x19
+  - [可选提交] gregtech:gt.metaitem.01:32464 x38
+  - [提交] GalacticraftMars:item.itemBasicAsteroids x38
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1456] Tier 3 Lander
+The Tier 3, or Deep Space lander is required for a soft landing.
+  - [可选提交] GalaxySpace:item.ModuleLander2, GalacticraftMars:item.null:5 x6, GalacticraftCore:item.steelPole x2
+  - [提交] GalaxySpace:item.ModuleLander3
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1531] Tier 4 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:4
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII | dreamcraft:CoinTechnicianIII
+
+### [1532] Tier 4 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 13 tier 4 heavy duty plates out of tier 3 plates and compressed ice plates.
+  - [可选提交] GalacticraftMars:item.itemBasicAsteroids x13, dreamcraft:IceCompressedPlate x78, bartworks:gt.bwMetaGeneratedbolt:90 x52
+  - [可选提交] dreamcraft:HeavyDutyAlloyIngotT4 x13
+  - [提交] dreamcraft:HeavyDutyPlateTier4 x13
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII | dreamcraft:CoinTechnicianIII
+
+### [1725] Tier 5 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:5
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII x2 | dreamcraft:CoinTechnicianIII x2
+
+### [1724] Tier 5 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 61 tier 5 heavy duty plates out of tier 4 plates and compressed quantium plates.
+  - [可选提交] dreamcraft:HeavyDutyPlateTier4 x61, dreamcraft:QuantinumCompressedPlate x488, gregtech:gt.metaitem.01:26070 x488
+  - [可选提交] dreamcraft:HeavyDutyAlloyIngotT5 x61
+  - [提交] dreamcraft:HeavyDutyPlateTier5 x61
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII x2 | dreamcraft:CoinTechnicianIII x2
+
+### [2751] Tier 6 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:6
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII x5 | dreamcraft:CoinTechnicianIII x5
+
+### [2639] Tier 6 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 13 tier 6 heavy duty plates out of tier 5 plates and compressed lead-oriharukon plates.
+  - [可选提交] dreamcraft:HeavyDutyPlateTier5 x13, dreamcraft:LeadOriharukonPlate x130, gregtech:gt.metaitem.01:26329 x104
+  - [可选提交] dreamcraft:HeavyDutyAlloyIngotT6 x13
+  - [提交] dreamcraft:HeavyDutyPlateTier6 x13
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIII x5 | dreamcraft:CoinTechnicianIII x5
+
+### [2702] Tier 7 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:7
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIV | dreamcraft:CoinTechnicianIV
+
+### [2641] Tier 7 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 79 tier 7 heavy duty plates out of tier 6 plates and compressed mysterious crystal plates.
+  - [可选提交] dreamcraft:HeavyDutyPlateTier6 x79, dreamcraft:MysteriousCrystalCompressedPlate x948, gregtech:gt.metaitem.01:26129 x790
+  - [可选提交] dreamcraft:HeavyDutyAlloyIngotT7 x79
+  - [提交] dreamcraft:HeavyDutyPlateTier7 x79
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIV | dreamcraft:CoinTechnicianIV
+
+### [2710] Tier 8 Control Computer
+Each rocket needs a Control Computer, appropriate to the tier of the rocket.
+  - [提交] GalaxySpace:item.RocketControlComputer:8
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIV x2 | dreamcraft:CoinTechnicianIV x2
+
+### [2643] Tier 8 Heavy Duty Plates
+Rockets require heavy duty plates for the main hull. Let's craft 19 tier 8 heavy duty plates out of tier 7 plates and compressed black plutonium plates.
+  - [可选提交] dreamcraft:HeavyDutyPlateTier7 x19, dreamcraft:BlackPlutoniumCompressedPlate x266, gregtech:gt.metaitem.01:26388 x228
+  - [可选提交] dreamcraft:HeavyDutyAlloyIngotT8 x19
+  - [提交] dreamcraft:HeavyDutyPlateTier8 x19
+  > 奖励: bq_standard:choice | dreamcraft:CoinSpaceIV x2 | dreamcraft:CoinTechnicianIV x2
+
+### [2724] Ultra Large Oxygen Tanks
+The Ultra Heavy oxygen tank is an oxygen storage tank that can hold up to 16000 units of air.
+  - [可选提交] GalacticraftCore:tile.oxygenPipe x2, gregtech:gt.metaitem.01:19868 x14, gregtech:gt.metaitem.01:32412 x2
+  - [提交] GalacticraftCore:item.oxygenTankUltraHeavyFull:5000 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII
+
+### [832] Wafers
+The basic wafer is used for creating basic machines such as the basic solar panel, the fuel loader, the energy storage module and the compressor.
+  - [可选提交] gregtech:gt.metaitem.03:32033 x12, dreamcraft:ReinforcedGlassLense
+  - [提交] GalacticraftCore:item.basicItem:13 x12
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+

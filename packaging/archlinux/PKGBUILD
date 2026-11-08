@@ -1,0 +1,22 @@
+pkgname=break-this-repo
+pkgver=0.0.0
+pkgrel=1
+pkgdesc='Small C++ binaries from the Break This Repo project'
+arch=('x86_64' 'aarch64')
+url='https://github.com/BL-BlueLighting/Break-This-Repo'
+license=('unknown')
+depends=()
+makedepends=('cmake' 'gcc')
+source=("${pkgname}-${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cmake -S "${srcdir}/${pkgname}-${pkgver}" -B build \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr
+  cmake --build build
+}
+
+package() {
+  DESTDIR="${pkgdir}" cmake --install build
+}

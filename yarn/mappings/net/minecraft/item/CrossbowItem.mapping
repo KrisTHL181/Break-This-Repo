@@ -1,0 +1,59 @@
+CLASS net/minecraft/class_1764 net/minecraft/item/CrossbowItem
+	FIELD field_7936 loaded Z
+	FIELD field_7937 charged Z
+	FIELD field_30863 RANGE I
+	FIELD field_30866 DEFAULT_PULL_TIME F
+	FIELD field_30867 CHARGE_PROGRESS F
+	FIELD field_30868 LOAD_PROGRESS F
+	FIELD field_30869 DEFAULT_SPEED F
+	FIELD field_30870 FIREWORK_ROCKET_SPEED F
+	FIELD field_51626 DEFAULT_LOADING_SOUNDS Lnet/minecraft/class_1764$class_9693;
+	METHOD method_7767 loadProjectiles (Lnet/minecraft/class_1309;Lnet/minecraft/class_1799;)Z
+		ARG 0 shooter
+		ARG 1 crossbow
+	METHOD method_7770 getPullProgress (ILnet/minecraft/class_1799;Lnet/minecraft/class_1309;)F
+		ARG 0 useTicks
+		ARG 1 stack
+		ARG 2 user
+	METHOD method_7775 getPullTime (Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)I
+		ARG 0 stack
+		ARG 1 user
+	METHOD method_7777 shootAll (Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;Lnet/minecraft/class_1268;Lnet/minecraft/class_1799;FFLnet/minecraft/class_1309;)V
+		ARG 1 world
+		ARG 2 shooter
+		ARG 3 hand
+		ARG 4 stack
+		ARG 5 speed
+		ARG 6 divergence
+		ARG 7 target
+	METHOD method_7781 isCharged (Lnet/minecraft/class_1799;)Z
+		ARG 0 stack
+	METHOD method_7784 getSoundPitch (ZLnet/minecraft/class_5819;)F
+		ARG 0 flag
+		ARG 1 random
+	METHOD method_20309 getSpeed (Lnet/minecraft/class_9278;)F
+		ARG 0 stack
+	METHOD method_57342 getSoundPitch (Lnet/minecraft/class_5819;I)F
+		ARG 0 random
+		ARG 1 index
+	METHOD method_57343 calcVelocity (Lnet/minecraft/class_1309;Lnet/minecraft/class_243;F)Lorg/joml/Vector3f;
+		ARG 0 shooter
+		ARG 1 direction
+		ARG 2 yaw
+	METHOD method_59973 (Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;Lnet/minecraft/class_6880;)V
+		ARG 2 sound
+	METHOD method_59974 (Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;Lnet/minecraft/class_6880;)V
+		ARG 2 sound
+	METHOD method_59976 getLoadingSounds (Lnet/minecraft/class_1799;)Lnet/minecraft/class_1764$class_9693;
+		ARG 1 stack
+	METHOD method_67186 (Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;Lnet/minecraft/class_6880;)V
+		ARG 2 sound
+	CLASS class_9693 LoadingSounds
+		FIELD field_51627 CODEC Lcom/mojang/serialization/Codec;
+		METHOD method_59977 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 0 instance
+	CLASS class_10393 ChargeType
+		FIELD field_55209 CODEC Lcom/mojang/serialization/Codec;
+		FIELD field_55210 name Ljava/lang/String;
+		METHOD <init> (Ljava/lang/String;ILjava/lang/String;)V
+			ARG 3 name

@@ -1,0 +1,244 @@
+.radio-card-group {
+  display: flex;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.radio-card input {
+  display: none;
+}
+
+.radio-card span {
+  padding: 10px 10px;
+  border-radius: 10px;
+  border: 2px solid var(--color-border);
+  background: var(--color-bg2);
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* 选中效果 */
+.radio-card input:checked+span {
+  border-color: var(--color-primary);
+  background: var(--color-bg2);
+  color: var(--color--primary-strong);
+  font-weight: 600;
+}
+
+/* hover效果 */
+.radio-card span:hover {
+  border-color: var(--color-primary);
+  /*  box-shadow: 0 0 0 3px var(--color-primary);*/
+}
+
+
+/**
+* ---------
+* radio input
+* ---------
+*/
+.radio-group {
+  margin: 6px 0;
+  display: flex;
+  gap: 16px;
+  text-align: center;
+}
+
+/* 隐藏原生单选按钮 */
+.radio-group input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+.label-box {
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--color-primary);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: var(--color-bg2);
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+/* 悬停效果 */
+.label-box:hover {
+  transform: scale(1.08);
+  border-color: var(--color-primary);
+}
+/* 内部小方块 */
+.label-box::after {
+  content: "";
+  width: 60%;
+  height: 60%;
+  background: var(--color-primary);
+  border-radius: calc(6px / 1.5);
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.2s ease;
+}
+/* 选中效果 */
+.radio-group input[type="radio"]:checked+.label-box {
+  border-color: var(--color-primary);
+}
+.radio-group input[type="radio"]:checked+.label-box::after {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/**
+ * Checkbox input
+ */
+.checkbox {
+       display: inline-flex;
+       align-items: center;
+       cursor: pointer;
+       gap: 8px;
+       user-select: none;
+   }
+
+/* 隐藏原生 checkbox */
+.checkbox input {
+    display: none;
+}
+
+/* 自定义方框 */
+.checkbox .box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--color-fg);
+    border-radius: 4px;
+    position: relative;
+    background: transparent;
+    transition: all 0.2s;
+}
+
+/* 打勾（✔） */
+.checkbox .box::after {
+    content: "";
+    position: absolute;
+    left: 3px;
+    top: 0px;
+    width: 6px;
+    height: 10px;
+    border: solid var(--color-primary);
+    border-width: 0 3px 3px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.2s ease;
+}
+
+/* 选中状态 */
+.checkbox input:checked + .box::after {
+    transform: rotate(45deg) scale(1);
+}
+
+/* hover 效果 */
+.checkbox:hover .box {
+    transform: scale(1.1);
+}
+
+/**
+* ---------
+* Text input
+* ---------
+*/
+
+.text-input {
+  padding: 10px 14px;
+  font-size: 15px;
+
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+
+  background: var(--color-bg2);
+  color: var(--color-fg);
+
+  outline: none;
+  transition: 0.2s;
+
+}
+
+.text-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* 隐藏 number 输入框默认上下箭头 */
+input[type="number"].text-input::-webkit-outer-spin-button,
+input[type="number"].text-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"].text-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+
+/**
+* ---------
+* File input
+* ---------
+*/
+
+.file-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--color-bg2);
+  border: 1px solid var(--color-border);
+
+  width: fit-content;
+}
+
+/* 隐藏原生 input */
+.file-upload input[type="file"] {
+  display: none;
+}
+
+/* 自定义按钮 */
+.file-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: var(--color-btn);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+/* hover效果 */
+.file-btn:hover {
+  background: var(--color-primary-soft);
+}
+
+/* 点击按下 */
+.file-btn:active {
+  transform: scale(0.96);
+}
+
+/* 文件显示 */
+.file-display {
+  font-size: 14px;
+  color: var(--color-fg);
+  max-width: 220px;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 图片缩略图 */
+.file-preview {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}

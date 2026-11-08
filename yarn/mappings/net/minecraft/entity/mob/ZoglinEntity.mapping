@@ -1,0 +1,35 @@
+CLASS net/minecraft/class_5136 net/minecraft/entity/mob/ZoglinEntity
+	FIELD field_23731 USED_SENSORS Lcom/google/common/collect/ImmutableList;
+	FIELD field_23732 movementCooldownTicks I
+	FIELD field_23733 USED_MEMORY_MODULES Lcom/google/common/collect/ImmutableList;
+	FIELD field_23734 BABY Lnet/minecraft/class_2940;
+	FIELD field_30506 DEFAULT_KNOCKBACK_RESISTANCE F
+	FIELD field_30507 DEFAULT_ATTACK_DAMAGE I
+	FIELD field_30508 BABY_ATTACK_DAMAGE F
+	FIELD field_30509 ADULT_MELEE_ATTACK_COOLDOWN I
+	FIELD field_30510 BABY_MELEE_ATTACK_COOLDOWN I
+	FIELD field_30511 ATTACK_TARGET_DURATION I
+	FIELD field_30512 DEFAULT_MOVEMENT_SPEED F
+	FIELD field_57695 DEFAULT_IS_BABY Z
+	METHOD method_26928 addCoreTasks (Lnet/minecraft/class_4095;)V
+		ARG 0 brain
+	METHOD method_26929 addIdleTasks (Lnet/minecraft/class_4095;)V
+		ARG 0 brain
+	METHOD method_26930 addFightTasks (Lnet/minecraft/class_4095;)V
+		ARG 0 brain
+	METHOD method_26931 tickBrain ()V
+	METHOD method_26933 playAngrySound ()V
+	METHOD method_26934 getHoglinTarget (Lnet/minecraft/class_3218;)Ljava/util/Optional;
+		ARG 1 world
+	METHOD method_26936 shouldAttack (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;)Z
+		ARG 1 world
+		ARG 2 target
+	METHOD method_26937 createZoglinAttributes ()Lnet/minecraft/class_5132$class_5133;
+	METHOD method_26938 setAttackTarget (Lnet/minecraft/class_1309;)V
+		ARG 1 entity
+	METHOD method_26939 isAdult ()Z
+	METHOD method_64468 (Lnet/minecraft/class_3218;Lnet/minecraft/class_5136;)Ljava/util/Optional;
+		ARG 0 world
+		ARG 1 target
+	METHOD method_64469 (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;)Z
+		ARG 2 target

@@ -1,0 +1,55 @@
+CLASS net/minecraft/class_2580 net/minecraft/block/entity/BeaconBlockEntity
+	FIELD field_11793 customName Lnet/minecraft/class_2561;
+	FIELD field_11795 primary Lnet/minecraft/class_6880;
+	FIELD field_11798 EFFECTS Ljava/util/Set;
+	FIELD field_11799 secondary Lnet/minecraft/class_6880;
+	FIELD field_11801 EFFECTS_BY_LEVEL Ljava/util/List;
+	FIELD field_11803 level I
+	FIELD field_17377 lock Lnet/minecraft/class_1273;
+	FIELD field_17378 propertyDelegate Lnet/minecraft/class_3913;
+	FIELD field_19177 beamSegments Ljava/util/List;
+	FIELD field_19179 minY I
+	FIELD field_31300 LEVEL_PROPERTY_INDEX I
+	FIELD field_31301 PRIMARY_PROPERTY_INDEX I
+	FIELD field_31302 SECONDARY_PROPERTY_INDEX I
+	FIELD field_31303 PROPERTY_COUNT I
+	FIELD field_31304 MAX_LEVEL I
+	FIELD field_40328 CONTAINER_NAME_TEXT Lnet/minecraft/class_2561;
+	FIELD field_45784 PRIMARY_EFFECT_NBT_KEY Ljava/lang/String;
+	FIELD field_45785 SECONDARY_EFFECT_NBT_KEY Ljava/lang/String;
+	METHOD <init> (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 pos
+		ARG 2 state
+	METHOD method_10936 setCustomName (Lnet/minecraft/class_2561;)V
+		ARG 1 customName
+	METHOD method_10938 playSound (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_3414;)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 sound
+	METHOD method_10940 applyPlayerEffects (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;ILnet/minecraft/class_6880;Lnet/minecraft/class_6880;)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 beaconLevel
+		ARG 3 primaryEffect
+		ARG 4 secondaryEffect
+	METHOD method_16896 tick (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2580;)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 blockEntity
+	METHOD method_20293 updateLevel (Lnet/minecraft/class_1937;III)I
+		ARG 0 world
+		ARG 1 x
+		ARG 2 y
+		ARG 3 z
+	METHOD method_53251 getEffectOrNull (Lnet/minecraft/class_6880;)Lnet/minecraft/class_6880;
+		ARG 0 effect
+	METHOD method_53252 readStatusEffect (Lnet/minecraft/class_11368;Ljava/lang/String;)Lnet/minecraft/class_6880;
+		ARG 0 view
+		ARG 1 key
+	METHOD method_53253 writeStatusEffect (Lnet/minecraft/class_11372;Ljava/lang/String;Lnet/minecraft/class_6880;)V
+		ARG 0 view
+		ARG 1 key
+		ARG 2 effect
+	METHOD method_55779 (Lnet/minecraft/class_11372;Ljava/lang/String;Lnet/minecraft/class_5321;)V
+		ARG 2 entryKey

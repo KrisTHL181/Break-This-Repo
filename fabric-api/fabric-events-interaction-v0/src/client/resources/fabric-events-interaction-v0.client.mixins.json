@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.event.interaction.client",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "MultiPlayerGameModeMixin",
+    "KeyMappingAccessor",
+    "MinecraftMixin",
+    "MouseHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

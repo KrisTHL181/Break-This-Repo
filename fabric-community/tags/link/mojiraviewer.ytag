@@ -1,0 +1,6 @@
+type: text
+
+---
+
+Unofficial Mojira Viewer by jacobsjo provides better UI for checking Mojira issues. Access here:
+<https://mojira-viewer.jacobsjo.eu/?jql=project+=+MC+AND+resolution+=+Unresolved>

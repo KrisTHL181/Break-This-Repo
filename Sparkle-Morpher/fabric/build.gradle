@@ -1,0 +1,100 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+loom {
+    accessWidenerPath = file('src/main/resources/sparkle_morpher.accesswidener')
+}
+
+apply from: rootProject.file('gradle/verify-native-abi.gradle')
+
+architectury {
+    platformSetupLoomIde()
+    fabric()
+}
+
+configurations {
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentFabric.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+dependencies {
+    // Loom 1.14 + JDK21 源码重映射（Mercury）需要 javax.annotation；缺失会导致
+    // cardinal-components 等依赖的 sources 重映射报 Pb(347) 并在配置阶段失败。
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    // Optional at runtime. Used only to compile the TaCZ: Refabricated compatibility bridge.
+    modCompileOnly "maven.modrinth:1j76DVHU:sqMweCpe"
+    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+
+    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
+
+    modImplementation "maven.modrinth:forge-config-api-port:$rootProject.forge_config_api_port_version"
+
+    modImplementation("dev.architectury:architectury-fabric:$rootProject.architectury_api_version") {
+        exclude group: "net.fabricmc.fabric-api", module: "fabric-api"
+    }
+    include "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
+    include "maven.modrinth:forge-config-api-port:$rootProject.forge_config_api_port_version"
+
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:$rootProject.cardinal_components_version"
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:$rootProject.cardinal_components_version"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-base:$rootProject.cardinal_components_version"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-entity:$rootProject.cardinal_components_version"
+
+    implementation "com.github.TartaricAlkaline:ImageStream:-SNAPSHOT"
+    include "com.github.TartaricAlkaline:ImageStream:-SNAPSHOT"
+
+    modCompileOnly "maven.modrinth:iris:1.8.8+1.21.1-fabric"
+    implementation "com.electronwill.night-config:core:3.9.0"
+    implementation "com.electronwill.night-config:toml:3.9.0"
+
+    implementation "com.electronwill.night-config:core:3.9.0"
+    implementation "com.electronwill.night-config:toml:3.9.0"
+
+    modCompileOnly "com.terraformersmc:modmenu:$rootProject.modmenu_version"
+
+    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+}
+
+processResources {
+    inputs.property 'version', project.version
+
+    filesMatching('fabric.mod.json') {
+        expand version: project.version
+    }
+
+    from(project(':common').sourceSets.main.resources)
+    from(rootProject.file('LICENSE.txt')) {
+        rename { 'LICENSE' }
+    }
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    if (rootProject.ext.isCurseForgeDist) {
+        rootProject.ext.distributionResourceExcludes(delegate)
+    }
+}
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = 'dev-shadow'
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    archiveFileName = rootProject.ext.distributionArchiveName("sparkle-morpher-${project.version}-fa1.21.1")
+}
+
+

@@ -1,0 +1,325 @@
+<#
+
+NOTE:
+
+This script assumes the latest MsQuic commit is built and downloaded as artifacts in the current session.
+
+.PARAMETER LogProfile
+    Configures the logging scope for the test. None by default.
+
+.PARAMETER MsQuicCommit
+    The MsQuic commit to use for the test. Defaults to "manual" which means the latest commit built and downloaded as artifacts in the current session.
+
+.PARAMETER plat
+    The platform (linux or windows) this test is running on.
+
+.PARAMETER os
+    The full OS name and version being tested (i.e., ubuntu-22.04).
+
+.PARAMETER arch
+    The architecture being tested (i.e., x64).
+
+.PARAMETER tls
+    The TLS library being used (quictls or schannel). Not all libraries are supported on all platforms.
+
+.PARAMETER io
+    The network IO interface to be used (not all are supported on all platforms).
+
+.PARAMETER serverio
+    The network IO interface to be used on the server (not all are supported on all platforms).
+
+.PARAMETER filter
+    Run only the tests whose arguments match one of the positive patterns but
+    none of the negative patterns (prefixed by '-'). '?' matches any single
+    character; '*' matches any substring; ';' separates two patterns.
+
+#>
+
+# Import the helper module.
+Using module .\secnetperf-helpers.psm1
+
+param (
+    [ValidateSet("", "NULL", "Basic.Light", "Datapath.Light", "Datapath.Verbose", "Stacks.Light", "Stacks.Verbose", "RPS.Light", "RPS.Verbose", "Performance.Light", "Basic.Verbose", "Performance.Light", "Performance.Verbose", "Full.Light", "Full.Verbose", "SpinQuic.Light", "SpinQuicWarnings.Light")]
+    [string]$LogProfile = "",
+
+    [Parameter(Mandatory = $true)]
+    [string]$MsQuicCommit = "manual",
+
+    [Parameter(Mandatory = $true)]
+    [string]$environment = "azure",
+
+    [Parameter(Mandatory = $true)]
+    [ValidateSet("windows", "linux")]
+    [string]$plat = "windows",
+
+    [Parameter(Mandatory = $true)]
+    [string]$os = "windows-2022",
+
+    [Parameter(Mandatory = $true)]
+    [ValidateSet("x64", "arm64")]
+    [string]$arch = "x64",
+
+    [Parameter(Mandatory = $true)]
+    [ValidateSet("quictls", "schannel", "openssl")]
+    [string]$tls = "schannel",
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("", "iocp", "xdp", "qtip", "wsk", "epoll", "iouring", "kqueue")]
+    [string]$io = "",
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet("", "iocp", "xdp", "qtip", "wsk", "epoll", "iouring","kqueue")]
+    [string]$serverio = "",
+
+    [Parameter(Mandatory = $false)]
+    [string]$filter = "",
+
+    [Parameter(Mandatory = $false)]
+    [string]$RemoteName = "netperf-peer",
+
+    [Parameter(Mandatory = $false)]
+    [string]$UserName = "secnetperf"
+)
+
+Set-StrictMode -Version "Latest"
+$PSDefaultParameterValues["*:ErrorAction"] = "Stop"
+
+function Is-XdpRequiredByIo {
+    param ($Io)
+
+    return ($Io -eq "xdp" -or $Io -eq "qtip")
+}
+
+$RunId = $env:netperf_run_id
+$SyncerSecret = $env:netperf_syncer_secret
+
+$psVersion = $PSVersionTable.PSVersion
+if ($psVersion.Major -lt 7) {
+    $IsWindows = $true
+}
+
+# Set up some important paths.
+$RemoteDir = "C:/_work/quic"
+if (!$isWindows) {
+    if ($UserName -eq "root") {
+        $RemoteDir = "/$UserName/_work/quic"
+    } else {
+        $RemoteDir = "/home/$UserName/_work/quic"
+    }
+}
+
+$SecNetPerfDir = "artifacts/bin/$plat/$($arch)_Release_$tls"
+$SecNetPerfPath = "$SecNetPerfDir/secnetperf"
+if ($io -eq "") {
+    if ($isWindows) {
+        $io = "iocp"
+    } else {
+        $io = "epoll"
+    }
+}
+if ($serverio -eq "") {
+    $serverio = $io
+}
+$NoLogs = ($LogProfile -eq "" -or $LogProfile -eq "NULL")
+if ($isWindows -and $NoLogs) {
+    # Always collect basic, low volume logs on Windows.
+    $LogProfile = "Basic.Light"
+}
+
+$useXDP = (Is-XdpRequiredByIo $io) -or (Is-XdpRequiredByIo $serverio)
+
+$Session = InitNetperfLib "quic_callback.ps1" $RemoteDir $RemoteName $UserName
+
+if ($Session -ne "NOT_SUPPORTED") {
+    # Make sure nothing is running from a previous run. This only applies to non-azure / 1ES environments.
+    Write-Host "NOT RUNNING ON AZURE AND POWERSHELL SUPPORTED"
+    Write-Host "Session: $Session, $(!($Session -eq "NOT_SUPPORTED"))"
+    Cleanup-State $Session $RemoteDir
+}
+
+# Create intermediary files.
+New-Item -ItemType File -Name "latency.txt"
+
+if ($io -eq "wsk") {
+    # WSK also needs the kernel mode binaries in the usermode path.
+    Write-Host "Moving kernel binaries to usermode path"
+    $KernelDir = "artifacts/bin/winkernel/$($arch)_Release_$tls"
+    Copy-Item "$KernelDir/secnetperfdrvpriv.sys" $SecNetPerfDir
+    Copy-Item "$KernelDir/secnetperfdrvpriv.pdb" $SecNetPerfDir
+    Copy-Item "$KernelDir/msquicpriv.sys" $SecNetPerfDir
+    Copy-Item "$KernelDir/msquicpriv.pdb" $SecNetPerfDir
+    # Remove all the other kernel binaries since we don't need them any more.
+    Remove-Item -Force -Recurse $KernelDir | Out-Null
+}
+
+Copy-RepoToPeer $Session
+
+# Create the logs directories on both machines.
+New-Item -ItemType Directory -Path ./artifacts/logs | Out-Null
+if ($Session -ne "NOT_SUPPORTED") {
+    Invoke-Command -Session $Session -ScriptBlock {
+        New-Item -ItemType Directory -Path $Using:RemoteDir/artifacts/logs | Out-Null
+    }
+}
+
+# Collect some info about machine state.
+if (!$NoLogs -and $isWindows) {
+    $Arguments = "-SkipNetsh"
+    if (Get-Help Get-NetView -Parameter SkipWindowsRegistry -ErrorAction Ignore) {
+        $Arguments += " -SkipWindowsRegistry"
+    }
+    if (Get-Help Get-NetView -Parameter SkipNetshTrace -ErrorAction Ignore) {
+        $Arguments += " -SkipNetshTrace"
+    }
+
+    Write-Host "::group::Collecting information on local machine state"
+    try {
+        Invoke-Expression "Get-NetView -OutputDirectory ./artifacts/logs $Arguments"
+        Remove-Item ./artifacts/logs/msdbg.$env:COMPUTERNAME -recurse
+        $filePath = (Get-ChildItem -Path ./artifacts/logs/ -Recurse -Filter msdbg.$env:COMPUTERNAME*.zip)[0].FullName
+        Rename-Item $filePath "get-netview.local.zip"
+        Write-Host "Generated get-netview.local.zip"
+    } catch { Write-Host $_ }
+    Write-Host "::endgroup::"
+
+    if ($Session -ne "NOT_SUPPORTED") {
+        Write-Host "::group::Collecting information on peer machine state"
+        try {
+            Invoke-Command -Session $Session -ScriptBlock {
+                Invoke-Expression "Get-NetView -OutputDirectory $Using:RemoteDir/artifacts/logs $Using:Arguments"
+                Remove-Item $Using:RemoteDir/artifacts/logs/msdbg.$env:COMPUTERNAME -recurse
+                $filePath = (Get-ChildItem -Path $Using:RemoteDir/artifacts/logs/ -Recurse -Filter msdbg.$env:COMPUTERNAME*.zip)[0].FullName
+                Rename-Item $filePath "get-netview.peer.zip"
+            }
+            Copy-Item -FromSession $Session -Path "$RemoteDir/artifacts/logs/get-netview.peer.zip" -Destination ./artifacts/logs/
+            Write-Host "Generated get-netview.peer.zip"
+        } catch { Write-Host $_ }
+        Write-Host "::endgroup::"
+    }
+}
+
+$json = @{}
+$json["commit"] = "$MsQuicCommit"
+# Persist environment information:
+if ($isWindows) {
+    $windowsEnv = Get-CimInstance Win32_OperatingSystem | Select-Object Version
+    $json["os_version"] = $windowsEnv.Version
+} else {
+    $osInfo = bash -c "cat /etc/os-release"
+    $osInfoLines = $osInfo -split "`n"
+    $osName = $osInfoLines | Where-Object { $_ -match '^PRETTY_NAME=' } | ForEach-Object { $_ -replace '^PRETTY_NAME="|"$', '' }
+    $kernelVersion = bash -c "uname -r"
+    $json["os_version"] = "$osName $kernelVersion"
+}
+
+# Test all supported scenarios.
+$allScenarios = @("upload", "download", "hps", "rps", "rps-multi", "latency")
+
+$hasFailures = $false
+
+try {
+Prepare-MachineForTest $Session $RemoteDir
+
+if ($isWindows -and !($environment -eq "azure")) {
+    $HasTestSigning = $false
+    try { $HasTestSigning = ("$(bcdedit)" | Select-String -Pattern "testsigning\s+Yes").Matches.Success } catch { }
+    if (!$HasTestSigning) { Write-Host "Test Signing Not Enabled!" }
+}
+
+Configure-DumpCollection $Session
+
+# Install any dependent drivers.
+if ($useXDP -and $isWindows) { Install-XDP $Session $RemoteDir }
+if ($io -eq "wsk") { Install-Kernel $Session $RemoteDir $SecNetPerfDir }
+
+if (!$isWindows) {
+    if (!($Session -eq "NOT_SUPPORTED")) {
+        Invoke-Command -Session $Session -ScriptBlock {
+            $env:LD_LIBRARY_PATH = "${env:LD_LIBRARY_PATH}:$Using:RemoteDir/$Using:SecNetPerfDir"
+            chmod +x "$Using:RemoteDir/$Using:SecNetPerfPath"
+            if ($Using:os -eq "ubuntu-22.04") {
+                sudo sh -c "ethtool -K eth0 generic-receive-offload on"
+            }
+        }
+    }
+    $fullPath = Repo-Path $SecNetPerfDir
+    $env:LD_LIBRARY_PATH = "${env:LD_LIBRARY_PATH}:$fullPath"
+    chmod +x "./$SecNetPerfPath"
+    if ($os -eq "ubuntu-22.04") {
+        sudo sh -c "ethtool -K eth0 generic-receive-offload on"
+    }
+}
+
+Write-Host "Fetching watermark_regression.json"
+$regressionJson = Get-Content -Raw -Path "watermark_regression.json" | ConvertFrom-Json
+
+# Run all the test cases.
+Write-Host "Setup complete! Running all tests"
+foreach ($scenario in $allScenarios) {
+    $Output = Invoke-Secnetperf $Session $RemoteName $RemoteDir $UserName $SecNetPerfPath $LogProfile $scenario $io $ServerIo $filter $environment $RunId $SyncerSecret
+    $Test = $Output[-1]
+    if ($Test.HasFailures) { $hasFailures = $true }
+
+    for ($tcp = 0; $tcp -lt $Test.Values.Length; $tcp++) {
+        if ($Test.Values[$tcp].Length -eq 0) { continue }
+        if ($tcp -eq 1) {
+            $transport = "tcp"
+        } else {
+            $transport = "quic"
+        }
+        $json["$scenario-$transport"] = $Test.Values[$tcp]
+
+        if ($Test.Metric -eq "latency") {
+            $json["$scenario-$transport-lat"] = $Test.Latency[$tcp]
+            $LatencyRegression = CheckRegressionLat $Test.Values[$tcp] $regressionJson $scenario $transport "$os-$arch-$environment-$io-$tls"
+            $json["$scenario-$transport-regression"] = $LatencyRegression
+        } else {
+            $ResultRegression = CheckRegressionResult $Test.Values[$tcp] $scenario $transport $regressionJson "$os-$arch-$environment-$io-$tls"
+            $json["$scenario-$transport-regression"] = $ResultRegression
+        }
+    }
+}
+
+Write-Host "Tests complete!"
+
+} catch {
+    Write-GHError "Exception while running tests!"
+    Write-GHError $_
+    Get-Error
+    $_ | Format-List *
+    $hasFailures = $true
+} finally {
+
+    # Perform any necessary cleanup.
+    try {
+        if ($Session -eq "NOT_SUPPORTED") {
+            throw "Cleanup not needed"
+        }
+        Cleanup-State $Session $RemoteDir
+     } catch { }
+
+    try {
+        if (Get-ChildItem -Path ./artifacts/logs -File -Recurse) {
+            # Logs or dumps were generated. Copy the necessary symbols/files to
+            # the same direcotry be able to open them.
+            Write-Host "Copying debugging files to logs directory"
+            if ($isWindows) {
+                Copy-Item "$SecNetPerfDir/*.pdb" ./artifacts/logs
+            } else {
+                Copy-Item "$SecNetPerfDir/libmsquic.so" ./artifacts/logs
+                Copy-Item "$SecNetPerfDir/secnetperf" ./artifacts/logs
+            }
+        }
+    } catch { }
+
+    # Save the test results.
+    Write-Host "`Writing json-test-results-$environment-$os-$arch-$tls-$io.json"
+    $json | ConvertTo-Json -Depth 4 | Set-Content -Path "json-test-results-$environment-$os-$arch-$tls-$io.json"
+}
+
+# Clear out any exit codes from previous commands.
+$global:LastExitCode = 0
+
+if ($hasFailures) {
+    exit 1
+}

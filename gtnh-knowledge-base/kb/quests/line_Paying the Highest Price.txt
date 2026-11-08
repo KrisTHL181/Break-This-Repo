@@ -1,0 +1,393 @@
+# 任务线: Paying the Highest Price
+### [432] A Bloodmage's Sword
+Diamonds and emeralds are limited in their ability to store LP. With this sword, you are able to get the crystallized souls from your enemies. Time to go hunting.  [warn]While active, all bound tools, including this sword, will actively draw LP from your network. This can have deadly consequences if you run out of LP, so be sure you have a reliable source.[/warn]
+  - [提交] AWWayofTime:energySword
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinBloodII x5
+
+### [712] Advanced Rituals
+More powerful rituals require dusk runes. With your new dusk chalk, you can enhance your ritual diviner to place those. Allowing you to perform a lot more rituals.
+  - [提交] AWWayofTime:itemRitualDiviner:1
+  > 奖励: AWWayofTime:demonicSlate x2 | enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [410] Alchemy With Blood
+Not like "blood alchemy". You probably will need more than one later, but for now one is sufficient.  Place an orb in the slot to start crafting, using LP from your network. You'll need higher tier orbs to craft more complicated items.  If the LP in your network falls to 0 while you're working with this alchemy, you will get a permanent Nausea debuff until it is increased again.
+  - [提交] AWWayofTime:blockWritingTable
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinChemistII | dreamcraft:CoinBloodII
+
+### [423] Apprentice Orb
+Your tier 2 orb.
+  - [提交] AWWayofTime:apprenticeBloodOrb
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [707] Archmage Orb. Let Them Come!
+Your tier 5 orb.
+  - [提交] AWWayofTime:archmageBloodOrb
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [701] Ascended
+You feel empowered, light, almost like a ghost.
+  - [提交] AWWayofTime:transcendentBloodOrb
+  > 奖励: enhancedlootbags:lootbag:18 x2 | dreamcraft:CoinBloodII x5
+
+### [437] A true blood-mage
+Bloodmagic is fine, so is Thaumcraft. Why not combine both worlds?
+  - [提交] AWWayofTime:sanguineHelmet, AWWayofTime:sanguineRobe, AWWayofTime:sanguinePants, AWWayofTime:sanguineBoots
+  > 奖励: Thaumcraft:ItemResource:2 x16 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinBloodII x2
+
+### [409] Basic Rune
+The Blood Rune is the basic rune that makes up blood altars, expect to make a lot of them.  You need 8 runes for your tier 2 altar. You can make new stuff with your upgraded altar.
+  - [提交] AWWayofTime:AlchemicalWizardrybloodRune x8
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinBloodII
+
+### [926] Blood Altar Tier 3
+To make your altar more powerful you need to upgrade it. Add another ring of Blood Runes with a two-high pillar of blood-soaked thaumium blocks at each corner. Top each of the pillars with a block of glowstone.  View the structure preview in NEI or visit [url]https://wiki.gtnewhorizons.com/wiki/Blood_Altar[/url] for images on how it should look.
+  - [可选提交] Thaumcraft:blockCosmeticSolid:4 x8
+  - [提交] minecraft:glowstone x4, dreamcraft:BloodyThaumium x8
+  > 奖励: AWWayofTime:AlchemicalWizardrybloodRune x8 | dreamcraft:CoinBloodII x5
+
+### [927] Blood Altar Tier 4
+If you want to make tier 4 slates you need a Tier 4 altar. This can be made like the tier 3 altar with pillars out of void-blood-soaked stones four blocks high and a blood brick on top of the pillars.
+  - [可选提交] AWWayofTime:ritualStone x4, AWWayofTime:weakBloodShard, thaumicbases:voidBlock x16
+  - [提交] AWWayofTime:largeBloodStoneBrick x4, dreamcraft:BloodyVoid x16
+  > 奖励: AWWayofTime:speedRune x8 | dreamcraft:CoinBloodII x5
+
+### [928] Blood Altar Tier 5
+If you want to make tier 5 slates you need a Tier 5 altar. This can be made with 4 beacons. Beacons have thaumcraft recipes and can be found in the thaumcraft book on the GTNH page. The quest is most of the way through adept thaumaturgy.
+  - [提交] minecraft:beacon x4
+  > 奖励: AWWayofTime:AlchemicalWizardrybloodRune:1 x8 | dreamcraft:CoinBloodIII
+
+### [929] Blood Altar Tier 6
+The highest tier of the blood altar is tier 6. You need pillars of blood-soaked ichorium 7 blocks high and on top the crystal cluster blocks made out of demon soul shards.
+  - [可选提交] ThaumicTinkerer:kamiResource:2 x56 (ore:ingotIchorium)
+  - [可选提交] gregtech:gt.blockmetal8:13 x28
+  - [提交] AWWayofTime:blockCrystal x4, dreamcraft:BloodyIchorium x28
+  > 奖励: AWWayofTime:AlchemicalWizardrybloodRune:5 x8 | dreamcraft:CoinSmithIII | dreamcraft:CoinChemistIII | dreamcraft:CoinBloodIII
+
+### [2451] Blood Letters Pack
+The Blood Letters Pack will damage you by half a heart until you're at half health (accounts for extra health!), and stores 100 LP each time up to 10,000. You can then use it on an altar to deposit the contents so long as it's not currently crafting something.
+  - [提交] AWWayofTime:itemBloodPack
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinBloodII
+
+### [431] Bound Armor
+Time to assemble your armor. You need to build the pattern with blocks as you would craft the armor in a crafting table. The soul forge must connect to the structure on at least 2 sides. Then, right-click the forge block with an empty hand to craft the armor piece.
+  - [提交] AWWayofTime:boundHelmet, AWWayofTime:boundPlate, AWWayofTime:boundLeggings, AWWayofTime:boundBoots
+  > 奖励: AWWayofTime:armourInhibitor | enhancedlootbags:lootbag:17 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinBloodII x2
+
+### [436] Bound Tools: Axe
+Upon right-clicking while activated, this axe will clear out any wood within a large area. Be warned: This uses a huge amount of LP. You might suffer from sudden death...
+  - [提交] AWWayofTime:boundAxe
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinBloodII x2
+
+### [434] Bound Tools: Pickaxe
+Mining never was easier. Just right-click with this tool and all the stone is gone! Like all bound tools, this uses a massive amount of LP.  [note]Watch out for falling into lava![/note]
+  - [提交] AWWayofTime:boundPickaxe
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinBloodII x2
+
+### [435] Bound Tools: Shovel
+Ever wanted to clear out a large piece of terrain with dirt, gravel and sand? Why not let demons do it? This shovel, imbued with the soul of a demon will unleash the power by your will. But be warned: The demon you're about to summon with this is thirsty, and it costs a lot of LP to make use of it, so make sure your LP pool is full!  [note]Will not dig beneath you.[/note]
+  - [提交] AWWayofTime:boundShovel
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinBloodII x2
+
+### [438] Complex Spell System
+Unlike the simple spells with foci and paradigm, the complex spell system is incredibly...complex. There are way too many combinations to cover them here, so it's advised to look for the knowledge in other places. However, with the items from this quest, you are able to craft a simple mining spell.
+  - [提交] AWWayofTime:AlchemicalWizardrytile.blockSpellParadigm
+  - [提交] AWWayofTime:AlchemicalWizardrytile.blockSpellEffect:3
+  - [提交] AWWayofTime:AlchemicalWizardrytile.blockSpellModifier:3
+  - [提交] AWWayofTime:AlchemicalWizardrytile.blockSpellEnhancement, AWWayofTime:AlchemicalWizardrytile.blockSpellEnhancement:10
+  - [提交] AWWayofTime:itemComplexSpellCrystal
+  > 奖励: bq_standard:choice | dreamcraft:CoinBloodII x2
+
+### [714] Convocation of the Damned
+Time to open a portal to the Demonic Realm. What could possibly go wrong? (It's recommended to do this ritual in a space dimension, as the demon city spreads up to 1000x1000 blocks)  [note]You should also be starting the ritual from the ground rather than in the air for the best results![/note]  Requirements: - 15M LP (Archmage Blood Orb and >= 13 Runes of the Orb) - 8 Crystal Belljars (one filled with each of: magicales, potentia, incendium, terrae, tenebrae, sanctus, aether, and aquasalus) - 1 Sacrifice (Bottle a lesser demon/elemental in a soul vial) - 1 Master Ritual Stone, 128 Ritual Stones, and 1 Blood Altar - 1 Awakened Activation Crystal  Steps to the Ritual: 1. Use a Ritual Diviner to place all the Ritual Stones. 2. Place the Belljars atop the 8 pillars surrounding the center. 3. Link the Belljars to the Master Ritual Stone. 4. Place the Blood Altar on top of the Master Ritual Stone. 5. Start the ritual with the Awakened Activation Crystal. 6. The Belljars are drained of their reagents. 7. Kill the lesser demon/elemental with a Dagger of Sacrifice. 8. The Demon Portal is opened.  For more details and images, visit [url]https://wiki.gtnewhorizons.com/wiki/Convocation_of_the_Damned[/url]  [warn]The OW is now blacklisted for the portal. Too many people did not follow the recommendation and servers suffered for it. It also does not work well in the Personal Dimension.[/warn]
+  - [提交] AWWayofTime:blockCrystalBelljar, AWWayofTime:blockCrystalBelljar, AWWayofTime:blockCrystalBelljar, AWWayofTime:blockCrystalBelljar, AWWayofTime:blockCrystalBelljar, AWWayofTime:blockCrystalBelljar, AWWayofTime:blockCrystalBelljar, AWWayofTime:blockCrystalBelljar
+  - [提交] AWWayofTime:ritualStone x128
+  - [可选提交] AWWayofTime:activationCrystal:1
+  > 奖励: AWWayofTime:demonicSlate x8 | enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodIII
+
+### [1325] Dagger of Sacrifice
+Time to get more blood. Mobs are a good source for more blood. Transform your knife of sacrifice in your tier 2 altar into a dagger of sacrifice.
+  - [提交] AWWayofTime:daggerOfSacrifice
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinSurvivorII | dreamcraft:CoinBloodII
+
+### [2456] Demon Blood Shards
+To get Demon Blood Shards, you'll need to summon and kill a demon. To summon one you'll need to arrange the pedestals around the plinth as such:  xpxpx xxxxx pxPxp xxxxx xpxpx  x=space, p=pedestal, P=plinth  Place a bound master orb on the plinth and the appropriate sacrifices on the pedestals. They must all be the same element. Specifically, Aether, Incendium, Aquasalus, Terrae, Tenebrae, or Sanctus.  After the lightning, the demon will appear. It won't always drop the shard, so prepare multiple sets.
+  - [提交] AWWayofTime:blockPedestal x6, AWWayofTime:blockPlinth
+  - [提交] AWWayofTime:demonBloodShard x3
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x3
+
+### [425] Elemental Chalk
+Necessary for rituals. You can technically use these to make the rituals, but just make the diviner.
+  - [提交] AWWayofTime:waterScribeTool, AWWayofTime:fireScribeTool, AWWayofTime:earthScribeTool, AWWayofTime:airScribeTool
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [709] Elemental Chalk II
+Enhanced elemental chalk, to write "darker" runes than you're used to...
+  - [提交] AWWayofTime:duskScribeTool
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [706] Ethereal Chalk
+Top tier chalk, for fancy wall paintings?
+  - [提交] AWWayofTime:dawnScribeTool
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [430] Getting Soul Shards
+Enable your sword by shift-right-clicking and slay some enemies! Collect as many shards as possible. You will need a ton of them...
+  - [提交] AWWayofTime:weakBloodShard x17
+  > 奖励: bq_standard:choice | dreamcraft:CoinBloodII x5
+
+### [2452] Glass Sacrificial Dagger
+The Glass Sacrificial Dagger works the same as the normal one, but gives you more LP and can cause you to bleed. The amount you get is randomized.  To get the Glass Shards, break normal Glass while holding Flint.  Unfortunately the glass version of the Dagger of Sacrifice might have some bugs, but other players are saying it works fine. Maybe try it yourself and report any issues.
+  - [提交] BloodArsenal:glass_sacrificial_dagger
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [713] High-end Rituals
+The last diviner so far, used for the most powerful rituals.
+  - [提交] AWWayofTime:itemRitualDiviner:2
+  > 奖励: AWWayofTime:bloodMagicBaseItems:27 x2 | enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [700] How Dark Can You Go?
+Seriously, how dark can one be? You're sure the face in that crystal was nothing but imagination...
+  - [提交] ForbiddenMagic:EldritchOrb
+  > 奖励: enhancedlootbags:lootbag:18 x4 | dreamcraft:CoinBloodIII
+
+### [715] Imbued Spell Upgrades
+With these new shards you're able to craft the most powerful spell components. Maybe it's time to upgrade your mining spell?
+  - [提交] AWWayofTime:AlchemicalWizardrytile.blockSpellEnhancement:3, AWWayofTime:AlchemicalWizardrytile.blockSpellEnhancement:8, AWWayofTime:AlchemicalWizardrytile.blockSpellEnhancement:13
+  > 奖励: AWWayofTime:bloodMagicBaseItems:29 x4 | AWWayofTime:bloodMagicBaseItems:28 x4 | enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [2453] Imperfect Ritual Stone
+This stone allows you to create simple rituals, such as changing the time to night, or summoning a thunderstorm.
+  - [提交] AWWayofTime:imperfectRitualStone
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [-5009088933424523272] Incense Crucible
+The forefather of the 1.12.2 Incense Altar.  The bonuses it gives are mostly similar, but the way it works is completely different. Each incense is meant to be tiered one after another. Currently you can only use §eWood Ash§r and §4Byrrus (Red)§r.  White smoke will come out when there is an incense in the crucible, and the crucible will light up when it finds a player to increase the incense value of. Once the player has an incense value greater than 0, their sacrificial knife will get super-charged, allowing the player to completely sacrifice all of their hearts but one.  Putting §eWood Ash§r in the crucible will increase the incense value from §90§r to §9400§r. §4Byrrus§r increases it from §9400§r to §9800§r. It cannot get you from §90§r to §9800§r alone.  The LP you get from self-sacrifice will get a boost depending on your §9Incense Value§r.  §dLP§r = §d200LP§r * §cHeartSacrificed§r * §bIncenseModifier§r  §bIncenseModifier§r = 1 + §9IncenseValue§r * 0.001
+  - [提交] AWWayofTime:blockCrucible
+  - [可选提交] AWWayofTime:bloodMagicIncenseItem, AWWayofTime:bloodMagicIncenseItem:1
+  > 奖励: bq_standard:choice
+
+### [2460] It Holds More, Ok?
+But why is it transparent?  [note]Does not actually hold more, doesn't render the blood in it properly, and can't be used in the altar. It does list the amount of blood you have in realtime though, and is used to make the next one.[/note]
+  - [提交] BloodArsenal:transparent_orb
+  > 奖励: enhancedlootbags:lootbag:18 x2 | dreamcraft:CoinBloodIII
+
+### [-8687505330958936569] Jeremy Fragrance
+The peak of all Incenses.  §dPurpura§r will increase your Incense from §92400§r to §93500§r.
+  - [提交] AWWayofTime:bloodMagicIncenseItem:4
+  > 奖励: bq_standard:choice
+
+### [424] Magican's Orb
+Your tier 3 orb.
+  - [提交] AWWayofTime:magicianBloodOrb
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [708] Master Orb: Getting Close
+Your tier 4 orb.
+  - [提交] AWWayofTime:masterBloodOrb
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [2458] Micro-Rituals
+Don't want to use all that space for rituals? Use the Soul Compactor to reduce them to a single block!
+  - [提交] BloodArsenal:compacter
+  > 奖励: enhancedlootbags:lootbag:17 x4 | dreamcraft:CoinBloodII x5
+
+### [417] Paradigm
+Paradigms shape your spell.
+  - [提交] minecraft:skull:1
+  - [提交] minecraft:skull
+  - [提交] minecraft:skull:2
+  - [提交] minecraft:skull:4
+  > 奖励: bq_standard:choice | dreamcraft:CoinBloodII x2
+
+### [161] Paying the Highest Price
+When regular magic just isn't enough, you need something... stronger. Which is paid with blood. Your blood, and maybe others'.  In tier 1 you only need to place the blood altar. Plan for the configuration to grow in size up to 23x23 for a single altar.  Keep in mind that you get less blood, and use more when crafting in GTNH. Plan for pain and frustration too.  The altar has a 10,000L blood tank, plus a 1,000L I/O buffer (you can pump in and out, but the rate is pitifully low at the start). Blood will flow to the I/O buffer until it's full, so be aware of that before your first craft.
+  - [提交] AWWayofTime:Altar
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinBloodII
+
+### [177] §oPoke§r
+Time to get some blood. You will have to start with your own...  You get 100LP in the altar for each use.
+  - [提交] AWWayofTime:sacrificialKnife
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinSurvivorII | dreamcraft:CoinBloodII
+
+### [164] Portable Battery...
+Using this binds it to you (expect to do that a lot), and consumes one heart while depositing 200LP in your 'soul network'. You can draw upon the soul network for anything that needs LP such as Alchemy or Rituals. If you want to automate it, you can put it into your altar for a 1:1 conversion of blood.  The highest tier orb you have bound will be considered the maximum limit to LP in your network, but you'll need to put it into the appropriately tiered altar to keep absorbing blood.
+  - [提交] AWWayofTime:weakBloodOrb
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinBloodI x5
+
+### [411] Potion Catalysts
+In order to manipulate potions you need catalysts. You then combine the ingredient you used to get the potion effect in with either a lengthening or power catalyst to increase the duration or the strength of the potion effect.
+  - [提交] AWWayofTime:mundaneLengtheningCatalyst x2, AWWayofTime:mundanePowerCatalyst x2, AWWayofTime:weakBindingAgent x2
+  > 奖励: AWWayofTime:simpleCatalyst x2 | enhancedlootbags:lootbag:16 | dreamcraft:CoinChemistI x5 | dreamcraft:CoinBloodI x5
+
+### [415] Potion: Flight Mode
+Just to give you an idea what is possible. Let's do a sample potion. Shall we? Get yourself a potion flask, a feather and one of your weak binding agents you made. Combine those in the chemistry set, and you'll get something that you'll probably want to keep for a while.
+  - [提交] AWWayofTime:alchemyFlask, minecraft:feather, AWWayofTime:weakBindingAgent
+  > 奖励: AWWayofTime:averageLengtheningCatalyst | dreamcraft:CoinChemistI x5 | dreamcraft:CoinBloodI x5
+
+### [429] Powerful Armor
+A long way to go, and rather expensive, but a really powerful armor and well worth the effort.
+  - [可选提交] AWWayofTime:emptySocket x28
+  - [可选提交] AWWayofTime:bloodSocket x28
+  - [提交] AWWayofTime:armourForge
+  > 奖励: AWWayofTime:weakBloodShard x8 | enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [703] Powerful Shards
+The demons summoned are rather strong, but their souls contain immense power!
+  - [可选提交] AWWayofTime:bloodMagicBaseItems:29 x20, AWWayofTime:bloodMagicBaseItems:28 x20
+  - [提交] AWWayofTime:blockCrystal x4
+  > 奖励: AWWayofTime:demonicSlate x4 | bq_standard:choice | dreamcraft:CoinSurvivorIII | dreamcraft:CoinBloodIII
+
+### [413] Refilling Your Potions
+If empty, you don't have to throw the potion away. Just refill it.
+  - [提交] AWWayofTime:weakFillingAgent
+  > 奖励: AWWayofTime:standardFillingAgent | enhancedlootbags:lootbag:16 | dreamcraft:CoinChemistI x5 | dreamcraft:CoinBloodI x5
+
+### [2462] Ritual Dismantler
+Use this to quickly dismantle a ritual.
+  - [提交] AWWayofTime:ritualDismantler
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII
+
+### [-8970426691467039793] Ritual of Gaia's Transformation
+The §5Ritual of Gaia's Transformation§r is the Blood Magic way of changing biomes. It consists of 116 Ritual Stones, including the Dusk ones, and requires an §9Awakened Activation Crystal§r.  To use the ritual, simply activate it, and it will transform an area up to §221x21§r.  If you want to change the biome you get from the ritual, use Arcane Plinths. The ritual starts from 0.5 humidity and 0.5 temperature, then consumes the items placed on the plinths to increase or decrease those values. It also starts by assuming a range of 0.1 is acceptable in both directions.  The items that modify these values are as follows: - Sand -> Humidity -0.1 - Sandstone -> Humidity -0.2 - Netherrack -> Humidity -0.4 - Lapis -> Humidity +0.1 - Water Bucket -> Humidity +0.2 - Lapis Block -> Humidity +0.4 - Coal -> Temperature +0.1 - Coal Block -> Temperature +0.2 - Lava Bucket -> Temperature +0.4 - Snowball -> Temperature -0.1 - Snow Block -> Temperature -0.2 - Ice Block -> Temperature -0.4  Once you have used the items to reach your desired environment, the ritual will give you a biome from it. If there are multiple biomes with that humidity and temperature, you can use wool to determine the exact one, for up to 17 conflicting biomes. If the ritual cannot find a valid biome, it will default to Plains.  Some cool ones include, but are not limited to: - Sky (also known as End) -> Orange Wool - Eldritch -> Cyan Wool - Eerie -> Light Gray Wool - TF Forest -> Pink Wool - Sacred Springs -> Yellow Wool - Tainted Land -> Purple or Blue Wool - Moon -> 0% Humidity, No Wool - Mars Flat -> 0% Humidity, White Wool - Asteroids -> 0% Humidity, Orange Wool - Space -> 0% Humidity, Magenta Wool - Toxic Everglades -> 70% Humidity, No Wool  [note]For the biome change to show up properly on the client, you may need to relog.[/note]
+  - [提交] AWWayofTime:masterStone, AWWayofTime:ritualStone x116
+  - [可选提交] AWWayofTime:activationCrystal:1
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [433] Rituals
+Time for some rituals. The most basic one you'll probably get first is the ritual of binding.  There are various rituals, some useful, some not. The other ones you're likely to care about are: Serenade of the Nether (if you don't like everburn urns), Ballad of Alchemy (for automating alchemy), Well of Suffering (for automating blood collection), Mark of the Falling Tower (summon a meteor filled with ore), and the endgame Convocation of the Damned.
+  - [提交] AWWayofTime:ritualStone x24, AWWayofTime:masterStone
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x5
+
+### [428] Rituals Made Easy
+Now that you have access to elemental chalk, you can get yourself the basic ritual diviner. A convenient way to place simple but yet complex magical rituals. Shift-right-click to cycle between rituals.
+  - [提交] AWWayofTime:itemRitualDiviner
+  > 奖励: AWWayofTime:imbuedSlate x2 | enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [463] Runes Tier 2
+The speed rune is the only tier 2 rune. The speed rune does what its name implies, provides an additive 25% increase to the processing speed of the blood altar.  HOWEVER, this makes it much more difficult to actually craft anything, so don't use them unless you're sure you can craft the item.
+  - [提交] AWWayofTime:speedRune x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinBloodII x2
+
+### [426] Sacrificial Runes
+Poking your finger might work for simple slates and runes, but getting enough blood for advanced stuff is tedious. With sacrificial runes you are able to increase the blood gain from mobs or yourself.  These increase the blood gain by 12% additively for each rune.
+  - [提交] AWWayofTime:runeOfSelfSacrifice x4, AWWayofTime:runeOfSacrifice x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinBloodII x2
+
+### [408] See All the Things
+It's quite difficult to see how much blood there is in your altar, or your personal blood network. This little device will solve that problem for you. Just a little prick in the finger, and everything will be revealed.  You can also make the sigil of sight when you have the alchemy set too.
+  - [提交] AWWayofTime:divinationSigil
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinBloodI x5
+
+### [412] Simple Alchemical Things
+Alchemy can be weird, and tedious. There are a lot of reagents and even more possible combinations. For now, and in order to get started, you need a couple of basic things.
+  - [可选提交] AWWayofTime:simpleCatalyst x16
+  - [提交] AWWayofTime:terrae x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5 | dreamcraft:CoinBloodI x5
+
+### [416] Simple, But Powerful Spells
+The simple spell system is rather easy to set up, and can be done early on in your blood magic career.
+  - [提交] AWWayofTime:blockHomHeart
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinBloodII x2
+
+### [-6681769780387992396] Smelling Even Better
+§3Livens§r will increase your Incense from §9800§r to §91500§r. §aViridis§r will increase it even further from §91500§r to §92400§r.
+  - [提交] AWWayofTime:bloodMagicIncenseItem:2, AWWayofTime:bloodMagicIncenseItem:3
+  > 奖励: bq_standard:choice
+
+### [419] Some Examples
+There are a LOT of spell combinations to discover, so just use trial and error!  [note]Or the internet.[/note]
+  - [提交] AWWayofTime:blankSpell
+  - [提交] minecraft:skull:4, minecraft:ice
+  - [提交] minecraft:skull:4, minecraft:ghast_tear
+  - [提交] minecraft:skull:2, AWWayofTime:apprenticeBloodOrb
+  > 奖励: dreamcraft:CoinBloodII x2
+
+### [414] Special Potion Flasks
+Regular glass phials are unable to hold these special potions you want. You need to imbue them with some blood from your altar.
+  - [提交] AWWayofTime:alchemyFlask x2
+  > 奖励: AWWayofTime:alchemyFlask | enhancedlootbags:lootbag:16 | dreamcraft:CoinChemistI x5 | dreamcraft:CoinBloodI x5
+
+### [418] Spell Foci
+There are nine basic elements and each has a focus, an item that represents them. You place this focus in your altar next to the spell table in order for your magic to flow through it and the paradigm.
+  - [提交] minecraft:flint_and_steel, minecraft:ice, minecraft:tnt
+  - [提交] minecraft:ghast_tear, minecraft:glowstone_dust, minecraft:water_bucket
+  - [提交] minecraft:obsidian, minecraft:ender_pearl, AWWayofTime:apprenticeBloodOrb
+  > 奖励: AWWayofTime:blankSpell | dreamcraft:CoinBloodII x2
+
+### [2457] Starter Key
+You need this to start Rituals. More complex rituals need the Activated version. To use it, bind it to yourself and right-click on the center of the ritual.  [note]The Energy Crystal needs to be fully charged.[/note]
+  - [提交] AWWayofTime:activationCrystal
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodII x2
+
+### [-7595617807436879192] Summon the Meteor!
+The Mark of the Falling Tower is among the most powerful magic you can achieve in GTNH. It allows you to summon a huge meteor full of various GT ores right where you want it. All you need is a particular catalyst item and a good amount of LP. Even better, you sometimes get access to ores before you could get them normally! Check out NEI for all the possible meteors. For example you can start by looking at the uses of a Pufferfish.  The meteor requires at least a singular block to see the sky above the master ritual stone. You can use the alchemical component Terrae to increase the radius of the meteor by 1. Using Orbis Terrae increases the radius by 2.  The meteor deals some damage but it does not deal environmental/block damage. Just be weary if you have villagers or important mobs nearby. The size of the meteor also increases the damage & radius by an enormous amount.  Multiblock miners can mine out the various ores spawned from the meteor, but there are other options too!
+  - [提交] AWWayofTime:masterStone, AWWayofTime:ritualStone x108
+  - [提交] minecraft:fish:3
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [407] Tier 1 Slates
+The basic slates. Basically just stone with blood infused in it.  You can either pump the blood out, use buckets, or fill cells to get the blood for the cutting machine.
+  - [可选提交] dreamcraft:ArcaneSlate x9
+  - [提交] AWWayofTime:blankSlate x9
+  > 奖励: AWWayofTime:blankSlate x12 | dreamcraft:CoinBloodII
+
+### [228] Tier 2 Sigils
+With Reinforced Slates, you can make new sigils.
+  - [提交] AWWayofTime:sigilOfTheFastMiner, AWWayofTime:growthSigil, AWWayofTime:waterSigil
+  > 奖励: enhancedlootbags:lootbag:16 | dreamcraft:CoinBloodII x5
+
+### [422] Tier 2 slates
+You need MOOORE. Imbue some slates with even more blood.
+  - [提交] AWWayofTime:reinforcedSlate x4
+  > 奖励: AWWayofTime:reinforcedSlate x8 | dreamcraft:CoinBloodII x5
+
+### [427] Tier 3 Runes
+The first rune increases the I/O from the altar's buffer by a multiplicative 50% rate, and the second increases your altar's capacity by 3500L. This also increases the size of the I/O buffer, which is always 10% of the altar.
+  - [提交] AWWayofTime:AlchemicalWizardrybloodRune:2 x4, AWWayofTime:AlchemicalWizardrybloodRune:1 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinBloodII x2
+
+### [406] Tier 3 Sigils
+They're actually useful this time.
+  - [提交] AWWayofTime:lavaSigil, AWWayofTime:sigilOfHolding, AWWayofTime:sigilOfMagnetism, AWWayofTime:itemBloodLightSigil, AWWayofTime:sigilOfTheBridge, AWWayofTime:voidSigil
+  > 奖励: enhancedlootbags:lootbag:17 | dreamcraft:CoinBloodIII
+
+### [421] Tier 3 Slates
+...and even more blood.
+  - [提交] AWWayofTime:imbuedSlate x4
+  > 奖励: AWWayofTime:imbuedSlate x4 | dreamcraft:CoinBloodII x5
+
+### [710] Tier 4 Runes
+Runes of Superior Capacity increase the Altar's size by 14% multiplicatively.  Runes of the Orb increase the soul network size by 4% each. You'll need them later on.
+  - [提交] AWWayofTime:AlchemicalWizardrybloodRune:3 x4, AWWayofTime:AlchemicalWizardrybloodRune:4 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinBloodII x5
+
+### [420] Tier 4 Sigils
+Are they useful? Maybe.
+  - [提交] AWWayofTime:airSigil, AWWayofTime:itemCompressionSigil, AWWayofTime:sigilOfElementalAffinity, AWWayofTime:sigilOfHaste, AWWayofTime:sigilOfSupression, AWWayofTime:sigilOfWind
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodIII
+
+### [704] Tier 4 Slates
+Tier 4 slates: Getting close.
+  - [提交] AWWayofTime:demonicSlate x4
+  > 奖励: AWWayofTime:demonicSlate x2 | enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodIII
+
+### [711] Tier 5 Runes
+The final frontier: There are not many runes available. The acceleration rune reduces the tick time until the next buffer I/O interaction. It starts at 20, and is reduced by 1 for each rune, with the minimum being 1.
+  - [提交] AWWayofTime:AlchemicalWizardrybloodRune:5 x4
+  > 奖励: enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodII x5
+
+### [2459] Tier 5 Sigils
+They're of seriously questionable utility this time, so why not try to get the blood arsenal ones as well? Collect them all!  PS: You need Lightning Sigils for the Transcendent Orb
+  - [提交] AWWayofTime:itemHarvestSigil, AWWayofTime:sigilOfEnderSeverance
+  - [提交] BloodArsenal:sigil_of_ender, BloodArsenal:sigil_of_lightning, BloodArsenal:sigil_of_augmented_holding, BloodArsenal:sigil_of_divinity, BloodArsenal:sigil_of_swimming
+  > 奖励: enhancedlootbags:lootbag:18 x5 | dreamcraft:CoinBloodIII
+
+### [702] Tier 5 slates
+1023 Buckets of blood in one slate! How much more I can store, oh I wish I would know. Then I add one and check if it works. 1024 buckets of blood in one slate! ... ...
+  - [提交] AWWayofTime:bloodMagicBaseItems:27 x4
+  > 奖励: AWWayofTime:bloodMagicBaseItems:27 x2 | enhancedlootbags:lootbag:18 | dreamcraft:CoinBloodIII
+
+### [2454] Well of Suffering
+The Well of Suffering damages mobs in a 6 block radius and feeds blood gained from them into an altar that is also within 6 blocks. Each mob costs 2 LP to damage, but give 10LP back. You can use Runes of Sacrifice to increase this. Very useful for automation!  [note]Instead of feeding it live mobs, you can also use the Extreme Entity Crusher (EEC) set to ritual mode for the same effect![/note]
+  - [提交] AWWayofTime:masterStone, AWWayofTime:ritualStone x36
+

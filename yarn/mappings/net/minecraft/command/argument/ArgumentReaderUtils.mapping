@@ -1,0 +1,4 @@
+CLASS net/minecraft/class_9010 net/minecraft/command/argument/ArgumentReaderUtils
+	METHOD method_58128 readWhileMatching (Lcom/mojang/brigadier/StringReader;Lnet/minecraft/class_5462;)Ljava/lang/String;
+		ARG 0 stringReader
+		ARG 1 predicate

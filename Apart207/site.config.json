@@ -1,0 +1,106 @@
+{
+  "site": {
+    "title": "合浦廉中第207研究所",
+    "short_title": "廉中207研究所",
+    "subtitle": "Lianzhong Institute 207 · Hepu",
+    "description": "深耕数理化生、电子及信息学等理工科领域，致力于推动基础科学发展",
+    "author": "廉中207研究所",
+    "email": "liymio@outlook.com",
+    "class": "2606班",
+    "icon": "assets/ico.svg",
+    "lang": "zh-CN"
+  },
+  "navigation": [
+    {
+      "title": "首页",
+      "path": "index.html",
+      "icon": "home"
+    },
+    {
+      "title": "关于我们",
+      "path": "about.html",
+      "icon": "info",
+      "children": [
+        {
+          "title": "研究所简介",
+          "path": "about.html"
+        },
+        {
+          "title": "成员详情",
+          "path": "members.html"
+        },
+        {
+          "title": "历史趣事",
+          "path": "history.html"
+        },
+        {
+          "title": "发展历程",
+          "path": "timeline.html"
+        },
+        {
+          "title": "公开财务",
+          "path": "finance.html"
+        }
+      ]
+    },
+    {
+      "title": "特别鸣谢",
+      "path": "credits.html",
+      "icon": "heart"
+    },
+    {
+      "title": "团队成员",
+      "path": "team.html",
+      "icon": "users"
+    },
+    {
+      "title": "学术文章",
+      "path": "papers/index.html",
+      "icon": "document",
+      "children": [
+        {
+          "title": "文章列表",
+          "path": "papers/index.html"
+        },
+        {
+          "title": "文章模板",
+          "path": "papers/template.html"
+        },
+        {
+          "title": "撰写指南",
+          "path": "papers/writing-guide.html"
+        },
+        {
+          "title": "LaTeX 教程",
+          "path": "papers/latex-tutorial.html"
+        },
+        {
+          "title": "使用文档",
+          "path": "papers/docs.html"
+        },
+        {
+          "title": "电子答辩",
+          "path": "papers/defense/linux-subsystem-for-windows.html",
+          "children": [
+            {
+              "title": "Linux Subsystem for Windows",
+              "path": "papers/defense/linux-subsystem-for-windows.html"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "联系我们",
+      "path": "contact.html",
+      "icon": "mail"
+    }
+  ],
+  "build": {
+    "content_dir": "content",
+    "output_dir": "public",
+    "template_dir": "templates",
+    "assets_dir": "assets",
+    "default_template": "page.html"
+  }
+}

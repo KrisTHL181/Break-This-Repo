@@ -1,0 +1,26 @@
+OWNERDOMAIN=spotify.com
+spotify.com, 1, DIRECT
+spotify.com, 1102, DIRECT
+google.com, pub-4438537725609581, DIRECT, f08c47fec0942fa0
+rubiconproject.com, 13440, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 209853, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 13698, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 209724, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 18848, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 22240, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 214118, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 22874, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 214435, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 16766, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 211381, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 23352, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 214674, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 22600, DIRECT, 0bfd66d529a55807
+rubiconproject.com, 214298, DIRECT, 0bfd66d529a55807
+telaria.com, 6wi8l-w9lf7, DIRECT, 1a4e959a1b50034a
+tremorhub.com, 6wi8l-w9lf7, DIRECT, 1a4e959a1b50034a
+telaria.com, 6wi8l-uaarg, DIRECT, 1a4e959a1b50034a
+tremorhub.com, 6wi8l-uaarg, DIRECT, 1a4e959a1b50034a
+indexexchange.com, 185387, DIRECT, 50b1c356f2c5c8fc
+openx.com, 539168787, DIRECT, 6a698e2ec38604c6
+openx.com, 537141249, DIRECT, 6a698e2ec38604c6

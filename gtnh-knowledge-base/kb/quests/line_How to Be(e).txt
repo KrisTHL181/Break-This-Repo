@@ -1,0 +1,424 @@
+# 任务线: How to Be(e)
+### [2745] A Backpack for Bees
+It's exactly what it says. It's also incredibly useful.
+  - [提交] Forestry:apiaristBag
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x5
+
+### [2747] A Bag for Butterflies, §oyawn§r
+I'm not sure this has any utility value since the butterflies are going to all be in chunkloaded areas, and thus near your base, but feel free to make it anyway.
+  - [提交] Forestry:lepidopteristBag
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x5
+
+### [1111] A Chest for Bees
+A chest for bees only. It can hold up to 125 different bees in one chest.
+  - [可选提交] Forestry:beeCombs x3 (ore:beeComb), gregtech:gt.metaitem.01:27305, Forestry:crate x5
+  - [提交] Forestry:apicultureChest
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x5
+
+### [2746] A Chest for...Butterflies? Really?
+Store your completely useless butterflies in this.
+  - [提交] Forestry:lepidopterology
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x5
+
+### [513] Advanced Mutatron
+A more advanced version of the mutatron. It uses more energy to mutate a drone with a princess, and you can select which mutation you want to have. This machine is a must-have for high-tier bees.  [note]You'll need neutronium bees to make this.[/note]
+  - [提交] gendustry:MutatronAdv
+  > 奖励: gendustry:Labware x5 | dreamcraft:CoinBeesII x5 | enhancedlootbags:lootbag:27
+
+### [1123] Alvearies
+The alveary is an advanced variant of the apiary. The alveary allows for combs to be produced faster due to its natural speed increase to production (as well as the ability to add up to six frames via the Extra Bees frame housings) and due to its ability to be modified by other blocks.  It is possible to adjust the internal temperature of the alveary using the alveary heater or alveary fan in order to accommodate bees that require hotter or colder climates.  Certain bees will not produce their specialty items unless they are Jubilant. This requires matching their preferred Temperature/Humidity, without any genetic modifiers. Some bees also need a block of something beneath them as well.  It is also possible to use mutators to increase chances of mutation, alveary lighting and alveary rain shield to allow bees without the nocturnal and tolerant flyer traits to work during the night and rain, respectively, and the swarmer to use excess royal jelly to create princesses that last for a limited number of generations.  [note]If you're mutating bees that need a specific block in it, you need to place the required block under the middle bottom, and have the one directly above be a normal alveary block.[/note]
+  - [可选提交] gregtech:gt.metaitem.02:19086 x432, Forestry:royalJelly x216, Forestry:pollen x216 (ore:itemPollen)
+  - [可选提交] Forestry:beeswax x432, Forestry:oakStick x648, gregtech:gt.metaitem.01:30725 x216
+  - [可选提交] Forestry:craftingMaterial:6 x216
+  - [可选提交] minecraft:log x216 (ore:logWood), gregtech:gt.metaitem.01:30713 x7
+  - [可选提交] Forestry:impregnatedCasing x27, Forestry:craftingMaterial:6 x216
+  - [提交] Forestry:alveary x27
+  - [可选提交] minecraft:wooden_slab x9
+  > 奖励: Forestry:royalJelly x16 | Forestry:propolis:3 x32 | dreamcraft:CoinBeesI x5 | enhancedlootbags:lootbag:26
+
+### [503] Analyze Them All
+Every bee has multiple properties that define what the bee does, how it behaves in rain or at night, and a couple of other aspects. It is mandatory to keep track of those properties. This kit isn't very good since it doesn't give you information on their Inactive attributes, but waste not, want not.  You'll need to use paper to analyze each bee.
+  - [提交] BinnieCore:fieldKit:63
+  > 奖励: enhancedlootbags:lootbag:25 | minecraft:paper x5 | dreamcraft:CoinBees x25
+
+### [518] And There Shall be Light
+Out of princesses to inject traits to? Too lazy to find hives and get more bees? Not a problem. With this nifty little device, you can use a ton of power, liquid DNA and protein to create any bee you wish to have. The only drawback is: All bees will be ignoble, which means they will die after a random amount of cycles after 90.  Of course, there's an upgrade for the industrial apiary to deal with that
+  - [提交] gendustry:Replicator
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [502] A New Home
+Now that you've destroyed the poor bees' homes, you should build them a new one. The humble Bee House will not let your bees mutate into new species. But you'll need the combs anyways for better housing. The production rate isn't too bad, but they cannot be automated.  One tip - Put some vanilla saplings near the Bee Houses. Bee Houses give a natural boost of 3x to pollination vs better housing. The bees will pollinate them and you might get lucky and start getting some Forestry tree crossbreeding. Stick with Oak and Birch trees, they'll give you a nice mix of starter Forestry trees.  Of course, if you do this without taking precautions, you may find yourself swarmed by laggy butterflies...  You may also notice that bees with the 'flower' type flower spread flowers. This can be used to get, say, lavender, among others. If you don't like them spreading them everywhere, replace the dirt/grass blocks, remove the trait, or reduce the pollination speed/territory.
+  - [提交] Forestry:apiculture:2
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:beeCombs:4 | dreamcraft:CoinBees x25
+
+### [996] Apiarist's Cloth
+If you have collected 24 woven silk you can make a complete Apiarist's suit to be protected from bee stings and other bad bee effects. You can also use the suit parts to upgrade your EnderIO Dark Steel Armor to have the same effect.
+  - [可选提交] Forestry:craftingMaterial:3 x24
+  - [提交] Forestry:apiaristHelmet, Forestry:apiaristChest, Forestry:apiaristLegs, Forestry:apiaristBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithI x5 | dreamcraft:CoinBeesI x5 | dreamcraft:CoinSurvivorI x5
+
+### [516] A Rather Cruel Disposal
+You'll probably end up with a lot of excess drones while doing bees. (Or saplings if you do trees). Instead of throwing them away, you could also turn them into... something useful.
+  - [提交] gendustry:Extractor
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [1515] Are the Bees Buzzing, or Screaming?
+These frames cause mutations at an increased rate. They're super useful.  About the stats on frames you see when holding shift, you'll note that some have a different number in brackets next to them, this means that this is the maximum they can be stacked. This only applies to the Extra Bees ones.  The stats on the frames are also multiplicative instead of additive, so after 4 frames in an alveary, soul frames will max out. On the other hand, accelerated frames will take 9 to get there, but you can just keep on going.  If you pile up the multipliers, 5x from stimulator, 3x from mutator, and 4x1.8x frames, it'll get you to 157x, getting you those 1% bees in a single generation!
+  - [提交] ExtraBees:hiveFrame.soul, miscutils:frameAccelerated, MagicBees:frameMetabolic
+  > 奖励: MagicBees:frameMetabolic x2 | dreamcraft:CoinBeesII | dreamcraft:CoinDarkWizardII | enhancedlootbags:lootbag:26
+
+### [517] Arnie's Blender
+They say breakfast is the most important meal of the day. This machine turns raw meat into liquid protein, which is used to create bees from scratch. Which has §oabsolutely nothing§r to do with breakfast.
+  - [提交] gendustry:Liquifier
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [2093] A Stim a Day Keeps the Doctor Awake
+Supporting circuit boards that can hold 4 electron tubes, the Electrical Stimulator provides a variety of functions. Use a Forestry Soldering Iron on an Intricate Circuit Board to set four slots worth of electron tubes. The tubes' capabilities are listed here as percentages:  Iron ET -> +0.5 Production Diamantine ET -> +1.5 Production Apatine ET -> 1.5x Pollination (Max 5x) Obsidian ET -> 0.8x Lifespan Lapis ET -> 1.5x Lifespan (Max 5x) Blazing ET -> Simulates Hellish temperature Golden ET -> 1.5x Mutation Rate (Max 5x) Tin ET -> 0.4x Territory (Min 0.1) & -0.1 Production Bronze ET -> 1.5x Territory (Max 5x)  Genetic Decay is also increased by 50% for all of them. This affects how long until ignoble bees die off, so don't worry about it if your bees are pristine.  Remember that lifespan is represented by ticks, not time. You need a world accelerator if you want a lifespan that is really less than 1 tick.  [note]Breeder's Notes: 12x Golden ETs and 20x Obsidian ETs across eight of these will make a super breeding party alveary; it will spike your mutation chances while dramatically decreasing lifespan. If you have been using the oblivion frame in an apiary to shorten lifespan for breeding, then this *does not* replace that because you cannot use world accelerators in alvearies. So the shortest you can reduce a bee's life cycle to is 1 tick = 27 seconds. On the other hand, dramatically increasing the mutation rate in the alveary may be faster for crossbreeding.  Production Apiarist's Notes: Alternately, you can slam down three of these with: * 10x Diamantine * 2x Iron That'll take you right up to the production limit. Any higher and you risk your pristine princesses turning ignoble from overwork.[/note]
+  - [提交] ExtraBees:alveary:4
+  > 奖励: Forestry:thermionicTubes:3 x8 | enhancedlootbags:lootbag:26
+
+### [2108] Bee More Knowledgeable
+This database keeps track of everything bee.
+  - [提交] ExtraBees:dictionary
+  > 奖励: Forestry:beeDroneGE
+
+### [2089] Bees By the Millions
+If you need endgame high speed production, industrial apiaries are the way to go. Industrial Apiaries take upgrade frames that never break. Production frames can be stacked up to 8 high. It also has many options for emulation, more pollen retrieval, and others.  The Industrial Apiary is now a GT machine. It takes up to UV voltage and up to 4 amps but the base usage is just 37 EU/t. You can no longer use a World Accelerator and there is only the one machine, so no GT overclocking. Instead, there are new §oacceleration upgrades§r that act similar to a World Accelerator but are directly integrated into the machine. You will want to use them, they increase the speed and energy usage by a lot. The final tier also increases productivity.  But I shouldn't drone on too long. Go make one and find out yourself.
+  - [提交] gregtech:gt.blockmachines:9399
+  > 奖励: gregtech:gt.metaitem.03:32199 x4 | enhancedlootbags:lootbag:27 | kubatech:kubaitems:11
+
+### [2768] Bee Slurry, the Breakfast of, Well, Weirdos
+Why would you even need this?
+  - [提交] miscutils:frameDecaying
+  > 奖励: enhancedlootbags:lootbag:25 | gendustry:Waste x64
+
+### [514] Blank Gene Samples
+To get the various traits from a bee, you need a lot of power, labware and an empty gene sample. You don't need a lot of those, as you can just throw them in a furnace to remove remaining DNA of traits you don't need or want.  In the meantime you can start working with the Genetics mod, since we all know Gendustry is too easy... Genetics is used for bees, trees, and Botany flowers so it gets its own quest tab. Gendustry is really good for bees, but will require top tier equipment.
+  - [提交] gendustry:GeneSampleBlank x256
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x2
+
+### [1516] Breeding Bees Into Oblivion
+If bee breeding is a dice game, then these are the biggest factors you'd control to win:  1. Fertility: How many dice you can roll each turn. 2. Mutation Rate: How good of a roll you need to make. 3. Lifespan: How often you can play the game.  The Oblivion Frame dramatically helps with #3 by reducing the bee's lifespan to the point that you can play the breeding dice game in one "tick" of 27.5 seconds. A bee with the "Shortest" lifespan trait cycles for 10 ticks (275 seconds), so you'd minimally cut the cycle by a whole order of magnitude!  You can find Oblivion Frames in Stronghold libraries. This is how you can get them in the early game for very aggressive bee breeding. Later, you can make them from Dragon Eggs. These frames are very precious and you don't want their durability to run out. A typical repair method is to use a Thaumic Restorer on them.  §oWait, to find a Stronghold reliably, I need some Eyes of Ender, and that's an HV-tier Chemical Reactor recipe!§r If you happen to have a Large Chemical Reactor, remember that it overclocks perfectly, so you can crank er' up with a bunch of MV-tier Energy Input Hatches.  §nThe Oblivion Bee Meta §r The oblivion bee meta can be enough to breed most bees quickly. You could do the whole bee breeding quest line with it, but you can ultimately improve on it with Alvearies and genetic modification. What you need for this meta is:  1. An Apiary 2. An Oblivion Frame 3. Some way to repair the frame (typically: thaumic restorer) 4. A Beealyzer and a lot of honey  This is a hands-on process. You don't automatically send the princess and drones back through because you need to watch the oblivion frame's durability. You inspect all the offspring bees after each cycle and hand-pick which to try next after a pass through the Beealyzer.  You can accelerate the Apiary with a World Accelerator. [warn]Be sure to protect the World Accelerator and supporting equipment from rain![/warn] You can use glass or a breakable clear glass so the Apiary can still see the sky while the World Accelerator is protected. If you need to use batteries, you can use a State Cell to draw out a button pulse to the world accelerator so it runs juuust long enough for an accelerated cycle.
+  - [提交] MagicBees:frameOblivion
+  > 奖励: Forestry:apiculture x8 | dreamcraft:CoinBeesII x2 | dreamcraft:CoinDarkWizardII x2 | enhancedlootbags:lootbag:26
+
+### [2092] Busy Bees Buzzing Boldly
+These upgrades can significantly increase your production rate by keeping your bees from stopping production due to the environment.  Rain Shield - Can work through the rain Lighting - Can work day and night Alveary Heater - Increases temperature a flat 30% each (needs power) Alveary Fan - Decreases temperature a flat 20% each (needs power) Alveary Hygroregulator[sic] - Has two modes, water and lava Lava - Temp+10%, Humidity-20% Water - Temp-10%, Humidity+20%  Unfortunately, there's no way to make them like caves with a block.
+  - [提交] ExtraBees:alveary:2, ExtraBees:alveary:3, Forestry:alveary:4, Forestry:alveary:3, Forestry:alveary:5
+  > 奖励: Forestry:alveary | enhancedlootbags:lootbag:26
+
+### [1513] Death to Bees!
+These frames will let you kill your bees faster. It's to breed the next generation sooner, right? Not because you don't like them?
+  - [提交] ExtraBees:hiveFrame.cocoa, ExtraBees:hiveFrame.cage, MagicBees:frameNecrotic
+  > 奖励: MagicBees:frameNecrotic | dreamcraft:CoinBeesII | dreamcraft:CoinDarkWizardII | enhancedlootbags:lootbag:26
+
+### [510] Diamondware
+Also known as labware. Be prepared. In order to do serious bee-work, you need stacks of diamonds. I'm not joking, stacks! Better start working on that diamond bee!
+  - [提交] gendustry:Labware x256
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x3
+
+### [2103] Droning On
+§n§rFinally! You can hack bees*! You have two choices, and you will only ever need one. Either way you go, you will hatch the modified drone using an Incubator that's been loaded with Bacteria Vector afterwards.  Both scale their requirements by the number of genes you intend to apply to a single Larvae.  §nThe Inoculator§r  Run Time: 10 minutes per gene RF Cost: 600,000 RF per gene RF/t: 50 Bacteria Vector: 15 mB per gene.  This one has a lower power and recipe cost at the expense of needing Bacteria Vector, created by incubating Bacteria and Blaze Powder, to transfer the gene into organisms. The consumption for Bacteria Vector is quite low.  It is also §oslooooow§...  §r §nThe Splicer§r  Run Time: 1 minute per gene RF Cost: 12,000,000 RF per gene RF/t: §l1,000 §r The Splicer is much like the Inoculator in function, however it has the benefit of not requiring any liquid. Its power consumption is terrifying compared to the Inoculator, but overall it only consumes twice the RF despite gobbling it much faster.  *or trees and flowers via their pollen, or butterflies via their caterpillars.
+  - [提交] Genetics:machine:3, Genetics:advMachine
+  > 奖励: BinnieCore:containerCylinder:772 x8 | enhancedlootbags:lootbag:27
+
+### [-6691038780326978429] Enzyme on The Mind
+Both the Genepool and the Isolator will require Enzyme. This is a resource you will want to passively generate for continuous gene research. It will require Bacteria and sugar. Bacteria can be created from (fluid) Growth Medium and Wheat in an Incubator. If you then have a bunch of Growth Medium, you can keep using that instead to stretch out that Bacteria forever. It's kind of like a sourdough starter.  For sugar, there's plenty of ways to passively generate that, including from bees!
+  - [提交] Genetics:misc:3
+  > 奖励: Genetics:misc:3 x16
+
+### [2090] Fastest Way to Get There
+A GT++ Mutagenic frame will get your bees to their final destination faster than you can blink. Just remember to wear your rubber suit while making it!  [note]These will break in the alveary before they take effect since their durability is under 6. So you can only get to 125x, but I think that's enough, don't you?[/note]
+  - [提交] miscutils:frameMutagenic
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII x2 | dreamcraft:CoinBeesII x2
+
+### [2106] Figuring Out Butterflies
+Butterflies don't do much, but this analyzer will give you details on their abilities.
+  - [提交] Forestry:flutterlyzer
+  > 奖励: gregtech:gt.metaitem.03:32079 x4
+
+### [500] First Things First
+As usual. In order to get started with bees, you need a few basic things. Most importantly... a scoop. For this quest you want to make a GregTech scoop. Later you can make scoops using magic or even rechargeable scoops.
+  - [提交] gregtech:gt.metatool.01:28
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:beeCombs x4 | dreamcraft:CoinBees x25
+
+### [-4678624581095150088] Fluorescent Dye
+Here is another one requiring ingredients you'll want to passively generate. The Sequencer needs one (1) Fluorescent Dye per gene it sequences. Each one is made from one of each tossed into a Mixer:  * redstone * glowstone * orange dye * yellow dye * molten blaze (from blaze powder)  Given how many bees you'll end up sequencing to get all the key genes you want, expect to need at least some hundreds or even thousands of these. Yes, there are only so many actual genes, but you're going to be hitting duplicates.
+  - [提交] Genetics:misc:2
+  > 奖励: Genetics:misc:2 x4
+
+### [2109] Fluttering Facts
+This database tracks all your knowledge of butterflies.  BTW, see the BBB tab for the Botany stuff.
+  - [提交] ExtraTrees:databaseMoth
+  > 奖励: IC2:itemPartCircuitAdv x2
+
+### [1112] Frames
+Untreated frames are the simplest frames. They do not work in bee houses, only in apiaries or alvearies. You will need them to craft bee houses.  They increase the bee's performance. Each untreated frame will double a bee's productivity.
+  - [可选提交] minecraft:wooden_slab x9 (ore:slabWood), minecraft:string x3, minecraft:stick x15
+  - [合成] Forestry:frameUntreated x3
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:beeCombs x8 | dreamcraft:CoinBees x25
+
+### [2099] Gene Database
+Discovered genes are logged into the Gene Database. This handheld device lists all genes by the type of organism they apply to.  §oThis device requires an EV circuit! Of all the things in the Binnie's Genetics line, it has the most technologically sophisticated requirement! §r Use an Empty Serum Vial or Empty Serum Array on the different discovered traits to prepare a cocktail you want to inject into a Larvae. If you misclick, you can just click on the one you wanted without consequence.
+  - [提交] Genetics:database
+  > 奖励: Genetics:misc:6 x8 | Genetics:misc:7 x2 | enhancedlootbags:lootbag:26
+
+### [2095] Genepool
+You will need to feed Raw DNA into a Polymerizer to prime your gene samples for injection into Larvae. The Genepool eats Enzyme and guzzles Ethanol in order to produce more Raw DNA than you could ever find even in a public gas station's restroom.  It is basically a chipper shredder for your leftover drones. You were hoarding them because you might need them some day, right? Today's that day! Whatever you put in here is going to go bye-bye. Make sure you keep some of your different drones around just in case.  It will also take saplings, flowers, and any excess Larvae you should be pumping out by now for modification and hatching.
+  - [提交] Genetics:labMachine:3
+  > 奖励: BinnieCore:containerCylinder:771 | enhancedlootbags:lootbag:26
+
+### [511] Genetic Imprinter
+With this powerful machine, you can inject gene samples, which allows you to alter any aspect of your bee, tree or butterfly. The gene sample (or pattern) will not be destroyed.  The machine has a 40% chance to kill ignoble bees.  One labware is consumed per operation.
+  - [提交] gendustry:Imprinter
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [509] Genetic Sampler
+With this machine, you can extract a random trait from any bee, sapling, butterfly or flower. The bee/sapling/butterfly/flower will be destroyed in this process. Each process requires an empty gene sample and some labware.  The resulting sample is random, so make sure to recycle the extra gene samples you don't want.
+  - [提交] gendustry:Sampler
+  > 奖励: enhancedlootbags:lootbag:27 x3 | dreamcraft:CoinBeesII x2
+
+### [515] Genetic Template
+Templates are used to combine multiple gene samples into one large batch. It can be used to apply multiple traits at once, but you can also replicate a bee from liquid DNA and protein, if you manage to fill all 13 traits in one template. These templates can also be copied, just like the small samples.
+  - [提交] gendustry:GeneTemplate
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x5
+
+### [512] Genetic Transposer
+DNA samples of species and/or traits are pretty valuable. You always should keep at least one of each gene sample you get your hands on in a chest somewhere safe. By using this machine, you are able to copy any gene sample, for the cost of an empty serum vial and some labware.  [note]You don't actually need to keep all of them if you don't intend to use them of course.[/note]
+  - [提交] gendustry:Transposer
+  > 奖励: gendustry:Labware x5 | dreamcraft:CoinBeesII | enhancedlootbags:lootbag:27
+
+### [2767] Get it Together Bees!
+These frames help prevent genetic decay.
+  - [提交] MagicBees:frameGentle, miscutils:frameStabilizing
+  > 奖励: enhancedlootbags:lootbag:26 | dreamcraft:CoinBeesII x5
+
+### [2416] Ghetto Biome Changing
+If you don't want to change the biome to a specific one, and just want a neutral environment for your bees, maybe using nodes is for you. You can try planting a Silverwood Sapling to get one with a pure node, or use other methods to move one.  Keep in mind a 'bare' pure node won't change anything unless it has Victus. You can try to use Sinister or Tainted, but...no refunds. These nodes have a radius of 11. To change the biome back, use an Ethereal Bloom (radius of 7). Keep in mind that both Pech and Wisps spawn in 'Magical' type biomes.
+  - [勾选确认]
+
+### [501] Go Find Some Bees
+The next thing to do: Find a few bee hives around the world. There are 11 mundane bees that can be found, of which 8 are located in the Overworld. Any kind of bee will work for this quest.
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:beeCombs x8 | dreamcraft:CoinBees x25
+
+### [992] Go Find Some Tropical Bees
+Next you'll need to find some tropical bees. The hives can be found in Jungle biomes. Be careful as these bees are very aggressive and can poison you. Collect the silky combs and extract some silk wisp from those in order to make some Apiarist's clothes. Try to get pristine bees. If you're having trouble finding them, you can use Nature's Compass to search for a specific biome.
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: Forestry:beeCombs:6 x8 | dreamcraft:CoinBees x25
+
+### [-8060696980258519811] Growth Medium
+The Binnie's Genetics machines will rely on Growth Medium in either a little, or a lot. If you can't make too much of it, then you'll need to rely on other passive generation to keep the machines constantly supplied for researching genes. If you can make a lot of Growth Medium, then you can use it in a closed loop in Incubators to duplicate some of the mod's resources you have previously produced just once.  It requires: * Sugar: The easy one here, and remember multiple bee species can produce it too. * Bones (whole bones, not meal): mob farm, animal traps, goofy conversions. * Wood Ash: Smelt some saplings. * Mulch: There are a lot of ways to do this, but consider Peat bees since you're already going for the bees.  This quest is just a little nudge that you should passively produce Growth Medium, which means being able to passively produce all of these ingredients.
+  - [提交] Genetics:misc:4
+  > 奖励: Genetics:misc:4 x16
+
+### [523] Highend species: Doctoral
+On your way to awesome bees, you have to collect only the best traits available.
+  - [提交] gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [522] Highend species: Draconic
+On your way to awesome bees, you have to collect only the best traits available.
+  - [提交] gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [525] Highend species: Silicon
+On your way to awesome bees, you have to collect only the best traits available.
+  - [提交] gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [1511] Humid and Warm?
+Stop guessing what the humidity and temperature are for your biome. Use the habitat locator to get a reading on your current climate.
+  - [提交] Forestry:habitatLocator
+
+### [3284] IAADDS
+Aka the Mega Apiary.  It has three primary modes (change with screwdriver) and two operation modes (change with shift+screwdriver):  INPUT MODE: Does not take power. Put your queens in the input bus to put them in the internal buffer.  OUTPUT MODE: Does not take power. Will give your bees back to the output bus.  OPERATING MODE - NORMAL: The processing time is 5 seconds. Uses 1 Amp LuV per queen. All bees are affected by 64x acceleration and 8 Production Upgrades as well as a Genetic Stabilizer Upgrade. The IAADDS also simulates a perfect environment for all bees.  You can provide royal jelly to increase the outputs. 1 royal jelly grants 5% bonus per bee. They will be consumed on each start of operation and be applied to that operation only. The maximum bonus is 200%. The normal bee stats still apply of course, though the IAADDS is able to provide a perfect environment for any bee.  OPERATING MODE - SWARMER: In this mode you can only insert 1 queen. The IAADDS will then slowly produce ignoble princesses for 100 royal jelly per operation. The base processing time is 1 minute but you can overclock this process. The base usage is 1 Amp IV.  [note]Yes you need thousands of queens, not princesses.[/note]
+  - [提交] gregtech:gt.blockmachines:14202
+  > 奖励: kubatech:kubaitems:2
+
+### [1113] Impregnated Frames
+Impregnated Frames are even better than untreated Frames. Each frame doubles the bee's productivity. It has a longer durability than the untreated frame, but a shorter one compared to the proven frame.
+  - [可选提交] Railcraft:slab:38 x9, harvestcraft:wovencottonItem x3, Forestry:oakStick x15
+  - [提交] Forestry:frameImpregnated x3
+  > 奖励: enhancedlootbags:lootbag:26 | Forestry:honeyDrop x32 | dreamcraft:CoinBeesI x5
+
+### [2088] Incubator
+The Incubator is a general production machine that serves two purposes:  1. Hatching (modified) Larvae into drones at the end of the whole process. 2. Heating items and liquids to produce different resources you will need in different parts of the entire research and modification process.  There are up to five different resources you can create from Incubators:  1. Liquid Growth Medium: Water + Growth Medium 2. Bacteria: Liquid Growth Medium + Wheat OR more Bacteria + Growth Medium 3. Enzyme: Bacteria + Sugar 4. Bacteria Vector: Bacteria + Blaze Powder OR more Bacteria Vector + Growth Medium 5. Polymerizing Bacteria: Bacteria + Bonemeal OR more Polymerizing Bacteria + Growth Medium  Three of the recipes can optionally be extended by injecting them with more Growth Medium instead of using a different ingredient. If you're able to produce a bunch of Growth Medium, consider "priming" incubators for these outputs and then switching them to use Growth Medium indefinitely in a feedback loop.  Enzyme is usually produced in a pipeline from Bacteria, which is in turn produced from Liquid Growth Medium.  Bacteria Vector is only used by the Inoculator to modify Larvae, and you don't need it if you use a Splicer instead.  PS: You'll also need a source for Ethanol for the Genepool and the Isolator. This technology line has a drinking problem.  PPS: Blaze Powder also comes up with at least Fluorescent Dye later.
+  - [提交] Genetics:labMachine:2 x2
+  > 奖励: Genetics:labMachine:2 | enhancedlootbags:lootbag:26
+
+### [2096] Isolator
+The Isolator will take Ethanol and Enzyme to extract a single gene from a candidate bee. Sometimes it gets hungry and eats the bee too. Don't feed it any bees you won't mind getting destroyed!  You must provide a Blank Sequence to store the output gene. This will be stored with a "faint" level of strength that can be sequenced slowly, or made stronger to be sequenced faster by passing the sequence through a Polymerizer.  The exact gene you get from the bee is going to be a random choice from that bee's genome. You won't know what it is until you run it through the Sequencer. It will then be accessible forever in the Gene Database.  You can wind up isolating the same gene from the same bee multiple times. It's just bad luck. They won't be isolated in any particular order.  The Sequencer will drain the container back into a Blank Sequence, so you can feed them back into the Isolator. You only ever need to make a few Blank Sequences because you can just loop like this indefinitely. If, however, you have a sequenced gene and want to make it blank again immediately, then just run it through your smelting/furnace device of choice.
+  - [提交] Genetics:machine, Genetics:misc:5
+  > 奖励: Genetics:misc:5 x16 | enhancedlootbags:lootbag:26
+
+### [2255] Keep Calm and Bee On
+This frame will let your bees last longer, and also increase the territory to help with tree breeding.
+  - [提交] miscutils:frameArborists
+  > 奖励: Forestry:apiculture x8 | dreamcraft:CoinBeesII x2 | enhancedlootbags:lootbag:26
+
+### [1514] Keep Them Around
+These frames will keep your bees buzzing for longer. If you care, that is.
+  - [提交] ExtraBees:hiveFrame.clay, MagicBees:frameGentle, miscutils:frameSlowing, MagicBees:frameTemporal
+  > 奖励: MagicBees:frameTemporal x3 | dreamcraft:CoinBeesII x2 | dreamcraft:CoinDarkWizardII x2 | enhancedlootbags:lootbag:26
+
+### [2100] Lab Stand
+The Lab Stand is a block on which an Apiarist Database, Arborist Database, Botanist Database or Gene Database can be placed by right-clicking on the placed stand with the database, attaching it and allowing the database to be accessed by right-clicking on the stand.  This is not a required structure, but people like to put their Gene Database on one as a kind of trophy case.
+  - [提交] Genetics:labMachine
+  > 奖励: bq_standard:choice
+
+### [-5734283716237442270] Living It Larvae
+To play with Binnie's Genetics with bees, you'll need some Larvae, and a Hatchery block inside an Alveary is the only way to make them. There's a little side perk for having them: they produce at a much faster rate than you'd get from any one species' drones. Those leftovers can feed into the Gene Pool for extra raw DNA. Just remember to keep a few Larvae on standby for the actual genetic modification!  The bee you use in the Alveary should be whatever you intend to modify. It can be any kind if you intend to overwrite all the traits, but you probably should have it either be:  1. Some new species which will have everything else overwritten. 2. Some existing superbee that you want to switch to a new species.  The Larvae will eventually be hatched in an Incubator into a modified drone based on whatever genetic traits you have inserted into it.
+  - [可选提交] ExtraBees:alveary:5
+
+### [2082] Making Bees More Comfortable
+The Acclimatiser can widen the temperature tolerance of a bee. This is technically a little side quest with Binnie's Genetics machines, but these alterations are permanent and carry into their genome.  Note that the bee's species determines its favored temperature for jubilance. You can't use this to make a bee produce secondary products in a different climate.  Drones, princesses, queens, and even larvae can go in these machines. This means you can boost one queen and be set for life for that bee.  (You can also use it for pollen, butterflies, caterpillars, plants...)  When a specimen's tolerance has been pushed as far as it can go, that bee will go in the output slot. The typical thing to do here is pipe the bee automatically into another Acclimatiser like a little trauma conga line. At the end, the bee should be able to tolerate being anywhere.  Here's what you can use for what at what factors: * Temperature down   * ice: 0.75   * snowball: 0.15 * Temperature up   * lava (canned!): 0.75   * blaze powder: 0.5   * blaze rod: 0.75 * Humidity up:   * water (canned!): 0.75 * Humidity down:   * sand: 0.15  Fluid containers are consumed. If only you had a waxy substance in overabundance you could use for throwaway fluids!  [note]The Ole' "Both Trick": If your specimen already has at least Up/Down 1 for temperature or humidity, acclimatising it in the opposite direction will make it Both 1. The trick is that it'll now grow both ways for the price of expanding only in one.  So, if handling canned water and lava is annoying, and you can start with Up 1 for temperature and humidity, then you can just bombard it with temperature and humidity lowering steps. It'll switch to Both 1 and then eventually Both 5 without ever raising temperature or humidity again.  This lets you skip out on canning liquids, you sly dog. [/note]
+  - [提交] Genetics:labMachine:4
+  > 奖励: minecraft:snowball x16 | minecraft:sand x16 | Forestry:waxCapsuleWater
+
+### [2286] Master Registry
+The master beekeeper needs a master registry. Make sure you don't get any tears in your apiaries as you collect all the requirements!
+  - [提交] Forestry:beeCombs:15 x64, Forestry:beeCombs:4 x64, Forestry:beeCombs:6 x64, MagicBees:comb x128
+  - [提交] Forestry:beeCombs:7 x64, MagicBees:comb:1 x64, ExtraBees:honeyComb:6 x64, Forestry:beeCombs x128
+  - [提交] Forestry:royalJelly x64, Forestry:pollen x64, Forestry:pollen:1 x64
+  > 奖励: Genetics:masterRegistry
+
+### [508] Mutatron
+Mutations can be boring, they can be annoying, and most times, they are frustrating. With this machine, you will get a 100 percent pure bred mutation. If the combination of princess and drone can result in multiple mutations, the outcome is random. But who cares?  [note]You can now upgrade your leftover Bees Advanced bags to Bees Expert in the last quest tab.  If you missed grabbing an effect from a species, this is a way to get it again.  You'll need naquadah bees to make this, and the other Gendustry machines.[/note]
+  - [提交] gendustry:Mutatron
+  > 奖励: gendustry:Labware x5 | dreamcraft:CoinBeesII | enhancedlootbags:lootbag:27
+
+### [528] Only the Best: Cave
+On your way to awesome bees, you have to collect only the best traits available. Bees with Cave can work in housing that is covered - by more housing!
+  - [提交] gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [527] Only the Best: Day and Night
+On your way to awesome bees, you have to collect only the best traits available. Bee working day and night, all night and all day long!
+  - [提交] gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [521] Only the Best: Fertility
+On your way to awesome bees, you have to collect only the best traits available. Bees bees everywhere!  [note]F4 is great while breeding bees, but F1 is what you want to use when producing stuff.[/note]
+  - [提交] gendustry:GeneSample, gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [520] Only the Best: Humidity
+On your way to awesome bees, you have to collect only the best traits available.  [note]None is for testing jubilant state, while 2 is what you'll have on most of the time. 3+ don't do anything as the range doesn't go that high.[/note]
+  - [提交] gendustry:GeneSample, gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [526] Only the Best: Rain
+On your way to awesome bees, you have to collect only the best traits available. Beekeeping in the rain! Make sure to keep your GT machines covered!
+  - [提交] gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [524] Only the Best: Speed Blinding
+On your way to awesome bees, you have to collect only the best traits available. Buzz buzz buzz, working hard and really buzzing!
+  - [提交] gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [519] Only the Best: Temperature
+On your way to awesome bees, you have to collect only the best traits available.  [note]None is for testing jubilant state, while 3 is what you'll have on most of the time. You can hit all temp requirements with 3 if you work in a normal temp area. You can go up to 5 if you use the acclimatiser and want nether bees working in an icy area for some reason.[/note]
+  - [提交] gendustry:GeneSample, gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [2748] Only the Best: Tree Breeding
+For those who love Forestry trees.
+  - [提交] gendustry:GeneSample, gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [2749] Only the Worst: Trees Suck!
+For those who don't like flowers or trees :(.
+  - [提交] gendustry:GeneSample, gendustry:GeneSample, gendustry:GeneSample
+  > 奖励: enhancedlootbags:lootbag:27 | dreamcraft:CoinBeesII
+
+### [-7336878164390242998] Pollen Collection Kit
+The easy way to get some pollen, just right-click on leaves. The Pollen Collection Kits are one-time use though, so maybe make a few.
+  - [提交] gendustry:PollenKit x8
+  > 奖励: enhancedlootbags:lootbag:25 | dreamcraft:CoinBeesI x5
+
+### [2098] Polymeriser
+The Polymeriser is necessary to turn Serum into something you can actually inject into a Larvae. It has a bonus use of strengthening an isolated gene so it can be sequenced faster by a factor of 4x.  The Polymeriser requires Raw DNA and Polymerising Bacteria. Raw DNA is obtained from the Genepool, and Polymerising Bacteria is made from incubating bacteria with bone meal. Gold nuggets can be used as a catalyst to speed up the process. You can also make more Polymerising Bacteria by feeding it back into an Incubator with Growth Medium.  When using the Polymeriser to prepare some Serum for a Larvae, the result will have a number of "charges." In other words, you get multiple uses out of it. This is nice because you are going to need to make a bunch of drones if you are trying to get all those traits to stick. Remember that you cannot use this process to modify a princess or queen directly! If you are satisfied before you use up all the Serum, you can recycle it by passing it through a smelter/furnace of your choice.  It takes two minutes to polymerise stuff. If you already use a World Accelerator for sequencing, then the Polymeriser would also benefit from cuddling up with that accelerator on another side.
+  - [提交] Genetics:machine:2
+  > 奖励: BinnieCore:containerCylinder:771 x8 | enhancedlootbags:lootbag:26
+
+### [1114] Production Frames
+You can make proven frames or purchase them from a villager. If you can't find a beekeeper, there are a couple of different options to get one. Rescue a zombie villager, add doors to a village to get them to make kids, or perhaps use a cupid's bow and arrow...  About magic frames: They're the core of magically endowed frames. They also have a special ability - no maximum production chance. Normal frames are ineffective to get above 16x production (4 frames) but with magic frames you can keep going - just watch out, above 16x you'll be working your bees so hard they have a chance to degenerate into ignoble ones. This can happen any bee tick, not just when they die. Frames to lower genetic decay will lower the chances of this happening.  Of course, with very long lifespans, high production genes, swarmers, and tons of frames, you may think this is worth it.  Note that normal products have a cap of 200% produced, and specialties 100%.
+  - [提交] Forestry:frameProven, MagicBees:frameMagic, MagicBees:frameResilient, miscutils:frameBusy
+  > 奖励: enhancedlootbags:lootbag:26 | dreamcraft:CoinBeesII x2
+
+### [1512] Put the Drones in a Jar and Shake it Up
+Once you get good effects from your bees, instead of just trashing the excess drones, you can put them in collector's jars to get the effects anywhere in your base.  Healing? XP? Poison?  The collector's jars can even be piped or connected to a conveyor so that drones last a long time.  [note]PS: Using the regen effect of Imperial bees while doing Blood Magic may be useful.[/note]
+  - [提交] MagicBees:effectJar
+  > 奖励: MagicBees:effectJar | dreamcraft:CoinBeesI x5
+
+### [2102] Registry
+The Registry combines the existing four databases into a new sleek browser to allow the properties, mutations and genes of all discovered bees, trees, butterflies and flowers.
+  - [提交] Genetics:registry
+  > 奖励: IC2:itemPartCircuitAdv x4
+
+### [2097] Sequencer
+After obtaining a DNA Sequence with the gene that you wish, it must be placed in the Sequencer. This uses Fluorescent Dye to determine the correct sequence, and when completed, logs the discovery. The important thing here is that §nthe discovery goes to the person who placed the machine.  §rThis process takes §l16 minutes§r! If the gene has been passed through a Polymeriser beforehand, it'll speed it up to only 4 minutes. You could also hug the machine with World Accelerators in Tile Entity mode to speed it up further.
+  - [提交] Genetics:machine:1
+  > 奖励: Genetics:misc:2 x16 | enhancedlootbags:lootbag:26
+
+### [993] Silky Combs and Propoli
+Collect silky combs and extract some silk wisp out of it in order to make some Apiarist's clothes.  This can take a very long time, so parallelize!  Use a GregTech or Forestry Centrifuge to get Silky Propoli. For higher tier (and useful) combs you need a GT centrifuge.
+  - [可选提交] Forestry:beeCombs:6 x370
+  - [提交] Forestry:propolis:3 x305
+  > 奖励: enhancedlootbags:lootbag:25 | gregtech:gt.metatool.01:28 | dreamcraft:CoinBees x25
+
+### [-5951281698787091280] The Truth About Serum
+Genetics has its own little glassware for carrying chosen genes over to Larvae. The Serum Vial will let you carry one gene to a Larvae. That's kind of underwhelming, so it's better to combine a few of them into a Serum Array. Then you can have a full buffet and pick one of each possible trait.  You must "charge" the Serum in a Polymerizer. Then you can feed it into an Inoculator or a Splicer to modify a Larvae. Look at the number of charges left on the Serum to see how many times you can do this. You can recharge it by putting it back in a Polymerizer. So if you ever get a magic recipe, you can just leave a Serum Array of it around and just recharge it as you need it.  [note]You cannot recharge Serums using a Thaumic Restorer.[/note]
+  - [可选提交] Genetics:misc:6
+  - [提交] Genetics:misc:7
+  > 奖励: Genetics:misc:7
+
+### [506] To Play God
+In order to continue with bees, to mutate and breed them as you like, you need mutagen. This greenish, smelly liquid needs to be refined from bacterial sludge that seems to be most readily available from fluid pockets on Mars. You will be able to continue, once you've acquired this.  In the meantime you can start working with the Genetics mod, since we all know Gendustry is too easy... Check out the recipes and you'll understand why you should look into the Genetics mod.  [note]Make sure to make more with the Vat once you can actually make it.[/note]
+  - [提交] GalacticraftMars:item.bucketSludge
+  > 奖励: enhancedlootbags:lootbag:27 | Forestry:beeDroneGE | Forestry:beePrincessGE | dreamcraft:CoinBeesII | dreamcraft:CoinAdventureII
+
+### [505] Top-Tier Analyzer
+The best you can get, for all your scanning and analyzing needs.
+  - [提交] Genetics:analyst
+  > 奖励: Genetics:misc:1 x10 | dreamcraft:CoinBeesII | enhancedlootbags:lootbag:26
+
+### [504] To Scan or Not to Scan
+In order to get into bee breeding, you need a way to see all the traits, active and inactive. You only want to breed so called "pure" bees; For those, both "Active" and "Inactive" traits are identical.  [note]BTW, it's not like the more 'advanced' versions are actually better, just that they have more functions. Use the one you like.[/note]
+  - [提交] Forestry:beealyzer
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:honeyDrop x10 | dreamcraft:CoinBeesI x5
+
+### [507] Upgraded Home
+The Bee House can be used to stabilize mutations, for example if you have successfully bred two different bees, but the passive traits are different from the active ones.  To actually breed those together to get a new species, you'll need something different - the Apiary. Building them will require a Carpenter and Impregnated frames, along with Seed Oil and Creosote - quite a bit of industrialization! Or, if you're lucky, you can find a beekeeper villager to trade with. Maybe you can help the villagers §lget lucky§r to make more beekeeper villagers? If only Cupid and his bow were around...  Production rates in an empty Apiary are low - lower than a Bee House by quite a bit, in fact. But the Apiary has two big advantages - Frames, and Automation. You can now use your Untreated or Impregnated frames in here to boost output - and the boost is multiplied. So 3 x2 frames gives you 2 * 2 * 2 = 8x extra output! You can also automate I/O for the bees and their products, though not frames unfortunately.  Bees also don't live as long as in a Bee House, but that's actually a good thing.  Also, you should check the Genetics mod for useful machines. The Acclimatiser can give very picky bees a much wider temperature or humidity tolerance without having to breed it into them.
+  - [提交] Forestry:apiculture
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:frameUntreated x3 | dreamcraft:CoinBeesI x5
+
+### [1367] Upgrade Your Forestry Backpack
+With your woven silk you can upgrade your Forestry backpacks. Each Pack has 45 slots.  You need a carpenter, your old backpack and a bit of seed oil.  If the recipe isn't working, put the bag in a crafting grid to reset its NBT data. After removing anything in it of course.
+  - [可选提交] Forestry:craftingMaterial:3 x18
+  - [提交] Forestry:diggerBagT2, Forestry:minerBagT2
+  > 奖励: bq_standard:choice | dreamcraft:CoinBeesI x5
+
+### [2091] Upgrading the Alveary
+These basic upgrades to the Alveary make it more powerful.  Frame Housing - Automation-enabled frame slot for the Alveary. Uses §55 durability§r every bee tick (27s). If it runs out on that tick, it has no effect. Alveary Stabilizer - Prevents the bees from mutating into another species. Ideal for breeding traits into a line. Alveary Transmission - Power input for upgrades that use power. Alveary Sieve - Instead of the pollen from a bee fertilizing a nearby tree, it is stored here and can be manually applied. Requires manually placing woven silk in the inventory. Swarmer - Creates additional Ignoble queens in hives around the Alveary. These are genetic copies of the original. This uses Royal Jelly or Aromatic Lumps. The latter are more effective.  [note]Note that all upgrade blocks must be in the bottom 2 layers. The center block also cannot be an upgrade block, though the bottom center can.[/note]  [warn]When using power, the transmission block will suck down entire amps to fill a tiny amount. Use the EnderIO capacitors or something similar to prevent this.[/warn]
+  - [提交] ExtraBees:alveary:1, Forestry:alveary:6, ExtraBees:alveary:6, Forestry:alveary:7, Forestry:alveary:2
+  > 奖励: Forestry:alveary x8 | enhancedlootbags:lootbag:26
+
+### [2081] Welcome to Biology Class!
+Binnie's Genetics mod will allow you to pick and chose traits for bees, trees and Botany flowers. But not for free! Doing this comes at a price.  [note]Note: We'll be focusing just on the bees in this section.[/note]  You will need a few streams of resources you can automate into passive generation. These are used across the process in different machines for different purposes, but Growth Medium is a super-resource you can substitute for some of the steps if you're able to produce that in abundance.  The research process can be easily automated. Gene modification and drone generation can be automated, but are slow and infrequent enough that you will probably just attend to them when you need them.  The general idea is to sequence a pile of leftover drones until you get all the traits you want from it. You'll then have those traits forever and can inject your own combinations of everything you've found into drone Larvae to make new drones that carry those traits. Larvae hatch only into drones. You don't get to directly hatch princesses and queens, so you have to worry about these new traits sticking across generations.  These genetic edits don't let you create new traits out of thin air. They just let you pick and choose what you have already researched, and that has to come out of bees you already have. You may use this to set up all your production bees through the rest of the game, but traits like 4x fertility also help with breeding.  You'll want to prepare a lab workspace for this. The actual machines won't take too much space. In fact, you'll probably wind up smacking a bunch of them against world accelerators, which will require direct contact due to using Tile Entity mode. What will end up taking up more space is any passive resource generation you prepare to make the process more hands-free.  You will need an alveary with a hatchery to produce Larvae of the base bee you want to modify.  These machines require RF power. It's recommended to provide power to an Ender IO capacitor and power these machines with RF instead of powering directly with GT EU. You can connect GT EU power up to these, but you run into strange consumption from amperage conversion glitches, or machines not getting power despite looking like they have proper cabling.  Ultimately, you'll need at least 7 of these casings and could end up making 14+ casings for all the machines you may opt to produce. You will also need HV-tier circuit production. There is §oone§o§r EV circuit involved in the complete process too.  [note]We give special credit to Three for a video explaining all these machines and their interplay:  §oAn Early Game Guide to Genetically Modify your Bees in Gregtech: New Horizons§r [url]https://www.youtube.com/watch?v=EmhDlga2SCA[/url]  Note that he will rant about the quest book. That was--ahem--an older version of the quest book.[/note]
+  - [提交] Genetics:misc
+  > 奖励: enhancedlootbags:lootbag:5 | EnderIO:itemPowerConduit:1 x8
+
+### [995] Woven Silk
+Centrifuge your silky propoli to get some silk wisp at a chance of 60 percent. Put 9 silk wisp in the Forestry carpenter or GregTech assembler to get woven silk.  This fine fabric can be used for crafting Apiarist's Clothes or to upgrade a Forestry Backpacks to 45 slots.
+  - [可选提交] Forestry:craftingMaterial:2 x216
+  - [提交] Forestry:craftingMaterial:3 x24
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:beeQueenGE | Forestry:beeDroneGE | dreamcraft:CoinBeesI x5
+
+### [2094] X-Men, or Should I Say X-Bee?
+The Mutator can vastly accelerate genetic mutations, even allowing those ultra rare bees to be bred. Items inserted into the Mutator control how much mutation it causes.  Soul Sand - 50 percent increase Ender Pearl - 100 percent increase Eye of Ender - 300 percent increase
+  - [提交] ExtraBees:alveary
+  > 奖励: minecraft:soul_sand x64 | enhancedlootbags:lootbag:26
+

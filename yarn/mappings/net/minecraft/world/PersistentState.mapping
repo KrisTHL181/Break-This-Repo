@@ -1,0 +1,6 @@
+CLASS net/minecraft/class_18 net/minecraft/world/PersistentState
+	FIELD field_72 dirty Z
+	METHOD method_78 setDirty (Z)V
+		ARG 1 dirty
+	METHOD method_79 isDirty ()Z
+	METHOD method_80 markDirty ()V

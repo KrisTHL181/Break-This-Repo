@@ -1,0 +1,5 @@
+CLASS net/minecraft/class_5423 net/minecraft/world/RegistryWorldView
+	COMMENT A world view or {@link World}'s superinterface that exposes access to
+	COMMENT a registry manager.
+	COMMENT
+	COMMENT @see #getRegistryManager()

@@ -1,0 +1,6 @@
+CLASS net/minecraft/class_4874 net/minecraft/client/realms/dto/PlayerInfo
+	FIELD field_22590 name Ljava/lang/String;
+	FIELD field_22591 uuid Ljava/util/UUID;
+	FIELD field_22592 operator Z
+	FIELD field_22593 accepted Z
+	FIELD field_22594 online Z

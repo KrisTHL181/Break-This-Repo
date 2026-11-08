@@ -1,0 +1,46 @@
+﻿<?xml  version="1.0" encoding="utf-8"?>
+<!--
+
+    The properties in this file cover the following:
+
+        Microsoft.IE.*
+
+    This file is currently installed in "%ProgramFiles%\Internet Explorer\ie9props.propdesc". On AMD64 systems,
+    the file must also be installed in "ProgramFiles(x86)\Internet Explorer\ie9props.propdesc" to be consumed 
+    correctly by PSRegisterPropertySchema(), when called by WOW64 Applications.
+    
+    These properties are installed only on Win8.1 and below; later OS versions have public property equivalents.
+    
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/windows/2006/propertydescription" schemaVersion="1.0">
+    <propertyDescriptionList publisher="Microsoft" product="Internet Explorer">
+        <propertyDescription name="Microsoft.IE.FeedItemLocalId" formatID="{E32596B0-1163-4E02-867A-12132DB4BA06}" propID="2">
+            <searchInfo inInvertedIndex="false" isColumn="true" maxSize="256"/>
+            <typeInfo type="String" isViewable="false"/>
+        </propertyDescription>
+        <propertyDescription name="Microsoft.IE.SelectionCount" formatID="{1CE0D6BC-536C-4600-B0DD-7E0C66B350D5}" propID="2">
+            <searchInfo inInvertedIndex="false" isColumn="true"/>
+            <typeInfo type="UInt32" isViewable="false"/>
+        </propertyDescription>
+        <propertyDescription name="Microsoft.IE.TargetUrl" formatID="{1CE0D6BC-536C-4600-B0DD-7E0C66B350D5}" propID="3">
+            <searchInfo inInvertedIndex="true" isColumn="true" maxSize="4168"/>
+            <typeInfo type="String" isViewable="true" isQueryable="true"/>
+        </propertyDescription>
+        <propertyDescription name="Microsoft.IE.TargetUrlHostName" formatID="{1CE0D6BC-536C-4600-B0DD-7E0C66B350D5}" propID="4">
+            <searchInfo inInvertedIndex="true" isColumn="true" maxSize="512"/>
+            <typeInfo type="String" isViewable="true" isQueryable="true"/>
+        </propertyDescription>
+        <propertyDescription name="Microsoft.IE.TargetUrlPath" formatID="{1CE0D6BC-536C-4600-B0DD-7E0C66B350D5}" propID="5">
+            <searchInfo inInvertedIndex="true" isColumn="true" maxSize="4168"/>
+            <typeInfo type="String" isViewable="true" isQueryable="true"/>
+        </propertyDescription>
+        <propertyDescription name="Microsoft.IE.Title" formatID="{1CE0D6BC-536C-4600-B0DD-7E0C66B350D5}" propID="6">
+            <searchInfo inInvertedIndex="true" isColumn="true" maxSize="4168"/>
+            <typeInfo type="String" isViewable="true" isQueryable="true"/>
+        </propertyDescription>
+        <propertyDescription name="Microsoft.IE.VisitCount" formatID="{1CE0D6BC-536C-4600-B0DD-7E0C66B350D5}" propID="7">
+            <searchInfo inInvertedIndex="false" isColumn="true"/>
+            <typeInfo type="UInt32" isViewable="false"/>
+        </propertyDescription>
+    </propertyDescriptionList>
+</schema>

@@ -1,0 +1,5 @@
+CLASS net/minecraft/class_1753 net/minecraft/item/BowItem
+	FIELD field_30855 TICKS_PER_SECOND I
+	FIELD field_30856 RANGE I
+	METHOD method_7722 getPullProgress (I)F
+		ARG 0 useTicks

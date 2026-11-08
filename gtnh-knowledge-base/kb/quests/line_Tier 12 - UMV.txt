@@ -1,0 +1,197 @@
+# 任务线: Tier 12 - UMV
+### [-7384462910267243515] §c§l§nAn Eye at the End of Time
+So you have made yourself an Eternal DTPF or hopefully a few, and now it is time for the push to the next tier, UXV.  Introducing the final multiblock in the game, and by far the most expensive. It introduces 4 new materials: Raw Stellar Plasma, White and Black Dwarf Matter and finally Universium.  It has 3 different tiered casings with 9 tiers each:  Spacetime Compression Field Generator: - Determines the tier of the planet block that can be run and decreases the processing time by 3% per tier.  Time Dilation Field Generator: - Decreases recipe time by 50% per tier, while decreasing the chance of a recipe succeeding by 9.25% per tier.  Stabilisation Field Generator: - Increases the chance of a recipe succeeding by 5% per tier, while decreasing the output of a recipe by 5% per tier.  Lower tier Stabilization Field Generators have a power output penalty.  Finding the best setup of different casing tiers might be a hard task, so use this calculator to evaluate setups and visualize drops: [url]https://docs.google.com/spreadsheets/d/1FTFdfmY_UWbTbFOyNzARKeI90pbHvPBH6M3JHJmaC-E/edit?usp=sharing[/url]  [note]Be sure to read the tooltip of the Eye of Harmony controller, it explains everything in detail! Depending on your GUI scale it might have multiple pages.[/note]  [note]Well... it explains mostly everything. The Eye of Harmony has an inbuilt pity system to make sure you don't lose your mind. Here's a quick rundown on how it operates:  (All chances are decimals here) There is a counter C that starts at the current recipe success chance P. If a recipe fails, (1-P)*P is added to C. If C reaches >= 1, the next roll is guaranteed to succeed and C resets to P.  If a recipe succeeds before C reaches >= 1, it resets in a similar manner. If you switch recipes, C will be reset to P of the new recipe, even if the next roll would be a guarantee. The guarantee can be canceled out by overflow penalties as they apply after the pity does. However, they do not reset C, so the guarantee is shifted to the next recipe cycle. If parallels are > 1, pity doesn't apply.[/note]
+  - [提交] gregtech:gt.blockmachines:15410, tectech:gt.blockcasingsBA0:11, tectech:gt.blockcasingsBA0:10, tectech:gt.blockcasingsBA0:12, tectech:gt.spacetime_compression_field_generator, tectech:gt.time_acceleration_field_generator, tectech:gt.stabilisation_field_generator
+
+### [-8323783763671749098] §c§l§nAre you Ready?
+From now on, you'll be dealing with extremely slow recipes.  Consider finishing up your QFTs and upgrading or replacing your old infrastructure to save on TPS.  You should definitely upgrade your power generation and infrastructure to handle millions of recipes.  The Eye of Harmony will be consuming most of your power before it starts generating more than it uses.  May Colen have mercy on your soul.  [note]Welcome to the waiting lounge.[/note]
+  - [勾选确认]
+
+### [-4764888386348873901] §c§l§nA Second Ring has Hit the Godforge
+As additional rings are placed closer to the star at the center of the Forge, the gravitational stress drastically increases on the structure. Graviton shards alleviate these stresses while also creating localized spacetime bridges to link the two rings and their modules' respective upgrades.  [note]Adding a second ring to your Godforge allows for 4 additional modules, as well as allowing you to pick a second path in the split paths part of the upgrade tree.[/note]  [note]Usage of a second ring requires the CD upgrade.[/note]
+  - [提交] tectech:gt.godforgecasing:6 x357
+  - [可选提交] tectech:gt.godforgecasing:3 x3336, tectech:gt.godforgecasing x2012, tectech:gt.godforgecasing:1 x240, tectech:gt.godforgecasing:2 x14, tectech:tile.spatiallyTranscendentGravitationalLens x45
+
+### [-8702313707335552401] §c§l§nA Solder Singularity
+Mutated Living Solder has become far too weak for your assembly needs. You need something more... cosmic.  Boundless Cosmic Solder is the final tier of soldering alloy, and you will need it in large quantities.  [note]Hopefully your Beamcrafter can keep up...[/note]
+  - [提交] gregtech:gt.metaitem.03:32264 x64
+  - [可选提交] gregtech:gt.metaitem.01:30114
+  - [提交] gregtech:gt.metaitem.01:30115
+
+### [-7959189288003028041] §c§l§nBlack Dwarf Matter
+Reinforcing your casings with matter from white dwarfs was a good idea.  You can now accelerate a solar system until a black dwarf forms. This material will likely be key to observing and understanding what happens next.  This is the second of your three EOH materials. Use it to upgrade your casings to T7.  [note]The EOH becomes power positive once all the casings are Tier 7.[/note]
+  - [流体]  x
+
+### [-7053414737734297359] §c§l§nConvergence
+Running your Dimensionally Transcendent Plasma Forge for an extended period [note](8 hours)[/note] allows the Multidimensional Spaces to align perfectly.  With your newly acquired technology, you can now tap into these spaces in perfect sync, enabling your plasma forges to operate at incredible speeds.  The Transdimensional Alignment Matrix allows the DTPF to run with Perfect Overclocks. To achieve this, you need a full discount, and the extra power cost is offset by using more of the same catalyst.  Overall, it is more efficient and totally worth it.  This process is extremely catalyst-hungry. Ensure you're producing enough to sustain it.  For recipes without a catalyst, you must specify the catalyst in the GUI by right-clicking the Convergence button, otherwise it will default to Crude.[/note]  [note]Math for the curious:  To clear up what exactly happens in the background, here's an explanation on how the extra catalyst values are calculated using an example:  The example recipe of choice is the molten neutronium recipe using prosaic catalyst, running at 64A UMV (8,589,934,592 EU/t). The recipe uses 14,753L of Prosaic catalyst and 36,484,545,600 EU per recipe without OCs or the catalyst discount. With the discount, the catalyst amount gets cut in half, meaning 7,376.5L of catalyst, which are rounded to 7,376L, and due to the 64A UMV the machine is supplied with the recipe overclocks 3 times, meaning each recipe actually uses 36,484,545,600 * 2^3 = 291,876,364,800 EU.  Knowing the amount of OCs and the base voltage of the recipe, the difference of the needed EU per recipe with and without perfect OC can be calculated, that being 291,876,364,800 - 36,484,545,600 = 255,391,819,200 extra EU due to imperfect OCs. To get the value of needed extra catalyst, this extra EU value has to be divided by the energy density of the relevant catalyst, prosaic in this case.  The division equates to 255,391,819,200 EU / 66,768,460 EU/L = 3,825.037 L, rounded to 3,825L extra prosaic catalyst per recipe. For the final step, this value has to be multiplied by 0.5 as it's affected by the discount, meaning the total extra catalyst that gets added to the recipe is 3,825L * 0.5 = 1,912.5 L, rounded to 1,912L.  To summarize it all in a formula: Amount extra catalyst per recipe = (B * ((2^x) - 1))/2L where: B is base total EU of the recipe x is the number of overclocks L is the EU/L of the relevant catalyst [/note]
+  - [提交] gregtech:gt.metaitem.03:32758
+
+### [-5606710145730409374] §c§l§nEternity
+Definitely consider this for the improved Magnetohydrodynamically Constrained Star Matter recipe. You'll also need it to make MHDCSM parts.  Kickstarting the loop is expensive and RNG-based. You need 20,736 L of Universium for the first 5 attempts and a catalyst.  The QFT recipe has a 25% chance of yielding Eternity per attempt. You should probably boost the QFT with plasmas and focus on producing Eternity.  [note]Did you know the QFT has a fluid mode? It could be useful for extracting molten Shirabon. Just right-click the controller with a §ascrewdriver§r.[/note]  [note]Building a full beacon out of Eternity Blocks might be a bit extravagant, don't you think?[/note]
+  - [可选提交] gregtech:gt.metaitem.03:4139 x4, gregtech:gt.metaitem.03:32757 x6, gregtech:gt.metaitem.99:583 x10
+  - [可选提交] eternalsingularity:combined_singularity:15 x5, miscutils:item.BasicGenericChemItem:28, gregtech:gt.metaitem.01:30142
+  - [流体]  x
+
+### [-6897090588793529674] §c§l§nFinally, Universium!
+You've finally solved it. Who knew that leaving dead stars long enough would cause your artificial solar system to implode and lead to a Big Bang?  If only you could tap into that much mass right before it started expanding again, you could literally hold the entire universe in the palm of your hand.  This is your third and final material from the EOH.  [note]It's mainly used for UXV crafts, but your first few should go in the Eternity loop. The quest for it is located in the Endgame Goals tab.  Congrats! You can now craft Magnetohydrodynamically Constrained Star Matter (MHDCSM).[/note]
+  - [流体]  x
+
+### [-7951601137615098449] §c§l§nGuzzling Massive Amounts of Gas
+It can run 4 different recipes simultaneously, with 4 parallels for each recipe.  A worthy upgrade for some SpaceTime.
+  - [提交] gregtech:gt.blockmachines:14011
+
+### [-4905890280735412841] §c§l§nMagnetic Monopole Matter
+With total mastery of the Forge of the Gods achieved, it is possible to begin a new universe-spanning initiative. It is now possible to quantize and extract graviton shards for use outside the Forge in powerful new technological endeavors; produce the most exotic plasmas beyond merely periodic elements; and most importantly, begin to understand the immense power of magmatter, a form of matter made entirely of magnetic monopoles with density and stability billions of times that of conventional bosonic matter. It is with this development you realize that the completion of the Forge was not the end goal, but merely a stepping stone to universal transcendence.  [note]Required for UXV components, Magmatter is the second material the Heliofusion Exoticizer can create, and will require a second module. Read the Godforge Information in the UI for more information on how to automate this.[/note]  [note]The creation of Magmatter requires the EE upgrade.[/note]  [note]Congrats! You can now move on to the UXV tier![/note]
+  - [流体]  x
+
+### [-5865034814944347891] §c§l§nMagnetohydrodynamically Constrained Star Matter
+Or MHDCSM for short.  This is your primary material for UXV components. It's tricky to make and extremely expensive, as all endgame materials should be.  Instead of solidifying it directly, you need to coat Eternity parts with it.  Have fun!
+  - [流体]  x
+
+### [3243] §c§l§nNot Quite There Yet
+Just a bit more.
+  - [提交] gregtech:gt.metaitem.01:32022, gregtech:gt.metaitem.01:32026, gregtech:gt.metaitem.01:32030, gregtech:gt.metaitem.01:32034, gregtech:gt.metaitem.01:32038, gregtech:gt.metaitem.01:32042
+
+### [-8555120433450212467] §c§l§nPerfected Components
+Your EoH may not need anything beyond Resplendent Components, but the rest of your factory soon will.  Perfected Components require exceptionally expensive materials, including Magmatter. You do not need them immediately, but future UXV CoAL Casings, Astral Arrays, and Stargate parts will demand plenty.
+  - [提交] gregtech:gt.metaitem.03:32309, gregtech:gt.metaitem.03:32312, gregtech:gt.metaitem.03:32315, gregtech:gt.metaitem.03:32318
+
+### [-7995813544306558907] §c§l§nRaw Stellar Plasma
+Created by all tiers of the Eye of Harmony, Raw Stellar Plasma can be used for several things including Stellar Catalyst.  [note]You may want to be careful with this material, as later running EOHs with Astral Arrays requires this instead of Hydrogen and Helium, so make sure to never fully run out![/note]
+  - [流体]  x
+
+### [-8691561364259854049] §c§l§nRefined Components
+Reinforced Components can only take your EoH so far. Another upgrade is needed to assemble its stronger parts.  By incorporating Black Dwarf Matter into their structure, Refined Components remain stable beneath even greater spacetime distortions.
+  - [提交] gregtech:gt.metaitem.03:32329, gregtech:gt.metaitem.03:32333, gregtech:gt.metaitem.03:32321, gregtech:gt.metaitem.03:32325
+
+### [-5432683915285308610] §c§l§nReinforced Components
+Primitive Components are no longer strong enough to make the parts needed for a better EoH. Time for an upgrade!  By incorporating White Dwarf Matter into their structure, Reinforced Components can maintain their shape beneath far stronger spacetime compression fields.
+  - [提交] gregtech:gt.metaitem.03:32328, gregtech:gt.metaitem.03:32332, gregtech:gt.metaitem.03:32320, gregtech:gt.metaitem.03:32324
+
+### [-8628649990826836806] §c§l§nResplendent Components
+Even Refined Components begin to fail near the final tiers of the EoH. Only something far greater than stellar matter will suffice.  By incorporating MHDCSM into their structure, Resplendent Components can withstand the most extreme conditions your EoH can create.
+  - [提交] gregtech:gt.metaitem.03:32330, gregtech:gt.metaitem.03:32334, gregtech:gt.metaitem.03:32322, gregtech:gt.metaitem.03:32326
+
+### [-6892498627708657446] §c§l§nSaving on SpaceTime
+SpaceTime is quite a challenge, isn't it? You should definitely consider upgrading your Component Assembly Lines to save on some of it.  [note]Did you know you can wall-share the component casings? Just turn one CoAL upside down.[/note]
+  - [提交] GoodGenerator:componentAssemblylineCasing:11 x43
+
+### [-9143660827823771849] §c§l§nShirabon
+A helper material needed in some UMV and UXV components. Have fun making millions.  [note]This is extremely slow to make and to process.[/note]
+  - [流体]  x
+
+### [-6892214430748682531] §c§l§nStars, So Many Stars
+Eternal coils? Perfect time for stargate trophy number three. You know the drill, you give 2 stargates' worth of stuff, you get your trophy. Simple as that.  [note]Our journey through time continues onwards, entering the UMV, aka DTPF era.  Surprisingly, it still is the year 2022, but there have been a huge amount of changes since our last stop in the UEV era. The DTPF exists now, hypogen & eternal coils included, and machine parts up to UMV thus are craftable. Wireless energy is a thing now too, both the LSC and the regular hatch kind, and AE2FC is in the pack, allowing direct fluid crafting (meaning no more volumetric flask shuffling). The power situation hasn't changed much since the UEV era, except for dyson being even more bugged and giving free uncapped infinite power (abusing this was obviously labeled as bugabuse). Some other new useful things are the MABS, Integrated Ore Factory, Space Elevator, UIV and UMV singleblocks, EIG, EEC, industrial & mega apiary, yottanks, stocking buses, data bank chaining and the Draconic Fusion Crafter. The stargate's cost has now skyrocketed far more than ever before, marking the beginning of this new era of GT:NH endgame, the era of expansion.  This time around the leading §aGDCloud§r was challenged by the team §aNeo Caelestia§r, who were progressing at a staggering speed, inching ever closer to being first to gate, but ultimately weren't able to fully catch up and thus §aGDCloud§r once again was first to conquer the challenge on the §a19th of November, 2022§r.  P.S.: You know how this works, right? Here's the list: -PCB Factory, Component Assemblyline, AAL, Transcendent Plasma Mixer, EOH, QFT -Multi-Amp wireless hatches -Sub 1-tick OC, Batch Mode, inbuilt Void Protection on multis -Level Maintainer, Stocking Hatches, Crafting Input Buses  P.P.S.: Chaotic capacitor bank? What's that?[/note]
+  - [提交] dreamcraft:DimensionalGatePlate x625, dreamcraft:DimensionalChevron x342, dreamcraft:DimensionalFramePart x1470, dreamcraft:StargateCrystalAncients x2, dreamcraft:DimensionalQuantumCircuit x82, gregtech:gt.metaitem.01:32022 x436, gregtech:gt.metaitem.01:32042 x138, gregtech:gt.metaitem.01:32038 x10, gregtech:gt.metaitem.01:32046 x736, GoodGenerator:compactFusionCoil:3 x124, gregtech:gt.blockmetal4:13 x1590, gregtech:gt.blockmetal7:9 x1960
+  > 奖励: minecraft:paper:3
+
+### [-5769420916380359643] §c§l§nStellar Catalyst
+Your attempts to improve your dimensional catalyst have been futile so far, but with the Raw Stellar Plasma from your Eye of Harmony, you can finally create a stable and more powerful catalyst.  You will need some higher-tier plasmas to help maintain its stability as well.  [warn]Handle with care. We are not responsible for your base turning into supermassive black holes. /s[/warn]
+  - [流体]  x
+
+### [-7444237521495181899] §c§l§nStoring Computation in the Cloud
+Wireless Computation is similar to Wireless Data, Cloud Computation Server Hatches send computation to Cloud Computation Client Hatches, which other multiblocks can use.  Place down a Server Hatch on a Quantum Computer, screwdriver the controller to enable Wireless Mode, then after placing down a Client Hatch, you have to set how much computation it should request from the Server Hatch.  [note]These Cloud Computation Hatches are N:M (Many:Many)[/note]
+  - [提交] gregtech:gt.blockmachines:15444, gregtech:gt.blockmachines:15445
+
+### [-5636991039177227943] §c§l§nSubspace Cooling
+Cooling exotic ingots proves to be a much bigger challenge than smelting them.  Fortunately, reinforcing some of the casings with your new materials allows you to inject exotic coolants that capture extreme heat in miniature tears of spacetime, helping to cool your ingots a bit faster.  With Subspace Cooling, you can enable the Vacuum Freezer to achieve Perfect Overclocks… at a cost.  Tier 1 will consume SpaceTime in liquid form at [warn]75 L/s[/warn] and allow for 1 Perfect Overclock.  [note]This cost is very high but static, remaining the same for each recipe being run. So, be selective about cooling your ingots.  The faster the recipes, the more efficient the cost, so find your optimal balance.[/note]  The Infinity Cooled Casings replace the frost proof casings, so you don't need to worry about damaging your setups.
+  - [提交] gregtech:gt.blockcasings8:14 x208
+
+### [-8965035435801102116] §c§l§nT2: Primitive
+The §dPrimitive§r Spacetime Compression Field Generator allows for up to §lT2§r recipes which produce §l4608L§r of White Dwarf Matter per successful batch.  The §dPrimitive§r Time Dilation Field Generator grants a §250%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c9.25%§r.  The §dPrimitive§r Stabilisation Field Generator will boost the success chance of the EoH by §25%§r, but will decrease the yield by §c5%§r and increase the power cost by §c35%§r.
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:1, tectech:gt.time_acceleration_field_generator:1, tectech:gt.stabilisation_field_generator:1
+  - [勾选确认]
+
+### [-6582154093958034319] §c§l§nT3: Stable
+The §9Stable§r Spacetime Compression Field Generator allows for up to §lT3§r recipes which produce §l18432L§r of White Dwarf Matter per successful batch.  The §9Stable§r Time Dilation Field Generator grants a §275%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c18.5%§r.  The §9Stable§r Stabilisation Field Generator will boost the success chance of the EoH by §210%§r, but will decrease the yield by §c10%§r and increase the power cost by §c30%§r.
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:2, tectech:gt.time_acceleration_field_generator:2, tectech:gt.stabilisation_field_generator:2
+  - [勾选确认]
+
+### [-4941146285800091061] §c§l§nT4: Advanced
+The §3Advanced§r Spacetime Compression Field Generator allows for up to §lT4§r recipes which produce §l1152L§r of Black Dwarf Matter per successful batch.  The §3Advanced§r Time Dilation Field Generator grants a §287.5%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c27.75%§r.  The §3Advanced§r Stabilisation Field Generator will boost the success chance of the EoH by §215%§r, but will decrease the yield by §c15%§r and increase the power cost by §c25%§r.
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:3, tectech:gt.time_acceleration_field_generator:3, tectech:gt.stabilisation_field_generator:3
+  - [勾选确认]
+
+### [-5656051784975508899] §c§l§nT5: Superb
+The §aSuperb§r Spacetime Compression Field Generator allows for up to §lT5§r recipes which produce §l4608L§r of Black Dwarf Matter per successful batch.  The §aSuperb§r Time Dilation Field Generator grants a §293.75%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c37%§r.  The §aSuperb§r Stabilisation Field Generator will boost the success chance of the EoH by §220%§r, but will decrease the yield by §c20%§r and increase the power cost by §c20%§r.
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:4, tectech:gt.time_acceleration_field_generator:4, tectech:gt.stabilisation_field_generator:4
+  - [勾选确认]
+
+### [-7083866694015723813] §c§l§nT6: Exotic
+The §eExotic§r§r Spacetime Compression Field Generator allows for up to §lT6§r recipes which produce §l18432L§r of Black Dwarf Matter per successful batch.  The §eExotic§r Time Dilation Field Generator grants a §296.875%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c46.25%§r.  The §eExotic§r Stabilisation Field Generator will boost the success chance of the EoH by §225%§r, but will decrease the yield by §c25%§r and increase the power cost by §c15%§r.
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:5, tectech:gt.time_acceleration_field_generator:5, tectech:gt.stabilisation_field_generator:5
+  - [勾选确认]
+
+### [-5805725701059093550] §c§l§nT7: Perfect
+The §6Perfect§r Spacetime Compression Field Generator allows for up to §lT7§r recipes which produce §l1152L§r of §5Universium§r per successful batch.  The §6Perfect§r Time Dilation Field Generator grants a §298.4375%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c55.5%§r.  The §6Perfect§r Stabilisation Field Generator will boost the success chance of the EoH by §230%§r, but will decrease the yield by §c30%§r and increase the power cost by §c10%§r.
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:6, tectech:gt.time_acceleration_field_generator:6, tectech:gt.stabilisation_field_generator:6
+  - [勾选确认]
+
+### [-5008615856009389453] §c§l§nT8: Tipler
+The §4Tipler§r Spacetime Compression Field Generator allows for up to §lT8§r recipes which produce §l4608L§r of Universium per successful batch.  The §4Tipler§r Time Dilation Field Generator grants a §299.21875%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c64.75%§r.  The §4Tipler§r Stabilisation Field Generator will boost the success chance of the EoH by §235%§r, but will decrease the yield by §c35%§r and increase the power cost by §c5%§r.
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:7, tectech:gt.time_acceleration_field_generator:7, tectech:gt.stabilisation_field_generator:7
+  - [勾选确认]
+
+### [-7941726137436471809] §c§l§nT9: Gallifreyan
+The §cG§6a§el§al§bi§9f§dr§ce§6y§ea§an§r Spacetime Compression Field Generator allows for up to §lT10§r§r recipes which produce §l18432L§r of Universium per successful batch.  The §cG§6a§el§al§bi§9f§dr§ce§6y§ea§an§r Time Dilation Field Generator grants a §299.609375%§r time reduction for any recipe ran in the EoH, but reduces the likelihood of success by §c74%§r.  The §cG§6a§el§al§bi§9f§dr§ce§6y§ea§an§r Stabilisation Field Generator will boost the success chance of the EoH by §240%§r, but will decrease the yield by §c40%§r.  [note]If you want to run a T10 EoH that is power positive, the best setup to use is a T9/T8/T9 (Using Tipler Time Dilation Field Generators).[/note]
+  - [可选提交] tectech:gt.spacetime_compression_field_generator:8, tectech:gt.time_acceleration_field_generator:8, tectech:gt.stabilisation_field_generator:8
+  - [勾选确认]
+
+### [-6890147797704476497] §c§l§nThe SUCC
+Like its predecessor it can run 4 different recipes at once, but this time each recipe has 64 parallels.  A good solution for your Hydrogen and Helium problems.  [note]This also requires Eternity to craft.[/note]
+  - [提交] gregtech:gt.blockmachines:14014
+
+### [-6087268361248963518] §c§l§nTier 12 (UMV)
+Welcome to the current penultimate tier of New Horizons, Mega Ultimate Voltage.  This tier is the tier for upgrading everything and provides access to better parts to help you scale up.  Good Luck.  [warn]This tier is not fully complete. Expect stuff to change.[/warn]
+  - [提交] gregtech:gt.blockmachines:11232
+
+### [-7369799697449707989] §c§l§nTier 4 QFT Catalysts
+With Shirabon now acquired, you can finally create catalysts to use in your Tier 4 QFT.  [note]These are extremely expensive, you may want to look into DTPF convergence, and faster means of creating Metastable Oganesson before you can make many of these.[/note]
+  - [可选提交] miscutils:item.BasicGenericChemItem:26, miscutils:item.BasicGenericChemItem:27, miscutils:item.BasicGenericChemItem:33
+  - [勾选确认]
+
+### [-7159553166987312386] §c§l§nUMV Energy Hatch
+The penultimate energy hatch.  Hopefully you know what to upgrade first.  [note]Have you checked out wireless energy hatches yet?[/note]
+  - [提交] gregtech:gt.blockmachines:11302
+
+### [-6232511347414889484] §c§l§nUMV Field Generator
+Another Field Generator... you are almost done.
+  - [提交] gregtech:gt.metaitem.01:32046
+
+### [-4972516930668425636] §c§l§nUMV Superconductors
+One of the last wires you have to make for now.  [note]Hope you're not using these for hooking up power to your pre-existing machines. Consider the Infinity Wire.[/note]
+  - [提交] gregtech:gt.blockmachines:2089
+
+### [3244] §c§l§nUXV Circuits
+Quantum Circuits, another upgrade of Optical Mainframes and Pico Circuits. These UXV circuits will be required for lots of future crafts.  [note]You will need your Pico Circuit NAC to get started.  Did you know all special circuits contribute to the calibration?[/note]  [warn]Rumor has it these circuits may not be around for much longer...   Maybe do not trust rumors...[/warn]
+  - [提交] dreamcraft:QuantumCircuit
+
+### [-9151745971379460930] §c§l§nWhat is this, Tekxit?
+The immense heat of the God Forge and its modules allow for ideas themselves to be melted down.  Two clashing ideologies, forced to coexist. §3Hexanite§r is born.  A fusion of §dMagic§r and §6Technology§f§r, the ultimate concoction, a volatile one. Even the God Forge struggles to merge them perfectly. A mess of ideas needs a host, something familiar to bind them together.  §3§r[note]Redstone Plasma requires the God Forge to be melted, while Ichorium only needs a Fluid Extractor. You are sure to have lots of Ichorium Dust lying around from your Space Miners.  It is recommended to cast these materials in an Exo-Foundry, as the long wait times and high volume of use cannot be supported in a Mass Solidifier[/note]
+  - [可选提交] gregtech:gt.metaitem.01:31810 x4, gregtech:gt.metaitem.99:978 x4
+  - [可选提交] gregtech:gt.metaitem.01:30173
+  - [提交] gregtech:gt.metaitem.01:17174 x4
+
+### [-5796823047327111175] §c§l§nWhite Dwarf Matter
+Who knew that creating artificial solar systems would finally allow you to extract the core of a freshly dead star?  With your current crude casings, you can only accelerate the life of an artificial solar system to observe white dwarfs.  Perhaps this matter will help you push the process even further.  [note]This is one of the three EOH materials. Use it to upgrade your casings up to T4.[/note]
+  - [流体]  x
+
+### [-6794591825239688845] §c§l§nWireless Multi-Amp Hatches
+With Shirabon now acquired, you can create 4A, 16A and 64A wireless energy hatches. These are particularly useful for machines which can use multi-amp, but do not need extreme amounts of power warranting a laser hatch.  [note]These used to be needed in large quantities, being the best energy hatch to use on a Processing Array. May they rest in peace.[/note]
+  - [可选提交] gregtech:gt.blockmachines:15091
+  - [勾选确认]
+
+### [-9189987553802947566] §c§l§nYet Another Space Elevator Upgrade
+This bad boi can handle 18 modules at once.
+  - [提交] gtnhintergalactic:gt.blockcasingsSEMotor:3
+
+### [3233] §c§l§nYou Are Worthy
+Go no further if you value your sanity.
+  - [提交] gregtech:gt.metaitem.01:32416
+  > 奖励: Forestry:beePrincessGE | Forestry:beeDroneGE
+
+### [-7085580672393101304] §c§l§nZepto Power IC
+You need Zepto Power ICs for UXV -> MAX transformers, UMV Energy/Dynamos Hatches, and Quantum Circuits.  These wafers will need to be crafted in a Beam Crafter with Spacetime Dust and Molten Creon and Mellion. Perhaps upgrade your LHC some more.  [note]You'll need a UMV Laser Engraver, or an OC'd multi to actually cut the wafers.  Who isn't using OC'd multis at this point?[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32270
+  - [提交] gregtech:gt.metaitem.03:32271 x2
+

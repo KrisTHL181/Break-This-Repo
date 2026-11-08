@@ -1,0 +1,26 @@
+type: text
+
+---
+
+io/github/mymod/mixin/MyClassAccess
+```java
+@Mixin(MyClass.class)
+public interface MyClassAccess {
+  @Invoker("access") void modid$callAccess();
+
+  @Accessor("myField") int modid$getMyField();
+  @Accessor("myField") void modid$setMyField(int value);
+
+  @Mutable
+  @Accessor("finalField") void modid$setFinalField(String value);
+}
+```
+to use it
+```java
+public class Container {
+  public void slapHaykam(MyClass instance) {
+     ((MyClassAccess)instance).modid$callAccess();
+  }
+}
+```
+More information at <https://docs.fabricmc.net/develop/mixins/accessors>

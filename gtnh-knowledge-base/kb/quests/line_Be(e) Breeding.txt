@@ -1,0 +1,946 @@
+# 任务线: Be(e) Breeding
+### [2245] Abandoned
+Abandoned are the next step up. Breed them from Oblivion and Nameless.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2224] Aer
+For Aer bees to appear, you must put an Air Crystal Cluster beneath the bee housing. They will produce Aer infused dust for you. Being nearby will grant a Swiftness buff. Breed them from two Windy.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2287] Agrarian
+Agrarian bees are supposed to help crops nearby grow. The effect isn't really that noticeable, is it? You'll have to be in a Plains-like biome for these to appear. Breed them from Farmerly and Industrious.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2198] Aluminium
+Aluminium isn't necessary until MV, but when you want it, you'll want lots. Requires block of Aluminium. Breed them from Nickel and Zinc.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [362] Americium
+A remarkable bee. If you thought americium can only be obtained from fusion you would be wrong.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [2281] Ancient
+Ancient bees are the first step to the best oil bees in the game. Breed them from Diligent and Noble.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2291] Apatite
+The Apatite bee requires an Apatite Block beneath it to breed. Its Seedy comb will make seed oil as well. Breed them from Ash and Coal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2220] Aqua
+Aqua requires a Water Crystal Cluster. It will produce Water infused dust. Staying nearby will clear potion effects, like drinking a bucket of milk. Might be useful for the clever industrial engineer! Breed them from two Watery.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2212] Arcane
+Enchanting drops from Arcane bees are used to create Aromatic Lumps for use in the Swarmer. It has a higher chance of success than normal Royal Jelly. These bees are the other bedrock of the Magic Bees branch. Breed them from Esoteric and Mysterious.  [note]Thaumaturge's Notes:  If you are playing with disabled Thaumcraft research, and instead pay for research with aspects, then review descendants of this line. You can cross with Monastic bees, working your way to Pupil, and then on to Savant. Savant queens will produce lore fragments that you can combine into knowledge shards. That will help you stock up on aspects that you can put towards all the Praecantatio the alternate research mode requires.  It doesn't get its own quest progression because that's a pretty niche use. On the other hand, those ... academic bees also produce Paper Combs that can be centrifuged into paper.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [356] Arid
+The Arid Bee species. Useless you say?
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2258] Aromatic Lump
+Aromatic Lumps are twice as effective as Royal Jelly in an Alveary Swarmer. You'll need Enchanting Drops from Arcane bees and Pollen Clusters from Industrious bees.
+  - [提交] MagicBees:miscResources:1
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:frameImpregnated x16 | Forestry:honeyDrop x64 | dreamcraft:CoinBeesI x5
+
+### [2254] Arsenic
+This deadly little princess will get you Arsenic, perfect for use in your circuits. Requires a Block of Arsenic. Breed them from Silver and Zinc.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2292] Ash
+A bee to make ashes? What insanity is this? At least you can get Large territory from them. You'll need to pay the Nether a visit. Breed them from Clay and Coal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-9136162451931116134] Attuned
+You're now getting into Magic Bees, and one of its mundane bee species is the Attuned species. These are scooped out of Deep Hives that you can find in the Overworld. These hives are a pain to find, so you should consider just buying hives with coins until you get a princess and a drone. However, if you are a real masochist or completionist try-hard, then here's some information about where they spawn:  * From Y=1 to Y=25 * In stone, surrounded on 5 sides. Not just vanilla stone. * In biomes tagged with one or more of:    * MOUNTAINS: Actual mountains may not count. It's the biome type that counts.       * Example: Canyon.    * HILLS: Again, actual hills don't count.       * Example: Snowy Coniferous Forest.    * MAGICAL: Unlike the others, they do have some ethereal aspect.       * Examples: Magical Forest is obvious, but also Cherry Blossom Grove counts. * Surrounded by a small redstone vein. This often fills any open space around them.  They also like to just kind of show up whatever-what-the-heck in other biomes. Our beekeeping intern found a Deep Hive in a Lush Desert:  Lush Desert [HOT, DRY, SAVANNA, LUSH, SANDY]  You can dump the biome data in NEI by clicking on the NEI options button (the wrench), then the Tools button, then the Data Dumps button, and finally the Dump button in the biomes category. This creates a "dumps" directory in the root folder of the modpack with a biome.csv inside of it. Any listed biome that has the tags of HILLS, MOUNTAINS, and/or MAGICAL can generate Deep Hives. You can feed these biomes into a Nature's Compass and see if there are any nearby.  Prospector's Scanners will pick up the little ore pockets for these (traces, small samples). If you had one of those end-game ones with a display, it would come up as a few red pixels. Larger ones are probably just regular ore veins. The ore finding wand doesn't do a good job from the surface. Chasing lava veins and tunnels helps. Ore veins filled with redstone will saturate either tool.  Of course, just buying hives is the low-effort way.  [note]Beekeeper's Notes:  If you get real bad luck and wind up with an ignoble princess, then just get a bunch of drones out of it and convert some other pristine princess afterwards. However, using base princesses will compel the bees to turn into the Common species. There are two choices:  1. Use an Alveary with an Alveary Stabilizer to block mutations. 2. Create a princess that doesn't line up with the Attuned species' breeding possibilities before starting.[/note]
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 x2
+
+### [2180] Austere
+Another bee that requires an attentive beekeeper. Without an Apiarist suit, this bee will inflict creeper explosions on you. Watch out! It will require a hot or hellish biome with Arid humidity. Breed them from Modest and Frugal.  [note]Breeder's Notes:  Austere may want a hellish biome, but that doesn't mean this species wants to be in The Nether. By default, they need to see the sky. You will either have to use an alveary with climate modifications to appease them, or alter an Overworld biome to their tastes. Something like the Potion of Shifting Seasons can put a little bit of a nether biome like Boneyard in the Overworld. You could get lucky and find an Overworld biome scorching hot enough to make them happy, but that's some serious luck.  The creeper explosions are usually just a bit annoying, but we once had an apiarist in steel armor and full, §agreen§r hearts get turned into a gravestone in §oone hit.§o §rThey were prepping to gear up into their apiarist suit, but they happened to be in its territory. Don't mess around with this species![/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2206] Avenging
+Hatred distilled into its most violent form. Keep away from everything. Breed them from Vengeful and Vindictive.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2228] Aware
+Not much to say about this bee. Breed them from Ethereal and Attuned.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-5810639836077429088] Barnarda
+This bee produces Barnarda dust.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x3
+
+### [-7154992499943054405] Barnarda F
+Barnarda F - Press F
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x3
+
+### [308] Barren
+The Barren Bee. Not much better.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2274] Batty
+Batty bees will spawn firebats. So prepare for battle. Their specialty is Gunpowder. Breed them from Skulking and Windy.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2171] Blooming
+A Blooming bee will bonemeal nearby saplings. This can definitely help your log and sapling production rate. They also provide the fastest pollination. Breed them from Industrious and Thriving.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2273] Blue
+Blue princesses will provide a handy source of blue dye. Breed them from Forest and Diligent.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [1117] Breed some common bees
+To cross breed bees you need two different species of bees. One drone and one princess from different naturally-generating hives (Meadows and Forest as an example).  Bee Houses do not allow crossbreeding. You need an Apiary to cross-breed them to a new species. Certain frames will help this process. Shortening their lifespan means faster crosses. Increasing the mutation rate means getting mutations and thus rare bees quicker.  Common Bees produce Honey Combs every 2.2 minutes. Note that production times are an approximation based on the bee's base production speed and the product's rarity. They do not reflect actual production time.  Make sure your bees are pure by checking their genetics with a Beealyzer or GT scanner.  [note]Breeder's Notes:  Riiiight from the start, they have a trick for you. The Common bee is bred from most mundane species smashed into each other. The problem is the Cultivated species, which is next in line, is bred with most mundane species along with Common. Noble and Diligent then are crossed from Common and Cultivated. You could start with two mundane bees, have the results loop back unattended, and run that whole progression. Here's an example active:inactive mix you could get on a princess over time:  Meadows:Forest Meadows:Common (Yay!) Common:Meadows (Double yay! Active trait!) Cultivated:Common (Boo!) . . . some time passes . . . Diligent:Noble (Wait, what?!)  Meanwhile, this quest would still be sitting there, waiting for you to submit Common bees. Whoops!  If Cultivated starts to show up, just stuff any princesses and drones involved into a chest and act like that didn't happen for now. You can use them when you complete this quest to jumpstart the Cultivated species.  Now, if you don't have any way to speed up breeding and don't want to stand around to micromanage, you can try filtering, or just checking on the result from time to time. Either way, maybe don't leave it going overnight if you're on a server.[/note]
+  - [可选提交] Forestry:beeDroneGE, Forestry:beePrincessGE, Forestry:beeDroneGE, Forestry:beePrincessGE
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:honeyDrop x16 | Forestry:beeCombs x16 | dreamcraft:CoinBees x25
+
+### [1116] Breed some cultivated bees
+Common Princess and Forest Drone can be bred to cultivated bees.  Cultivated bees have the shortest lifespan - this means they make great princesses to breed with your newly bred drones. The queen will die quickly, quickly giving genetic material to work with. Make sure the traits you want are kept!  They are also a Fast production bee, which means lots of honey combs for powering your Beealyzer or Treealyzer.  Cultivated Bees produce Honey Combs every 0.9 minutes. Note that production times are an approximation based on the bee's base production speed and the product's rarity. They do not reflect actual production time.  Make sure your cultivated bees are pure with a Beealyzer or GT scanner.  The main bee breeding quests will require pure bees but you can use Ignoble or Pristine princesses.
+  - [可选提交] Forestry:beeDroneGE, Forestry:beePrincessGE, Forestry:beeDroneGE, Forestry:beePrincessGE
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:honeyDrop x32 | Forestry:beeCombs x32 | dreamcraft:CoinBees x25
+
+### [1121] Breed some imperial bees
+Cross breeding noble and majestic bees can result in imperial bees.  These bees produce a Regeneration buff in their active area. You can probably find a use for this in case of...accidents.  Imperial bees produce dripping combs every 3.8 minutes and royal jelly every 5.1 minutes. Note that production times are an approximation based on the bee's base production speed and the product's rarity. They do not reflect actual production time.  Royal jelly is needed in making scented paneling for an Alveary - the third tier bee housing.  You can now start working towards the Master Registry in the How to Be(e) tab.
+  - [可选提交] Forestry:beePrincessGE, Forestry:beeDroneGE, Forestry:beePrincessGE, Forestry:beeDroneGE
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:beePrincessGE | Forestry:beeDroneGE x4 | Forestry:beeCombs:5 x32 | Forestry:honeyDrop x64 | dreamcraft:CoinBeesI x5
+
+### [1120] Breed some majestic bees
+Cross breeding noble and cultivated bees can result in majestic bees.  If you didn't get it from Wintry bees already, Majestic bees have a very important attribute - high fertility. They will leave 4 drones when they die. This means lots of genetic material for the next generation to work with.  Majestic bees produce dripping combs every 1.5 minutes. Note that production times are an approximation based on the bee's base production speed and the product's rarity. They do not reflect actual production time.
+  - [可选提交] Forestry:beePrincessGE, Forestry:beeDroneGE, Forestry:beePrincessGE, Forestry:beeDroneGE
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:honeyDrop x64 | Forestry:honeydew x64 | dreamcraft:CoinBees x25
+
+### [1118] Breed some noble bees
+Cross breeding common and cultivated bees can result in noble bees.  Noble bees produce dripping combs every 3.8 minutes and honeydew. Note that production times are an approximation based on the bee's base production speed and the product's rarity. They do not reflect actual production time.  You've heard of a drunk beekeeper saying he has perfected a method of creating proven frames using Honeydew and a little magic. It might be worth your time to try experimenting yourself.
+  - [可选提交] Forestry:beePrincessGE, Forestry:beeDroneGE, Forestry:beePrincessGE, Forestry:beeDroneGE
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:honeyDrop x64 | Forestry:beeCombs x64 | dreamcraft:CoinBees x25
+
+### [2252] Celebratory
+ This fun bee doesn't have any useful products, but it does produce a fun effect - constant fireworks! You can breed the effect into other lines, and the color of the fireworks will match the bee. Make the bees require sky and you can disable the effects by covering them up with a piston. Great for a celebration! Breed them from Austere and Excited.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2173] Certus
+The Certus Quartz bee. Hmm, does it have any breeding requirements? I can't seem to remember. Maybe try a block of Certus Quartz? Breed it from Lapis and Hermitic.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2231] Chaotic
+Chaotic bees require an Entropy Crystal Cluster. They will produce Entropy Infused Dust. Breed them from Ethereal and Supernatural.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2216] Charmed
+The power of three! Charmed bees are your next step up the magic bee tree. Breed them from Eldritch and Cultivated.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2202] Chrome
+Chrome, a necessary ingredient for Stainless Steel. Better to get it directly instead of having to deal with Rubies or Garnets. This bee will require a block of Chrome to breed. Breed them from Titanium and Ruby.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2163] Clay
+To breed a Clay bee, you must put a Clay block beneath the housing. Clay bees are the bedrock of many important bee lines. Breed them from Industrious and Diligent.  [note]Breeder's Notes:  This bee is an ancestor for a diverse group of species. A lot of them have incompatible biome requirements--especially the humidity. While breeding, you'll find that you have to alter the biome from cycle to cycle. You probably want to just earmark a spot that is NORMAL/DAMP right now if your only option for handling this is to run around with your breeding setup.  You're probably on your way to more interesting production bees, but don't forget that clay dust can be electrolyzed into some useful stuff![/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2168] Coal
+Ah yes, Coal is King indeed, but Coal Bees are matriarchal. A great bee, giving you Coal to use to power your industry. This will require a Coal Block under your bee housing. This bee will also have the first really dangerous effect - it will apply a creeper explosion to you if you are not wearing your Apiarist suit. Breed them from Peat and Industrious.  [note]Breeder's Notes:  This is a major prerequisite ancestor species to a lot of other bee species in this chapter, and they're advanced ones too. The problem is the Coal species is long-lived, so it takes a long time for the queen to drop down to a princess and two drones (assuming the Coal species default of 2x fertility). Consider using some lifetime-reducing frames to accelerate that so you can get a Coal drone stock more quickly and start on those other species.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2162] Copper
+The Copper bee is the first of the metal lines. There are too many metal breeding lines to cover here, but by now you should be able to use NEI to figure out how to breed more bee types. Copper bees require a copper block beneath the bee housing. Breed them from Majestic and Clay.  The Copper Combs have a strong chance of centrifuging into copper dust, but you'll also see a Chemical Reactor recipe to use hydrochloric acid to get a 1:1 exchange. You have some bee options for getting chlorine so you should think about a sustained hydrochloric acid production line soon. You'll eventually §lhave to §ruse hydrochloric acid and won't have the Centrifuge option for later combs.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-4981586207458669133] Cosmic Neutronium
+You have finally obtained this new bee, and it is a game-changer! Its combs are especially useful for processing cosmic neutronium in the DTPF, making the recipe run twice as fast.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x5
+
+### [359] Decaying
+The Decaying Bee is not any more useful than the previous three. But now it should be clear, we are on our way to the Lutetium Bee!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2176] Demonic
+Better be careful with this one! It will set you on fire. In addition to combs, this bee can produce Glowstone Dust. It will require Nether to breed. Breed them from Sinister and Fiendish.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [360] Desolate
+The Desolate species. Maybe you can see where this is going?
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2172] Diamond
+Ah finally, a girl... I mean Queen's best friend. Will require a block of Diamond. Breed from Certus and Coal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2156] Diligent
+Diligent bees are a core breeding stock bee. Breed them from Common and Cultivated.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2278] Distilled
+What's this? A step back you say! Yes, the Distilled bee doesn't make anything of use, but the potential is there. Breed them from Oily and Industrious.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [3286] D-O-B
+It is not the psychedelic drug kicking in. The NEI page is actually correct. You can get a lot of different stuff from this comb.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x2
+
+### [2246] Draconic
+The Draconic bee is required in order to get the dusts needed to recreate the Dragon Egg using magic. It must be bred in the End. Breed them from Imperial and Abandoned.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [395] Dragon Blood
+The Dragon Blood Bee is a lot of effort to obtain but quite handy for hypogen in late game.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [1119] Dripping Combs
+Your noble bees produce some dripping combs. A good source for honey, and if you have a magical mind, honeydew for proven frames.
+  - [提交] Forestry:beeCombs:5 x16
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:honeyDrop x16 | dreamcraft:CoinBees x25
+
+### [2222] Earthen
+Earthen bees must be bred on top of Bricks. Breed them from Supernatural and Ethereal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2236] Edenic
+The Edenic bee has the remarkable effect of giving experience points to players nearby. Breed it from Exotic and Tropical.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2285] Elastic
+Finally! A useful bee from the Boggy branch. The Elastic bee will actually produce rubber bars for you! No more smelly Sulfur! Breed them from Distilled and Resinous.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2213] Eldritch
+Eldritch are the start of the magic bee family. Breed them from Mystical and Cultivated.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2200] Emerald
+Ah yes, a very useful bee. Emeralds are used for many upgrades, and trading with villagers. Will require a block of Emerald. Breed them from Olivine and Diamond.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2235] Empowering
+The Empowering bee will randomly add aspects to nearby nodes, allowing enormous power to build up. The best chance to breed them is during a full moon. Breed them from Rejuvenating and Vis.  [note]The maximum node size was capped for a few versions, but that cap is now removed! Maybe go on the GTNH discord and praise Runakai for that. :)[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x2
+
+### [-5782854984189443147] Enceladus
+The Enceladus bee allows you to obtain resources found on Enceladus, one of Saturn's moons.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [2215] Enchanted
+Enchanted is the next step in the progression. Breed them from Charmed and Eldritch.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [372] End Dust
+A bit of a misnamed bee. What it really gives you is Ender Goo and End Powder.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [354] Enderium
+An enderium bee. It's particularly interesting for the blinding speed trait!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [3297] Ender Shard
+Critical for your Ichor production.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2187] Energetic Alloy
+Energetic Alloy will require a block of Energetic Alloy, of course. Breed them from Redstone Alloy and Demonic.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-9173649568252084802] Energium
+Are you tired of making Energium Dust by mixing Ruby and Redstone Dust? This bee offers a way to acquire it directly - how convenient is that? To breed it, you'll need to place some Hot Coolant below the hive while inside a Boneyard found in the Nether.  Unlike its parents, this bee won't burn down your base—but it will set you on fire if you're not wearing your apiarist suit!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2218] Esoteric
+Another basic Magic branch bee. Breed them from Eldritch and Cultivated.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-5534359835533217609] Essentia
+This bee produces nothing directly but instead sacrifices its lifetime to generate liquid essentia for all your magical needs. To do so, however, it requires an Apimancer's Drainer beneath its housing.  The speed at which the bee produces essentia is affected by its production speed. You have to right-click the drainer with a filled phial of the desired essentia to lock it to that type.  You can breed them from chaotic and ordered bees.  §3You can also place up to 9 drainers beneath a single alveary as long as the blocks at the bottom are plain alveary blocks.
+  - [提交] Forestry:beePrincessGE, MagicBees:apimancersDrainer
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2219] Ethereal
+Ethereal bees are critical for all the magical aspect bees. Breed them from Arcane and Supernatural.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2251] Excited
+You might be thinking to yourself, huh this sure is an easy bee to give redstone....well, it also gives destructive lightning strikes. You might want to place them far from you. Or set them up in a Creeper spawner to make charged creepers for...experiments. Breed them from Valiant and Cultivated.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2237] Exotic
+Watch out, just like its parent the Exotic bee will poison you. But it is also a source of silk wisps. Breed them from Austere and Tropical.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [804] Explosive
+Ideal for your Implosion Compressor.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2288] Farmerly
+Like most farmers, these bees seem to spend all their time complaining about the neighbors or the weather instead of actually doing much. They'll need a Plains-like biome. Breed them from Unweary and Rural.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2290] Fertilizer
+The Fertilizer bee will make your crop empire purr — or grow, anyways. They are a good source of Fastest production and Faster pollination as well. Breed them from Apatite and Ash.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2178] Fiendish
+Just like Sinister, Fiendish requires the Nether and a protective bee suit. Breed them from Sinister and Cultivated.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [777] Firestone
+Don't burn yourself.  [note]It's also possible to get Firestone from the Sulfur Bee, though it has a notably smaller comb output.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2221] Firey
+Firey bees must be bred on top of Lava. Breed them from Ethereal and Supernatural.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2190] Fluix
+If you go deep into AE2, you'll want cheap sources of Fluix from these bees. Breeding will require a block of Fluix. Breed them from Lapis and Redstone.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2181] Frugal
+The Frugal bee doesn't have much direct use, but is part of many breeding lines. It will require a hot or hellish biome and arid humidity. Breed them from Modest and Sinister.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2153] Fruity bees
+Fruity bees will make your Forestry trees ripen their fruit faster. Breed them using a Sweetened and Thriving.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-8785372800340988846] Furious
+If you want to pursue the breeding path toward Lapotron and Pyrotheum Bees, you'll need to start by breeding some Furious Bees. They can be bred in the nether using Fiendish and Embittered Bees, with the latter found in the wilds of the Nether.  Beware: Furious Bees spawn fire charges downward, so make sure your breeding area is fireproof!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [363] Gassy Bees
+There is whole swarm of gas producing bees. Let's breed just one of them here. Check out NEI to see all the options you can aim for.  [note]The Xenon Bee might be the most useful one. You can use it for Void Miners and potentially smelting time reductions.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2275] Ghastly
+Ghastly bees will spawn Ghasts, so beeee careful. Their specialty is Ghast Tears. They only have 1 fertility so you want to make sure you breed the drones with your master template princess. Breed them from Batty and Ethereal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-8934580080477372197] Glowstone
+The Glowstone Princess isn't as picky as her peers. There are no breeding requirements besides the species being Gold and Redstone. Hooray!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-8063033383018802688] Gold
+There are a plethora of ways to acquire gold, but here's one more for the dedicated apiarist. This breeding chain will eventually allow you to reach Sunnarium. You'll need a Block of Gold and a biome with a hot temperature. Breed them from Copper and Lead.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2158] Growing
+Growing bees are the start of the Fruity specific breeding tree. Breed them from Forest and Diligent.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2250] Hateful
+You can feel the waves of hate radiating out of her eyes. Don't even think about getting close without an Apiarist Suit. Must be bred in the Nether. Breed them from Eldritch and Infernal.  [note]Breeder's Notes: Infernal bees are used to make both this species and Spiteful, which is next in line from Hateful. That means you'll probably start winding up with Spitefuls while trying to make this species. Since this is a progression to more interesting species, you could say it doesn't matter, but:  1. Skipping straight to Spiteful means not getting this quest done and then losing your progression. 2. Maybe you want to do a Smoldering bee, which needs this one.  What we recommend is tucking away any Spitefuls you get and just act like that didn't happen until you finish this bee. If the princess starts turning Spiteful and you don't want to just start a new one, you'd want to pump it with Infernal or Eldritch (pick one!) until you've cleaned out the Spiteful trait.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2175] Hermitic
+Hermitic bees have the same no-entities requirement as Secluded, but they solve that problem themselves. They are so repugnant they repel mobs near them. Breed them from Secluded and Monastic.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2243] Heroic
+This one takes a little luck. You'll have to find Steadfast drones in chests classified as dungeon chests. Note that doesn't mean the chests have to be in a dungeon! You could find one in the middle of some Thaumcraft obsidian pillars right on the surface of The Overworld.   Heroic bees have the pleasant effect of causing damage to hostile mobs. Breed them from Steadfast and Valiant.  [note]Breeder's Notes:  Specifically, you'll only ever find Steadfast drones in the chests. §nNo princesses.§r You'll have to convert a princess if you want to make a stock of them. Heroic is the only thing you can use them for, but you'll have a better time of it if you have more than a handful of drones. So if you play your cards well and use a high-fertility starter princess, you could take one or two Steadfast drones and multiply them into something safer before trying this mutation.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [367] Hydra
+These make fiery blood.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2226] Ignis
+Ignis bees require Fire Crystal Clusters beneath the bee housing. They will produce Fire infused dust. Watch out! They will set nearby entities on fire! Breed them from two Firey.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [390] Indium
+This bee multiplies all sources of Indium by 3x. The Indium bee is available in LuV, or in IV with the help of magic.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [2164] Industrious
+Industrious bees produce pollen clusters, a key ingredient to the Alveary. They're also used for breeding many other bees. Their pollination speed is Fast, better than most bees. Breed them from Diligent and Unweary.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-6706848260873273195] Infernal
+Infernal bees are mundane: you get them from hives, and they have no ancestors.  Infernal hives are in The Nether, surrounded by nether quartz. Avoid large nether quartz blobs in ore chunks. Instead, look for little pockets of nether quartz. Any ghast-infested, open area will show a few dabs of them. Alternately, if you're tunneling around, you'll inevitably bump into some of these small pockets.  Zombie pigmen will get mad if they spot you nibbling on their quartz, so consider just breaking away the netherrack around the quartz to see that it's a solid cluster that could surround a hive. If so, you are just one or two mining hammer swings away from a likely infernal hive.  There's another way to get these hives: §obuy them with coins! Ka-ching! §o§r Their molten combs are nice for a mundane bee. They centrifuge down to refractory wax, which can be used for fireproof wood and refractory capsules.  [warn]Infernal bees have an aggressive trait, so they'll damage entities--namely, you--when you are within their territory. You want an apiarist's suit before you start working with them. Alternately, if you set them up in an isolated spot, you can just run real fast. This isn't sustainable for all types of aggressive bees, by the way.[/warn]  [note]Breeder's Notes: You can run these bees in the Overworld if you can find a hot/arid climate. When in doubt, place an apiary and look at what it claims the climate is in the upper right of its GUI. Even if the bee isn't jubilant, but you can get drones out of them for breeding. Then you don't have to run back and forth to The Nether to run a cycle with a fussy queen while cross-breeding.  Use nether wart to keep them happy, and don't forget some soul sand!  They don't cross breed with other mundane bees into stuff like Common and Cultivated bees, so you can convert another mundane princess to an Infernal princess if you have the drones. Just take some care with this. For example, if you try this with an Arctic princess, you could wind up with an Infernal princess that needs a scorching/arid climate, but also needs snow to pollinate.[/note]
+  - [提交] Forestry:beePrincessGE, Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25 x2
+
+### [-7137489033282013666] Infinity
+This bee lets you produce molten Infinity in the DTPF!  [note]Faster than an Infiniti drives on the road![/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x10
+
+### [-7797974468906509980] Infinity Catalyst
+An Infinity Catalyst bee for your late-game Infinity needs.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x5
+
+### [353] Iridium
+An iridium bee. You can actually get small amounts of pure osmium and iridium from its combs.  [note]With these combs and the uranium ones you can now make climate control units for modules in your industrial apiary![/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2193] Iron
+Iron bees as a resource isn't that big a deal, so much stuff makes iron anyways, but they are a key breeding species. They will need an Iron block. Breed them from Copper and Tin.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-6221210961492684435] Jupiter
+The Jupiter bee allows you to obtain resources from Jupiter.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x3
+
+### [-6376062393258103045] Kevlar
+At last, you have reached the highest tier of bee evolution!  Kevlar is a very useful material from UV through UMV.  [note]This bee lets you skip the many processing steps normally required to produce Kevlar.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x10
+
+### [2174] Lapis
+Finally, a bee with some real promise. The Lapis bee will require a block of lapis to breed. Breed them from Demonic and Imperial.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-8796313451559844100] Lapotron
+This magnificent breed of Bee produces a whole plethora of useful resources, including endless amounts of Lapis, Energium, and Lapotron Dust. However, they are somewhat picky when it comes to breeding; you'll need Energium and Lapis Bees as parents, and the process must take place on the Moon under icy temperatures.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2196] Lead
+Lead will be necessary in large quantities once you start making nuclear reactors. You'll need a block of Lead for these. Breed them from Copper and Coal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [366] Lich
+Lich bones without a boss fight.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [361] Lutetium
+Lutetium is extremely useful if you are in ZPM. You will need quite a bit and bees can help you with that.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [2269] Magenta
+Magenta bees are also Fastest production, but come with +- 3 Climate. Breed them from Pink and Blue.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-4674182484620924311] MakeMake
+The MakeMake bee allows you to obtain resources from MakeMake.  [note]MakeMake dust provides Infinity and niobium. Why not let bees handle it?[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x3
+
+### [351] Manganese
+A manganese bee. Not very useful but one step closer to some more interesting bees.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-8734190256134836946] Mars
+Even Elon Musk will envy you after you obtain this bee.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x2
+
+### [2284] Miry
+Miry bees aren't too useful yet. They'll open up the Boggy branch for you. You'll need to find a biome with Warm/Damp to cause their mutation. Use your Nature's Compass and Habitat Locator to find them. An easy one to find is Rainforest. Breed them from Marshy and Noble.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2185] Monastic
+Monastic bees aren't found in hives or bred. Instead, you will need to find a Beekeeper villager and trade with them for it. There are various ways to make more villagers, so do some research.  [note]Trader's Notes:  Beekeeper villagers spawn in houses that have a fenced back yard with apiaries. If the apiaries are missing, the villager didn't spawn. Or, well, a player already came along and looted the apiaries. They might have abducted the beekeeper too. The beekeeper should be wearing an apiarist outfit. Their initial trades probably don't have this bee. You will have to work up to this by trading what is available. If they require a princess for a trade, an ignoble one is fine. Honorable mention goes to the trade of some logs for an apiary. That's so much easier than having to make them yourself! If trades lock up, one trade of the "rightmost" trade should unlock preceding ones so you can keep trying to get this trade to pop up.  You can make a golden lasso at LV tier and run off with the villager. If you do, prepare a heavily-fortified spot. Even single-block-wide walls won't keep all zombies away. Consider just keeping the beekeeper in the lasso when you're not using them.  Beekeeper's Notes:  The base fertility for a Monastic bee is 1x. That's really annoying. When each cycle ends, you get a princess and a drone. That's it. You don't get surplus stock for carrying on breeding. If you can't just straight up alter the genome, then you can try to convert an arctic princess (or something else with a high fertility) with monastic drones in a way that gives you a higher fertility.  On the flip side, their long life is useful to try to get into production bees so you don't quickly clog up your bee product inventories with drones.  The "monastic line" of bees have other quirks. They'll take stuff like wheat and bookshelves as pollination sources. They can have some nasty aggression habits. They are long-lived, so you want something that cuts their life cycle for breeding--like an oblivion frame. You will start out here with a bee that likes average temperatures and humidity, but that'll drift to outright hellish and arid (but not The Nether!) for descendant species.[/note]
+  - [提交] Forestry:beeDroneGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-8750393892834326316] Moon
+The Moon bee allows you to obtain resources from the Moon.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2217] Mysterious
+Just your mysterious stranger... Breed them from Eldritch and Esoteric.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [364] Naga
+You don't like fighting bosses or you play on peaceful for whatever reason? Well you can still get Naga drops with this bee!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2244] Nameless
+Nameless bees are required to get Draconic bees. They are also where you can get Amnesiac Wax. Breed them from Oblivion and Ethereal. Oblivion bees can be purchased with coins, or found in The End.  [note]Breeder's Notes:  The Oblivion bees are going to be the main problem here if you haven't reached The End yet. You can try to cross-breed without that access, but you're stuck when the mating pair creates an Oblivion Queen that needs End pollinators.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [358] Naquadah
+A naquadah bee. It doesn't let you avoid the naquadah line, but if you have sufficient technology you can make a Mutatron now!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x2
+
+### [350] Naquadria
+A naquadria bee. It's a bit tricky to obtain. And before you ask, yes you will still need the naquadria production line to refine it.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [-5082411588066061267] Neptune
+The Neptune bee allows you to obtain resources from Triton and Proteus.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x3
+
+### [3298] Nether Shard
+Critical for your Ichor production.  [note]You will need to breed through a bunch of elemental bees that don't have quests to actually get to it.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [355] Neutronium
+You made it all the way to the Neutronium Bee! Wow!  The Neutronium Combs can not just lighten the burden on your smelting setup, you can also use them to finally make the Advanced Mutatron.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x2
+
+### [2194] Nickel
+Nickel bees provide a pretty useful resource. You'll need a block of Nickel. Breed them from Iron and Copper.  Nickel Combs cannot be centrifuged. You now need to use a Chemical Reactor with some hydrochloric acid.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-7380028735896570065] Oberon
+The Oberon bee allows you to obtain resources from Oberon.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x2
+
+### [2282] Ocean
+The Ocean bee is bred from Diligent and Water in an ocean-type biome. Note that this doesn't mean literally an ocean. It is any biome that has the OCEAN tag. The stock terrain generator does not generate oceans in The Overworld, but there are a few biomes that carry the tag.  Skipping The Overworld, you might have luck trying in a Twilight Forest lake - you'll know you are in the right biome if you see Water Creepers!  You can dump the biome data in NEI by clicking on the NEI options button (the wrench), then the Tools button, then the Data Dumps button, and finally the Dump button in the biomes category. This creates a "dumps" directory in the root folder of the modpack with a biome.csv file inside of it. Try anything that has OCEAN tagged to it. You can feed these biomes into a Nature's Compass and see if there are any nearby.  Some examples: Shield, Tropics, Twilight Lake, and Lush Swamp.  If you have trouble locating an appropriate spot, you can also purchase Ocean bees from the Vending Machine. Breed them from Diligent and Water.  [note]You get more than one princess per purchase, so it's a useful way to get a few extra pristine princesses.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2167] Oil
+Finally, Black Gold. The Oil bee, with proper... encouragement... can take care of all your power and chemical needs for quite some time. An alternate bee, Oily, requires less processing to get oil but has a longer breeding chain. It is below the Magical bees. Breed them from Coal and Sticky Resin.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2279] Oily
+Finally, the Oily bee! Its combs produce the most oil, but its output isn't that thrilling...yet. Breed them from Primeval and Ocean. As an alternative, you can breed them from Primeval and Frugal if you can't find an Ocean biome or used up all your Beekeeper coins.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2199] Olivine
+An otherwise mostly useless bee, Olivine is required for breeding better bees. I guess if you need Magnesium? Breed them from Ender and Certus.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2232] Ordered
+Ordered bees require Ordered Crystal Clusters. They can produce Order Infused Dust. Breed them from Arcane and Ethereal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-7541484306467421350] Oriharukon
+An infinite source of Oriharukon for producing Melodic Alloy.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x2
+
+### [391] Osmium
+Quite the interesting bee. Maybe integrate it into your osmium processing?
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2169] Peat
+Peat from these bees can be used in furnaces and boilers. Free fuel is free, right? Breed them from Rural and Clay.  [note]Breeder's Notes:  You probably are only doing this because it's a prerequisite for other breeds (especially Coal), but this is a really productive bee! Its peat should be able to pull off a little side hustle somewhere.  Now, its §omulch§o§r is useful for growth medium with the Genetics tool line. If you're going that way, you might as well put this bee to work for it because you're already invested in bees.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2188] Phantasmal
+Phantasmal bees are similar to Spectral, except they cause the other drops to reanimate, like ghasts, spiders, creepers, endermen, or even Ender Dragons if their drops are lying around. Breed them from Spectral and Ender.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2270] Pink
+Pink princesses provide pink dye. They also have Fastest production and +-3 Humidity. Breed them from Red and White.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2203] Platinum
+The Platinum bee! Useful as a decent aid to your platline as well as a slow source of pure platinum. Requires a block of Platinum. Breed them from Diamond and Chrome.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-6600959110500426438] Pluto
+The Pluto bee allows you to obtain resources from Pluto.  [note]Pluto is Kruto![/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x3
+
+### [2205] Plutonium
+A metal that represents the epitome of technology. Never existing in the universe before man. Destroying everything around it. This bee will require a block of Plutonium. Breed them from Uranium and Emerald.  [note]Plutonium Combs are also used in a few crafting recipes![/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x2
+
+### [2280] Primeval
+Primeval. The next step. Breed them from Ancient and Secluded.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-9038089047233248346] Pyrotheum
+Blazing Pyrotheum is needed in large quantities to satisfy the unquenchable thirst of your Volcani. This Bee produces Pyrotheum Dust directly - all you need to do is fluid-extract it (after reaching this point in the breeding chain, of course).  Breed these bees from Energy and Redstone Bees. They aren't picky about conditions, requiring only Hellish temperature. Yay!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2272] Red
+Dye bees obviously provide dyes, but some of them are also useful for their traits. There are many dye bees, these are just a sample. They can be useful for the hard to find dye colors from flowers. Breed Red from Common and Diligent.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2183] Red Alloy
+The Red Alloy princess will require a block of Red Alloy. Breed them from Redstone and Copper.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2184] Redstone
+The Redstone princess will require a block of Redstone. Breed them from Industrious and Demonic.  [note]Breeder's Notes:  The stock versions of Industrious and Demonic have incompatible climates:  Demonic:   * HELLISH down 2 (to WARM)   * ARID zero tolerance Industrious:   * NORMAL temperature, zero tolerance   * NORMAL humidity, zero tolerance  You will probably have to do something to make it work, which can include just running around a lot between apiaries in different places depending on the queen you get on any cycle.  When the Redstone species starts to appear, it'll probably also want NORMAL/NORMAL with zero tolerance, but will need nether pollination.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2182] Redstone Alloy
+Obviously, a block of Redstone Alloy is required, right? Breed them from Red Alloy and Redstone.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2277] Refined
+Ah, here it is. This bee has been known to power whole civilizations. Placed in a top tier bee housing like an Alveary or Industrial Apiary, with appropriate frames, it can produce oil faster than some wells. In addition, you will get small amounts of Diesel fuel as well! Breed them from Oily and Distilled.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2234] Rejuvenating
+Rejuvenating bees must be bred within 25m of a node. They will slowly charge the nearest node. Breed them from Vis and Attuned.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2283] Resinous
+Well at least you can get a couple of Sticky Resin from this otherwise boring bee. Breed them from Miry and Primeval.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [1122] Royal Jelly
+Royal jelly is a honey bee secretion that is used in the nutrition of larvae, as well as adult queens. It is only produced by the imperial bee. Its production can be increased with proven frames or any other kind of frames except for the soul frame. Royal jelly is also useful because it can craft ambrosia, which fills 8 hunger points (4 full food icons) and gives Regeneration I for 40 seconds. Royal jelly is used to craft scented paneling which are required in the creation of alveary blocks.
+  - [提交] Forestry:royalJelly x4
+  > 奖励: enhancedlootbags:lootbag:25 | Forestry:frameImpregnated x16 | Forestry:honeyDrop x64 | dreamcraft:CoinBeesI x5
+
+### [2191] Ruby
+For early Chrome, a Ruby bee is a great source. It will require a block of Ruby. Breed them from Redstone and Diamond.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2170] Rural
+Rural bees like to live out in the country - you'll have to relocate to a Plains-type biome for these. Breed them from Diligent and Meadows.  They produce Wheaten Combs, which make . . . wheat. Hey, it ain't nothing! Still, this bee is more of a speed bump on the way to bigger projects.  [note]They will take any biome with the PLAINS tag. You can dump the biome data in NEI by clicking on the NEI options button (the wrench), then the Tools button, then the Data Dumps button, and finally the Dump button in the biomes category. This creates a "dumps" directory in the root folder of the modpack with a biome.csv inside of it. Any listed biome that has the PLAINS tag is fair game. You can feed these biomes into a Nature's Compass and see if there are any nearby.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2242] Salis Mundus
+Tired of all the effort it takes to make Salis Mundus? After hours of breeding you can now do magic trouble free with this bee making all the Salis Mundus you need. It requires a Magical Forest Biome. Breed them from Thaumic Shards and Thaumium Dust.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x2
+
+### [-9139717528921651199] Salt
+At this point, you may have noticed that these higher-tier metal combs can't be extracted with a centrifuge. Instead, you need to pass them through a chemical reactor with some hydrochloric acid. This will leave you in a pickle. Here you are, trying to reach post-scarcity, and now you're limited by chlorine.  Speaking of pickles, hydrochloric acid is kind of like a pickle, right? After all, you make both with salt! The salt bee is perfect for this. Well, the apatite bee line can get you some salt and also some phosphorus for phosphoric acid, but you have to start on ash bees first. Meanwhile, you'll likely take care of the salt bee's pre-requisites on your way through getting all the major ores.  Breed them from clay and aluminium bees on top of a block of salt.  They will produce salt combs, borax dust, slag combs, and trace lithium combs. The salt combs will require at least an MV-tier centrifuge, but at least it doesn't require processing with acid in a chemical reactor!  [note]Breeder's Notes:  There are two challenges with this bee:  1. The 5% chance of mutation. You may consider trying the escritoire minigame to get a boost to this chance. If so, favor aluminium drones because you're probably on your way to the other bees derived from aluminium ancestry, and they all only have a 5% chance anyways. They could all use a little boost.  2. The humidity swing between clay and aluminium species. Clay bees want it wet, and both aluminium and salt bees want it completely arid. If you can't manipulate the climate or the tolerances of any of the bees, consider starting by plugging clay drones into a modest princess. This has a good chance to get you a clay princess that prefers a dryer climate. You can then do all your breeding exclusively in an arid biome.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 | harvestcraft:blackpepperItem x4
+
+### [2289] Sandwich
+sudo make me a sandwich. Or a bee that makes sandwich parts anyways. Breed them from Batty and Agrarian.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [-6452485320595586644] Saturn
+The Saturn bee allows you to obtain resources from Saturn.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27
+
+### [2179] Secluded
+Secluded bees are real loners. There must not be any entities within their territory for them to produce their combs. The Mellow combs can produce Nether quartz. Breed them from Monastic and Austere.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2197] Silver
+Silver is a key metal at HV and up with the amount of Electrum you will need. Requires a block of Silver. Breed them from Lead and Tin.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2177] Sinister
+Sinister bees will hurt nearby mobs and players. Make sure to wear your suit. They will require breeding in the Nether. Breed them from Modest and Cultivated.  Their Simmering Combs are no joke! You can centrifuge them down to get Phosphor, which you can then squeeze to get lava. Lava!
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2239] Skulking
+Skulking bees are the core of the various mob bees. Check out the rest of the recipes in NEI, there are too many to show here. Breed them using Eldritch and Modest.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2165] Slimeball
+Slimeballs aren't super useful, but you can easily breed this bee to make them. It's a necessary step on the way to Oil though. You will need a Congealed Slime Block beneath the bee housing. Breed them from Clay and Marshy.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2276] Smouldering
+Smouldering drones will spawn blazes, and make Blaze Rods as their specialty. Breed the drones with your template princesses so you can prevent the harmful effects from destroying your base. Also, their Hellish temperature and Normal humidity requirements are interesting - use an Acclimatiser from Genetics to make the bee tolerant or other methods to adjust the biome. Must be bred in the Nether. Breed them from Ghastly and Hateful.  To get their Blaze Rod drop, however, you'll need to place them in a biome that matches their default requirements. Sorry.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [369] Snow Queen
+I don't know why you would need a lot of Snow Queen blood. But this is the way to do it.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2225] Solum
+Solum bees require Earth Crystal Clusters. They can produce Earth infused dust. It will also give you a mining speed boost. Breed them from two Earthen.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2230] Soul
+The Soul bee has the highest chance of making Soul Combs, 20 percent. Well, except for Dreaming bees. Anyway, breed them from Aware and Spirit.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [3238] Space Bees
+Breed an Industrious bee with a Heroic bee to obtain a Space bee. The temperature must be Icy.  Just one small step for you, but a giant leap for beekind.  [note]This is the starting point for many space-related bees. Check NEI to see what you can aim for.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2189] Spectral
+Spectral bees will require Ender bees to breed. This will test the ability of even the toughest beekeeper - don't forget your apiarist suit. To work in a bee housing, there must be a Dragon Egg nearby. Don't drop any bones, blaze rods or rotten meat! This bee will cause those to come back to life! Perhaps you can find a use for this ability. Breed them from Ender and Hermitic.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2240] Spidery
+Watch out, the effect from this bee will attract spiders. But it has one nice trait - a large working area. Perfect for breeding into your fast pollinators or for providing useful effects. Breed it from Skulking and Tropical.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2229] Spirit
+The Spirit bee is the first bee to give you Soul Combs, necessary for Soulful Wax, used in many magical frames. Breed them from Aware and either Ethereal or Attuned.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2249] Spiteful
+The sheer disdain this bee shows you is awe inspiring. Must be bred in the Nether. Don't walk around it without proper protection, it seems to laugh when you think about that. Breed them from Hateful and Infernal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [371] Stainless Steel
+Not particularly strong, to be honest.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [370] Steel
+It's not much steel, but it doesn't cause pollution.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2166] Sticky Resin
+Never having to use a treetap again? Sign me up! You'll need to put a Rubber Wood log beneath the bee housing. Breed them from Slimeball and Peat.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-6278340775631964090] Sunnarium
+Not only does this bee produce more Glowstone than its parent species, but it's also capable of producing Sunnarium. However, this requires some technical progress: to breed this bee, you will need to place a Superconducting Coil Block beneath it.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2214] Supernatural
+What have those two brothers gotten into now? The Supernatural bee is a keystone of the Magical branch of bees. Check NEI for details on the best lunar phase for breeding. Breed it from Charmed and Enchanted.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2154] Sweetened
+Sweetened bees can make you sugar. Breed them from Valiant and Diligent.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2241] Thaumic Shards
+The Thaumic Shards bee has a chance of giving you any shard propolis. It will require a Magical Forest biome. Breed them from Thaumium Dust and Aqua.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2238] Thaumium Dust
+Thaumium is pretty easy to make, but with this bee you can automate and get enormous quantities. It requires a block of Thaumium. Breed them from Edenic and Ignis.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [357] Thorium
+A thorium bee.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2155] Thriving
+Thriving bees don't have an effect, but are a necessary step for Fruity. Breed them from Growing and Unweary.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2192] Tin
+Tin is a great early bee to get, it can save time you'd otherwise spend looking for Cassiterite Sand. You'll need a Tin block. Breed them from Clay and Diligent.  The Tin Combs have a strong chance of centrifuging into tin dust, but you'll also see a Chemical Reactor recipe to use hydrochloric acid to get a 1:1 exchange. You have some bee options for getting chlorine so you should think about a sustained hydrochloric acid production line soon. You'll eventually §lhave to §ruse hydrochloric acid and won't have Centrifuge recipes for later combs.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2201] Titanium
+Titanium from bees will make getting those LCRs and distillation towers a breeze. Hey, I rhymed! You'll need a block of Titanium for this bee. Breed them from Aluminium and Redstone.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-7088462700756585321] Trinium
+The Trinium bee allows you to obtain Trinium.  [note]There is no planet named Trinium, but this bee still provides a very useful ZPM material.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x2
+
+### [352] Tungsten
+Let's breed a tungsten bee. It is particularly interesting because you can make pure tungsten from its combs and not just tungstate or scheelite.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2157] Unweary
+Unweary bees are key to a couple of breeding lines. Breed them with Diligent and Cultivated.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2204] Uranium
+All that hatred had a purpose - to create this bee, capable of producing enormous power. As before, keep away from everything. This bee will require a block of Uranium. Breed them from Avenging and Platinum.  To actually get the combs you need to either find a biome with cold temperature and normal humidity or emulate these conditions.  [note]With these combs and the iridium ones you can now make climate control units for modules in your industrial apiary![/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x2
+
+### [-5951823151670757990] Uranus
+Radioactive alert! The Uranus bee allows you to obtain resources from Uranus and its moons.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:27 x2
+
+### [368] Ur-Ghast
+Need a lot of magical wood? Well, this bee produces carminite.  [note]This bee requires a Thaumcraft Thaumium block below the apiary to be bred. To get the correct one, chisel a GT Thaumium block[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2207] Vengeful
+Hatred. Of all things, living and solid. Keep bee housing away from anything valuable, or even not valuable. Breed them from Monastic and Vindictive.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2186] Vibrant Alloy
+Finally. It was a long, hazardous road, but you can now get Vibrant Alloy directly from a bee. Great job. You'll need a Block of Vibrant Alloy. Breed them from Energetic Alloy and Phantasmal.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2208] Vindictive
+Beware. These bees not only hate everything, they even hate blocks. Put their bee housing far away from everything. Breed them from Demonic and Monastic.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2233] Vis
+Vis bees lead to some of the most powerful bees in the whole pack. They require a node within 75m of the bee housing. Make sure the lunar phase matches the requirements. Breed them from Ethereal and Infernal.  [note]Astronomer's Notes: The waxing and waning phases happen on alternating days. The moon starts its next phase at sunrise and will keep to the same phase all day and all night. You want to prepare the day before, get to bed to start the next day, and immediately get to work. Also, congratulations if you just learned that the moon in Minecraft has phases!  Breeder's Notes: Just because this bee only mutates around specific lunar phases doesn't mean you can't work on them in other phases. To get the mutations to show up at all, yes, you need correct lunar phases. However, you will need a spare Infernal or Ethereal princess to get started, and you can prep that any day. Also, once the Vis species trait shows up in some drones and/or a princess, it's just regular cross-breeding to get a pure princess and pure drone. That can be done any day too.  Despite the focus on moon phases, you do not need to breed at night to trigger the mutation.  The Ethereal and Infernal bees are a rough combination. Since you'll need a new princess for this bee, consider using a pristine princess that isn't aggressive and is closer to your Ethereal bees' climate. If you get lucky, you may breed out the aggression and produce hybrid Infernals that don't need to live in an oven to function. You will probably need your apiarist suit if the bred queen gets a dominant Infernal trait for a few cycles.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [-8657564700861666675] Volcanic
+One step closer to your goal, these bees can be bred from Furious and Demonic Bees while inside the Nether. Just like their Furious counterparts, they will spawn fire charges while working.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2227] Watery
+Watery bees must be bred over water. Breed them from Ethereal and Supernatural.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2271] White
+White bees provide white dye. Breed them from Wintry and Diligent.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [2223] Windy
+Windy bees must be bred on top of Oak leaves. Breed them using Ethereal and Supernatural.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2247] Wither
+The Wither bee will let you generate Wither skulls and small amounts of Nether star dust. It requires a block of Nether Star, and must be bred in the End. Breed them from Withering and Draconic.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26 x2
+
+### [2248] Withering
+Inflicts Withering all those who come near. Must be bred in the Nether. Chances are going to be low, so now would be the time to look for frames that increase mutation rates. Breed them from Demonic and Spiteful.
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+
+### [2195] Zinc
+Zinc makes great early game item pipes when mixed into brass. Also, these bees have a small chance of producing Gallium combs, which is very useful for players needing to make circuits or SMD devices. These bees will require a Zinc block. Breed them from Tin and Iron.  Zinc Combs cannot be centrifuged. You now need to use a Chemical Reactor with some hydrochloric acid.  [note]Breeder's Notes:  You probably only bred this as a stepping stone into the other metals. Nonetheless, that gallium is no joke! The queen will need to be jubilant for you to get those, so you need to match up its temperature and humidity band exactly. Your HUD will have a note when you are pointed at the apiary about if it's not jubilant. The default band is just NORMAL/NORMAL so any old plain/prairie kind of place will probably do.[/note]
+  - [提交] Forestry:beePrincessGE
+  > 奖励: enhancedlootbags:lootbag:26
+

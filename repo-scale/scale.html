@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>体重站 / The Weigh-in · KrisTHL181/Break-This-Repo</title>
+<style>
+:root{
+  --bg:#fbfbfa; --panel:#ffffff; --ink:#1b1c1e; --muted:#6b6f76;
+  --line:#e3e3df; --ink-strong:#0f1011; --accent:#1f6feb; --warn:#c2410c;
+  --good:#0f7b6c;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#131416; --panel:#191b1e; --ink:#e8e8e6; --muted:#9aa0a6;
+    --line:#2a2d31; --ink-strong:#ffffff; --accent:#6ba3ff; --warn:#f97316;
+    --good:#2dd4bf;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:16px/1.65 ui-sans-serif,system-ui,-apple-system,"Segoe UI",
+  "PingFang SC","Microsoft YaHei",sans-serif;}
+.wrap{max-width:1000px;margin:0 auto;padding:40px 22px 72px}
+h1{font-size:30px;line-height:1.25;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:19px;margin:44px 0 14px;padding-bottom:8px;
+  border-bottom:1px solid var(--line);letter-spacing:-.01em}
+h3{font-size:15px;margin:26px 0 8px;color:var(--muted);
+  font-weight:600;letter-spacing:.02em}
+.sub{color:var(--muted);font-size:14.5px;margin:0}
+code,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.9em;background:var(--panel);border:1px solid var(--line);
+  border-radius:4px;padding:1px 5px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:18px 20px;margin:16px 0}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0}
+@media (max-width:720px){.pair{grid-template-columns:1fr}}
+.big{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  padding:20px}
+.big .k{font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted)}
+.big .v{font-size:34px;font-weight:700;letter-spacing:-.03em;margin:6px 0 2px;
+  font-variant-numeric:tabular-nums}
+.big .n{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);
+  font-variant-numeric:tabular-nums}
+th{color:var(--muted);font-weight:600;font-size:12px;letter-spacing:.04em;
+  text-transform:uppercase}
+td.num{text-align:right;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,
+  monospace}
+tr.now td{font-weight:700}
+tr.gone td{color:var(--warn)}
+.note{font-size:12.5px;color:var(--muted)}
+.row{display:grid;grid-template-columns:minmax(150px,1.5fr) 1.4fr 76px 52px 68px;
+  align-items:center;gap:10px;padding:4px 0;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px}
+.rname{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;min-width:34px;margin-right:6px;font-size:9.5px;
+  text-align:center;border-radius:3px;padding:1px 0;border:1px solid var(--line);
+  color:var(--muted)}
+.rtrack{background:var(--panel);border:1px solid var(--line);border-radius:3px;
+  height:11px;overflow:hidden}
+.rfill{height:100%;background:var(--accent);border-radius:2px}
+.rnum,.rpct,.rfiles{text-align:right;color:var(--muted)}
+.rfiles{color:var(--muted)}
+blockquote{margin:16px 0;padding:2px 0 2px 16px;border-left:3px solid var(--accent);
+  color:var(--ink)}
+blockquote p{margin:8px 0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13.5px;
+  margin:0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-variant-numeric:tabular-nums}
+footer{margin-top:52px;padding-top:16px;border-top:1px solid var(--line);
+  color:var(--muted);font-size:12.5px}
+.lede{font-size:17px;color:var(--ink)}
+</style>
+</head><body><div class="wrap">
+
+<h1>体重站 · 一份体检报告</h1>
+<p class="sub"><code>KrisTHL181/Break-This-Repo</code> ·
+实测于 09-22 10:33 UTC ·
+工作树 25.45 GiB · 576,155 个文件 · 81,943 个目录</p>
+
+<p class="lede" style="margin-top:22px">
+这个仓库在八天里涨到原来的 <b>3.9</b> 倍。
+它曾经在四分钟内被删掉 508,721 个文件、几乎归零，
+七个多小时后又被全部装回来 ——
+<b>而且比被删之前更重</b>。
+下面每个数字都来自 409 次 API 调用，
+没有一次是估算。</p>
+
+<div class="pair">
+  <div class="big">
+    <div class="k">工作树 · working tree</div>
+    <div class="v">25.45 GiB</div>
+    <div class="n">576,155 个文件 · 81,943 个目录 · 实测于 910163cb9b</div>
+  </div>
+  <div class="big">
+    <div class="k">仓库本体 · GitHub 报的 size</div>
+    <div class="v">15.09 GiB</div>
+    <div class="n">包含历史。GitHub 建议 &lt;5 GiB，理想 &lt;1 GiB。</div>
+  </div>
+</div>
+
+<h2>一 · 整周：从 6.6 GiB 到 25.5 GiB</h2>
+<div class="card">
+<svg viewBox="0 0 960 300" width="100%" role="img" aria-label="working tree weight over time" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"><line x1="62" y1="266.0" x2="946" y2="266.0" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="269.5" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">0 B</text><line x1="62" y1="203.5" x2="946" y2="203.5" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="207.0" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">6.36 GiB</text><line x1="62" y1="141.0" x2="946" y2="141.0" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="144.5" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">12.72 GiB</text><line x1="62" y1="78.5" x2="946" y2="78.5" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="82.0" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">19.09 GiB</text><line x1="62" y1="16.0" x2="946" y2="16.0" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="19.5" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">25.45 GiB</text><line x1="62.0" y1="16" x2="62.0" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="107.3" y1="16" x2="107.3" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="164.9" y1="16" x2="164.9" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="196.5" y1="16" x2="196.5" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="534.2" y1="16" x2="534.2" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="853.5" y1="16" x2="853.5" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="859.3" y1="16" x2="859.3" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="873.9" y1="16" x2="873.9" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="875.4" y1="16" x2="875.4" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="876.0" y1="16" x2="876.0" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="885.4" y1="16" x2="885.4" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="886.7" y1="16" x2="886.7" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="934.4" y1="16" x2="934.4" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="935.4" y1="16" x2="935.4" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="946.0" y1="16" x2="946.0" y2="266" stroke="currentColor" stroke-opacity="0.08"/><text x="62.0" y="280" text-anchor="start" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-14 14:18</text><text x="196.5" y="280" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-15 18:29</text><text x="534.2" y="280" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-18 17:15</text><text x="946.0" y="280" text-anchor="end" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-22 07:33</text><polygon points="62,266 62.0,201.5 107.3,201.0 164.9,200.4 196.5,82.3 534.2,64.7 853.5,62.4 859.3,36.8 873.9,35.2 875.4,265.8 876.0,265.2 885.4,246.8 886.7,246.8 934.4,16.0 935.4,16.0 946.0,16.0 946.0,266" fill="#1f6feb" fill-opacity="0.10"/><polyline points="62.0,201.5 107.3,201.0 164.9,200.4 196.5,82.3 534.2,64.7 853.5,62.4 859.3,36.8 873.9,35.2 875.4,265.8 876.0,265.2 885.4,246.8 886.7,246.8 934.4,16.0 935.4,16.0 946.0,16.0" fill="none" stroke="#1f6feb" stroke-width="2" stroke-linejoin="round"/><circle cx="62.0" cy="201.5" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="107.3" cy="201.0" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="164.9" cy="200.4" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="196.5" cy="82.3" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="534.2" cy="64.7" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="853.5" cy="62.4" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="859.3" cy="36.8" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="873.9" cy="35.2" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="875.4" cy="265.8" r="3.6" fill="#c2410c" stroke="var(--bg)" stroke-width="1.4"/><circle cx="876.0" cy="265.2" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="885.4" cy="246.8" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="886.7" cy="246.8" r="3.6" fill="#c2410c" stroke="var(--bg)" stroke-width="1.4"/><circle cx="934.4" cy="16.0" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="935.4" cy="16.0" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="946.0" cy="16.0" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><text x="946.0" y="27.0" text-anchor="end" font-size="10" font-weight="600" fill="currentColor">25.45 GiB</text><text x="875.4" y="256.8" text-anchor="middle" font-size="10" font-weight="600" fill="currentColor">25.2 MiB</text></svg>
+<p class="note">横轴为真实时间，纵轴线性。倒数第二个点之后的那段空白，
+是仓库被删到只剩 23 个文件的那几个小时 —— 曲线几乎贴到零。</p>
+</div>
+
+<h2>二 · 最后 16 小时：战争与复原</h2>
+<div class="card">
+<svg viewBox="0 0 960 300" width="100%" role="img" aria-label="working tree weight over time" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"><line x1="62" y1="266.0" x2="946" y2="266.0" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="269.5" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">9.5 MiB</text><line x1="62" y1="203.5" x2="946" y2="203.5" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="207.0" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">69.0 MiB</text><line x1="62" y1="141.0" x2="946" y2="141.0" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="144.5" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">498.5 MiB</text><line x1="62" y1="78.5" x2="946" y2="78.5" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="82.0" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">3.52 GiB</text><line x1="62" y1="16.0" x2="946" y2="16.0" stroke="currentColor" stroke-opacity="0.16"/><text x="54" y="19.5" text-anchor="end" font-size="10" fill="currentColor" fill-opacity="0.62">25.45 GiB</text><line x1="62.0" y1="16" x2="62.0" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="80.6" y1="16" x2="80.6" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="88.3" y1="16" x2="88.3" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="203.1" y1="16" x2="203.1" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="218.9" y1="16" x2="218.9" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="803.3" y1="16" x2="803.3" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="816.1" y1="16" x2="816.1" y2="266" stroke="currentColor" stroke-opacity="0.08"/><line x1="946.0" y1="16" x2="946.0" y2="266" stroke="currentColor" stroke-opacity="0.08"/><text x="62.0" y="280" text-anchor="start" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-21 16:25</text><text x="203.1" y="280" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-21 18:50</text><text x="803.3" y="280" text-anchor="middle" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-22 05:06</text><text x="946.0" y="280" text-anchor="end" font-size="9.5" fill="currentColor" fill-opacity="0.62">09-22 07:33</text><polygon points="62,266 62.0,18.5 80.6,235.3 88.3,195.9 203.1,97.1 218.9,97.1 803.3,16.0 816.1,16.0 946.0,16.0 946.0,266" fill="#1f6feb" fill-opacity="0.10"/><polyline points="62.0,18.5 80.6,235.3 88.3,195.9 203.1,97.1 218.9,97.1 803.3,16.0 816.1,16.0 946.0,16.0" fill="none" stroke="#1f6feb" stroke-width="2" stroke-linejoin="round"/><circle cx="62.0" cy="18.5" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="80.6" cy="235.3" r="3.6" fill="#c2410c" stroke="var(--bg)" stroke-width="1.4"/><circle cx="88.3" cy="195.9" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="203.1" cy="97.1" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="218.9" cy="97.1" r="3.6" fill="#c2410c" stroke="var(--bg)" stroke-width="1.4"/><circle cx="803.3" cy="16.0" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="816.1" cy="16.0" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><circle cx="946.0" cy="16.0" r="3.6" fill="#1f6feb" stroke="var(--bg)" stroke-width="1.4"/><text x="946.0" y="27.0" text-anchor="end" font-size="10" font-weight="600" fill="currentColor">25.45 GiB</text><text x="62.0" y="226.3" text-anchor="start" font-size="10" font-weight="600" fill="currentColor">25.2 MiB</text></svg>
+<p class="note">同样数据，纵轴取对数，窗口缩到 09-21 16:20 之后。
+这样才能在同一张图上看见 26 MiB 和 27.3 GB 之间的差距：
+1033 倍。</p>
+</div>
+
+<h2>三 · 十一个时刻的称重记录</h2>
+<table>
+<thead><tr><th>时刻</th><th>UTC</th><th>bytes</th><th>重量</th>
+<th>文件数</th><th>相对上一点</th></tr></thead>
+<tbody><tr><td>喵 (#508)</td><td class='num'>09-14 14:18</td><td class='num'>7,050,654,476</td><td class='num'>6.57 GiB</td><td class='num'>364,313</td><td class='num'>—</td></tr><tr><td>展馆 (#522)</td><td class='num'>09-14 23:48</td><td class='num'>7,102,687,723</td><td class='num'>6.61 GiB</td><td class='num'>370,914</td><td class='num'>+52,033,247</td></tr><tr><td>9/15 11:52</td><td class='num'>09-15 11:52</td><td class='num'>7,171,688,410</td><td class='num'>6.68 GiB</td><td class='num'>371,209</td><td class='num'>+69,000,687</td></tr><tr><td>novel/ 传完</td><td class='num'>09-15 18:29</td><td class='num'>20,079,190,375</td><td class='num'>18.70 GiB</td><td class='num'>382,730</td><td class='num'>+12,907,501,965</td></tr><tr><td>随机的 2GiB</td><td class='num'>09-18 17:15</td><td class='num'>22,000,730,959</td><td class='num'>20.49 GiB</td><td class='num'>382,687</td><td class='num'>+1,921,540,584</td></tr><tr><td>+HowToCook/AnimeStudio</td><td class='num'>09-21 12:10</td><td class='num'>22,256,864,212</td><td class='num'>20.73 GiB</td><td class='num'>384,093</td><td class='num'>+256,133,253</td></tr><tr><td>+dotnet/</td><td class='num'>09-21 13:23</td><td class='num'>25,051,818,932</td><td class='num'>23.33 GiB</td><td class='num'>567,829</td><td class='num'>+2,794,954,720</td></tr><tr><td>开战前 (16:25)</td><td class='num'>09-21 16:25</td><td class='num'>25,227,666,153</td><td class='num'>23.50 GiB</td><td class='num'>576,132</td><td class='num'>+175,847,221</td></tr><tr class="gone"><td>大破 30/30 (16:45)</td><td class='num'>09-21 16:45</td><td class='num'>26,450,268</td><td class='num'>25.2 MiB</td><td class='num'>67,411</td><td class='num'>-25,201,215,885</td></tr><tr class="gone"><td>+FFmpeg/ (16:52)</td><td class='num'>09-21 16:52</td><td class='num'>92,098,751</td><td class='num'>87.8 MiB</td><td class='num'>10,801</td><td class='num'>+65,648,483</td></tr><tr><td>随机 2000MiB (18:50)</td><td class='num'>09-21 18:50</td><td class='num'>2,099,607,329</td><td class='num'>1.96 GiB</td><td class='num'>6,856</td><td class='num'>+2,007,508,578</td></tr><tr><td>清理垃圾 (19:06)</td><td class='num'>09-21 19:06</td><td class='num'>2,097,173,523</td><td class='num'>1.95 GiB</td><td class='num'>23</td><td class='num'>-2,433,806</td></tr><tr><td>RESET TEST (05:06)</td><td class='num'>09-22 05:06</td><td class='num'>27,324,839,676</td><td class='num'>25.45 GiB</td><td class='num'>576,155</td><td class='num'>+25,227,666,153</td></tr><tr><td>#738 合并 (05:19)</td><td class='num'>09-22 05:19</td><td class='num'>27,324,839,676</td><td class='num'>25.45 GiB</td><td class='num'>576,155</td><td class='num'>+0</td></tr><tr class="now"><td>现在 (#739, 07:33)</td><td class='num'>09-22 07:33</td><td class='num'>27,324,839,755</td><td class='num'>25.45 GiB</td><td class='num'>576,155</td><td class='num'>+79</td></tr></tbody>
+</table>
+<p class="note">47,426 bytes per file on average, and the median is far smaller</p>
+
+<h2>四 · 重量在哪里</h2>
+<div class="card">
+<p class="note" style="margin:0 0 12px">
+根目录最重的 25 个条目，合起来占全树 97.2%：
+</p>
+<div class="row"><div class="rname" title="novel/"><span class="tag dir">dir</span>novel/</div><div class="rtrack"><div class="rfill" style="width:100.00%"></div></div><div class="rnum">11.49 GiB</div><div class="rpct">45.2%</div><div class="rfiles">11,183</div></div><div class="row"><div class="rname" title="rust-corpus/"><span class="tag dir">dir</span>rust-corpus/</div><div class="rtrack"><div class="rfill" style="width:25.91%"></div></div><div class="rnum">2.98 GiB</div><div class="rpct">11.7%</div><div class="rfiles">208,041</div></div><div class="row"><div class="rname" title="dotnet/"><span class="tag dir">dir</span>dotnet/</div><div class="rtrack"><div class="rfill" style="width:22.65%"></div></div><div class="rnum">2.60 GiB</div><div class="rpct">10.2%</div><div class="rfiles">183,736</div></div><div class="row"><div class="rname" title="Break-This-Repo/"><span class="tag dir">dir</span>Break-This-Repo/</div><div class="rtrack"><div class="rfill" style="width:17.00%"></div></div><div class="rnum">1.95 GiB</div><div class="rpct">7.7%</div><div class="rfiles">23</div></div><div class="row"><div class="rname" title="000.RANDOM.FILES/"><span class="tag dir">dir</span>000.RANDOM.FILES/</div><div class="rtrack"><div class="rfill" style="width:17.00%"></div></div><div class="rnum">1.95 GiB</div><div class="rpct">7.7%</div><div class="rfiles">20</div></div><div class="row"><div class="rname" title="琵琶曲/"><span class="tag dir">dir</span>琵琶曲/</div><div class="rtrack"><div class="rfill" style="width:6.24%"></div></div><div class="rnum">734.4 MiB</div><div class="rpct">2.8%</div><div class="rfiles">40</div></div><div class="row"><div class="rname" title="wallpapers/"><span class="tag dir">dir</span>wallpapers/</div><div class="rtrack"><div class="rfill" style="width:5.33%"></div></div><div class="rnum">627.7 MiB</div><div class="rpct">2.4%</div><div class="rfiles">242</div></div><div class="row"><div class="rname" title="彼方的他Aliya/"><span class="tag dir">dir</span>彼方的他Aliya/</div><div class="rtrack"><div class="rfill" style="width:4.27%"></div></div><div class="rnum">502.4 MiB</div><div class="rpct">1.9%</div><div class="rfiles">99</div></div><div class="row"><div class="rname" title="wallpaperFromDTL/"><span class="tag dir">dir</span>wallpaperFromDTL/</div><div class="rtrack"><div class="rfill" style="width:3.18%"></div></div><div class="rnum">374.6 MiB</div><div class="rpct">1.4%</div><div class="rfiles">177</div></div><div class="row"><div class="rname" title="Eaglercraftx-1.8.8-src/"><span class="tag dir">dir</span>Eaglercraftx-1.8.8-src/</div><div class="rtrack"><div class="rfill" style="width:1.43%"></div></div><div class="rnum">168.5 MiB</div><div class="rpct">0.6%</div><div class="rfiles">4,196</div></div><div class="row"><div class="rname" title="bad_apple!!/"><span class="tag dir">dir</span>bad_apple!!/</div><div class="rtrack"><div class="rfill" style="width:1.36%"></div></div><div class="rnum">159.7 MiB</div><div class="rpct">0.6%</div><div class="rfiles">6,575</div></div><div class="row"><div class="rname" title="OpenJDK_25.0.3/"><span class="tag dir">dir</span>OpenJDK_25.0.3/</div><div class="rtrack"><div class="rfill" style="width:1.15%"></div></div><div class="rnum">135.6 MiB</div><div class="rpct">0.5%</div><div class="rfiles">14,761</div></div><div class="row"><div class="rname" title="Grasscutter/"><span class="tag dir">dir</span>Grasscutter/</div><div class="rtrack"><div class="rfill" style="width:1.10%"></div></div><div class="rnum">129.2 MiB</div><div class="rpct">0.5%</div><div class="rfiles">5,591</div></div><div class="row"><div class="rname" title="MCRe-NoiseFarlands-MCRef_stable-FloatPerlinNoiseVer/"><span class="tag dir">dir</span>MCRe-NoiseFarlands-MCRef_stable-FloatPerlinNoiseVer/</div><div class="rtrack"><div class="rfill" style="width:1.09%"></div></div><div class="rnum">128.7 MiB</div><div class="rpct">0.5%</div><div class="rfiles">18,350</div></div><div class="row"><div class="rname" title="408/"><span class="tag dir">dir</span>408/</div><div class="rtrack"><div class="rfill" style="width:0.96%"></div></div><div class="rnum">112.6 MiB</div><div class="rpct">0.4%</div><div class="rfiles">34</div></div>
+</div>
+<p class="note">最大的一块是 <code>novel/</code>，11.49 GiB，
+占 45% ，
+由 StevenLi-phoenix 在 2026-09-15 分 12 次 PR 送入 —— 
+它没有宣言，没有阵营，只是安静地占着差不多一半的重量。</p>
+
+<h2>五 · 三位选手的实际得分</h2>
+<div class="card">
+<dl class="kv">
+<dt>StevenLi-phoenix · <code>novel/</code></dt>
+<dd>11.49 GiB · 12 次 PR · 静默</dd>
+<dt>shuiyue-cmyk · <code>rust-corpus/</code></dt>
+<dd>2.98 GiB · 208,041 个文件（全仓文件数的 36%）</dd>
+<dt>MeowMyaa · <code>000.RANDOM.FILES/</code> + <code>RND100M/</code></dt>
+<dd>3.91 GiB · 40 个文件 · 每个正好 104,857,600 字节</dd>
+<dt>shuiyue-cmyk · 大破 30 连</dt>
+<dd>删除 508,721 个文件 · 净结果 <b style="color:var(--warn)">1.95 GiB 更重</b></dd>
+</dl>
+<p class="note" style="margin-top:12px">
+最后一行是这份报告的重点。四个人里，唯一在这张表上留下负数的人，
+实际上做了最多的事、也最没有用。</p>
+</div>
+
+<h2>六 · 账本</h2>
+<div class="card">
+<p style="margin:0 0 10px">开战前的那棵树，加上被"清理垃圾"清剩下的那棵树，等于复原后的那棵树 —— 相加是精确的：</p>
+<pre style="overflow-x:auto;font-size:12.5px">开战前  (14ed270f)   25,227,666,153 B
+清剩    (0d1f3a11)    2,097,173,523 B
+                            ─────────────────
+相加                 27,324,839,676 B
+复原后  (20fafdb9)   27,324,839,676 B   精确相等</pre>
+<p class="note">复原提交 <code>20fafdb9</code> 的父提交是
+<code>0d1f3a11</code> 和 <code>14ed270f</code> —— 也就是
+<b>直接把大破之前的那个提交 merge 回来</b>。
+这一步能成功，唯一的原因是那些文件从来没有离开过仓库。</p>
+</div>
+
+<h2>七 · 用药说明</h2>
+<div class="card">
+<p><b>随机数是最贵的文件类型。</b> 40 个文件，
+每个 104,857,600 字节 —— 正好卡在 GitHub 单文件硬上限上。
+文本在 pack 里能压掉很大一部分，随机数一个字节都省不掉。
+想给这个仓库增重，写代码是最慢的方式。</p>
+<p><b>删除只移动指针，不释放重量。</b> git 里没有"删除"，
+只有"当前这棵树不再指向它"。所以
+508,721 个文件的消失是可逆的 ——
+而这正是它无效的证明：一次 12 小时后就复原的删除，
+对仓库本体的贡献是零。</p>
+<p><b>仓库本体是只能加不能减的。</b> 这个仓库的唯一变更入口是
+自动合并 PR，而一次合并只能新增提交。想真正减小 <code>size</code>，
+只有重写历史一条路；那条路不能表达为一个 PR。
+所以只要这个玩法不变，这个数字只会往上走。</p>
+<p class="note">本节为描述，不是处方。没有任何一条建议在鼓励对
+共享仓库做 force push —— 那会打断 164 个 fork 和所有人的本地副本。</p>
+</div>
+
+<h2>八 · 复查方式</h2>
+<pre style="overflow-x:auto;font-size:12.5px">python3 weigh.py KrisTHL181/Break-This-Repo                # 现在的重量
+python3 weigh.py KrisTHL181/Break-This-Repo --by-dir 20     # 重量在哪里
+python3 weigh.py KrisTHL181/Break-This-Repo --series 24     # 沿主干采样
+python3 weigh.py KrisTHL181/Break-This-Repo --milestone before=&lt;sha&gt; --milestone after=&lt;sha&gt;
+python3 -m unittest -v                    # 29 项离线测试</pre>
+<p class="note">零依赖、只读、不 clone。第一次跑要几分钟，之后靠子树
+SHA 缓存，同样的测量只要几秒。</p>
+
+<footer>
+页面由 <code>make_scale.py</code> 从 <code>measurements.json</code> 生成，
+静态 HTML，不加载任何脚本、字体或外部资源。
+原始数据见同目录 <code>measurements.json</code> 与 <code>WEIGHT.md</code>。
+</footer>
+
+</div></body></html>

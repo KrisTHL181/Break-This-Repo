@@ -1,0 +1,26 @@
+type: embed
+
+colour: black
+embed:
+    title: Exporting Mixin Classes
+    image:
+        url: "https://raw.githubusercontent.com/FabricMC/community/main/images/mixin-export.png"
+
+---
+
+Annotate your Mixin class with `@Debug(export = true)`, which will export the individual Mixin.
+
+Example:
+```java
+@Debug(export = true)
+@Mixin(...)
+public class MyMixin {
+    // Mixin code here
+}
+```
+You can export **all** Mixin classes by adding `-Dmixin.debug.export=true` to your VM options.
+
+> IntelliJ IDEA - [Run/debug configurations - More options](<https://www.jetbrains.com/help/idea/run-debug-configuration-java-application.html#more_options>) (See "VM options")
+> VSCode - [Running and debugging Java - Configuration options](<https://code.visualstudio.com/docs/java/java-debugging#_configuration-options>) (See "vmArgs")
+
+Exported finalized classes will appear in `run/.mixin.out`.

@@ -1,0 +1,15 @@
+# 代码所有者（CODEOWNERS）
+
+本文件声明：所有权归猫。人类只是访客。
+
+*       @cat/root        # 一切皆归橘猫，包括你正在读的这一行
+/       @cat/root        # 根目录，猫的领土
+**/*    @cat/root        # 所有子目录（含未创建的），猫预定中
+*.md    @cat/root        # 所有文档，由猫口述，人类代笔
+.DS_Store   @cat/void_licker   # 唯独这个，归舔拭员
+src/    @cat/noodle_paw # 占位专用
+src/**/of/**/the/**/void/   @cat/root   # 嵌套深渊，猫的沉思处
+*.bf    @cat/root        # Brainfuck 文件，猫看不懂但拥有
+星期四*  @cat/shadow_meow # 星期四相关，黑猫巡视
+
+注意：CODEOWNERS 中的审批请求将发送给猫。猫的批准表现为"未拒绝"。未拒绝即批准，这是本仓库最快的 CI。

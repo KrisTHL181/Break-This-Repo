@@ -1,0 +1,602 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.impl.client.indigo.renderer.aocalc;
+
+import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.AXIS_ALIGNED_FLAG;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.CUBIC_FLAG;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
+
+import java.util.BitSet;
+
+import com.mojang.blaze3d.vertex.QuadInstance;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.BlockModelLighter;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
+
+import net.fabricmc.fabric.impl.client.indigo.Indigo;
+import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.QuadViewImpl;
+
+/**
+ * Adaptation of BlockModelLighter that serves same purpose.
+ */
+public class AoCalculator {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AoCalculator.class);
+
+	/** The number of possible combinations returned by {@link #computeFace(Direction, boolean, Direction)}. */
+	private static final int FACE_DATA_COUNT = 6 * 2 * 6;
+
+	private final BlockModelLighter.Cache lightCache;
+
+	private final BlockPos.MutableBlockPos lightPos = new BlockPos.MutableBlockPos();
+	private final BlockPos.MutableBlockPos searchPos = new BlockPos.MutableBlockPos();
+
+	private BlockAndTintGetter level;
+	private BlockState state;
+	private BlockPos pos;
+
+	/** caches results of {@link #computeFace(Direction, boolean, Direction)} for the current block. */
+	private final AoFaceData[] faceData = new AoFaceData[FACE_DATA_COUNT];
+
+	/** indicates which elements of {@link #faceData} have been computed for the current block. */
+	private final BitSet completionFlags = new BitSet(FACE_DATA_COUNT);
+
+	/** holds per-corner weights - used locally to avoid new allocation. */
+	private final float[] w = new float[4];
+
+	// outputs
+	public final float[] ao = new float[4];
+	public final int[] light = new int[4];
+
+	public AoCalculator(BlockModelLighter.Cache lightCache) {
+		this.lightCache = lightCache;
+
+		for (int i = 0; i < FACE_DATA_COUNT; i++) {
+			faceData[i] = new AoFaceData();
+		}
+	}
+
+	/** call at start of each new block. */
+	public void prepare(BlockAndTintGetter level, BlockState state, BlockPos pos) {
+		this.level = level;
+		this.state = state;
+		this.pos = pos;
+		completionFlags.clear();
+	}
+
+	public void clear() {
+		level = null;
+	}
+
+	public void compute(QuadViewImpl quad, boolean vanillaShade) {
+		final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
+
+		switch (config) {
+			case VANILLA -> calcVanilla(quad);
+			case EMULATE -> calcFastVanilla(quad);
+			case HYBRID -> {
+				if (vanillaShade) {
+					calcFastVanilla(quad);
+				} else {
+					calcEnhanced(quad);
+				}
+			}
+			case ENHANCED -> calcEnhanced(quad);
+		}
+
+		if (Indigo.DEBUG_COMPARE_LIGHTING && vanillaShade && (config == AoConfig.EMULATE || config == AoConfig.HYBRID)) {
+			float[] vanillaAo = new float[4];
+			int[] vanillaLight = new int[4];
+			calcVanilla(quad, vanillaAo, vanillaLight);
+
+			for (int i = 0; i < 4; i++) {
+				if (light[i] != vanillaLight[i] || !Mth.equal(ao[i], vanillaAo[i])) {
+					LOGGER.info(String.format("Mismatch for %s @ %s", state.toString(), pos.toString()));
+					LOGGER.info(String.format("Flags = %d, LightFace = %s", quad.geometryFlags(), quad.lightFace().toString()));
+					LOGGER.info(String.format("    Old Brightness: %.2f, %.2f, %.2f, %.2f", vanillaAo[0], vanillaAo[1], vanillaAo[2], vanillaAo[3]));
+					LOGGER.info(String.format("    New Brightness: %.2f, %.2f, %.2f, %.2f", ao[0], ao[1], ao[2], ao[3]));
+					LOGGER.info(String.format("    Old Light: %s, %s, %s, %s", Integer.toHexString(vanillaLight[0]), Integer.toHexString(vanillaLight[1]), Integer.toHexString(vanillaLight[2]), Integer.toHexString(vanillaLight[3])));
+					LOGGER.info(String.format("    New Light: %s, %s, %s, %s", Integer.toHexString(light[0]), Integer.toHexString(light[1]), Integer.toHexString(light[2]), Integer.toHexString(light[3])));
+					break;
+				}
+			}
+		}
+	}
+
+	private void calcVanilla(QuadViewImpl quad) {
+		calcVanilla(quad, ao, light);
+	}
+
+	// These are what vanilla AO calc wants, per its usage in vanilla code
+	// Because this instance is effectively thread-local, we preserve instances
+	// to avoid making a new allocation each call.
+	private final BlockModelLighter vanillaCalc = new BlockModelLighter();
+	private final QuadInstance vanillaQuadInstance = new QuadInstance();
+	private final Vector3f vanillaPos0 = new Vector3f();
+	private final Vector3f vanillaPos1 = new Vector3f();
+	private final Vector3f vanillaPos2 = new Vector3f();
+	private final Vector3f vanillaPos3 = new Vector3f();
+	private final BakedQuad.MaterialInfo vanillaMaterialInfo = new BakedQuad.MaterialInfo(null, ChunkSectionLayer.SOLID, Sheets.cutoutBlockItemSheet(), Sheets.cutoutBlockItemGlintSheet(), Sheets.cutoutBlockItemGlintSpecialSheet(), -1, null, 0);
+
+	private void calcVanilla(QuadViewImpl quad, float[] aoDest, int[] lightDest) {
+		// calculateShape only uses the vertex positions and light face of the quad, so making a new BakedQuad every
+		// time here is very inefficient, but this is by far the simplest choice. We don't use QuadView.toBakedQuad here
+		// as it requires the sprite to be not null, it's less efficient as it needs to populate all fields correctly,
+		// and it doesn't allow us to reuse Vector3f objects.
+		BakedQuad bakedQuad = new BakedQuad(
+				quad.copyPos(0, vanillaPos0),
+				quad.copyPos(1, vanillaPos1),
+				quad.copyPos(2, vanillaPos2),
+				quad.copyPos(3, vanillaPos3),
+				0, 0, 0, 0,
+				quad.lightFace(),
+				vanillaMaterialInfo
+		);
+
+		vanillaCalc.prepareQuadAmbientOcclusion(level, state, pos, bakedQuad, vanillaQuadInstance);
+
+		for (int i = 0; i < 4; i++) {
+			// the color is expected to be fully gray, so we can pick either one and be fine.
+			aoDest[i] = ARGB.redFloat(vanillaQuadInstance.getColor(i));
+			lightDest[i] = vanillaQuadInstance.getLightCoords(i);
+		}
+	}
+
+	private void calcFastVanilla(QuadViewImpl quad) {
+		int flags = quad.geometryFlags();
+		boolean isOnLightFace = (flags & LIGHT_FACE_FLAG) != 0;
+
+		// force to block face if shape is full cube - matches vanilla logic
+		if (!isOnLightFace && (flags & AXIS_ALIGNED_FLAG) != 0 && state.isCollisionShapeFullBlock(level, pos)) {
+			isOnLightFace = true;
+		}
+
+		if ((flags & CUBIC_FLAG) == 0) {
+			vanillaPartialFace(quad, quad.lightFace(), isOnLightFace, quad.shadeDirectionOverride());
+		} else {
+			vanillaFullFace(quad, quad.lightFace(), isOnLightFace, quad.shadeDirectionOverride());
+		}
+	}
+
+	private void calcEnhanced(QuadViewImpl quad) {
+		switch (quad.geometryFlags()) {
+		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG | CUBIC_FLAG:
+			vanillaFullFace(quad, quad.lightFace(), true, quad.shadeDirectionOverride());
+			break;
+
+		case LIGHT_FACE_FLAG | AXIS_ALIGNED_FLAG:
+			vanillaPartialFace(quad, quad.lightFace(), true, quad.shadeDirectionOverride());
+			break;
+
+		case AXIS_ALIGNED_FLAG | CUBIC_FLAG:
+			blendedFullFace(quad, quad.lightFace(), quad.shadeDirectionOverride());
+			break;
+
+		case AXIS_ALIGNED_FLAG:
+			blendedPartialFace(quad, quad.lightFace(), quad.shadeDirectionOverride());
+			break;
+
+		default:
+			irregularFace(quad, quad.shadeDirectionOverride());
+			break;
+		}
+	}
+
+	private void fullFace(QuadViewImpl quad, Direction lightFace, AoFaceData faceData) {
+		faceData.toArrays(ao, light, AoFace.get(lightFace).vertexMap, GeometryHelper.firstCubicVertex(quad));
+	}
+
+	private void partialFace(QuadViewImpl quad, Direction lightFace, AoFaceData faceData) {
+		final AoFace aoFace = AoFace.get(lightFace);
+		final float[] w = this.w;
+
+		for (int i = 0; i < 4; i++) {
+			aoFace.computeCornerWeights(quad, i, w);
+			light[i] = faceData.weightedCombinedLight(w);
+			ao[i] = faceData.weightedAo(w);
+		}
+	}
+
+	private void vanillaFullFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, @Nullable Direction shadeDirectionOverride) {
+		fullFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shadeDirectionOverride));
+	}
+
+	private void vanillaPartialFace(QuadViewImpl quad, Direction lightFace, boolean isOnLightFace, @Nullable Direction shadeDirectionOverride) {
+		partialFace(quad, lightFace, computeFace(lightFace, isOnLightFace, shadeDirectionOverride));
+	}
+
+	/** Used in {@link #blendedInsetFace(QuadViewImpl, int, Direction, Direction)} as return variable to avoid new allocation. */
+	private final AoFaceData tmpFace = new AoFaceData();
+
+	/** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face. */
+	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
+		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
+		final float w0 = 1 - w1;
+		return AoFaceData.weightedMean(computeFace(lightFace, true, shadeDirectionOverride), w0, computeFace(lightFace, false, shadeDirectionOverride), w1, tmpFace);
+	}
+
+	/**
+	 * Like {@link #blendedInsetFace(QuadViewImpl, int, Direction, Direction)} but optimizes if depth is 0 or 1.
+	 * Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
+	 */
+	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
+		final float w1 = AoFace.get(lightFace).computeDepth(quad, vertexIndex);
+
+		if (Mth.equal(w1, 0)) {
+			return computeFace(lightFace, true, shadeDirectionOverride);
+		} else if (Mth.equal(w1, 1)) {
+			return computeFace(lightFace, false, shadeDirectionOverride);
+		} else {
+			final float w0 = 1 - w1;
+			return AoFaceData.weightedMean(computeFace(lightFace, true, shadeDirectionOverride), w0, computeFace(lightFace, false, shadeDirectionOverride), w1, tmpFace);
+		}
+	}
+
+	private void blendedFullFace(QuadViewImpl quad, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
+		fullFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shadeDirectionOverride));
+	}
+
+	private void blendedPartialFace(QuadViewImpl quad, Direction lightFace, @Nullable Direction shadeDirectionOverride) {
+		partialFace(quad, lightFace, blendedInsetFace(quad, 0, lightFace, shadeDirectionOverride));
+	}
+
+	/** used exclusively in irregular face to avoid new heap allocations each call. */
+	private final Vector3f vertexNormal = new Vector3f();
+
+	private void irregularFace(QuadViewImpl quad, @Nullable Direction shadeDirectionOverride) {
+		final Vector3fc faceNorm = quad.faceNormal();
+		Vector3fc normal;
+		final float[] w = this.w;
+		final float[] aoResult = this.ao;
+		final int[] lightResult = this.light;
+
+		for (int i = 0; i < 4; i++) {
+			normal = quad.hasNormal(i) ? quad.copyNormal(i, vertexNormal) : faceNorm;
+			float ao = 0, sky = 0, block = 0, maxAo = 0;
+			int maxSky = 0, maxBlock = 0;
+
+			final float x = normal.x();
+
+			if (!Mth.equal(0f, x)) {
+				final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
+				final AoFaceData fd = gatherInsetFace(quad, i, face, shadeDirectionOverride);
+				AoFace.get(face).computeCornerWeights(quad, i, w);
+				final float n = x * x;
+				final float a = fd.weightedAo(w);
+				final int s = fd.weightedSkyLight(w);
+				final int b = fd.weightedBlockLight(w);
+				ao += n * a;
+				sky += n * s;
+				block += n * b;
+				maxAo = a;
+				maxSky = s;
+				maxBlock = b;
+			}
+
+			final float y = normal.y();
+
+			if (!Mth.equal(0f, y)) {
+				final Direction face = y > 0 ? Direction.UP : Direction.DOWN;
+				final AoFaceData fd = gatherInsetFace(quad, i, face, shadeDirectionOverride);
+				AoFace.get(face).computeCornerWeights(quad, i, w);
+				final float n = y * y;
+				final float a = fd.weightedAo(w);
+				final int s = fd.weightedSkyLight(w);
+				final int b = fd.weightedBlockLight(w);
+				ao += n * a;
+				sky += n * s;
+				block += n * b;
+				maxAo = Math.max(maxAo, a);
+				maxSky = Math.max(maxSky, s);
+				maxBlock = Math.max(maxBlock, b);
+			}
+
+			final float z = normal.z();
+
+			if (!Mth.equal(0f, z)) {
+				final Direction face = z > 0 ? Direction.SOUTH : Direction.NORTH;
+				final AoFaceData fd = gatherInsetFace(quad, i, face, shadeDirectionOverride);
+				AoFace.get(face).computeCornerWeights(quad, i, w);
+				final float n = z * z;
+				final float a = fd.weightedAo(w);
+				final int s = fd.weightedSkyLight(w);
+				final int b = fd.weightedBlockLight(w);
+				ao += n * a;
+				sky += n * s;
+				block += n * b;
+				maxAo = Math.max(maxAo, a);
+				maxSky = Math.max(maxSky, s);
+				maxBlock = Math.max(maxBlock, b);
+			}
+
+			aoResult[i] = (ao + maxAo) * 0.5f;
+			lightResult[i] = (((int) ((sky + maxSky) * 0.5f) & 0xFF) << 16) | ((int) ((block + maxBlock) * 0.5f) & 0xFF);
+		}
+	}
+
+	private AoFaceData computeFace(Direction lightFace, boolean isOnBlockFace, @Nullable Direction shadeDirectionOverride) {
+		// Use the override option if it's available, otherwise use the lightFace instead
+		// Same as BlockModelLighter#getDirectionalBrightness
+		final Direction shadeDirection = shadeDirectionOverride != null ? shadeDirectionOverride : lightFace;
+
+		final int faceDataIndex = shadeDirection.get3DDataValue()
+				+ (lightFace.get3DDataValue() * 6)
+				+ (isOnBlockFace ? 36 : 0);
+
+		final AoFaceData result = faceData[faceDataIndex];
+
+		if (!completionFlags.get(faceDataIndex)) {
+			completionFlags.set(faceDataIndex);
+			computeFace(result, lightFace, isOnBlockFace, shadeDirection);
+		}
+
+		return result;
+	}
+
+	/**
+	 * Computes smoothed light and brightness for four corners of a block face.
+	 * Outer block face is what you normally see and what you get when the second
+	 * parameter is true. Inner is light *within* the block and usually darker.
+	 * It is blended with the outer face for inset surfaces, but is also used directly
+	 * in vanilla logic for some blocks that aren't full opaque cubes.
+	 * Except for parameterization, the logic itself is practically identical to vanilla.
+	 */
+	private void computeFace(AoFaceData result, Direction lightFace, boolean isOnBlockFace, Direction shadeDirection) {
+		final BlockAndTintGetter level = this.level;
+		final BlockPos pos = this.pos;
+		final BlockState blockState = this.state;
+		final BlockPos.MutableBlockPos lightPos = this.lightPos;
+		final BlockPos.MutableBlockPos searchPos = this.searchPos;
+		BlockState searchState;
+
+		if (isOnBlockFace) {
+			lightPos.setWithOffset(pos, lightFace);
+		} else {
+			lightPos.set(pos);
+		}
+
+		AoFace aoFace = AoFace.get(lightFace);
+
+		// Vanilla was further offsetting the positions for opaque block checks in the
+		// direction of the light face, but it was actually mis-sampling and causing
+		// visible artifacts in certain situations
+
+		searchPos.setWithOffset(lightPos, aoFace.neighbors[0]);
+		searchState = level.getBlockState(searchPos);
+		final int light0 = lightCache.getLightCoords(searchState, level, searchPos);
+		final float ao0 = lightCache.getShadeBrightness(searchState, level, searchPos);
+
+		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+			searchPos.move(lightFace);
+			searchState = level.getBlockState(searchPos);
+		}
+
+		final boolean isClear0 = searchState.isLightPermeable();
+
+		searchPos.setWithOffset(lightPos, aoFace.neighbors[1]);
+		searchState = level.getBlockState(searchPos);
+		final int light1 = lightCache.getLightCoords(searchState, level, searchPos);
+		final float ao1 = lightCache.getShadeBrightness(searchState, level, searchPos);
+
+		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+			searchPos.move(lightFace);
+			searchState = level.getBlockState(searchPos);
+		}
+
+		final boolean isClear1 = searchState.isLightPermeable();
+
+		searchPos.setWithOffset(lightPos, aoFace.neighbors[2]);
+		searchState = level.getBlockState(searchPos);
+		final int light2 = lightCache.getLightCoords(searchState, level, searchPos);
+		final float ao2 = lightCache.getShadeBrightness(searchState, level, searchPos);
+
+		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+			searchPos.move(lightFace);
+			searchState = level.getBlockState(searchPos);
+		}
+
+		final boolean isClear2 = searchState.isLightPermeable();
+
+		searchPos.setWithOffset(lightPos, aoFace.neighbors[3]);
+		searchState = level.getBlockState(searchPos);
+		final int light3 = lightCache.getLightCoords(searchState, level, searchPos);
+		final float ao3 = lightCache.getShadeBrightness(searchState, level, searchPos);
+
+		if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
+			searchPos.move(lightFace);
+			searchState = level.getBlockState(searchPos);
+		}
+
+		final boolean isClear3 = searchState.isLightPermeable();
+
+		// c = corner - values at corners of face
+		int cLight0, cLight1, cLight2, cLight3;
+		float cAo0, cAo1, cAo2, cAo3;
+		boolean cIsClear0, cIsClear1, cIsClear2, cIsClear3;
+
+		// If neighbors on both sides of the corner are opaque, then apparently we use the light/shade
+		// from one of the sides adjacent to the corner.  If either neighbor is clear (no light subtraction)
+		// then we use values from the outwardly diagonal corner. (outwardly = position is one more away from light face)
+		if (!isClear2 && !isClear0) {
+			cAo0 = ao0;
+			cLight0 = light0;
+			cIsClear0 = false;
+		} else {
+			searchPos.setWithOffset(lightPos, aoFace.neighbors[0]).move(aoFace.neighbors[2]);
+			searchState = level.getBlockState(searchPos);
+			cAo0 = lightCache.getShadeBrightness(searchState, level, searchPos);
+			cLight0 = lightCache.getLightCoords(searchState, level, searchPos);
+			cIsClear0 = searchState.isLightPermeable();
+		}
+
+		if (!isClear3 && !isClear0) {
+			cAo1 = ao0;
+			cLight1 = light0;
+			cIsClear1 = false;
+		} else {
+			searchPos.setWithOffset(lightPos, aoFace.neighbors[0]).move(aoFace.neighbors[3]);
+			searchState = level.getBlockState(searchPos);
+			cAo1 = lightCache.getShadeBrightness(searchState, level, searchPos);
+			cLight1 = lightCache.getLightCoords(searchState, level, searchPos);
+			cIsClear1 = searchState.isLightPermeable();
+		}
+
+		if (!isClear2 && !isClear1) {
+			// Use the values from neighbor 1 instead of neighbor 0 since this corner is not adjacent to neighbor 0
+			cAo2 = ao1;
+			cLight2 = light1;
+			cIsClear2 = false;
+		} else {
+			searchPos.setWithOffset(lightPos, aoFace.neighbors[1]).move(aoFace.neighbors[2]);
+			searchState = level.getBlockState(searchPos);
+			cAo2 = lightCache.getShadeBrightness(searchState, level, searchPos);
+			cLight2 = lightCache.getLightCoords(searchState, level, searchPos);
+			cIsClear2 = searchState.isLightPermeable();
+		}
+
+		if (!isClear3 && !isClear1) {
+			// Use the values from neighbor 1 instead of neighbor 0 since this corner is not adjacent to neighbor 0
+			cAo3 = ao1;
+			cLight3 = light1;
+			cIsClear3 = false;
+		} else {
+			searchPos.setWithOffset(lightPos, aoFace.neighbors[1]).move(aoFace.neighbors[3]);
+			searchState = level.getBlockState(searchPos);
+			cAo3 = lightCache.getShadeBrightness(searchState, level, searchPos);
+			cLight3 = lightCache.getLightCoords(searchState, level, searchPos);
+			cIsClear3 = searchState.isLightPermeable();
+		}
+
+		// If on block face and neighbor isn't occluding, "center" will be neighbor light
+		// Doesn't use light pos because logic not based solely on this block's geometry
+		int lightCenter;
+		boolean isClearCenter;
+		searchPos.setWithOffset(pos, lightFace);
+		searchState = level.getBlockState(searchPos);
+
+		// Vanilla uses an OR operator here; we use an AND operator to invert the result when isOnBlockFace and
+		// isOpaqueFullCube have the same value. When both are true, the vanilla logic caused inset faces against
+		// solid blocks to appear too dark when using enhanced AO (i.e. slab below ceiling or fence against wall). When
+		// both are false, the vanilla logic caused inset faces against non-solid blocks to be lit discontinuously (i.e.
+		// dark room with active sculk sensor above slabs).
+		if (isOnBlockFace && !searchState.isSolidRender()) {
+			lightCenter = lightCache.getLightCoords(searchState, level, searchPos);
+			isClearCenter = searchState.isLightPermeable();
+		} else {
+			lightCenter = lightCache.getLightCoords(blockState, level, pos);
+			isClearCenter = blockState.isLightPermeable();
+		}
+
+		float aoCenter = lightCache.getShadeBrightness(level.getBlockState(lightPos), level, lightPos);
+		float shadeBrightness = level.cardinalLighting().byFace(shadeDirection);
+
+		result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * shadeBrightness;
+		result.a1 = ((ao2 + ao0 + cAo0 + aoCenter) * 0.25F) * shadeBrightness;
+		result.a2 = ((ao2 + ao1 + cAo2 + aoCenter) * 0.25F) * shadeBrightness;
+		result.a3 = ((ao3 + ao1 + cAo3 + aoCenter) * 0.25F) * shadeBrightness;
+
+		result.l0(meanLight(light3, light0, cLight1, lightCenter, isClear3, isClear0, cIsClear1, isClearCenter));
+		result.l1(meanLight(light2, light0, cLight0, lightCenter, isClear2, isClear0, cIsClear0, isClearCenter));
+		result.l2(meanLight(light2, light1, cLight2, lightCenter, isClear2, isClear1, cIsClear2, isClearCenter));
+		result.l3(meanLight(light3, light1, cLight3, lightCenter, isClear3, isClear1, cIsClear3, isClearCenter));
+	}
+
+	/**
+	 * Vanilla code sets light values equal to zero to the center light value (D) before taking the mean, which fixes
+	 * solid blocks near a face making edges too dark. However, a value of zero does not mean it came from a solid
+	 * block; this causes natural zero values to be treated differently from other natural values, causing visual
+	 * inconsistencies. This implementation checks for the source of a light value explicitly. It also fixes samples
+	 * being blended inconsistently based on the center position, which causes discontinuities, by computing a
+	 * consistent minimum light value from all four samples.
+	 */
+	private static int meanLight(int lightA, int lightB, int lightC, int lightD, boolean isClearA, boolean isClearB, boolean isClearC, boolean isClearD) {
+		if (Indigo.FIX_MEAN_LIGHT_CALCULATION) {
+			int lightABlock = lightA & 0xFFFF;
+			int lightASky = (lightA >>> 16) & 0xFFFF;
+			int lightBBlock = lightB & 0xFFFF;
+			int lightBSky = (lightB >>> 16) & 0xFFFF;
+			int lightCBlock = lightC & 0xFFFF;
+			int lightCSky = (lightC >>> 16) & 0xFFFF;
+			int lightDBlock = lightD & 0xFFFF;
+			int lightDSky = (lightD >>> 16) & 0xFFFF;
+
+			// Compute per-component minimum light, only including values from clear positions
+			int minBlock = 0x10000;
+			int minSky = 0x10000;
+
+			if (isClearA) {
+				minBlock = lightABlock;
+				minSky = lightASky;
+			}
+
+			if (isClearB) {
+				minBlock = Math.min(minBlock, lightBBlock);
+				minSky = Math.min(minSky, lightBSky);
+			}
+
+			if (isClearC) {
+				minBlock = Math.min(minBlock, lightCBlock);
+				minSky = Math.min(minSky, lightCSky);
+			}
+
+			if (isClearD) {
+				minBlock = Math.min(minBlock, lightDBlock);
+				minSky = Math.min(minSky, lightDSky);
+			}
+
+			// Ensure that if no positions were clear, minimum is 0
+			minBlock &= 0xFFFF;
+			minSky &= 0xFFFF;
+
+			lightA = Math.max(lightASky, minSky) << 16 | Math.max(lightABlock, minBlock);
+			lightB = Math.max(lightBSky, minSky) << 16 | Math.max(lightBBlock, minBlock);
+			lightC = Math.max(lightCSky, minSky) << 16 | Math.max(lightCBlock, minBlock);
+			lightD = Math.max(lightDSky, minSky) << 16 | Math.max(lightDBlock, minBlock);
+
+			return meanInnerLight(lightA, lightB, lightC, lightD);
+		} else {
+			return vanillaMeanLight(lightA, lightB, lightC, lightD);
+		}
+	}
+
+	/** vanilla logic - excludes missing light values from mean and has anisotropy defect mentioned above. */
+	private static int vanillaMeanLight(int a, int b, int c, int d) {
+		if (a == 0) a = d;
+		if (b == 0) b = d;
+		if (c == 0) c = d;
+		// bitwise divide by 4, clamp to expected (positive) range
+		return a + b + c + d >> 2 & 0xFF00FF;
+	}
+
+	private static int meanInnerLight(int a, int b, int c, int d) {
+		// bitwise divide by 4, clamp to expected (positive) range
+		return a + b + c + d >> 2 & 0xFF00FF;
+	}
+}

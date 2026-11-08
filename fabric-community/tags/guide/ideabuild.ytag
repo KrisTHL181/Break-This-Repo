@@ -1,0 +1,13 @@
+type: text
+
+---
+
+By default, IntelliJ delegates to Gradle to build the project. This is unnecessary for Fabric and causes longer build times and hotswapping related weirdness, among other problems. To make it use the builtin compiler:
+
+**»** Open the 'Gradle Settings' dialog from the Gradle tab.
+**»** Change the 'Build and run using' and 'Run tests using' fields to 'IntelliJ IDEA'.
+**»** Go to File » Project Structure » Project and set 'Project compiler output' to `$PROJECT_DIR$/out`.
+
+**For more info:** <https://fabricmc.net/wiki/tutorial:setup>
+
+**Example:** https://raw.githubusercontent.com/FabricMC/community/main/images/ideabuild.png

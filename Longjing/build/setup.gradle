@@ -1,0 +1,148 @@
+import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.bundling.AbstractArchiveTask
+
+abstract class TeaConLongjingProcessing extends DefaultTask {
+    @Input
+    abstract Property<String> getTargetFileName()
+    @InputFile
+    abstract RegularFileProperty getTargetFile()
+    @TaskAction
+    void check() {
+        if (System.env.GITHUB_ACTIONS) {
+            // We assume that the task is of type AbstractArchiveTask.
+            // def theTask = targetTask.get()
+            // assert theTask instanceof AbstractArchiveTask
+            // def theFile = theTask.archiveFile.get().getAsFile()
+            // Open the env file provided by GitHub Action
+            // Ref: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#environment-files
+            def envFile = new File(System.env.GITHUB_ENV)
+            // Use the env-specific line separator for maximally possible compatibility
+            def newLine = System.getProperty('line.separator')
+            // Write out new env variable for later usage
+            envFile << newLine << "ARTIFACT_NAME=${targetFileName.get()}"
+            envFile << newLine << "ARTIFACT_LOCAL_PATH=${targetFile.getAsFile().get().absolutePath}"
+            // Similarly, we write artifact path to action output
+            def actionOutputFile = new File(System.env.GITHUB_OUTPUT)
+            actionOutputFile << newLine << "artifact=${targetFile.getAsFile().get().absolutePath}"
+        }
+    }
+}
+
+afterProject { project ->
+    // Skip buildSrc. We do not want to config that one.
+    // Today I learnt that init script is also run against buildSrc...
+    if (project.name == 'buildSrc') {
+        return
+    }
+
+    // Yuushya 方块小镇 gives me some new insights on how init script works...
+    // Init script is run on every single sub-project, in an undefined order.
+    // My own test shows that the order is somewhat a breath-first search.
+    // Yuushya has an intriguting setup: their `build.gradle` in root project does not have any Minecraft-related 
+    // gradle plugins! They are in 1st level sub-projects' `build.gradle`.
+    // i.e. 1.21.0/build.gradle, 1.20.1/build.gradle, etc
+    // Combining two points above together, we will run into this situation: when we run init script for root project,
+    // all sub projects are not configured with necessary gradle plugins yet, and the task we need is not there.
+    // Which will lead to error.
+    if (System.env.TEACON_ARTIFACT_TASK) {
+        // If TEACON_ARTIFACT_TASK is present, attempt to retrieve the project name at which the task locates.
+        String targetTaskName = System.env.TEACON_ARTIFACT_TASK
+        String targetProjectPath = null
+        int splitPoint = targetTaskName.lastIndexOf(Project.PATH_SEPARATOR)
+        if (splitPoint > 0) {
+            targetProjectPath = targetTaskName.substring(0, splitPoint)
+        }
+        // Apparently, you can get a subproject by using a name that does not start with ':'.
+        // i.e. rootProject.findProject('1.21.0:neoforge') will give you result (provided that you do have this directory structure)
+        // For consistency, we always prepend a ':' at the beginning.
+        if (targetProjectPath && !targetProjectPath.startsWith(':')) {
+            targetProjectPath = ':' + targetProjectPath
+        }
+        
+        // If targetProjectPath is null, it means that the task locates in root project.
+        if (!targetProjectPath) {
+            // In this case, we want to process in rootProject.
+            if (project != rootProject) {
+                return
+            }
+        } else {
+            // Otherwise, we want to process AFTER the specified subproject is initialized.
+            // We need to reconstruct the full subproject name, and compare with that.
+            String projectFullName = project.name
+            def parent = project.parent
+            while (parent && parent != rootProject) {
+                projectFullName = parent.name + Project.PATH_SEPARATOR + projectFullName
+                parent = parent.parent
+            }
+            projectFullName = Project.PATH_SEPARATOR + projectFullName
+            // Compare. Return early if not the project we are looking for.
+            if (projectFullName != targetProjectPath) {
+                return
+            }
+        }
+    } else if (project != rootProject) {
+        // If no TEACON_ARTIFACT_TASK specified, assume that we are in a single-project build.
+        return
+    }
+
+    // Try locating the task that produces production-ready artifact.
+    // The precedence, from high to low, is as following:
+    //   1. If environmental variable TEACON_ARTIFACT_TASK is defined, then we will use the value of that 
+    //      environmental variable as the name of the task to use.
+    //      Example: if we specify TEACON_ARTIFACT_TASK=my_task, then we will find task with name of `my_task'.
+    //      Specifying a task within sub-project is possible: if we specify TEACON_ARTIFACT_TASK=:fabric:my_task, 
+    //      then we will find task with name of `my_task' under sub-project named `fabric'.
+    //   2. If plugin `com.github.johnrengelman.shadow` is present, use `shadowJar` from that plugin.
+    //   3. If `remapJar` exists, use that task
+    //   4. Use `jar`, failing if not found.
+    // The task is expected to have type of org.gradle.api.tasks.bundling.AbstractArchiveTask.
+    def targetTask = null
+    if (System.env.TEACON_ARTIFACT_TASK) {
+        // If env var TEACON_ARTIFACT_TASK is present, use this over everything else.
+        // Longjing is responsible for reading the correct value from Biluochun and set it up before 
+        // starting up a Gradle build.
+        def targetTaskName = System.env.TEACON_ARTIFACT_TASK
+        // There is TaskContainer.findByPath, however using that will have side effect (i.e. pre-loading 
+        // the task), thus its usage is avoided. 
+        // To properly support task within a sub-project, we have to replicate its logic of locating 
+        // subproject, hence the string splitting.
+        def targetProject = project
+        def splitPoint = targetTaskName.lastIndexOf(Project.PATH_SEPARATOR)
+        if (splitPoint > 0) {
+            def targetProjectPath = targetTaskName.substring(0, splitPoint)
+            targetProject = project.findProject(targetProjectPath)
+            targetTaskName = targetTaskName.substring(splitPoint + 1)
+            if (targetProject == null) {
+                println "::error title=Invalid TEACON_ARTIFACT_TASK Detected!::你所指定的输出任务中包含有 Gradle 子项目名 $targetProjectPath，但该子项目实际并不存在！"
+            }
+        }
+        targetTask = targetProject.tasks.named(targetTaskName)
+    } else if (project.pluginManager.hasPlugin("com.github.johnrengelman.shadow")) {
+        // If shadow plugin is present, prioritize the shadowJar task
+        targetTask = project.tasks.named('shadowJar')
+    } else {
+        try {
+            // If remapJar task is present, assuming that Fabric Loom or Architectury Loom is present, 
+            // and prioritize the remapJar task.
+            targetTask = project.tasks.named('remapJar')
+        } catch (UnknownTaskException e) {
+            // This is the conventional task to produce the jar. ForgeGradle uses it.
+            // This should not fail. If it fails, either we need to add more special case, or 
+            // the project setup has more serious problem.
+            targetTask = project.tasks.named('jar')
+        } 
+    }
+
+    // Register the info-dumping task to root project.`
+    rootProject.tasks.register('teaconLongjingProcessing', TeaConLongjingProcessing) {
+        it.dependsOn targetTask
+        it.mustRunAfter targetTask
+        it.getTargetFileName().set(targetTask.flatMap({ it.archiveFileName }))
+        it.getTargetFile().set(targetTask.flatMap({ it.archiveFile }))
+    }
+}

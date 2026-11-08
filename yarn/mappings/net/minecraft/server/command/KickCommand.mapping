@@ -1,0 +1,13 @@
+CLASS net/minecraft/class_3073 net/minecraft/server/command/KickCommand
+	FIELD field_46229 CANNOT_KICK_OWNER_EXCEPTION Lcom/mojang/brigadier/exceptions/SimpleCommandExceptionType;
+	FIELD field_47520 CANNOT_KICK_SINGLEPLAYER_EXCEPTION Lcom/mojang/brigadier/exceptions/SimpleCommandExceptionType;
+	METHOD method_13409 (Lcom/mojang/brigadier/context/CommandContext;)I
+		ARG 0 context
+	METHOD method_13410 register (Lcom/mojang/brigadier/CommandDispatcher;)V
+		ARG 0 dispatcher
+	METHOD method_13411 execute (Lnet/minecraft/class_2168;Ljava/util/Collection;Lnet/minecraft/class_2561;)I
+		ARG 0 source
+		ARG 1 targets
+		ARG 2 reason
+	METHOD method_13412 (Lcom/mojang/brigadier/context/CommandContext;)I
+		ARG 0 context

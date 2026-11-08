@@ -1,0 +1,101 @@
+CLASS net/minecraft/class_1291 net/minecraft/entity/effect/StatusEffect
+	FIELD field_5883 translationKey Ljava/lang/String;
+	FIELD field_5885 attributeModifiers Ljava/util/Map;
+	FIELD field_5886 color I
+	FIELD field_18270 category Lnet/minecraft/class_4081;
+	FIELD field_49789 AMBIENT_PARTICLE_ALPHA I
+	FIELD field_49790 particleFactory Ljava/util/function/Function;
+	FIELD field_50114 applySound Ljava/util/Optional;
+	FIELD field_50115 requiredFeatures Lnet/minecraft/class_7699;
+	FIELD field_51933 ENTRY_CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_51934 ENTRY_PACKET_CODEC Lnet/minecraft/class_9139;
+	FIELD field_55650 fadeInTicks I
+	FIELD field_55651 fadeOutTicks I
+	FIELD field_55652 fadeOutThresholdTicks I
+	METHOD <init> (Lnet/minecraft/class_4081;I)V
+		ARG 1 category
+		ARG 2 color
+	METHOD <init> (Lnet/minecraft/class_4081;ILnet/minecraft/class_2394;)V
+		ARG 1 category
+		ARG 2 color
+		ARG 3 particleEffect
+	METHOD method_5552 canApplyUpdateEffect (II)Z
+		ARG 1 duration
+		ARG 2 amplifier
+	METHOD method_5555 onApplied (Lnet/minecraft/class_5131;I)V
+		ARG 1 attributeContainer
+		ARG 2 amplifier
+	METHOD method_5556 getColor ()I
+	METHOD method_5559 loadTranslationKey ()Ljava/lang/String;
+	METHOD method_5560 getName ()Lnet/minecraft/class_2561;
+	METHOD method_5561 isInstant ()Z
+	METHOD method_5562 onRemoved (Lnet/minecraft/class_5131;)V
+		ARG 1 attributeContainer
+	METHOD method_5564 applyInstantEffect (Lnet/minecraft/class_3218;Lnet/minecraft/class_1297;Lnet/minecraft/class_1297;Lnet/minecraft/class_1309;ID)V
+		ARG 1 world
+		ARG 2 effectEntity
+		ARG 3 attacker
+		ARG 4 target
+		ARG 5 amplifier
+		ARG 6 proximity
+	METHOD method_5566 addAttributeModifier (Lnet/minecraft/class_6880;Lnet/minecraft/class_2960;DLnet/minecraft/class_1322$class_1323;)Lnet/minecraft/class_1291;
+		ARG 1 attribute
+		ARG 2 id
+		ARG 3 amount
+		ARG 5 operation
+	METHOD method_5567 getTranslationKey ()Ljava/lang/String;
+	METHOD method_5572 applyUpdateEffect (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;I)Z
+		ARG 1 world
+		ARG 2 entity
+		ARG 3 amplifier
+	METHOD method_5573 isBeneficial ()Z
+	METHOD method_18792 getCategory ()Lnet/minecraft/class_4081;
+	METHOD method_52520 onApplied (Lnet/minecraft/class_1309;I)V
+		ARG 1 entity
+		ARG 2 amplifier
+	METHOD method_55650 forEachAttributeModifier (ILjava/util/function/BiConsumer;)V
+		ARG 1 amplifier
+		ARG 2 consumer
+	METHOD method_55651 (Ljava/util/function/BiConsumer;ILnet/minecraft/class_6880;Lnet/minecraft/class_1291$class_8634;)V
+		ARG 2 attribute
+		ARG 3 attributeModifierCreator
+	METHOD method_58145 (ILnet/minecraft/class_1293;)Lnet/minecraft/class_2394;
+		ARG 1 effect
+	METHOD method_58146 createParticle (Lnet/minecraft/class_1293;)Lnet/minecraft/class_2394;
+		ARG 1 effect
+	METHOD method_58147 (Lnet/minecraft/class_2394;Lnet/minecraft/class_1293;)Lnet/minecraft/class_2394;
+		ARG 1 effect
+	METHOD method_58614 onEntityDamage (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;ILnet/minecraft/class_1282;F)V
+		ARG 1 world
+		ARG 2 entity
+		ARG 3 amplifier
+		ARG 4 source
+		ARG 5 amount
+	METHOD method_58616 applySound (Lnet/minecraft/class_3414;)Lnet/minecraft/class_1291;
+		ARG 1 sound
+	METHOD method_58617 onEntityRemoval (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;ILnet/minecraft/class_1297$class_5529;)V
+		ARG 1 world
+		ARG 2 entity
+		ARG 3 amplifier
+		ARG 4 reason
+	METHOD method_58618 (Lnet/minecraft/class_1309;Lnet/minecraft/class_3414;)V
+		ARG 1 sound
+	METHOD method_58619 requires ([Lnet/minecraft/class_7696;)Lnet/minecraft/class_1291;
+		ARG 1 requiredFeatures
+	METHOD method_58620 playApplySound (Lnet/minecraft/class_1309;I)V
+		ARG 1 entity
+		ARG 2 amplifier
+	METHOD method_66222 fadeTicks (I)Lnet/minecraft/class_1291;
+		ARG 1 fadeTicks
+	METHOD method_66223 fadeTicks (III)Lnet/minecraft/class_1291;
+		ARG 1 fadeInTicks
+		ARG 2 fadeOutTicks
+		ARG 3 fadeOutThresholdTicks
+	METHOD method_66224 getFadeInTicks ()I
+	METHOD method_66225 getFadeOutTicks ()I
+	METHOD method_66226 getFadeOutThresholdTicks ()I
+	CLASS class_8634 EffectAttributeModifierCreator
+		FIELD comp_2183 baseValue D
+		METHOD comp_2183 baseValue ()D
+		METHOD method_52522 createAttributeModifier (I)Lnet/minecraft/class_1322;
+			ARG 1 amplifier

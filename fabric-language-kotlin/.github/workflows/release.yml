@@ -1,0 +1,32 @@
+name: Release
+on: [workflow_dispatch] # Manual trigger
+jobs:
+  build:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v6
+        with:
+          java-version: 25
+          distribution: 'temurin'
+      - uses: FabricMC/fabric-action-scripts@v3
+        id: changelog
+        with:
+          context: changelog
+          workflow_id: release.yml
+      - run: ./gradlew build publishMods publish --stacktrace --warning-mode=fail
+        env:
+          MAVEN_URL: ${{ secrets.MAVEN_URL }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          CHANGELOG: ${{ steps.changelog.outputs.changelog }}
+      - run: ./gradlew processMDTemplates --warning-mode=fail
+      - uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: Update readme
+          commit_author: github-actions <41898282+github-actions[bot]@users.noreply.github.com>

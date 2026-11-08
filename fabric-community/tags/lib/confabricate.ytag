@@ -1,0 +1,7 @@
+type: text
+
+---
+
+Confabricate is a fabric version of [sponge's configuration library](https://github.com/SpongePowered/configurate), and provides more usecases for fabric mods
+
+https://github.com/zml2008/confabricate

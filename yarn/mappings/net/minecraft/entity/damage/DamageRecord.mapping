@@ -1,0 +1,9 @@
+CLASS net/minecraft/class_1281 net/minecraft/entity/damage/DamageRecord
+	FIELD comp_1535 damageSource Lnet/minecraft/class_1282;
+	FIELD comp_1536 damage F
+	FIELD comp_1538 fallDistance F
+	METHOD <init> (Lnet/minecraft/class_1282;FLnet/minecraft/class_8572;F)V
+		ARG 1 damageSource
+	METHOD comp_1535 damageSource ()Lnet/minecraft/class_1282;
+	METHOD comp_1536 damage ()F
+	METHOD comp_1538 fallDistance ()F

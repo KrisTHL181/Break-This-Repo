@@ -1,0 +1,9 @@
+plugins {
+	id 'fabric-api.module'
+}
+
+fabricApiModule {
+	testDependencies(
+		':fabric-command-api-v2'
+	)
+}

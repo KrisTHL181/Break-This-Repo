@@ -1,0 +1,41 @@
+CLASS net/minecraft/class_5617 net/minecraft/client/render/entity/EntityRendererFactory
+	METHOD create (Lnet/minecraft/class_5617$class_5618;)Lnet/minecraft/class_897;
+		ARG 1 ctx
+	CLASS class_5618 Context
+		FIELD field_27762 renderDispatcher Lnet/minecraft/class_898;
+		FIELD field_27764 resourceManager Lnet/minecraft/class_3300;
+		FIELD field_27765 entityModels Lnet/minecraft/class_5599;
+		FIELD field_27766 textRenderer Lnet/minecraft/class_327;
+		FIELD field_38888 blockRenderManager Lnet/minecraft/class_776;
+		FIELD field_53190 mapRenderer Lnet/minecraft/class_330;
+		FIELD field_54174 equipmentModelLoader Lnet/minecraft/class_10201;
+		FIELD field_54175 equipmentRenderer Lnet/minecraft/class_10197;
+		FIELD field_55291 itemModelManager Lnet/minecraft/class_10442;
+		FIELD field_61799 spriteHolder Lnet/minecraft/class_11697;
+		FIELD field_62255 playerSkinCache Lnet/minecraft/class_11786;
+		METHOD <init> (Lnet/minecraft/class_898;Lnet/minecraft/class_10442;Lnet/minecraft/class_330;Lnet/minecraft/class_776;Lnet/minecraft/class_3300;Lnet/minecraft/class_5599;Lnet/minecraft/class_10201;Lnet/minecraft/class_11697;Lnet/minecraft/class_327;Lnet/minecraft/class_11786;)V
+			ARG 1 renderDispatcher
+			ARG 2 itemRenderer
+			ARG 3 mapRenderer
+			ARG 4 blockRenderManager
+			ARG 5 resourceManager
+			ARG 6 entityModels
+			ARG 7 equipmentModelLoader
+			ARG 8 atlasManager
+			ARG 9 textRenderer
+			ARG 10 playerSkinCache
+		METHOD method_32166 getRenderDispatcher ()Lnet/minecraft/class_898;
+		METHOD method_32167 getPart (Lnet/minecraft/class_5601;)Lnet/minecraft/class_630;
+			ARG 1 layer
+		METHOD method_32169 getResourceManager ()Lnet/minecraft/class_3300;
+		METHOD method_32170 getEntityModels ()Lnet/minecraft/class_5599;
+		METHOD method_32171 getTextRenderer ()Lnet/minecraft/class_327;
+		METHOD method_43337 getBlockRenderManager ()Lnet/minecraft/class_776;
+		METHOD method_62427 getMapRenderer ()Lnet/minecraft/class_330;
+		METHOD method_64071 getEquipmentModelLoader ()Lnet/minecraft/class_10201;
+		METHOD method_64072 getEquipmentRenderer ()Lnet/minecraft/class_10197;
+		METHOD method_65566 getItemModelManager ()Lnet/minecraft/class_10442;
+		METHOD method_72980 getSpriteAtlasTexture (Lnet/minecraft/class_2960;)Lnet/minecraft/class_1059;
+			ARG 1 id
+		METHOD method_72981 getSpriteHolder ()Lnet/minecraft/class_11701;
+		METHOD method_73540 getPlayerSkinCache ()Lnet/minecraft/class_11786;

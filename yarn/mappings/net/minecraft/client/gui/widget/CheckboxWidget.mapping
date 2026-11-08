@@ -1,0 +1,72 @@
+CLASS net/minecraft/class_4286 net/minecraft/client/gui/widget/CheckboxWidget
+	FIELD field_19230 checked Z
+	FIELD field_45348 SELECTED_HIGHLIGHTED_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45349 SELECTED_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45350 HIGHLIGHTED_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45351 TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_47107 callback Lnet/minecraft/class_4286$class_8930;
+	FIELD field_52293 textWidget Lnet/minecraft/class_7940;
+	METHOD <init> (IIILnet/minecraft/class_2561;Lnet/minecraft/class_327;ZLnet/minecraft/class_4286$class_8930;)V
+		ARG 1 x
+		ARG 2 y
+		ARG 3 maxWidth
+		ARG 4 message
+		ARG 5 textRenderer
+		ARG 6 checked
+		ARG 7 callback
+	METHOD method_20372 isChecked ()Z
+	METHOD method_54786 getCheckboxSize (Lnet/minecraft/class_327;)I
+		ARG 0 textRenderer
+	METHOD method_54787 builder (Lnet/minecraft/class_2561;Lnet/minecraft/class_327;)Lnet/minecraft/class_4286$class_8929;
+		ARG 0 text
+		ARG 1 textRenderer
+	METHOD method_61128 calculateWidth (ILnet/minecraft/class_2561;Lnet/minecraft/class_327;)I
+		ARG 1 max
+		ARG 2 text
+		ARG 3 textRenderer
+	METHOD method_61129 calculateHeight (Lnet/minecraft/class_327;)I
+		ARG 1 textRenderer
+	METHOD method_61130 calculateWidth (Lnet/minecraft/class_2561;Lnet/minecraft/class_327;)I
+		ARG 0 text
+		ARG 1 textRenderer
+	METHOD method_76257 setMaxWidth (ILnet/minecraft/class_327;)I
+		ARG 1 max
+		ARG 2 textRenderer
+	CLASS class_8929 Builder
+		FIELD field_47108 message Lnet/minecraft/class_2561;
+		FIELD field_47109 textRenderer Lnet/minecraft/class_327;
+		FIELD field_47110 x I
+		FIELD field_47111 y I
+		FIELD field_47112 callback Lnet/minecraft/class_4286$class_8930;
+		FIELD field_47113 checked Z
+		FIELD field_47114 option Lnet/minecraft/class_7172;
+		FIELD field_47115 tooltip Lnet/minecraft/class_7919;
+		FIELD field_52294 maxWidth I
+		METHOD <init> (Lnet/minecraft/class_2561;Lnet/minecraft/class_327;)V
+			ARG 1 message
+			ARG 2 textRenderer
+		METHOD method_54788 build ()Lnet/minecraft/class_4286;
+		METHOD method_54789 pos (II)Lnet/minecraft/class_4286$class_8929;
+			ARG 1 x
+			ARG 2 y
+		METHOD method_54790 option (Lnet/minecraft/class_7172;)Lnet/minecraft/class_4286$class_8929;
+			ARG 1 option
+		METHOD method_54791 callback (Lnet/minecraft/class_4286$class_8930;)Lnet/minecraft/class_4286$class_8929;
+			ARG 1 callback
+		METHOD method_54792 (Lnet/minecraft/class_4286;Z)V
+			ARG 1 checkbox
+			ARG 2 checked
+		METHOD method_54793 tooltip (Lnet/minecraft/class_7919;)Lnet/minecraft/class_4286$class_8929;
+			ARG 1 tooltip
+		METHOD method_54794 checked (Z)Lnet/minecraft/class_4286$class_8929;
+			ARG 1 checked
+		METHOD method_61131 maxWidth (I)Lnet/minecraft/class_4286$class_8929;
+			ARG 1 maxWidth
+	CLASS class_8930 Callback
+		FIELD field_47116 EMPTY Lnet/minecraft/class_4286$class_8930;
+		METHOD method_54795 (Lnet/minecraft/class_4286;Z)V
+			ARG 0 checkbox
+			ARG 1 checked
+		METHOD onValueChange (Lnet/minecraft/class_4286;Z)V
+			ARG 1 checkbox
+			ARG 2 checked

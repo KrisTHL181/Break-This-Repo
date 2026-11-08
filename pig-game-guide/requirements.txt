@@ -1,0 +1,11 @@
+# Tested dependency set. Install into this folder's .venv; no system-site packages.
+numpy==2.3.5
+Pillow==12.3.0
+opencv-python-headless==5.0.0.93
+pyobjc-core==12.2.2
+pyobjc-framework-Cocoa==12.2.2
+pyobjc-framework-Quartz==12.2.2
+pyobjc-framework-CoreMedia==12.2.2
+pyobjc-framework-CoreML==12.2.2
+pyobjc-framework-ScreenCaptureKit==12.2.2
+pyobjc-framework-Vision==12.2.2

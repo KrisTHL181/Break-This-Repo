@@ -1,0 +1,661 @@
+# 任务线: Multiblock Goals
+### [697] §6§l2x Steel
+Steel production is so slow. If you got enough bricks and clay, build a second BBF. Build it attached to the first one, so they can share a wall and you will save some bricks, clay and concrete.  [warn]Note that this will generate twice as much pollution in total - consider moving them further away.[/warn]
+  - [提交] gregtech:gt.metaitem.01:11305 x64
+  - [提交] gregtech:gt.blockcasings4:15 x24
+  - [提交] gregtech:gt.blockmachines:140
+  > 奖励: Railcraft:fuel.coke x64 | enhancedlootbags:lootbag:2 | bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [698] §6§l4x Steel
+Not even two BBFs are fast enough...Can you figure out how to save the most bricks making 4?  [note]PS: If you can't, this pack may not be for you.[/note]  [warn]Note that this will generate massive amounts of pollution - have you considered the Nether?[/warn]
+  - [提交] gregtech:gt.metaitem.01:11305 x256
+  - [提交] gregtech:gt.blockcasings4:15 x40
+  - [提交] gregtech:gt.blockmachines:140 x2
+  > 奖励: Railcraft:fuel.coke x128 | enhancedlootbags:lootbag:2 | bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [-8602150355407157686] §6§lA Beginner's Guide to Particle Physics
+If you've built the Source Chamber already, you may have noticed that particles aren't produced as items, like GT++ ones are.  Instead they're transmitted through Beamline Pipes from multi to multi, similar to real life.  Each stream of particles transmitted, or "beam", has four properties: - §6Particle§r: the type of particle carried by the beam - §4Energy§r: the amount of energy the particles have - §9Focus§r: out of 100, how focused the beam is - §dAmount§r: a measure of the number of particles in the beam  Note that you can see info about a multi's input and output beams by using a Tricorder on the controller.  For the recipes you'll be interested in, i.e. the ones that actually produce items, there'll be a threshold for allowed input beam energy, a minimum focus value, and an amount value which determines recipe time (more on that in the Target Chamber quest). Take a look some TC recipes for an example of this.  Have a Higgs Boson. To hang on your wall.
+  - [勾选确认]
+  > 奖励: gtnhlanth:particle:3
+
+### [2982] §6§lAbsorption Filter
+When you reach MV tier you can make your own Absorption Filter for the Air Filter to clean pollution much more efficiently. The Filter will be consumed and you get a dirty Filter back after 30 Cycles.
+  - [可选提交] dreamcraft:AdsorptionFilterCasing
+  - [提交] dreamcraft:AdsorptionFilter
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [2856] §6§lAdvanced MB Construction
+The ability to rotate MBs and view a structure hologram has been sto-§oborrowed§r from §9Tec§1Tech§r, giving you greater freedom to build the way you want! §5(until we nerf wallsharing at least)§r  Unlike TT, you can use a normal wrench for this, just aim at the front center of a controller (or one of the other sides if you want to. You just need to aim for the part of the grid with the mark) and right-click or shift-right-click. The first rotates it clockwise, the latter flips it. If you want to change the facing of the controller itself, do that the normal way.  Use a Multiblock Structure Hologram Projector or MSHP to visualize the structure, pay attention to the bottom left for structure details. For multiblocks that accept multiple types of tiered components or have a variable size, the number of MSHPs you hold in your hand will decide which tier is shown in the hologram.  [note]If you don't get it, try placing a controller, wrenching it, and using the MSHP on it.[/note]  While it's now possible to build a sideways EBF, or even build one into the floor, not everything can be rotated.  [note]PS: We did get permission, that was just a little joke.[/note]
+  - [提交] gregtech:gt.metatool.01:16, structurelib:item.structurelib.constructableTrigger
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [2981] §6§lAir-Filter
+Electric Air Filter  This wonderful multiblock comes in 3 versions: T1 for LV, T2 for late HV and T3 for IV.  It has 2 modes:  - a normal mode, where one chunk is processed at a time in the working area, in order, per pollution cleaning cycle. - a random mode, where the chunk being cleaned is picked randomly between all the polluted chunks in the working area.  To cycle between the modes, right-click on the controller with a screwdriver.  The controller can change its working area from 1x1 to (2*tier+1) x (2*tier+1) chunks. To do that, right-click with a screwdriver on the controller while sneaking. The default size is the maximum working area.  The pollution removal calculation is equals (by default) to 30 * bonusMultiTier * Muffler Hatches * Turbine Eff * Multiblock Eff * 2.5 ^ Effective Tier where:  - BonusMultiTier is a boost given by the multiblock tier. T1 is 1 (0%), T2 is 1.05 (5%) and T3 is 1.10 (10%)  - Muffler Hatches is the amount of muffler hatches on the multiblock (up to 8)  - Turbine Eff is the efficiency of the turbine chosen to run the multi. It won't run if there is no turbine in the controller.  - Multiblock Eff is the efficiency of the multiblock (100% when no maintenance issue, -10% per issue)  - Effective Tier is the Effective Tier of the multi: the minimum tier between the electric tier of the multi and the tier of the muffler hatches.  The pollution cleaning is boosted by two (by default) when using an Absorption Filter. When added in the input bus, it will be consumed and used for 30 (by default) successful pollution cleaning cycle. If a chunk with no pollution in it is processed, that doesn't count as successful, and the multi decides that a chunk has no pollution if the pollution is below 10k gibbl (by default). After the 30th successful pollution cleaning cycle, the output bus will give a Dirty Absorption Filter.  To know if an Absorption Filter is present and how many remaining cycles there are, use a portable scanner on the controller.  A pollution cycle lasts 10s, and the cleaning is done every second.  [note]P.S. If you procrastinated making one of these and make a T2 or T3 instead, the quest will still complete![/note]
+  - [提交] gregtech:gt.blockmachines:12020
+  - [可选提交] gregtech:gt.blockcasingsNH:1 x8, gregtech:gt.blockcasingsNH x13
+  - [可选提交] gregtech:gt.blockmachines:71, gregtech:gt.blockmachines:81
+  - [可选提交] gregtech:gt.blockmachines:90, gregtech:gt.blockmachines:91 x8
+  - [可选提交] gregtech:gt.blockmachines:41
+  - [可选提交] gregtech:gt.metatool.01:170
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x75
+
+### [-8996825125550293613] §6§lAlgae Pond
+Sustainability. It's not the name of the game... but it could be!  If you've ever wanted to generate many chemicals from a single source, you've probably looked at Oil or Benzene. However, there's also the Algae Farm.  Each tier, starting from ULV (at 50s per batch) through IV (25s per batch), reduces the time it takes to produce Algae by about 5 seconds, and then beyond that each tier will cut the duration in half. The production time can also randomly double or triple, but this happens relatively rarely.  Each tier increase also adds to the amount of Algae you get in a single cycle, as well as the type of Algae produced. Each cycle gives out an exact amount as well as a bonus amount 10% of the time. The Algae Farm also accepts Compost, which you can make from the algae itself, to boost the multi's tier by one. This might be expensive at the start, but it's heavily recommended in most cases. You can get regular Algae and Green Algae starting at ULV; Brown Algae starts appearing at HV, Golden-Brown Algae at EV, and Red Algae at IV, though higher tier algae appears in very small quantities at first.  To find out more about the exact output quantities and timings, please see the wiki: [url]https://wiki.gtnewhorizons.com/wiki/Algae_Farm[/url]  The Algae can be used for various chemicals like Methane, Ammonia, Sulfuric Acid, Sodium Carbonate, Ethylene, Lithium Chloride, and even some power-generating fluids. You typically need a Chemical Plant for that. In IV tier you can also combine Green Algae with Glowstone to get Glowing Coral and make Sunnarium from that. If you're curious about all the processing chains, look them up on NEI: quests to cover them are coming up, possibly with more recipes that don't need the Chemical Plant.
+  - [提交] gregtech:gt.blockmachines:15545
+  - [可选提交] bartworks:BW_TieredGlass x68, gregtech:gt.blockcasings12:15 x23, gregtech:gt.blockframes:306 x6, gregtech:gt.blockcasings3:11 x5
+  > 奖励: bq_standard:choice | enhancedlootbags:lootbag:5 x2
+
+### [-8611731264735512226] §6§lA Little More Sigma (Squared)
+Eventually, your LHC will start making rarer and rarer particles. You may find that they appear in large bursts as single particle packets with very high Amounts, but not very often. The Beam Stabilizer allows you to capture these large packets and redistribute them over time as a continuous series of smaller packets with a lower Amount.  [warn]This is particularly useful to ensure recipe checks work consistently for beam-consuming machines.[/warn]
+  - [提交] gregtech:gt.blockmachines:3018
+
+### [373] §6§lAn Industrial Mobfarm
+§6§lExtreme Entity Crusher§r is your newest and probably §lbest§r spawner/grinder, with this you are not only able to get drops without any §lTPS§r issues but also with style and §lextreme§r efficiency.  Of course that depends on the quality of your sword; damage, looting, and durability are the only stats that will translate towards the efficacy of the machine. §3(weapon is optional however, there are spikes in it after all!)§r  Will occasionally spawn infernal mobs if possible and will use §2§lx8§r power with every infernal spawn so you need to take that into account!  If you are actively using the Blood Magic "§c§lWell of Suffering§r" ritual to power your altar, this multi may be used in combination with it to 'generate' and 'kill' mobs automatically for life essence, so you don't need a setup involving an actual spawner!  §lNotes:§r Will generate §2§l120L§r of liquid XP with every cycle. In case of any problems with multiblock animation just use §5soldering iron§r on the machine to disable it. Read the tooltip! There are a few unique quality of life settings that you may find of use.  [warn]Enchanting the spikes in the structure does nothing to affect the machine.[/warn]
+  - [提交] gregtech:gt.blockmachines:14201
+  > 奖励: dreamcraft:CoinSurvivorII | dreamcraft:CoinTechnicianII | kubatech:kubaitems:8
+
+### [-5594786792833372990] §6§lA Not So Useful Scanner...
+...but a very useful meter.  GT EU Meter will give you basic information about electricity in your cables and machines.  [note]A more advanced version is available in MV and will allow you to gather much more data, so come back to this tab later to find it.[/note]
+  - [提交] tectech:item.em.EuMeterGT
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [82] §6§lAn Unexpected Bonus
+Because we're nice developers, we decided to add a little bonus if you happen to compress charcoal. Use it in the bricked blast furnace, or in a boiler, it yields 10 times the burn time of a piece of charcoal. So one charcoal for free. This bonus only occurs on the first compression step. (But for fanciness, you should definitely get a quintuple one!)  [note]Of course they're kinda useless unless you're using BBFs or boilers, though you can use them to make industrial diamonds.[/note]
+  - [提交] gregtech:gt.blockgem3:4 x64
+  > 奖励: bq_standard:choice
+
+### [1412] §6§lAssembly Line
+The Assembly Line (or 'Assline') is an important machine for high tier components in LuV tier and above for making Motors, Pistons, Robot Arms, Pumps and many more.  The multiblock can be 5-16 blocks long. The minimum length required depends on the number of components and fluids required by the recipe it's crafting. A length of 11 blocks will fit 80 percent of all recipes in GTNH.  The bottom layer must have on one outer side all the Input Hatches for fluids (4), in the bottom middle layer Input Buses for items (10), and on the end 1 Output Bus. Also on the bottom outer layer must be one Maintenance Hatch. The rest is Solid Steel Machine Casings.  The second layer on the outer sides left and right are Reinforced Glass and in the middle center Assembly Line Casing.  The third layer has on the left and right Grate Machine Casings and in the middle Assembler Machine Casings (Note the name change!). The Assembly Line control block and Data Access Hatch are on the opposite edge from the Input Hatches - not at the end with the Output Bus.  The fourth layer is a single line of Solid Steel Machine Casings in the middle (11), with two Energy Hatches for power. Once you have it built, you can replace the two IV energy hatches with 1 LuV energy hatch.  Automating the assline is a difficult challenge! You can use advanced tools like SFM or OpenComputers, but maybe you can figure out how to do it with EnderIO or just AE2.  For more details on using the Assembly Line, check out the wiki page [url]https://wiki.gtnewhorizons.com/wiki/Assembly_Line[/url]  [note]BTW the input buses are ULV to help with your automating, if you don't want to automate it, you can use higher tier ones, unlike the CAL.[/note]  [note]You can have up to 16 input buses. If you use the full 16 you should put the output bus to the side.[/note]  [note]When using buses of a higher tier than ULV it will look for items starting at the top left slot, down to the bottom right slot.[/note]
+  - [可选提交] gregtech:gt.blockcasings2 x26, gregtech:gt.blockmachines:51 x4, gregtech:gt.blockmachines:70 x10, gregtech:gt.blockmachines:83, gregtech:gt.blockmachines:90
+  - [可选提交] gregtech:gt.blockglass1:10 x22, gregtech:gt.blockcasings2:5 x11
+  - [可选提交] gregtech:gt.blockmachines:45 x2, gregtech:gt.blockcasings3:10 x21, gregtech:gt.blockcasings2:9 x15
+  - [提交] gregtech:gt.blockmachines:1170
+  > 奖励: minecraft:paper x64 | gregtech:gt.metaitem.98:6 x64 | gregtech:gt.metaitem.01:32708 x4 | enhancedlootbags:lootbag:8 x2 | dreamcraft:CoinTechnicianIII
+
+### [81] §6§lAt the End of...
+...the universe everything freezes eventually. But waiting for the heat death of the universe might take too long. Therefore, we present you the vacuum freezer. It should be good enough to cool your hot stuff.  Ingots that go through the EBF above a certain temperature will come out as hot ingots that need to be cooled.  You will need a minimum of 16 frost proof machine casings, the rest depends on your setup.
+  - [提交] gregtech:gt.blockmachines:1002
+  - [可选提交] gregtech:gt.blockcasings2:1 x22
+  > 奖励: harvestcraft:neapolitanicecreamItem x4 | enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII
+
+### [695] §6§lAutomation, Tier 1
+Do you want to automate your smeltery because you're planning to make stacks and stacks of glass blocks?  No problem, craft a large bronze pipe and place it under the faucet. Make sure to connect the pipe to the faucet using a wrench. Now the molten fluid will flow inside the pipe. Under or next to the pipe you have to place the casting basins or tables.  A hopper and a chest underneath will auto-output products from the casting blocks.  NOTE: Faucets will output precisely 144L each activation if you toggle it off immediately. That's going to have some uses later on...
+  - [提交] gregtech:gt.blockmachines:5123
+  - [可选提交] gregtech:gt.metaitem.01:17032 x10 (ore:plateIron), gregtech:gt.metaitem.02:31032 x2 (ore:gearIron)
+  - [可选提交] minecraft:chest x4
+  - [提交] minecraft:hopper x2
+  > 奖励: TConstruct:GlassBlock x16 | enhancedlootbags:lootbag:2 | dreamcraft:CoinTechnician x10
+
+### [696] §6§lAutomation, Tier 2
+You want a better automation than using pipes? Sure, craft a comparator and link it with redstone dust placed on the ground. The redstone needs to be adjacent to the faucet to activate the crafting process.
+  - [提交] minecraft:comparator, minecraft:redstone_torch, minecraft:redstone x10
+  > 奖励: minecraft:redstone_torch x2 | enhancedlootbags:lootbag:2 | dreamcraft:CoinTechnician x15
+
+### [941] §6§lA Very Useful Scanner
+The portable scanner is a tool capable of showing advanced information about almost every block in the game. In order to function, the tool needs to be charged first. It can hold up to 400k EU and accept 128 EU/t or less. This is MV tier.  It can scan crops by right-clicking them.  It can scan machines from GregTech, giving information about current progress, the stored energy, efficiency, problems and CPU-load - be sure to check the full chat window for additional details.  For any block in the game it scans, it gives information about its ID, Metadata, position in the world and hardness value. It also gives information about pollution level in the chunk the scanned block belongs to.  In addition it shows when the cleanroom has reached its 100 percent efficiency level.
+  - [提交] gregtech:gt.metaitem.01:32762
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1833] §6§lAwakened Draconium Coil Upgrade
+To process the most advanced materials like Infinity Catalyst or Infinity you need more than 9900K. Upgrade your EBF to 10800K.  [note]With the heat adjustment included, you can get up to 11601K if you OC with UHV hatches. Not that you need it or anything.[/note]
+  - [提交] gregtech:gt.blockcasings5:8 x16
+  > 奖励: enhancedlootbags:lootbag:43 | dreamcraft:CoinTechnicianIV x2
+
+### [2561] §6§lBacterial Vat
+The Bacterial Vat is a unique multiblock machine with its own recipes. But it also has advanced versions of many brewery recipes.  The Vat isn't mandatory in this tier, but there are many useful recipes and you'll need it later on, so let's build one!  All recipes require a §cculture§r, some recipes require a specific §cGlass-Tier.§r  The culture is made in a BioLab and §lput in the controller.§r  The Glass-Tier is calculated as LV = Tier 1, so this quest requires you to make tier 3 glass.
+  - [可选提交] bartworks:BW_TieredGlass x32
+  - [提交] gregtech:gt.blockmachines:12712
+  > 奖励: enhancedlootbags:lootbag:6 x2 | dreamcraft:CoinTechnicianII
+
+### [2556] §8§lBetter Glass Upgrade, EV Glass
+The next tier of Borosilicate glass is Titanium. Make it to allow higher tier recipes in the Bacterial Vat, higher tier Energy Hatches in the MBF, or better Capacitors in your LSC. Or just use it for machine recipes, whatever.
+  - [提交] bartworks:BW_TieredGlass:1 x32
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII x2
+
+### [755] §6§lBetter Than Duct Tape
+Using a soldering iron tool to remove the "burned out circuits" message is cheaper than duct tape.  The soldering iron requires one soldering material item and 10,000 EU. Valid soldering materials are fine wires, rods, and ingots made from either tin, lead, or soldering alloy. The soldering iron will consume the first such material it finds in the player's inventory. Since you'll likely have more than enough, Fine Wires of Soldering Alloy are probably best.  Other uses for the soldering iron:  - It will adjust the redstone strength from weak to strong emitted by GT machines. - While holding it all pipes, wires, and cables will look very small, so that you can see everything past them, and also be sure of the exact connections. - Shift right-clicking on some machines with it will allow you to toggle multi-stack input, which can be very useful for automating certain assembler recipes.  For the other problems other tools are necessary. Keep in mind that you can put all needed tools in a toolbox to fix all problems in one click.  Possible problems                Tool to fix "Pipe is loose."                    Wrench "Screws are loose."           Screwdriver "Something is stuck."            Soft Mallet "Platings are dented."           Hammer "Circuitry burned out."    Soldering Iron "That doesn't belong there."   Crowbar  [warn]In order to complete this quest, you'll need to charge the soldering iron after you craft it. The quest accepts LV, MV, or HV tier soldering irons.[/warn]
+  - [提交] gregtech:gt.metatool.01:160 (ore:craftingToolSolderingIron)
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [3289] §6§lCatalyzing Miracles
+The QFT uses the kind of catalyst that the Chemical Plant also does. However, like the plants that have Awakened Draconium coils or higher, it does not consume the catalyst's durability on recipe finish, behaving more like a real-life catalyst that is regenerated after being used. This makes the catalysts used here more expensive to craft, as was the case with the Infinite Mutation Catalyst for Mutated Living Solder, which is meant to be used only with those coils that make it last forever.  Given that there is no durability loss, it would seem only one catalyst needs to be crafted. However, there are two reasons for this to not be true: firstly, each QFT recipe uses a different catalyst; secondly, the QFT checks for parallels by counting the amount of catalysts it has in its Bulk Catalyst Housing for the recipe in question (limit of 2,147,483,647). This system makes it so that crafting 1 of the correct type of catalyst is required to unlock a recipe, but making more is completely optional and only changes the speed at which the multi crafts, provided it gets enough EU input.  Every catalyst needs some of the materials that it unlocks in the QFT, which is to say, the original processing line will have to be used to craft the catalyst that allows the player to skip it in the QFT. This applies to every recipe, and in turn every line that can be skipped.  To improve the general speed of processing, your one option is to get more parallels with catalysts. The other, more complicated way is to boost the chances of a successful output by adding more energy to the system, but in a special way: instead of using direct EU, using it to create a powerful plasma works to improve the QFT processing.  If the correct plasmas are added, the boosting will work, but it is also possible to upgrade the structure itself to perform chemistry skips that are not possible with the base QFT. These upgrades rely on more advanced and powerful materials, mainly in the material progression of DTPF recipes. However, those existing materials are not enough, because the quantum stabilization can't be maintained with those “foreign” substances. Luckily, the QFT itself can produce the items needed to build the upgraded casings, and these items are outputs of some of the skips performed in the multi. It begins by allowing the much simpler production of already-owned materials but, in this process, it unlocks entirely new materials that are useful to improve the structure itself.  There are three new items and four tiers in the structure. The first tier can be built without them, but every new tier needs a new item crafted in the tier before. These outputs are related to the recipe where they can be obtained, and they possess unique characteristics that, in real life, are only theoretical.  The first item you will need to craft is the Hyper-Stable Self-Healing Adhesive. To craft this material, proceed with the Glue/Solder recipe by using the Adhesion Promoter Catalyst. Additionally, make these other catalysts to prove you're well set in your QFT journey.
+  - [提交] miscutils:item.BasicGenericChemItem:16, miscutils:item.BasicGenericChemItem:17, miscutils:item.BasicGenericChemItem:19
+
+### [940] §6§lCleanroom
+If you want to make more advanced (and cheaper!) circuits, you will need a Cleanroom. The Cleanroom is an interesting multiblock, because you will be placing other machines §oinside§r of the room!  The cleanroom is a hollow multiblock between 3x4x3 and 15x15x15 (WxHxL) blocks. The base does not need to be a square; a rectangular shape is fine. The top layer is built out of Filter Machine Casings, except for the edges, which are Plascrete Blocks. The controller needs to be in the center of the top layer. If the width or length of the room are even, then it can be any one of the two (or four) middle blocks. The rest of the structure is built out of Plascrete Blocks.  Up to 30% of those Plascrete Blocks can be replaced by other valid blocks or materials:  A Reinforced Door lets you get in and out of the cleanroom. Make sure to keep the doors closed, or the cleanroom will rapidly lose efficiency. Travel Anchors and Elevators also work, you can even embed them in the floor if you want to. You can also use Ineffable Glass as a "door" if you'd prefer.  In order to automate power and item transport through the walls, you can use Cable Diodes or Machine Hulls. Just be really careful when upgrading your machines to a higher voltage. Be sure to remove the machine hulls and diodes and replace them with the new power tier, or else you will be very sad. You don't need to do this for ones you only use to pass items through.  If you want to see inside, you can use any EV+ tier glass (for example, Reinforced Glass, Managlass, or Ineffable Glass). If the Cleanroom does not form, mind the 30% limit: often the problem is that you added too much glass.  Finally, the Cleanroom itself will need a Maintenance and Energy Hatch to run. The power usage of this multiblock is a bit unusual. It starts out at 40 EU/t and then gradually goes down. But even when it uses 40 EU/t - which is usually MV - a single LV energy hatch suffices, because it accepts two amps of LV power. Just keep in mind that this makes the Cleanroom an exception, not the rule.  Let's build a 5x5x5 room for now. You can expand it later as needed. Give it power and let it run until it reaches 100% efficiency. Below 100% efficiency, machines inside the cleanroom have a chance to void outputs, so you want to keep the cleanroom running at all times!  Any maintenance issue reduces the maximum efficiency by 10%. Monitor your cleanroom manually with Waila or automatically with either an Industrial Information Panel or a Needs Maintenance Cover connected to a Redstone Powered Light or Howler Alarm.  [note]Multiblocks such as the Large Chemical Reactor or Hyper-Intensity Laser Engraver don't need to be in a cleanroom. However, you will still need the cleanroom later on for other machines, like Bio Labs.[/note]  [note]Other helpful hints: you can use an AE Wireless Connector or a Transvector Interface for item transport to avoid machine hulls, and use a higher tier energy hatch to reach 100% efficiency faster.[/note]  [warn]Keep in mind that you can not use anything in the cleanroom that causes pollution, or the cleanroom will stop working.[/warn]
+  - [提交] gregtech:gt.blockmachines:1172
+  - [可选提交] gregtech:gt.blockreinforced:2 x76, gregtech:gt.blockcasings3:11 x8, gregtech:gt.blockglass1:10 x6
+  - [可选提交] gregtech:gt.blockmachines:90, gregtech:gt.blockmachines:41, gregtech:gt.blockmachines:11 x2, gregtech:gt.blockmachines:12635
+  - [可选提交] IC2:itemDoorAlloy, EnderIO:blockTravelAnchor, OpenBlocks:elevator
+  > 奖励: enhancedlootbags:lootbag:6 x2 | dreamcraft:CoinTechnicianII
+
+### [-7228129145658002387] §6§lCollision Course
+Finally, to actually get some ICs, use your photons in a Target Chamber.  Note that the EU/t value listed in TC recipes is only a minimum, as recipe time is entirely determined by the Amount of photons you give the multi.  More specifically, you can get the recipe time by dividing recipe Amount by your input beam Amount, then multiplying that by 5s.
+  - [提交] gregtech:gt.blockmachines:10508
+  > 奖励: gtnhlanth:casing.shielded_accelerator x16 | gregtech:gt.blockmachines:10502 x4
+
+### [-5302417245690018536] §6§lComponent Assembly Line
+Check the NEI pages to see all the nice recipes this machine can handle for you. Great to craft GT components in bulk.
+  - [提交] gregtech:gt.blockmachines:32026
+
+### [80] §6§lCompress All the Things
+Martin's (DreamMasterXXL) favorite machine. Compress ALL the things! With explosives, of course. Boom today!  Note: You might want to put this far from your living quarters, the pollution can get high really fast.
+  - [提交] gregtech:gt.blockmachines:1001
+  - [可选提交] gregtech:gt.blockcasings2 x20
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1787] §6§lData Access Hatches
+So, if you want to do more than one recipe in your Assline, you want a Data Access Hatch. There are 3+1 versions.  Data Access Hatch: It holds 4 data sticks, so 4 recipes.  Advanced Data Access Hatch: It holds 16 data sticks. Ironically, you can make this right away.  Automatable Data Access Hatch: It's UV, but it allows I/O of the sticks. Skip it.  The Data Bank Multi: Can be connected to multiple Asslines, and can contain more than 1 DAH. This is the best way, when you can do it. Look in ZPM for the quest.  [note]You only need to make one.[/note]
+  - [提交] gregtech:gt.blockmachines:145, gregtech:gt.blockmachines:146, gregtech:gt.blockmachines:147
+  > 奖励: gregtech:gt.metaitem.01:32708 x4 | enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x2
+
+### [-5144566957992644258] §6§lDecay Warehouse
+The Decay Warehouse stores a single type of radioactive isotope and allows it to decay over time.   The decay speed of the isotope is §adependent§r on its half-life.  Isotopes will decay §9regardless§r of whether the warehouse is on or powered.   The Warehouse's capacity equals the chest's capacity divided by §c400§r.  Capacity of the multiblock for each chest:  §6Super Chest I:§r §c10,000 §6Super Chest II:§r §c20,000 §6Super Chest III:§r §c40,000 §6Super Chest IV:§r §c80,000 §6Super Chest V:§r §c160,000 §6Quantum Chest I:§r §c320,000 §6Quantum Chest II:§r §c640,000 §6Quantum Chest III:§r §c1,280,000 §6Quantum Chest IV:§r §c2,560,000 §6Quantum Chest V:§r §c5,368,000§r  [note]Right click the controller with a §aScrewdriver§r to dump stored isotopes into an output bus.  Right click the controller with a §aPlunger§r to empty it. [/note]  [warn]The Warehouse's contents are §nvoided§r when the controller is broken[/warn]
+  - [提交] gregtech:gt.blockmachines:15751
+  - [可选提交] gregtech:gt.blockmachines:135
+
+### [-6045671959528753382] §6§lDigging Deep for Water
+Is the Water Tank not cutting it anymore? Have you set up in a dry biome and are in desperate need of more water? Fear not, for the Steam Water Pump can solve your issues! This Multiblock is able to produce large amounts of Water if fed with Steam (1500L/s).  Like other Steam Multiblocks, it can be upgraded by using Steel Frame Boxes instead of Bronze ones, which doubles the Water output at no additional Steam cost.  §4It is, however, still dependent on how humid the Biome you are in is, so keep that in mind.§r  §9Hint: You can find small lead ore in the Nether or full ingots on the lowest floor of roguelike dungeons if you're lucky!§r  [note]P.S. The optional quest item count includes the cost for the controller. [/note]
+  - [可选提交] gregtech:gt.blockcasings9:2 x12, gregtech:gt.blockframes:300 x15, gregtech:gt.blockmachines:31040, gregtech:gt.blockmachines:60
+  - [合成] gregtech:gt.blockmachines:31085
+  > 奖励: gregtech:gt.blockmachines:5122 x8 | enhancedlootbags:lootbag:2 x3 | dreamcraft:CoinTechnician x50
+
+### [3042] §6§lDissolution Tank
+Basically a mixing machine purposely made for dilution.  You'll need to take care in providing the inputs at the required ratios, else you'll get no output.  Anyway, this plays a large part in the lanthanide line so craft it up.
+  - [提交] gregtech:gt.blockmachines:10501
+
+### [-6965903878335952711] §6§lDistill the Atmosphere
+Using the Vacuum Freezer you can create Liquid Air. Liquid Air can be centrifuged into additional gases you won't get when centrifuging normal compressed air. If you can gather enough Liquid Air you can instead distill it into a larger quantity and variety of rare gases.  Make these special hatches to hold and store the amounts required for this recipe.
+  - [提交] gregtech:gt.blockmachines:12736, gregtech:gt.blockmachines:12737
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII | dreamcraft:CoinChemistII
+
+### [-6181192742307506634] §6§lDon't ask how this works
+It's a mirror, it reflects stuff. Should this only work for Photons?   Maybe.   [note]But it works for all particles.[/note]
+  - [提交] gregtech:gt.blockmachines:3016
+
+### [-8321971917314713709] §6§lDon't Lose That Multiblock Miner!
+It's easy to lose Ore Drilling Plants. You're a busy engineer, you know? You can't be bothered to remember trifling things like "where, in what galactic backwater did I last place my miner." You could do something boring like "write down the location of the miner" or "put up a sign with the miner's location in my ore processing area," but there's a better way.  Enter the Metrics Transmitter Cover. This cover, when attached to a multiblock miner (or any GregTech machine), spawns in a GregTech Advanced Sensor Card paired to the host machine. This card, when inserted into a NuclearCraft Industrial Information Panel, will receive runtime information transmitted by the host machine, including its current location. Additionally, it returns the same information that its lower-tech sibling, the GregTech Sensor Kit, provides. Unlike the GregTech Sensor Kit, the Metrics Transmitter Cover §nworks interdimensionally and at any range without the need of range upgrades.§r In addition, since covers remain on machines when they are dismantled, the paired sensor card §nwill continue to work even if the host machine is relocated, and never needs to be recalibrated.§r This makes it perfect for the Ore Drilling Plant and Oil/Gas/Fluid Drilling Rig, which are deployed in the field and often have to be relocated.  However, like always, there's a catch. If the Metrics Transmitter Cover is detached from its host machine, §nthe paired sensor card will be destroyed.§r Maybe you shouldn't be using a crowbar around sensitive electronics...
+  - [提交] gregtech:gt.metaitem.03:32232
+  > 奖励: bq_standard:choice
+
+### [-5264682334615126317] §6§lDraconic Development
+The Draconic Fusion Crafted has 5 tier of casings, each an upgrade of the previous tier.  Each new tier of casings allows you to make better Cores, eventually ending at the Chaotic Core.  [note]Each casing tier above recipe tier grants one perfect (4/4) overclock![/note]
+  - [提交] kubatech:defc.casing:8 x32
+  - [提交] kubatech:defc.casing:9 x32
+  - [提交] kubatech:defc.casing:10 x32
+  - [提交] kubatech:defc.casing:11 x32
+  - [提交] kubatech:defc.casing:12 x32
+
+### [-8875238551243913734] §6§lDrones are not Drones!
+...but they can be just as industrious as bees. These new electric companions are the perfect partners for Multiblock machines: maintenance, control, management—they can handle it all.  §6§lMaintenance§r The §5§lDrone Centre§r is a newly developed machine. It requires no power—simply place a drone into the input bus, and it will begin operation.  Replacing the maintenance hatch on your Multiblock machines with a §lDrone Downlink Module§r will connect them to the drone network.  Once activated, the Drone Centre will automatically scan for all Downlink Modules within range and attempt to establish a connection with them. As long as the Drone Centre remains active, all connected Multiblock machines will [bold]never[/bold] suffer from annoying maintenance issues again!  [note]Goodbye, my precious 256x superconductor base ingots that were lost due to maintenance failures...[/note]   §6§lEntity Drones§r Drones now exist as physical entities, unlocking several new features:  - When a maintenance issue occurs, a drone will deploy from the Downlink Module and perform a circular inspection flight around the affected machine. - We've equipped drones with cameras! Click the §9§lObserve§r button in the GUI to access a real-time video feed from the drone. As long as you are in the same dimension, you can connect to the drone regardless of distance. - While in observation mode, the WAILA HUD provides more information than normal. Additionally, aim your crosshair at a machine and press §2§lG§r to remotely open its GUI! This currently supports all GT machines and hatches. However, since drones are not equipped with robotic arms, item and fluid slots cannot be interacted with.   §6§lGroup Control & Statistics§r The Drone Centre provides a powerful machine management interface, supporting grouping, remote observation, batch power control, and machine renaming:  - Connected machines can be organized into up to §664§r custom groups. Groups can be renamed, and a machine may belong to multiple groups. - After selecting a group, power control actions will be applied to all machines within that group. Specifically, §6§lShift-clicking§r the shutdown button will set all machine controller covers to "Disable" mode. - By enabling the built-in §5§lProduction Recorder§r, the Drone Centre can collect real-time statistics from all connected machines, including EU consumption, item throughput, and fluid throughput. All recorded data is stored directly inside the Drone Centre.   §6§lTiered Drones§r [warn]Drones may crash during operation. The crash probability decreases from Tier 1 to Tier 3, and Tier 3 and Tier 4 Drones will never crash.[/warn]  Don't worry—if a backup drone is available in the input bus, the Drone Centre will consume it instantly.  Using higher-tier drones increases the operating range of the Drone Centre:    §6•§r §l§3Drone (T1)§r     - Range: §6128 blocks§r     - Crash Chance: §61/28,800 per second§r (Average ~8 hours)    §6•§r §l§3Drone (T2)§r     - Range: §6512 blocks§r     - Crash Chance: §61/172,800 per second§r (Average ~48 hours)    §6•§r §l§3Drone (T3)§r     - Range: §64,096 blocks§r     - Crash Chance: §2Never§r    §6•§r §l§3Drone (T4)§r     - Range: §64,096 blocks (Automatic) / Infinite (Matching Key)§r     - Crash Chance: §2Never§r     - Cross-dimension: §2Yes§r   To enable cross-dimensional connections with a T4 Drone, configure matching keys on both the Drone Centre and the Downlink Module.  The Downlink Module can copy matching keys using a §lData Stick§r.  &g&#FFD700&#FF4500Our drones can now operate machines across other planets... initiating warp drive!&r   §6§lStructure§r Refer to the NEI Structure Preview to construct the new Multiblock structure. There is also a new drone model in the centre! [note]Hempcrete blocks may be any color![/note]
+  - [提交] gregtech:gt.blockmachines:15568, gregtech:gt.blockmachines:9401
+  - [可选提交] gregtech:gt.blockcasings2:13 x61, gregtech:gt.blockframes:305 x47, chisel:hempcrete:15 x29, gregtech:gt.blockframes:32 x28, gregtech:gt.blockcasings2 x26
+  > 奖励: bq_standard:choice
+
+### [764] §6§lDynamite
+Dynamite is the most basic explosive you can use in the implosion compressor. Mix some paper, string and glyceryl trinitrate in a chemical reactor to get dynamite.
+  - [可选提交] minecraft:string x16, minecraft:paper x16
+  - [可选提交] gregtech:gt.metaitem.01:30714 x8
+  - [提交] IC2:itemDynamite x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [1179] §6§lEBF Info
+You can use a scanner to manually check how your EBF works, or you can make an information panel from nuclear control and always see the status. Make a GT sensor kit and use it on the EBF controller. Place the sensor card in your info panel. Enable it with a redstone signal.  The GregTech sensor card can monitor GregTech machines like the EBF, Turbines, and Pyrolyse ovens. This is handy for keeping an eye on maintenance issues for multiblocks.  If you want to put the panels far from the machines they are monitoring, you will need range upgrades.  [note]There's also a more advanced version.[/note]
+  - [提交] IC2NuclearControl:blockNuclearControlMain:4, IC2NuclearControl:blockNuclearControlMain:5
+  - [提交] gregtech:gt.metaitem.01:32763
+  - [提交] minecraft:lever
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1817] §6§lElectrum Flux Coil Upgrade
+To process more advanced materials like Cosmic Neutronium, Tritanium and Awakened Draconium you need more than 9000K. Upgrade your EBF to 9900K.
+  - [提交] gregtech:gt.blockcasings5:7 x16
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinTechnicianIV
+
+### [788] §6§lEven More Steam? Are You Sure?
+The Large Tungstensteel Boiler is the biggest and baddest of the four. Like the Titanium one, it is a specialized boiler that only accepts specific fuels, mainly the Solid Super Fuels, but it will produce Superheated Steam at a rate equivalent to 16000 EU/t, at 100% fuel efficiency. If you have good Steam Turbines, especially Oriharukon ones, you will get much more power than that, around 24000 EU/t or more.  Depending on how many of these you build, you might need a huge amount of turbines. To solve that problem, consider going a bit above the optimal flow on each turbine, or even switching to Loose mode, although this is only a good choice if you can match the optimal flow in that mode.
+  - [提交] gregtech:gt.blockmachines:15532
+  - [可选提交] gregtech:gt.blockcasings4 x33, gregtech:gt.blockcasings3:15 x11, gregtech:gt.blockcasings2:15 x2, gregtech:gt.blockmachines:91
+  > 奖励: gregtech:gt.blockreinforced:7 x64 | enhancedlootbags:lootbag:7 x2 | dreamcraft:CoinTechnicianIII
+
+### [3030] §6§lExpert MB-Construction
+Right-click the controller while sneaking will invoke an action called §osurvival autoplace§r. This will attempt to build the multiblock with items from your inventory, provided the area this multi occupies is clear of obstacles. Again, like hologram spawning, multiblocks that accept multiple types of tiered components or has variable length, the number of MSHPs you hold in hand will decide which tier of blocks will be placed. It will place correct amount of hatches for you, but will usually orient the hatches towards you, not perpendicular to the surface. It will just place casings for you if you don't have any hatches in inventory, unless this spot requires the use of a hatch (e.g. the top center spot of EBF).  Survival autoplace can also take from your alternative inventories, or items that contain/link to an inventory. Currently, this includes: - adventure backpacks, either worn or as an item in inventory - AE2 portable cells - ME networks connected via any AE2 wireless terminal with item access capabilities - Forestry backpacks - ender chest inventory, if you have the Ender Backpack from Backpacks mod. Note: ordinary backpacks from the Backpacks mod are NOT supported at the moment.
+  - [勾选确认]
+
+### [-6985852645832985096] §6§lFiltered Beamline Output Hatch
+The Filtered Beamline Output Hatch allows you to blacklist particles from appearing in the output of your Large Hadron Collider or Beam Splitter.
+  - [提交] gregtech:gt.blockmachines:3014
+
+### [3288] §6§lFocusing Science and Mystery
+This mechanic is completely optional, and never required for crafting. However, it's greatly incentivized when the number of parallels is high and when crafting the unique items that unlock higher tiers. “Focusing”, in general, means to increase the chances of the outputs in a QFT recipe, and it can be done in two ways, possibly both at the same time. Each method uses a new plasma, both of which are crafted in a T4 Fusion Reactor by using other plasmas as the inputs, including one T3 plasma for each. These plasmas are Neptunium and Fermium and they can be used together, or individually.  When Neptunium Plasma is present, the current recipe can have one of the outputs focused. The specific output is chosen with a circuit in the input bus (this is the only thing circuits do for this multi), where circuit 1 is for the 1st output visible in NEI, circuit 2 is for the 2nd output, and so on. It is up to the player to choose which output they want the most out of all the existing ones, and the fact that every recipe has multiple outputs is because of this mechanic.  When an output is successfully focused with Neptunium, its chance increases by reducing the chance of all the other outputs. The logic for this change is as follows:  -> Without focusing, the chance of each output is 100 / number of outputs; -> If the casing tier matches the recipe tier, the chance of all other outputs is halved and the sum of those halves is added to the focused output (for example, 20/20/20/20/20 becomes 60/10/10/10/10); -> If the casing tier is +1 over the recipe tier, halve the other outputs' chance again (for example, 60/10/10/10/10 becomes 80/5/5/5/5); -> If the casing tier is +2 or +3 over the recipe tier, set the focused output to 100% and the rest to 0%.  In general, this type of focusing doesn't increase the total amount of outputs, save for the new items added with this multi that will come out in smaller quantities. Instead, it allows the player to replace less useful outputs with the more useful ones, and this choice is completely up to them, as is the choice of focusing at all.  When Fermium Plasma is present, the current recipe will have all of its output chances boosted, unless the chance for one of them is 100%, in which case that chance is unchanged. This happens because the boost increases if the output chance before ferm focusing is smaller, and the maximum boost is achieved when the chance is 0%, which happens with high-tier nep focusing.  When an output is successfully focused with Fermium, its chance increases based on how far it is from 100% chance. This applies to all the outputs at once, and the logic for this change is as follows:  -> If the casing tier matches the recipe tier, each output gets increased by 1/4 of the "failure" chance (for example, a 50% chance output has a 50% chance of failure, so it gets boosted by 12.5%, becoming 62.5%) -> If the casing tier is +1 over the recipe tier, each output gets increased by 1/3 of the "failure" chance -> If the casing tier is +2 or +3 over the recipe tier, each output gets increased by 1/2 of the "failure" chance  With the two plasmas combined and a +2 or +3 over recipe tier, a 5-output recipe would normally have 20/20/20/20/20 chances, but it becomes 100/50/50/50/50.  Many lategame multis have parallels, which means they complete the recipe several times at once every time the recipe time is completed, instead of only one, but they require extra EU to achieve this. This makes power the biggest constraint for those multiblocks, and the same happens with the QFT, given that recipe inputs are generally very cheap and simple. Throwing more power at the machine means more outputs, in general.  Given that, a player that wants a faster QFT will make more catalysts to unlock more parallels, but each added parallels adds to the other ones, to a cap of 64. Focusing, instead, changes output odds, which effectively multiplies the number of outputs per cycle. In terms of speed, a recipe with 4 outputs and 64 parallels runs at the speed of 256 parallels for the focused output if it's nep focused to the maximum of 100%, since it was 25% originally.  This is a lot of saved EU for high-tier, high-parallel QFTs, so it is the main reason for focusing, and both plasmas are useful here. However, plasma consumption is not the same regardless of parallels, it instead scales with the square root of the number of correct catalysts for the recipe, which is to say, the number of parallels.  This further applies to the 3 new items that are needed to upgrade the casing tiers. Since their output amount is much smaller than usual, they could get a further boost if focusing is being used, to incentivize the plasma mechanic when upgrading the multi.
+  - [提交] miscutils:itemCellPlasmaNeptunium x64, miscutils:itemCellPlasmaFermium x64
+
+### [3041] §6§lGetting Muddy With Monazite
+Pretty soon you're going to need lanthanide elements. A lot of them. They're not that easy to separate, however...  Craft up a Digester to unlock the questline in the IV tab.  Note: This multiblock will not function correctly without a muffler hatch
+  - [提交] gregtech:gt.blockmachines:10500
+  > 奖励: gregtech:gt.blockcasings4 x8 | bq_standard:choice
+
+### [556] §6§lGlyceryl Trini...... What?
+Kids, today we will make some glyceryl trinitrate (aka Nitroglycerin) with some glycerol.     - Chemistry 101
+  - [可选提交] gregtech:gt.metaitem.01:30629 x8
+  - [提交] gregtech:gt.metaitem.01:30714 x8
+  > 奖励: IC2:itemCellEmpty:1 x16 | dreamcraft:CoinChemist x25
+
+### [1832] §6§lGrinding With Wind
+The Windmill is a grinder that uses the force of wind to macerate Items and Blocks. You will only get one crushed Ore from it sometimes. However it does give a bonus when you try to macerate other things. That bonus depends on the item inserted, for example Netherrack has a chance to give two instead of one dust and Wheat will always give one and a quarter flour.  The dispensers replace a clay block in the walls. Put anything you like in the interior - a bed, stairs, torches, etc.  Normal multiblock rules apply - do not cross chunk boundaries with this multiblock.  If this is your first GregTech multiblock, as with all the rest you will need to whack the controller with a soft mallet to activate it.  If you have troubles forming the multiblock, try breaking and replacing the controller block.  The controller can be fed items via hoppers etc. to allow for larger batches. Just don't allow the dispenser to fill up or it will void outputs.  The rotor blades will run if the controller is disabled or has no recipe. Remove the blades when not in use or else they'll be used up.  Speed and output will be affected by wind speed, recipe, and rotor.  Macerates 16 items at a time.  High wind speeds will decrease output.  The durability will decrease according to the wind speed.
+  - [提交] minecraft:brick_block x44, minecraft:planks x100, minecraft:wooden_door, minecraft:dispenser, minecraft:hardened_clay x45
+  - [提交] gregtech:gt.metaitem.02:31032 x4, minecraft:hopper, gregtech:gt.metaitem.01:28032 x4, bartworks:craftingParts:2
+  - [提交] bartworks:BWRotorBlock, gregtech:gt.blockmachines:12698
+  > 奖励: dreamcraft:CoinTechnicianI | gregtech:gt.metaitem.02:31032 | bq_standard:choice
+
+### [1904] §6§lHelium is Not Just for Balloons
+Higher tier superconducting wires and energy hatches will require helium. Compressing air and liquefying it requires 1802 compressed air cells to get 1 He cell. It's probably better to get it from end stone dust or monazite from the Moon. Another option is to have a look at your oil processing and see how you can get Helium from there.  [note]PS: If you've progressed far enough in the TF, you can also chip off parts of the snow queen's lair. She won't mind, right?[/note]
+  - [提交] gregtech:gt.metaitem.01:30004
+  > 奖励: enhancedlootbags:lootbag:5 x3
+
+### [2672] §6§lHigher Precision
+You can upgrade the precise casings to unlock more recipes in precise mode and gain more parallels in normal mode.  [note]To make orundum check out the recipe for the orundum plate.[/note]
+  - [提交] GoodGenerator:preciseUnitCasing x42
+  - [提交] GoodGenerator:preciseUnitCasing:1 x42
+  - [提交] GoodGenerator:preciseUnitCasing:2 x42
+  - [提交] GoodGenerator:preciseUnitCasing:3 x42
+
+### [562] §6§lHigh-Pressure Boiler Tank
+After you make steel you are able to craft a high pressure boiler tank. The upgraded version increases the temperature and produces more steam than the low pressure version. It will take longer to warm up, so make sure to keep it well fed!  Extract steam by attaching a pipe to the boiler tank; the boiler will only begin outputting steam once it reaches 50% of its steam capacity.  [note]This is better than the low pressure variant only if you keep it working for very long time, if you intend to turn it on and off all the time this will waste a lot of resources! If you keep it at top temperature it will use ~2x more fuel than low pressure and will give ~4x more steam per sec making it 100% more efficient! If you can't sustain the fuel drain or want a more flexible power source instead use the low pressure variant.[/note]  [warn]Actual fuel usage depends on the machine size and other factors such as machine temperature, if you want to know the actual number you will need to test it on your own setup.[/warn]
+  - [可选提交] gregtech:gt.metaitem.01:27305 x2, gregtech:gt.metaitem.02:18305 x6
+  - [合成] Railcraft:machine.beta:4
+  > 奖励: harvestcraft:meatfeastpizzaItem x2 | gregtech:gt.metaitem.02:32240 x2 | bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [83] §6§lHigh-Speed Charcoal
+Sure, those coke ovens are nice, but they aren't even remotely fast enough to keep up with a large steam boiler. Luckily, there is an upgrade available! The creosote oil will not be produced, but the process will speed up dramatically. Who needs that nasty yellowish flammable stuff anyway...
+  - [可选提交] minecraft:netherbrick x68
+  - [可选提交] dreamcraft:HotNetherrackBrick x68
+  - [可选提交] dreamcraft:CokeOvenBrick x68, dreamcraft:InfernalBrick x68
+  - [可选提交] dreamcraft:AdvancedCokeOvenBrick x136
+  - [提交] Railcraft:machine.alpha:12 x34
+  > 奖励: gregtech:gt.blockgem3:4 x10 | minecraft:coal_block x10 | Railcraft:cube x10 | dreamcraft:CoinTechnicianI x5
+
+### [2069] §6§lHot Hot Hot!
+Once you build your vacuum freezer, you're going to have to carry around hot ingots all the time (assuming you don't automate it). Your old gloves are falling apart, and take up both hands. I think there's a way to glue them together so you can carry hot items with just one hand. Give me some parts and I'll do it for you.
+  - [提交] dreamcraft:OvenGlove, dreamcraft:OvenGlove:1, Natura:barleyFood:7 x8, Thaumcraft:ItemResource:7 x8, Natura:barleyFood:6 x8, dreamcraft:MicaInsulatorFoil x8
+  > 奖励: miscutils:GTPP.bauble.fireprotection.0.name
+
+### [475] §6§lHSS-G Coil Upgrade
+To process more advanced materials like HSS-E, HSS-S and naquadah you need more than 4500K. Time to upgrade your EBF to 5400K.
+  - [提交] gregtech:gt.blockcasings5:4 x16
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianIII
+
+### [2892] §6§lHSS-S Coil Upgrade
+Technically this coil tier can be skipped. But you need LuV to get the next one, so you should really get these coils for now.  To process more advanced materials like LuV Superconductor Base you need more than 5400K. Time to upgrade your EBF to 6300K.
+  - [提交] gregtech:gt.blockcasings5:9 x16
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianIII
+
+### [-6603481604534581008] §6§lHundreds of Thousands of eV
+A Linear Accelerator (LINAC) can be used to boost the energy of your beam, provided the beam's particles are charged. You'll need to constantly provide it with coolant for it to run, otherwise you'll have maintenance issues every time it runs dry.  Output energy can be increased by increasing EU/t (scales with the cbrt) or increasing length (scales linearly). The latter also decreases focus, however.  Focus in turn can be improved by using a better/lower temperature coolant (options listed on tooltip).  Note that Amount remains unchanged.
+  - [提交] gregtech:gt.blockmachines:10505
+  > 奖励: gregtech:gt.blockcasings:15 x8 | gtnhlanth:casing.coolant_delivery x4
+
+### [3217] §6§lInfinity Coil Upgrade
+Smelting with the ferocity of the universe itself.  This unbelievable material seemed impossible to manipulate into a coil block form, even though its properties made this desirable. It is incredibly stable even at extreme temperatures, but this also made it unable to pack together for coils.  However, the situation changed when you thought about using something more intelligent. By integrating a Wetware or better UHV circuit, the Infinity Coil became a reality, controlled by the ever-watching eyes of the circuitry you've spent months to create. From now on, these eyes will watch over your multiblocks.  Provides 11701K heat. You could upgrade your EBF, though at this point it's more likely to be for your MBFs or your DTPF.
+  - [提交] gregtech:gt.blockcasings5:11 x16
+
+### [763] §6§liTNT
+Industrial TNT is the HV variant of TNT. It explodes with more power, and you can't pick it up. Not by hand anyway
+  - [可选提交] gregtech:gt.metaitem.01:30647 x18
+  - [可选提交] gregtech:gt.metaitem.02:32010 x256
+  - [可选提交] gregtech:gt.metaitem.01:30628 x13
+  - [提交] IC2:blockITNT x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [784] §6§lIt's Time to Get More Steam
+As soon as you have the ability to store energy in large quantities, it would be necessary to have a way to generate energy in large quantities. You need a large bronze boiler. But in order to make this boiler, you will need a mountain of bronze. This boiler produces 800L of steam per tick. This is enough to run 10 basic steam turbines.  The large boiler can use either water or distilled water. Water is consumed at a rate of 1L of water per 160L of steam.  To make a large boiler you must make a 3x3x5 structure with Bronze Pipe Casings in the center of the middle 3 levels. The lowest level must contain at least 1 or 2 input hatches, 1 or 2 input buses, 3 or 4 fireboxes, 1 muffler, and one maintenance hatch. The lowest level can not contain any plated bricks. All hatches, buses, and mufflers must have their back side touching a firebox. The output hatch can be placed on any of the upper 4 levels.  §cWarning: Different from other boilers, Large Boilers must contain water at all times while active. If at any point the Boiler runs out of water while it is active, it will explode.
+  - [提交] gregtech:gt.blockmachines:15529
+  - [可选提交] gregtech:gt.blockcasings:10 x27, gregtech:gt.blockcasings3:13 x15, gregtech:gt.blockcasings2:12 x4, gregtech:gt.blockmachines:91
+  > 奖励: dreamcraft:DoubleCompressedCharcoal x2 | enhancedlootbags:lootbag:4 x2 | dreamcraft:CoinTechnicianI x5
+
+### [2557] §9§lIV Glass
+The next tier of Borosilicate glass is Tungstensteel. Make it to allow higher tier recipes in the Bacterial Vat, higher tier Energy Hatches in the MBF, or better Capacitors in your LSC. Or just use it for machine recipes, whatever.  [note]PS: If you just want to use it to make machines, check out the Thorium Yttrium glass blocks.[/note]
+  - [提交] bartworks:BW_TieredGlass:2 x32
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x5
+
+### [756] §6§lLess Power Loss
+When you reach MV tier you can make your own duct tape in case you have to move your multiblock machines around. Duct tape will fix all maintenance problems in any multiblock machine.
+  - [可选提交] IC2:itemPartCarbonMesh x9, gregtech:gt.metaitem.01:17880 x9, gregtech:gt.metaitem.01:30726
+  - [提交] gregtech:gt.metaitem.01:32764
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [766] §6§lLet's Get Crackin!
+Cracking oil products like light and heavy fuel with the oil cracker is faster and more efficient than using a chemical reactor, producing 25 to 50 percent more output, depending on which cracking method it's doing (steam does 50%, hydro does 25% but consumes 20% less hydrogen). Cracked products will result in additional by-products in the distillation tower. It is a smart idea to get this multiblock since you are going to need TONS of industrial TNT from Toluene for advanced tier rockets.  The 16 coils form 2 vertical rings of 8 on either side of the controller. The casings between the rings can be replaced with a hatch for steam/hydrogen input. Energy hatch and maintenance hatch can replace any of the casings. The input product hatch and output product hatch must replace one of the casings outside of the coils.  Hint: Only GT/Railcraft steam can be used, not ic2 steam. You can use a fluid heater to make it instead of a boiler.  [note]The circuit goes in the controller.[/note]  [note]PS: I listed all the cracker recipes on the spreadsheet for you to look at in a convenient format. Now you can easily compare which oil path to take![/note]
+  - [可选提交] gregtech:gt.blockcasings5 x20, gregtech:gt.blockcasings4:1 x20
+  - [可选提交] gregtech:gt.blockmachines:53 x2, gregtech:gt.blockmachines:63, gregtech:gt.blockmachines:90
+  - [提交] gregtech:gt.blockmachines:1160
+  > 奖励: enhancedlootbags:lootbag:6 x2 | bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [561] §6§lLiquid-Fuelled Firebox
+Creosote oil into steam! After you make your first steel you are able to craft a liquid fueled firebox.  Diesel, ethanol, creosote and Biodiesel all work well here. This will also require a boiler tank - see the quests linked below.
+  - [可选提交] dreamcraft:SteelBars x2, gregtech:gt.blockcasings3:13, etfuturum:blast_furnace, minecraft:cauldron, gregtech:gt.metaitem.01:17305 x4 (ore:plateSteel)
+  - [合成] Railcraft:machine.beta:6
+  > 奖励: gregtech:gt.metaitem.01:30712 x16 | bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [559] §6§lLow-Pressure Boiler Tank
+The low pressure boiler tank is the easiest way to make steam with an RC boiler. The firebox needs this tank on top to produce steam. The bigger the boiler the slower it heats up, but it will produce more steam when heated up.  Extract steam by attaching a pipe to the boiler tank; the boiler will only begin outputting steam once it reaches 50% of its steam capacity.  [note]This variant is very useful for inconsistent operation. It has lower efficiency but heats up significantly faster than the high pressure variant meaning the fuel will be used more efficiently at the beginning of the operation, the drawback is that this variant is 50% as efficient as the high pressure one is at max temperature. If instead you want to have a constant high-throughput steam generation use high pressure variant instead.[/note]  [warn]Actual fuel usage depends on the machine size and other factors such as machine temperature, if you want to know the actual number you will need to test it on your own setup.[/warn]
+  - [可选提交] gregtech:gt.metaitem.01:27032 x2, gregtech:gt.metaitem.02:18032 x6
+  - [合成] Railcraft:machine.beta:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [2558] §d§lLuV Glass
+The next tier of Borosilicate glass is Rhodium-Plated Palladium. Make it to allow higher tier recipes in the Bacterial Vat, higher tier Energy Hatches in the MBF, or better Capacitors in your LSC. Or just use it for machine recipes, whatever.
+  - [提交] bartworks:BW_TieredGlass:3 x32
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianIII x2
+
+### [2564] §6§lMaking the Vat More Efficient!
+Looking at the Vat's recipes you are likely discouraged by the small amount of fluid being produced per recipe. Don't worry! Fluid consumption and production shown in NEI are just the baseline for the lowest efficiency. The efficiency of Vat depends on the amount of fluid in the Output Hatch.  The efficiency gradually increases as the output hatch fills up and reaches maximum efficiency when it is §cexactly half-filled§r. If the hatch fills even more, the efficiency goes down again, so try to keep it close to half! At maximum efficiency the amount of fluid consumed and produced per recipe is multiplied by 1001. The items and culture are not affected.  There are different means to keep it at half, including OC (not SFM, it doesn't like BW fluids), fluid detector+machine controller, or a fluid regulator, as well as more off the wall ones such as frames or block-sharing. If you choose the fluid detector route, remember that using a larger output hatch will make it easier to keep it close to half-filled.
+  - [勾选确认]
+
+### [787] §6§lMoooooore Steam
+The Titanium Large Boiler is a distant cousin to the Bronze and Steel Boilers, and it has a significant difference. Instead of accepting just about any burnable fuel, it will only accept specific ones and reject all others. You can see which ones are accepted by looking at the appropriate NEI tab, but the Solid Super Fuels are guaranteed to work.  This is a big downside, but the upside is that these boilers output respectable power even in these tiers. Without any other inputs, this boiler produces Superheated Steam at a flow rate matching 4000 EU/t, on turbines running at 100% fuel efficiency. If this becomes 150%, then the steam output will produce 6000 EU/t, almost the same as a boosted Large Combustion Engine!  To get all the power from this, though, you will need an HP Steam Turbine, followed by a regular Steam Turbine, or more than one of each if the flow rate is too big for the turbine material you've chosen. Make sure to send the Distilled Water back to the boilers!
+  - [提交] gregtech:gt.blockmachines:15531
+  - [可选提交] gregtech:gt.blockcasings4:2 x33, gregtech:gt.blockcasings4:3 x11, gregtech:gt.blockcasings2:14 x2, gregtech:gt.blockmachines:91
+  > 奖励: gregtech:gt.metaitem.01:11028 x48 | enhancedlootbags:lootbag:6 x2 | dreamcraft:CoinTechnicianII x5
+
+### [-8637502851546358797] §6§lMore Algae Uses
+Now that you have an Algae Pond, why not create Golden-Brown Algae for some cheap Ammonia? The ratio is about 50 mB of Ammonia per Golden-Brown Algae. At EV, each cycle has a 90% chance to produce 4 Golden-Brown Algae and takes 60 seconds.  This process does not require a Chemical Plant, but it does require an MV Assembler and an MV Fluid Extractor at minimum.
+  - [提交] miscutils:item.BasicAgrichemItem:3 x20
+  - [提交] miscutils:item.BasicAgrichemItem:6 x10
+  - [提交] gregtech:gt.metaitem.01:30659
+  > 奖励: miscutils:item.BasicAgrichemItem:6 x60 | enhancedlootbags:lootbag:7
+
+### [78] §6§lMore Heat - Kanthal Coil Upgrade
+Better materials need higher temperatures. You can just exchange the old coils with the new ones. Kanthal coils let you reach 2700K. You can even reuse the old coils in your Pyro or to make other machines, how fancy is that! If you don't have any other place to use them, you can macerate or arc furnace them too.  If you don't have a Vacuum Freezer yet, then cool the hot ingots in an MV Chemical Bath with Coolant.  Remember that you can get an upgraded OC (4/4) instead of a regular OC (2/4) if your coils are 1800K above the recipe temperature, as well as an EU discount. In this notation, the first number is speed and the second is power. This applies to every 900K or 1800K above, so you should try to upgrade your coils as soon as you can.
+  - [提交] gregtech:gt.blockcasings5:1 x16
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII
+
+### [45] §6§lMultiblock Tanks... Railcraft Tanks
+576 buckets of fluid, that should be enough to store all the creosote you have accumulated thus far. If that isn't enough you can make this tank bigger. The smallest tanks are 3x4x3 while the biggest are 9x8x9.  Fluid will auto-output without any pumps if you place a valve on its bottom side at the center. The output rate is 1000 L/t so twice as fast as a GT HV Pump Cover. You can color the tank with Buildcraft paintbrushes and the GT spray can.  If you still use Railcraft tanks in later tiers, you boost the output rate by using pumps.
+  - [提交] Railcraft:machine.beta x30, Railcraft:machine.beta:2 x2, Railcraft:machine.beta:1 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [477] §6§lNaquadah Alloy Coil Upgrade
+This one is optional now. But still very useful and recommended.
+  - [提交] gregtech:gt.blockcasings5:6 x16
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianIII x5
+
+### [476] §6§lNaquadah Coil Upgrade
+To process more advanced materials like naquadah alloy you need more than 6300K. Upgrade your EBF to 7200K to increase the heat.
+  - [提交] gregtech:gt.blockcasings5:5 x16
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianIII x2
+
+### [2938] §6§lNeutron Accelerator
+It is used to accelerate the NKE. You just need to connect a cable to it and it will keep consuming the energy.  [note]PS: You can use a controller cover to stop it.[/note]
+  - [提交] gregtech:gt.blockmachines:32008
+
+### [2936] §6§lNeutron Activator
+The Neutron Activator is a unique machine that you will use for processing Naquadah, and eventually Naquadah Fuel should you choose to do so.  Unlike traditional multis, instead of using a regular energy hatch, this machine relies on a Neutron Accelerator that will need to be regulated by a Sensor Hatch. §3(The Neutron Accelerator needs to be provided power just like an energy hatch)§r  The accelerator will increase its Neutron Kinetic Energy (NKE) and when the NKE is between the requested number which you can see in NEI, the machine will work and output the right products. However, if you turn on the Neutron Activator when NKE doesn't meet the requirement, it will still consume your input material but output trash. So be careful with the NKE when you run this machine.  When all Neutron Accelerators aren't running, NKE will decrease 72keV/s.  §dYou can enable batch mode with wire cutters.§r  [note]The more height/speed casings you have, the more inefficient the EU->eV conversion becomes, so you then need more power. The math is as follows: Multiply recipe time by 0.9 for each height above 4 and multiply eV you get from your input power by 0.95 for each height above 4.[/note]
+  - [可选提交] gregtech:gt.blockcasings2:6 x18, gregtech:gt.blockglass1:10 x32, gregtech:gt.blockframes:305 x16, GoodGenerator:speedingPipe x4
+  - [提交] gregtech:gt.blockmachines:32013
+  > 奖励: enhancedlootbags:lootbag:8 x2 | dreamcraft:CoinTechnicianIII
+
+### [2937] §6§lNeutron Sensor
+The sensor will send redstone signals according to the NKE of the Neutron Activator.  It works like a cover: enter the threshold value in eV, and it will emit a redstone signal when the NKE is at least as high as the threshold.
+  - [提交] gregtech:gt.blockmachines:32012
+
+### [79] §6§lNichrome Coil Upgrade
+To reach 3600K so you can process higher tier materials like tungsten, you need nichrome heating coils.
+  - [提交] gregtech:gt.blockcasings5:2 x16
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII x2
+
+### [-5243481096921136607] §6§lNo More (IC) Engraving
+Now that you've reached ZPM, you're going to have to resort to means other than mere laser engraving for your photolithography needs.  Of course, we're going overkill right away, requiring a full-on particle accelerator setup to produce the ultra-coherent ultra-high-energy light used to etch more advanced ICs.  To begin with, you'll need a Source Chamber to produce electrons (at pitifully low energies, of course). Check out NEI for the available recipes, you'll want the one with the hand-drawn icon.
+  - [提交] gregtech:gt.blockmachines:10506
+  > 奖励: gtnhlanth:casing.shielded_accelerator x16 | gregtech:gt.blockmachines:10502 x4
+
+### [-6969466475986785356] §6§lOne Fluid Tank to Store it All!!
+If you ever thought that the standard super tanks or quantum tanks were still too small then the YOTTank is the next option.  The YOTTank compared to the TFFT might only be able to store one fluid instead of 25 fluids. However it makes up for this downside by not having to share any of the fluid storage space with any other fluids. It also does not require any energy input or maintenance requirements.  If all you want to do is store a large amount of one fluid type then look no further then the YOTTank. It has a special ME input hatch for ae2 connections while having expandable storage blocks. The tank can be both upgraded with the fluid storage blocks and can be increased in height to hold any more fluid.  So if you want to store your fluid in style then look no further then the YOTTank.  [note]If you're having issues searching for the fluid storage blocks for the YOTTank in NEI then search for: fluid cell block[/note]
+  - [提交] gregtech:gt.blockmachines:32014
+  - [可选提交] gregtech:gt.blockmachines:32015
+
+### [2939] §6§lOops
+If you failed to meet the NKE as NEI requested, you can recycle something useful in this place.
+  - [提交] GoodGenerator:radioactiveWaste x64
+  > 奖励: bartworks:gt.bwMetaGenerateddust:10054
+
+### [-8838176938353182973] §6§lPlaying with Colors!
+Multiblock machines enforce input separation based on hatch color. Inputs from Input Buses and Input Hatches will only interact if they share the same color. Un-dyed inputs act as wildcards compatible with any color.  Color can be applied using a Spray Can and removed with a Spray Can Solvent. An Infinite Spray Can becomes available later in progression.  [note]There are a few other items which paint inputs. Check out [quest]Making Sense of Spaghetti[/quest] in the §lBuilding Better Bases§l§r tab for a complete list.[/note]  [note]For more advanced users, note that the priority of dyed hatches is ordered exactly how the vanilla dyes are in NEI, from highest (black) to lowest (white).[/note]  §6Now §2go §3have §4fun§5!!!
+  - [提交] gregtech:gt.metaitem.01:32402, gregtech:gt.metaitem.01:32467
+  - [提交] gregtech:gt.metaitem.01:32468
+  > 奖励: harvestcraft:rainbowcurryItem | bq_standard:choice
+
+### [2397] §6§lPlaying With the Big Boys, Chemically
+This facility will process certain chemical recipes you'll need later on, like Rocket Fuels. Keep in mind that recipes can only be made after meeting the required Chemical Plant tier.  It will need a minecart load of resources, so start mining!  Catalysts are needed in some recipes, place them in the Catalyst Housing. They use durability, this includes ones that don't look like it.  [note]You can make Silicon Carbide in the mixer, you don't need the ABS.[/note]  Valid solid casings: (Determines Chemical Plant Tier for recipes) 1 Strong Bronze Machine Casing 2 Solid Steel Machine Casing 3 Sturdy Aluminium Machine Casing 4 Clean Stainless Steel Machine Casing 5 Stable Titanium Machine Casing 6 Robust Tungstensteel Casing 7 Vigorous Laurenium Machine Casing 8 Rugged Botmium Machine Casing  Valid machine casings: (Determines maximum hatch/bus tier) LV-UHV Machine Casing, UHV unlocks any hatch/bus.  Valid pipe casings: (+2 Parallels, -20% chance to consume catalyst durability per pipe casing starting with 2 parallels and 100% chance for the first one.) Bronze Steel Titanium Tungstensteel  All coils from Cupronickel to Eternal are valid. Each one increases speed by +50%, starting at 50% speed for Cupronickel.  [note]Additionally: If you have at least Awakened Draconium Coils and Tungstensteel pipe casings, then no catalyst is consumed at all![/note]
+  - [提交] gregtech:gt.blockmachines:998
+  > 奖励: enhancedlootbags:lootbag:5 x2
+
+### [761] §6§lPowderbarrels
+Powderbarrels are pretty bad in the implosion compressor. They are good for prospecting though. Craft one stack.
+  - [可选提交] minecraft:string x64, minecraft:gunpowder x256, gregtech:gt.metaitem.01:17809 x256
+  - [提交] gregtech:gt.blockreinforced:5 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x30
+
+### [-7449875220775355737] §6§lProducing Solar Panels in BULK!!
+[quest]The Solar Factory![/quest]  The structure has tiers, each of which allow greater production than the previous tier.   Recipes in NEI display the minimum wafer tier required.  Wafer Tiers:   §6Monocrystalline Phosphorous Naquadah Europium Americium Photonically Prepared Photonically Enhanced§r  Machine parallels are based on Precise Casing Tier:  §6MK-I: §c8x§r §6MK-II: §c16x§r §6MK-III: §c32x§r §6MK-IV: §c64x§r  §lTier §b2:§r  §aSupports Multi-Amp energy hatches§r §c25%§r more outputs for every Wafer tier §oabove§r the minimum required. The bonus to outputs occurs after parallels, but §9cannot be greater§r than §c100%§r LV-LuV Solar Panels can be made without the previous panel, but at a higher cost.  §lTier §b3:§r  §aSupports Laser Energy hatches§r Bonus per increased wafer tier is increased to §c50%§r ZPM-UV Solar Panels can be made without the previous panel, but at a higher cost.
+  - [提交] gregtech:gt.blockmachines:367
+
+### [560] §6§lRailcraft Steam Power
+As an alternative way to make steam you can use the railcraft boilers. They require at least one firebox.  More than one size is possible: (1x1 which the quest gets you to make) 2x2 and 3x3.  Provide water and coal to the firebox. Make sure you don't run out of water or...BOOM.  Each boiler needs 1, 2 or 3 layers of tanks on top, equal to the size (1x1x1, 2x2x2, or 3x3x3) - see the quests linked below.
+  - [可选提交] gregtech:gt.blockcasings3:13, minecraft:brick_block x2, etfuturum:blast_furnace, minecraft:cauldron, gregtech:gt.metaitem.01:17032 x4 (ore:plateIron)
+  - [提交] Railcraft:machine.beta:5
+  > 奖励: gregtech:gt.metaitem.01:17032 x4 | harvestcraft:figjellysandwichItem x3 | dreamcraft:CoinTechnician x10
+
+### [2563] §6§lSievert for the Vat
+Some Vat recipes require a certain Sievert (radioactivity) value. So attach this Radio Hatch to your Vat to input radioactive material!  The Radio Hatch holds rods/long rods of radioactive material and uses them to produce Sievert. The input item determines the Sievert value and how long it lasts. Items stored in the hatch will be used continuously even if machine not active, so make sure you want to craft something before putting items in.  You can check the stats of an inputted item with a portable scanner.  Some recipes require [warn]exact[/warn] sievert, you can use the screwdriver to access the radiation shutter control to adjust how much sv is blocked from being sent to the vat. For example, you need 100sv to make Seaweed Broth, so you'd use Naquadah rods, and block off 30sv.  Rod Stats: Material-Sievert-Apprx. time until used up Bismuth                 83sv   198s Uranium 235           92sv    80s Uranium 238           92sv    80s Plutonium 239         94sv    66s Plutonium 241         94sv    66s Naquadah             130sv   14.5s Enriched Naquadah 140sv   10.5s Naquadria            150sv     8s  There are more radioactive materials than these, but these are the main ones.
+  - [提交] gregtech:gt.blockmachines:12713
+  > 奖励: gregtech:gt.metaitem.01:23098
+
+### [2668] §6§lSomething From Nothing
+Void Miners are basically the same thing as regular ones, except that they draw from the whole pool of ores for the dimension without there having to be any nearby. In addition, you can speed them up by supplying Neon, Krypton, Xenon, or Oganesson.  You can get Neon reasonably easily from Bartimaeusnek Ore from Ross 128ba. Krypton and Xenon can be produced from centrifuging fuel rods. All three can be produced from the EV liquid air distillation method. Remember you need the Liquid Air Fluid Hatch to actually put in enough liquid air. If you want all the produced gasses from the first 4 slots, you'll need to use the Giant Output Hatch.  To get Oganesson, you'll need mk3 fusion.  All four fluids can be replicated, so you'll probably end up doing that.  [note]If you want the Deep Dark's ores, you HAVE to use a Void Miner.[/note]
+  - [提交] gregtech:gt.blockmachines:12741
+
+### [786] §6§lSteam is Never Enough
+Now you can make Advanced Circuits, which means it's time to build a Large Steel Boiler. Each one of these produces 1000 EU/t in Steam, which means you will need several Steam Turbines to convert it all to power! Keep in mind that the MV ones are less efficient, so calculate your losses when building your setup.
+  - [提交] gregtech:gt.blockmachines:15530
+  - [可选提交] gregtech:gt.blockcasings2 x33, gregtech:gt.blockcasings3:14 x11, gregtech:gt.blockcasings2:13 x2, gregtech:gt.blockmachines:91
+  > 奖励: gregtech:gt.blockmachines:5134 x12 | enhancedlootbags:lootbag:5 x2 | dreamcraft:CoinTechnicianII
+
+### [87] §6§lSteel Multiblock Tanks
+Do you want to have tanks that can hold double the amount of the iron ones? Go ahead and make a steel tank. Everything else is the same.
+  - [提交] Railcraft:machine.beta:13 x30, Railcraft:machine.beta:15 x2, Railcraft:machine.beta:14 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x30
+
+### [-7321525324036531442] §6§lStern-Gerlach, Perhaps?
+The Beam Splitter allows you to sort your particle beams. The LHC produces output particles randomly, and this machine allows you to sort them into different lanes using the Filtered Beamline Output Hatch. It also divides the Amount of any particle packet by the number of valid output spots.  [note]For example, if you set one output to protons and two outputs to electrons, then a mixed input beam (with all particles having an Amount of 100) will be sorted into 3 beams - one of protons (Amount 100) and two of electrons (each Amount 50).[/note]
+  - [提交] gregtech:gt.blockmachines:3017
+
+### [781] §6§lStill Not Enough Charcoal?
+This oven is the best way to get charcoal and creosote (x50 faster than the Coke Oven) and other byproducts. You will need tons of bronze, iron and steel to build it, but it's worth it. Finally, it will be possible to dismantle the charcoal pit.  With Cupronickel coils the oven is a bit slower. Each coil tier speeds up the charcoal production.
+  - [提交] gregtech:gt.blockmachines:15546
+  - [可选提交] gregtech:gt.blockcasingsNH:2 x66, gregtech:gt.blockcasings5 x12, gregtech:gt.blockcasings2:13 x8, gregtech:gt.blockcasings3:14 x4, gregtech:gt.blockframes:305 x2, gregtech:gt.blockmachines:91
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [-6124867409590611841] §6§lSynchrotron (No Relation to the Catalyst)
+To actually produce some light for photolithography, you'll need to accelerate your electrons in a Synchrotron. Like with the LINAC, providing it with coolant is necessary to keep it running.  You can increase the energy of the produced photons by increasing EU/t, or increasing the tier of all four Antenna Casings inside.  To improve focus, you can use a better coolant, and the output amount increases with both EU/t and antennae tier.  Yes, you need all four energy hatches.
+  - [提交] gregtech:gt.blockmachines:10507
+  > 奖励: gregtech:gt.blockcasings:15 x8 | gtnhlanth:casing.niobium_cavity x8
+
+### [2765] §6§lTFFT
+The TFFT is very useful if you don't want to have a bunch of Super Tanks, it also has a modular structure so it can be up to x4.33 times bigger than numbers in this quest.  With the tier I storage field block, it consumes 27 EU/t but only has about 0.27x the storage capacity of a Super Tank I per fluid.  With the tier V storage field block it consumes 1134 EU/t and has about 0.54x the storage capacity of a QT III per fluid.  With the tier X storage field block it consumes 0EU/t (only tier X uses 0) and has about x3.3 capacity of T7 YOTTank (divide by 25 to get per 1 fluid)  You can use the multi hatch to access all the fluids at once with an ME Fluid Storage Bus or Fluid Ender Conduit.  [note]Remember to turn auto-voiding on if you need it.[/note]
+  - [提交] gregtech:gt.blockmachines:13104
+
+### [2027] §6§lThermal Boiler - Lava you long time
+If you want energy from Lava and the byproducts, the Thermal Boiler is the perfect solution. It processes Lava super fast for Steam, and with a Lava Filter will provide some centrifuged lava byproducts as well. A great source of Copper, Silver, Gold, Tin, Tantalum, and Tungstate, better outputs than regular lava processing in a Centrifuge.  You can get even better efficiency pairing it with a Large Heat Exchanger. The LHE will turn normal vanilla Lava into Pahoehoe Lava, which will provide Steam and byproducts in the Thermal Boiler. Win/Win/Win!
+  - [提交] gregtech:gt.blockmachines:15557, miscutils:itemLavaFilter
+  - [可选提交] miscutils:bookGT
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:11 x27, miscutils:gtplusplus.blockcasings.2 x17, gregtech:gt.blockcasings4 x17, miscutils:blockFrameGtMaragingSteel350 x16, gregtech:gt.blockcasings2:15 x6, gregtech:gt.blockcasings2:12 x6
+  > 奖励: miscutils:itemLavaFilter x3
+
+### [75] §6§lThe Water Dilemma
+Finite water is a problem. But fear not, there are solutions! I shall guide you to a steady supply of water. The Railcraft water siding tanks provides enough water to last the early game.  The humidity of a biome is very important and will increase the base fill rate. If it is raining, the tank will fill much quicker. One block of the water siding tank must see sky for the maximum output. The best part is that you don't need a pump to extract water. Tanks and pipes placed next to it will be autofilled by the water siding tank.
+  - [提交] IC2:blockRubSapling
+  - [合成] IC2:itemTreetap
+  - [可选提交] IC2:itemHarz x26
+  - [可选提交] gregtech:gt.metaitem.01:23032 x52
+  - [可选提交] minecraft:planks x130 (ore:plankWood)
+  - [合成] Railcraft:machine.alpha:14 x26
+  > 奖励: gregtech:gt.blockmachines:5101 x10 | enhancedlootbags:lootbag:2 x2 | dreamcraft:CoinTechnician x50
+
+### [954] §6§lThe 'Water Problems' Are Solved
+After entering the HV age you've found a way of making a water reservoir which solves the finite water problem. Craft it with some fused quartz glass, HV pumps, and cauldrons.
+  - [可选提交] EnderIO:blockFusedQuartz x12
+  - [可选提交] gregtech:gt.metaitem.01:32612 x4
+  - [可选提交] minecraft:cauldron x2
+  - [提交] EnderIO:blockReservoir x4
+  > 奖励: gregtech:gt.blockmachines:5142 x8 | enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5
+
+### [-5211315330207694591] §6§lTier 2 Manipulating
+After significant progression, you'll be able to upgrade the QFT to tier 2 by replacing the §3Neutron Pulse Manipulator§r casings with §3Cosmic Fabric Manipulator§r casings. Once installed, the QFT can perform the §6monaline skip§r, the §6first two naqline skips§r, and the §6netherite line skip§r.  These casings require more advanced materials, including §3Hyper-Stable Self-Healing Adhesive§r, which can only be crafted in a tier 1 QFT. This adhesive isn’t just excellent at sticking things together - it’s also built to withstand the intense energy flow of a tier 2, 3, or even tier 4 QFT! §o  Who knows what kinds of materials you’ll need after this?!
+  - [提交] miscutils:gtplusplus.blockcasings.5:8 x236, miscutils:item.BasicGenericChemItem:22, miscutils:item.BasicGenericChemItem:23, miscutils:item.BasicGenericChemItem:34
+
+### [3290] §6§lTier 2 Shielding
+Consider improving your QFT's focusing capabilities by replacing your §3Neutron Shielding Core§r casings with §3Cosmic Fabric Shielding Core§r casings. Like the tier 2 manipulators, these also require §3Hyper-Stable Self-Healing Adhesive§r.
+  - [提交] miscutils:gtplusplus.blockcasings.5:12
+
+### [-5989492425518755855] §6§lTier 3 Manipulating
+With access to even more advanced materials, you can upgrade your QFT to tier 3 by replacing the §3Cosmic Fabric Manipulator§r casings with §3Infinity Infused Manipulator§r casings. This tier unlocks two powerful new skips: the §6final naqline skip§r and the §6stem cell skip§r.  This new casing requires even more advanced materials still, including the §3Superconductor Rare-Earth Composite§r, which can only be crafted in a tier 2 QFT. Unlike §3Hyper-Stable Self-Healing Adhesive§r, which focused on structural integrity, this composite is designed purely for energy transmission. With automatic self-repair now fully handled, we can shift our focus to increasing the energy flow between components and into the multi itself.  Standard superconductors break down under quantum stress - but this composite eliminates all resistance across the outer shell. Its precisely layered rare-earth elements create such gradual transitions that quantum flow moves effortlessly, with no losses or destabilizing effects.  §oWhat will you discover next?!
+  - [提交] miscutils:gtplusplus.blockcasings.5:9 x236, miscutils:item.BasicGenericChemItem:24, miscutils:item.BasicGenericChemItem:25
+
+### [3291] §6§lTier 3 Shielding
+Consider improving your QFT's focusing capabilities even further by replacing your §3Cosmic Fabric Shielding Core§r casings with §3Infinity Infused Shielding Core§r casings. Like the tier 3 manipulators, these also require §3Superconductor Rare-Earth Composite§r.
+  - [提交] miscutils:gtplusplus.blockcasings.5:13
+
+### [-5137376728426304535] §6§lTier 4 Manipulating
+§lFinally, you have done it§r! You can now upgrade your QFT to the ultimate tier by replacing your §3Infinity Infused Manipulator§r casings with §3SpaceTime Continuum Ripper§r casings. This final upgrade unlocks all skips, including the §6bio cell skip, the kevlar skip and the radox + xenoxene skip§r.  Even with all previous upgrades, the final leap remained out of reach. Chemical skips for foundational components used in the earlier stages of the QFT, such as bioware circuits, were still impossible - §ountil now§r. Reaching the theoretical limit of the QFT demands a material far beyond anything seen before, hidden deep within the second half of the Naquadah line.  The material you require will be your magnum opus - the §3Black Body Naquadria Supersolid§r. This extraordinary substance acts as a perfect black body - absorbing all radiation without reflection - and behaves as a supersolid, flowing like a fluid with zero viscosity. Combining these properties in a single material ensures stable, effortless quantum energy flow at any voltage level, even at the MAX tier!  With this breakthrough, your QFT is fully unlocked, capable of creating components up to the UHV tier.
+  - [提交] miscutils:gtplusplus.blockcasings.5:10 x236, miscutils:item.BasicGenericChemItem:27, miscutils:item.BasicGenericChemItem:26
+
+### [3292] §6§lTier 4 Shielding
+Consider pushing your QFT's focusing capability to its final form by replacing your §3Infinity Infused Shielding Core§r casings with §3SpaceTime Bending Core§r casings. Like the tier 4 manipulators, these also require §3Black Body Naquadria Supersolid§r.
+  - [提交] miscutils:gtplusplus.blockcasings.5:14
+
+### [765] §6§lTime to Drill for Oil!
+Pumps are nice but you're going to reach a point where you'll want MOOOOOOOOOOOOORE oil. This multiblock will help with that but you'll need to search for oil using a seismic prospector. You can find raw, light, medium, and heavy oil. There's also a chance to find natural gas.  Higher tiers of power will drill faster. You need to upgrade the energy hatch corresponding to the power tier.  Later you can upgrade the oil drilling rig so it extracts from more than one chunk at a time.  You need mining pipes in the controller. If you need more than 64, you can use an input bus.  These are GT machines, so remember to protect them (and their power sources!) from rain on any side. And set a waypoint with JourneyMaps so you don't forget where you placed it!  Space dims can also have fluids beneath bedrock. For info, check the Tips and Tricks tab.
+  - [提交] gregtech:gt.blockmachines:1157
+  - [可选提交] gregtech:gt.blockcasings2 x8, gregtech:gt.blockframes:305 x15, gregtech:gt.blockmachines:62, gregtech:gt.blockmachines:42, gregtech:gt.blockmachines:90
+  - [可选提交] IC2:blockMiningPipe x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5 | bq_standard:questcompletion
+
+### [1545] §6§lTime to Drill For Ore!
+Auto Miners are nice but you're going to reach a point where you will want MOOOOOOOOOOOOORE ores. This multiblock will help with that. It will also pre-macerate your ores and give you a little bonus crushed ores as well.  Higher tiers of power will drill faster. You need to upgrade the energy hatch corresponding to the power tier. You will also need an energy hatch, an input hatch, and an output bus - at least MV but you can choose.  Later you can upgrade the ore drilling plant so it extracts from more than a 48 block radius. If you don't want to mine that far away, adjust the range with a screwdriver. Each tier of the controller also gives 1 bonus fortune for small ores starting at 4. At tier 3 you'll want to spread the wealth to multiple compressed chests!  The multiblock miners have been upgraded so that they will chunkload the area they dig in. They will NOT chunkload themselves however. They will dig §odown§r in the chunk they're in like normal, and then dig §oup§r one chunk at a time in other chunks within its range.  You need mining pipes in the controller and drilling fluid in the fluid hatch. You can also feed mining pipes into an input bus.  You'll need to make lots of Drilling Fluid. 64 is a tiny amount to get started with! Plan to make thousands of buckets - perhaps onsite, or pumped in via Long Distance Fluid Pipes.  These are GT machines, so remember to protect them (and their power sources!) from rain (and meteors!) on any side. And set a waypoint with JourneyMap so you don't forget where you placed it!
+  - [提交] gregtech:gt.blockmachines:1158
+  - [可选提交] gregtech:gt.blockcasings2 x8, gregtech:gt.blockframes:305 x15, gregtech:gt.blockmachines:90
+  - [可选提交] IC2:blockMiningPipe x64
+  - [可选提交] gregtech:gt.metaitem.98:5 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5 | bq_standard:questcompletion
+
+### [76] §6§lTime to Get Some Steel
+You need steel? Uhh... fine. Let's get busy...  The Bricked Blast Furnace (BBF) can share walls with other ones, just like most GT multiblocks. How will this affect the air quality though...  If you are short on Stone Dust, you can get more by macerating cobblestone.  If you spawn near a biome with Hardened Clay you can macerate it to get the clay dust you need. You can also use brick blocks from Villages to get brick dust in the macerator.  Crafting the Worktable from Forestry can make it easier as you can use all the buckets for crafting in one click.
+  - [可选提交] minecraft:clay_ball x1008, minecraft:cobblestone x24, minecraft:flint x12
+  - [可选提交] gregtech:gt.metaitem.01:17032 x28 (ore:plateIron), minecraft:furnace x4
+  - [可选提交] etfuturum:blast_furnace x4
+  - [可选提交] gregtech:gt.metaitem.01:2823 x72, gregtech:gt.metaitem.01:2805 x144, gregtech:gt.metaitem.01:2299 x36, gregtech:gt.metaitem.01:2939 x36 (ore:dustQuartzSand)
+  - [可选提交] dreamcraft:UnfiredClayBrick x432
+  - [可选提交] minecraft:brick x432
+  - [可选提交] gregtech:gt.metaitem.01:2625 x108, gregtech:gt.metaitem.01:2805 x108
+  - [可选提交] gregtech:gt.metaitem.01:32110 x216
+  - [可选提交] gregtech:gt.metaitem.01:32111 x216
+  - [可选提交] gregtech:gt.metaitem.01:2934 x72
+  - [可选提交] gregtech:gt.blockcasings4:15 x36
+  - [提交] gregtech:gt.blockmachines:140
+  > 奖励: Railcraft:fuel.coke x32 | enhancedlootbags:lootbag:2 x2 | dreamcraft:CoinTechnician x50 | bq_standard:choice
+
+### [762] §6§lTNT
+TNT is much more powerful than the powderbarrel but much harder to craft. There are LV and HV ways to craft. At LV you need heavy or light fuel to make some toluene which can be solidified to gelled toluene. Alternatively you can use sugar and plastic dust in a chemical reactor to make toluene more efficiently. Mix it with sulfuric acid to make TNT.  The HV petrol way requires an oil cracking unit to make all kinds of cracked fuel or cracked naphtha and a distillation tower to extract toluene from that. Though you can also go the wood tar route in mid-MV.
+  - [可选提交] gregtech:gt.metaitem.01:30647 x26
+  - [可选提交] gregtech:gt.metaitem.02:32010 x256
+  - [可选提交] gregtech:gt.metaitem.01:30720 x16
+  - [提交] minecraft:tnt x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x40
+
+### [3144] §6§lToo much Indium?
+Milling process is an alternative way to produce Indium, designed for LuV and above. It does not void Aluminium and Galena for no reason, and you can extract Indium from Sphalerite efficiently. In exchange for machine cost and infrastructure needed to process.
+  - [提交] gregtech:gt.blockmachines:31027
+  - [提交] gregtech:gt.blockmachines:15560
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [86] §6§lTPV Coil Upgrade
+To process more advanced materials like Tungstensteel, Enderium and Niobium-Titanium, you will need more than 3600K. Time to upgrade your EBF... again.
+  - [提交] gregtech:gt.blockcasings5:3 x16
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x5
+
+### [2893] §6§lTrinium Coil Upgrade
+To process more advanced materials like neutronium or fluxed electrum you need more than 8100K. Upgrade your EBF to 9001K. (OVER 9000!!!)
+  - [提交] gregtech:gt.blockcasings5:10 x16
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianIII x5
+
+### [-8743907766268867509] §5§l§nUEV Glass
+The next tier of Borosilicate glass is Infinity.
+  - [提交] bartworks:BW_TieredGlass:7 x32
+
+### [-7231203481252809438] §4§l§nUHV Glass
+The next tier of Borosilicate glass is Neutronium.
+  - [提交] bartworks:BW_TieredGlass:6 x32
+  > 奖励: enhancedlootbags:lootbag:43
+
+### [-6404757342473472628] §9§l§nUIV Glass
+The next tier of Borosilicate glass is Transcendent.
+  - [提交] bartworks:BW_TieredGlass:8 x32
+
+### [-5541872338101410607] §c§l§nUMV Glass
+The next tier of Borosilicate glass is Hexanite.
+  - [提交] bartworks:BW_TieredGlass:9 x32
+
+### [-8929525966506400783] §6§lUsing That Algae
+So you've created the Chemical Plant, and an Algae Farm, excellent! Time to make some use of it instead of letting it sit there collecting. There's quite a few recipes you can make with Algae, but we'll start with a more simple one.  For this you'll need some Brown Algae and some Green Algae. This means you need at minimum HV machine casings for the bottom of the Algae Farm. HV will produce up to 8 brown algae every 35 seconds, but can at worst case produce 2 in 105 seconds, while EV will produce at best 20 every 30 seconds, and at worst 12 in 90 seconds.  Once you have some Green and Brown Algae, you'll have to put them in a tier 2 Chemical Plant (steel based) with some distilled water, and you'll get back Sulfuric Acid. Cheap to produce once you have it all set up, a bit expensive to get there though! There's another Sulfuric acid recipe you can use as well later on, but it'll cost higher tier Algae and a higher tier Chemical Plant.
+  - [提交] miscutils:item.BasicAgrichemItem:1 x60, miscutils:item.BasicAgrichemItem:2 x36
+  - [提交] gregtech:gt.metaitem.01:30720 x30
+  > 奖励: enhancedlootbags:lootbag:6 x2
+
+### [2560] §2§l§nUV Glass
+The next tier of Borosilicate glass is Osmium. Make it to allow higher tier recipes in the Bacterial Vat, higher tier Energy Hatches in the MBF, or better Capacitors in your LSC. Or just use it for machine recipes, whatever.
+  - [提交] bartworks:BW_TieredGlass:5 x32
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinTechnicianIV
+
+### [-6292869179710098948] §4§l§nUXV Glass
+The final, and by far most expensive tier of Borosilicate glass is Universium.  Enjoy the bonus for gathering 32 ;)
+  - [提交] bartworks:BW_TieredGlass:10 x32
+  > 奖励: bartworks:BW_TieredGlass:10 x16
+
+### [699] §6§lWhy One Coke Oven When You Can Have Ten?
+Your Bricked Blast Furnace uses coal like hell and your steam boilers do too? Well it's time to make more coke ovens and automate them a bit. The Coke Oven Hatch, Wooden Fluid Pipes, and Tin Item Pipes will help you reach your goal.  Since this is a GT multiblock, it can wallshare bricks and hatches. The amount of bricks required for this quest is the minimum for creating 10 wallshared Coke Ovens.  Remember that tin item pipes require a steel wrench to dismantle them.  [note]Search NEI for a more efficient way to make coke oven bricks.[/note]  [warn]The whole coke-oven process generates a lot of pollution, so consider putting it further away.[/warn]
+  - [提交] gregtech:gt.blockmachines:236 x10, gregtech:gt.blockcasings12 x136
+  - [提交] gregtech:gt.blockmachines:237 x9
+  - [提交] gregtech:gt.blockmachines:5590 x64, gregtech:gt.blockmachines:5101 x32
+  - [提交] JABBA:barrel x2
+  > 奖励: Railcraft:cube x16 | enhancedlootbags:lootbag:4 | bq_standard:choice | dreamcraft:CoinTechnician x100
+
+### [3031] §6§lYou Are Not Prepared!!!
+It's time for something really big: A smeltery! There's a lot to craft, so better gather some resources... or you could go try complete this with the help of some unhappy NPC friends, but that would void your quest rewards.  [note]Note: This quest is mutually exclusive with the other smeltery quest.[/note]
+  - [可选提交] minecraft:sand x123 (ore:sand), minecraft:gravel x123, gregtech:gt.metaitem.01:2805 x82 (ore:dustClay)
+  - [可选提交] TConstruct:CraftedSoil:1 x162
+  - [可选提交] dreamcraft:WoodenBrickForm
+  - [可选提交] dreamcraft:UnfiredSearedBrick x162
+  - [可选提交] TConstruct:materials:2 x162
+  - [合成] TConstruct:Smeltery:2 x28
+  - [可选提交] minecraft:furnace
+  - [合成] TConstruct:Smeltery, TConstruct:LavaTank
+  - [提交] TConstruct:SearedBlock:1 x2, TConstruct:CastingChannel x2
+  - [合成] TConstruct:Smeltery:1 x2, TConstruct:SearedBlock:2
+  - [提交] TConstruct:Smeltery:4
+  - [合成] TConstruct:SearedBlock
+  > 奖励: TConstruct:oreBerries:5 x10 | enhancedlootbags:lootbag:2 x2 | dreamcraft:CoinTechnician x50
+
+### [2985] §6§lYou Are Not Prepared... But They Are
+Building a smeltery from the ground up can be really tedious and time consuming. How about borrowing one from the locals? They will surely be happy to share it with an unfriendly adventurer that just dismantled their bricked railway station.  The villagers are so dumb that they spent all their seared bricks without adding a few key components like faucets or drains. You still need to craft some smeltery bricks yourselves...  Totally not useful tip: if you hold off building this long enough, you will be able to break down seared brick blocks into seared brick items with a forge hammer or extractor.  [note]Unfortunately, going down this path means we will not give you quest rewards, since you are already getting this important multiblock for free. Check the checkbox to signify your consent.[/note]
+  - [提交] TConstruct:SearedBlock:1 x2, TConstruct:LavaTank, TConstruct:Smeltery, TConstruct:CastingChannel x2, TConstruct:SearedBlock, TConstruct:SearedBlock:2, TConstruct:Smeltery:1 x2
+  - [勾选确认]
+
+### [74] §6§lYou Are Now Prepared, Hopefully!
+No matter where you got this smeltery from, you have one now. Time for some casting!  Note: The book says to make a 3x3 base, but you can make a smeltery with a smaller or wider base. Taller/wider smelteries can do more items at one time, conserving fuel.  [note]The smeltery does not double ores in GTNH. Later machines will help you there.[/note]
+  - [勾选确认]
+
+### [2559] §b§lZPM Glass
+The next tier of Borosilicate glass is Iridium. Make it to allow higher tier recipes in the Bacterial Vat, higher tier Energy Hatches in the MBF, or better Capacitors in your LSC. Or just use it for machine recipes, whatever.
+  - [提交] bartworks:BW_TieredGlass:4 x32
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianIII x5
+

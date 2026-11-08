@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>B站播放器模拟页 - 扩展本地测试</title>
+  <style id="bpx-native-rules">
+    body {
+      background: #101014;
+      color: #eee;
+      font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+      padding: 24px;
+    }
+    .player { width: 720px; }
+    video { width: 100%; background: #000; display: block; }
+    .mode-bar { margin: 12px 0; }
+    .mode-bar button { margin-right: 8px; }
+    /* 网页全屏预览：不依赖 Fullscreen API，仅把播放器铺满视口 */
+    .player[data-screen="web"] {
+      position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 99999; background: #000;
+    }
+
+    /* ===== 以下控制栏规则从B站播放器实际样式表原样摘录（实测 computed 值一致） ===== */
+    .bpx-player-control-bottom {
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      height: 35px;
+      line-height: 22px;
+      margin: 20px 0 0;
+      padding: 0 12px;
+      width: 100%;
+      background: #1c1c22;
+    }
+    .bpx-player-control-bottom-left { display: inline-flex; flex: 0 0 auto; color: #fff; }
+    .bpx-player-ctrl-time { font-size: 14px; line-height: 22px; color: rgba(255,255,255,.8); }
+    .bpx-player-control-bottom-right { display: flex; justify-content: flex-end; }
+    .bpx-player-ctrl-btn {
+      fill: #fff;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0;
+      height: 22px;
+      line-height: 22px;
+      outline: 0;
+      position: relative;
+      text-align: center;
+      width: 36px;
+      z-index: 2;
+    }
+    .bpx-player-ctrl-btn-icon { cursor: pointer; width: 100%; }
+    .bpx-common-svg-icon { display: inline-flex; height: 100%; width: 100%; user-select: none; }
+    .bpx-common-svg-icon svg { height: 100%; width: 100%; }
+    .bpx-player-ctrl-btn-icon > .bpx-common-svg-icon { height: 22px; opacity: .9; vertical-align: middle; }
+    .bpx-player-ctrl-btn:hover { color: #fff; }
+    .bpx-player-ctrl-btn:hover .bpx-player-ctrl-btn-icon > .bpx-common-svg-icon { opacity: 1; }
+    .bpx-player-ctrl-quality { width: auto; margin-right: 10px; }
+    .bpx-player-ctrl-quality-result { font-size: 12px; }
+
+    /* 真实B站把这三条包在 @media screen and (min-width:750px) 里；
+       mock 去掉媒体查询条件，保证任意窗口尺寸都能复现全屏几何 */
+    .bpx-player-container[data-screen="full"] .bpx-player-control-bottom,
+    .bpx-player-container[data-screen="web"] .bpx-player-control-bottom {
+      height: 45px;
+      line-height: 34px;
+    }
+    .bpx-player-container[data-screen="full"] .bpx-player-ctrl-btn,
+    .bpx-player-container[data-screen="web"] .bpx-player-ctrl-btn {
+      height: 43px;
+      line-height: 32px;
+      width: 54px;
+    }
+    .bpx-player-container[data-screen="full"] .bpx-player-ctrl-btn-icon > .bpx-common-svg-icon,
+    .bpx-player-container[data-screen="web"] .bpx-player-ctrl-btn-icon > .bpx-common-svg-icon {
+      height: 28px;
+    }
+    .bpx-player-container[data-screen="full"] .bpx-player-ctrl-time,
+    .bpx-player-container[data-screen="web"] .bpx-player-ctrl-time {
+      font-size: 14px;
+      line-height: 32px;
+    }
+    p.note { color: #888; font-size: 12px; }
+  </style>
+  <style id="giant-rules" disabled>
+    /* 故障注入：模拟播放器初始化那一帧的样式状态——B站对 .bpx-common-svg-icon 的
+       22px/28px 约束尚未命中我们的按钮，百分比高度链让 svg 按 100% 铺满播放器，
+       即用户看到的「加载视频时遮挡一秒的巨大色块」。只作用于 .bff-ctrl-btn，
+       保留原生图标作对照基线。 */
+    .bff-ctrl-btn .bpx-player-ctrl-btn-icon > .bpx-common-svg-icon {
+      height: 400px;
+      width: 400px;
+    }
+  </style>
+  <link rel="stylesheet" href="../content.css">
+</head>
+<body>
+  <h2>模拟B站播放器控制栏（本地测试页）</h2>
+  <p class="note">
+    本页面按类名与几何规则复刻B站播放器控制栏（含 <code>[data-screen]</code> 全屏尺寸规则），
+    并注入 chrome.storage 桩（秒数 30、快捷键 Shift+→）。
+    状态面板即回归判据：<code>alignOk</code> 要求注入图标与各原生图标中心偏差 &lt; 1px
+    （旧版 <code>height:100%</code> 实测普通偏 6.5px、全屏偏 5.5px）；
+    <code>noShadowOk</code> 要求注入图标在任何样式状态下都不超过一个图标位（&le; 60px）——
+    打开视频时那块遮挡约一秒的巨大色块，正是百分比高度链未就位时 svg 按 100% 铺满播放器的结果
+    （实测 472&times;472）。修复方式是「绘制前自检」：尺寸不合格就在同一帧内撤掉节点，
+    所以 <code>btnPresent:false</code> 是故障态下的期望结果，不是回归。
+  </p>
+  <div class="mode-bar">
+    模式：
+    <button id="m-normal" type="button">普通</button>
+    <button id="m-web" type="button">网页全屏</button>
+    <button id="m-full" type="button">全屏(Fullscreen API)</button>
+    <button id="m-nocss" type="button">切换：播放器CSS整体未注入</button>
+    <button id="m-giant" type="button">切换：故障注入（图标未被约束，巨大色块复现）</button>
+  </div>
+  <div class="player bpx-player-container" id="player" data-screen="normal">
+    <div class="bpx-player-video-wrap">
+      <video id="video" controls preload="metadata"
+             src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
+    </div>
+    <div class="bpx-player-control-bottom">
+      <div class="bpx-player-control-bottom-left">
+        <span class="bpx-player-ctrl-time">00:00 / 09:56</span>
+      </div>
+      <div class="bpx-player-control-bottom-right">
+        <div class="bpx-player-ctrl-btn bpx-player-ctrl-volume" role="button" aria-label="音量">
+          <div class="bpx-player-ctrl-btn-icon"><span class="bpx-common-svg-icon"><svg viewBox="0 0 88 88"><path d="M18 34h12l16-14v52L30 58H18z"></path></svg></span></div>
+        </div>
+        <div class="bpx-player-ctrl-btn bpx-player-ctrl-quality" role="button" aria-label="清晰度">
+          <div class="bpx-player-ctrl-quality-result"><span class="bpx-player-ctrl-quality-result-name">自动</span></div>
+        </div>
+        <div class="bpx-player-ctrl-btn bpx-player-ctrl-setting" role="button" aria-label="设置">
+          <div class="bpx-player-ctrl-btn-icon"><span class="bpx-common-svg-icon"><svg viewBox="0 0 88 88"><circle cx="44" cy="44" r="12"></circle></svg></span></div>
+        </div>
+        <div class="bpx-player-ctrl-btn bpx-player-ctrl-pip" role="button" aria-label="画中画">
+          <div class="bpx-player-ctrl-btn-icon"><span class="bpx-common-svg-icon"><svg viewBox="0 0 88 88"><rect x="16" y="22" width="56" height="44" fill="none" stroke="#fff" stroke-width="6"></rect></svg></span></div>
+        </div>
+        <div class="bpx-player-ctrl-btn bpx-player-ctrl-full" role="button" aria-label="全屏">
+          <div class="bpx-player-ctrl-btn-icon"><span class="bpx-common-svg-icon"><svg viewBox="0 0 88 88"><path d="M20 20h18v8H28v10h-8zM68 20v18h-8V28H50v-8zM20 68V50h8v10h10v8zM68 68H50v-8h10V50h8z"></path></svg></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // chrome.storage 桩：模拟扩展存储（30 秒配置，用于验证配置接线）
+    window.__bffSaved = null;
+    window.chrome = {
+      storage: {
+        sync: {
+          get: () =>
+            Promise.resolve({
+              seconds: 30,
+              shortcut: { key: 'arrowright', code: 'ArrowRight', ctrl: false, alt: false, shift: true },
+            }),
+          set: (obj) => { window.__bffSaved = obj; return Promise.resolve(); },
+        },
+        onChanged: { addListener: () => {} },
+      },
+    };
+
+    // 离线兜底：若远端测试视频元数据在 6 秒内不可用（网络受限），
+    // 给 video 安装影子 duration/currentTime，使快进逻辑仍可被验证
+    window.__bffTest = { mode: 'real', seeks: [] };
+    (function () {
+      const v = document.getElementById('video');
+      const installFake = () => {
+        if (window.__bffTest.mode !== 'real' || v.readyState >= 1) return;
+        window.__bffTest.mode = 'fake';
+        v.removeAttribute('src');
+        try { v.load(); } catch (e) { /* ignore */ }
+        let t = 0;
+        Object.defineProperty(v, 'duration', { configurable: true, get: () => 600 });
+        Object.defineProperty(v, 'currentTime', {
+          configurable: true,
+          get: () => t,
+          set: (val) => { t = val; window.__bffTest.seeks.push(val); },
+        });
+      };
+      if (v.readyState < 1) setTimeout(installFake, 6000);
+    })();
+
+    // 模式切换：改 data-screen 即可切换控制栏几何
+    const player = document.getElementById('player');
+    const setScreen = (s) => {
+      player.dataset.screen = s;
+      if (s === 'full' && player.requestFullscreen) player.requestFullscreen().catch(() => {});
+      else if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    };
+    document.getElementById('m-normal').addEventListener('click', () => setScreen('normal'));
+    document.getElementById('m-web').addEventListener('click', () => setScreen('web'));
+    document.getElementById('m-full').addEventListener('click', () => setScreen('full'));
+    // 注意：<style> 的 disabled 内容属性只对带 title 的候选样式表有效，Chrome 会忽略它；
+    // 必须翻转 CSSStyleSheet.disabled。开关状态一律从 sheet 读回，避免用 JS 标志自证。
+    const flipSheet = (id) => {
+      const sheet = document.getElementById(id).sheet;
+      sheet.disabled = !sheet.disabled;
+      window.__bffSyncFlags();
+      return sheet.disabled;
+    };
+    // 复现视频首屏：播放器CSS尚未注入，注入的svg只能靠自身 width/height 属性兜底
+    document.getElementById('m-nocss').addEventListener('click', () => flipSheet('bpx-native-rules'));
+    // 复现视频首屏的另一半：B站的百分比高度链已生效但 22px 约束还没命中我们
+    document.getElementById('m-giant').addEventListener('click', () => flipSheet('giant-rules'));
+
+    window.__bffNoCss = false;
+    window.__bffGiant = false;
+    // 关键：没有 title 的 <style>，其 disabled 内容属性会被 Chrome 忽略，
+    // 故障注入表必须在启动时用 sheet.disabled 显式关掉
+    document.getElementById('giant-rules').sheet.disabled = true;
+    window.__bffSyncFlags = () => {
+      window.__bffNoCss = document.getElementById('bpx-native-rules').sheet.disabled;
+      window.__bffGiant = !document.getElementById('giant-rules').sheet.disabled;
+    };
+    window.__bffSyncFlags();
+  </script>
+  <script src="../content.js"></script>
+
+  <h3>测试状态（自动刷新）</h3>
+  <pre id="bff-status">等待视频…</pre>
+  <p>
+    <input id="chat" type="text" placeholder="模拟弹幕/搜索输入框（在此打字时快捷键不应触发）">
+  </p>
+
+  <script>
+    // 把视频状态与图标对齐偏差渲染到可见 DOM，便于自动化只读断言（避免使用 evaluate）
+    (function () {
+      const v = document.getElementById('video');
+      const el = document.getElementById('bff-status');
+      const cy = (n) => { const r = n.getBoundingClientRect(); return r.top + r.height / 2; };
+      const fmt = () => {
+        try {
+          window.__bffSyncFlags();
+          const ours = document.querySelector('.bff-ctrl-btn .bpx-common-svg-icon');
+          const refs = Array.from(
+            document.querySelectorAll('.bpx-player-ctrl-btn:not(.bff-ctrl-btn) .bpx-common-svg-icon')
+          );
+          let drift = null;
+          if (ours && refs.length) {
+            const oc = cy(ours);
+            drift = Math.max(...refs.map((n) => Math.abs(cy(n) - oc)));
+            drift = Math.round(drift * 10) / 10;
+          }
+          const btn = document.querySelector('.bff-ctrl-btn');
+          const svg = document.querySelector('.bff-ctrl-btn svg');
+          const sb = svg ? svg.getBoundingClientRect() : null;
+          const iconBox = sb ? [Math.round(sb.width), Math.round(sb.height)] : null;
+          el.textContent = JSON.stringify({
+            mode: window.__bffTest.mode,
+            screen: player.dataset.screen,
+            playerCssOn: !window.__bffNoCss,
+            faultOn: !!window.__bffGiant,
+            readyState: v.readyState,
+            currentTime: Number(v.currentTime.toFixed(2)),
+            duration: isFinite(v.duration) ? Math.round(v.duration) : null,
+            seeks: window.__bffTest.seeks.map((x) => Math.round(x * 10) / 10),
+            btnPresent: !!btn,
+            iconBoxPx: iconBox,
+            iconFill: svg ? getComputedStyle(svg).fill : null,
+            iconCenterDriftPx: window.__bffNoCss ? null : drift,
+            alignOk: drift === null || window.__bffNoCss ? null : drift < 1,
+            // 核心判据：按钮不存在，或存在时只有一个图标位大小（正常 36x22 / 全屏 54x28）
+            noShadowOk: !iconBox || (iconBox[0] <= 60 && iconBox[1] <= 60),
+          }, null, 1);
+        } catch (e) {
+          el.textContent = 'status-error: ' + e.message;
+        }
+      };
+      v.addEventListener('seeked', fmt);
+      setInterval(fmt, 400);
+    })();
+  </script>
+</body>
+</html>

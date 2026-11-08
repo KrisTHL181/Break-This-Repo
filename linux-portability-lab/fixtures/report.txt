@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "report.txt"
+ASCII space-free name; compare with report plus an invisible character.

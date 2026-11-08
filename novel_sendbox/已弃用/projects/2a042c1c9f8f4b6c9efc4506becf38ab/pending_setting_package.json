@@ -1,0 +1,55 @@
+{
+  "world_rules": {
+    "rules": [
+      "雨夜能见度不足五米，追踪只能靠听觉与直觉",
+      "凶手每次作案后必在现场留下一枚黑铁乌鸦徽章",
+      "人类不可复活"
+    ]
+  },
+  "characters": [
+    {
+      "name": "林默",
+      "personality": "冷静敏锐，带有轻微偏执，对雨夜犯罪有着近乎本能的执着",
+      "current_goal": "追踪代号'夜鸦'的连环杀手并阻止其下一次作案",
+      "current_emotion": "紧绷而专注，雨水激起他的战意",
+      "current_location": "雨夜旧巷",
+      "exposure_status": "exposed",
+      "hidden_fields": {},
+      "is_focus": true
+    },
+    {
+      "name": "夜鸦",
+      "personality": "狡诈残忍，享受雨夜杀戮的仪式感",
+      "current_goal": "完成第三起献祭式谋杀并摆脱追踪",
+      "current_emotion": "亢奋且轻蔑",
+      "current_location": "雨夜旧巷",
+      "exposure_status": "exposed",
+      "hidden_fields": {},
+      "is_focus": false
+    }
+  ],
+  "initial_scene": {
+    "name": "雨夜旧巷",
+    "description": "惨白路灯下雨水如针，林默的皮鞋踏碎水面倒影，远处传来细微金属声。"
+  },
+  "completion_conditions": [
+    {
+      "id": "cond1",
+      "title": "揭露夜鸦的真实身份",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond2",
+      "title": "在雨夜将夜鸦逮捕归案",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond3",
+      "title": "破解夜鸦留下的所有乌鸦徽章暗号",
+      "achieved": false,
+      "achieved_chapter": null
+    }
+  ]
+}

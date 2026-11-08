@@ -1,0 +1,435 @@
+# 任务线: Kill All the Things
+### [902] A Big Ugly Snake
+Required for your first wand, and in general, an ugly creature.  [note]To progress in TF, you need to follow the achievements. They can be finicky, so make sure to check if you got the achievement each time. If not, try to drop and pickup everything that dropped from the bosses.[/note]  [note]If you have problems completing the quest, you can also use the Spawn Eggs from the Vending Machine to try again.[/note]
+  - [击杀] target=TwilightForest.Naga n=
+  > 奖励: Thaumcraft:ItemLootBag:1 | dreamcraft:CoinSurvivorI x3 | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinAdventureI x3
+
+### [903] Adventure Time!
+Stop him before he makes his wish at Prismo's!
+  - [击杀] target=TwilightForest.Twilight Lich n=
+  > 奖励: Thaumcraft:ItemLootBag:1 | dreamcraft:CoinSurvivorI x6 | dreamcraft:CoinDarkWizardI x6 | dreamcraft:CoinAdventureI x6
+
+### [920] Blaze: Evolved
+In order to proceed to Tier 4 Planets, the blaze boss needs to be killed. Find him in one of the dungeons on Ceres.
+  - [到达] 
+  - [击杀] target=GalacticraftCore.EvolvedBossBlaze n=
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinAdventureII x2
+
+### [919] Creeper: Evolved
+Not that regular creepers are nasty enough, no. There is an evolved creeper boss! He is your key (Well he HAS a key...) to reach the next tier of planets (Asteroid Belt, Ceres, Io, Europa, Ganymede, Callisto).
+  - [到达] 
+  - [击杀] target=GalacticraftMars.CreeperBoss n=
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSurvivorII | dreamcraft:CoinDarkWizardII | dreamcraft:CoinAdventureII
+
+### [922] Crystal Boss: Ayyy... Wait, What?
+Seriously, a crystal boss? Anyway, it's your key to Tier 6 planets, and he lurks around on Enceladus.
+  - [到达] 
+  - [击杀] target=GalacticraftCore.EvolvedCrystalBoss n=
+  > 奖励: enhancedlootbags:lootbag:8 x3 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [900] Don't Look it in the Eyes!
+Bad things may happen if this creature is allowed to stay alive. The ores in its cave being valuable have nothing to do with why you need to kill it. Seriously.
+  - [击杀] target=TwilightForest.Hydra n=
+  > 奖励: Thaumcraft:ItemLootBag:1 | dreamcraft:CoinSurvivorII x3 | dreamcraft:CoinDarkWizardII x3 | dreamcraft:CoinAdventureII x3
+
+### [606] Ender Guardians
+Well if you've decided to grind then do it... Kill some of the guardians.
+  - [击杀] target=HardcoreEnderExpansion.EnderGuardian n=
+  - [击杀] target=HardcoreEnderExpansion.Endermage n=
+  - [击杀] target=HardcoreEnderExpansion.AngryEnderman n=
+  - [提交] HardcoreEnderExpansion:auricion x5
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinSurvivorII x3 | dreamcraft:CoinAdventureII x3 | dreamcraft:CoinDarkWizardII x3
+
+### [921] Ghast: Evolved
+Fluffy, fluffier, ghasts! And also big crybabies. This one hides in a dungeon on IO, and holds the key for Tier 5 planets.
+  - [到达] 
+  - [击杀] target=GalacticraftCore.EvolvedBossGhast n=
+  > 奖励: enhancedlootbags:lootbag:8 x2 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinDarkWizardII x5 | dreamcraft:CoinAdventureII x5
+
+### [2111] Hail to the King
+If you get lucky, you might find a King Slime in your travels. Kill it and I'll give you a really nice replacement head for one of your tools.
+  - [击杀] target=TConstruct.KingSlime n=
+  > 奖励: bq_standard:choice
+
+### [2079] Hey is That a Friendly Bumblebee?
+Aieee, no it's not, it's a nether wasp, kill it kill it kill it!
+  - [击杀] target=BiomesOPlenty.Wasp n=
+  > 奖励: dreamcraft:CoinBees x25
+
+### [901] I Don't Even...
+OK so there is this maze. And there are... minotaurs. But what in the world is a minoshroom?
+  - [击杀] target=TwilightForest.Minoshroom n=
+  > 奖励: Thaumcraft:ItemLootBag:1 | dreamcraft:CoinSurvivorII | dreamcraft:CoinDarkWizardII | dreamcraft:CoinAdventureII
+
+### [398] Kill Baba Yaga
+Baba Yaga is a witch (or one of a trio of sisters of the same name), who appears as a deformed and/or ferocious-looking elderly woman. She flies around in a mortar and wields a pestle. She dwells deep in the forest, in a hut usually described as standing on chicken legs, with a fence decorated with human skulls. Baba Yaga may help or hinder those that encounter or seek her out.
+  - [击杀] target=witchery.babayaga n=
+  > 奖励: enhancedlootbags:lootbag:55 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [404] Kill Demon
+Demons are powerful, evil beings who dwell in the infernal dimensions. To date, none have been seen roaming the Nether, where their minions: ghasts, blazes, and their ilk seem to dominate. To meet a demon without a way to protect oneself is almost certain death. They are known to hit like a proverbial truck, and require a significant amount of damage to kill. Some demons have even been seen shooting fireballs! They are, of course, also immune to fire.
+  - [击杀] target=witchery.demon n=
+  > 奖励: enhancedlootbags:lootbag:55 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [400] Kill Ender Dragon
+The dragon must die. Long enough has she destroyed those precious endstone blocks!  [note]PS: Hold shift and whack it with a vanilla sword.[/note]
+  - [提交] minecraft:dragon_egg
+  > 奖励: enhancedlootbags:lootbag:10 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [399] Kill Horned Huntsman
+A Horned Huntsman is a member of the Wild Hunt, a powerful entity created by the Horned God. If one is encountered, either prepare for a hard fight, or flee.
+  - [击杀] target=witchery.hornedHuntsman n=
+  > 奖励: enhancedlootbags:lootbag:55 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [925] Killing: Evolved
+I guess you're good at killing things, huh? And if you got this far, maybe making things too?
+  - [提交] dreamcraft:CoinDarkWizardIII x10, dreamcraft:CoinAdventureIII x10, dreamcraft:CoinSurvivorIII x10, dreamcraft:CoinTechnicianIII x10
+  > 奖励: bq_standard:choice
+
+### [402] Kill Lord of Tormentum
+A Lord of Torment is a mighty demonic being that is able to create prisons to torment its victims. Those foolish enough to summon one of these creatures must prepare for an arduous fight.
+  - [击杀] target=witchery.lordoftorment n=
+  > 奖励: enhancedlootbags:lootbag:55 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [403] Kill Mog and Gulg
+Mog and Gulg are the god-like beings that hobgoblins worship. They may send their avatars to pay witches a visit who exploit their worship (with a statue of hobgoblin patron). Rumor has it that using a nether star may make them take immediate notice.
+  - [击杀] target=witchery.goblinmog n=
+  - [击杀] target=witchery.goblingulg n=
+  > 奖励: enhancedlootbags:lootbag:55 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [401] Kill Shade of Leonard
+Leonard is the demonic being who is rumored to have taught a cadre of German witches their trade, and often presided over their sabbats. A skilled coven with the witches' cauldron can summon a Shade of the Demon according to the method described in the Witches' Brews book.
+  - [提交] witchery:leonardsurn
+  > 奖励: enhancedlootbags:lootbag:12 | enhancedlootbags:lootbag:56 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [906] Let Her Go
+It seems the cold doesn't bother her. Committed crimes: None. But... you know... you have to progress somehow...  [note]PS: Keep going.[/note]
+  - [击杀] target=TwilightForest.Snow Queen n=
+  > 奖励: Thaumcraft:ItemLootBag:2 x2 | dreamcraft:CoinSurvivorIII x5 | dreamcraft:CoinDarkWizardIII x5 | dreamcraft:CoinAdventureIII x5
+
+### [908] Secret: A Nice....
+Hey, you! I want that lamp. I have something for you in return. You don't need it anyways, do you?  [note]If you want the TF achievement, get that first.[/note]
+  - [提交] TwilightForest:item.lampOfCinders
+  - [提交] TwilightForest:item.lampOfCinders
+  > 奖励: TConstruct:cleaver | dreamcraft:CoinDarkWizardIII x10
+
+### [917] Secret: The Trade For Life
+You have been busy my friend. I have something for you. Give me your hearts, and I will magically enhance them so you can actually use them.
+  - [提交] betterquesting:extra_life x4
+  > 奖励: TConstruct:heartCanister:2 | dreamcraft:CoinDarkWizardI x5
+
+### [918] Skeleton: Evolved
+In order to advance to a higher tier and reach Mars, Deimos and Phobos, you need to make yourself a better rocket. There are rumors that an Evolved Skeleton hiding out on the Moon has the schematics of such a device.
+  - [到达] 
+  - [击杀] target=GalacticraftCore.EvolvedSkeletonBoss n=
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinSurvivorII | dreamcraft:CoinDarkWizardII | dreamcraft:CoinAdventureII
+
+### [607] Slay the Dragon. (Again)
+If you're bored, you could resurrect the dragon. Or, you can find a chaos dragon, if you dare. Anyway, kill one of those, and you'll be well rewarded.
+  - [击杀] target=DraconicEvolution.ChaosGuardian n=
+  > 奖励: enhancedlootbags:lootbag:8 x5 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [605] Slay the Eyes!
+Find and kill Ender-Eyes, that guard the Towers.
+  - [击杀] target=HardcoreEnderExpansion.EnderEye n=
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinAdventureII x2
+
+### [923] Slime: Evolved
+Totally looks like a thaumic slime to me. Don't you think so? Find this dude on Proteus.
+  - [到达] 
+  - [击杀] target=GalacticraftCore.EvolvedBossSlime n=
+  > 奖励: enhancedlootbags:lootbag:8 x5 | dreamcraft:CoinSurvivorIII x2 | dreamcraft:CoinDarkWizardIII x2 | dreamcraft:CoinAdventureIII x2
+
+### [905] The Big Fluffy Crybaby
+It flies, it makes funny sounds, and... IT'S SO FLUFFY! Well, kill it.
+  - [击杀] target=TwilightForest.Tower Boss n=
+  > 奖励: Thaumcraft:ItemLootBag:1 x2 | dreamcraft:CoinSurvivorIII | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinAdventureIII
+
+### [405] The Power of Infinity
+You've mastered everything possible. And now it's time to give your equipment the final boost. The infinity egg is just the right addition to your altar. It's quite expensive, but well worth the cost.
+  - [提交] minecraft:dragon_egg
+  - [提交] witchery:chalkheart, witchery:chalkinfernal, witchery:chalkritual, witchery:chalkotherwhere
+  - [提交] witchery:ingredient:64, witchery:ingredient:45 x8, witchery:ingredient:80 x4, witchery:ingredient:23 x4
+  - [提交] Thaumcraft:ItemEldritchObject:3
+  > 奖励: witchery:infinityegg | dreamcraft:CoinSurvivorIV | dreamcraft:CoinDarkWizardIV | dreamcraft:CoinAdventureIV
+
+### [2073] Time to Kill (Bat)
+...Did you expect a raid boss of some kind? If you count the number of bats you'll encounter and kill, then probably yes.
+  - [击杀] target=Bat n=
+  - [击杀] target=Thaumcraft.Firebat n=
+  > 奖励: harvestcraft:spamcompressedsaltBlockalt x8 | minecraft:fish:3 x64 | dreamcraft:CoinDarkWizardII
+
+### [2832] Time to Kill (Bighorn Sheep)
+Oh no, not the poor bighorn sheep! Fluffy and red, I'm so sad in the Twilight Forest.
+  - [击杀] target=TwilightForest.Bighorn Sheep n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [913] Time to Kill (Blaze)
+You should be careful with this task. Fire protection is highly recommended.
+  - [击杀] target=Blaze n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2443] Time to Kill (Chicken)
+Screaming doesn't help. You're going in the soup.
+  - [击杀] target=Chicken n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [2441] Time to Kill (Cow)
+I think I need a new leather coat. Let's slaughter a few cows.
+  - [击杀] target=Cow n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [909] Time to Kill (Creeper)
+Who hasn't experienced this...? You're just minding your own business, mining a few diamonds, and suddenly, you wake up in your bed, all your items gone.  Time to strike back!
+  - [击杀] target=Creeper n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [282] Time To Kill (Crimson Knight)
+I can feel it. Yess. Yeeeess. We will gain more power nigh. Nigh! Yes. My precious. The voices gave me a hint, there is a dimension filled with unbelievable sources of magic energy. I must go there. I must! The crimson people know the secret. I will rip them aparrrt... They will tell me!  §3NOTE: The Knights are spawned by the Clerics, but the Clerics DO NOT RESPAWN after killed.
+  - [击杀] target=Thaumcraft.CultistKnight n=
+  - [击杀] target=Thaumcraft.CultistCleric n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinSurvivorII | dreamcraft:CoinAdventureII | dreamcraft:CoinDarkWizardII
+
+### [2074] Time to Kill (Dire Wolf)
+This kind of wolf does not take kindly to you marching close to them or offering them bones! Neutral at first, but extremely hostile upon approaching close to them and dangerous. They'll rip the bones right off ya! Found within snowy forest biomes.
+  - [击杀] target=enderzoo.DireWolf n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinSurvivorI x3 | dreamcraft:CoinAdventureI x3 | dreamcraft:CoinTechnicianI x3
+
+### [915] Time to Kill (Enderman)
+Uh, fancy teleport pearls. You need them. All of them. Now!  [note]PS: Top is regular enderman, bottom is special mob's version. Complete one set. Blame SM for their method of creating new endermen types for this. HEE ones like angry don't count.[/note]
+  - [击杀] target=Enderman n=
+  - [击杀] target=SpecialMobs.SpecialEnderman n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2843] Time to Kill (Fire Beetle)
+The Fire Beetle is found in Hollow Hills and Labyrinths. Fire Beetles will shoot a breath of fire at nearby players, dealing 2 damage every half second the player is exposed to the fire.
+  - [击杀] target=TwilightForest.Fire Beetle n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2552] Time to Kill (Fire Golem)
+Oh you fell out of the world, I'm sorry. Try again.
+  - [击杀] target=HardcoreEnderExpansion.FireGolem n=
+  > 奖励: betterquesting:extra_life:1 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5 | bq_standard:choice
+
+### [2835] Time to Kill (Forest Bunny)
+Oh, how cute this little rabbit is. Pow! .... oh it's dead?
+  - [击杀] target=TwilightForest.Forest Bunny n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [-9089128153539631833] Time to Kill (Fox)
+The Fox can be found in colder biomes. Make sure you're properly equipped, they're quite quick!
+  - [击杀] target=etfuturum.fox n=
+  > 奖励: betterquesting:extra_life:2 | etfuturum:sweet_berries x5 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [985] Time to Kill (Ghast)
+They shoot you with explosive fireballs but they are weak when you hit them or knock the fireballs back with a weapon. Better upgrade your armor with fire and blast protection.
+  - [击杀] target=Ghast n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2553] Time to kill (Haunted Miners)
+Haunted miners are the flying fire devils. They shoot you into the abyss with their bazookas.
+  - [击杀] target=HardcoreEnderExpansion.HauntedMiner n=
+  > 奖励: betterquesting:extra_life:1 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5 | bq_standard:choice
+
+### [2075] Time to Kill (Hellhound)
+Aggressive and can apply fire, although not a fast enemy either. Recommendation, avoid melee combat and offerings of bones.
+  - [击杀] target=witchery.hellhound n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinSurvivorI x3 | dreamcraft:CoinAdventureI x3 | dreamcraft:CoinTechnicianI x3
+
+### [-8406688982659812687] Time to Kill (Husk)
+A Husk is a variant of Zombie that spawns in deserts! They attack like Zombies, except they inflict hunger and refuse to burn in the sunlight.
+  - [击杀] target=etfuturum.husk n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2854] Time to Kill (Imp)
+Imps are little orange creatures who run through the whole nether. They are peaceful and they won't attack you either.  Kill a few to get their leather and build fireproof armor.
+  - [击杀] target=Natura.Imp n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinSurvivorI x3 | dreamcraft:CoinAdventureI x3 | dreamcraft:CoinTechnicianI x3
+
+### [2841] Time to Kill (Kobold)
+Kobolds can often be found in Hollow Hills. They will spawn almost anywhere that is dark within the Twilight Forest dimension and tend to spawn in large groups.
+  - [击杀] target=TwilightForest.Twilight Kobold n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2851] Time to Kill (Lava Monster)
+They are everywhere where there is lava and they shoot at you with fireballs. From the air with a bow and arrow or crossbow they're easy targets.
+  - [击杀] target=SpecialMobs.LavaMonster n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinSurvivorI x3 | dreamcraft:CoinAdventureI x3 | dreamcraft:CoinTechnicianI x3
+
+### [2554] Time to Kill (Louse)
+Bugs everywhere! These damned bastards! Better run away quickly.
+  - [击杀] target=HardcoreEnderExpansion.Louse n=
+  > 奖励: betterquesting:extra_life:1 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5 | bq_standard:choice
+
+### [2076] Time to Kill (Magma Cube)
+Now a Hell version of your slime! Always appears with Infernal status.
+  - [击杀] target=LavaSlime n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinChemistI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [2853] Time to Kill (Nitro Creeper)
+They are highly explosive and make holes much larger than regular creepers.  They also cause a lot more damage. So be careful!
+  - [击杀] target=Natura.NitroCreeper n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinSurvivorI x3 | dreamcraft:CoinAdventureI x3 | dreamcraft:CoinTechnicianI x3
+
+### [2837] Time to Kill (Penguin)
+Be careful not to slip on the ice and land on a penguin.
+  - [击杀] target=TwilightForest.Glacier Penguin n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2442] Time to Kill (Pig)
+Mmm... turn on the grill. We need more meat.
+  - [击杀] target=Pig n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [910] Time to Kill (Pigman)
+"Zombie Pigman"? What the hell is going on with you zombies?! Maybe you should encase your animals better at night...
+  - [击杀] target=PigZombie n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2846] Time to Kill (Pinch Beetle)
+Pinch Beetles have 20 hearts worth of health and can hit for 4 hearts of damage when grabbed. They can be found in the largest Hollow Hills, Labyrinths, and in Dark Towers. Pinch Beetles charge at you and grab your body. When in this situation you want to quickly attack and kill them. They are very fast and can be extremely dangerous when near lava, a cliff, or other enemies. Pinch beetles can suffocate you if the ceiling is too low.
+  - [击杀] target=TwilightForest.Pinch Beetle n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [-5398881678143504386] Time to Kill (Rabbit)
+It's a shame to kill something so adorable... oh well, do it anyway.
+  - [击杀] target=etfuturum.rabbit n=
+  > 奖励: betterquesting:extra_life:2 | etfuturum:rabbit_foot | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2836] Time to Kill (Raven)
+Abracadabra... Give me your black feathers.
+  - [击杀] target=TwilightForest.Forest Raven n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2842] Time to Kill (Redcap)
+The Redcap is a goblin carries an Iron Pickaxe, wears Iron Boots, and constantly giggles to itself. They are found lurking in Hollow Hills, as well as occasionally appearing in the Goblin Knight Stronghold.
+  - [击杀] target=TwilightForest.Redcap n=
+  - [击杀] target=TwilightForest.Redcap Sapper n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2551] Time to Kill (Scorching Lens)
+They live on a fiery island in the end and spit at you with fireballs. Better run for your life.
+  - [击杀] target=HardcoreEnderExpansion.ScorchedLens n=
+  > 奖励: betterquesting:extra_life:1 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5 | bq_standard:choice
+
+### [2440] Time to Kill (Sheep)
+Oh no, not the poor sheep! Fluffy and red, I'm so sad.
+  - [击杀] target=Sheep n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [-8580166751420167909] Time to Kill (Shulker)
+The Shulker can spawn in the Lich or Ghast Queen Tower in the Twilight Forest. You can also optionally obtain its spawn egg either with the crafting recipe or through the Vending Machine.
+  - [击杀] target=etfuturum.shulker n=
+  > 奖励: betterquesting:extra_life:2 | etfuturum:shulker_shell x2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2078] Time to Kill (Silverfish)
+Be wary, they like to disguise and clone themselves in stone-related blocks! (Applies to Vanilla blocks only) Can be found within dungeons and hills. Can also be found in Drowning Creeper spawned cobblestone blocks.
+  - [击杀] target=Silverfish n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinSmithII | dreamcraft:CoinChemistII
+
+### [912] Time to Kill (Skeleton)
+Arrows are nice, if you shoot them. If one hits you, well, bad things happen.  Hint: Arrows are an excellent source of telum.
+  - [击杀] target=Skeleton n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [2840] Time to Kill (Skeleton Druid)
+The druid skeleton is always infernal so watch out. It can be found in little huts all over the Twilight Forest.
+  - [击杀] target=TwilightForest.Skeleton Druid n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2077] Time to Kill (Slime)
+Sticky and bouncy! Now in many variations. Say hello to my little friend, Lemon Slice!
+  - [击杀] target=Slime n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinChemistI x5
+
+### [2844] Time to Kill (Slime Beetle)
+The Slime Beetle can be found in Hollow Hills, and Labyrinths. Slime Beetles fire slimy projectiles at players that deal about 8 points of damage on attack. They have incredible accuracy, and move extremely quickly when the player attempts to approach one.
+  - [击杀] target=TwilightForest.Slime Beetle n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [911] Time to Kill (Spiders)
+Eeeek! Wall climbing monsters, gross! Slay them. Quickly! Watch out for the witch spiders, they can give as good as they get.
+  - [击杀] target=Spider n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [2445] Time to Kill (Squid)
+Delicious squid. We're making Tom Yum seafood.
+  - [击杀] target=Squid n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [2838] Time to Kill (Squirrel)
+Mmm... yummy squirrel on a stick!
+  - [击杀] target=TwilightForest.Forest Squirrel n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [-5152503880681494502] Time to Kill (Stray)
+The Stray is a variety of Skeleton you will find in colder biomes. Watch out for their arrows; they can have a slowness effect!
+  - [击杀] target=etfuturum.stray n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2845] Time to Kill (Swarm Spider)
+The Swarm Spider can be found in large groups inside various landmarks, such as Hollow Hills, Leaf Dungeons and Hedge Mazes. Swarm Spiders can sometimes spawn with Skeletons riding them. They have 3 health points, making them weak to almost any attack. Swarm Spiders will attempt to attack but due to their low attack, they barely inflict damage on anything.
+  - [击杀] target=TwilightForest.Swarm Spider n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2839] Time to Kill (Tiny Birds)
+Tweet, tweet, tweeeeeet!.... silence.
+  - [击杀] target=TwilightForest.Tiny Bird n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2834] Time to Kill (Wild Boar)
+Delicious roasted wild boar. Mmm... very tasty.
+  - [击杀] target=TwilightForest.Wild Boar n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2833] Time to Kill (Wild Deer)
+Christmas is canceled this year. So sad.
+  - [击杀] target=TwilightForest.Wild Deer n=
+  > 奖励: betterquesting:extra_life:2 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2852] Time to Kill (Wisp)
+They appear everywhere in the Nether, and there are wisp spawners as well. Since they are very fast and small, it gets difficult in long-range combat.
+  - [击杀] target=Automagy.WispNether n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinSurvivorI x3 | dreamcraft:CoinAdventureI x3 | dreamcraft:CoinTechnicianI x3
+
+### [537] Time to Kill (Witch)
+Witches bring stitches because they are always infernal and very dangerous. Be careful since they throw potions at you.
+  - [击杀] target=Witch n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [563] Time to Kill (Wither Skeleton)
+Gimme yo §oSkuuuuull!!!§r <-- The thought of every non-noob player upon seeing one.  BTW, in case you didn't know, you can summon the Wither by placing 4 soul sand blocks in a T shape, with 3 wither skulls on top. Don't do so in your base.
+  - [击杀] target=Skeleton n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [916] Time to Kill (Wither)
+After collecting a couple of those wither skeleton heads, you feel like you could use some more action. So why not kill a wither? You'll need a ton of nether stars anyway...  Kill it twice for something nice.
+  - [击杀] target=WitherBoss n=
+  > 奖励: betterquesting:extra_life:1 | dreamcraft:CoinTechnicianII | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSurvivorII
+
+### [2847] Time to Kill (Wraith)
+The Twilight Wraith is a floating spirit and are not initially aggressive towards the player but will become angry when approached. When spotted by a Wraith it can be difficult to lose it, as they are relentless in chasing the player and its ability to phase through blocks. They are found in large Hollow Hills.
+  - [击杀] target=TwilightForest.Twilight Wraith n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5 | dreamcraft:CoinTechnicianI x5
+
+### [914] Time to Kill (Zombie)
+Nobody knows who they are, or where they came from. They're just annoying at night, and too stupid to make a crafting table.
+  - [击杀] target=Zombie n=
+  > 奖励: betterquesting:extra_life:2 | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinAdventure x25 | dreamcraft:CoinTechnician x25
+
+### [904] Who Ya Gonna Call?
+Phantom Busters! Or wait... Ah whatever. They drop good armor by the way.
+  - [击杀] target=TwilightForest.Knight Phantom n=
+  > 奖励: Thaumcraft:ItemLootBag:1 x2 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinDarkWizardII x5 | dreamcraft:CoinAdventureII x5
+
+### [924] Wolf: Evolved
+The final frontier... A... wolf that is not even an Iron Maiden fan?... What did you expect, a super boss? Heh. No. The budget was too tight...
+  - [到达] 
+  - [击杀] target=GalacticraftCore.EvolvedBossWolf n=
+  > 奖励: enhancedlootbags:lootbag:14 | dreamcraft:CoinSurvivorIII x5 | dreamcraft:CoinDarkWizardIII x5 | dreamcraft:CoinAdventureIII x5
+
+### [907] Yeti. Alpha, Yeti.
+Wanted: Alpha Yeti, Dead. Committed crimes: Violently throwing ice at people, for no reason.
+  - [击杀] target=TwilightForest.Yeti Boss n=
+  > 奖励: Thaumcraft:ItemLootBag:1 x2 | dreamcraft:CoinSurvivorIII x2 | dreamcraft:CoinDarkWizardIII x2 | dreamcraft:CoinAdventureIII x2
+

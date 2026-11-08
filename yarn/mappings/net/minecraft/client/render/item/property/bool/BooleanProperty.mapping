@@ -1,0 +1,2 @@
+CLASS net/minecraft/class_10460 net/minecraft/client/render/item/property/bool/BooleanProperty
+	METHOD method_65637 getCodec ()Lcom/mojang/serialization/MapCodec;

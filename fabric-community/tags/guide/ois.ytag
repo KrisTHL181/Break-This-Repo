@@ -1,0 +1,10 @@
+type: text
+
+---
+
+**Do not use `ObjectInputStream`** unless you know what you are doing.
+
+`ObjectInputStream` is associated with several vulnerabilities.
+While the impact is benign in many cases, there have been some successful exploits in the past.
+
+Use other serialization methods like JSON or NBT, or serialize each field of a class manually.

@@ -1,0 +1,330 @@
+# 任务线: Tier 7 - ZPM
+### [377] §b§lA Casing
+I need something for the outer shell. Again, a crystal-based material would be best, because I like it shiny. I tested all crystals I know of and none of them met the requirements. I heard you have access to outer space? Can you try to find a suitable material while you're out there?
+  - [勾选确认]
+
+### [385] §b§lA Few More Things...
+Ok, I think I have everything I need to assemble the device. Can you assist me with some additional materials? I need to update some of my machines, as these exotic components you got me damaged some of them already. Don't worry, I have a list here.  Some of my circuits burned to a crisp while I was trying to measure the conductivity of these soul and life shards. I need better ones.  Good lord, these mysterious crystals have eaten away my diamond grinding head! How could that happen? Can you get me a better one?  Do you see that pile of Rhodium and Palladium over there? No? Neither do I. Because the machine was VAPORIZED! Good that you gave me 2 singularities, the first one... Well... Just get me a better casing, would you?  It seems, that the stabilizers need... stabilizing... But I'm out of field generators. Can you help me with this?
+  - [提交] gregtech:gt.metaitem.03:32088 x10
+  - [提交] gregtech:gt.metaitem.01:32723
+  - [提交] gregtech:gt.blockmachines:17
+  - [提交] gregtech:gt.metaitem.01:32675 x2
+  > 奖励: enhancedlootbags:lootbag:42 x2 | dreamcraft:CoinTechnicianIII
+
+### [380] §b§lA Problem that Matters
+I need to open a wormhole. But for that, I need an immense gravitational field. One like those created upon the death of a massive star, a black hole. But I can't really "kill" a sun for this. I need to compress matter somehow... But... How? I think I may need a specialized machine for this, one that does not use explosions, as that won't get dense enough.
+  - [勾选确认]
+
+### [2634] §b§lA Vision of the Future (FPS Drop Not Included)
+To get to the Toxic Everglades, you'll need 10 Containment Frames and an Alkalus Disk (Activated). You use them like when making a nether portal. The disk can also be used to set special fires. It doesn't spread across the ground that well, but it'll take out a tree real fast. If you want to get rid of a giant tree, this is your tool.  The dim itself is filled with GT++ ores.
+  - [提交] ToxicEverglades:blockDarkWorldPortalFrame x10, ToxicEverglades:everglades.trigger
+  - [到达] 
+
+### [2637] §b§lCheaper EV Circuits
+With a higher voltage, you can use your ASoCs to make cheaper Quantum Processors.
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:32754 x4, bartworks:gt.bwMetaGeneratedItem0:32730 x4, gregtech:gt.blockmachines:1642 x64, gregtech:gt.metaitem.01:26360 x256
+  - [提交] gregtech:gt.metaitem.03:32085 x64
+
+### [2945] §b§lConcentration
+Now, let's neutralize the solution.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10070
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [2683] §b§lConfiguring TecTech Multiblocks
+Many TecTech multis can be customized by adjusting certain internal numbers called parameters. You can directly adjust them in the GUI.  If there are lit up sections in the parameters part of the multi interface (see the TecTech Multiblocks quest), you can configure the multi, otherwise there is nothing to do.  We'll be using the Quantum Computer as our example, since that is what you probably want it for.  First we need to understand the parameter naming, like ID:0:1:I. The first number represents the parameter block. For the QC only block 0 is used. Each such block can have up to 4 used parameters, 2 inputs and 2 outputs. The letter at the end specifies if a parameter is an input or output with I or O and the number in the middle distinguishes the 2 parameters of this kind in the block. It is either 0 or 1.  Inputs are something that is either set or is a default. Outputs give information that the machine sends to you, that indicates things. (like heat or Computation)  And lastly, the Parametrizer Memory Card lets you copy settings from one machine to another easily.
+  - [提交] tectech:item.em.parametrizerMemoryCard
+
+### [2671] §b§lData Bank
+By now you probably feel overwhelmed with the number of data sticks needed for your Assembly Line. TecTech has a solution for you: The Data Bank. It allows you to store more than just 16 data sticks and can be connected to multiple Assembly Lines at the same time.  Place the controller one block above the ground and use the Multiblock Structure Hologram Projector to see how it is built. You will need a Maintenance Hatch and at least an EV Energy Hatch, though the power requirements can be much higher if you use many Data Access Hatches and Data Bank Master Connectors, for now you should start with an LuV energy hatch. Trying to run the Data Bank and then scanning the controller will tell you how much EU/t is needed.  You will need more blocks than what is asked for in this quest, as the number of Data Access Hatches and Connectors is up to you. You can have a maximum of 15 combined.  The Assembly Line Reception Connector replaces your old Data Access Hatch on the Assembly Line. Connect it to a Master Connector on the Data Bank with Optical Fiber Cable and make sure to color the hatches and the cable.  [note]If you can't figure out what blocks to place, pay attention to the tooltip in the bottom-left when using the Multiblock Structure Hologram Projector. In this case the filler blocks are Computer Casing.[/note]
+  - [可选提交] tectech:gt.blockcasingsTT:2 x18, tectech:gt.blockcasingsTT x6, tectech:gt.blockcasingsTT:1 x3, gregtech:gt.blockmachines:146, gregtech:gt.blockmachines:15443, gregtech:gt.blockmachines:15442, gregtech:gt.blockmachines:15470 x10
+  - [提交] gregtech:gt.blockmachines:15313
+
+### [2953] §b§lDisproportionation
+The chemical properties of naquadria are a bit weird.  There's nothing known that can precipitate it. The only way to get naquadria from the solution is to use high energy particle to bombard it.  However, only a part of the output naquadria can be used for further processing and you have to re-purify the rest.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10078
+  > 奖励: dreamcraft:CoinChemistIV
+
+### [457] §b§lEnergy Infuser
+The Energy Infuser is the tech answer to the Thaumic Restorer for repairing items and also acts a charger.  When fed with energy it is able to charge any item that is fed into its Input Bus. Fully charged items will be placed in the Output Bus. The items will be fed with the amount of energy provided by the used Energy Hatch.  Apart from its charging capabilities the Energy Infuser can repair items when provided with UU-Matter and energy. However, GregTech tools can not be repaired. When repairing the machine consumes 1L UU-Matter and 1000 EU per repaired durability point.
+  - [提交] gregtech:gt.blockmachines:15350
+
+### [2920] §b§lEnriched Naquadah Time
+The Enriched Naquadah line is much shorter than the Naquadah line, and easier. It's used for fuel or Neuro Processing Units which are UV content, and it's also used in the Prismarine line to make Prismatic Naquadah; something you will need for Trinium Coils.  [warn]Hold 64 enriched Naquadah Ingot / Dust to skip this questline.[/warn]
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:10069
+  - [勾选确认]
+
+### [2919] §b§lEnriched Naquadah Ingot
+Ah, you made it.  You can choose to smelt it with zinc in an EBF or electrolyze it. Either is fine but you can fully recycle the zinc, so the EBF recipe is better if you want the ingot.
+  - [提交] gregtech:gt.metaitem.01:11326, gregtech:gt.metaitem.01:2326
+  > 奖励: enhancedlootbags:lootbag:42 x2 | dreamcraft:CoinChemistIII x20
+
+### [2630] §b§lEuropium Doped Wafers
+These boules are more efficient when making wafers out of them than Naquadah.
+  - [可选提交] gregtech:gt.metaitem.03:32150
+  - [提交] gregtech:gt.metaitem.03:32151 x96
+
+### [381] §b§lFancy!
+Yes. Yes! That's it! Bring me more of this stuff! I probably need a lot of it...
+  - [提交] GalaxySpace:item.UnknowCrystal
+  - [提交] GalaxySpace:item.UnknowCrystal x32
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinSpaceIII
+
+### [1197] §b§lFusion Reactor MKII - Bigger, Better, Fusor
+Now that you have some Europium, put it to use by making a MK II reactor.  This one requires the same block placement, but replaces the LuV casings with fusion machine casings and the superconducting coil blocks with fusion coil blocks. The energy hatches must now be at least ZPM too.  Each energy hatch has an energy capacity of 20M EU and draws up to 8192 EU/t. That means it can handle start costs up to 320M EU and power consumption up to 131072 EU/t. Furthermore, MK I recipes in a MK II reactor are granted 2/2 OC which doubles the speed and power consumption.
+  - [提交] gregtech:gt.blockmachines:1194, gregtech:gt.blockmachines:32020
+  - [可选提交] gregtech:gt.blockcasings4:6 x108, gregtech:gt.blockcasings4:7 x32, gregtech:gt.blockmachines:47 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x2
+
+### [376] §b§lI'm Hungry
+What... I work a lot! So get me some food please.
+  - [提交] harvestcraft:creamofavocadosoupItem
+  - [提交] harvestcraft:supremepizzaItem
+  - [提交] harvestcraft:mintchocolatechipicemcreamItem
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [379] §b§lI need a stabilizer
+Opening the wormhole is one thing, but I need to stabilize it, so it doesn't harm anything. I guess I need something made of crystal. Why? Because I like it fancy. Find me a crystal-based, transparent material with immense power, would you?
+  - [勾选确认]
+
+### [378] §b§lIt Needs a Power Plug...
+Given the fact that I will be able to craft this device, it needs some kind of "plug" to get the power out. I need something to conduct immense amounts of power. I thought about superconductors, but they don't fit with the crystal casing material I have in mind. I need 2 different crystals, one for positive and one for negative charge.
+  - [勾选确认]
+
+### [2730] §b§lLasers Solve Everything
+Laser hatches are a high-end way of sending lots of amps of power, so much in fact, that it starts at 256A. This goes 1024/4096/16384+ and continues from there. They're also so powerful that only a few machines support them outside of the ever §owonderful§r TecTech: LSC, MBF, EnF, and PSS. Remember to paint the Laser Vacuum Pipes, the Source Hatch, and the Target Hatch. Also, Source = Output, Target = Input. Laser Vacuum Pipes do not split or bend. To turn your laser, use an [note]Active Transformer[/note]. Later on, you can use a Laser Vacuum Mirror to bend your Laser Vacuum Pipes; this will not allow splitting.  [note]Laser hatches can have their operational amperage adjusted in their GUI.[/note]  [warn]Be careful with using very high amp hatches as every Laser Hatch has 1EU/s * max amps passive power loss. For example, a 256A Laser Source Hatch and 256A Laser Target Hatch will both lose 256 EU/s regardless of the amount of power flowing through.[/warn]
+  - [勾选确认]
+
+### [2005] §b§lLearning Curve? Where We're Going There Are No Curves
+Only dangerous cliffs to fly off. TecTech can be the source of adventures, scary and satisfying.  Thanks to Piky/Scripted for giving you some guardrails to stay on the road. Scripted/Piky shed blood over these quests for you. Now it's your turn!  For additional details on TecTech, check out the wiki at [url]https://github.com/Technus/TecTech/wiki[/url]  You'll probably receive better help in Discord, though.
+  - [勾选确认]
+
+### [2947] §b§lLinear Accelerator
+I think you should have known how to process it.  Suitable for 9+ to use.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10071
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [1199] §b§lMaking Americium
+To upgrade your reactor further and to make UV motors, you will need to get some americium. The recipe is pretty expensive, but once you made the next tier of reactor, you will unlock a simpler and cheaper one. However, to get there you will need a lot of americium already, so better make sure you are producing enough lutetium.  Let's start with just 48 ingots. Enough for a single UV motor.
+  - [可选提交] gregtech:gt.metaitem.01:11078 x48, gregtech:gt.metaitem.01:11030 x48
+  - [提交] gregtech:gt.metaitem.01:11103 x48
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x2
+
+### [2658] §b§lMaking Tritanium
+In order to make Tritanium, first you need to make Duranium.  Tritanium is used for the T6 rocket, Gravisuit, MKIII Matter Manipulator, and UHV circuits.
+  - [可选提交] gregtech:gt.metaitem.01:30093 x3, gregtech:gt.metaitem.99:37 x2
+  - [可选提交] gregtech:gt.metaitem.99:328 x2, gregtech:gt.metaitem.99:28 x3
+  - [提交] gregtech:gt.metaitem.99:329
+
+### [2632] §b§lNano Power ICs
+You need these for Solars, UV -> UHV transformers, and ZPM Hatches and Dynamos.  [note]You'll need a ZPM Cutting Machine, or an OC'd multi.[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32160
+  - [提交] gregtech:gt.metaitem.03:32161
+
+### [2955] §b§lNaquadria Ingot
+Smelt it with magnesium dust in an EBF.
+  - [提交] gregtech:gt.metaitem.01:11327, gregtech:gt.metaitem.01:2327
+  > 奖励: gregtech:gt.metaitem.01:11327 x16 | dreamcraft:CoinChemistIV
+
+### [-7063329900109640972] §b§lNaquarite Universal Insulator Foil
+Finally, you can combine the §2Radiation-Proof Composite Sheet§r with §2Netherite Foil§r and §2Manyullyn§r in the §5§lForming Press§r to create §3Naquarite Universal Insulator Foil§r. This incredibly strong foil can be used to bind ingredients to all of your future coils due to its unrivaled radiation and heat resistance. 
+  - [可选提交] gregtech:gt.metaitem.01:29132 x4, gregtech:gt.metaitem.03:32250 x16, gregtech:gt.metaitem.99:386 x8
+  - [提交] gregtech:gt.metaitem.03:32251 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x10
+
+### [2950] §b§lN.N.Q.Q.N.Q.Q
+Do you want some naquadria?  Unfortunately, the naquadria dust has become repulsive naquadria oxide mixture dust because of a NERF. You have to build a line for it, like the naquadah.  [warn]Hold 64 Naquadria Ingots / Dust to skip this questline.[/warn]
+  - [提交] bartworks:gt.bwMetaGenerateddust:10074
+  > 奖励: dreamcraft:CoinChemistIV
+
+### [384] §b§lNow that Matters!
+Of course! The matter condenser! How come I didn't think of that?
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:47
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:47
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinTechnicianIII
+
+### [2954] §b§lOnce again
+The miscibility of P-507 and naquadria is still very perfect like naquadah. Most naquadria can be concentrated again.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10076
+  > 奖励: dreamcraft:CoinChemistIV
+
+### [2678] §b§lPaint-by-Numbers
+If you want to color all those fancy cables and such, you'll want to use the humble Paintbrush. To uncolor them, use a bucket of water.  Alternatively, you can also use the IC2 Painter, GT Spray Can, or the AE2 Color Applicator.  [note]The buildcraft paintbrush and GT spray cans can now color many cables or pipes in a row with just a single click![/note]
+  - [勾选确认]
+  - [可选提交] BuildCraft|Core:paintbrush, appliedenergistics2:item.ToolColorApplicator, gregtech:gt.metaitem.01:32438, gregtech:gt.metaitem.01:32468
+
+### [375] §b§lPower, So Much Power!
+If only I could harness it... Well, hello there my friend. I need your help with a project of mine. I want to create an immense power source, but I have a few problems that I need to solve first. Will you help me? You'll be well rewarded.  [note]The quests to get items will trigger the next part once you hold the item in question.[/note]
+  - [勾选确认]
+
+### [2631] §b§lPPIC Wafers
+You'll need Piko Power ICs to make Solars, UHV -> UEV transformers, and UV Hatches and Dynamos.  [note]You'll need a UV Cutting Machine, or an OC'd multi to cut the wafers.[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32160, gregtech:gt.metaitem.01:2981 x64, gregtech:gt.metaitem.99:318 x10
+  - [提交] gregtech:gt.metaitem.03:32162
+
+### [-6918418604701965607] §b§lPrismarine Precipitate
+After creating the §2Prismarine-Rich Nitrobenzene Solution§r, you'll need to process it using a §5§lChemical Plant§r with §2Strontium Hydroxide§r. Once processed, you can successfully obtain your first §3Prismarine Precipitate§r.  [warn]This line produces excess Strontium, so no need to worry about its continuous injection.[/warn]  [note]If you have not gotten Strontium yet, you can obtain it from Strontium Oxide based on Rare Earth 3 or from Spessartine Froth.[/note]
+  - [可选提交] miscutils:itemDustStrontiumHydroxide x42, gregtech:gt.metaitem.01:30137 x16
+  - [提交] gregtech:gt.metaitem.03:32248 x8, gregtech:gt.metaitem.01:30138 x12, miscutils:nitrobenzene x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistIII x10
+
+### [-5821693953433775363] §b§lPrismarine Recycling Pt. 2
+You'll notice after processing your first Prismarine Precipitates you are left with a second §2Contaminated Prismarine Solution§r. You can also recycle this for added §3Prismarine Solution§o§r and §3Prismarine-Rich Nitrobenzene Solution§r. Again, technically optional, but highly recommended.  [warn]If you didn't setup the recycling for the Contaminated Hydrogen Peroxide then you'll want to now since this recycling actively produces it.[/warn]
+  - [可选提交] gregtech:gt.metaitem.01:30135, gregtech:gt.metaitem.01:30138 x3
+  - [可选提交] gregtech:gt.metaitem.01:30136, gregtech:gt.metaitem.01:30137 x2
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-7701056798770456536] §b§lPrismarine Recycling
+§2Prismarine-Contaminated Hydrogen Peroxide§r is a byproduct of a couple different recipes in this line, it's best to recycle it for the bonus §3Prismarine Solution§r. Of course, you don't have to, but it would be ill-advised to avoid it.
+  - [可选提交] gregtech:gt.metaitem.01:30136 x6, miscutils:HydrogenPeroxide x2, Botania:manaResource:10 x6
+  - [可选提交] gregtech:gt.metaitem.01:30135 x8, gregtech:gt.metaitem.01:2522
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-5780847652833109357] §b§lPrismarine-Rich Nitrobenzene Solution
+After you've gotten ahold of some §2Prismarine Solution§r, combine it with §2Nitrobenzene§r in a §5§lChemical Bath§r in order to create a §3rich solution mixture§r.   Additionally, you will start to receive some §3Prismarine-Contaminated Hydrogen Peroxide§r byproduct.
+  - [可选提交] gregtech:gt.metaitem.01:30135, miscutils:nitrobenzene x2
+  - [提交] gregtech:gt.metaitem.01:30136, gregtech:gt.metaitem.01:30137 x2
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-8682720142309394438] §b§lPrismarine Solution
+After you've managed to grab some §2Prismarine§r, you must process it with §2Industrial Strength Hydrofluoric Acid§r and §2Hydrogen Peroxide§r in the §5§lDissolution Tank§r. Using these ingredients you can make your very first batch of §3Prismarine Solution§r.  [warn]After you've created your first batch of Industrial Strength HF, it's highly recommended to check the Chemical Plant recipes for further creation of it![/warn]
+  - [可选提交] Botania:manaResource:10 x24, IC2:itemCellEmpty:15 x4, miscutils:HydrogenPeroxide x4
+  - [提交] gregtech:gt.metaitem.01:30135 x8, gregtech:gt.metaitem.01:2516 x4
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-9188443817784325036] §b§lPrismarine!? What Do I Need That For?
+§5§lPrismarine§r is an ancient material long rumored to have originated from structures found deep within the ocean. Learning how to create this is extremely important, and may lead to advancements in technology with further exploration into the substrate.  You can get Prismarine in a few different ways as shown resource-wise by the optional tasks:  §31. Through Botania by transmutating §nNether Quartz§r§3 directly to §nPrismarine§r§3 via an §nAlchemical Catalyst or the Fountain of Alchemy§r §r §22. Using §nRed Algae Biomass§r§2 and §nCertus Quartz§r §2dust in an §nAutoclave §r §c3. Using §nRed Algae Biomass§r§c and §nPrismatic Combs§r §cin an §nAutoclave. §r Which method you choose is entirely up to you and dependent on what infrastructure you have setup thus-far. Either way you would be wise to make a robust setup as you will be needing a decent amount of Prismarine in the future.  [warn]Hold 64 Naquarite Insulator Foil to skip the Prismarine line Quests.[/warn]
+  - [可选提交] minecraft:quartz x64
+  - [可选提交] miscutils:item.BasicAgrichemItem:4 x256, gregtech:gt.metaitem.01:2516 x256
+  - [可选提交] miscutils:item.BasicAgrichemItem:4 x128, gregtech:gt.comb:170 x128
+  - [提交] Botania:manaResource:10 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistIII
+
+### [-5600778106165283022] §b§lPrismatic Acid
+Almost there I promise!  Now that you have obtained the §2Prismatic Gas§o§r, you must cool it down in a §5§lVacuum Freezer§r with the assistance of §2Liquid Nitrogen§r. This will give you §3Prismatic Acid§r.  [warn]Aside from continuing down this line, you can also use Prismatic Acid in the processing of Gaia blocks later.[/warn]
+  - [可选提交] gregtech:gt.metaitem.01:30161 x4, gregtech:gt.metaitem.01:30494 x12
+  - [提交] gregtech:gt.metaitem.01:30162 x16
+  > 奖励: dreamcraft:CoinChemistIII x5
+
+### [-6354261280492690379] §b§lPrismatic Crystal
+After finally getting the §2Prismarine Precipitate§r, the logical next step is to crystallize the Prismarine into a §3Prismatic Crystal§r. Using a §2Magneto-Resonance Lens§r we can do this in a §5§lLaser Engraver§r with the assistance of §2Molten Crystalline Alloy§r.
+  - [可选提交] gregtech:gt.metaitem.03:32248, gregtech:gt.metaitem.99:403, bartworks:gt.bwMetaGeneratedlens:36
+  - [提交] gregtech:gt.metaitem.03:32249, gregtech:gt.metaitem.99:44 x2
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-8684814659604725155] §b§lPrismatic Gas
+The §2Prismatic Crystal§r will then be processed in a §5§lVacuum Furnace§r with §2Boron Plasma§r in order to successfully convert it to the highly sought after §3Prismatic Gas§r.
+  - [可选提交] gregtech:gt.metaitem.03:32249, gregtech:gt.metaitem.01:31009
+  - [提交] gregtech:gt.metaitem.01:30161
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-5569503959352868746] §b§lPrismatic Naquadah Composite Slurry
+Why stop at §2Prismatic Naquadah§r? Given its malleable nature you suspect that it may be advantageous to use its unique strength to form new, much more durable, foil types.  Combining the §2Prismatic Naquadah§r with your choice of §2binding powder§r in a §5§lMixer§r and you'll create exactly the type of substance you were looking for; A §3Prismatic Naquadah Composite Slurry§r to mold into foil. 
+  - [可选提交] gregtech:gt.metaitem.99:163 x4, kekztech:kekztech_crafting_item:9 x4, gregtech:gt.metaitem.01:2901 x32
+  - [可选提交] gregtech:gt.metaitem.99:163 x4, kekztech:kekztech_crafting_item:9 x4, bartworks:gt.bwMetaGenerateddust:102 x24
+  - [提交] gregtech:gt.metaitem.01:30164 x2
+  > 奖励: dreamcraft:CoinChemistIII x5
+
+### [-7159360897796270977] §b§lPrismatic Naquadah Composite Sheet
+§5§lDehydrating§r this §2Prismatic Naquadah Composite Slurry§r over the top of §2Tungsten Carbide§r & §2Lead foil§r creates a completely §3Radiation-Proof Composite Sheet§r. This will prove to be very useful in protecting your environment from radiation-emitting structures.
+  - [可选提交] gregtech:gt.metaitem.01:29370 x16, gregtech:gt.metaitem.01:29089 x16, gregtech:gt.metaitem.01:30164 x8
+  - [提交] gregtech:gt.metaitem.03:32250 x16
+  > 奖励: dreamcraft:CoinTechnicianIII x10
+
+### [-8865634979638790486] §b§lPrismatic Naquadah
+Woah, a new metal?  By combining the forces of your newly created §2Enriched Naquadah§r and §2Prismatic Acid§r in the §5§lAlloy Blast Smelter§r, you find that a new metal forms; §3Prismatic Naquadah§r.   [warn]This extremely strong, yet shockingly pliant material will be used in quite a few different structures and materials going forth.[/warn]
+  - [可选提交] gregtech:gt.metaitem.01:2326 x32, gregtech:gt.metaitem.01:30162 x8
+  - [提交] gregtech:gt.metaitem.99:163 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistIV
+
+### [2951] §b§lPurification
+The barium will react with sulfuric acid and become insoluble dust so we can remove it.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:10075
+  - [勾选确认]
+
+### [2952] §b§lRecycle Indium
+Free indium!  You have two options to deal with it.  1) React with Calcium Dust in a chemical reactor.  2) Mix it with Gallium Hydroxide Dust in a mixer.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10073
+
+### [2946] §b§lRecycle Trinium
+You can get the Trinium dust by reacting it with Hydrogen in an LCR.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10068
+
+### [382] §b§lRed and Blue
+Really? A red and blue crystal? How awesome is that! I think I will need 8 of each color, just to be sure.
+  - [提交] AWWayofTime:bloodMagicBaseItems:28, AWWayofTime:bloodMagicBaseItems:29
+  - [提交] AWWayofTime:bloodMagicBaseItems:28 x8, AWWayofTime:bloodMagicBaseItems:29 x8
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinBloodIII
+
+### [2949] §b§lRefining
+So it is a circle?
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:10077
+  - [勾选确认]
+
+### [383] §b§lShiny!
+What in the world is this? This is amazing! I need more of these! They will be an amazing containment material for the wormhole!
+  - [提交] TaintedMagic:ItemMaterial:5
+  - [提交] TaintedMagic:ItemMaterial:5 x4
+  > 奖励: enhancedlootbags:lootbag:42 | dreamcraft:CoinDarkWizardIII
+
+### [-7406677140276529890] §b§lSuperdense
+The advanced machines you are now creating require more advanced materials, as well as more advanced ways to process them. In ZPM, you can construct the Hot Isostatic Pressurization Unit, an upgrade to the Large Electric Compressor. This multiblock heats material to extreme temperatures under extreme pressure, allowing it to create superdense plates with minimal imperfections.  The HIP Unit heats up while it is running, and must be given some time to cool off. If it reaches its maximum heat threshold, it will significantly slow your recipes or even void the inputs. Use better coils to increase how long it will take to overheat, and use Heat Sensor Hatches to automate it properly.  [note]Can perform compression recipes which say "Requires HIP Unit" in NEI.[/note]
+  - [提交] gregtech:gt.blockmachines:3006
+  - [可选提交] gregtech:gt.blockcasings10:4, gregtech:gt.blockcasings10:5, gregtech:gt.blockcasings10:9, gregtech:gt.blockcasings10:10, gregtech:gt.blockmachines:3009
+
+### [2682] §b§lTecTech Multiblocks
+TecTech Multiblock Common Functionality  Multiple Ampere and Laser Hatches Compatibility - to ease power distribution.  Power Pass - Allows connected dynamo hatches to take power from the controller and output it, just like the active transformer does (and that is why the controller always need it in its recipe if that function is enabled...). [warn]Be sure to turn off Power Pass if you want to edit your machine and don't want it to explode![/warn]  Constructable Interface - Allows visualizing the structure with blueprints (there is an API to implement that for any block, but almost nothing does).  From left to right is 1, then clockwise for the rest in TT multi interfaces.  1) Parameters - They are the way of the controller to communicate with player and parameter hatches. Lights indicate status but more detailed information can be seen when moused over. The tooltip contains ID in form of HatchID:ParameterNumber:Direction, Current Status, Current Value, and Short Description.  2) Uncertainty status - These 9 blocks indicate uncertainty status of the machine. If the lights are on, this machine requires an uncertainty resolver. Red = Bad, Green = Good. You need to do the absurd puzzle before using the machine.  Control buttons - Buttons might change their behavior and appearance depending on machine but usually they work like this, starting from top:  3) Power Pass - Toggles Power Pass.  4) Safe Void - Currently unused.  5) Power Switch - Soft Mallet with your finger...  6) Input slot - Standard functionality.
+  - [勾选确认]
+
+### [2006] §b§lThe Beginning of the End Game
+Welcome to TecTech! The pinnacle of absolute high-tier machinery for all your end-tier needs. However, learning TecTech is incredibly confusing, so listen very carefully.  First, you'll need to gather various casings for your machines that you'll need. We've provided some examples of the blocks you'll need, but you should expect to have to craft more. Lots more.  You use the optical cables to connect machines together. Just make sure that they're painted, as well as what you want to connect them to.
+  - [提交] tectech:gt.blockcasingsTT x4, tectech:gt.blockcasingsTT:1 x4, tectech:gt.blockcasingsTT:3 x4, tectech:gt.blockcasingsTT:2 x4, gregtech:gt.blockmachines:15470 x4
+  > 奖励: gregtech:gt.blockmachines:15470 x64
+
+### [3251] §b§lThe Final Goal
+Thanks to your help I have managed to create the ultimate energy source: An encased wormhole that drains energy from a synthesized pocket universe, to the point when it reaches heat death. I have no use for it, so you may have it. Thank you for making my dream come true!
+  - [勾选确认]
+  > 奖励: gregtech:gt.metaitem.01:32598 | dreamcraft:CoinTechnicianIII x2
+
+### [2610] §b§lTier 7 (ZPM)
+The ZPM tier. Speaking of ZPM, did you know the name is based on the Zero Point Module from the show Stargate SG-1, which continues the story of the movie? It's a great show, go watch it! Maybe you have already found a depleted ZPM in the world generation. If you find some help, maybe you can even create a completely new one.
+  - [提交] gregtech:gt.blockmachines:17
+
+### [2669] §b§lWasn't This Only Found in the Center of Neutron Stars?
+You'll need Neutronium for UV and the T7 rocket, so let's make some.  To get Neutronium, go to one of the planets that has the small ores. Then mix it with Helium Plasma to make Raw Neutronium Dust. It can be smelted in a Blast Furnace at 9000K and 491,520 EU/t. This recipe takes a long time and a lot of power. Better make another EBF or Volcanus. Or a few. Or upgrade your Mega Blast Furnace.
+  - [提交] gregtech:gt.metaitem.01:11129 x16
+
+### [2646] §b§lWhere No One Has Gone Before
+Another rocket, another set of planets. Get to work already, that's why you made it, right?  There's only two new planets this time, Proteus and Triton. They're both moons of Neptune.  The new veins are Neutronium, Niobium, and Thorium. The ores are: Adamantium, Gallium, Naquadah, Neutronium, Niobium, Plutonium-241, Titanium, Uranium 235, Uranium-238, and Yttrium.  You can get Black Plutonium from small ores on Triton.  You should pick up some planet blocks while you're visiting.  The schematic is on Proteus.
+  - [勾选确认]
+
+### [-4876820112594069463] §b§lWormhole Generator
+The §5§lMiniature Wormhole Generator§r uses Quantum Entangled Singularities to transmit power over any distance, including across dimensions.  To use it, you must link two generators together using AE2 Entangled Singularities by placing one in each controller. Once linked, both wormholes must be started by placing a full (non-entangled) AE2 Singularity into an input bus on each machine. The wormhole will continue running as long as power is being transferred between them. If power transfer stops, the link will shut down and must be restarted using another Singularity on both ends.  Power is transferred through Laser Source Hatches and Laser Target Hatches. Each wormhole can support up to 4 laser hatches. These must be placed in the center block of one of the side faces, excluding the controller side. Hatch pairs link based on relative position between the two wormholes, not cardinal direction. For example, a Source Hatch placed on the top of the sending side must connect to a Target Hatch placed on the bottom of the receiving wormhole.  Additionally, unlike AE2 P2P tunnels, this does not come with a 5% power loss but rather a much more manageable 0.5% loss.   [note]The glass and input hatch must be tiered accordingly with the tier of the laser hatches. But remember, there is no amperage limit on this machine, so use whatever makes it cheapest for you.[/note]
+  - [提交] gregtech:gt.blockmachines:13115
+  - [可选提交] tectech:gt.blockcasingsTT x47, bartworks:BW_TieredGlass x36, tectech:gt.blockcasingsTT:4 x24, gregtech:gt.blockcasings4:7 x22, gregtech:gt.blockcasings8:5 x8
+
+### [2611] §b§lYou Can't Get Enough of This Pt 1 in ZPM
+You know what to do.
+  - [提交] gregtech:gt.metaitem.01:32646, gregtech:gt.metaitem.01:32636, gregtech:gt.metaitem.01:32616, gregtech:gt.metaitem.01:32656
+
+### [2612] §b§lYou Can't Get Enough of This Pt 2 in ZPM
+Just Make It ™.  [note]PS: You can make the ZPM CA now and start on the wetware line if you want, but the quests are in UV since you can't make the last circuit until then.[/note]
+  - [提交] gregtech:gt.metaitem.01:32686, gregtech:gt.metaitem.01:32696
+
+### [2625] §b§lZPM Assembler
+Like previous tiers, you need a same-tier assembler to make the energy hatch. It's also used to make Trinium Coils.
+  - [提交] gregtech:gt.blockmachines:10781
+
+### [2627] §b§lZPM Energy Hatch
+You'll need this for the next tier of fusion so you can make Americium and Tritanium, and to upgrade your multis.
+  - [提交] gregtech:gt.blockmachines:47
+
+### [2622] §b§lZPM Field Generator
+Why are they circles anyway? Wouldn't that make it harder to fit in a device?
+  - [提交] gregtech:gt.metaitem.01:32676
+
+### [2619] §b§lZPM Superconductors (131,072 EU/t)
+You can figure out how to make them yourself, right?
+  - [提交] gregtech:gt.blockmachines:2420 x64
+

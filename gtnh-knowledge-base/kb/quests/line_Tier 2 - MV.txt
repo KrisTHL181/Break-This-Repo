@@ -1,0 +1,779 @@
+# 任务线: Tier 2 - MV
+### [852] §6§lAcetic Acid
+Acetic acid can be made out of Oxygen and Ethylene. Alternatively, it can be made out of Biomass, Wood Vinegar or Vinegar. It is an important part of making Ethenone on your way to Cetane-Boosted Diesel.
+  - [可选提交] gregtech:gt.metaitem.01:30013 x6, gregtech:gt.metaitem.01:30677 x3
+  - [提交] gregtech:gt.metaitem.01:30670 x3
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [1322] §6§lAdvanced Centrifuge
+The MV centrifuge is twice as fast as the LV one but uses 4x the power.
+  - [提交] gregtech:gt.blockmachines:362
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [838] §6§lAdvanced Circuits
+Finally, the HV circuit! To make it, you need good integrated circuits, RAM, an integrated logic circuit, and transistors.  By the way, circuits get cheaper to make as you go along, but not till HV.
+  - [可选提交] gregtech:gt.metaitem.03:32079 x8, gregtech:gt.metaitem.03:32037 x16, gregtech:gt.metaitem.03:32039 x16, gregtech:gt.metaitem.01:32717 x32, gregtech:gt.metaitem.02:19303 x64, gregtech:gt.metaitem.01:26345 x64
+  - [提交] IC2:itemPartCircuitAdv x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1320] §6§lAdvanced Compressor
+The MV compressor is twice as fast as the LV one but uses 4x the power.
+  - [提交] gregtech:gt.blockmachines:242
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25 | bq_standard:questcompletion
+
+### [1324] §6§lAdvanced Fluid Extractor
+The MV fluid extractor is twice as fast as the LV one but uses 4x the power.  To make bio diesel you need seed oil or fish oil. Seeds give seed oil and fish produce fish oil when placed in a fluid extractor.
+  - [提交] gregtech:gt.blockmachines:512
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1321] §6§lAdvanced Macerator
+The MV macerator is twice as fast as the LV one but uses 4x the power.
+  - [提交] gregtech:gt.blockmachines:302
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25 | bq_standard:questcompletion
+
+### [1518] §6§lAll the Crops You Could Want
+Tired of applying bone meal or fertilizer by hand? A sprinkler can take water and boost your crop growth rate. Bone meal will make it work even faster.  [note]Note that the sprinkler does not work with crops on cropsticks.[/note]
+  - [提交] minecraft:dye:15 x64
+  - [提交] Forestry:fertilizerCompound x64
+  - [提交] OpenBlocks:sprinkler x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [2014] §6§lAll Those Chunks, All in a Row
+Sometimes you don't want a 3x3 area chunkloaded, but a long straight line instead. This can be handy for rail lines or power lines going across long distances. An anchor sentinel can perform this function. Right-click on a chunk loader with a crowbar, and it will activate. Go in any straight line from the chunkloader and place the anchor and hit it with the crowbar. Those chunks, up to 25x1, will now remain loaded.  This will draw an amount of chunkloader time relative to the 9 chunk area normally loaded. If for some reason you wanted only a 1 chunk area loaded, this will extend the time. Stock up on those pearls or server coins!
+  - [提交] Railcraft:machine.beta:10
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinChunkloaderTierIV x2
+
+### [1850] §6§lAll We Are is Dust in the Wind
+Looking for an alternative to flowing water for your mobfarm? Use a fan to blow mobs or items where you want. Apply a redstone signal to activate.
+  - [提交] OpenBlocks:fan
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x3
+
+### [166] §6§lA New Alloy, Soularium
+There are some... "Darker" uses for machines. Stuff that might be considered "magic". Anyway, for that you need a new alloy: Soularium.
+  - [提交] gregtech:gt.metaitem.01:11379 x16
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinChemistI x5
+
+### [749] §6§lAre You Prepared For HV?
+Stainless steel will be the tier material for HV. Use an MV mixer to produce the dust.  Manganese can be acquired as ore byproducts from spessartine, pyrolusite and tantalite ore. You can also pull them apart to get even more. Alternatively you can take apart Red Garnet dusts. If you get desperate, you can buy some ore from the Vending Machine.  Chrome can be electrolyzed out of ruby dust. You can get ruby dust from redstone if the ruby in redstone veins isn't enough.
+  - [可选提交] gregtech:gt.metaitem.01:2032 x48, gregtech:gt.metaitem.01:2034 x8, gregtech:gt.metaitem.01:2031 x8, gregtech:gt.metaitem.01:2030 x8
+  - [提交] gregtech:gt.metaitem.01:2306 x72
+  > 奖励: gregtech:gt.metaitem.02:32224 x2 | enhancedlootbags:lootbag:5 | dreamcraft:CoinChemistI x5 | dreamcraft:CoinTechnicianI x5
+
+### [168] §6§lA Soul Vessel
+The Soul Vial is used later in HV Ender IO machines. For now though you may find it convenient to deal with....troublesome mobs. The Soul Vial is reusable. Just right-click any living entity to steal its soul. Right-click again to release it in the environment.  The possibilities swirl in your head...
+  - [提交] EnderIO:itemSoulVessel x8
+  - [提交] EnderIO:itemSoulVessel
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorI x5
+
+### [931] §6§lAuto Mining MV
+The MV miner will find ores for you faster than the LV miner, and in a larger range. It also has a larger fortune bonus, great for gathering small ores in the Nether. Plus it's faster, but I'm sure you figured that.
+  - [提交] gregtech:gt.blockmachines:680
+  > 奖励: IC2:blockMiningPipe x32 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25 | bq_standard:questcompletion
+
+### [1598] §6§lAvengers, Assemble! 2
+Time to make the MV version of the assembler.
+  - [提交] gregtech:gt.blockmachines:212
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [1917] §6§lBEEEP BEEEP BEEEP
+Knowing that your cleanroom needs maintenance is pretty important. Instead of just turning on a light, why not use a howler alarm? It'll notify you up to 128 blocks away.  [warn]Warning: May cause uncontrollable urine leakage when activated.[/warn]
+  - [提交] IC2NuclearControl:blockNuclearControlMain:2
+  > 奖励: minecraft:noteblock | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [1910] §6§lBetter Tools
+Now that you have an MV extruder you can make the next level of Tinker Tools - Vanadiumsteel head parts with Damascus Steel rods.
+  - [提交] TGregworks:tGregToolPartHammerHead:1650, TGregworks:tGregToolPartToughRod:1634
+  > 奖励: bq_standard:choice | enhancedlootbags:lootbag:5 | TGregworks:tGregToolPartToughRod:1634 | dreamcraft:CoinSmithI x5
+
+### [733] §6§lBio Chaff
+Plant Mass needs to be centrifuged into Bio Chaff, the base material to make biomass.
+  - [提交] IC2:itemBiochaff x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [845] §6§lBio Diesel Fuel
+With Ethanol or Methanol and Seed Oil or Fish Oil you can make Bio Diesel. Its burn value is 320,000 EU per cell, less than regular Diesel, but more renewable. Diesel or Bio Diesel are needed for Cetane-Boosted Diesel.
+  - [提交] gregtech:gt.metaitem.01:30627 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [730] §6§lBio Fuels
+You've been using Steam, Creosote, or possibly Oil to generate power. It's time to start making Bio Diesel. The first step is to make Plantballs out of organic materials. You can use Wheat, Sugar Canes, Apples, Saplings or, well, practically anything. All CropsNH crops are 4:1 instead of an 8:1 ratio. Realistically, you'll probably just use saplings though, since you'll want/need a tree farm anyway.  Be sure you have a Forestry Multifarm, Steve's Carts Farm, CropsNH Crop Sticks with a Crop Manager, or whatever, because you need plenty of bio materials for constant Bio Diesel production.
+  - [提交] minecraft:reeds x64, minecraft:apple x64, minecraft:wheat x64
+  > 奖励: minecraft:wheat_seeds x32 | Forestry:fertilizerCompound x32 | dreamcraft:CoinFarmer x25
+
+### [1323] §6§lBiomass
+Choose the IC2 or the GregTech way to make Biomass. Water and Bio Chaff is needed.  You can also use the Pyrolyze Oven to make Biomass in a more efficient way if you make it.  Note that Forestry has its own Biomass as well. It can also be turned into Fermented Biomass.
+  - [提交] IC2:itemCellEmpty:6 x64, gregtech:gt.metaitem.01:30704 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [774] §6§lBio Organic Mesh
+If you want to save the environment you can autoclave 16 plantballs to get raw bio fiber with the following liquids:  Biomass        33% chance Methanol       50% chance Fuel            90% chance Nitro-diesel 100% chance  §rHowever, making carbon plates this way will require an electric blast furnace.
+  - [可选提交] dreamcraft:RawBioFiber x48
+  - [提交] dreamcraft:BioOrganicMesh x24
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinFarmer x25
+
+### [2043] §6§lBorax Electrolyzing
+Now that you have an MV Electrolyzer, you can extract Boron from Borax. This element is used later on for Borosilicate Glass and fiber, but for now you can use it to make some volumetric flasks to hold precise amounts. This is handy for recipes that may only need a tiny amount of a substance, like 1L.
+  - [可选提交] gregtech:gt.metaitem.01:2009
+  - [提交] gregtech:gt.Volumetric_Flask
+  > 奖励: gregtech:gt.Volumetric_Flask x3
+
+### [142] §6§lBrewing Liquids
+This machine is not only capable of brewing more powerful burnable liquids, it can also be used to brew nutrient distillation, which might have further usage soon™.  Note that you get different ratios depending on what item you use for recipes that allow alternates. Use what you like.
+  - [提交] EnderIO:blockVat
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [1527] §6§lCaging a Demon - Wither Killing Chamber
+Ever wanted to trap a wither but the only option was non movable bedrock? Now that you've made dark steel you can get reinforced obsidian which is wither-proof. Useful for manual killing and even automation once you get a powered spawner supplying you with wither skeleton skulls.  [note]Hint: Unlike vanilla obsidian, reinforced obsidian CAN be moved by pistons which might come in handy.[/note]
+  - [提交] EnderIO:blockReinforcedObsidian x32
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x3 | dreamcraft:CoinSmithI x2
+
+### [778] §6§lCarbon Plates
+Carbon plates are used for a bunch of stuff, including eventually the nanosuit. Go check out the armor chapter.
+  - [提交] IC2:itemPartCarbonPlate x24
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [1614] §6§lChemical Dehydrator
+Dehydrate your grapes to raisins. Or make some Styrene, Benzene or Ethylene at MV. Either way, this device is a nice to have.  It also does the Drying Rack recipes as well.
+  - [提交] gregtech:gt.blockmachines:911
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1744] §6§lChemical Lesson, Part Two
+More advanced recipes need an MV chemical reactor. It also speeds up your existing recipes.
+  - [提交] gregtech:gt.blockmachines:422
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [760] §6§lClay Electrolyzing
+If you looked through NEI you may have found out that electrolyzing clay dust will give you Alumina, Silicon Dioxide, Sodium, and Lithium dust. And water, but you're probably just voiding that already, right? There are plenty of stained clay blocks found in canyon, mesa, lush desert biomes or several to a couple dozen on mountains that can be pulverized to clay dust.  There are more ways to get alumina now that you're in MV, enough that it's basically worthless by the time you get to EV.
+  - [提交] gregtech:gt.metaitem.01:2805 x160
+  - [提交] gregtech:gt.metaitem.01:2697 x50, gregtech:gt.metaitem.01:2017 x20, gregtech:gt.metaitem.01:2006 x10, gregtech:gt.metaitem.01:2837 x60
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5 | dreamcraft:CoinAdventureI x5
+
+### [138] §6§lCome to the Dark Side...
+...we have cookies.
+  - [提交] EnderIO:itemAlloy:6 x32
+  > 奖励: minecraft:cookie x64 | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [-4853455128671811694] §6§lConduit Probe
+The Conduit Probe is an incredibly useful tool for managing and troubleshooting your Ender IO conduit networks.  It features two modes:  • §lProbe Mode§r Right-click an Energy Conduit to view detailed network information Right-click an Item Conduit to simulate item transport using the item in your hand Right-click a Redstone Conduit to see connection details, including signal levels sent and received  • §lCopy/Paste Mode§r Shift + Right-click a conduit connection to copy its settings Right-click another conduit to paste those settings  This is especially useful when configuring multiple machines with identical setups and helps prevent mistakes.  You can switch between modes by: Using Shift + Mouse Wheel, or pressing the §nYeta Wrench Mode§r keybind (unbound by default) while holding the probe.
+  - [提交] EnderIO:itemConduitProbe
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [134] §6§lConduits
+Probably the most awesome way to transport just about anything in multiple different ways. Get some conduits of each type. Higher tiers of each (except item) exist.  [note]There's also ME conduits for when you can do that.[/note]
+  - [提交] EnderIO:itemItemConduit x8, EnderIO:itemLiquidConduit x8, EnderIO:itemPowerConduit x8, EnderIO:itemRedstoneConduit x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [3073] §6§lCoolant
+Make your first coolant out of water or distilled water and lapis dust in an MV mixer.  Using distilled water lets you save on lapis while also speeding up the process by a lot.  [note]If you don't use distilled water, you will need a lot more than 8 lapis dust.[/note]
+  - [可选提交] IC2:itemCellEmpty:12 x8, gregtech:gt.metaitem.01:2526 x8
+  - [提交] IC2:itemCellEmpty:9 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [3071] §6§lCooling Kanthal
+Hot Kanthal ingots can be cooled down in an MV Chemical Bath.
+  - [提交] gregtech:gt.blockmachines:542
+  > 奖励: enhancedlootbags:lootbag:5 | IC2:itemCellEmpty x8 | dreamcraft:CoinTechnician x25 | dreamcraft:CoinChemist x25 | bq_standard:questcompletion
+
+### [1417] §6§lCough Cough - Something Needs to Be Done About the Smell
+Birds falling out of the sky, fish dead and floating belly up in the rivers, acid rain melting the ground...Time to start picking up the trash and cleaning up the air. Small black steel turbines should be fine for now. You'll need two amps of steady power to keep the scrubber working.  The detector's setting can be changed by clicking on the +/- texture with a screwdriver. Also, in general, better (and larger) turbines work better at cleaning up pollution. The code is too complex to fully explain here, but that's basically it. More EU turbine = more pollution cleaning turbine.  [warn]This quest covers one method of combating pollution - there are others, including not making as much to begin with.[/warn]
+  - [提交] gregtech:gt.blockmachines:756
+  - [提交] miscutils:itemAirFilter
+  - [提交] gregtech:gt.metatool.01:170
+  - [提交] gregtech:gt.blockmachines:759
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [953] §6§lDark Steel Pipes
+Dark steel pipes are much better than the bronze, steel, or potin pipes you might have been using. Make sure your wrench can handle mining level 3 or you can't deconstruct them.  [note]If you don't need these, just recycle them to get the materials back. Not everything needs ginormous pipes or high heat tolerance.[/note]
+  - [提交] gregtech:gt.blockmachines:30762 x16
+  > 奖励: gregtech:gt.metatool.01:16 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1093] §6§lDid You Run Low On Gold or Redstone?
+Did you run low on redstone and/or gold? It's no problem with a glowstone flower farm. You can centrifuge glowstone dust to redstone and gold dust. Redstone is also a good source of chrome. You'll need tons of gold for HV, so it's a good idea to set this up before then.  [note]There are actually a couple plants that produce glowstone, pick the one you like![/note]
+  - [提交] minecraft:glowstone_dust x128
+  - [提交] minecraft:redstone x64, gregtech:gt.metaitem.01:2086 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [553] §6§lDiesel Fuel
+If you get an MV mixer, you can mix your light and heavy fuel together to give diesel. At 480,000 per cell, this turns 1,885,000 EU into 2,880,000, not accounting for how much you spent to get it, so it's definitely worth it.
+  - [提交] gregtech:gt.metaitem.01:30708 x48
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [-6760626514029793290] §6§lDislocator Inhibitor
+Tired of your magnet picking up everything? Fortunately, with the advent of Dark Steel this no longer needs to be an issue.  The Dislocator Inhibitor will restrict the function of the Draconic Evolution Item Dislocator within a customizable range of up to 16 blocks. You can stop it from picking up items entirely, or configure a whitelist or blacklist of your choosing. Additionally, you can choose whether it is always active or only enabled by a redstone signal.
+  - [提交] DraconicEvolution:dislocatorInhibitor
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [1914] §6§lDo You Feel Unlucky?
+Well not anymore! With some emeralds and a blank book, I'll give you a Fortune I book you can use in your printing press. Once you've duplicated it, you can combine the 2 Fortune I books in an anvil to get a Fortune II. Duplicate the Fortune II books to get a Fortune III!  With a Fortune III book and a tier-specific item you can remove the trash item rewards from your loot bags. More good stuff!  Soulbound is another good enchantment, it will keep an enchanted item in your inventory in case of death.
+  - [提交] minecraft:emerald x64, minecraft:book x8
+  > 奖励: minecraft:enchanted_book
+
+### [126] §6§lElectrolyzing All the Things
+Collected a lot of dusts you can't do anything with since you started with macerating, washing and centrifuging ores? It's finally time to get all the useful materials out of them.  This machine is §overy§r important for your MV progression. If you find a biome with tons of Stained or Hardened Clay, you can process it here, plus some other machines, into Sodium, Lithium, Silicon, Aluminium and Oxygen!
+  - [提交] gregtech:gt.blockmachines:372
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [1015] §6§lEmpty Plastic Board
+Plastic circuit boards require a plastic plate with Sulfuric Acid to make an Empty Board. By adding copper foil and Iron(III) Chloride or Sodium Persulfate you can craft a plastic circuit board. Later on you can make them more efficiently.  [note]PCBs are used in the circuits in HV tier.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:17874
+  - [可选提交] gregtech:gt.metaitem.01:29035 x6, gregtech:gt.metaitem.03:32007
+  - [提交] gregtech:gt.metaitem.03:32106
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5 | dreamcraft:CoinTechnicianI x5
+
+### [844] §6§lEthanol
+Ethanol has a burn value of 192,000 EU per cell can be used to make Bio Diesel and other fluids.
+  - [提交] gregtech:gt.metaitem.01:30706 x36
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [850] §6§lEthenone
+Hopefully you saved some sulfuric acid. If not, make some more. Together with acetic acid you can make ethenone.  Save the ethenone for HV, you'll need it to make tetranitromethane for cetane boosted diesel.
+  - [可选提交] gregtech:gt.metaitem.01:30720 x3, gregtech:gt.metaitem.01:30670 x3
+  - [提交] gregtech:gt.metaitem.01:30641 x3
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [847] §6§lEthylene
+You can make ethylene several different ways  - Ethanol and sulfuric acid in an MV Chemical Reactor - Ethanol in a Chemical Dehydrator - Distilling various gases (i.e. wood gas) in a Distillery - Obtain it from Oil in the Working with Oil tab  [note]You will need much more than 12 cells later on so keep that in mind.[/note]
+  - [提交] gregtech:gt.metaitem.01:30677 x12
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5
+
+### [2409] §6§lEven Rarer Earths
+Rare Earth processing may have been ignored, but you believe your new Dehydrator can finally make it worthwhile. First, you need to use some Sulfuric Acid to melt off any impurities in a Chemical Bath, leaving you with Crushed Rare Earth (I). After that you need to process it like a normal ore until you get Rare Earth (I) Dust.  After running the Dust through your Dehydrator, you get a number of strange materials, only some of which you recognize. But if you run these materials through an Electrolyzer or through the Dehydrator again, you may get some use out of them. Some of them may take quite a few to do so, but you §ohave§r been stockpiling, right? You'll need 204 Rare Earth.  You believe if you had more powerful acids and machines, you could extract even more valuable materials out of the Rare Earth.
+  - [提交] miscutils:itemDustGreenockite, miscutils:itemDustLanthaniteCe x11, miscutils:itemDustAgarditeCd x45, miscutils:itemDustYttrialite x13, gregtech:gt.metaitem.01:2522, gregtech:gt.metaitem.01:2830 x2, gregtech:gt.metaitem.01:2855 x4, miscutils:itemDustCryoliteF x10, gregtech:gt.metaitem.01:2045
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII | dreamcraft:CoinSmithII | dreamcraft:CoinTechnicianII
+
+### [740] §6§lExtrude All the Things
+I know you've been after this for a while...  Now that you've hit MV tier, it's time to get a better ratio when making rods, gears, and rings. Most extruder recipes use more than 32 EU/t so you need an MV extruder. After crafting the machine you need extruder shapes for the different types of parts you will want to make.  There are a few more shapes than the ones listed here. Make sure to have a look.  [note]Most of the Tinkers Gregworks tool parts are made in the extruder. They also have long extrusion times to balance out their usefulness.[/note]
+  - [提交] gregtech:gt.metaitem.01:32351, gregtech:gt.metaitem.01:32350, gregtech:gt.metaitem.01:32352, gregtech:gt.metaitem.01:32353, gregtech:gt.metaitem.01:32358, gregtech:gt.metaitem.01:32359, gregtech:gt.metaitem.01:32360, gregtech:gt.metaitem.01:32361, gregtech:gt.metaitem.01:32362, gregtech:gt.metaitem.01:32357, gregtech:gt.metaitem.01:32354, gregtech:gt.metaitem.01:32372, gregtech:gt.metaitem.01:32375, gregtech:gt.metaitem.01:32374, gregtech:gt.metaitem.01:32376
+  - [提交] gregtech:gt.blockmachines:282
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5 | bq_standard:questcompletion
+
+### [736] §6§lFermented Biomass
+Fermenting your Biomass allows you to get more products out of it like Methanol, Ethanol, Ammonia, etc.
+  - [可选提交] gregtech:gt.blockmachines:502
+  - [提交] gregtech:gt.metaitem.01:30691 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [149] §6§lFire Water
+Too bad, you can't drink it. When used in the Combustion Generator, it will produce 80 RF/t.
+  - [提交] EnderIO:bucketFire_water
+  > 奖励: dreamcraft:CoinChemist x25
+
+### [3072] §6§lFirst Kanthal
+You made your first Kanthal ingots. It's time to make some more to upgrade your Electric Blast Furnace.
+  - [提交] gregtech:gt.metaitem.01:11312 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinTechnician x25
+
+### [1544] §6§lFish Oil
+Got Fish?  [note]There are rumors of a weird crop in the shape of a fish...  Otherwise, look under the Feeding Yourself tab for fish catching options.[/note]
+  - [提交] gregtech:gt.metaitem.01:30711 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [951] §6§lFluid Solidifier
+Use molds to make plates, sticks, bolts and many more item parts in the fluid solidifier.  Molds are != to Extruder shapes. You're gonna need 2 sets. If they're too expensive, just make the most important ones for now.
+  - [提交] gregtech:gt.metaitem.01:32301
+  - [提交] gregtech:gt.blockmachines:522
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5 | bq_standard:questcompletion
+
+### [1226] §6§lGlycerol
+Glycerol is a byproduct of making bio diesel, but it's really useful too. It's used to make epoxid in EV, and for making dynamite, I guess. Both TNT and iTNT are better though.  [note]PS: You don't actually need dynamite, and epoxid can be made another way, if you don't want to make bio diesel forever/at all.[/note]
+  - [提交] gregtech:gt.metaitem.01:30629 x20
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [793] §6§lGood Integrated Circuits
+By the way, did you ever try looking at the oredict for circuits? You can tell what tier they are from that. They go: Primitive (ULV), Basic (LV), Good (MV), Advanced (HV), etc. Now make your Good Integrated Circuits.
+  - [可选提交] gregtech:gt.metaitem.03:32101 x8, gregtech:gt.metaitem.01:32701 x16, gregtech:gt.metaitem.01:32716 x32, gregtech:gt.metaitem.01:32715 x32, gregtech:gt.metaitem.02:19086 x32, gregtech:gt.metaitem.01:26054 x32
+  - [提交] gregtech:gt.metaitem.03:32079 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [2086] §6§lGrinding Heads Are Better Than None
+While the SAG mill will work with no grinding heads, flint heads only save a little power. If you want to exploit the true capability of the SAG mill, you want to use Diamond or Tungsten grinding heads. Craft me a Diamond head and I'll give you a Tungsten one as a reward.
+  - [提交] gregtech:gt.metaitem.01:32722
+  > 奖励: gregtech:gt.metaitem.01:32723
+
+### [894] §6§lGT Tanks, HV Tank
+This one stores 256,000L. The ULV circuits make it annoying to craft, so make them only if you need them. This is the last of the Voltage Tier ones, after this is the Super Tanks, which you can actually make right now.
+  - [提交] gregtech:gt.blockmachines:820
+  > 奖励: gregtech:gt.blockmachines:5132 x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1913] §6§lGut-Enough For You? Bet You Thought Newspapers Were Dead!
+When used together, the Typesetting Table and Printing Press allow you to duplicate enchanted books. You'll need a lot of XP, so either build a mob grinder or get farming. A Fortune III book, for example, requires 40 levels to convert into an enchanted plate.  To use the §lTypesetting Table§r, place a print press chase in the top slot and an enchanted book in the bottom left slot. Sneak right-click the enchanted book to convert it into an enchanted plate if you have enough XP.  To use the §lPrinting Press§r, place an enchanted plate in the center of the machine, ink sacs on the top metal plate, and books on the bottom left side of the counter. It immediately starts processing without any power or redstone signal.  Wearing Reading Glasses, Tinted Glasses, or a Monocle will display more information about these blocks when looking at them.  Each enchanted plate can make three enchanted books before breaking, but the trick is to make two books and then repair it in a Thaumic Restorer for unlimited uses.  [note]You'll need some Thaumium ingots. You can get into Thaumcraft, find some in a chest, or try breeding the Thaumium oreberry crop.[/note]
+  - [提交] BiblioCraft:item.BiblioChase, BiblioCraft:Typesetting Machine, BiblioCraft:Printing Press
+  > 奖励: minecraft:experience_bottle x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianII
+
+### [1227] §6§lHCL
+More than just a byproduct of your Sodium Persulfate production. HCl becomes important for Epoxid in HV/EV tier. You can also use it to process bee combs.  You can also make it directly from Hydrogen and Chlorine.
+  - [提交] gregtech:gt.metaitem.01:30683 x10
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [150] §6§lHootch
+The lowest tier of renewable, burnable fluid. Generates 60 RF/t, but can be automated for "green" infinite power.
+  - [提交] EnderIO:bucketHootch
+  > 奖励: dreamcraft:CoinChemist x25
+
+### [837] §6§lILC and RAM
+Advanced circuits need integrated logic circuits and random access memory chips. You can get those by cutting the ILC and RAM wafers.
+  - [可选提交] gregtech:gt.metaitem.03:32036 x4, gregtech:gt.metaitem.03:32038
+  - [提交] gregtech:gt.metaitem.03:32037 x32, gregtech:gt.metaitem.03:32039 x32
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [136] §6§lImproving Conduits
+Conduits on their own are pretty awesome, but you can do better. By using filters and speed upgrades, you gain even more control over what they do and how fast they work.  [note]PS: You can't make all of these right now.[/note]
+  - [提交] EnderIO:itemBasicFilterUpgrade, EnderIO:itemBigFilterUpgrade
+  - [提交] EnderIO:itemBasicFilterUpgrade:1, EnderIO:itemBigFilterUpgrade:1
+  - [提交] EnderIO:itemExistingItemFilter, EnderIO:itemModItemFilter, EnderIO:itemPowerItemFilter
+  - [提交] EnderIO:itemExtractSpeedUpgrade, EnderIO:itemExtractSpeedUpgrade:1
+  > 奖励: EnderIO:itemItemConduit x32 | dreamcraft:CoinTechnicianII x5
+
+### [2975] §6§lI need a drink. And more Chrome.
+The most efficient way to process Ruby Ore. Better than electrolysis.  [note]Check out NEI for similar processes based on Sapphire and Green Sapphire.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:5502, gregtech:gt.metaitem.01:3502, gregtech:gt.metaitem.01:6502, gregtech:gt.metaitem.01:4502
+  - [提交] gregtech:gt.metaitem.01:685, gregtech:gt.metaitem.01:30683
+  - [提交] gregtech:gt.metaitem.01:30417
+  - [提交] gregtech:gt.metaitem.01:2698 x3, gregtech:gt.metaitem.01:2030
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [794] §6§lIntegrated Circuit
+In order to make HV machines, you need HV circuits. The first one you can make is the Advanced Circuit from IC2. You'll need to make LV circuits to make MV circuits to make the HV circuits. Yay for recursive crafting! Start with the LV Integrated Logic Circuit. And no, you can't use the IC2 Electronic Circuits.
+  - [可选提交] gregtech:gt.metaitem.03:32100 x16, gregtech:gt.metaitem.03:32037 x16, gregtech:gt.metaitem.01:32716 x32, gregtech:gt.metaitem.01:32715 x32, gregtech:gt.metaitem.02:19035 x32, gregtech:gt.metaitem.01:26057 x32
+  - [提交] gregtech:gt.metaitem.01:32701 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [128] §6§lIO, IO, It's Off to EnderIO We Go
+You've probably used EnderIO before. It's quite useful for a lot of things. But the recipes are different and it's not as useful for some things like ore processing. Let's go through what it has to offer. Note that the other half is in HV.
+  - [提交] gregtech:gt.metaitem.01:11365 x8
+  - [提交] gregtech:gt.metaitem.01:11369 x8
+  - [提交] gregtech:gt.metaitem.01:11378 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [1020] §6§lIron (III) Chloride
+Iron (III) Chloride can be made by first making hydrochloric acid out of hydrogen and chlorine. Then combine this with some iron dust to make Iron(III) Chloride. You can etch your board with it.
+  - [可选提交] gregtech:gt.metaitem.01:30001 x18, gregtech:gt.metaitem.01:30023 x18
+  - [可选提交] gregtech:gt.metaitem.01:2032 x6, gregtech:gt.metaitem.01:30683 x18
+  - [提交] gregtech:gt.metaitem.01:30693 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5 | dreamcraft:CoinTechnicianI x5
+
+### [1520] §6§lLarge Aluminium Fluid Cells
+512 buckets in a stack not cutting it? Aluminium cells can hold 32 buckets per cell, and stack to 64. 2,048 buckets in a single stack? That's half a supertank!
+  - [提交] gregtech:gt.metaitem.01:32407 x4
+  > 奖励: gregtech:gt.metaitem.01:32407 x4 | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [129] §6§lMachine Chassis
+All EnderIO machines still require the basic chassis, and it's almost the same recipe as before; Except that you need plates instead of ingots. But that shouldn't be a problem at all...
+  - [可选提交] EnderIO:itemBasicCapacitor x4 (ore:capacitorBasic)
+  - [提交] EnderIO:itemMachinePart x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [3069] §6§lMake a better Distillery
+To produce Methanol and Ethanol much faster, craft a MV Distillery.
+  - [提交] gregtech:gt.blockmachines:532
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [137] §6§lMaking Things Pretty
+While conduits on their own are already awesome, you can also hide them if you want. There are 2 types of facades, basic and hardened. While basic ones are simple and easy, the reinforced ones are able to withstand explosions and mining with tools. You have to use your Yeta Wrench to remove it.  You'll have to paint your facades in the Painting Machine first - place the block you want them to look like where the paintbrush is, and the facade on the left. Of course, the Painting Machine needs to be powered.
+  - [提交] EnderIO:itemMaterial:1 x128
+  - [提交] EnderIO:itemConduitFacade x16
+  - [提交] EnderIO:itemConduitFacade:1 x16
+  - [提交] EnderIO:blockPainter
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [842] §6§lMethane Gas
+Methane gas has a burn value of 104,000 EU per cell and can be burned in the Gas Turbine.
+  - [提交] gregtech:gt.metaitem.01:30691 x64
+  - [提交] gregtech:gt.metaitem.01:30715 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [843] §6§lMethanol
+Methanol has a burn value of 84,000 EU per cell and can be used to make Bio Diesel and other fluids. It's also used to make certain rocket fuels.
+  - [提交] gregtech:gt.metaitem.01:30673 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [751] §6§lMixing at MV level
+MV Mixer is needed to progress toward HV. It also unlocks Diesel, more efficient fuel.
+  - [提交] gregtech:gt.blockmachines:582
+  > 奖励: gregtech:gt.metaitem.02:32221 x2 | enhancedlootbags:lootbag:5 | dreamcraft:CoinChemistI x5 | dreamcraft:CoinTechnicianI x5
+
+### [750] §6§lMolten Plastic
+Molten polyethylene can be made in a chemical reactor using ethylene, compressed air cells or oxygen - using oxygen gives a 50% boost. Use a mold for making plates in a fluid solidifier to make plastic sheets.
+  - [提交] gregtech:gt.metaitem.01:17874 x124
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5 | dreamcraft:CoinTechnicianI x5
+
+### [759] §6§lMolten Polyethylene
+Polyethylene is made out of ethylene and oxygen in a chemical reactor. Molten Polyethylene cells hold 144L, perfect for 1 ingot or plate. If you want precise amounts, you can use a Volumetric Flask once you electrolyze some Boron from Borax.  You §omay§r have started getting damaged from holding the cells. If you have, put your glove baubles back on. All Molten cells cause damage and store 144L. Mostly, Molten cells come from metal-type materials, or stuff that was melted. Excuse me, §oFluid Extracted§r, whatever that's supposed to mean.  If you have the materials, you can use 12 ethylene cells and 83 oxygen cells to make 124 cells of polyethylene.  [note]Notice some leftovers? Try using the plunger[/note]
+  - [可选提交] gregtech:gt.metaitem.01:30677 x12, gregtech:gt.metaitem.01:30013 x83
+  - [提交] gregtech:gt.metaitem.99:874 x124
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5
+
+### [782] §6§lMonocrystalline Silicon Boules
+To make wafers, you need to make monocrystalline silicon boules first. The process takes 450 seconds and requires solar grade silicon dust and a small gallium arsenide crystal in the electric blast furnace. You can make 16 wafers out of every boule.
+  - [可选提交] gregtech:gt.metaitem.01:2856 x32, gregtech:gt.metaitem.03:32191
+  - [提交] gregtech:gt.metaitem.03:32030
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1898] §6§lMV Advanced Steam Boiler
+The MV GT++ Steam Boiler is the next machine you can make to produce steam efficiently. It regulates its fuel more efficiently if it ends up being full.
+  - [提交] gregtech:gt.blockmachines:754
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [1081] §6§lMV Bending
+This Plate Bending Machine allows you to directly make double, triple or more compressed plates, which might be useful for your first rocket in HV Tier.  It also allows you to make dense plates at all.
+  - [提交] gregtech:gt.blockmachines:222
+  > 奖励: gregtech:gt.metaitem.01:22305 x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [754] §6§lMV Energy Hatch
+Some materials like stainless steel require 480 EU/t. Your LV hatches are not good enough. Craft a minimum of two MV hatches to upgrade your electric blast furnace to HV.  [note]BTW, if a Multiblock's recipe is 1EU over 1A for that tier, you must use a second energy hatch for it to use 2A or more.[/note]
+  - [提交] gregtech:gt.blockmachines:42 x2
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [1867] §6§lMV Motor
+Most machines in MV need a motor as well. If you haven't built a polarizer already, go craft one. MV motors need magnetic steel rods and aluminium rods, 2x cupronickel wires and copper cables.
+  - [可选提交] gregtech:gt.metaitem.01:23355 x4, gregtech:gt.metaitem.01:23019 x8, gregtech:gt.blockmachines:1341 x16, gregtech:gt.blockmachines:1366 x8
+  - [提交] gregtech:gt.metaitem.01:32601 x4
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [791] §6§lMV Precision Laser Engraver
+Advanced circuits need an MV precision laser engraver. Let's craft one.
+  - [提交] gregtech:gt.blockmachines:592
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5 | bq_standard:questcompletion
+
+### [1404] §6§lMV Superconductors (128 EU/t)
+How about lossless 128 EU Wires? Pentacadmiummagnesiumhexaoxide is a superconductor wire and will transfer your energy without any loss. Every Voltage going forward has a superconductor wire with zero loss.  Mix Cadmium, Magnesium and Oxygen in an MV mixer. Next, the base dust needs an EBF with Kanthal Coils to be smelted. Make some MV Superconductor Base Wires and use an Assembler to combine these wires with Helium, Stainless Steel pipes and MV pumps to get your 128 EU/t superconductor wires.  [note]Whether these are worth it to save a little power or not is up to you of course. Also note that although they're wires, you aren't hurt by coming into contact with them.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:2055 x5, gregtech:gt.metaitem.01:2018, gregtech:gt.metaitem.01:30013 x6
+  - [可选提交] gregtech:gt.metaitem.01:2987 x12
+  - [可选提交] gregtech:gt.metaitem.01:11987 x12
+  - [可选提交] gregtech:gt.blockmachines:2200 x24
+  - [可选提交] gregtech:gt.blockmachines:2200 x24, gregtech:gt.blockmachines:5140 x16, gregtech:gt.metaitem.01:32611 x8, gregtech:gt.metaitem.01:30004 x16
+  - [提交] gregtech:gt.blockmachines:2320 x24
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinChemistI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [-6998924290488708393] §6§lMV Wiremill
+The MV Wiremill is twice as fast as the LV one but uses 4x the power.
+  - [提交] gregtech:gt.blockmachines:352
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25 | bq_standard:questcompletion
+
+### [846] §6§lO like Oxygen
+Oxygen can be made in lots of different ways. Most commonly you'll either electrolyze it out of cassiterite sand, sugar from sugar canes or sugar beets, water, or various other oxygen-rich dusts, or centrifuge it from brown or yellow limonite dust.  Later on, water electrolyzing or air centrifuging is probably going to be your main source.
+  - [提交] gregtech:gt.metaitem.01:30013 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5
+
+### [145] §6§lOre Processing, Kind Of...
+The endless war between macerators and SAG mills rages on eternally, so why does it matter which one you choose?  HV Macerators are still required for the final byproducts on many ore chains, but a SAG mill still shines through with upgraded grinding heads! SAG mills are the perfect machine for getting the most from your ores without using bees and crops. You can get bonus outputs with tungsten grinding heads, but that doesn't mean you can dupe materials (like ingots) with it. Plus for many of them you'll get the final output directly without any need for further processing. Handy for processing Redstone to get Chrome!  It's great for lead, copper, tin, silver, nickel, redstone, ruby, lapis, certus quartz, and malachite ores. Other ores will give you better outputs as well if you use a good enough head.  Even coal, charcoal, bones, wheat, ender pearls, and charcoal non-ores will give bonus outputs.  That said, the GT ones are still way faster later on.
+  - [提交] EnderIO:blockSagMill
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [780] §6§lOrganic Way
+Bio carbon plates are made out of raw carbon mesh. Put it in the electric blast furnace to make carbon plates.
+  - [可选提交] dreamcraft:BioCarbonPlate x24
+  - [提交] IC2:itemPartCarbonPlate x24
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinFarmer x25
+
+### [1180] §6§lPassive Chunkloading
+Using the MV bender you can finally press dense plates. So let's craft a passive chunkloader. It will also load a 3x3 chunk area. You need ender pearls or coins to power the chunkloader.  Passive anchors will run for 1 hour off of an ender pearl, and a varying amount depending on the coin used.  §aPersonal Anchors§r are loaded once the owner visits, and stay loaded while the player is logged in.  §9Passive Anchors§r are loaded once the owner visits, and stay loaded until the server resets.  [warn]World Anchors[/warn] are always loaded, even after a server reset.
+  - [提交] Railcraft:machine.alpha:13
+  > 奖励: dreamcraft:CoinChunkloaderTierI x4 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1736] §6§lPipes, Pipes Everywhere
+Now that you're in MV, you'll want to start automating Polyethylene, Oxygen, Nitrogen, Hydrogen, Rubber, Charcoal, etc. Faster item pipes will help with transporting items quicker around your base. For now, use your spiffy new extruder to craft some brass item pipes.  The reward - restrictive item pipes - allow you to prioritize destinations. Locations on the other side of a restrictive pipe are treated as much further away than locations on the same side of a pipe. Very handy when you want overflow (or non-matching) items to go somewhere else!  For higher tiers, look up "item pipe" in NEI or use the wiki: [url]https://wiki.gtnewhorizons.com/wiki/Fluid_%26_Item_Pipes[/url]  [note]If you require higher speeds than the Brass pipes offer, you can try out the Electrum pipes, but beware the gold cost![/note]
+  - [可选提交] gregtech:gt.metaitem.01:11301 x12
+  - [提交] gregtech:gt.blockmachines:5601 x12
+  > 奖励: gregtech:gt.blockmachines:5641 x3 | dreamcraft:CoinTechnician x25
+
+### [731] §6§lPlantballs
+Next you should compress Plantballs out of your bio materials.  The MV Compressor is twice as fast as the LV one. You might think this means using it is a good idea. Well, it depends. Remember it also uses 4x the power. This means you spend 2x the EU in total to get the same amount of EU out. If you overclock too much in your fuel production setup, you end up with an EU deficit! Overclocking once is usually well worth it though.  Eventually you want to use multiblocks for better speeds and efficiency!
+  - [提交] IC2:itemFuelPlantBall x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [732] §6§lPlant Mass
+Macerate the Plantballs down to Plant Mass for better processing. The HV Macerator has an extra slot so you can get more, but it's not worth it power-wise, same for EV and IV.
+  - [提交] dreamcraft:MaceratedPlantmass x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [1873] §6§lPolyvinyl Chloride
+Polyvinyl Chloride is PVC which can be used for the PVC Pipes. You need Vinyl Chloride and Oxygen to make it. You'll also want it for SMD capacitors later.  Do the recipe twice if you want to clean out your reactor, or three times if used the eight second recipe.
+  - [可选提交] gregtech:gt.metaitem.01:30650 x12, gregtech:gt.metaitem.01:30013 x83
+  - [提交] gregtech:gt.metaitem.99:649 x124
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [1482] §6§lPortable Prospecting Tool
+Now that you have some tech, you've discovered a way to prospect for ores.  Unfortunately, the tech to make it repairable or rechargeable doesn't work, so you'll have to make a new one each time it breaks. It does work better at higher tiers and lasts longer with better materials.  It doesn't make a convenient book like the Seismic Prospector, but you can look at the results of scanning on the map, thanks to Visual Prospecting.  It can be hard to choose a good material for the Basic Prospector. Here are some good choices for you in their respective tiers, the size searched, and the average amount of veins they can scan:  LV Vanadiumsteel 3x3 - 50 MV Vanadiumsteel 3x3 - 213 HV Vibrant Alloy 5x5 - 299 EV Shadow Metal 7x7 - 1080 IV Oriharukon 7x7 - 2649  As you can see, the prospectors become better and better with each tier, but it might also be worth looking around for better materials.  Good luck.
+  - [提交] gregtech:gt.detrav.metatool.01:4
+  > 奖励: gregtech:gt.metaitem.01:32691 | gregtech:gt.metaitem.01:32702 x2 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [130] §6§lPortable Tanks
+Until now, you had to use buildcraft tanks with dollies to carry liquids around. Which can be a pain with all that slowness. These portable tanks from EnderIO are able to push and pull liquids by themselves, as they have a built-in pump which is powered by some magic energy source. How convenient.  The pressurized versions are twice as large.  [note]Just be careful, because it will eat water cells instead of returning them.[/note]
+  - [提交] EnderIO:blockTank
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [1547] §6§lPress All the Things in MV
+With the MV forming press you can make aluminum iron plates for solar panels, turbine blades for turbines and some items for Logistics Pipes.
+  - [提交] gregtech:gt.blockmachines:602
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25 | bq_standard:questcompletion
+
+### [1874] §6§lPVC Sheets
+PVC Sheets make SMDs (make foils), plastic circuit boards, and really good item pipes.
+  - [提交] gregtech:gt.metaitem.01:17649 x124
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [773] §6§lRaw Carbon Mesh
+This way of making carbon plates requires autoclaving carbon dust. There are 4 different fluids you can use, check NEI to see which gives how much.
+  - [可选提交] IC2:itemPartCarbonFibre x48
+  - [提交] IC2:itemPartCarbonMesh x24
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [3211] §6§lRaw Silicon Dust
+Silicon is needed in all boule (and thus wafers, chips, and circuits) creation. Silicon is therefore an §oincredibly important material§r.  With your new Electrolyzer you can obtain Raw Silicon Dust from many different sources. Alternatively, you can also centrifuge Redstone. You can also get it from Silicon Dioxide, by adding Magnesium Dust to it in a Chemical Reactor and then recycling it in an Electrolyzer, which also gives you a lot of bonus Oxygen.
+  - [提交] gregtech:gt.metaitem.01:2020 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5
+
+### [604] §6§lRF Batteries
+Basic Capacitor Banks are RF batteries which can store the RF power you generate. You can put many blocks together to enlarge your total battery capacity - they will merge into one battery.  You can also change the mode of each face using your wire cutters or yeta wrench instead of the GUI. One option is a nice display of input and output RF, but it has to be taller than it is wide.  These are great for interfacing with RF machines. GT wires will convert to RF, but they send a full amp packet no matter what. EnderIO machines properly accept it, but others like Genetics do not and waste most of the packet, so consider using them with any RF machine if it looks like you need it.
+  - [可选提交] EnderIO:itemBasicCapacitor x4 (ore:capacitorBasic)
+  - [提交] EnderIO:blockCapBank:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinTechnician x25
+
+### [757] §6§lRuby Electrolyzing
+Ruby is a good source for chrome and a little alumina. Once you get low on Ruby, you can centrifuge Redstone to get more.  Another good source of alumina and oxygen is red granite dusts. You can get those from red granite stone lilies. Check out the Green Revolution tab for more details about crops.
+  - [提交] gregtech:gt.metaitem.01:2502 x60
+  - [提交] gregtech:gt.metaitem.01:2030 x10, gregtech:gt.metaitem.01:2697 x50
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [3214] §6§lSalty from all the silicon?
+If you are salty about the ingredients needed to purify silicon, I got good news for you! You can recover all of the chlorine and sodium you used by electrolyzing the salt you got!  [note]You can also use zinc instead of sodium, the first reaction is longer but the recycling is much cheaper.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:2817 x48
+  - [提交] gregtech:gt.metaitem.01:30023 x24, gregtech:gt.metaitem.01:2017 x24
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5
+
+### [848] §6§lSeed Oil
+Pam's peanuts are a good seed oil source, and can be sped up with sprinklers. Or you can use CropsNH Canola (the best option). Another option is Forestry tree nuts such as Hazelnuts, Butternuts, or the King of nuts, coconuts. Or you can be lame and get them from regular seeds like wheat seeds.
+  - [提交] gregtech:gt.metaitem.01:30713 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25 | dreamcraft:CoinTechnician x25
+
+### [1819] §6§lSilicon Dioxide
+Get yourself some Silicon Dioxide! Smelting it in your EBF with some carbon is the best way to obtain raw silicon ingots. It is used in a few places but most importantly you can macerate it back down to raw silicon dust. You can also turn the silicon dioxide into raw silicon dust via chemical processes using aluminium or magnesium.  You can get silicon dioxide easily by centrifuging glass dust or electrolyzing sand.  If you have raw silicon dust but want silicon dioxide for some reason, you can use an arc furnace or an autoclave.
+  - [提交] gregtech:gt.metaitem.01:2837 x12
+  > 奖励: gregtech:gt.metaitem.01:2837 x12 | dreamcraft:CoinChemistI
+
+### [752] §6§lSilicon Plate
+Advanced circuits require transistors, which are made out of high grade silicon plates, fine tin wire and molten polyethylene.
+  - [提交] gregtech:gt.metaitem.01:17856 x6
+  > 奖励: harvestcraft:hotdogItem x3 | gregtech:gt.metaitem.02:32113 x2 | dreamcraft:CoinTechnicianI x5
+
+### [1788] §6§lSilicon Solar Grade
+Whichever path you followed, you now have the Solar Grade Silicon Dust. You want to smelt it into ingots to make plates for Transistors, but you will also need some to make Silicon Boules.
+  - [提交] gregtech:gt.metaitem.01:2856 x6
+
+### [3212] §6§lSilicon Tetrachloride
+However, the raw silicon dust you obtained is not pure enough! We will need to work on that. There are two reasonable options to do so. Let us look at the first one here. Don't worry, this is just a simple two step process. First let us start by reacting it with some chlorine in a chemical reactor.
+  - [可选提交] gregtech:gt.metaitem.01:2020 x6, gregtech:gt.metaitem.01:30023 x24
+  - [提交] gregtech:gt.metaitem.01:30968 x6
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinChemistI x5
+
+### [3213] §6§lSilicon Tetrachloride - continued
+As a second step, we combine the Tetrachloride with Sodium Dust. There we go! The Silicon Dust is now purified to solar grade!  The Chlorine and Sodium are §onot§r lost during this process. To recover them, just electrolyze the Salt you get at the end and send it back to the Chemical Reactors, for a complete loop that turns Raw Silicon into Solar Grade Silicon.
+  - [可选提交] gregtech:gt.metaitem.01:30968 x6, gregtech:gt.metaitem.01:2017 x24
+  - [提交] gregtech:gt.metaitem.01:2856 x6, gregtech:gt.metaitem.01:2817 x48
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinChemistI x5
+
+### [792] §6§lSilicon Wafer
+To create some silicon wafers, put the monocrystalline silicon boule in a cutting machine. It would be best to make the MV version because you'll need it soon for ILCs, RAM, and other chips.  You can also use wafers to make diodes more efficiently if you have polyethylene as well.
+  - [提交] gregtech:gt.blockmachines:252
+  - [提交] gregtech:gt.metaitem.03:32033 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5 | bq_standard:questcompletion
+
+### [154] §6§lSimple Fluid Transfer
+Just like the item translocators, the fluid ones transfer... fluids. Same restrictions apply, 1 block distance. These can also be upgraded.
+  - [提交] Translocator:translocator:1
+  > 奖励: Translocator:diamondNugget x2 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [153] §6§lSimple Item Transfer
+Translocators can only transfer items over a distance of 1 block. But they're quite cheap, and a good solution to building compact machine setups. They include a free simple item filter which can be enabled on the input or output side. And they support multiple inputs and outputs! Glowstone will make it transfer faster - try investigating other upgrades.
+  - [提交] Translocator:translocator
+  > 奖励: Translocator:diamondNugget x2 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [132] §6§lSimple RF Power: Liquids
+This generator requires both water as coolant, and a burnable liquid as fuel. The amount of power it produces depends on the type of liquid used.  Fuel           Burn Time (ticks/mb)    Power Output (RF/tick)    Power Output (RF/mb) Oil                5                          30                               150 Hootch          6                          60                               360 Ethanol        15                          40                               600 Fire Water    15                          80                              1200 Diesel/Fuel   25                          60                              1500  [note]Rocket Fuel is disabled.[/note]
+  - [提交] EnderIO:blockCombustionGenerator
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [131] §6§lSimple RF power: Solid
+By simply burning coal as fuel, this machine produces RF power. Enough for a basic machine setup. This machine will also accept compressed and multiple-compressed blocks. Want to burn something for 250+ days? Also, with double or octadic capacitors the output will increase and efficiency will improve.  GT wiring can convert EU to RF, but not the other way around. Note that with the eNet changes a GT wire network will need at least one GT energy consumer - a machine hull of the matching voltage will work.  Ender IO machines and GT cables and Wires can be left safely out in the rain.  It might be useful for Genetics machines since they consume excessive power when attached to GT wiring - Forestry and EnderIO machines work fine (except for the Thermionic Fabricator). Or use a Capacitor Bank.
+  - [提交] EnderIO:blockStirlingGenerator
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [143] §6§lSmelting All-Joy
+This combination smelter allows you to produce fused quartz and quite clear glass of all variants.  It does §onot§r alloy you to make the EIO alloys though, you'll need a mixer and (probably) EBF for that.
+  - [提交] EnderIO:blockAlloySmelter
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [849] §6§lSodium Hydroxide
+Sodium hydroxide is needed for bio diesel. You can make it out of sodium and water, or out of salt water.  Sodium hydroxide is also used in advanced aluminium production.
+  - [可选提交] gregtech:gt.metaitem.01:2017 x8, IC2:itemCellEmpty:1 x8
+  - [提交] gregtech:gt.metaitem.01:2685 x24
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [1021] §6§lSodium Persulfate
+Sodium Persulfate can be made in the electrolyzer out of sodium bisulfate dust. Sodium bisulfate is made out of sulfuric acid and salt in the chemical reactor. You can etch your board with it.
+  - [可选提交] gregtech:gt.metaitem.01:30720 x2, gregtech:gt.metaitem.01:2817 x4
+  - [可选提交] gregtech:gt.metaitem.01:2630 x14
+  - [提交] gregtech:gt.metaitem.01:30718
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5 | dreamcraft:CoinTechnicianI x5
+
+### [746] §6§lSolar Grade Ingots
+To turn your solar grade dust into solar grade ingots you need to use an EBF with kanthal coils and then cool the resulting hot ingots in a chemical bath.
+  - [提交] gregtech:gt.metaitem.01:11856 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2110] §6§lSpeeding Up Slow Machines
+Many mods don't have methods of speeding up their slow machines. For this, you'll need a GregTech World Accelerator. It guzzles amps though, so your power infrastructure better be ready for it. The tooltip will list the performance boost provided. For block-based acceleration, the WA will do an area around it. For TileEntities like most machines, it will only accelerate the blocks directly touching the WA, and will need to be reconfigured with a screwdriver. This uses twice the power though.  [warn]This does not work with GregTech machines![/warn] For those, build more or higher tier ones.  If you want, you can change the level of acceleration by using a wrench on it. It will go back to the minimum, then increase one tier from there for every usage. It will use that tier's amount of power (and acceleration), increasing as per GT standard of 2x speed (acceleration) and 4x EU per tier.
+  - [提交] gregtech:gt.blockmachines:11101
+  > 奖励: bq_standard:choice | minecraft:cake
+
+### [753] §6§lStainless Steel EBF processing
+Stainless Steel ingots are made in the Electric Blast Furnace at a temperature of 1700K.  It takes 85 seconds at 480 EU/t or 60 seconds at 480 EU/t by adding Oxygen gas. Always add a gas if you can, you're saving tons of power by doing so, and you're gonna need a TON of SS. The Cracker, Large Steam Turbine, and Distillery Tower all need huge amounts of SS. A single DT uses several stacks, and you're gonna want more than just one.
+  - [提交] gregtech:gt.metaitem.01:11306 x64
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinSmithI x5 | dreamcraft:CoinTechnicianI x5
+
+### [1494] §6§lStainless Taking Too Long?
+Time for a second EBF!  You can make ingots faster in 3 ways - better coils, higher tier energy hatches, or adding more furnaces. It's probably time to add a second EBF to your base.  Multiblock machines can share casings, mufflers, and input/output hatches/buses, but not maintenance hatches (you can share the auto ones though). You can share energy hatches, but only if you can supply enough power to all machines it's a part of.  Remember, pollution will be very high with two EBFs active at once! Watch out for high pollution effects. Use the best mufflers available and don't place the EBFs in the same chunk as farmland or other high pollution machines like Pyrolyse Ovens and Large Boilers. Maybe it is time to do something more active?  You can use whatever coils you have lying around, but you certainly want to start searching for Mica if you haven't found any yet.
+  - [提交] gregtech:gt.blockmachines:1000
+  - [提交] gregtech:gt.blockmachines:92
+  - [提交] gregtech:gt.blockmachines:42 x2
+  > 奖励: gregtech:gt.metaitem.01:32529 x2 | gregtech:gt.blockmachines:172 | dreamcraft:CoinTechnicianI x5
+
+### [-7413318361154584174] §6§lStill No Filing in MV
+The MV Lathe isn't a completely necessary upgrade (assuming you can get ahold of an Exquisite Green Sapphire), but it will grant you a boost in productivity nonetheless should you choose to invest in one.
+  - [提交] gregtech:gt.blockmachines:292
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [-8090569753309964099] §6§lString Theory?
+Tired of farming Cotton?  If you combine Naphtha with some Saltpeter in the Chemical Reactor you can create Polycaprolactam (PCL).   This can then be solidified into a bar and put through a Wiremill to obtain String.
+  - [提交] gregtech:gt.metaitem.01:30739 x4, gregtech:gt.metaitem.01:2836
+  - [提交] gregtech:gt.metaitem.01:32306, gregtech:gt.metaitem.99:472
+  - [提交] gregtech:gt.metaitem.01:11472
+  - [提交] minecraft:string x32
+  > 奖励: enhancedlootbags:lootbag:5 | minecraft:string x64 | dreamcraft:CoinChemist x25
+
+### [944] §6§lSuper Tank I
+This tank works the same as the smaller GT tanks, but holds way more. Specifically, 4,000,000L. Only make this for things you need tons of, LV circuits are expensive after all.  Now you can store the same amount of fluids a steel 5x5 Railcraft tank contains in a single block.  [note]A lot of nice functionality has been added to Super and Quantum tanks. You can now pick them up with a wrench without voiding the fluids! Super tanks (but not Quantum) will give you heavy debuffs though, so better prepare some milk.  If you actually want to void the fluids you can crouch while using the wrench.  They now also have optional automatic fluid output, fluid locking, overflow void mode, or full void mode. And all that with a nice and simple GUI. Quite the IMPACTful change I would say.[/note]
+  - [可选提交] gregtech:gt.blockcasings6:1
+  - [提交] gregtech:gt.blockmachines:130
+  > 奖励: gregtech:gt.blockmachines:5173 x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [1835] §6§lTantalum Ore
+Tantalum is used in many important GT recipes, and is also a source for niobium. You can find Tantalite at Y 20-30 on the Overworld and at Y 20-30 in the Nether.  [note]Tip: The Manganese you get from these ores can be used for EnderIO capacitors.[/note]  §4Keep in mind you need an HV + Kanthal EBF and an MV Chemical Bath to get Tantalum Ingots.
+  - [提交] gregtech:gt.metaitem.03:5921 x64, gregtech:gt.metaitem.03:5838 x64, gregtech:gt.metaitem.03:5943 x64, gregtech:gt.metaitem.03:5831 x64
+  - [提交] gregtech:gt.blockores2:921 x64, gregtech:gt.blockores2:838 x64, gregtech:gt.blockores2:943 x64, gregtech:gt.blockores2:831 x64
+  - [提交] gregtech:gt.blockores2:1921 x32, gregtech:gt.blockores2:1838 x32, gregtech:gt.blockores2:1943 x32, gregtech:gt.blockores2:1831 x32
+  > 奖励: bq_standard:choice | harvestcraft:celerysoupItem x2 | dreamcraft:CoinAdventure x50
+
+### [148] §6§lTasty...
+Yeah, that is... Well... You are sure it will have a usage for something... some day... eventually... maybe...
+  - [提交] EnderIO:bucketNutrient_distillation
+  > 奖励: dreamcraft:CoinChemist x25
+
+### [1643] §6§lThere Can Be Only One...
+...so make them lose their heads.  Make yourself a Cleaver with your tool forge and collect some wither skeleton skulls.  [warn]If you have problems finding wither skeletons, once you get to HV you can put a powered skeleton spawner in the Nether.[/warn]
+  - [提交] TGregworks:tGregToolPartLargeSwordBlade:1650
+  - [提交] minecraft:skull:1 x3
+  > 奖励: minecraft:skull:1
+
+### [1148] §6§lTier 2 (MV)
+The MV Machine Hull needs aluminium. You're also gonna need aluminium for every MV machine part, so keep that EBF truckin'.  Here are some tips on where to start: - MV Electrolyzer makes getting aluminium easier. - MV Extruder makes parts cheaper. - MV Miner saves your time.  Have you read the quest Safety First for details about mixing tiers? Sending MV to an LV machine causes it to explode. Sending MV voltage over LV cables causes them to melt, which causes fire that will likely cause the machines to blow up. Additionally, recipes done in a tier higher than the original one (not ULV, ULV counts as LV) are overclocked (OC'd). The OC'd recipes use 4x power but complete 2x faster.
+  - [提交] gregtech:gt.blockmachines:12
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinTechnicianI x5
+
+### [2414] §6§lToo Many Items? Unpossible!
+Too many items getting you down? Just slap this badboy on a drawer, and any items you put in over the maximum will be automatically voided for you! More useful in combination with a Drawer Controller admittedly.
+  - [提交] StorageDrawers:upgradeVoid
+  > 奖励: StorageDrawers:upgradeVoid | dreamcraft:CoinTechnician x25
+
+### [785] §6§lTransistor
+For the next tier we need advanced circuits. To make advanced circuits, you need transistors.
+  - [可选提交] gregtech:gt.metaitem.02:19057 x48, gregtech:gt.metaitem.01:17856 x6
+  - [提交] gregtech:gt.metaitem.01:32717 x36
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1549] §6§lTrichlorosilane
+The second route is probably even better! With just 2 singleblock chemical reactors you can make Silicon Solar Grade. In the first step, make some Trichlorosilane.
+  - [可选提交] gregtech:gt.metaitem.01:2020 x6, gregtech:gt.metaitem.01:30683 x18
+  - [提交] gregtech:gt.metaitem.01:30972 x6, gregtech:gt.metaitem.01:30001 x12
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinChemistI x5
+
+### [1492] §6§lTrichlorosilane - continued
+Keep the hydrogen and continue in a second chemical reactor to obtain the purified Solar Grade Silicon. You get all the Hydrochloric Acid back!  Maybe you can automate this process?
+  - [可选提交] gregtech:gt.metaitem.01:30972 x6, gregtech:gt.metaitem.01:30001 x12
+  - [提交] gregtech:gt.metaitem.01:2856 x6, gregtech:gt.metaitem.01:30683 x18
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinChemistI x5
+
+### [1868] §6§lUltra Low Power IC
+MV Energy hatches need ultra low power ICs. Go and craft some.
+  - [可选提交] gregtech:gt.metaitem.03:32062
+  - [提交] gregtech:gt.metaitem.03:32063 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [206] §6§lVenting the Heat
+A low-tech method to cool down the hot coolant is to use vent covers. Place the cover directly on the side of the Chem Bath next to a water source block and watch it work its magic. The cover can be used on any GT machine or fluid buffer if you'd prefer another setup.  This will help until you have access to a Large Heat Exchanger to make the process quicker, or a Vacuum Freezer to skip it altogether.  An advanced or overclocked reactor vent is much faster than a basic heat vent and can work without a water block in front of it, albeit slower. Unfortunately, you can't make those yet, but you can keep that in mind for later.
+  - [提交] IC2:reactorVent:1
+  > 奖励: enhancedlootbags:lootbag:5
+
+### [1872] §6§lVinyl Chloride
+Vinyl Chloride is the base product for making PVC for advanced pipes. These Pipes are needed in LuV machines or the Hermetic Casing IIs for Super Tank IIs.
+  - [可选提交] gregtech:gt.metaitem.01:30677 x12, gregtech:gt.metaitem.01:30023 x24
+  - [提交] gregtech:gt.metaitem.01:30650 x12
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x25
+
+### [735] §6§lWay One: Brewery
+If you are lucky and find a Brewing Stand or have started using Thaumcraft to make one, you can craft a Brewery. You get 1000mb of Biomass out of 1000mb Water and 1 Bio Chaff. Use Distilled Water to get a better ratio and a much faster recipe.
+  - [提交] gregtech:gt.blockmachines:492
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25 | bq_standard:questcompletion
+
+### [3070] §6§lWay Two: Pyrolyse Oven
+By using the Pyrolyse Oven, you are able to reap the rewards of coil speed increases.  You can also side-step the need for a Fermenter. Check out NEI to see which way suits you best. The GT++ Industrial Coke Oven will allow you to do this as well.  (You only have to submit one of these)
+  - [提交] gregtech:gt.blockmachines:15546, gregtech:gt.blockmachines:15543
+  > 奖励: bq_standard:choice
+
+### [2141] §6§lWelcome to the Church of Benzene
+If you made it to MV using steam, you're probably wondering how to survive going further. One option is to switch to Light Fuel, discussed in LV. Another option is to use Benzene. Benzene is made from Wood Tar. There are a couple of pathways for that. Both start with logs from trees.  One path is to use Coke Ovens or Advanced Coke Ovens to make Charcoal, and fluid-extract Wood Tar from it. Then distill the Wood Tar to make Benzene. This method produces less pollution, but will also provide less Benzene.  The second path is to use the Pyrolyze Oven multiblock and Nitrogen gas to extract Wood Tar and Charcoal. Fluid-extract the Charcoal for additional Wood Tar. Then proceed as above. This method will create pollution from the Pyrolyze Oven, but will provide more Benzene per log.  Excess wood tar can also be turned into Toluene, a key ingredient for explosives that you'll need later on to make rockets.  If you use the Charcoal Byproducts recipe, you can get a plethora of useful byproducts as well, but you'll need 4 DTs.  [note]Later on, you will get an even better option: the Industrial Coke Oven.[/note]
+  - [提交] gregtech:gt.metaitem.01:30686 x64
+  > 奖励: enhancedlootbags:lootbag:5
+
+### [1916] §6§lWhere's That Handyman When You Need Him?
+A Needs Maintenance cover will send out a redstone signal when the controller it's attached to requires maintenance. This is handy for the cleanroom you'll need to build in HV, since maintenance issues reduces cleanliness level and will cause voided materials.  For the cleanroom you can place this on the top or bottom. For other machines you might want to place it on the side so you can have access to the front face. In that case, you can use a soldering iron and fine solder to have it emit a strong redstone signal that will penetrate through a block next to the cover.
+  - [可选提交] gregtech:gt.metaitem.01:32681, gregtech:gt.metaitem.01:17019
+  - [提交] gregtech:gt.metaitem.01:32748
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x3
+
+### [135] §6§lYet Another Wrench
+The Yeta Wrench is more than just a regular wrench. While holding it, you are able to switch between conduit types, eventually allowing you to remove one specific conduit type from a bundle of many. Ctrl-Mousewheel will switch modes, also shift-left-click allows you to open the configuration interface even if you don't have access to that side of the conduit.
+  - [提交] EnderIO:itemYetaWrench
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [893] §6§lYou're Gonna Hate This in MV Too #2
+The second item you'll need a lot of in MV tier. When you want to get fluid out of tanks you'll want one, though you don't necessarily need an MV one.
+  - [提交] gregtech:gt.metaitem.01:32611
+  > 奖励: gregtech:gt.blockmachines:5134 x6 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [895] §6§lYou're Gonna Hate This in MV Too #1
+The first item you'll need a lot of in MV too. If you want to pull items out of chests or barrels you'll need one. Way faster than the LV one, so it's actually useful.
+  - [提交] gregtech:gt.metaitem.01:32631
+  > 奖励: gregtech:gt.metaitem.01:17880 x16 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [896] §6§lYou're Gonna Hate This in MV Too #3
+An electric piston for your MV machines. The third item you're going to craft a lot of in the future.
+  - [提交] gregtech:gt.metaitem.01:32641
+  > 奖励: gregtech:gt.metaitem.01:32601 x2 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [897] §6§lYou're Gonna Hate This in MV Too #4
+The fourth item you'll need a lot of in MV, which is still a pain to craft.
+  - [提交] gregtech:gt.metaitem.01:32651
+  > 奖励: gregtech:gt.metaitem.01:32702 x2 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [1478] §6§lYou're Gonna Hate This in MV Too #5
+The fifth item you'll need a lot of. For the microwave, the scanner, the precision laser engraver, etc.
+  - [提交] gregtech:gt.metaitem.01:32681
+  > 奖励: minecraft:ender_pearl x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+
+### [1477] §6§lYou're Gonna Hate This in MV Too #6
+The sixth item you'll need a lot of, namely for the Scanner and the Seismic Prospector.
+  - [提交] gregtech:gt.metaitem.01:32691
+  > 奖励: gregtech:gt.metaitem.02:29501 x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI x5
+

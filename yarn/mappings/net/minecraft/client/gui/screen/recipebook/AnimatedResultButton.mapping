@@ -1,0 +1,34 @@
+CLASS net/minecraft/class_514 net/minecraft/client/gui/screen/recipebook/AnimatedResultButton
+	FIELD field_3139 bounce F
+	FIELD field_3142 resultCollection Lnet/minecraft/class_516;
+	FIELD field_26595 MORE_RECIPES_TEXT Lnet/minecraft/class_2561;
+	FIELD field_45555 SLOT_MANY_CRAFTABLE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45556 SLOT_CRAFTABLE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45557 SLOT_MANY_UNCRAFTABLE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45558 SLOT_UNCRAFTABLE_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_52846 currentIndexProvider Lnet/minecraft/class_9938;
+	FIELD field_54834 results Ljava/util/List;
+	FIELD field_55503 allResultsEqual Z
+	METHOD <init> (Lnet/minecraft/class_9938;)V
+		ARG 1 currentIndexProvider
+	METHOD method_2640 showResultCollection (Lnet/minecraft/class_516;ZLnet/minecraft/class_513;Lnet/minecraft/class_10352;)V
+		ARG 1 resultCollection
+		ARG 2 filteringCraftable
+		ARG 3 results
+		ARG 4 context
+	METHOD method_2642 hasSingleResult ()Z
+	METHOD method_2644 getTooltip (Lnet/minecraft/class_1799;)Ljava/util/List;
+		ARG 1 stack
+	METHOD method_2645 getResultCollection ()Lnet/minecraft/class_516;
+	METHOD method_62048 hasMultipleResults ()Z
+	METHOD method_64880 (Lnet/minecraft/class_10352;Lnet/minecraft/class_10297;)Lnet/minecraft/class_514$class_10330;
+		ARG 1 entry
+	METHOD method_64881 getCurrentId ()Lnet/minecraft/class_10298;
+	METHOD method_64882 getDisplayStack ()Lnet/minecraft/class_1799;
+	METHOD method_65811 (Lnet/minecraft/class_514$class_10330;)Ljava/util/stream/Stream;
+		ARG 0 result
+	METHOD method_65812 areAllResultsEqual (Ljava/util/List;)Z
+		ARG 0 results
+	CLASS class_10330 Result
+		METHOD method_64883 getDisplayStack (I)Lnet/minecraft/class_1799;
+			ARG 1 currentIndex

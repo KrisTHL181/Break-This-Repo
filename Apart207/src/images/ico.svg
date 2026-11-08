@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+
+    @media (prefers-color-scheme: light) {
+      .bg { fill: #f2efe4; }
+      .badge { fill: #e6dfcf; }
+      .frame { fill: #738c92; stroke: #738c92; }
+      .text-main { fill: #2c3e44; }
+      .text-sub { fill: #547075; }
+      .line { stroke: #547075; }
+      .dot { fill: #547075; }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #242c33; }
+      .badge { fill: #2e373f; }
+      .frame { fill: #88a1a7; stroke: #88a1a7; }
+      .text-main { fill: #e6e2d7; }
+      .text-sub { fill: #a0b8bd; }
+      .line { stroke: #a0b8bd; }
+      .dot { fill: #a0b8bd; }
+    }
+
+    text {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+  </style>
+
+  <!-- 背景 -->
+  <rect class="bg" x="0" y="0" width="512" height="512" rx="64" />
+
+  <!-- 徽章外框 -->
+  <circle class="badge" cx="256" cy="256" r="204" />
+  <circle class="frame" cx="256" cy="256" r="204" fill="none" stroke-width="10" />
+
+  <!-- 顶部科技短线 -->
+  <line class="line" x1="130" y1="106" x2="200" y2="106" stroke-width="5" />
+  <line class="line" x1="312" y1="106" x2="382" y2="106" stroke-width="5" />
+  <circle class="dot" cx="256" cy="106" r="6" />
+
+  <!-- 中心主标识 207 -->
+  <text class="text-main" x="256" y="230" font-size="136" font-weight="800">207</text>
+
+  <!-- 完整群名 -->
+  <text class="text-sub" x="256" y="310" font-size="22" font-weight="600">廉中自然科学局第</text>
+  <text class="text-sub" x="256" y="342" font-size="22" font-weight="600">207 研究所</text>
+
+  <!-- 底部班级信息 -->
+  <text class="text-main" x="256" y="390" font-size="28" font-weight="700">2606班</text>
+
+  <!-- 底部科技线条 -->
+  <line class="line" x1="150" y1="430" x2="362" y2="430" stroke-width="5" />
+  <circle class="dot" cx="150" cy="430" r="6" />
+  <circle class="dot" cx="362" cy="430" r="6" />
+</svg>

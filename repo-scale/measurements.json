@@ -1,0 +1,528 @@
+{
+ "repository": "KrisTHL181/Break-This-Repo",
+ "generated_at": "2026-09-22T10:33:45Z",
+ "method": {
+  "endpoint": "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
+  "note": "recursive listings are truncated by GitHub at 100,000 entries or 7 MB; truncated trees are split and re-fetched until every total is exact",
+  "api_calls_total": 409,
+  "cache": "aggregates are cached per subtree SHA, so history is cheap"
+ },
+ "head": {
+  "ref": "main",
+  "sha": "910163cb9ba55d0059526e78baaa7068c07aa44e",
+  "tree_sha": "dbe9ad9d9aba2831381bb8da6af330fd2c52bae0",
+  "date": "2026-09-22T07:33:06Z",
+  "subject": "Merge pull request #739 from hsi145/main",
+  "bytes": 27324839755,
+  "files": 576155,
+  "dirs": 81943,
+  "symlinks": 3,
+  "submodules": 4,
+  "exact": true
+ },
+ "github_repo_size_bytes": 16199646208,
+ "breakdown_shown": 25,
+ "breakdown": [
+  {
+   "name": "novel/",
+   "kind": "dir",
+   "bytes": 12339600452,
+   "files": 11183,
+   "dirs": 1
+  },
+  {
+   "name": "rust-corpus/",
+   "kind": "dir",
+   "bytes": 3196891972,
+   "files": 208041,
+   "dirs": 45208
+  },
+  {
+   "name": "dotnet/",
+   "kind": "dir",
+   "bytes": 2794954720,
+   "files": 183736,
+   "dirs": 29301
+  },
+  {
+   "name": "Break-This-Repo/",
+   "kind": "dir",
+   "bytes": 2097173523,
+   "files": 23,
+   "dirs": 4
+  },
+  {
+   "name": "000.RANDOM.FILES/",
+   "kind": "dir",
+   "bytes": 2097152000,
+   "files": 20,
+   "dirs": 1
+  },
+  {
+   "name": "琵琶曲/",
+   "kind": "dir",
+   "bytes": 770076261,
+   "files": 40,
+   "dirs": 1
+  },
+  {
+   "name": "wallpapers/",
+   "kind": "dir",
+   "bytes": 658210292,
+   "files": 242,
+   "dirs": 20
+  },
+  {
+   "name": "彼方的他Aliya/",
+   "kind": "dir",
+   "bytes": 526854484,
+   "files": 99,
+   "dirs": 14
+  },
+  {
+   "name": "wallpaperFromDTL/",
+   "kind": "dir",
+   "bytes": 392847684,
+   "files": 177,
+   "dirs": 12
+  },
+  {
+   "name": "Eaglercraftx-1.8.8-src/",
+   "kind": "dir",
+   "bytes": 176637366,
+   "files": 4196,
+   "dirs": 409
+  },
+  {
+   "name": "bad_apple!!/",
+   "kind": "dir",
+   "bytes": 167453338,
+   "files": 6575,
+   "dirs": 1
+  },
+  {
+   "name": "OpenJDK_25.0.3/",
+   "kind": "dir",
+   "bytes": 142188308,
+   "files": 14761,
+   "dirs": 1595
+  },
+  {
+   "name": "Grasscutter/",
+   "kind": "dir",
+   "bytes": 135498470,
+   "files": 5591,
+   "dirs": 199
+  },
+  {
+   "name": "MCRe-NoiseFarlands-MCRef_stable-FloatPerlinNoiseVer/",
+   "kind": "dir",
+   "bytes": 134915534,
+   "files": 18350,
+   "dirs": 1501
+  },
+  {
+   "name": "408/",
+   "kind": "dir",
+   "bytes": 118116411,
+   "files": 34,
+   "dirs": 1
+  },
+  {
+   "name": "HowToCook/",
+   "kind": "dir",
+   "bytes": 114433532,
+   "files": 760,
+   "dirs": 217
+  },
+  {
+   "name": "bacteria_culture_plate_细菌培养皿/",
+   "kind": "dir",
+   "bytes": 114398760,
+   "files": 151,
+   "dirs": 2
+  },
+  {
+   "name": "gtnh-knowledge-base/",
+   "kind": "dir",
+   "bytes": 114128162,
+   "files": 112,
+   "dirs": 12
+  },
+  {
+   "name": "music/",
+   "kind": "dir",
+   "bytes": 112533364,
+   "files": 7,
+   "dirs": 1
+  },
+  {
+   "name": "Onlyfans精选无码图集/",
+   "kind": "dir",
+   "bytes": 81798984,
+   "files": 128,
+   "dirs": 1
+  },
+  {
+   "name": "maimai/",
+   "kind": "dir",
+   "bytes": 69952913,
+   "files": 40,
+   "dirs": 2
+  },
+  {
+   "name": "MCRe-NoiseFarlandsJava/",
+   "kind": "dir",
+   "bytes": 56369316,
+   "files": 28335,
+   "dirs": 1380
+  },
+  {
+   "name": "badApple/",
+   "kind": "dir",
+   "bytes": 51610743,
+   "files": 6581,
+   "dirs": 2
+  },
+  {
+   "name": "live2d_defoko/",
+   "kind": "dir",
+   "bytes": 49341099,
+   "files": 15,
+   "dirs": 2
+  },
+  {
+   "name": "有趣的小文件/",
+   "kind": "dir",
+   "bytes": 39825227,
+   "files": 11,
+   "dirs": 1
+  }
+ ],
+ "breakdown_share": 97.18,
+ "heaviest_files": [
+  {
+   "path": "000.RANDOM.FILES/100MiB.000.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.001.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.002.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.003.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.004.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.005.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.006.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.007.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.008.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.009.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.010.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.011.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.012.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.013.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.014.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.015.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.016.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.017.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.018.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "000.RANDOM.FILES/100MiB.019.RANDOM",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/000",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/001",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/002",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/003",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/004",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/005",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/006",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/007",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/008",
+   "bytes": 104857600,
+   "mode": "100644"
+  },
+  {
+   "path": "Break-This-Repo/RND100M/009",
+   "bytes": 104857600,
+   "mode": "100644"
+  }
+ ],
+ "timeline": [
+  {
+   "label": "meow",
+   "display": "喵 (#508)",
+   "note": "364,313 files, the baseline before the growth",
+   "sha": "efd79ef8e6e40f66c388e6a269fb6cc9658f2c37",
+   "date": "2026-09-14T14:18:07Z",
+   "bytes": 7050654476,
+   "files": 364313,
+   "dirs": 51637
+  },
+  {
+   "label": "museum",
+   "display": "展馆 (#522)",
+   "note": "the injection museum; +52 MB",
+   "sha": "2ec73c5da0a6d8b3d1ad0892f5ecdc1e2f51ff7a",
+   "date": "2026-09-14T23:48:16Z",
+   "bytes": 7102687723,
+   "files": 370914,
+   "dirs": 51642
+  },
+  {
+   "label": "weekago",
+   "display": "9/15 11:52",
+   "note": "still small",
+   "sha": "59017707ca186278e135d0cec976ef031b359643",
+   "date": "2026-09-15T11:52:03Z",
+   "bytes": 7171688410,
+   "files": 371209,
+   "dirs": 51695
+  },
+  {
+   "label": "d0815_after_novel",
+   "display": "novel/ 传完",
+   "note": "12 PRs, 11,183 files, 11.5 GiB",
+   "sha": "5491e3382ffa6e3a343dae37c0e03ef375260288",
+   "date": "2026-09-15T18:29:19Z",
+   "bytes": 20079190375,
+   "files": 382730,
+   "dirs": 51749
+  },
+  {
+   "label": "d0918_after_random",
+   "display": "随机的 2GiB",
+   "note": "20 files of exactly 100 MiB",
+   "sha": "1d50bd62288f241422cb0151b8854f3016b64abd",
+   "date": "2026-09-18T17:15:50Z",
+   "bytes": 22000730959,
+   "files": 382687,
+   "dirs": 51735
+  },
+  {
+   "label": "d0921_cook",
+   "display": "+HowToCook/AnimeStudio",
+   "note": "vendored repositories",
+   "sha": "10417cae3139599c01594e2fc7ebbe4e7c52384c",
+   "date": "2026-09-21T12:10:25Z",
+   "bytes": 22256864212,
+   "files": 384093,
+   "dirs": 52238
+  },
+  {
+   "label": "d0921_dotnet",
+   "display": "+dotnet/",
+   "note": "another whole repository imported",
+   "sha": "5b1a2e79a9ea1f1b4794ed8c0389d9ceed93e70f",
+   "date": "2026-09-21T13:23:19Z",
+   "bytes": 25051818932,
+   "files": 567829,
+   "dirs": 81539
+  },
+  {
+   "label": "predapo",
+   "display": "开战前 (16:25)",
+   "note": "the high-water mark before the war",
+   "sha": "14ed270f2f0be46b05c42b7102cd9d0fd5fa1a84",
+   "date": "2026-09-21T16:25:57Z",
+   "bytes": 25227666153,
+   "files": 576132,
+   "dirs": 81939
+  },
+  {
+   "label": "dapo30",
+   "display": "大破 30/30 (16:45)",
+   "note": "508,721 files deleted in four minutes",
+   "sha": "c6d2112960653dee0f64fd995c2b4fdec234245b",
+   "date": "2026-09-21T16:45:00Z",
+   "bytes": 26450268,
+   "files": 67411,
+   "dirs": 7
+  },
+  {
+   "label": "ffmpeg",
+   "display": "+FFmpeg/ (16:52)",
+   "note": "10,732 files back in",
+   "sha": "b10122f8e3ed7e27771e237093f4d6e490f99e0d",
+   "date": "2026-09-21T16:52:57Z",
+   "bytes": 92098751,
+   "files": 10801,
+   "dirs": 130
+  },
+  {
+   "label": "rand2g",
+   "display": "随机 2000MiB (18:50)",
+   "note": "deliberate incompressible ballast",
+   "sha": "f29f25413cab51f080e63d7048d0e90bc9d279c3",
+   "date": "2026-09-21T18:50:45Z",
+   "bytes": 2099607329,
+   "files": 6856,
+   "dirs": 3
+  },
+  {
+   "label": "cleanup",
+   "display": "清理垃圾 (19:06)",
+   "note": "root reduced to 23 files",
+   "sha": "0d1f3a1113063c21d224a5fefb316d6241ae6a7e",
+   "date": "2026-09-21T19:06:57Z",
+   "bytes": 2097173523,
+   "files": 23,
+   "dirs": 3
+  },
+  {
+   "label": "revert",
+   "display": "RESET TEST (05:06)",
+   "note": "merge of the pre-war commit",
+   "sha": "20fafdb9edd20a107d306ea46cd85a5e7b44dd5d",
+   "date": "2026-09-22T05:06:39Z",
+   "bytes": 27324839676,
+   "files": 576155,
+   "dirs": 81943
+  },
+  {
+   "label": "restored",
+   "display": "#738 合并 (05:19)",
+   "note": "576,155 files back",
+   "sha": "0ff7e62c415a3436bb4c02c2c0cb6e81b2b39ee9",
+   "date": "2026-09-22T05:19:45Z",
+   "bytes": 27324839676,
+   "files": 576155,
+   "dirs": 81943
+  },
+  {
+   "label": "borg",
+   "display": "现在 (#739, 07:33)",
+   "note": "heavier than before the war",
+   "sha": "910163cb9ba55d0059526e78baaa7068c07aa44e",
+   "date": "2026-09-22T07:33:06Z",
+   "bytes": 27324839755,
+   "files": 576155,
+   "dirs": 81943
+  }
+ ],
+ "war": {
+  "pre": 25227666153,
+  "left": 2097173523,
+  "revert": 27324839676,
+  "deleted_files": 508721,
+  "deleted_files_display": "508,721",
+  "net_bytes": 2097173602
+ },
+ "context": {
+  "novel_author": "StevenLi-phoenix",
+  "novel_date": "2026-09-15",
+  "novel_parts": 12,
+  "rust_author": "shuiyue-cmyk",
+  "meow_author": "MeowMyaa",
+  "dapo_author": "shuiyue-cmyk",
+  "random_count": 40,
+  "random_file_size": 104857600,
+  "random_bytes": 4194304000,
+  "forks": 164,
+  "random_share": 15.35
+ }
+}

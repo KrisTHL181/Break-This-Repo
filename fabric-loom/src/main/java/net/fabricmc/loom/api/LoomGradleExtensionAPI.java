@@ -1,0 +1,380 @@
+/*
+ * This file is part of fabric-loom, licensed under the MIT License (MIT).
+ *
+ * Copyright (c) 2021-2023 FabricMC
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package net.fabricmc.loom.api;
+
+import java.io.File;
+import java.util.List;
+
+import org.gradle.api.Action;
+import org.gradle.api.NamedDomainObjectContainer;
+import org.gradle.api.NamedDomainObjectList;
+import org.gradle.api.NamedDomainObjectProvider;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.Dependency;
+import org.gradle.api.file.ConfigurableFileCollection;
+import org.gradle.api.file.FileCollection;
+import org.gradle.api.file.RegularFileProperty;
+import org.gradle.api.provider.ListProperty;
+import org.gradle.api.provider.Property;
+import org.gradle.api.provider.Provider;
+import org.gradle.api.provider.SetProperty;
+import org.gradle.api.publish.maven.MavenPublication;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.TaskProvider;
+import org.gradle.jvm.tasks.Jar;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.fabricmc.loom.api.decompilers.DecompilerOptions;
+import net.fabricmc.loom.api.manifest.VersionsManifestsAPI;
+import net.fabricmc.loom.api.mappings.intermediate.IntermediateMappingsProvider;
+import net.fabricmc.loom.api.mappings.layered.spec.LayeredMappingSpecBuilder;
+import net.fabricmc.loom.api.processor.MinecraftJarProcessor;
+import net.fabricmc.loom.api.remapping.RemapperExtension;
+import net.fabricmc.loom.api.remapping.RemapperParameters;
+import net.fabricmc.loom.configuration.ide.RunConfigSettings;
+import net.fabricmc.loom.configuration.processors.JarProcessor;
+import net.fabricmc.loom.configuration.providers.minecraft.ManifestLocations;
+import net.fabricmc.loom.configuration.providers.minecraft.MinecraftJarConfiguration;
+import net.fabricmc.loom.task.GenerateSourcesTask;
+import net.fabricmc.loom.util.DeprecationHelper;
+
+/**
+ * This is the public api available exposed to build scripts.
+ */
+public interface LoomGradleExtensionAPI {
+	@ApiStatus.Internal
+	DeprecationHelper getDeprecationHelper();
+
+	RegularFileProperty getAccessWidenerPath();
+
+	/**
+	 * Specifies the {@code fabric.mod.json} file location used in injected interface processing.
+	 *
+	 * <p>
+	 *     By default, either {@code src/main/resources/fabric.mod.json}
+	 *     or {@code src/client/resources/fabric.mod.json} in the project directory is used.
+	 * </p>
+	 *
+	 * <p>
+	 *     Providing a path to a different location allows using a shared or preprocessed
+	 *     file. However, at the end it must be put into the root of the processed
+	 *     resources directory (usually {@code build/resources/main}).
+	 * </p>
+	 */
+	RegularFileProperty getFabricModJsonPath();
+
+	NamedDomainObjectContainer<DecompilerOptions> getDecompilerOptions();
+
+	void decompilers(Action<NamedDomainObjectContainer<DecompilerOptions>> action);
+
+	@Deprecated()
+	ListProperty<JarProcessor> getGameJarProcessors();
+
+	@Deprecated()
+	default void addJarProcessor(JarProcessor processor) {
+		getGameJarProcessors().add(processor);
+	}
+
+	ListProperty<MinecraftJarProcessor<?>> getMinecraftJarProcessors();
+
+	void addMinecraftJarProcessor(Class<? extends MinecraftJarProcessor<?>> clazz, Object... parameters);
+
+	ConfigurableFileCollection getLog4jConfigs();
+
+	Dependency officialMojangMappings();
+
+	Dependency layered(Action<LayeredMappingSpecBuilder> action);
+
+	void runs(Action<NamedDomainObjectContainer<RunConfigSettings>> action);
+
+	NamedDomainObjectContainer<RunConfigSettings> getRunConfigs();
+
+	/**
+	 * {@return the value of {@link #getRunConfigs}}
+	 * This is an alias for it that matches {@link #runs}.
+	 */
+	default NamedDomainObjectContainer<RunConfigSettings> getRuns() {
+		return getRunConfigs();
+	}
+
+	void mixin(Action<MixinExtensionAPI> action);
+
+	/**
+	 * Optionally register and configure a {@link ModSettings} object. The name should match the modid.
+	 * This is generally only required when the mod spans across multiple classpath directories, such as when using split sourcesets.
+	 */
+	void mods(Action<NamedDomainObjectContainer<ModSettings>> action);
+
+	NamedDomainObjectContainer<ModSettings> getMods();
+
+	NamedDomainObjectList<RemapConfigurationSettings> getRemapConfigurations();
+
+	RemapConfigurationSettings addRemapConfiguration(String name, Action<RemapConfigurationSettings> action);
+
+	void createRemapConfigurations(SourceSet sourceSet);
+
+	default List<RemapConfigurationSettings> getCompileRemapConfigurations() {
+		return getRemapConfigurations().stream().filter(element -> element.getOnCompileClasspath().get()).toList();
+	}
+
+	default List<RemapConfigurationSettings> getRuntimeRemapConfigurations() {
+		return getRemapConfigurations().stream().filter(element -> element.getOnRuntimeClasspath().get()).toList();
+	}
+
+	@ApiStatus.Experimental
+	// TODO: move this from LoomGradleExtensionAPI to LoomGradleExtension once getRefmapName & setRefmapName is removed.
+	MixinExtensionAPI getMixin();
+
+	default void interfaceInjection(Action<InterfaceInjectionExtensionAPI> action) {
+		action.execute(getInterfaceInjection());
+	}
+
+	InterfaceInjectionExtensionAPI getInterfaceInjection();
+
+	@ApiStatus.Experimental
+	default void versionsManifests(Action<VersionsManifestsAPI> action) {
+		action.execute(getVersionsManifests());
+	}
+
+	@ApiStatus.Experimental
+	ManifestLocations getVersionsManifests();
+
+	/**
+	 * @deprecated use {@linkplain #getCustomMinecraftMetadata} instead
+	 */
+	@Deprecated
+	default Property<String> getCustomMinecraftManifest() {
+		return getCustomMinecraftMetadata();
+	}
+
+	Property<String> getCustomMinecraftMetadata();
+
+	SetProperty<String> getKnownIndyBsms();
+
+	/**
+	 * Disables the deprecated POM generation for a publication.
+	 * This is useful if you want to suppress deprecation warnings when you're not using software components.
+	 *
+	 * <p>Experimental API: Will be removed in Loom 0.12 together with the deprecated POM generation functionality.
+	 *
+	 * @param publication the maven publication
+	 */
+	@ApiStatus.Experimental
+	void disableDeprecatedPomGeneration(MavenPublication publication);
+
+	/**
+	 * Reads the mod version from the fabric.mod.json file located in the main sourcesets resources.
+	 * This is useful if you want to set the gradle version based of the version in the fabric.mod.json file.
+	 *
+	 * @return the version defined in the fabric.mod.json
+	 */
+	String getModVersion();
+
+	/**
+	 * When true loom will apply transitive access wideners from compile dependencies.
+	 *
+	 * @return the property controlling the transitive access wideners
+	 */
+	Property<Boolean> getEnableTransitiveAccessWideners();
+
+	/**
+	 * When true loom will apply mod provided javadoc from dependencies.
+	 *
+	 * @return the property controlling the mod provided javadoc
+	 */
+	Property<Boolean> getEnableModProvidedJavadoc();
+
+	@ApiStatus.Experimental
+	IntermediateMappingsProvider getIntermediateMappingsProvider();
+
+	@ApiStatus.Experimental
+	void setIntermediateMappingsProvider(IntermediateMappingsProvider intermediateMappingsProvider);
+
+	@ApiStatus.Experimental
+	<T extends IntermediateMappingsProvider> void setIntermediateMappingsProvider(Class<T> clazz, Action<T> action);
+
+	/**
+	 * An Experimental option to provide empty intermediate mappings, to be used for game versions without any intermediate mappings.
+	 */
+	@ApiStatus.Experimental
+	default void noIntermediateMappings() {
+		getUseIntermediateMappings().set(false);
+		getUseIntermediateMappings().finalizeValue();
+	}
+
+	/**
+	 * Returns the tiny mappings file used to remap the game and mods.
+	 *
+	 * @return the mappings file, or null if in a non-obfuscated environment
+	 */
+	File getMappingsFile();
+
+	/**
+	 * Returns the {@link GenerateSourcesTask} for the given {@link DecompilerOptions}.
+	 * When env source sets are split and the client param is true the decompile task for the client jar will be returned.
+	 */
+	GenerateSourcesTask getDecompileTask(DecompilerOptions options, boolean client);
+
+	/**
+	 * Use "%1$s" as a placeholder for the minecraft version.
+	 *
+	 * @return the intermediary url template
+	 */
+	Property<String> getIntermediaryUrl();
+
+	/**
+	 * @return the production namespace
+	 */
+	Property<String> getProductionNamespace();
+
+	/**
+	 * @return whether to use intermediate mappings
+	 */
+	Property<Boolean> getUseIntermediateMappings();
+
+	/**
+	 * @return the default mixin remap type
+	 */
+	Property<String> getDefaultMixinRemapType();
+
+	@ApiStatus.Experimental
+	Property<MinecraftJarConfiguration<?, ?, ?>> getMinecraftJarConfiguration();
+
+	default void serverOnlyMinecraftJar() {
+		getMinecraftJarConfiguration().set(MinecraftJarConfiguration.SERVER_ONLY);
+	}
+
+	default void clientOnlyMinecraftJar() {
+		getMinecraftJarConfiguration().set(MinecraftJarConfiguration.CLIENT_ONLY);
+	}
+
+	default void splitMinecraftJar() {
+		getMinecraftJarConfiguration().set(MinecraftJarConfiguration.SPLIT);
+	}
+
+	void splitEnvironmentSourceSets();
+
+	boolean areEnvironmentSourceSetsSplit();
+
+	/**
+	 * When enabled, Loom remaps JSR {@code Nullable}, {@code Nonnull}, and {@code Immutable} annotations to their JetBrains counterparts in the Minecraft JAR.
+	 *
+	 * <p>When disabled, Loom keeps JSR annotations as-is, and remaps any JetBrains {@code Nullable}, {@code NotNull}, and {@code Unmodifiable} annotations to their JSR counterparts in the Minecraft JAR.
+	 *
+	 * <p>This has no effect on Minecraft versions that solely use JSpecify annotations.
+	 *
+	 * <p>Default: true
+	 *
+	 * @return the property controlling the remapping of JSR annotations
+	 */
+	Property<Boolean> getRemapJsrAnnotationsToJetBrains();
+
+	Property<Boolean> getRuntimeOnlyLog4j();
+
+	/**
+	 * When enabled, lwjgl-opengl or lwjgl-vulkan will be added as a runtime dependency preventing the mod from compiling against a specific graphics API.
+	 */
+	Property<Boolean> getRuntimeOnlyLwjglGraphics();
+
+	Property<Boolean> getSplitModDependencies();
+
+	/**
+	 * Whether to transform zip entries within nested jars to be using STORED compression.
+	 *
+	 * <p>This will usually reduce the resulting jar size by avoiding double-compression.
+	 *
+	 * <p>However, this will very likely increase the decompressed size during runtime as a side effect.
+	 *
+	 * <p>Default: false
+	 *
+	 * @return the property controlling this toggle
+	 */
+	Property<Boolean> getUncompressNestedJars();
+
+	<T extends RemapperParameters> void addRemapperExtension(Class<? extends RemapperExtension<T>> remapperExtensionClass, Class<T> parametersClass, Action<T> parameterAction);
+
+	/**
+	 * @return The minecraft version, as a {@link Provider}.
+	 */
+	Provider<String> getMinecraftVersion();
+
+	/**
+	 * @return A lazily evaluated {@link FileCollection} containing the named minecraft jars.
+	 */
+	FileCollection getNamedMinecraftJars();
+
+	/**
+	 * Nest mod jars from a {@link FileCollection} into the specified jar task.
+	 * This is useful for including locally built mod jars or jars that don't come from Maven.
+	 *
+	 * <p>Important: The jars must already be valid mod jars (containing a fabric.mod.json file).
+	 * Non-mod jars will be rejected.
+	 *
+	 * <p>Example usage:
+	 * {@snippet lang=groovy :
+	 * loom {
+	 *     nestJars(tasks.jar, files('local-mod.jar'))
+	 *     nestJars(tasks.remapJar, tasks.named('buildOtherMod'))
+	 * }
+	 * }
+	 *
+	 * @param jarTask the jar task to nest jars into (can be jar or remapJar)
+	 * @param jars the file collection containing mod jars to nest
+	 * @since 1.14
+	 */
+	@ApiStatus.Experimental
+	void nestJars(TaskProvider<? extends Jar> jarTask, FileCollection jars);
+
+	/**
+	 * Includes dependencies from a configuration in the specified jar task.
+	 *
+	 * <p>This is the task-bound equivalent of the default {@code include} configuration.
+	 * Dependencies are converted to nestable jars before they are nested into the jar task.
+	 *
+	 * <p>Example usage:
+	 * {@snippet lang=groovy :
+	 * loom {
+	 * 	   nestJars(tasks.jar, configurations.myInclude)
+	 * 	   nestJars(tasks.named('remapJar'), configurations.named('myRemapInclude'))
+	 * }
+	 * }
+	 *
+	 * @param jarTask the jar task to include dependencies in
+	 * @param configuration the configuration containing dependencies to include
+	 * @since 1.17
+	 */
+	@ApiStatus.Experimental
+	void nestJars(TaskProvider<? extends Jar> jarTask, Configuration configuration);
+
+	/**
+	 * Includes dependencies from a lazily provided configuration in the specified jar task.
+	 *
+	 * @param jarTask the jar task to include dependencies in
+	 * @param configuration the lazy configuration containing dependencies to include
+	 * @since 1.17
+	 */
+	@ApiStatus.Experimental
+	void nestJars(TaskProvider<? extends Jar> jarTask, NamedDomainObjectProvider<? extends Configuration> configuration);
+}

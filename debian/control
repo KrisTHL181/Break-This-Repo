@@ -1,0 +1,13 @@
+Source: break-this-repo
+Section: misc
+Priority: optional
+Maintainer: Break This Repo contributors <noreply@example.invalid>
+Build-Depends: debhelper-compat (= 13), cmake, g++, pkg-config
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: break-this-repo
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Small C++ binaries from the Break This Repo project
+ This package installs the fozu and what command-line programs.

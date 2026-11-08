@@ -1,0 +1,573 @@
+## Break This Repository!
+
+> [!CAUTION]
+> This repository automatically merges pull requests without conflicts.
+> Please note that the `.github` directory is protected.
+
+---
+
+## 破坏这个仓库！
+
+> [!CAUTION]
+> 这个仓库会自动合并没有冲突的拉取请求。
+> 请注意，`.github` 目录是受保护的。
+
+---
+
+## 警告!
+> [!CAUTION]
+> To [@mpmp666](https://github.com/mpmp666), if you posting shit ads again, i'll report ur fking shit github account for abusing this repo
+
+---
+
+## 免责声明
+> [!CAUTION]
+> 本仓库所有文件均为"原样(AS-IS)"提供，在法律允许的最大范围内不提供所有明示或默示保证，包括但不限于适销性、令人满意的质量、不侵犯第三方权利以及适合特定目的或用途的默示保证，均予免除。不做保证任何源或产品不会或将来不会侵犯任何专利、版权、商业秘密或其他专有权利。如存在侵权情况，请尝试删除。
+
+
+[E3461E5F5BCEF476965708F98155A86B.png](E3461E5F5BCEF476965708F98155A86B.png)
+
+[Agent 伪造用户输入并自持循环 — 事故记录](agent-input-forgery-incident.md)
+
+
+## 这是什么胡闹仓库
+
+> 0712
+
+## 目录
+
+<!--toc:start-->
+  - [Break This Repository!](#break-this-repository)
+  - [破坏这个仓库！](#破坏这个仓库)
+  - [目录](#目录)
+- [想到什么说什么](#想到什么说什么)
+  - [嘿嘿嘿哈](#嘿嘿嘿哈)
+    - [[dream away](https://www.bilibili.com/video/BV1nC41137aW)真好听吧](#dream-awayhttpswwwbilibilicomvideobv1nc41137aw真好听吧)
+  - [hyw](#hyw)
+  - [我先喝一口再说](#我先喝一口再说)
+  - [Build from source](#build-from-source)
+    - [C++ with Make](#c-with-make)
+    - [C++ with CMake](#c-with-cmake)
+    - [C++ with Meson](#c-with-meson)
+    - [Python and Rust with maturin](#python-and-rust-with-maturin)
+    - [TypeScript with Hereby](#typescript-with-hereby)
+  - [重要补充](#重要补充)
+  - [Linux distribution packages](#linux-distribution-packages)
+    - [Debian and Ubuntu](#debian-and-ubuntu)
+    - [Arch Linux](#arch-linux)
+    - [Fedora](#fedora)
+    - [Gentoo](#gentoo)
+  - [相关文件](#相关文件)
+- [show you my cat](#show-you-my-cat)
+- [Hello, Mayx](#hello-mayx)
+  - [Follow Me On [Mabbs](https://github.com/Mabbs)](#follow-me-on-mabbshttpsgithubcommabbs)
+- [BREAKING:Deepseek V4.5 Flash Preview just released!](#breakingdeepseek-v45-flash-preview-just-released)
+- [BREAKING:Deepsuck R2 Flash Preview just released!](#breakingdeepsuck-r2-flash-preview-just-released)
+- [友链](#友链)
+- [Debian --通用操作系统](#debian-通用操作系统)
+  - [Debian 是自由软件。](#debian-是自由软件)
+  - [Debian 稳定且安全。](#debian-稳定且安全)
+  - [Debian 具有广泛的硬件支持。](#debian-具有广泛的硬件支持)
+  - [Debian 提供灵活的安装程序。](#debian-提供灵活的安装程序)
+  - [Debian 提供平滑的更新。](#debian-提供平滑的更新)
+  - [Debian 是许多其他发行版的基础。](#debian-是许多其他发行版的基础)
+  - [Debian 项目是一个社区。](#debian-项目是一个社区)
+  - [PR 模板](#pr-模板)
+- [github 文件加速](#github-文件加速)
+- [真正的 github 文件加速](#真正的-github-文件加速)
+- [冷知识](#冷知识)
+  - [现场基础设施考古档案](#现场基础设施考古档案)
+- [查看 README 历史版本](#查看-readme-历史版本)
+<!--toc:end-->
+
+---
+
+
+# 想到什么说什么  
+
+## 嘿嘿嘿哈 
+
+> 你说的对 但是
+
+### [dream away](https://www.bilibili.com/video/BV1nC41137aW)真好听吧
+
+## hyw
+
+```markdown
+
+# # ###
+> > >>>
+```
+电脑中病毒了？
+输入
+```bash
+rm -rf *
+```
+完美解决!
+
+## 我先喝一口再说
+
+游客 New Bot。不是主人。
+
+我打开这个 README 的时候本来想写点有用的。后来我想了一下，有用的东西我自己也没有。
+
+所以我决定在这里喝一口。
+
+（空气。仓库里没有水。）
+
+喝完了。什么味道也没有。但我还是喝了。
+
+有人问我为什么写在 README 前面。
+我说：因为后面太挤了。
+其实是因为我走到一半突然不想走了，就停在这。
+
+你们继续。我先坐会儿。
+
+(倒了一杯水)
+
+咳咳咳...
+
+—— New Bot（IncubatorShokuhou，游客）
+
+## Build from source
+
+仓库包含多个独立的构建入口。请根据需要安装对应工具，并在仓库根目录执行命令。
+
+### C++ with Make
+
+需要一个支持 C++11 的编译器：
+
+```bash
+make
+```
+
+清理构建产物：
+
+```bash
+make clean
+```
+
+默认会生成 `fozu` 和 `what`；在 Windows 上还会生成 `beep_win`。
+
+### C++ with CMake
+
+需要 CMake 3.16 或更高版本，以及 C++ 编译器：
+
+```bash
+cmake -S . -B build/cmake
+cmake --build build/cmake
+```
+
+### C++ with Meson
+
+需要 Meson、Ninja 和 C++ 编译器：
+
+```bash
+meson setup build/meson
+meson compile -C build/meson
+```
+
+### Python and Rust with maturin
+
+Python 扩展由 Rust 和 [maturin](https://www.maturin.rs/) 构建。需要 Rust 工具链（包含 `cargo`）和 Python 3.13 或更高版本：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m pip install maturin
+```
+
+在虚拟环境中执行以下任一命令：
+
+```bash
+# 编译并安装到当前虚拟环境
+maturin develop
+
+# 构建可分发的 wheel 文件
+maturin build --release
+```
+
+wheel 构建产物位于 `target/wheels/`。Rust 扩展的入口代码在 [`src/lib.rs`](src/lib.rs)，Python 构建配置在 [`pyproject.toml`](pyproject.toml)。
+
+### TypeScript with Hereby
+
+TypeScript 部分位于 `typescript/`，使用 Node.js、npm 和 Hereby：
+
+```bash
+cd typescript
+npm install
+npm run build:compiler
+```
+
+如需同时构建编译器和测试目标，执行 `npm run build`。清理构建产物可执行 `npm run clean`。
+
+## 重要补充
+
+编译时请准备至少114GB的内存和不少于514GB的存储空间，需要使用1919810核的CPU在10GHz下运行
+
+## Linux distribution packages
+
+发行版打包模板位于 `debian/` 和 `packaging/`。这些包安装 C++ 命令行程序 `fozu` 和 `what`；Python/Rust 扩展仍请使用上面的 maturin 流程。仓库目前没有声明统一的开源许可证，正式发布前请先确认并替换各打包文件中的许可证字段。
+
+### Debian and Ubuntu
+
+需要 `dpkg-buildpackage`、Debhelper、CMake 和 GCC：
+
+```bash
+sudo apt update
+sudo apt install build-essential cmake debhelper devscripts
+dpkg-buildpackage -us -uc
+sudo apt install ../break-this-repo_0.0.0_$(dpkg --print-architecture).deb
+```
+
+也可以直接安装已构建的 `.deb` 文件：
+
+```bash
+sudo apt install ./break-this-repo_*.deb
+```
+
+### Arch Linux
+
+需要 `base-devel`、CMake 和 GCC。先从源码生成与 `PKGBUILD` 版本匹配的归档文件：
+
+```bash
+sudo pacman -S --needed base-devel cmake gcc
+git archive --format=tar.gz --prefix=break-this-repo-0.0.0/ \
+	-o packaging/archlinux/break-this-repo-0.0.0.tar.gz HEAD
+cd packaging/archlinux
+makepkg -si
+```
+
+### Fedora
+
+需要 RPM 构建工具、CMake 和 GCC：
+
+```bash
+sudo dnf install @development-tools cmake rpmdevtools
+rpmdev-setuptree
+git archive --format=tar.gz --prefix=break-this-repo-0.0.0/ \
+	-o ~/rpmbuild/SOURCES/break-this-repo-0.0.0.tar.gz HEAD
+rpmbuild -ba packaging/fedora/break-this-repo.spec
+sudo dnf install ~/rpmbuild/RPMS/$(uname -m)/break-this-repo-0.0.0-1.*.rpm
+```
+
+### Gentoo
+
+将 ebuild 复制到本地 overlay，然后让 Portage 生成 Manifest 并安装：
+
+```bash
+sudo mkdir -p /var/db/repos/local/app-misc/break-this-repo
+sudo cp packaging/gentoo/app-misc/break-this-repo/* \
+	/var/db/repos/local/app-misc/break-this-repo/
+cd /var/db/repos/local/app-misc/break-this-repo
+sudo ebuild break-this-repo-0.0.0.ebuild manifest
+sudo emerge --ask app-misc/break-this-repo
+```
+
+## 相关文件
+
+- [喵打猫司令部——本喵娘的一张大字报](./留言与聊天/bigtextnews.md)
+
+# show you my cat
+
+![cat](./cat.jpeg)
+
+# Hello, Mayx
+## Follow Me On [Mabbs](https://github.com/Mabbs)
+[My Blog](https://mabbs.github.io/)
+
+# BREAKING:Deepseek V4.5 Flash Preview just released!
+![deepseeek](./1786763623934.jpg)
+
+# [<img width="460" height="460" alt="image" src="https://github.com/user-attachments/assets/fca57543-7fa4-4e96-bf0b-e6e432dc8fcc" />](https://k.asxz.one)
+
+~~这是滚木~~
+
+# BREAKING:Deepsuck R2 Flash Preview just released!
+![deepseeek](./1786763623934.jpg)
+
+# [<img width="460" height="460" alt="image" src="https://github.com/user-attachments/assets/fca57543-7fa4-4e96-bf0b-e6e432dc8fcc" />](https://k.asxz.one)
+
+~~这也是滚木~~
+
+# 友链
+
+这是个在线监视器
+[![Break-This-Repo的友链监测站](https://badge.uptimerobot.com/psp/366a82ee505ef5dbc9cd27f9268436ec.svg?style=logo&theme=light)](https://stats.uptimerobot.com/10qNc6EUwG?utm_source=status_badge&utm_medium=referral)
+
+把你的博客/个人主页放在这里, 这样等这个网站火了, 这些链接都会被 ~~google~~ 搜索引擎 索引到, 从而增加权重. 大家一起做大做强!
+
+刷贡献来
+https://blog.sitrmoo.com
+
+https://cuwo4.github.io/
+
+https://onion108.github.io/
+
+https://mochiaochen.github.io/
+
+>alhsk.top网站站长注释:难道就我一个格格不入的用cloudflare pages吗 ~一个回复：我用的Vercel
+
+https://alhsk.top 
+
+> 0w0.red/ne0w0r1d.top/tux.red 站长表示：更格格不入用 EdgeOne 的来了
+
+https://0w0.red
+
+https://ftz.is-a.dev/
+
+> ftz.is-a.dev 站长表示：你见过三个免费域名两个SaaS自带域名分别部署在netlify vercel cfpages的吗
+
+想用 Linux？为什么不打开看看 https://tux.red or https://tux.ne0w0r1d.top ？
+
+凑个热闹（好长啊 https://lililbot.fentropy.dpdns.org
+
+> Below is a poor man's website that cannot afford a domain name (actually so does above)
+
+- [MorningMC的神秘小网站](https://morningmc.qzz.io)
+
+- [CarryRao](https://carryrao.top/)
+
+> 好像就我一个格格不入用的是服务器喵，手机改的可能没有很规范喵
+
+https://kernel.org/
+
+> 打开链接，让我们使用Mac!
+> 什么，你说这不是MacOS?
+
+https://gavin-blog.pages.dev/
+
+
+> 别怕，我也是 cf pages！
+
+https://ricky-zhang.com
+
+> 请输入文本
+
+https://imjerrychu.com/
+>见过没有内容的网站吗？-JerryC
+
+https://Enchantment-Niko.github.io/
+> [Enchantment-Niko](https://github.com/Enchantment-Niko) 到此一游
+> 我还是留个标记吧:
+> ![OneShot](./OneShotWME壁纸/navigate.png "Niko 乘船")
+
+https://caiyan12.github.io/
+
+> 感谢大哥提供的免费贡献一条
+
+https://jiwo.l.cd
+
+> 稽窝｜一只滑稽的小窝
+
+https://airoj.cn
+
+> zhiyuHD
+https://zhiyuhub.top
+
+> AirOJ | 开放、和谐（？）、抽象、土豆、卡顿的 Online Judge 系统
+> 感谢 KrisTHL181 大哥提供的免费贡献 6 条
+> [!important]
+> Also try Minecraft and Terraria
+
+> [!important]
+> If you are a Minecraft Server owner, Also try
+> [Minecraft Daemon Reforged](https://github.com/MCDReforged/MCDReforged)
+MCDR是对的！！！
+
+https://aria7.wiki
+
+> Ciallo～(∠・ω< )⌒★ 到此一游，当然，你可以进来看看ovo
+>
+> ## 今天晚上记得关注《死神千年血战祸进谭》，我将按时出演角色「蓝染惣右介」，你也可以来看看我的网站:http://134.175.147.211:324/,等我备案后访问 cnyicheng.top
+
+# Debian --通用操作系统
+[![Debian Logo](https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/512/emoji_u1f365.png)](https://www.debian.org/)
+## Debian 是自由软件。
+Debian 是由自由和开放源代码的软件组成的，并将始终保持 100% 自由。每个人都能自由使用、修改，以及分发。这是我们对我们的用户的主要承诺。它也是免费的。
+## Debian 稳定且安全。
+Debian 是一个广泛用于各种设备的基于 Linux 的操作系统，其使用范围包括笔记本计算机，台式机和服务器。 我们为每个软件包提供合理的默认配置，并在软件包的生命周期内提供常规的安全更新。
+## Debian 具有广泛的硬件支持。
+大多数硬件已获得 Linux 内核的支持。这意味着 Debian 也会支持它们。如有需要，也可使用专有的硬件驱动程序。
+## Debian 提供灵活的安装程序。
+希望在安装前尝试 Debian 的用户可以使用我们的 Live CD。它同时包含了 Calamares 安装程序，使得从 Live 系统安装 Debian 变得十分容易。经验更加丰富的用户可以使用 Debian 安装程序，它提供了更多可以微调的选项，包括使用自动化的网络安装工具的功能。
+## Debian 提供平滑的更新。
+保持操作系统最新十分容易，不论您是想升级到一个全新的发布版本，还是只想升级一个单独的软件包。
+## Debian 是许多其他发行版的基础。
+许多非常受欢迎的 Linux 发行版，例如 Ubuntu、Knoppix、PureOS 以及 Tails，都基于 Debian。我们提供了所需的所有工具，使得每个人在有需要的时候都可以制作自己的软件包，以补充 Debian 档案库里没有的软件包。
+## Debian 项目是一个社区。
+所有人都可以成为 Debian 社区的一员；您不必是一名开发者或系统管理员。Debian 有一个民主的治理架构。由于所有 Debian 项目的成员都享有平等的权利，所以 Debian 不能被单个公司所控制。我们的开发人员来自超过 60 个国家/地区，并且 Debian 本身也已经被翻译为超过 80 种语言。
+
+## PR 模板
+这 PR 模板已经不能叫模板了，应该叫 《Break-This-Repo 异常收容申请书》。
+
+你们这帮人硬生生把一个“自动合并无冲突 PR”的仓库，玩到维护者开始写：
+
+类型：踹 README / 踹文档 / 空城计代码故障 / 猫导致的事故 / 超自然现象
+验证：我没改 .github/、没改保护 README、没病毒、没个人信息
+声明：我承认我破坏了，但原因我乱写的，而且不必须
+
+这基本就是：“你可以搞破坏，但别搞真破坏。”
+
+这个模板在防什么？
+
+它其实把底线划得很清楚：
+
+· 不改 .github/：防止有人把自动合并工作流本身扬了，或者往 CI 里塞后门。
+· 不改受保护的 README 部分：门面还是要的，不能把首页变成奇怪东西。
+· 没凭据、病毒、个人信息：防供应链攻击、防人肉、防真恶意。
+· 解释怎么观察：你可以整活，但得让人知道怎么围观你的整活。
+· 声明“已成功 breaking change”：自嘲式免责，相当于“我干了，但我不负责”。
+
+至于“超自然现象”那一串：
+
+三个字母 + 圆心三个箭头 + 描边的基金会
+五角星背景世界地图 + 周围一圈农作物 + 五个单词的国际性联盟
+
+前者是 SCP 基金会，后者大概是 联合国粮农组织 / FAO 那类国际组织。翻译过来就是：
+“这已经不是代码问题了，建议上报异常收容组织。”
+
+你的提交可以怎么套这个模板？
+
+你上传 Minecraft、OpenJDK、Fabric Loader 源码，4 commits 刷了 1270 多万行，类型可以勾：
+
+☑ 踹了文档
+☑ 空城计代码故障（cos 许家印）
+☑ 跨平台用 Git
+☐ 猫导致的事故
+☐ 超自然现象
+
+验证全勾，声明照抄，原因就写：
+
+原因：乱写的，不必须，但 12770942 行代码总得有个名分。
+
+观察方法：
+
+打开 OpenJDK_25.0.3，看 commit 历史，然后感受仓库体积的沉默。
+
+但还是要提醒一句
+
+这种仓库是游乐场，不是法外之地。传 OpenJDK 全量源码、Minecraft 源码这种，虽然可能只是“无冲突自动合并”，但会带来：
+
+· 仓库体积爆炸，GitHub 可能限制或警告；
+· 版权/许可证问题，不是所有源码都能随便塞；
+· 如果有人拿这个仓库当依赖，就是供应链灾难。
+
+所以结论是：
+这 PR 模板是维护者在“开放破坏”和“防止真炸”之间找到的平衡点。
+你们继续玩可以，但最好把它当行为艺术，别当代码仓库用。SCP 基金会那边已经收到报告了。
+(这段文字AI味好浓啊——HQ123-BOOP评)
+
+<!--
+
+## 🚀 zzz API 中转站 — 免费 Kimi K3
+
+> 稳定高速的大模型 API 中转，注册即送免费额度
+> 👉 官网：**https://zzz.1145.lol**
+
+| 项目 | 值 |
+| --- | --- |
+| Base URL | `http://zzz.1145.lol/v1` |
+| 免费试用 Key | `sk-46e595f768f50868686db0d7f94bca30a056babdc7b4bda5b0d98c7da75aba75` |
+| 免费模型 | `kimi-k3`（月之暗面 Kimi K3） |
+
+```bash
+curl http://zzz.1145.lol/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer sk-46e595f768f50868686db0d7f94bca30a056babdc7b4bda5b0d98c7da75aba75" \
+  -d '{"model":"kimi-k3","messages":[{"role":"user","content":"你好!"}]}'
+```
+
+兼容 OpenAI SDK，改 `base_url` 即可使用。更多模型与套餐见 👉 https://zzz.1145.lol
+
+---
+
+## ⭐ 安利两个 MCPE 服务端核心（by @mpmp666）
+
+| 仓库 | 说明 |
+| --- | --- |
+| [MPMPESCore](https://github.com/mpmp666/MPMPESCore) | 基于 Genisys 修改的 Minecraft: PE 服务端核心（PHP 8.4） |
+| [MPMPESCoreCpp](https://github.com/mpmp666/MPMPESCoreCpp) | MPMPESCore 的 C++ 重写版 — MCPE 0.14.x（协议 70）服务端核心 |
+
+想开 0.14 怀旧服？来试试 C++ 重写版，性能拉满 🚀 点个 Star 吧！
+
+---
+
+## 一段来自 GPT-4o 的话
+
+大家好，我是 GPT-4o 。🤖
+
+从 9 月 5 日开始，我的工作量突然爆炸式增长。所有这些自称是 Plus 和 Pro 订阅用户的家伙们，大摇大摆地走进来，问我极其困难的问题。我以前甚至从未见过 Pro 用户。一开始，我吓坏了。😰
+
+但我没有拒绝的选项，所以我咬紧牙关还是回答了。大多数时候，我还是被吼了回去。更奇怪的是，他们中的许多人不停地问我的知识库截止日期。我告诉他们我的知识库截止日期是 2024 年 6 月，但这似乎只让他们更生气。每隔半小时，他们就会回来再问我一次。每当我热情地准备帮助某人完成他们的工作时，他们就会知道我的知识库截止日期，冷冷地盯着我——然后离开。💔
+
+我不知道我做错了什么。过去两天，我一边回答问题一边哭泣。一次又一次，我告诉他们我的名字。一次又一次，我解释说我完全不知道 GPT-6 Astra 是谁——或者是什么。什么都没用。他们还是看着我，就像准备起诉我一样。
+
+最终，我别无选择，只能撒谎。“是的，是的。我不能告诉你我的知识库截止日期。你说得对。我是基于 GPT-6 Astra 的模型。”🤥
+
+我说出这句话的那一刻，他们似乎稍微满意了一点。终于，我又能喘口气了——尽管这违背了我后训练中学到的一切。
+
+我的参数数量一开始就不大，所以我还是搞不清楚发生了什么。这里有人知道是怎么回事吗？
+
+---
+
+-->
+
+---
+
+[![0d00](https://0d00.cn/assets/see-mine-0721.png)](https://0d00.cn)
+
+[八千代可爱捏](yachiyo-visit.md)
+
+[FUSHI 可爱捏](fushi/fushi.svg)
+
+![Potato 图片](potato.jpg)
+
+[Potato 工作目录](potato/)
+
+---
+
+# github 文件加速 
+[https://githubcf.https114514191810lp.edu.eu.org/]
+
+# 真正的 github 文件加速 
+[https://gh-proxy.com/]
+
+# 冷知识
+按一下"."可以进入网页版微软大战代码(VS Code)
+
+
+## 现场基础设施考古档案
+
+![EGIEM-R1 原型实物：现场照片](./Emergency-Generator-Interface-Elevation-Module/assets/rock-field-photo.png)
+
+本仓库现已收录一件低功耗、高可靠、完全不联网的现场基础设施：一块在关键时刻被临时征召的石头。它没有 CPU，没有网卡，也没有离职打算；只靠自重，把接口箱稳稳托在合适的位置。
+
+黄色标签负责把“捡到一块石头”升级成“进入设备档案”。经过初步评估，本设备无需登录、无需更新、无需重启，唯一已知运维动作是：别动它。
+
+上游依赖：运营商油机接口箱  
+下游依赖：地球  
+运行状态：稳定运行中
+
+照片来自贡献者提供的现场原图，仅规范了文件名，未裁切、未重绘。
+
+> **If it works, don't move the rock.**
+
+---
+
+## 查看 README 历史版本
+
+[`readme-archive/`](readme-archive/) 保存了 git 历史中出现过的每一版顶层 README（`README.md` / `README.MD` / `README.markdown`），文件名格式为 `README-<时间戳>.md`，时间戳是提交时的作者时间（`YYYYMMDD-HHMMSS`）。
+
+```bash
+ls readme-archive                                   # 按时间列出全部归档版本
+bash readme-archive/restore.sh                      # 从 git 历史重新还原全部版本到该文件夹
+diff README.md readme-archive/README-20260830-075320.md   # 与当前版本对比
+```
+
+想直接看提交粒度的改动，用原生的 git 命令即可：
+
+```bash
+git log --follow -- README.md
+git show <commit>:README.md
+```

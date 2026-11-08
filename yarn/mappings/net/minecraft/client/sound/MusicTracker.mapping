@@ -1,0 +1,41 @@
+CLASS net/minecraft/class_1142 net/minecraft/client/sound/MusicTracker
+	FIELD field_5571 random Lnet/minecraft/class_5819;
+	FIELD field_5572 timeUntilNextSong I
+	FIELD field_5574 current Lnet/minecraft/class_1113;
+	FIELD field_5575 client Lnet/minecraft/class_310;
+	FIELD field_33019 DEFAULT_TIME_UNTIL_NEXT_SONG I
+	FIELD field_55164 volume F
+	FIELD field_60796 musicFrequency Lnet/minecraft/class_1142$class_11504;
+	FIELD field_60951 shownToast Z
+	METHOD <init> (Lnet/minecraft/class_310;)V
+		ARG 1 client
+	METHOD method_4858 play (Lnet/minecraft/class_5195;)V
+		ARG 1 sound
+	METHOD method_4859 stop ()V
+	METHOD method_4860 isPlayingType (Lnet/minecraft/class_5195;)Z
+		ARG 1 type
+	METHOD method_18669 tick ()V
+	METHOD method_50025 stop (Lnet/minecraft/class_5195;)V
+		ARG 1 type
+	METHOD method_65255 canFadeTowardsVolume (F)Z
+		ARG 1 volume
+	METHOD method_71933 setMusicFrequency (Lnet/minecraft/class_1142$class_11504;)V
+		ARG 1 musicFrequency
+	METHOD method_71934 getCurrentMusicTranslationKey ()Ljava/lang/String;
+	METHOD method_72055 tryShowToast ()V
+	METHOD method_75844 shouldReplace (Lnet/minecraft/class_5195;Lnet/minecraft/class_1113;)Z
+		ARG 0 newSound
+		ARG 1 currentSound
+	CLASS class_11504 MusicFrequency
+		FIELD field_60800 CODEC Lcom/mojang/serialization/Codec;
+		FIELD field_60803 delayBetweenTracks I
+		FIELD field_64471 name Ljava/lang/String;
+		FIELD field_64472 text Lnet/minecraft/class_2561;
+		METHOD <init> (Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;I)V
+			ARG 3 name
+			ARG 4 translationKey
+			ARG 5 minutesBetweenTracks
+		METHOD method_71935 getDelayBeforePlaying (Lnet/minecraft/class_5195;Lnet/minecraft/class_5819;)I
+			ARG 1 music
+			ARG 2 random
+		METHOD method_76564 getText ()Lnet/minecraft/class_2561;
