@@ -1,0 +1,14 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:true"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "minecraft:diamond"
+  }
+}

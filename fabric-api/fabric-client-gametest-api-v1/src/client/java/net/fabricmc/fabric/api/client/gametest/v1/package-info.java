@@ -1,0 +1,207 @@
+/**
+ * Provides support for client gametests. To register a client gametest, add an entry to the
+ * {@code fabric-client-gametest} entrypoint in your {@code fabric.mod.json}. Your gametest class should implement
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.FabricClientGameTest FabricClientGameTest}.
+ *
+ * <p>Loom provides an API to configure client gametests in your {@code build.gradle}. It is recommended to run
+ * gametests from a separate source set and test mod:
+ * <pre>
+ *     {@code
+ *     fabricApi.configureTests {
+ *         createSourceSet = true
+ *         modId = 'your-gametest-mod-id'
+ *     }
+ *     }
+ * </pre>
+ *
+ * <h2>Lifecycle</h2>
+ * Client gametests are run sequentially. When a gametest ends, the game will be
+ * returned to the title screen. When all gametests have been run, the game will be closed.
+ *
+ * <h2>Threading</h2>
+ *
+ * <p>Client gametests run on the client gametest thread. Use the functions inside
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext ClientGameTestContext} and other test
+ * helper classes to run code on the correct thread. Exceptions are transparently rethrown on the test thread, and their
+ * stack traces are mutated to include the async stack trace, to make them easy to track. You can disable this behavior
+ * by setting the {@code fabric.client.gametest.disableJoinAsyncStackTraces} system property.
+ *
+ * <p>The game remains paused unless you explicitly unpause it using various waiting functions such as
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#waitTick() ClientGameTestContext.waitTick()}.
+ * A side effect of this is that <strong>the results of your code may not be immediate if the game needs a tick to
+ * process them</strong>. A big example of this is key mappings, although some key mapping methods have built-in tick
+ * waits to mitigate the issue. See the {@link net.fabricmc.fabric.api.client.gametest.v1.TestInput TestInput}
+ * documentation for details. Another pseudo-example is effects on the server need a tick to propagate to the client and
+ * vice versa, although this is related to packets more than the fact the game is suspended (see the network
+ * synchronization section below). A good strategy for debugging these issues is by
+ * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.context.ClientGameTestContext#takeScreenshot(String) taking screenshots},
+ * which capture the immediate state of the game.
+ *
+ * <p>A few changes have been made to how the vanilla game threads run, to make tests more reproducible. Notably, there
+ * is exactly one server tick per client tick while a server is running (singleplayer or multiplayer). There is also a
+ * limit of one client tick per frame.
+ *
+ * <p>Network packets can take a variable number of ticks to arrive on the other side. To make consistent game tests, see
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection#waitForClientboundPackets()  TestServerConnection.waitForClientboundPackets()},
+ * {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection#waitForServerboundPackets()  TestServerConnection.waitForServerboundPackets()},
+ * and similar methods.
+ *
+ * <h2>Default settings</h2>
+ * The client gametest API adjusts some default settings, usually for consistency of tests. These settings can always be
+ * changed back to the default value or a different value inside a gametest.
+ *
+ * <h3>Game options</h3>
+ * <table>
+ *     <caption>Game options adjusted for client gametests</caption>
+ *     <tr>
+ *         <th>Setting name</th>
+ *         <th>Gametest default</th>
+ *         <th>Vanilla default</th>
+ *         <th>Reason</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#tutorialStep Tutorial step}</td>
+ *         <td>{@link net.minecraft.client.tutorial.TutorialSteps#NONE NONE}</td>
+ *         <td>{@link net.minecraft.client.tutorial.TutorialSteps#MOVEMENT MOVEMENT}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#cloudStatus() Cloud status}</td>
+ *         <td>{@link net.minecraft.client.CloudStatus#OFF OFF}</td>
+ *         <td>{@link net.minecraft.client.CloudStatus#FANCY FANCY}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#maxAnisotropyBit() Anisotropic filtering}</td>
+ *         <td>{@code 0} (disabled)</td>
+ *         <td>{@code 2}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#chunkSectionFadeInTime() Chunk fade}</td>
+ *         <td>{@code 0}</td>
+ *         <td>{@code 0.75}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#onboardAccessibility Onboard accessibility}</td>
+ *         <td>{@code false}</td>
+ *         <td>{@code true}</td>
+ *         <td>Would cause the game test runner to have to click through the onboard accessibility prompt</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#renderDistance() Render distance}</td>
+ *         <td>{@code 5}</td>
+ *         <td>{@code 10}</td>
+ *         <td>Speeds up loading of chunks, especially for functions such as
+ *         {@link net.fabricmc.fabric.api.client.gametest.v1.context.TestServerConnection#waitForChunksRender() TestServerConnection.waitForChunksRender()}</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.Options#getSoundSourceOptionInstance(net.minecraft.sounds.SoundSource) Music volume}</td>
+ *         <td>{@code 0.0}</td>
+ *         <td>{@code 1.0}</td>
+ *         <td>The game music is annoying while running gametests</td>
+ *     </tr>
+ * </table>
+ *
+ * <h3>World creation options</h3>
+ * These adjusted defaults only apply if the world builder's
+ * {@linkplain net.fabricmc.fabric.api.client.gametest.v1.world.TestWorldBuilder#setUseConsistentSettings(boolean) consistent settings}
+ * have not been set to {@code false}.
+ *
+ * <table>
+ *     <caption>World creation options adjusted for client gametests</caption>
+ *     <tr>
+ *         <th>Setting name</th>
+ *         <th>Gametest default</th>
+ *         <th>Vanilla default</th>
+ *         <th>Reason</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setWorldType(net.minecraft.client.gui.screens.worldselection.WorldCreationUiState.WorldTypeEntry) World type}</td>
+ *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#FLAT FLAT}</td>
+ *         <td>{@link net.minecraft.world.level.levelgen.presets.WorldPresets#NORMAL DEFAULT}</td>
+ *         <td>Creates cleaner test cases</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setSeed(String) Seed}</td>
+ *         <td>{@code 1}</td>
+ *         <td>Random value</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.client.gui.screens.worldselection.WorldCreationUiState#setGenerateStructures(boolean) Generate structures}</td>
+ *         <td>{@code false}</td>
+ *         <td>{@code true}</td>
+ *         <td>Consistency of tests and creates cleaner tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_TIME Advance time}</td>
+ *         <td>{@code false}</td>
+ *         <td>{@code true}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#ADVANCE_WEATHER Advance weather}</td>
+ *         <td>{@code false}</td>
+ *         <td>{@code true}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#SPAWN_MOBS Spawn mobs}</td>
+ *         <td>{@code false}</td>
+ *         <td>{@code true}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@linkplain net.minecraft.world.level.gamerules.GameRules#RESPAWN_RADIUS Respawn radius}</td>
+ *         <td>{@code 0}</td>
+ *         <td>{@code 10}</td>
+ *         <td>Consistency of tests</td>
+ *     </tr>
+ * </table>
+ *
+ * <h3>Dedicated server properties</h3>
+ * <table>
+ *     <caption>Dedicated server properties adjusted for client gametests</caption>
+ *     <tr>
+ *         <th>Setting name</th>
+ *         <th>Gametest default</th>
+ *         <th>Vanilla default</th>
+ *         <th>Reason</th>
+ *     </tr>
+ *     <tr>
+ *         <td>{@code online-mode}</td>
+ *         <td>{@code false}</td>
+ *         <td>{@code true}</td>
+ *         <td>Allows the gametest client to connect to the dedicated server without being logged in to a Minecraft
+ *         account</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@code sync-chunk-writes}</td>
+ *         <td>{@code true} on Windows, {@code false} on other operating systems</td>
+ *         <td>{@code true}</td>
+ *         <td>Causes world saving and closing to be extremely slow (on the order of many seconds to minutes) on Unix
+ *         systems. The vanilla default is set correctly in singleplayer but not on dedicated servers.</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@code spawn-protection}</td>
+ *         <td>{@code 0}</td>
+ *         <td>{@code 16}</td>
+ *         <td>Spawn protection prevents non-opped players from modifying the world within a certain radius of the world
+ *         spawn point, a likely source of confusion when writing gametests</td>
+ *     </tr>
+ *     <tr>
+ *         <td>{@code max-players}</td>
+ *         <td>{@code 1}</td>
+ *         <td>{@code 20}</td>
+ *         <td>Stops other players from joining the server and interfering with the test</td>
+ *     </tr>
+ * </table>
+ */
+@ApiStatus.Experimental
+@NullMarked
+package net.fabricmc.fabric.api.client.gametest.v1;
+
+import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.NullMarked;

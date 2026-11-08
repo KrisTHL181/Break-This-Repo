@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/wall_hanging_sign",
+  "textures": {
+    "all": "fabric-object-builder-api-v1-testmod:block/teal_hanging_sign",
+    "particle": "minecraft:block/stripped_acacia_log"
+  }
+}

@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: break-this-repo
+Source: https://github.com/BL-BlueLighting/Break-This-Repo
+
+Files: *
+Copyright: Break This Repo contributors
+License: unknown
+ This project does not currently declare a license for these files.

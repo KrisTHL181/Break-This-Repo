@@ -1,0 +1,30 @@
+CLASS net/minecraft/class_2619 net/minecraft/block/entity/JukeboxBlockEntity
+	FIELD field_46507 recordStack Lnet/minecraft/class_1799;
+	FIELD field_52064 RECORD_ITEM_NBT_KEY Ljava/lang/String;
+	FIELD field_52065 TICKS_SINCE_SONG_STARTED_NBT_KEY Ljava/lang/String;
+	FIELD field_52066 manager Lnet/minecraft/class_9794;
+	METHOD <init> (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 pos
+		ARG 2 state
+	METHOD method_44370 tick (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2619;)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 blockEntity
+	METHOD method_49210 setDisc (Lnet/minecraft/class_1799;)V
+		ARG 1 stack
+	METHOD method_49213 dropRecord ()V
+	METHOD method_60780 (Lnet/minecraft/class_6880;)V
+		ARG 1 song
+	METHOD method_60782 onRecordStackChanged (Z)V
+		ARG 1 hasRecord
+	METHOD method_60783 (Lnet/minecraft/class_6880;)V
+		ARG 1 song
+	METHOD method_60784 getManager ()Lnet/minecraft/class_9794;
+	METHOD method_60785 onManagerChange ()V
+	METHOD method_60786 reloadDisc ()V
+	METHOD method_60992 getComparatorOutput ()I
+	METHOD method_68286 (Ljava/lang/Long;Lnet/minecraft/class_6880;)V
+		ARG 2 song
+	METHOD method_68287 (Lnet/minecraft/class_11368;Ljava/lang/Long;)V
+		ARG 2 ticksSinceSongStarted

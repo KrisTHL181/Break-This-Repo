@@ -1,0 +1,43 @@
+CLASS net/minecraft/class_1952 net/minecraft/block/spawner/MobSpawnerEntry
+	FIELD comp_64 entity Lnet/minecraft/class_2487;
+	FIELD comp_65 customSpawnRules Ljava/util/Optional;
+	FIELD field_34460 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_34461 DATA_POOL_CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_40893 ENTITY_KEY Ljava/lang/String;
+	METHOD comp_64 entity ()Lnet/minecraft/class_2487;
+	METHOD comp_65 customSpawnRules ()Ljava/util/Optional;
+	METHOD equals (Ljava/lang/Object;)Z
+		ARG 1 o
+	METHOD method_38093 getNbt ()Lnet/minecraft/class_2487;
+	METHOD method_38094 (Lnet/minecraft/class_1952;)Ljava/util/Optional;
+		ARG 0 entry
+	METHOD method_38095 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	METHOD method_38097 getCustomSpawnRules ()Ljava/util/Optional;
+	METHOD method_38098 (Lnet/minecraft/class_1952;)Lnet/minecraft/class_2487;
+		ARG 0 entry
+	METHOD method_58679 (Lnet/minecraft/class_1952;)Ljava/util/Optional;
+		ARG 0 entry
+	METHOD method_59717 getEquipment ()Ljava/util/Optional;
+	CLASS class_6542 CustomSpawnRules
+		FIELD comp_66 blockLightLimit Lnet/minecraft/class_6497;
+		FIELD comp_67 skyLightLimit Lnet/minecraft/class_6497;
+		FIELD field_34462 CODEC Lcom/mojang/serialization/Codec;
+		FIELD field_34463 DEFAULT Lnet/minecraft/class_6497;
+		METHOD comp_66 blockLightLimit ()Lnet/minecraft/class_6497;
+		METHOD comp_67 skyLightLimit ()Lnet/minecraft/class_6497;
+		METHOD equals (Ljava/lang/Object;)Z
+			ARG 1 o
+		METHOD method_38099 validate (Lnet/minecraft/class_6497;)Lcom/mojang/serialization/DataResult;
+			ARG 0 provider
+		METHOD method_38100 (Lnet/minecraft/class_1952$class_6542;)Lnet/minecraft/class_6497;
+			ARG 0 rules
+		METHOD method_38101 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 0 instance
+		METHOD method_38102 (Lnet/minecraft/class_1952$class_6542;)Lnet/minecraft/class_6497;
+			ARG 0 rules
+		METHOD method_51719 createLightLimitCodec (Ljava/lang/String;)Lcom/mojang/serialization/MapCodec;
+			ARG 0 name
+		METHOD method_56563 canSpawn (Lnet/minecraft/class_2338;Lnet/minecraft/class_3218;)Z
+			ARG 1 pos
+			ARG 2 world

@@ -1,0 +1,197 @@
+# 任务线: Focus on Wand Foci & EMT
+### [1399] A Battlemage's Best Friend
+The Wand Focus: Mage's Mace can be equipped by any wand and will boost its attack damage to 30 hearts. Equipping it to a staff will deal double damage.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Bloodlust§r (level 5): Slain mobs may drop Crystal Blood like when killed with a Crystal Dagger
+  - [提交] TaintedMagic:ItemFocusMageMace
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [289] An Appropriate Weapon
+The Wand Focus: Nine Hells is truly a weapon worthy of your skills. It can fire creatures of the Nether at your enemies!  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Bat Bombs§r (level 3): Summoned bats always explode on contact §5Devil Bats§r (level 3): Summoned bats are larger, do more damage, and stay around for longer §5Vampire Bats§r (level 5): Summoned bats will heal themselves and the caster when they deal damage
+  - [提交] Thaumcraft:FocusHellbat
+  > 奖励: Thaumcraft:ItemSpawnerEgg:9 x2 | enhancedlootbags:lootbag:10 | dreamcraft:CoinDarkWizardII
+
+### [1396] A Taste of Their Own Medicine
+The Wand Focus: Dark Matter allows its wielder to shoot the same projectiles as Eldritch Guardians. There is a chance for the caster to gain sticky warp for each projectile cast.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Corrosive§r (level 3): The orbs now inflict the Wither effect upon their targets §5Sanity§r (level 5): The caster will not gain warp from using this focus
+  - [提交] TaintedMagic:ItemFocusEldritch
+  > 奖励: enhancedlootbags:lootbag:11 | Thaumcraft:ItemLootBag:2 x2 | dreamcraft:CoinDarkWizardII x5
+
+### [-7381838222159086836] But Duct Tape Already is Magical!
+The Wand Focus: Maintenance will fix all problems of a multiblock machine when used on its Maintenance Hatch. It won't prevent future issues, but it sure beats recharging your Soldering Iron for the 6th time.  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] EMT:MaintenanceFocus
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1374] Bzzap!
+The Wand Focus: Shock will shoot a bolt of lightning. It homes in slightly to the nearest mob/player from where it is aimed. It is even fast enough to hit Endermen before they can teleport away!  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Chain Lightning§r (level 3): The lightning bolt now arcs to two nearby creatures. Great for dealing with bats from warp! §5Earth Shock§r (level 3): The focus now shoots a ball of lightning that leaves the ground electrified §5Enlarge§r (requires §5Chain Lightning§r): The lightning bolt arcs to two additional targets per level. Show those bats who's boss!
+  - [提交] Thaumcraft:FocusShock
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1398] Can You Feel the Sunshine?
+The Wand Focus: Meteorology can be used to start or stop rain at will. The perfect thing for Water Infused Solar Panels!  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] TaintedMagic:ItemFocusMeteorology
+  > 奖励: enhancedlootbags:lootbag:11 | Thaumcraft:ItemLootBag:2 x2 | dreamcraft:CoinDarkWizardII x5
+
+### [1373] Diggy Diggy Hole
+The Wand Focus: Excavation emits a green beam of light that will mine blocks of any hardness (except for unbreakable blocks like Bedrock) from a distance.  This focus is also required to operate the Arcane Bore. Upgrading foci to be used in the Bore with §5Enlarge§r is highly recommended, as it increases the radius by 1 per level.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases block breaking speed every level §5Treasure§r: Acts like vanilla Fortune §5Enlarge§r (even levels): Breaks an extra adjacent block per level §5Dowsing§r (level 3): May drop Thaumcraft Native Ores from ores, but does not apply to GT ores §5Silk Touch§r (level 5): Acts like vanilla Silk Touch
+  - [提交] Thaumcraft:FocusExcavation
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1346] Dropped in Asgard, Fallen to Earth
+You've heard rumors of a mighty weapon, dropped in Asgard and fallen to earth. Could this be the mystical Item?
+  - [提交] EMT:TaintedMjolnir
+  > 奖励: dreamcraft:CoinAdventureI
+
+### [1357] Electric Hoe-ing
+While the Hoe of Growth breaks easily, we have a fix for you! Get this one and simply recharge it when it's empty.
+  - [提交] EMT:ElectricHoeGrowth:1561
+  > 奖励: dreamcraft:CoinDarkWizardI | enhancedlootbags:lootbag:10
+
+### [1389] Ender Backpack
+The Wand Focus: Ender Rift opens your vanilla Personal Ender Chest when used. It can also be attuned to an Ender Chest from Ender Storage with shift-right-click. Shift-right-click a block of obsidian to set it back to your Personal Ender Chest.  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] ThaumicTinkerer:focusEnderChest
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1358] EU->VIS
+This device allows you to charge your wands using EU, but it costs 10kEU per Vis restored.
+  - [提交] EMT:EMTMachines
+  > 奖励: dreamcraft:CoinTechnicianII | Thaumcraft:WandRod:52
+
+### [1387] Fly High!
+The Wand Focus: Uprising propels its caster forward. It works well to gain height to glide for long distances or to scale tall obstacles. Fall damage is only reset when cast, so be careful when using it!  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] ThaumicTinkerer:focusFlight
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1395] Heat-Seeking Vis-sile
+The Wand Focus: Vis Shard can be used to cast a homing projectile which deals 35 damage. This projectile can bounce off of solid blocks. If the target is not hit in 10 seconds, the projectile disappears.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Persistent§r (level 5): The shard will seek another target if its current one dies or gets out of range
+  - [提交] TaintedMagic:ItemFocusVisShard
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1372] I Don't Want to Set the World on Fire
+Wand Focus: Fire is a basic wand focus that is able to spew a short-range cone of fire that deals damage and sets mobs ablaze.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Alchemist's Fire§r (even levels): Hit mobs burn for longer and lights blocks on fire §5Fireball§r (level 3): The focus now shoots a large, explosive ball of fire which sets the ground on fire if paired with §5Alchemist's Fire§r §5Fire Beam§r (level 3): Concentrates the cone of fire into a beam that does more damage and shoots farther
+  - [提交] Thaumcraft:FocusFire
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag | dreamcraft:CoinDarkWizard x25
+
+### [1390] It Can't Bend Spoons
+The Wand Focus: Telekinesis is a wand focus that can move nearby dropped items. It either moves them where you are pointing with the wand or toward you while sneaking.  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] ThaumicTinkerer:focusTelekinesis
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1381] It's Mesmerizing...
+The Wand Focus: Primal will hurl an orb of primal energy with right-click. The orb explodes on impact, and it has a small chance to cause other effects. It sometimes creates taint when it lands, and it very rarely creates a node if it destroys the block it impacts. Its base vis cost constantly fluctuates. [note]Maybe studying it and its projectiles will give you a better understanding of vis.[/note]  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Seeker§r (level 3): The orb homes in on the closest target, but loses some of its special effects like creating taint or nodes
+  - [提交] Thaumcraft:FocusPrimal
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1378] Keep it Away from Bags of Holding
+The Wand Focus: Portable Hole will create a temporary 3x3x32 hole centered on the targeted block. Some blocks cannot be passed through, such as Bedrock or blocks warded by the Wand Focus: Warding.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Enlarge§r: Extends the hole by 8 blocks per level §5Extend§r: The hole will stay open 3 seconds longer for every level
+  - [提交] Thaumcraft:FocusPortableHole
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1391] Knowledge is Power
+The Wand Focus: Experience Drain will drain the player's experience every tick, using 15 XP to restore 5 vis to the lowest aspect in the wand.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers experience cost per tick by 1 per level §5Potency§r: Creates 20% more vis per level
+  - [提交] ThaumicTinkerer:focusXPDrain
+  > 奖励: enhancedlootbags:lootbag:11 | Thaumcraft:ItemLootBag:2 x2 | dreamcraft:CoinDarkWizardII x5
+
+### [1377] Magical Base Defense
+The Wand Focus: Warding can be used to make blocks invincible with right-click. Warding may be removed by right-clicking it again. It is not able to ward transparent blocks like Glass or non-full blocks like slabs, but there is a block known as Warded Glass available with the Warded Arcana research if you want a protected transparent block. It is also unable to ward blocks with Tile Entities like chests. Take note that only the player who warded the block can unward it.  Holding a wand with this focus will show an outline on nearby blocks you have warded. They look normal otherwise. Warded Blocks are [note]completely indestructible[/note] and will produce particle effects similar to runic shielding when a player tries to break them. Blocks will lose any special properties when warded: sand or gravel will not fall, grass will not grow, and packed ice will no longer be slippery. Warded blocks cannot be affected by any outside influence such as redstone or pistons. The only way to break the warded block is via the owner right-clicking with a wand with this focus.  [note]Special Note: Warded blocks emit light. They can also cause quite a bit of lag if used at scale.[/note]  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level § §5Architect§r (level 2): Allows the focus's working area to be modified with the Misc Wand Toggle keybind. Sneaking with the keybind changes which axes are modified. This upgrade increases the maximum area to 7x7x7 §5Enlarge§r (Requires §5Architect§r)§r: Expands the maximum range by 1 block in each direction per level
+  - [提交] Thaumcraft:FocusWarding
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1386] Medic!
+The Wand Focus: Mending is a wand focus that will slowly mend the caster's wounds by expending Vis. It heals half a heart at a time. It's an invaluable tool in a Blood Mage's arsenal.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases healing by half a heart per level.
+  - [提交] ThaumicTinkerer:focusHeal
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1380] Plague Inc.
+The Wand Focus: Pech's Curse is a rare wand focus which cannot be crafted by players. It can only be obtained from a Pech Mage -- either by bartering valuable items or by killing it for its wand to drop. Pech Mages are rare and the drop chance is quite low, so bartering is recommended. [warn]If attacked, the Pech will use this focus against you![/warn]  This focus fires a small ball of energy with a bright bluish-green trail. This missile is affected by gravity, so the shots need to be "arced" to hit distant targets. When the shot hits a mob, it does one heart of damage and randomly inflicts one of several effects on the target: Poison, Weakness, or Slowness.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases potency of the applied effect. Being able to apply Weakness III to mobs might be useful for Blood Magic... §5Extend§r (even levels): Extends the duration of the applied effect §5Nightshade§r (level 5): Applies all three effects at once
+  - [提交] Thaumcraft:FocusPech
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1385] Pocket Dolly
+Wand Focus: Dislocation is a very useful focus that allows its user to take and place nearly any block, even Tile Entities and one that usually can't be moved, like Mob Spawners, planted crops, and more.  [warn]Please use responsibly, and don't move things you shouldn't, like door halves, or some multiblock parts, unless you like the idea of world corruption destroying your world. That said, if you're in SP and make a backup, do whatever you want, just know the risks.[/warn]  It uses: 5 Ordo + 5 Perditio + 1 Terra to take any mundane block. 25 Ordo + 25 Perditio + 5 Terra to take any block with a tile entity (such as a Chest). 100 Ordo + 100 Perditio + 20 Terra to take a Mob Spawner.  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] ThaumicTinkerer:focusDislocation
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1384] Pocket Furnace
+Wand Focus: Efreet's Flame shoots a beam similar to the Wand Focus: Excavation that smelts blocks like a Furnace.  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] ThaumicTinkerer:focusSmelt
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1359] Press and Hold the B Button to Block!
+The Wand Focus: Shield creates a shield around you which blocks any incoming damage and removes potion effects. Sneak away if you're fighting an enemy too strong for you!  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] EMT:ShieldFocus
+  > 奖励: bq_standard:choice
+
+### [1388] Projectile Protection V
+The Wand Focus: Distortion protects the caster from "ordinary" projectiles such as arrows, snowballs, and potions while right-click is held.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Enlarge§r (even levels): Expands the projectile deflection range by 1 block in each direction per level
+  - [提交] ThaumicTinkerer:focusDeflect
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1360] Reactor Shielding 2.0
+Shield Blocks - explosion proof - single use. Get a couple of these to shield your reactor!
+  - [提交] EMT:ShieldBlock x50
+  > 奖励: IC2:itemOreIridium x8
+
+### [1354] Rechargeable Scribing Tools
+Are you tired of getting all the Ink for your scribing and you don't want to use your blood either? Get this Hi-Tech Scribing Device which will make your life much easier! Treat it like an HV battery - charge in any HV machine's battery slot, or in an HV battery buffer.
+  - [提交] EMT:ElectricScribingTools:400
+  > 奖励: IC2:itemBatCrystal:26 | dreamcraft:CoinTechnicianI | bq_standard:choice
+
+### [1347] Repaired it!
+Sadly enough, the hammer was broken. But you have the skills and the knowledge to repair it, don't you?
+  - [可选提交] EMT:EMTItems:6 x2, Thaumcraft:FocusShock, Thaumcraft:ItemSwordElemental, IC2:itemBatCrystal:26 x2, gregtech:gt.metaitem.01:17880 x4, Thaumcraft:ItemResource:1
+  - [提交] EMT:Mjolnir
+  > 奖励: bq_standard:choice
+
+### [-9114151446486300176] Scrub, Scrub, Scrub...
+The Wand Focus: Flux Scrubber is an incredibly useful focus for the messy or insane thaumaturge. It creates a beam that sucks up flux goo and gas.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Speeds up flux cleanup §5Crystallization§r: Drops Crystallized Potentia when cleaning up flux at level 1. Drops Crystallized Essence of a random aspect at level 2. Mutually exclusive with §5Warping§r and §5Calming§r §5Warping§r: Gives its user temporary warp when used to clean flux. Mutually exclusive with §5Crystallization§r §5Calming§r (level 5, requires §5Warping§r): Negates the effect of §5Warping§r. Removes some temporary or sticky warp when used to clean flux. Mutually exclusive with §5Crystallization§r
+  - [提交] thaumicbases:fociFlux
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1376] Snowball Fight!
+The Wand Focus: Frost will launch a ball of ice that can bounce off of blocks and mobs.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Alchemist's Frost§r (odd levels): Applies Slowness to hit mobs. Higher levels increase the potency of the effect §5Scattershot§r (level 3): The focus now shoots a volley of shards that break on impact. The normal damage immunity timer is ignored, so multiple shards can hit the same mob at once and all will deal damage. §5Potency§r increases the number of shards instead of the damage §5Ice Boulder§r (level 3): The focus now shoots a larger, bouncier, and deadlier ball of ice
+  - [提交] Thaumcraft:FocusFrost
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1397] So Take Me Back in Time...
+The Wand Focus: Time can be used to move time forward by 12 hours. Using this focus at noon will set the time to midnight, while using it at dusk will make it dawn. This focus will also make the player unable to use any other foci for 30 seconds.  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] TaintedMagic:ItemFocusTime
+  > 奖励: enhancedlootbags:lootbag:11 | Thaumcraft:ItemLootBag:2 x2 | dreamcraft:CoinDarkWizardII x5
+
+### [1353] Sparking Nitor...?
+YELLOW! What an ugly color! I want PURPLE Nitor! Get me some and you'll receive something nice in exchange.
+  - [提交] EMT:electricCloud x16
+  > 奖励: Thaumcraft:blockCandle:10 x16 | Thaumcraft:blockWoodenDevice:8 x4 | TConstruct:slime.gel:2 x4
+
+### [1348] Super-Mjolnir
+Additional tweaks to your Mjolnir have changed it. Now you can summon some Guardian Snowmen to help you out!
+  - [提交] EMT:SuperchargedMjolnir:27
+  > 奖励: enhancedlootbags:lootbag:12 | dreamcraft:CoinDarkWizardII
+
+### [1394] Tainted Nuclear Detonation
+The Wand Focus: Tainted Shockwave will release a powerful shockwave around the caster which travels 10 blocks away, damaging all mobs in the radius and launching them into the air. After using this focus, the caster will be unable to use any other foci for 6 seconds.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level §5Enlarge§r: Increases the radius by 2 blocks per level. This also adds 2.5 Perditio, Terra, and Aqua to the casting cost per level
+  - [提交] TaintedMagic:ItemFocusTaintedBlast
+  > 奖励: enhancedlootbags:lootbag:11 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII x2
+
+### [1375] Trade Offer
+Wand Focus: Equal Trade is able to switch out blocks in the world with blocks in the player's inventory. Shift-right-click on a block to attune the focus to the block. Once attuned to a block, left-click on a single block to replace it with the substitute block. Right-click will transform a contiguous 5x5x5 area of the same block that has air on at least one side. This can go through thin walls or into caves, so be careful. Very useful for upgrading EBF coils or for swapping other blocks that are slow to break like Obsidian! It cannot be used to break or place blocks with Tile Entities like chests.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Enlarge§r: Expands the maximum range by 1 block in each direction per level §5Treasure§r (level 3): Works like vanilla Fortune §5Architect§r (level 3): Allows the focus's working area to be modified with the Misc Wand Toggle keybind. Sneaking with the keybind changes which axes are modified. This upgrade also changes the working area to a plane, so be sure to test this upgrade out before committing to it and applying further upgrades §5Silk Touch§r (level 5): Works like vanilla Silk Touch
+  - [提交] Thaumcraft:FocusTrade
+  > 奖励: enhancedlootbags:lootbag:9 | Thaumcraft:ItemLootBag:1 | dreamcraft:CoinDarkWizardI x5
+
+### [1400] Walking is Too Hard...
+The Wand Focus: Blink is a very powerful focus that allows its user to teleport anywhere in sight, as long as the destination is less than 50 blocks away. There is no teleport cooldown, so it can be used to travel very quickly in the right conditions.  [note]This focus accepts the following upgrade in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level
+  - [提交] ForbiddenMagic:BlinkFocus
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1392] Wand Focus Shadow Beam
+The Wand Focus: Shadowbeam shoots a beam of dark energy that is reflected by any block and damages everything it passes through. The beam travels about 40 blocks and does about 100 damage.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt every level
+  - [提交] ThaumicTinkerer:focusShadowbeam
+  > 奖励: enhancedlootbags:lootbag:11 | Thaumcraft:ItemLootBag:2 x2 | dreamcraft:CoinDarkWizardII x5
+
+### [1393] Weaponized Blight
+The Wand Focus: Tainted Storm will emit a stream of tainted bubbles which damage anything in a short distance and inflict Poison for 5 seconds. The focus may also debuff the caster with Flux Flu III for 50 seconds.  [note]This focus accepts the following upgrades in the Focal Manipulator:[/note] §5Frugal§r: Lowers vis cost to cast by 10% per level §5Potency§r: Increases damage dealt and increases the number of bubbles every level §5Tainturgy§r (level 3): The caster will no longer get Flux Flu. This adds 0.6 Ordo to the casting cost §5Enlarge§r (level 4): The tainted bubbles fan out across a wider area. This adds 0.6 Aer and Aqua to the casting cost §5Corrosive§r (level 5): The tainted bubbles inflict the Wither effect instead of Poison. This adds 0.6 Perditio and Ignis to the casting cost
+  - [提交] TaintedMagic:ItemFocusTaint
+  > 奖励: enhancedlootbags:lootbag:10 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII
+
+### [1361] What the Heck...?
+You found a yellow-ish glowing ball. It might be useful later on.
+  - [提交] EMT:EMTItems:6
+  > 奖励: dreamcraft:CoinAdventure x5
+

@@ -1,0 +1,11 @@
+type: text
+
+---
+
+We recommend to follow these following naming standards for Java code:
+
+Classes should be named with the first letter of each word capitalized, like this: `ThisIsAClass`. This is known as `UpperCamelCase` or `PascalCase`.
+`static final` fields should be named in all caps, with underscores between each word, like this: `THIS_IS_STATIC_FINAL`. This is known as `SCREAMING_SNAKE_CASE`.
+Everything else (methods, variables, non-`static final` fields, etc) should be named with the first letter of each word capitalized, but with the first letter lowercase, like this: `thisIsEverythingElse`. This is known as `camelCase` or `lowerCamelCase`.
+
+Naming things like this helps other people to understand your code more quickly.

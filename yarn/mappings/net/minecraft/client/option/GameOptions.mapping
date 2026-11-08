@@ -1,0 +1,802 @@
+CLASS net/minecraft/class_315 net/minecraft/client/option/GameOptions
+	FIELD field_1814 cloudRenderMode Lnet/minecraft/class_7172;
+	FIELD field_1815 hideServerAddress Z
+	FIELD field_1816 smoothCameraKey Lnet/minecraft/class_304;
+		COMMENT A key binding for toggling smooth camera.
+		COMMENT Not bound to any keys by default.
+	FIELD field_1817 chatLinksPrompt Lnet/minecraft/class_7172;
+	FIELD field_1818 showSubtitles Lnet/minecraft/class_7172;
+	FIELD field_1819 forceUnicodeFont Lnet/minecraft/class_7172;
+	FIELD field_1820 chatOpacity Lnet/minecraft/class_7172;
+	FIELD field_1822 inventoryKey Lnet/minecraft/class_304;
+		COMMENT A key binding for opening {@linkplain net.minecraft.client.gui.screen.ingame.InventoryScreen the inventory screen}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_E the E key} by default.
+	FIELD field_1823 GSON Lcom/google/gson/Gson;
+	FIELD field_1824 togglePerspectiveKey Lnet/minecraft/class_304;
+		COMMENT A key binding for toggling perspective.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_F5 the F5 key} by default.
+	FIELD field_1825 chatHeightUnfocused Lnet/minecraft/class_7172;
+	FIELD field_1826 fov Lnet/minecraft/class_7172;
+	FIELD field_1827 advancedItemTooltips Z
+	FIELD field_1828 fullscreenResolution Ljava/lang/String;
+	FIELD field_1829 mainArm Lnet/minecraft/class_7172;
+	FIELD field_1830 realmsNotifications Lnet/minecraft/class_7172;
+	FIELD field_1831 swapHandsKey Lnet/minecraft/class_304;
+		COMMENT A key binding for swapping the items in the selected slot and the off hand.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_F the F key} by default.
+		COMMENT
+		COMMENT <p>The selected slot is the slot the mouse is over when in a screen.
+		COMMENT Otherwise, it is the main hand.
+	FIELD field_1832 sneakKey Lnet/minecraft/class_304;
+		COMMENT A key binding for sneaking.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_LEFT_SHIFT the left shift key} by default.
+	FIELD field_1834 LOGGER Lorg/slf4j/Logger;
+	FIELD field_1835 screenshotKey Lnet/minecraft/class_304;
+		COMMENT A key binding for taking a screenshot.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_F2 the F2 key} by default.
+	FIELD field_1836 fullscreenKey Lnet/minecraft/class_304;
+		COMMENT A key binding for toggling fullscreen.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_F11 the F11 key} by default.
+	FIELD field_1837 pauseOnLostFocus Z
+	FIELD field_1838 chatHeightFocused Lnet/minecraft/class_7172;
+	FIELD field_1839 allKeys [Lnet/minecraft/class_304;
+		COMMENT An array of all key bindings.
+		COMMENT
+		COMMENT <p>Key bindings in this array are shown and can be configured in
+		COMMENT {@linkplain net.minecraft.client.gui.screen.option.ControlsOptionsScreen
+		COMMENT the controls options screen}.
+	FIELD field_1840 gamma Lnet/minecraft/class_7172;
+	FIELD field_1841 ao Lnet/minecraft/class_7172;
+	FIELD field_1842 hudHidden Z
+	FIELD field_1843 mouseSensitivity Lnet/minecraft/class_7172;
+	FIELD field_1844 advancementsKey Lnet/minecraft/class_304;
+		COMMENT A key binding for opening {@linkplain net.minecraft.client.gui.screen.advancement.AdvancementsScreen the advancements screen}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_L the L key} by default.
+	FIELD field_1845 commandKey Lnet/minecraft/class_304;
+		COMMENT A key binding for opening {@linkplain net.minecraft.client.gui.screen.ChatScreen
+		COMMENT the chat screen} with the {@code /} already typed.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_SLASH the slash key} by default.
+	FIELD field_1846 incompatibleResourcePacks Ljava/util/List;
+	FIELD field_1848 autoJump Lnet/minecraft/class_7172;
+	FIELD field_1849 rightKey Lnet/minecraft/class_304;
+		COMMENT A key binding for moving right.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_D the D key} by default.
+	FIELD field_1852 hotbarKeys [Lnet/minecraft/class_304;
+		COMMENT Key bindings for selecting hotbar slots.
+		COMMENT Bound to the corresponding number keys (from {@linkplain
+		COMMENT org.lwjgl.glfw.GLFW#GLFW_KEY_1 the 1 key} to {@linkplain
+		COMMENT org.lwjgl.glfw.GLFW#GLFW_KEY_9 the 9 key}) by default.
+	FIELD field_1853 COLON_SPLITTER Lcom/google/common/base/Splitter;
+	FIELD field_1854 touchscreen Lnet/minecraft/class_7172;
+	FIELD field_1856 mipmapLevels Lnet/minecraft/class_7172;
+	FIELD field_1857 fullscreen Lnet/minecraft/class_7172;
+	FIELD field_1859 STRING_LIST_TYPE Lcom/google/gson/reflect/TypeToken;
+	FIELD field_1863 client Lnet/minecraft/class_310;
+	FIELD field_1864 lastServer Ljava/lang/String;
+	FIELD field_1865 invertMouseY Lnet/minecraft/class_7172;
+	FIELD field_1867 sprintKey Lnet/minecraft/class_304;
+		COMMENT A key binding for sprinting.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_LEFT_CONTROL the left control key} by default.
+	FIELD field_1868 guiScale Lnet/minecraft/class_7172;
+	FIELD field_1869 dropKey Lnet/minecraft/class_304;
+		COMMENT A key binding for dropping the item in the selected slot.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_Q the Q key} by default.
+		COMMENT
+		COMMENT <p>The selected slot is the slot the mouse is over when in a screen.
+		COMMENT Otherwise, it is the main hand.
+	FIELD field_1870 viewDistance Lnet/minecraft/class_7172;
+	FIELD field_1871 pickItemKey Lnet/minecraft/class_304;
+		COMMENT A key binding for holding an item corresponding to the {@linkplain net.minecraft.entity.Entity#getPickBlockStack() entity}
+		COMMENT or {@linkplain net.minecraft.block.Block#getPickStack(net.minecraft.world.WorldView,
+		COMMENT net.minecraft.util.math.BlockPos, net.minecraft.block.BlockState) block} the player is looking at.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_MIDDLE the middle mouse button} by default.
+	FIELD field_1872 overrideWidth I
+	FIELD field_1873 autoSuggestions Lnet/minecraft/class_7172;
+	FIELD field_1874 loadToolbarActivatorKey Lnet/minecraft/class_304;
+		COMMENT A key binding for loading the hotbar items in {@linkplain net.minecraft.world.GameMode#CREATIVE creative mode}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_X the X key} by default.
+	FIELD field_1875 tutorialStep Lnet/minecraft/class_1157;
+	FIELD field_1876 useNativeTransport Z
+	FIELD field_1877 chatVisibility Lnet/minecraft/class_7172;
+	FIELD field_1878 biomeBlendRadius Lnet/minecraft/class_7172;
+	FIELD field_1879 saveToolbarActivatorKey Lnet/minecraft/class_304;
+		COMMENT A key binding for saving the hotbar items in {@linkplain net.minecraft.world.GameMode#CREATIVE creative mode}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_C the C key} by default.
+	FIELD field_1881 backKey Lnet/minecraft/class_304;
+		COMMENT A key binding for moving backward.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_S the S key} by default.
+	FIELD field_1882 particles Lnet/minecraft/class_7172;
+	FIELD field_1883 language Ljava/lang/String;
+	FIELD field_1884 enableVsync Lnet/minecraft/class_7172;
+	FIELD field_1885 overrideHeight I
+	FIELD field_1886 attackKey Lnet/minecraft/class_304;
+		COMMENT A key binding for attacking an entity or breaking a block.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_LEFT the left mouse button} by default.
+	FIELD field_1887 resourcePacks Ljava/util/List;
+	FIELD field_1888 entityShadows Lnet/minecraft/class_7172;
+	FIELD field_1889 mouseWheelSensitivity Lnet/minecraft/class_7172;
+	FIELD field_1890 chatKey Lnet/minecraft/class_304;
+		COMMENT A key binding for opening {@linkplain net.minecraft.client.gui.screen.ChatScreen the chat screen}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_T the T key} by default.
+	FIELD field_1891 bobView Lnet/minecraft/class_7172;
+	FIELD field_1892 enabledPlayerModelParts Ljava/util/Set;
+	FIELD field_1894 forwardKey Lnet/minecraft/class_304;
+		COMMENT A key binding for moving forward.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_W the W key} by default.
+	FIELD field_1895 attackIndicator Lnet/minecraft/class_7172;
+	FIELD field_1896 narrator Lnet/minecraft/class_7172;
+	FIELD field_1897 optionsFile Ljava/io/File;
+	FIELD field_1900 chatColors Lnet/minecraft/class_7172;
+	FIELD field_1901 glDebugVerbosity I
+	FIELD field_1903 jumpKey Lnet/minecraft/class_304;
+		COMMENT A key binding for jumping.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_SPACE the space key} by default.
+	FIELD field_1904 useKey Lnet/minecraft/class_304;
+		COMMENT A key binding for using an item, such as placing a block.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_RIGHT the right mouse button} by default.
+	FIELD field_1906 spectatorOutlinesKey Lnet/minecraft/class_304;
+		COMMENT A key binding for highlighting players in {@linkplain net.minecraft.world.GameMode#SPECTATOR spectator mode}.
+		COMMENT Not bound to any keys by default.
+	FIELD field_1907 playerListKey Lnet/minecraft/class_304;
+		COMMENT A key binding for displaying {@linkplain net.minecraft.client.gui.hud.PlayerListHud the player list}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_TAB the tab key} by default.
+	FIELD field_1908 chatScale Lnet/minecraft/class_7172;
+	FIELD field_1909 maxFps Lnet/minecraft/class_7172;
+	FIELD field_1910 reducedDebugInfo Lnet/minecraft/class_7172;
+	FIELD field_1911 chatLinks Lnet/minecraft/class_7172;
+	FIELD field_1913 leftKey Lnet/minecraft/class_304;
+		COMMENT A key binding for moving left.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_A the A key} by default.
+	FIELD field_1914 smoothCameraEnabled Z
+	FIELD field_1915 chatWidth Lnet/minecraft/class_7172;
+	FIELD field_1916 soundVolumeLevels Ljava/util/Map;
+	FIELD field_18725 backgroundForChatOnly Lnet/minecraft/class_7172;
+	FIELD field_18726 textBackgroundOpacity Lnet/minecraft/class_7172;
+	FIELD field_19244 discreteMouseScroll Lnet/minecraft/class_7172;
+	FIELD field_20308 rawMouseInput Lnet/minecraft/class_7172;
+	FIELD field_21332 sneakToggled Lnet/minecraft/class_7172;
+	FIELD field_21333 sprintToggled Lnet/minecraft/class_7172;
+	FIELD field_21840 skipMultiplayerWarning Z
+	FIELD field_23932 chatLineSpacing Lnet/minecraft/class_7172;
+	FIELD field_23933 chatDelay Lnet/minecraft/class_7172;
+	FIELD field_24214 entityDistanceScaling Lnet/minecraft/class_7172;
+	FIELD field_25623 syncChunkWrites Z
+	FIELD field_26675 distortionEffectScale Lnet/minecraft/class_7172;
+	FIELD field_26676 fovEffectScale Lnet/minecraft/class_7172;
+	FIELD field_26677 perspective Lnet/minecraft/class_5498;
+	FIELD field_26844 joinedFirstServer Z
+	FIELD field_26845 socialInteractionsKey Lnet/minecraft/class_304;
+		COMMENT A key binding for opening {@linkplain net.minecraft.client.gui.screen.multiplayer.SocialInteractionsScreen the social interactions screen}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_P the P key} by default.
+	FIELD field_26926 hideMatchedNames Lnet/minecraft/class_7172;
+	FIELD field_32156 monochromeLogo Lnet/minecraft/class_7172;
+	FIELD field_34783 soundDevice Lnet/minecraft/class_7172;
+	FIELD field_34784 serverViewDistance I
+	FIELD field_34785 EMPTY_STRING Ljava/lang/String;
+	FIELD field_34786 hideLightningFlashes Lnet/minecraft/class_7172;
+	FIELD field_34787 chunkBuilderMode Lnet/minecraft/class_7172;
+	FIELD field_34959 simulationDistance Lnet/minecraft/class_7172;
+	FIELD field_35426 showAutosaveIndicator Lnet/minecraft/class_7172;
+	FIELD field_35637 allowServerListing Lnet/minecraft/class_7172;
+	FIELD field_37877 directionalAudio Lnet/minecraft/class_7172;
+	FIELD field_37878 DARK_MOJANG_STUDIOS_BACKGROUND_COLOR_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_37879 HIDE_LIGHTNING_FLASHES_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_37880 NONE_CHUNK_BUILDER_MODE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_37881 BY_PLAYER_CHUNK_BUILDER_MODE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_37882 NEARBY_CHUNK_BUILDER_MODE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38290 SCREEN_EFFECT_SCALE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38291 FOV_EFFECT_SCALE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38292 DARKNESS_EFFECT_SCALE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38293 darknessEffectScale Lnet/minecraft/class_7172;
+	FIELD field_38294 ALLOW_SERVER_LISTING_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38295 DIRECTIONAL_AUDIO_ON_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38296 DIRECTIONAL_AUDIO_OFF_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38297 TOGGLE_KEY_TEXT Lnet/minecraft/class_2561;
+	FIELD field_38298 HOLD_KEY_TEXT Lnet/minecraft/class_2561;
+	FIELD field_38299 HIDE_MATCHED_NAMES_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_38300 MAX_FPS_LIMIT I
+	FIELD field_39320 ONLY_SHOW_SECURE_CHAT_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_39321 onlyShowSecureChat Lnet/minecraft/class_7172;
+	FIELD field_40382 panoramaSpeed Lnet/minecraft/class_7172;
+	FIELD field_41094 operatorItemsTab Lnet/minecraft/class_7172;
+	FIELD field_41335 TELEMETRY_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_41336 telemetryOptInExtra Lnet/minecraft/class_7172;
+	FIELD field_41783 NOTIFICATION_DISPLAY_TIME_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_41784 notificationDisplayTime Lnet/minecraft/class_7172;
+	FIELD field_41785 onboardAccessibility Z
+	FIELD field_42112 GLINT_SPEED_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_42113 glintSpeed Lnet/minecraft/class_7172;
+	FIELD field_42114 GLINT_STRENGTH_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_42115 glintStrength Lnet/minecraft/class_7172;
+	FIELD field_42481 DAMAGE_TILT_STRENGTH_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_42482 damageTiltStrength Lnet/minecraft/class_7172;
+	FIELD field_43043 HIGH_CONTRAST_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_43044 highContrast Lnet/minecraft/class_7172;
+	FIELD field_43110 MAX_SERIALIZABLE_GUI_SCALE I
+	FIELD field_43405 GUI_SCALE_AUTO I
+	FIELD field_45987 narratorHotkey Lnet/minecraft/class_7172;
+	FIELD field_46854 HIDE_SPLASH_TEXTS_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_46855 hideSplashTexts Lnet/minecraft/class_7172;
+	FIELD field_49105 japaneseGlyphVariants Lnet/minecraft/class_7172;
+	FIELD field_49474 MENU_BACKGROUND_BLURRINESS_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_49475 DEFAULT_MENU_BACKGROUND_BLURRINESS I
+	FIELD field_49476 menuBackgroundBlurriness Lnet/minecraft/class_7172;
+	FIELD field_52127 REALMS_NOTIFICATIONS_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_52758 INACTIVITY_FPS_LIMIT_MINIMIZED_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_52759 INACTIVITY_FPS_LIMIT_AFK_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_52760 inactivityFpsLimit Lnet/minecraft/class_7172;
+	FIELD field_52761 ROTATE_WITH_MINECART_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_52762 rotateWithMinecart Lnet/minecraft/class_7172;
+	FIELD field_54812 HIGH_CONTRAST_BLOCK_OUTLINE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_54813 highContrastBlockOutline Lnet/minecraft/class_7172;
+	FIELD field_55851 startedCleanly Z
+	FIELD field_60303 cloudRenderDistance Lnet/minecraft/class_7172;
+	FIELD field_60682 MUSIC_FREQUENCY_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_60683 musicFrequency Lnet/minecraft/class_7172;
+	FIELD field_60985 quickActionsKey Lnet/minecraft/class_304;
+		COMMENT A key binding for opening the quick actions dialog, if any exist.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_KEY_G the G key} by default.
+	FIELD field_61508 SHOW_SUBTITLES_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_61509 attackToggled Lnet/minecraft/class_7172;
+	FIELD field_61510 useToggled Lnet/minecraft/class_7172;
+	FIELD field_61511 SPRINT_WINDOW_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_61512 sprintWindow Lnet/minecraft/class_7172;
+	FIELD field_61513 invertMouseX Lnet/minecraft/class_7172;
+	FIELD field_61999 CHAT_DRAFTS_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_62000 chatDrafts Lnet/minecraft/class_7172;
+	FIELD field_62461 ALLOW_CURSOR_CHANGES_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_62462 allowCursorChanges Lnet/minecraft/class_7172;
+	FIELD field_62567 spectatorHotbarKey Lnet/minecraft/class_304;
+		COMMENT A key binding for opening the hotbar in {@linkplain net.minecraft.world.GameMode#SPECTATOR spectator mode}.
+		COMMENT Bound to {@linkplain org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_MIDDLE the middle mouse button} by default.
+	FIELD field_63468 toggleGuiKey Lnet/minecraft/class_304;
+	FIELD field_63469 toggleSpectatorShaderEffectsKey Lnet/minecraft/class_304;
+	FIELD field_63470 debugOverlayKey Lnet/minecraft/class_304;
+	FIELD field_63471 debugModifierKey Lnet/minecraft/class_304;
+	FIELD field_63472 debugCrashKey Lnet/minecraft/class_304;
+	FIELD field_63473 applyingGraphicsMode Z
+	FIELD field_63474 preset Lnet/minecraft/class_7172;
+	FIELD field_63475 debugReloadChunkKey Lnet/minecraft/class_304;
+	FIELD field_63476 debugShowHitboxesKey Lnet/minecraft/class_304;
+	FIELD field_63477 debugClearChatKey Lnet/minecraft/class_304;
+	FIELD field_63478 debugShowChunkBordersKey Lnet/minecraft/class_304;
+	FIELD field_63479 debugShowAdvancedTooltipsKey Lnet/minecraft/class_304;
+	FIELD field_63480 debugCopyRecreateCommandKey Lnet/minecraft/class_304;
+	FIELD field_63481 debugSpectateKey Lnet/minecraft/class_304;
+	FIELD field_63482 debugSwitchGameModeKey Lnet/minecraft/class_304;
+	FIELD field_63483 debugOptionsKey Lnet/minecraft/class_304;
+	FIELD field_63484 debugFocusPauseKey Lnet/minecraft/class_304;
+	FIELD field_63485 debugDumpDynamicTexturesKey Lnet/minecraft/class_304;
+	FIELD field_63486 debugReloadResourcePacksKey Lnet/minecraft/class_304;
+	FIELD field_63487 debugProfilingKey Lnet/minecraft/class_304;
+	FIELD field_63488 debugCopyLocationKey Lnet/minecraft/class_304;
+	FIELD field_63489 debugDumpVersionKey Lnet/minecraft/class_304;
+	FIELD field_63490 debugProfilingChartKey Lnet/minecraft/class_304;
+	FIELD field_63491 debugFpsChartsKey Lnet/minecraft/class_304;
+	FIELD field_63492 debugNetworkChartsKey Lnet/minecraft/class_304;
+	FIELD field_63493 debugKeys [Lnet/minecraft/class_304;
+	FIELD field_63494 WEATHER_RADIUS_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_63495 weatherRadius Lnet/minecraft/class_7172;
+	FIELD field_63496 CUTOUT_LEAVES_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_63497 cutoutLeaves Lnet/minecraft/class_7172;
+	FIELD field_63498 VIGNETTE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_63499 vignette Lnet/minecraft/class_7172;
+	FIELD field_63500 IMPROVED_TRANSPARENCY_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_63501 improvedTransparency Lnet/minecraft/class_7172;
+	FIELD field_64193 MAX_ANISOTROPY_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_64194 maxAnisotropy Lnet/minecraft/class_7172;
+	FIELD field_64195 CHUNK_FADE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_64196 chunkFade Lnet/minecraft/class_7172;
+	FIELD field_64533 musicToast Lnet/minecraft/class_7172;
+	FIELD field_64658 TEXTURE_FILTERING_NONE_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_64659 TEXTURE_FILTERING_RGSS_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_64660 TEXTURE_FILTERING_ANISOTROPIC_TOOLTIP Lnet/minecraft/class_2561;
+	FIELD field_64661 textureFiltering Lnet/minecraft/class_7172;
+	METHOD <init> (Lnet/minecraft/class_310;Ljava/io/File;)V
+		ARG 1 client
+		ARG 2 optionsFile
+	METHOD method_1626 update (Lnet/minecraft/class_2487;)Lnet/minecraft/class_2487;
+		ARG 1 nbt
+	METHOD method_1627 addResourcePackProfilesToManager (Lnet/minecraft/class_3283;)V
+		ARG 1 manager
+	METHOD method_1630 getCategorySoundVolume (Lnet/minecraft/class_3419;)F
+		ARG 1 category
+	METHOD method_1632 getCloudRenderModeValue ()Lnet/minecraft/class_4063;
+	METHOD method_1635 setPlayerModelPart (Lnet/minecraft/class_1664;Z)V
+		ARG 1 part
+		ARG 2 enabled
+	METHOD method_1636 load ()V
+	METHOD method_1639 shouldUseNativeTransport ()Z
+	METHOD method_1640 write ()V
+	METHOD method_1643 sendClientSettings ()V
+		COMMENT Sends the current client settings to the server if the client is
+		COMMENT connected to a server.
+		COMMENT
+		COMMENT <p>Called when a player joins the game or when client settings are
+		COMMENT changed.
+	METHOD method_19343 getTextBackgroundOpacity (F)F
+		ARG 1 fallback
+	METHOD method_19344 getTextBackgroundColor (I)I
+		ARG 1 fallbackColor
+	METHOD method_19345 getTextBackgroundColor (F)I
+		ARG 1 fallbackOpacity
+	METHOD method_24230 (Lnet/minecraft/class_2487;Ljava/lang/String;)V
+		ARG 1 line
+	METHOD method_31043 setPerspective (Lnet/minecraft/class_5498;)V
+		ARG 1 perspective
+	METHOD method_31044 getPerspective ()Lnet/minecraft/class_5498;
+	METHOD method_32594 isPlayerModelPartEnabled (Lnet/minecraft/class_1664;)Z
+		ARG 1 part
+	METHOD method_32595 isTrue (Ljava/lang/String;)Z
+		ARG 0 value
+	METHOD method_32596 isFalse (Ljava/lang/String;)Z
+		ARG 0 value
+	METHOD method_33666 accept (Lnet/minecraft/class_315$class_5823;)V
+		ARG 1 visitor
+	METHOD method_33671 parseList (Ljava/lang/String;)Ljava/util/List;
+		ARG 0 content
+	METHOD method_37293 (Lcom/mojang/datafixers/util/Pair;)Ljava/lang/String;
+		ARG 0 option
+	METHOD method_37294 getOptionsFile ()Ljava/io/File;
+	METHOD method_37295 collectProfiledOptions ()Ljava/lang/String;
+	METHOD method_38520 setServerViewDistance (I)V
+		ARG 1 serverViewDistance
+	METHOD method_38521 getClampedViewDistance ()I
+	METHOD method_41772 getMonochromeLogo ()Lnet/minecraft/class_7172;
+	METHOD method_41773 toMouseWheelSensitivitySliderProgressValue (D)I
+		ARG 0 value
+	METHOD method_41777 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_41778 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_41781 getPercentValueText (Lnet/minecraft/class_2561;D)Lnet/minecraft/class_2561;
+		ARG 0 prefix
+		ARG 1 value
+	METHOD method_41782 getGenericValueText (Lnet/minecraft/class_2561;I)Lnet/minecraft/class_2561;
+		ARG 0 prefix
+		ARG 1 value
+	METHOD method_41783 getGenericValueText (Lnet/minecraft/class_2561;Lnet/minecraft/class_2561;)Lnet/minecraft/class_2561;
+		ARG 0 prefix
+		ARG 1 value
+	METHOD method_41784 getHideLightningFlashes ()Lnet/minecraft/class_7172;
+	METHOD method_41788 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_41789 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_41791 getPixelValueText (Lnet/minecraft/class_2561;I)Lnet/minecraft/class_2561;
+		ARG 0 prefix
+		ARG 1 value
+	METHOD method_41792 getAo ()Lnet/minecraft/class_7172;
+	METHOD method_41793 toMouseWheelSensitivityValue (I)D
+		ARG 0 value
+	METHOD method_41796 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_41798 getChunkBuilderMode ()Lnet/minecraft/class_7172;
+	METHOD method_41799 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_41800 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_41801 getChatHeightUnfocused ()Lnet/minecraft/class_7172;
+	METHOD method_41802 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_41803 getChatHeightFocused ()Lnet/minecraft/class_7172;
+	METHOD method_41804 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_41805 getBiomeBlendRadius ()Lnet/minecraft/class_7172;
+	METHOD method_41806 getMouseWheelSensitivity ()Lnet/minecraft/class_7172;
+	METHOD method_41807 getRawMouseInput ()Lnet/minecraft/class_7172;
+	METHOD method_41808 getFov ()Lnet/minecraft/class_7172;
+	METHOD method_42423 getAutoJump ()Lnet/minecraft/class_7172;
+	METHOD method_42424 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42425 getAutoSuggestions ()Lnet/minecraft/class_7172;
+	METHOD method_42427 getChatColors ()Lnet/minecraft/class_7172;
+	METHOD method_42429 getChatLinks ()Lnet/minecraft/class_7172;
+	METHOD method_42430 (Ljava/lang/Double;)I
+		ARG 0 value
+	METHOD method_42431 getChatLinksPrompt ()Lnet/minecraft/class_7172;
+	METHOD method_42432 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42433 getEnableVsync ()Lnet/minecraft/class_7172;
+	METHOD method_42434 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42435 getEntityShadows ()Lnet/minecraft/class_7172;
+	METHOD method_42436 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42437 getForceUnicodeFont ()Lnet/minecraft/class_7172;
+	METHOD method_42438 getInvertMouseY ()Lnet/minecraft/class_7172;
+	METHOD method_42439 getDiscreteMouseScroll ()Lnet/minecraft/class_7172;
+	METHOD method_42440 getRealmsNotifications ()Lnet/minecraft/class_7172;
+	METHOD method_42441 getAllowServerListing ()Lnet/minecraft/class_7172;
+	METHOD method_42442 getReducedDebugInfo ()Lnet/minecraft/class_7172;
+	METHOD method_42443 getShowSubtitles ()Lnet/minecraft/class_7172;
+	METHOD method_42444 getDirectionalAudio ()Lnet/minecraft/class_7172;
+	METHOD method_42445 getBackgroundForChatOnly ()Lnet/minecraft/class_7172;
+	METHOD method_42446 getTouchscreen ()Lnet/minecraft/class_7172;
+	METHOD method_42447 getFullscreen ()Lnet/minecraft/class_7172;
+	METHOD method_42448 getBobView ()Lnet/minecraft/class_7172;
+	METHOD method_42449 getSneakToggled ()Lnet/minecraft/class_7172;
+	METHOD method_42450 getSprintToggled ()Lnet/minecraft/class_7172;
+	METHOD method_42451 getHideMatchedNames ()Lnet/minecraft/class_7172;
+	METHOD method_42452 getShowAutosaveIndicator ()Lnet/minecraft/class_7172;
+	METHOD method_42453 getDistortionEffectScale ()Lnet/minecraft/class_7172;
+	METHOD method_42454 getFovEffectScale ()Lnet/minecraft/class_7172;
+	METHOD method_42455 (Lnet/minecraft/class_1306;)V
+		ARG 0 value
+	METHOD method_42456 (Lnet/minecraft/class_1659;)V
+		ARG 0 value
+	METHOD method_42458 (Lnet/minecraft/class_4061;)V
+		ARG 0 value
+	METHOD method_42463 (Lnet/minecraft/class_4065;)V
+		ARG 1 value
+	METHOD method_42467 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42472 getDarknessEffectScale ()Lnet/minecraft/class_7172;
+	METHOD method_42473 getGamma ()Lnet/minecraft/class_7172;
+	METHOD method_42474 getGuiScale ()Lnet/minecraft/class_7172;
+	METHOD method_42475 getParticles ()Lnet/minecraft/class_7172;
+	METHOD method_42476 getNarrator ()Lnet/minecraft/class_7172;
+	METHOD method_42477 getSoundDevice ()Lnet/minecraft/class_7172;
+	METHOD method_42489 (Lnet/minecraft/class_2561;Lnet/minecraft/class_4065;)Lnet/minecraft/class_2561;
+		ARG 1 optionText
+		ARG 2 value
+	METHOD method_42491 (Lnet/minecraft/class_2561;Ljava/lang/Boolean;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42492 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42493 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42495 getMouseSensitivity ()Lnet/minecraft/class_7172;
+	METHOD method_42500 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_42501 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42503 getViewDistance ()Lnet/minecraft/class_7172;
+	METHOD method_42504 (I)Ljava/lang/Double;
+		ARG 0 value
+	METHOD method_42506 (Lnet/minecraft/class_2561;Ljava/lang/Boolean;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42508 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42509 (Ljava/lang/String;)V
+		ARG 0 value
+	METHOD method_42510 getSimulationDistance ()Lnet/minecraft/class_7172;
+	METHOD method_42511 (I)Ljava/lang/Integer;
+		ARG 0 value
+	METHOD method_42513 (Ljava/lang/Boolean;)V
+		ARG 1 value
+	METHOD method_42514 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42515 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_42516 (Ljava/lang/String;)Ljava/util/Optional;
+		ARG 0 value
+	METHOD method_42517 getEntityDistanceScaling ()Lnet/minecraft/class_7172;
+	METHOD method_42518 (I)Ljava/lang/Double;
+		ARG 0 sliderProgressValue
+	METHOD method_42520 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_42522 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42523 (Lnet/minecraft/class_2561;Ljava/lang/String;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42524 getMaxFps ()Lnet/minecraft/class_7172;
+	METHOD method_42525 (Lnet/minecraft/class_2561;Ljava/lang/Boolean;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42526 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42528 getCloudRenderMode ()Lnet/minecraft/class_7172;
+	METHOD method_42530 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_42532 (Ljava/lang/Integer;)Ljava/lang/Double;
+		ARG 0 value
+	METHOD method_42535 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_42536 (Ljava/lang/Double;)Ljava/lang/Integer;
+		ARG 0 value
+	METHOD method_42537 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_42538 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_42539 getChatVisibility ()Lnet/minecraft/class_7172;
+	METHOD method_42540 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42542 getChatOpacity ()Lnet/minecraft/class_7172;
+	METHOD method_42544 (Ljava/lang/Double;)I
+		ARG 0 value
+	METHOD method_42545 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42546 getChatLineSpacing ()Lnet/minecraft/class_7172;
+	METHOD method_42548 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42550 getTextBackgroundOpacity ()Lnet/minecraft/class_7172;
+	METHOD method_42552 getMainArm ()Lnet/minecraft/class_7172;
+	METHOD method_42554 getChatScale ()Lnet/minecraft/class_7172;
+	METHOD method_42555 (Ljava/lang/Integer;)V
+		ARG 0 value
+	METHOD method_42556 getChatWidth ()Lnet/minecraft/class_7172;
+	METHOD method_42557 (Ljava/lang/Integer;)I
+		ARG 0 value
+	METHOD method_42558 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42559 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42560 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42561 getChatDelay ()Lnet/minecraft/class_7172;
+	METHOD method_42562 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42563 getMipmapLevels ()Lnet/minecraft/class_7172;
+	METHOD method_42564 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_42565 getAttackIndicator ()Lnet/minecraft/class_7172;
+	METHOD method_42566 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_42568 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_44026 getOnlyShowSecureChat ()Lnet/minecraft/class_7172;
+	METHOD method_45575 (Lnet/minecraft/class_3419;Ljava/lang/Double;)V
+		ARG 2 volume
+	METHOD method_45576 createSoundVolumeOption (Ljava/lang/String;Lnet/minecraft/class_3419;)Lnet/minecraft/class_7172;
+		ARG 1 key
+		ARG 2 category
+	METHOD method_45578 getSoundVolumeOption (Lnet/minecraft/class_3419;)Lnet/minecraft/class_7172;
+		ARG 1 category
+	METHOD method_45580 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_45581 getPanoramaSpeed ()Lnet/minecraft/class_7172;
+	METHOD method_47395 getOperatorItemsTab ()Lnet/minecraft/class_7172;
+	METHOD method_47396 (Lnet/minecraft/class_6597;)Lnet/minecraft/class_7919;
+		ARG 0 value
+	METHOD method_47398 (Ljava/lang/Boolean;)Lnet/minecraft/class_7919;
+		ARG 0 value
+	METHOD method_47607 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_47608 (Lnet/minecraft/class_2561;Ljava/lang/Boolean;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_47609 getTelemetryOptInExtra ()Lnet/minecraft/class_7172;
+	METHOD method_48187 (I)Ljava/lang/Double;
+		ARG 0 sliderProgressValue
+	METHOD method_48188 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_48189 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_48190 (Ljava/lang/Double;)I
+		ARG 0 value
+	METHOD method_48191 getNotificationDisplayTime ()Lnet/minecraft/class_7172;
+	METHOD method_48580 getGlintSpeed ()Lnet/minecraft/class_7172;
+	METHOD method_48581 getGlintStrength ()Lnet/minecraft/class_7172;
+	METHOD method_48582 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_48974 getDamageTiltStrength ()Lnet/minecraft/class_7172;
+	METHOD method_49598 refreshResourcePacks (Lnet/minecraft/class_3283;)V
+		ARG 1 resourcePackManager
+	METHOD method_49599 (Ljava/lang/Boolean;)V
+		ARG 1 value
+	METHOD method_49600 getHighContrast ()Lnet/minecraft/class_7172;
+	METHOD method_52704 (Ljava/lang/Boolean;)Lnet/minecraft/class_4063;
+		ARG 0 value
+	METHOD method_53530 getNarratorHotkey ()Lnet/minecraft/class_7172;
+	METHOD method_53842 getSyncedOptions ()Lnet/minecraft/class_8791;
+	METHOD method_54581 getHideSplashTexts ()Lnet/minecraft/class_7172;
+	METHOD method_57018 getJapaneseGlyphVariants ()Lnet/minecraft/class_7172;
+	METHOD method_57019 acceptProfiledOptions (Lnet/minecraft/class_315$class_9242;)V
+		ARG 1 visitor
+	METHOD method_57020 onFontOptionsChanged ()V
+	METHOD method_57021 shouldUseJapaneseGlyphsByDefault ()Z
+	METHOD method_57022 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_57702 getMenuBackgroundBlurriness ()Lnet/minecraft/class_7172;
+	METHOD method_57703 getMenuBackgroundBlurrinessValue ()I
+	METHOD method_59835 getPercentValueOrOffText (Lnet/minecraft/class_2561;D)Lnet/minecraft/class_2561;
+		ARG 0 prefix
+		ARG 1 value
+	METHOD method_60648 getGenericValueOrOffText (Lnet/minecraft/class_2561;I)Lnet/minecraft/class_2561;
+		ARG 0 prefix
+		ARG 1 value
+	METHOD method_61127 setAccessibilityOnboarded ()V
+	METHOD method_61967 getRotateWithMinecart ()Lnet/minecraft/class_7172;
+	METHOD method_61969 (Lnet/minecraft/class_9927;)Lnet/minecraft/class_7919;
+		ARG 0 option
+	METHOD method_61970 getInactivityFpsLimit ()Lnet/minecraft/class_7172;
+	METHOD method_64858 getHighContrastBlockOutline ()Lnet/minecraft/class_7172;
+	METHOD method_66523 getFullscreenResolution ()Ljava/lang/String;
+	METHOD method_66524 (Lnet/minecraft/class_3419;)Lnet/minecraft/class_7172;
+		ARG 1 category
+	METHOD method_71043 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_71268 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_71270 getCloudRenderDistance ()Lnet/minecraft/class_7172;
+	METHOD method_71785 (Lnet/minecraft/class_1142$class_11504;)V
+		ARG 0 value
+	METHOD method_71788 getMusicFrequency ()Lnet/minecraft/class_7172;
+	METHOD method_71978 getSoundVolume (Lnet/minecraft/class_3419;)F
+		ARG 1 category
+	METHOD method_72706 getInvertMouseX ()Lnet/minecraft/class_7172;
+	METHOD method_72707 getAttackToggled ()Lnet/minecraft/class_7172;
+	METHOD method_72708 getUseToggled ()Lnet/minecraft/class_7172;
+	METHOD method_72709 getSprintWindow ()Lnet/minecraft/class_7172;
+	METHOD method_72710 (Lnet/minecraft/class_2561;Ljava/lang/Boolean;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_72711 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_72712 (Lnet/minecraft/class_2561;Ljava/lang/Boolean;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_72713 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_72714 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_72715 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_72717 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_73197 getChatDrafts ()Lnet/minecraft/class_7172;
+	METHOD method_74034 getAllowCursorChanges ()Lnet/minecraft/class_7172;
+	METHOD method_74035 (Ljava/lang/Boolean;)V
+		ARG 0 value
+	METHOD method_75315 (Lnet/minecraft/class_4066;)V
+		ARG 1 value
+	METHOD method_75316 (Lnet/minecraft/class_4063;)V
+		ARG 1 value
+	METHOD method_75317 applyGraphicsMode (Lnet/minecraft/class_5365;)V
+		ARG 1 mode
+	METHOD method_75318 (Lnet/minecraft/class_6597;)V
+		ARG 1 value
+	METHOD method_75319 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_75320 (Lnet/minecraft/class_2561;Lnet/minecraft/class_5365;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_75321 onChangeGraphicsOption ()V
+	METHOD method_75325 (Ljava/lang/Integer;)V
+		ARG 0 value
+	METHOD method_75327 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_75328 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_75329 getPreset ()Lnet/minecraft/class_7172;
+	METHOD method_75330 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_75331 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_75333 getWeatherRadius ()Lnet/minecraft/class_7172;
+	METHOD method_75334 getCutoutLeaves ()Lnet/minecraft/class_7172;
+	METHOD method_75335 getVignette ()Lnet/minecraft/class_7172;
+	METHOD method_75336 (Ljava/lang/Boolean;)V
+		ARG 1 value
+	METHOD method_75337 getImprovedTransparency ()Lnet/minecraft/class_7172;
+	METHOD method_75341 (Ljava/lang/Double;)V
+		ARG 1 value
+	METHOD method_76247 getMaxAnisotropy ()Lnet/minecraft/class_7172;
+	METHOD method_76248 getEffectiveAnisotropy ()I
+	METHOD method_76249 (I)Ljava/lang/Double;
+		ARG 0 ticks
+	METHOD method_76250 (Lnet/minecraft/class_2561;Ljava/lang/Integer;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76252 (Lnet/minecraft/class_2561;Ljava/lang/Double;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76253 getChunkFade ()Lnet/minecraft/class_7172;
+	METHOD method_76254 (Ljava/lang/Double;)V
+		ARG 0 value
+	METHOD method_76255 (Ljava/lang/Double;)I
+		ARG 0 seconds
+	METHOD method_76527 (Lnet/minecraft/class_2561;Lnet/minecraft/class_4066;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76528 (Lnet/minecraft/class_2561;Lnet/minecraft/class_1306;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76529 (Lnet/minecraft/class_2561;Lnet/minecraft/class_1659;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76530 (Lnet/minecraft/class_2561;Lnet/minecraft/class_4061;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76531 (Lnet/minecraft/class_2561;Lnet/minecraft/class_4063;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76532 (Lnet/minecraft/class_2561;Lnet/minecraft/class_9927;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76533 (Lnet/minecraft/class_2561;Lnet/minecraft/class_6597;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76534 (Lnet/minecraft/class_2561;Lnet/minecraft/class_1142$class_11504;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76609 (Lnet/minecraft/class_12345;)V
+		ARG 1 value
+	METHOD method_76610 (Lnet/minecraft/class_2561;Lnet/minecraft/class_12345;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76611 getMusicToast ()Lnet/minecraft/class_7172;
+	METHOD method_76612 (Lnet/minecraft/class_12345;)Lnet/minecraft/class_7919;
+		ARG 0 value
+	METHOD method_76747 getTextureFiltering ()Lnet/minecraft/class_7172;
+	METHOD method_76749 (Lnet/minecraft/class_2561;Lnet/minecraft/class_12393;)Lnet/minecraft/class_2561;
+		ARG 0 optionText
+		ARG 1 value
+	METHOD method_76750 (Lnet/minecraft/class_12393;)Lnet/minecraft/class_7919;
+		ARG 0 mode
+	METHOD method_76778 (Lnet/minecraft/class_761;)V
+		ARG 0 worldRenderer
+	METHOD method_76779 refreshWorldRenderer (Ljava/util/function/Consumer;)V
+		ARG 0 refresher
+	METHOD method_76780 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_76781 (Ljava/lang/Integer;)V
+		ARG 0 value
+	METHOD method_76782 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_76783 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_76784 (Ljava/lang/Integer;)V
+		ARG 1 value
+	METHOD method_76785 (Ljava/lang/Boolean;)V
+		ARG 1 value
+	METHOD method_76786 (Ljava/lang/Boolean;)V
+		ARG 1 value
+	CLASS 2
+		METHOD method_33676 find (Ljava/lang/String;)Ljava/lang/String;
+			ARG 1 key
+		METHOD method_42571 (Ljava/lang/String;Lnet/minecraft/class_7172;Lcom/mojang/serialization/DataResult$Error;)V
+			ARG 2 error
+	CLASS 3
+		METHOD method_33677 print (Ljava/lang/String;)V
+			ARG 1 key
+		METHOD method_42573 (Ljava/lang/String;Ljava/io/PrintWriter;Lcom/google/gson/JsonElement;)V
+			ARG 3 json
+		METHOD method_72718 (Lnet/minecraft/class_7172;Lcom/mojang/serialization/DataResult$Error;)V
+			ARG 1 error
+	CLASS class_5823 Visitor
+		METHOD method_33679 visitFloat (Ljava/lang/String;F)F
+			ARG 1 key
+			ARG 2 current
+		METHOD method_33680 visitInt (Ljava/lang/String;I)I
+			ARG 1 key
+			ARG 2 current
+		METHOD method_33681 visitObject (Ljava/lang/String;Ljava/lang/Object;Ljava/util/function/Function;Ljava/util/function/Function;)Ljava/lang/Object;
+			ARG 1 key
+			ARG 2 current
+			ARG 3 decoder
+			ARG 4 encoder
+		METHOD method_33683 visitString (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+			ARG 1 key
+			ARG 2 current
+		METHOD method_33684 visitBoolean (Ljava/lang/String;Z)Z
+			ARG 1 key
+			ARG 2 current
+	CLASS class_9242 OptionVisitor
+		METHOD method_42570 accept (Ljava/lang/String;Lnet/minecraft/class_7172;)V
+			ARG 1 key
+			ARG 2 option

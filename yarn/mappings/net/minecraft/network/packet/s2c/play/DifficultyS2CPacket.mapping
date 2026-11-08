@@ -1,0 +1,6 @@
+CLASS net/minecraft/class_2632 net/minecraft/network/packet/s2c/play/DifficultyS2CPacket
+	FIELD comp_4282 difficulty Lnet/minecraft/class_1267;
+	FIELD comp_4283 difficultyLocked Z
+	FIELD field_47907 CODEC Lnet/minecraft/class_9139;
+	METHOD comp_4282 difficulty ()Lnet/minecraft/class_1267;
+	METHOD comp_4283 difficultyLocked ()Z

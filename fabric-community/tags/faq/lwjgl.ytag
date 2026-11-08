@@ -1,0 +1,7 @@
+type: text
+
+---
+
+If you're getting `java.lang.UnsatisfiedLinkError: Failed to locate library: lwjgl.dll` when running your project:
+  1. delete `<project dir>/.gradle/loom-cache/launch.cfg`
+  2. regenerate your run configs

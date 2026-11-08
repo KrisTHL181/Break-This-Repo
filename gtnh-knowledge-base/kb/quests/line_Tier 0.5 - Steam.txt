@@ -1,0 +1,576 @@
+# 任务线: Tier 0.5 - Steam
+### [2026] §c§lA Better Way to Find Items
+NEI has a built in search feature for finding an item stored in an inventory nearby. A Stockroom Catalog can give you a list of everything stored in your inventories.  Sneak-right-click a block with an inventory (a chest, bookcase, barrel, anything with an inventory) to add that inventory to the list of inventories for the catalog to keep track of.  Sneak-right-click the same block again to remove that block from the list.  A small particle effect will render on any block that has been selected with the catalog when holding the Stockroom Catalog to let you know that block is being tracked.  Right-click to open the GUI and see the list. You can sort the list in ascending or descending order by quantity (Count) or alphabetical order.  You can also see a list of all the inventories that have a particular item and easily add the location of one of those inventories to a stockroom catalog so you can easily find your stuff.  The Stockroom Catalog can also be copied with the typesetting table and printing press.  Click on the title to change it to anything so you can custom label your stockroom catalog.  Click on the small chest icons on the right hand side of each listing to open the inventory list view.  If you want, you can craft a waypoint compass and use that to point you towards the chest. Since we have JourneyMaps and NEI, it's not really necessary.  [warn]The Catalog seems to be a bit broken though and doesn't work well with GT items.[/warn]
+  - [提交] BiblioCraft:item.StockroomCatalog
+  > 奖励: minecraft:chest x16
+
+### [705] §c§lAccelerated Plant Growth
+As you might've discovered by now, plants grow very slowly. So why don't you try to speed that up a little? A watering can will come in handy.
+  - [合成] ExtraUtilities:watering_can:1
+  > 奖励: bq_standard:choice | harvestcraft:supremepizzaItem x4 | dreamcraft:CoinFarmer x10 | dreamcraft:CoinForestry x10 | dreamcraft:CoinTechnician x10
+
+### [52] §c§lA Clear View
+Are you still living in your dirt/cobble hut? How about letting in some sunlight? Grind up some sand and flint and craft some glass dust. Put it in your smeltery and pour it into a casting basin to make clear glass.  [note]Hint: In order to use it for recipes, you have to chisel it.[/note]  [note]PS: The macerator no longer gives tiny piles, just uncraft a normal pile to get tiny ones. You'll appreciate this once you have a mixer.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:2939 x6 (ore:dustQuartzSand), gregtech:gt.metaitem.01:802 x6
+  - [可选提交] gregtech:gt.metaitem.01:2890 x6
+  - [可选提交] TConstruct:GlassBlock x6
+  - [可选提交] chisel:chisel:32767
+  - [提交] minecraft:glass x6
+  > 奖励: bq_standard:choice | minecraft:cookie x2 | dreamcraft:CoinChemist x15 | dreamcraft:CoinTechnician x15
+
+### [2389] §c§lAdvanced Solar Boilers
+Once you have some Steam machines, you can make Advanced Solar Boilers. They have more Steam output per second. Otherwise they are the same as Simple Solar Boilers.  Fill it with Water on the bottom side to produce Steam. Unlike the other Boilers, this only outputs Steam on the output port side.  Hint: The Advanced Solar Boiler calcifies and becomes less efficient over time - but it will only drop to 120L/s, not 40L/s, like the Simple Solar Boiler. Later on you can consider using Distilled Water to avoid calcification.  [note]You'll need Silver from the Twilight Forest (LV+) or from small ores for this.[/note]
+  - [提交] gregtech:gt.blockmachines:114
+  > 奖励: harvestcraft:kiwijellysandwichItem x4 | dreamcraft:CoinTechnician x10
+
+### [2140] §c§lA Fool Fit for a King
+Only the craziest fool would use diamonds to make a tool! Or is it crazy like a fox?  §3PS: You can also §oburn them for fuel§r§3 for that extra bit of craziness.
+  - [提交] gregtech:gt.metatool.01:12
+  > 奖励: gregtech:gt.metaitem.02:29500
+
+### [61] §c§lAnother Use for Java, I Mean Lava
+Now that you have Steel, you can craft a sturdy enough Boiler to handle Lava. Steam is only outputted in the back, and you require Water input on the side and Lava input on the top. But as an added benefit, this Boiler will reward you with Obsidian!  §3Did you know? Over 3 billion machines run on Lava!
+  - [合成] gregtech:gt.blockmachines:102
+  > 奖励: harvestcraft:cranberryjellysandwichItem x2 | dreamcraft:CoinTechnician x10
+
+### [48] §c§lA Very Important Alloy
+The most important alloy (until you reach a higher tier) is undoubtedly red alloy. Fortunately, you have an alloy smelter, so grab some redstone and combine it with copper to get yourself a handful of that.  Don't confuse your bronze with your copper or else you'll be scratching your head.
+  - [提交] gregtech:gt.metaitem.01:11308 x14
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x15 | dreamcraft:CoinChemist x15
+
+### [1124] §c§lBarrel Upgrades
+Are your cobblestone or dirt barrels filled to the brim? No problem, upgrade them!
+  - [可选提交] JABBA:barrel, gregtech:gt.metaitem.01:17809 x4, minecraft:stick x4
+  - [提交] JABBA:upgradeStructural
+  - [可选提交] JABBA:barrel, minecraft:piston, gregtech:gt.metaitem.01:27305 x4
+  - [提交] JABBA:upgradeCore
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [1125] §c§lBarrel Upgrades Tier 2
+Are your upgraded cobblestone or dirt barrels full again? No problem, upgrade them some more!
+  - [可选提交] JABBA:barrel, gregtech:gt.metaitem.01:17035 x4, gregtech:gt.metaitem.01:23035 x4
+  - [提交] JABBA:upgradeStructural:1
+  - [可选提交] JABBA:barrel x2, minecraft:piston x2, gregtech:gt.metaitem.01:27305 x8
+  - [提交] JABBA:upgradeCore x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [2910] §c§lBarrel Upgrades Tier 3
+Are your upgraded cobblestone or dirt barrels full again? No problem, upgrade them some more!
+  - [提交] JABBA:upgradeStructural:2
+  - [提交] JABBA:upgradeCore x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [2911] §c§lBarrel Upgrades Tier 4
+Are your upgraded cobblestone or dirt barrels full again? No problem, upgrade them some more!
+  - [提交] JABBA:upgradeStructural:3
+  - [提交] JABBA:upgradeCore x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [2912] §c§lBarrel Upgrades Tier 5
+Are your upgraded cobblestone or dirt barrels full again? No problem, upgrade them some more!
+  - [提交] JABBA:upgradeStructural:4
+  - [提交] JABBA:upgradeCore x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x20
+
+### [73] §c§lBasic Crafting: Machine Hulls
+All machines need a hull to keep their private parts together. Good news is: They are crafted in the same way for every tier, only the materials change.  §3As noted on the tooltip, you can also use a machine hull to pass EU through, at 1A. This can be useful for a 1A diode on Thermos servers, splitting cables from 4A->1A or in a cleanroom later. You can also pass items or fluids through it.
+  - [合成] gregtech:gt.blockcasings:1
+  - [合成] gregtech:gt.blockmachines:11
+  > 奖励: harvestcraft:poachedpearItem x2 | dreamcraft:CoinTechnician x15
+
+### [71] §c§lBasic Crafting: Motors
+Motors are little devices that can turn electrical power into rotational energy. Very useful for all kind of machines, and not that difficult to craft. The pattern is always the same, only the materials change with tiers. For now you can use redstone to magnetize your iron rod. Later on you will build an Electromagnetic Polarizer.
+  - [可选提交] minecraft:redstone x8
+  - [可选提交] gregtech:gt.metaitem.01:23354 x2
+  - [合成] gregtech:gt.metaitem.01:32600 x2
+  > 奖励: harvestcraft:melonsmoothieItem x2 | dreamcraft:CoinTechnician x15
+
+### [72] §c§lBasic Crafting: Rotors
+Rotors are also crafted using an identical pattern with different materials. A bit annoying to craft at the moment, but you don't need a lot of them anyway.
+  - [可选提交] gregtech:gt.metaitem.01:28057 x2
+  - [合成] gregtech:gt.metaitem.02:21057 x2
+  > 奖励: harvestcraft:strawberrysmoothieItem x2 | dreamcraft:CoinTechnician x15
+
+### [441] §c§lBasic > Steam Lootbag Trade
+Trade three Basic lootbags to get a better one: Steam.  After you've completed the Steam tab and head into LV you will unlock recipes to uptier your lootbags in the assembler, but for now here is a quest to do so! (Repeatable)
+  - [提交] enhancedlootbags:lootbag:1 x3
+  > 奖励: enhancedlootbags:lootbag:2
+
+### [-5816092802750880657] §c§lBetter Make that Two!
+You may need a second anvil!   One would have been for the Forge Hammer and another for general repairing or renaming!
+  - [合成] minecraft:anvil
+  > 奖励: dreamcraft:CoinSmith x15 | dreamcraft:CoinTechnician x15
+
+### [16] §c§lBetter Tank... Iron Tank
+Storing more than 16 buckets of fluid in one tank? Sure! Just make an iron tank or upgrade the Buildcraft tank.  Diamond tanks carry up to 64 buckets and obsidian ones are blast proof. There's even more past that, but you should probably use GT tanks or large cells instead.
+  - [提交] irontank:ironTank
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinTechnician x10
+
+### [948] §c§lBetter Than Iron
+But not as good as steel. Mostly, this is used in machine hulls, or in tools if you don't want to use steel up for that.  To make Cast Iron, you either need to use a Tinkers' Smeltery to melt some Iron Ingots down and cast them into Iron Nuggets, or use an Iron Ingot and a saw to craft Iron Nuggets. Then put these in a furnace to get Cast Iron Nuggets. With the Compressor, you can compress the nuggets into ingots.  §3Hint: Crushed or purified iron ore (not a mixed version like pyrite; look for Iron Ore in Chalcopyrite veins) can be smelted directly into iron nuggets.   You can optionally use an Alloy Smelter to turn iron ingots into nuggets faster than a smeltery.   Later on, you can use an Arc Furnace to make Cast Iron Ingots directly.
+  - [可选提交] gregtech:gt.metaitem.01:9032 x63
+  - [可选提交] gregtech:gt.metaitem.01:9304 x63
+  - [提交] gregtech:gt.metaitem.01:11304 x7
+  > 奖励: gregtech:gt.metatool.01:12 | gregtech:gt.metatool.01:16 | gregtech:gt.metaitem.02:32243 | dreamcraft:CoinTechnician x10
+
+### [65] §c§lBlastoff!
+It's about time to make some steel. Look in the Multiblock Goals quest tab and build a Bricked Blast Furnace. Return here once you've made at least 8 steel ingots.
+  - [提交] gregtech:gt.metaitem.01:11305 x8
+  > 奖励: bq_standard:choice | harvestcraft:breadedporkchopItem x3 | dreamcraft:CoinSmith x15 | dreamcraft:CoinTechnician x15
+
+### [1008] §c§lBooks
+Books can be found easily enough in villages or in the roguelike dungeons surface brick house. I'm sure they have a recipe too.  Now glue on the other hand...or should I say horse? Try and get a horse inside a smeltery and feed it hay to keep it alive.  Or you can wait until after you go to the Nether and get some sulfur. Either way.
+  - [提交] minecraft:book x12
+  > 奖励: minecraft:bucket x2 | minecraft:book x6 | gregtech:gt.metaitem.02:32234 x2 | dreamcraft:CoinTechnician x10
+
+### [1735] §c§lBowl Full of Spaghetti
+Or at least factories full of item pipes. You can take items out of one machine using a hopper pointing directly into your pipes, and from there deliver them to a second machine.  Later on you can make better item pipes. Search for "item pipe" in NEI for options.  [warn]You'll need a Steel Wrench to remove them. Don't place them down unless you're sure of the location until you have one.[/warn]
+  - [可选提交] gregtech:gt.metaitem.01:17057 x12
+  - [提交] gregtech:gt.blockmachines:5590 x12
+  > 奖励: harvestcraft:spagettiItem | dreamcraft:CoinTechnician x10
+
+### [834] §c§lCircuit Boards
+For every circuit you need a circuit board. Craft a coated circuit board and use copper wire to finish it.
+  - [可选提交] gregtech:gt.metaitem.01:17809, IC2:itemHarz x2
+  - [合成] gregtech:gt.metaitem.01:32710
+  - [可选提交] gregtech:gt.metaitem.01:32710, gregtech:gt.blockmachines:1360 x8
+  - [合成] gregtech:gt.metaitem.03:32100
+  > 奖励: bq_standard:choice | minecraft:bread x2 | dreamcraft:CoinTechnician x15
+
+### [54] §c§lCompressing Stuff
+This rather simple device does a very important job: compression. Its main function is to press 9 ingots into a block, but it's also useful for a variety of recipes, for example making firm tofu.
+  - [合成] gregtech:gt.blockmachines:115
+  > 奖励: dreamcraft:CoinTechnician x15
+
+### [743] §c§lCutting a Tree log by log is so Old School
+By making a lumber axe, you are now able to cut down an entire tree in one hit. Don't forget your backpack when you're cutting a sacred oak down.  Protip: With wooden equivalents of casts, make a lumber axe completely out of netherrack - lower mining speed means less XP needed to level it up. Use the modifier slots to add Reinforced. Once you've leveled it up enough, upgrade the parts for better ones, such as steel, obzinite, or others. The higher-level metals will require an MV Extruder. Keep in mind that the auto-smelt modifier doesn't work, so don't bother with it.  The quest will accept a lumber axe from any material.
+  - [提交] TConstruct:metalPattern:17, TConstruct:metalPattern:16, TConstruct:metalPattern:15, TConstruct:metalPattern:14
+  - [提交] TConstruct:lumberaxe
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [51] §c§lExtracting Stuff
+As you'll need rubber later to make cables from wires, you should get yourself a steam extractor. You can also use this machine to get more dyes from flowers, or process different fruits into juice.
+  - [合成] gregtech:gt.blockmachines:109
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinTechnician x15
+
+### [1130] §c§lExtra Modifier
+If you don't have an extra modifier on your tool you can easily add one. A gold block and a diamond are all you need.  You can add two more modifiers, but you'll need to read the tinkers book yourself to know what to use.
+  - [提交] minecraft:gold_block, minecraft:diamond
+  > 奖励: gregtech:gt.blockores2:86 x16 | gregtech:gt.metaitem.01:11300 x8 | harvestcraft:leafyfishsandwichItem x2 | dreamcraft:CoinTechnician x10
+
+### [1789] §c§lFactory Iron Door
+For your new Factory you need iron doors. Unfortunately, the recipe is really hard, needing steel.  You can choose two more iron doors as reward if you like.
+  - [可选提交] gregtech:gt.metaitem.01:17032 x4, dreamcraft:SteelBars, gregtech:gt.metaitem.01:27305, gregtech:gt.metaitem.01:28305
+  - [提交] minecraft:iron_door
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [1845] §c§lFlaming idiots
+Blazes are all infernals, and all nasty. Avoid like a plague. Get awesome weapons, awesome armor, and prepare for a fight.  The alternative is to figure out a way to destroy them with technology.  The alternative to the alternative is to figure out a different way to get blaze powder and blaze rods.
+  - [勾选确认]
+  > 奖励: minecraft:blaze_powder
+
+### [478] §c§lFlint and Steel
+After you make steel you are able to craft flint and steel. I guess you'll want to travel to the Nether as soon as possible but be aware; the Nether is a very dangerous place.  Note: The ball of moss gives a tinker's tool self-repair. But if the tool is completely broken, it won't repair it.  Note that the flint and steel can take a few times to work.
+  - [可选提交] gregtech:gt.metaitem.01:23305 x3, gregtech:gt.metaitem.01:17305 (ore:plateSteel), minecraft:flint
+  - [可选提交] gregtech:gt.metaitem.02:23305, gregtech:gt.metaitem.02:20305
+  - [合成] minecraft:flint_and_steel
+  > 奖励: bq_standard:choice | minecraft:bow | minecraft:arrow x32 | TConstruct:materials:6 | dreamcraft:CoinTechnician x15
+
+### [1147] §c§lGT6-Styled Wires and Cables
+They work basically the same as pipes, but you need wire cutters (or a soldering iron) instead of a wrench. Additionally, you take damage if they're not insulated (wire) but not if they are (cable).  Hint: If you click one wire or cable on the other it will auto-connect. Cables and pipes can be painted to make sure you do not cross your MV line with your EV line, or dump hot lava into your plastic water pipes. No boom today.  Ha ha just kidding there is always a boom today!
+  - [勾选确认]
+  > 奖励: bq_standard:choice | harvestcraft:splitpeasoupItem | dreamcraft:CoinTechnician x10
+
+### [868] §c§lGypsum
+To make bricks for the blast furnace you need concrete and gypsum. Gypsum can be found in a vein together with basaltic and granitic mineral sand, and fullers earth. Y 50-60 and only in the overworld.
+  - [提交] gregtech:gt.metaitem.03:5935 x32, gregtech:gt.metaitem.03:5936 x32, gregtech:gt.metaitem.03:5928 x32, gregtech:gt.metaitem.03:5934 x16
+  - [提交] gregtech:gt.blockores2:935 x32, gregtech:gt.blockores2:936 x32, gregtech:gt.blockores2:928 x32, gregtech:gt.blockores2:934 x16
+  > 奖励: bq_standard:choice | harvestcraft:gingerbreadItem | harvestcraft:pumpkinbreadItem | enhancedlootbags:lootbag:2 | dreamcraft:CoinAdventure x10
+
+### [53] §c§lHammer time v2
+Using 6 ingots to craft a hammer seems pretty wasteful, as this tool has durability. How nice would it be to have a machine that does the same but without having durability and using three ingots to make two plates? Guess what, there is one! And you should totally get one.
+  - [合成] gregtech:gt.blockmachines:112
+  > 奖励: minecraft:iron_ingot x6 | dreamcraft:CoinTechnician x15
+
+### [-4815840969987309766] §c§lHandpicking Crops is So Old School
+By making a scythe you are now able to clear 3x3 blocks of vegetation, and to harvest 5x5 tiles of crops! The harvesting ability works on most non-magical crops, including crops on cropsticks!  §6The quest should accept the tool whatever materials you used.
+  - [提交] TConstruct:metalPattern:18, TConstruct:metalPattern:15, TConstruct:metalPattern:14
+  - [提交] TConstruct:scythe
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [1205] §c§lHoppers
+Hoppers come in handy when you want to automate your machines. You can input items via hoppers directly into GT pipes and you don't have to use a conveyor module. However, the input rate is much slower, and the hopper must be beneath its source inventory.
+  - [提交] minecraft:hopper
+  > 奖励: harvestcraft:chocolatesprinklecakeItem | dreamcraft:CoinTechnician x10
+
+### [558] §c§lHow Can I Carry All These Items?
+After you made your first steel, you are able to craft a small backpack. It has 36 slots, which is a bit more than a small chest. Later you can make it even larger.  You can have at most four of these backpacks in your inventory.  You can put one on your back and set it to automatically pick up stuff. In your controls, check that the command "Open Backpacks" has a key and doesn't have conflicts. The key only works after the backpack is added to the back slot, which can be done by using Shift+<Open Backpacks Key>. §r You can rename your backpack by pressing Shift+RMB when holding it in your hand.
+  - [可选提交] gregtech:gt.metaitem.01:28305, harvestcraft:wovencottonItem x3, Backpack:tannedLeather x5
+  - [合成] Backpack:backpack
+  > 奖励: bq_standard:choice | ExtraUtilities:paintbrush | dreamcraft:CoinSurvivor x10 | dreamcraft:CoinTechnician x10
+
+### [496] §c§lHow to Make Rubber
+Making rubber is now more complicated - you need raw rubber and sulfur. Finding a sulfur vein in the Nether seems like a good idea, doesn't it? Found on Y 5-20. Later on you can get sulfur from chemicals like hydrogen sulfide or pyrite.  [warn]Sphalerite will be important later for gallium and zinc. Save it until you can fully process it in LV.[/warn]
+  - [提交] gregtech:gt.metaitem.03:5022 x128, gregtech:gt.metaitem.03:5834 x64, gregtech:gt.metaitem.03:5839 x32
+  - [提交] gregtech:gt.blockores2:1022 x64, gregtech:gt.blockores2:1834 x32, gregtech:gt.blockores2:1839 x16
+  > 奖励: bq_standard:choice | harvestcraft:peaandhamsoupItem x4 | dreamcraft:CoinAdventure x15
+
+### [2332] §c§lHow to open your Iron Doors?
+Your iron doors make your Machine Hall or House more safe. They cannot be opened by hand.  Now let's craft some Pressure Plates and Buttons to open these heavy iron doors.
+  - [可选提交] etfuturum:stone_slab x10, gregtech:gt.metaitem.01:27032 x20 (ore:screwAnyIron), gregtech:gt.metaitem.02:24032 x5 (ore:springAnyIron)
+  - [提交] minecraft:stone_pressure_plate x10
+  - [提交] minecraft:stone_button x10
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [2333] §a§lHow to Open Your Wooden Doors?
+Wooden doors make your House safer. Let's craft some wooden Pressure plates and Buttons to open these Doors.  Doors will open when they receive a redstone signal, and close again after it stops. If you place the plates on either side of a door, it will open when you step on it. Or a monster does. Double doors will open together.  You'll need to use Oak for this quest. Purchase some saplings from the Vending Machine if you don't have any nearby.  Pressure plates will send a redstone signal when an entity is on top of them. There are different types, like items or not, or mobs/player/any entity/etc.  Buttons will emit one for about 2 seconds before resetting.  Levers will emit a signal until switched back off.
+  - [可选提交] gregtech:gt.metaitem.02:32470 x10, gregtech:gt.metaitem.01:27809 x20, gregtech:gt.metaitem.02:24032 x5 (ore:springAnyIron)
+  - [提交] minecraft:wooden_pressure_plate x10 (ore:pressurePlateWood)
+  - [提交] minecraft:wooden_button x10 (ore:buttonWood)
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x5 | dreamcraft:CoinTechnician x5
+
+### [1536] §c§lI Ain't Afraid of no Ghost!
+I've found a use for the Ectoplasm you can collect from spirits of the dead. It makes a very useful glass that you can walk on, but mobs cannot. However, they think they can!  So you can use this to create a moat around your base that drops mobs to their death in various ways, or just to shuttle them off somewhere else. Separate babies from mothers? Use it in a mob farm? Capture pigmen walking into the Overworld from your Nether portal? So many possibilities!
+  - [可选提交] RandomThings:ingredient:3, minecraft:glass x8
+  - [提交] RandomThings:spectreGlass x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15 | dreamcraft:CoinDarkWizard x15
+
+### [2399] §c§lI Know His Name!
+The Name Remover is a simple utility machine that can strip off incorrect or useless NBT data. Only works on GT items?  §3Was more useful before NBT disassembly data was removed, but good riddance I (and basically everyone) say.  Lead is plentiful in the Twilight Forest. Or if you are desperate, small ores can be found in the Nether.
+  - [合成] gregtech:gt.blockmachines:12070
+  > 奖励: gregtech:gt.metaitem.01:2817 x16
+
+### [942] §c§lIt's a Dirty Job, and You're Going to Do It
+The Plunger is used to clear liquids from pipes. It can also be used on a machine to remove up to 1000mb of fluid from its internal buffer. So you don't have to wrench your machine and re-place it. It can be crafted from a rod of the desired material and rubber sheets.
+  - [提交] gregtech:gt.metatool.01:44 (ore:craftingToolPlunger)
+  > 奖励: bq_standard:choice | harvestcraft:oldworldveggiesoupItem | dreamcraft:CoinTechnician x10
+
+### [2056] §c§lJacques Cousteau
+Now that you have a Scuba Helmet you can safely explore underwater for long periods of time. You just need some compressed air cells. I'll trade you some Tin ingots for a few compressed air cells.  As your air drops, the helmet will take a compressed air cell and give back an empty cell. Throw these cells into your compressor and you can easily gather clay from beneath rivers. You'll be able to make more cells later once you get an extruder or a plate bender.
+  - [提交] IC2:itemArmorHazmatHelmet
+  - [提交] gregtech:gt.metaitem.01:11057 x32
+  > 奖励: IC2:itemCellEmpty:5 x16
+
+### [867] §c§lLapis, Lazurite, Sodalite, Calcite
+In order to make your bricked blast furnace you need to find a lapis vein containing calcite.  You can find the vein in the overworld at Y 20-50.
+  - [提交] gregtech:gt.metaitem.03:5524 x32, gregtech:gt.metaitem.03:5525 x32, gregtech:gt.metaitem.03:5526 x32, gregtech:gt.metaitem.03:5823 x16
+  - [提交] gregtech:gt.blockores2:524 x32, gregtech:gt.blockores2:525 x32, gregtech:gt.blockores2:526 x32, gregtech:gt.blockores2:823 x16
+  > 奖励: bq_standard:choice | gregtech:gt.metaitem.02:32243 | gregtech:gt.metaitem.02:32244 | enhancedlootbags:lootbag:2 | dreamcraft:CoinAdventure x10
+
+### [1128] §c§lLapis? Lucky!
+Maybe you were lucky and received the luck modifier on your pickaxe. If not, you may still have an unused modifier on your pick so you can add some lapis lazuli. Or you can perhaps add another modifier by adding a diamond and a gold block to your pick and then add some lapis.  You can put the lapis lazuli in more than one slot in the tool station, use blocks to raise the luck level faster, and even use lapis blocks in the crafting station with your tool for maximum luck gain.
+  - [提交] minecraft:dye:4 x64
+  > 奖励: minecraft:golden_carrot x2 | harvestcraft:gingerbreadItem x4 | enhancedlootbags:lootbag:2 | dreamcraft:CoinTechnician x10
+
+### [497] §c§lLit Way to Get Charred
+The "Charcoal Pile Igniter" is an alternative option for mass-producing charcoal. It does not consume any power or steam, but generates a lot of pollution. Follow the steps below to get it working.  1. Build a brick floor no bigger than 11x11 in size. 2. Place 1-5 layers of logs atop the brick floor. No air gaps allowed. 3. Place the Charcoal Pile Igniter above the top-center log. 4. Surround the remaining logs in dirt or grass. 5. The Charcoal Pile Igniter immediately starts processing 6. After some time, the logs are converted to brittle charcoal blocks. 7. Break the blocks with an axe for the charcoal (Luck/Fortune has NO effect on the drop rates).  If this is your first multiblock, read the extended tooltip (hold shift) for construction requirements, or visit [url]https://wiki.gtnewhorizons.com/wiki/Charcoal_Pile_Igniter[/url] for more information and step-by-step images.
+  - [可选提交] gregtech:gt.metaitem.01:17300 x4
+  - [可选提交] gregtech:gt.metaitem.02:21305, minecraft:flint_and_steel, gregtech:gt.blockmachines:4
+  - [合成] gregtech:gt.blockmachines:1155
+  > 奖励: bq_standard:choice | gregtech:gt.metaitem.01:11305 x2 | gregtech:gt.metaitem.01:11300 x4 | dreamcraft:CoinTechnician x10
+
+### [1908] §c§lLucifer's Little Helper
+With an alloy smelter and some netherrack dust you can make Nether furnaces, which are extremely efficient cooking machines. Very handy for someone needing a lot of stuff furnaced in a jiffy.  In comparison to the Blast Furnace, they operate at half the speed and half the fuel usage. So they have the same fuel consumption ratio but are slower. Another downside to crafting Nether Furnaces is that they cannot be used as a component for the Electric Blast Furnace (EBF) craft later on. Blast Furnaces can.  Then again, Nether dust is practically free, and unlike Blast Furnaces these can process every type of furnace recipe, so what's the loss? You can always use them to bake stacks of bread!
+  - [提交] Natura:NetherFurnace
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinAdventure x10
+
+### [50] §c§lMacerator v1.0!
+Finally you are able to make a device that will replace your mortar. However, the "no-durability" feature of this device comes with a cost: You need 2 diamonds for the grinding heads.  The macerator will double your ore output. Put ores through it instead of smelting directly.  §3NOTE: Remember, don't block the output port and don't stand behind it.§r  [warn]The Steam Macerator and each tier up to HV only have one output slot, so they cannot produce bonus outputs![/warn]
+  - [合成] gregtech:gt.blockmachines:106
+  > 奖励: harvestcraft:jellybeansItem x3 | dreamcraft:CoinTechnician x15
+
+### [1507] §c§lMaking a List, Checking it Twice
+As your base grows, you're going to have a dozen different long term goals each with many steps. Build a clipboard to keep track of what you need to do.  [note]Hint: You can put the clipboard on a wall using shift-right-click.[/note]
+  - [提交] BiblioCraft:item.BiblioClipboard
+  > 奖励: dreamcraft:CoinSmith x10
+
+### [744] §c§lMining Dirt Block by Block is so Old School
+By making an excavator you are now able to mine dirt in a 3x3 area. You can use iron, steel, or obzinite poured from the Smeltery, it doesn't need to be steel.  Higher tier metals require the MV extruder. Don't destroy your whole garden.  §6The quest should accept the tool whatever materials you used.
+  - [提交] TConstruct:metalPattern:19, TConstruct:metalPattern:16, TConstruct:metalPattern:15, TConstruct:metalPattern:14
+  - [提交] TConstruct:excavator
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [871] §c§lMolds, Molds, Molds
+After you can make steel and have a tinkers smelter you can make molds. Molds can be used in the alloy smelter and the fluid solidifier. You need them to make vacuum tubes, ingots, gears and more.  [note]PS: The 'shapes' are for the Extruder.[/note]
+  - [提交] gregtech:gt.metaitem.01:32302, gregtech:gt.metaitem.01:32303, gregtech:gt.metaitem.01:32306, gregtech:gt.metaitem.01:32307, gregtech:gt.metaitem.01:32309, gregtech:gt.metaitem.01:32308
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [46] §c§lMore Advanced Alloys
+Your smeltery does a great job mixing metals into alloys, but it's not very efficient, and limited in its complexity. You need something new, so why not put your steam to some use? The Alloy Smelter can make bronze for you directly, using ingots, dusts, or even nuggets. You can make a nugget mold as well to turn ingots into nuggets if you have steel.  It might also come in handy when processing raw rubber. You should keep an eye on recipes to see when machines offer better options to make items...  [note]NOTE: Like all steam machines, the output port is a steam outlet when recipes complete. It must not be blocked. Also, steam is hot, remember? Change the output side by whacking the machine with a wrench. The 3x3 grid will show you which side the output will move to when you whack it.[/note]  You can empty the machine by putting a hopper beneath it.  [warn]WARNING: The Alloy Smelter recipes take a lot of steam.[/warn] Do them one by one until you understand how fast you use steam, and how much you will need buffered. Large pipes are a decent "poor man's" buffer, and the boiler can hold quite a bit of steam, as well as the machine itself. Once you get a little further along, make a larger steam buffer with an iron or steel railcraft tank.
+  - [合成] gregtech:gt.blockmachines:2
+  - [合成] gregtech:gt.blockmachines:118
+  > 奖励: gregtech:gt.metaitem.01:11300 x4 | dreamcraft:CoinTechnician x15
+
+### [625] §c§lMoving Your Tanks, Chests, and Barrels
+Want to move your chests and barrels without spilling all the things (buildcraft™)? No problem! Make a dolly and you can carry your full chests, barrels or storage drawers anywhere you want. But be warned, you will get a slowness debuff so hopefully you don't have to travel very far. You can also move non-portable buildcraft and iron tanks without losing fluids, and worktables without losing stored recipes.  Shift-right-click an empty dolly to collapse it. It won't carry anything until you unfold it, but it will stack and can go in your backpack.  §3PS: Later on you can fly or make a traveller's belt to get around the debuff.§r
+  - [可选提交] gregtech:gt.metaitem.01:32100 x2, gregtech:gt.metaitem.01:25880 x2, gregtech:gt.metaitem.01:23032 x3, gregtech:gt.metaitem.01:17305 (ore:plateSteel)
+  - [提交] JABBA:mover
+  > 奖励: bq_standard:choice | JABBA:barrel x5 | dreamcraft:CoinTechnician x10
+
+### [1915] §c§lMud, Can Also be Used For Facials
+You may have found plenty of mud piles around the wetlands and thought of them as mere annoyances when jumping in the water or for that armor. Waste not! With your new extractor, you can pull out the clay hidden in the mud!
+  - [提交] BiomesOPlenty:mudball x64
+  > 奖励: minecraft:clay_ball x16 | enhancedlootbags:lootbag:2 | dreamcraft:CoinTechnician x5
+
+### [1132] §c§lNether Quartz? Sharpness!
+Your sword is too dull? Get some nether quartz to sharpen it.  If you have lots of Certus quartz, 1 piece of Certus is equal to 4 Nether quartz.
+  - [提交] minecraft:quartz x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x10
+
+### [1092] §c§lNew Source of Glowstone
+Find some Glow Flowers in the Nether and plant them in the Overworld. You will never need to go to the Nether and harvest Glowstone again.  [note]These must be planted on Soul Sand in order to grow![/note]
+  - [提交] fether:glow_flower x10
+  - [提交] fether:glow_flower_seeds x10
+  > 奖励: enhancedlootbags:lootbag:2 | minecraft:dye:15 x32 | dreamcraft:CoinTechnician x15
+
+### [1741] §c§lNice Nether Trees
+There are a few very useful Nether trees out there which give resources like Redstone, Gunpowder, Bone meal or Fertilizer.  Go and get a few trees like Bloodwood, Fusewood, Darkwood or Ghostwood out of the Nether.  These trees can be planted like normal trees, except for Bloodwood. That has to be planted on a ceiling and will grow down instead of up.
+  - [提交] Natura:floraleavesnocolor:1 x16, Natura:florasapling:4 x4, Natura:tree:2 x8
+  - [提交] Natura:floraleavesnocolor:2 x16, Natura:bloodwood x8, Natura:bloodwood:15 x8, Natura:florasapling:5 x4
+  - [提交] Natura:Dark Tree x8, Natura:florasapling:6 x4, Natura:Dark Leaves x16, Natura:Natura.netherfood
+  - [提交] Natura:Dark Tree:1 x8, Natura:Dark Leaves:3 x16, Natura:florasapling:7 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25 | dreamcraft:CoinAdventure x25
+
+### [1126] §c§lObzinite
+It's upgrade time again. You can make Obzinite by mixing obsidian, steel, and zinc in the smeltery. Obzinite pickaxes are able to mine ardite in the Nether.  Leave the rest of your Obzinite as liquid in your smeltery; you'll want it to make the Tool Forge. You need 16 ingots in the smeltery to make 2 Large Plates.  [note]Later in LV you can get a better yield by using a Mixer.[/note]
+  - [提交] TConstruct:materials:15 (ore:ingotAlumite)
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinChemist x10 | dreamcraft:CoinTechnician x10
+
+### [694] §c§lOne Anvil...
+With your brand-new Compressor you are able to make some metal blocks for your new anvil. You're required to craft at least one for the Forge Hammer.  §3With the anvil you can repair, rename and enchant armor and some types of tools (non-GT).§r
+  - [可选提交] minecraft:iron_block x5 (ore:blockIron), gregtech:gt.metaitem.01:17032 x2 (ore:plateIron), gregtech:gt.metaitem.01:27032 x2 (ore:screwAnyIron)
+  - [合成] minecraft:anvil
+  > 奖励: minecraft:iron_block | minecraft:piston | dreamcraft:CoinSmith x15 | dreamcraft:CoinTechnician x15
+
+### [742] §c§lOne Block Mining is so Old School
+By making a hammer you are now able to mine a shaft of 3x3 blocks. You can use iron, steel, or obzinite poured from the Smeltery, it doesn't need to be steel. Higher tier metals require the MV extruder. You'll need a hammer head, two large plates and a large rod for your hammer. Be careful in the Nether or you could be boiled in lava very quickly.  §6The quest should accept the tool whatever materials you used.
+  - [提交] TConstruct:metalPattern:21, TConstruct:metalPattern:16, TConstruct:metalPattern:14
+  - [提交] TConstruct:hammer
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [495] §c§lOoo, Shiny! (Not Platinum!)
+To make your first macerator you need two diamonds, and to enter the Twilight Forest you need one. Finding a diamond vein would help you a lot. Go and look for one at Y 5-20.
+  - [提交] gregtech:gt.metaitem.03:5865 x64, gregtech:gt.metaitem.03:5500 x32, gregtech:gt.metaitem.03:5535 x16
+  - [提交] gregtech:gt.blockores2:865 x64, gregtech:gt.blockores2:500 x32, gregtech:gt.blockores2:535 x16
+  > 奖励: bq_standard:choice | gregtech:gt.metaitem.02:32234 x2 | gregtech:gt.metaitem.02:32232 x2 | enhancedlootbags:lootbag:2 | dreamcraft:CoinAdventure x10 | dreamcraft:CoinDarkWizard x10
+
+### [534] §c§lPollution What....?
+If you are running your bricked blast furnace for a long time you will sometimes get headaches, nausea and other weird effects. Yes this is pollution... from making so much steel. If you can collect some rubber sheets, I will trade you a complete hazmat suit.
+  - [提交] gregtech:gt.metaitem.01:17880 x64
+  > 奖励: IC2:itemArmorHazmatHelmet | IC2:itemArmorHazmatChestplate | IC2:itemArmorHazmatLeggings | IC2:itemArmorRubBoots
+
+### [2446] §c§lPumping Water
+RC Water Tanks not cutting it through those dry spells? Or maybe you chose a dry biome to set up in? This pump will produce more water for the low cost of something burnable (like all that lignite).
+  - [提交] bartworks:BWHeatedWaterPumpBlock
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinSmithI x10
+
+### [1127] §c§lReinforced X? Unbreakable
+With your steel tool you are able to mine obsidian. You can make the Reinforcement which gives a reinforced modifier which increases the durability of your tool. Reinforced level X makes a tool unbreakable.  §3PS: In many cases this is not worth it, since the tools don't degrade that fast, it doesn't cost much to repair, and you get better materials (with higher durability) to make them out of reasonably fast. Plus, by the time you got it to unbreakable, you'd be auto-mining everything with a miner anyway. Just use redstone, or maybe luck/silky. However, there are a few very nice use cases like lumber axes and tools for automation setups.
+  - [提交] TConstruct:woodPattern:16
+  - [提交] TConstruct:heavyPlate:6
+  - [提交] TConstruct:materials:43
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [1888] §c§lRepairing Your Hazmat Suit
+Be careful when wearing your hazmat suit all the time. The durability is not very high. Even just falling a few blocks will damage the boots quickly.  You can repair your suit long before you can craft a new one in late LV Age, using some rubber sheets and a glue bucket.
+  - [提交] TConstruct:buckets:25 x4, gregtech:gt.metaitem.01:17880 x21
+  - [提交] IC2:itemArmorHazmatHelmet, IC2:itemArmorHazmatChestplate, IC2:itemArmorHazmatLeggings, IC2:itemArmorRubBoots
+  > 奖励: bq_standard:choice | gregtech:gt.metaitem.01:17880 x8 | minecraft:bucket x2 | dreamcraft:CoinSmith x10
+
+### [835] §c§lResistor
+Every basic circuit needs two resistors to work.  There are better versions you can make later.  [note]You can also use slime, blood, or glue instead of Sticky Resin![/note]
+  - [可选提交] gregtech:gt.blockmachines:1360 x4, gregtech:gt.metaitem.02:19035 x4, gregtech:gt.metaitem.01:2535 x2, IC2:itemHarz x4
+  - [合成] gregtech:gt.metaitem.01:32716 x2
+  > 奖励: harvestcraft:blueberrysmoothieItem x2 | dreamcraft:CoinTechnician x15
+
+### [536] §c§lRubber Sheets
+Let's make a mold for the rubber sheets. They are mainly used for conveyors and cables.  At this stage, making cables by hand with rubber sheets is faster and cheaper in power than the Alloy Smelter recipe for the cables.  With the sheets, you should be able to craft Piston Boots - a massive upgrade to your mobility. Check out the questline Getting Around to find them.
+  - [提交] TConstruct:blankPattern:1
+  - [合成] dreamcraft:MoldFormPlate
+  - [提交] gregtech:gt.metaitem.01:32301
+  - [提交] gregtech:gt.metaitem.01:17880 x10
+  > 奖励: bq_standard:choice | harvestcraft:creamedbroccolisoupItem | dreamcraft:CoinTechnician x10
+
+### [1157] §c§lRubber Soft Mallet
+Your wooden soft mallet breaks after a few uses. Now you can make a rubber mallet which is much more durable.  §3You can create much higher durability mallets using Steeleaf or Ironwood, both easily attainable once you get access to the Twilight Forest.
+  - [提交] minecraft:stick (ore:woodStick), gregtech:gt.metaitem.01:11880 x6
+  - [合成] gregtech:gt.metatool.01:14
+  > 奖励: bq_standard:choice | harvestcraft:chickenpotpieItem x2 | dreamcraft:CoinTechnician x10
+
+### [875] §c§lSlime Island Journey
+Rubber trees are not the only source for raw rubber. Go and find a slime island high in the sky. Slime balls and slime leaves give raw rubber too. Make some slime tree farms beside your rubber farm.  §3Liquid slime is not allowed to be placed down, as it acts as a spawner, and can cause lag.
+  - [提交] TConstruct:CraftedSoil:5, TConstruct:slime.gel:1, TConstruct:slime.sapling, TConstruct:strangeFood x4, TConstruct:slime.gel:2
+  > 奖励: bq_standard:choice | minecraft:iron_sword | dreamcraft:CoinSurvivor x10 | dreamcraft:CoinAdventure x10
+
+### [59] §c§lSteam Alternatives
+There is more than one way to get steam for your machines. This completely optional questline shows you some alternative methods for producing steam.  §3For the ones that need glass, you'll need to progress a few more quests to see how to do so, though you can also make it now if you know how to use NEI to find the recipe.
+  - [提交] gregtech:gt.metaitem.01:11300
+  > 奖励: harvestcraft:beansontoastItem
+
+### [2346] §c§lTame an Ocelot to Get a Friend
+Once you have the required materials, you will need to find an ocelot to tame.  Ocelots can be found in Jungle Biomes.  If you are having trouble finding an ocelot, you can always summon an ocelot using a spawn egg.  You can tame an ocelot by giving it a raw fish. So add the raw fish to your inventory and select the raw fish in your hotbar.  Just like vanilla Minecraft, a tamed ocelot turns into a cat. The cat will repel creepers.  §3TIP: Make sure you are in a large space when trying to tame the ocelot so that the ocelot has lots of room to move. If you are in a space that is too small, you will not be able to tame the ocelot.  Next, while holding the raw fish, do not move. If you move, you will scare away the ocelot. If you are very still, the ocelot will eventually notice the fish in your hand and begin to walk over to you.
+  - [可选提交] minecraft:fishing_rod
+  - [提交] minecraft:fence x32 (ore:fenceWood), minecraft:fish x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x10
+
+### [1108] §c§lThe Cool Guy
+Feeling lonely? Located far away from a snow biome? Craft a Snow Golem, and perhaps challenge him to a snow ball fight.
+  - [提交] minecraft:pumpkin, minecraft:snow x2
+  > 奖励: bq_standard:choice | minecraft:snowball | dreamcraft:CoinDarkWizard x10 | dreamcraft:CoinTechnician x10
+
+### [890] §c§lThe GT Tank, ULV Version
+This is the first GT-type tank. It stores 32 buckets or 32,000L, and can be used to I/O cells. The ULV Tank from GT++ needs steel plates, iron plates, tin plates, a clay pipe, and a water bucket.  GT tanks do not auto-output. If you want to move fluids out of the tank, use a GT pump, conduit, or something similar.
+  - [合成] gregtech:gt.blockmachines:817
+  > 奖励: gregtech:gt.blockmachines:30768 x4 | enhancedlootbags:lootbag:2 | dreamcraft:CoinTechnician x10
+
+### [49] §c§lThe Heck is That?
+In order to get more machines, you'll need pistons. But not those amateurish ones, you need special ones, and I shall guide you in the making of them.  §3PS: Infernals can drop them, though you won't get credit for the quest that way.
+  - [可选提交] gregtech:gt.metaitem.01:23032 x4
+  - [可选提交] gregtech:gt.metaitem.01:17032 x2 (ore:plateIron)
+  - [可选提交] gregtech:gt.metaitem.02:20032 x2
+  - [可选提交] CarpentersBlocks:blockCarpentersBlock x3
+  - [可选提交] gregtech:gt.metaitem.01:17308
+  - [可选提交] minecraft:cobblestone x2
+  - [可选提交] minecraft:fence (ore:fenceWood)
+  - [合成] minecraft:piston
+  > 奖励: bq_standard:choice | CarpentersBlocks:blockCarpentersBlock x6 | dreamcraft:CoinTechnician x15
+
+### [1107] §c§lThe Iron Guy
+Do you feel lonely? Need some extra protection in your base? Want to keep the pigmen off your back in the Nether? Craft some Iron Golems and the monster problem inside your base will be gone.  They can do good amounts of damage and aggro enemies like the pigmen away from you. They can even take care of that pesky Vampire Pigman.
+  - [提交] minecraft:pumpkin, minecraft:iron_block x4
+  > 奖励: bq_standard:choice | minecraft:red_flower | dreamcraft:CoinDarkWizard x10 | dreamcraft:CoinTechnician x10
+
+### [479] §c§lTHE NETHER
+Now more dangerous with extra hardcore infernal mobs. Have fun and take care. Remember that the flint and steel can take a few times to work, but there are other ways to make fire ...  Be sure to bring a tough companion along to keep you alive. If you have no friends, why not make an Iron Golem and push it through first, or bring the materials for more along with you?  Also, §lwhen§r you die here, not if, your graves will spawn skeletons because of the darkness. Make sure you light up areas where you might die, and when recovering graves light up the area §lfirst§r so that you don't end up dying over and over and making a mess.  Watch out for some mobs! They'll take minimal damage from any weapon that is not their weakness. So if you seem to not be doing much damage, you probably aren't! Think about other options to hurt/kill the monster.
+  - [到达] 
+  - [可选提交] minecraft:obsidian x10
+  > 奖励: bq_standard:choice | Natura:natura.armor.imphelmet | Natura:natura.armor.impjerkin | Natura:natura.armor.impleggings | Natura:natura.armor.impboots | dreamcraft:CoinAdventure x15 | dreamcraft:CoinDarkWizard x15
+
+### [-5122202840608450070] §c§lThe one book to rule them all
+This Tome can store multiple documentation books from other mods. It will be empty when crafted, but you can add books by combining it with the desired book in a crafting grid.  Right-clicking with the Tome in hand will open an interface showing all the added books; clicking on a book will transform the tome into the selected book. To revert it back to the Tome, left-click while sneaking.  To retrieve a stored book, transform the Tome into the desired book and throw it away while sneaking - this will drop the selected book and leave the tome in your inventory.  [warn]Some warnings:  The extended version of the Book of Biomes from Witchery is not compatible with this tome.  You should not throw it through the Botania portal. The elves might steal your Tome and return only their own copy of the Lexica Botania.[/warn]
+  - [提交] akashictome:tome
+  > 奖励: minecraft:paper x16
+
+### [62] §c§lThe Power of the Sun
+The sun has quite a bit of power, so why not use it to produce Steam?  Fill it with Water on the bottom side to produce Steam. Unlike the other Boilers, this only outputs Steam on the output port side.  You need Silver from small ores to craft Solar Boilers. Later in LV you can get much more in the Twilight Forest.  §3Hint: The Simple Solar Boiler calcifies and becomes less efficient over time, dropping down to a minimum of 40L/s. Later on you can consider using Distilled Water to avoid calcification.
+  - [合成] gregtech:gt.blockmachines:105
+  > 奖励: harvestcraft:papayajellysandwichItem x2 | dreamcraft:CoinTechnician x10
+
+### [66] §c§lTime For Some Logic
+Good news! You are now able to advance to the next tier! Bad news: You still have to craft a lot of things before you can begin. Fear not mortal, I shall guide you!
+  - [可选提交] gregtech:gt.blockmachines:1360 x6, gregtech:gt.metaitem.01:26308 x2, gregtech:gt.metaitem.01:23305 x4, gregtech:gt.metaitem.02:19035 x4, gregtech:gt.metaitem.03:32012 x2
+  - [合成] gregtech:gt.metaitem.01:32700 x2
+  > 奖励: bq_standard:choice | harvestcraft:turkeycookedItem x2 | dreamcraft:CoinTechnician x15
+
+### [741] §c§lTool Forge
+After getting obzinite, it's time to craft a tool forge for making bigger (and better) Tinkers tools.  §3You do not have to use iron to create the forge; you can also use other materials like tin or copper, among others.
+  - [可选提交] TConstruct:heavyPlate:15 x2, minecraft:iron_block x4, TConstruct:CraftingSlab:1, TConstruct:SearedSlab:1
+  - [提交] TConstruct:ToolForgeBlock:32767
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [1919] §c§lToo Much Junk??
+Impossible! But if you really want to get rid of excess items, make yourself a trashcan. If you want to be really fancy, you can use a hopper with a lever next to it to make sure you only throw away items you really want. I mean, §lI've§r never thrown away a tool accidentally, nope, never me.
+  - [提交] ExtraUtilities:trashcan
+  > 奖励: enhancedlootbags:lootbag:2 | dreamcraft:CoinSmith x5
+
+### [-5451807604278606777] Underground Geodes
+You can find amethyst blocks, crystals, and calcite blocks in underground geodes.   During the Steam Age, calcite blocks become incredibly useful because you can put them into a Forge Hammer to obtain valuable calcite dust, which is used for crafting the Bricked Blast Furnace. They can usually be found between Y-levels 5 and 46.  Amethyst can also be mined and used as a source of silicon dioxide. One amethyst block drops 9 amethyst dust, making it a great option for obtaining silicon dioxide. [note] You can use an Ore Finder with calcite dust inserted into it to locate calcite deposits more easily.[/note]
+  - [可选提交] etfuturum:amethyst_block x32
+  - [提交] etfuturum:calcite x32
+  > 奖励: dreamcraft:CoinAdventure x25 | dreamcraft:CoinSmith x25
+
+### [55] §c§lUpgrade: A Better Compressor
+An updated version of the steam compressor. Uses the same total amount of steam as its predecessor but does the job twice as fast.
+  - [合成] gregtech:gt.blockmachines:116
+  > 奖励: bq_standard:choice | harvestcraft:spicymustardporkItem x2 | dreamcraft:CoinTechnician x10
+
+### [64] §c§lUpgrade: Better Furnace
+An updated version of the steam furnace. Uses the same total amount of steam as its predecessor but does the job twice as fast.
+  - [合成] gregtech:gt.blockmachines:104
+  > 奖励: bq_standard:choice | harvestcraft:fairybreadItem x3 | dreamcraft:CoinTechnician x10
+
+### [58] §c§lUpgrade: Better Macerator
+An updated version of the steam macerator. Uses the same total amount of steam as its predecessor but does the job twice as fast.
+  - [合成] gregtech:gt.blockmachines:107
+  > 奖励: bq_standard:choice | harvestcraft:softpretzelandmustardItem x3 | dreamcraft:CoinTechnician x10
+
+### [60] §c§lUpgrade: Coal Boiler
+This is basically just an upgrade to your current coal boiler, however it produces more than twice as much steam. Something you should consider building if you're planning to get some of the upgraded machines.
+  - [合成] gregtech:gt.blockmachines:101
+  > 奖励: harvestcraft:zeppoleItem x2 | dreamcraft:CoinTechnician x10
+
+### [57] §c§lUpgrade: Extractor
+An updated version of the steam extractor. Uses the same total amount of steam as its predecessor but does the job twice as fast.  You probably want to craft this, as the extractor does also extract your nerves...
+  - [合成] gregtech:gt.blockmachines:110
+  > 奖励: bq_standard:choice | harvestcraft:stuffedpepperItem x3 | dreamcraft:CoinTechnician x10
+
+### [56] §c§lUpgrade: Forge Hammer
+An updated version of the steam forge hammer. Uses the same total amount of steam as its predecessor but does the job twice as fast.
+  - [合成] gregtech:gt.blockmachines:113
+  > 奖励: bq_standard:choice | harvestcraft:gummybearsItem x3 | dreamcraft:CoinTechnician x10
+
+### [47] §c§lUpgrade: High Speed Alloys
+Like most machines, there is a more advanced version of the alloy smelter. It uses the same total amount of steam as its predecessor but does the job twice as fast.  Keep in mind that it uses quite a lot of steam, so you better have enough of it in boilers, pipes, or tanks.
+  - [合成] gregtech:gt.blockmachines:119
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [596] §c§lUpgrade of the Upgrade of the...
+It's upgrade time. Unlock redstone and obsidian level for your different tools.  Remember, a fresh tool head starts at one level below. So you'll need to use it enough to level it up before you can mine at the proper level. Go strip-mine a mountain or something.
+  - [提交] TConstruct:pickaxeHead:16, TConstruct:shovelHead:16 x2, TConstruct:hatchetHead:16 x2, TConstruct:swordBlade:16
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinTechnician x10
+
+### [1987] §c§lUpgrading Drawers
+Drawer upgrades are different from barrel upgrades. First you need to make the upgrade template.
+  - [提交] StorageDrawers:upgradeTemplate x3
+  > 奖励: StorageDrawers:upgradeTemplate x6
+
+### [63] §c§lUsing Steam to Cook Things
+A rather slow process, but it's more efficient than using a regular furnace.
+  - [合成] gregtech:gt.blockmachines:103
+  > 奖励: harvestcraft:lamingtonItem | dreamcraft:CoinTechnician x10
+
+### [44] §c§lWelcome to Tier 0.5, Steam!
+Welcome, and well done so far! This tier is all about your first machines, getting more stuff from your ores and making bronze ingots in a more efficient manner.  For water, check out the Water Tank multiblock in the §9"Water Dilemma"§r quest. (Multiblock Goals tab)  To connect up your boilers, be sure to provide water from the bottom, they'll accept only water from this side, so no risk of melting your pipe. Wooden pipes are fine for this. Make sure you never run out of water - [warn]adding water to a dry hot boiler will cause it to explode![/warn]  Steam will come out from the sides. Remember, steam is hot! It will destroy wooden pipes. And it can burn you if you walk on bronze pipes full of steam. Cover them with wooden planks or paper. Or just don't walk on/next to them.  And no, you can't automate it. Make an electric one if you want to do that.  [note]Tip: Water is consumed at a rate of 1L of water per 160L of steam for all boilers unless otherwise noted.[/note]
+  - [提交] gregtech:gt.blockmachines:100
+  > 奖励: Railcraft:fuel.coke x2 | minecraft:coal x2 | minecraft:coal:1 x2 | gregtech:gt.metaitem.01:8538 x2
+
+### [2407] §c§lWhat Engineer Doesn't Want a Portable Workbench?
+This backpack sacrifices some space to give you a portable crafting table. You have to put the items you want to craft inside the backpack. Because of this, you can use it to quickly craft large amounts of items at once.  You can also use the Forestry Worktable with its larger inventory to do the same. Once you reach MV, you can switch to an Adventure Backpack that includes a pair of tanks for storing fluids if you want.
+  - [提交] Backpack:workbenchbackpack:17
+  > 奖励: dreamcraft:CoinSurvivor x10 | dreamcraft:CoinTechnician x10
+
+### [84] §c§lWhere Can I Put All the Liquids?
+With your brand new alloy smelter you are able to combine two materials. What happens if you mix some obsidian dust and thickened glass? Obsidian glass, great. Your first tank that you can make would be a Buildcraft tank. This tank can carry up to 16 buckets of a single fluid. It's possible to upgrade those tanks so they can hold up to 64 buckets. You can also stack the tanks to increase capacity.
+  - [可选提交] gregtech:gt.metaitem.01:28032 x2 (ore:ringIron), gregtech:gt.metaitem.01:27032 x4 (ore:screwIron)
+  - [可选提交] TConstruct:GlassBlock
+  - [可选提交] gregtech:gt.metaitem.01:2804 x4 (ore:dustObsidian), ExtraUtilities:decorativeBlock2
+  - [可选提交] ExtraUtilities:decorativeBlock2:5
+  - [提交] BuildCraft|Factory:tankBlock
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [67] §c§lWired, Weird?!
+Two of the very basic materials for machines are wires and cables. For cables you can either use a rubber sheet in the crafting table or use rubber bars in the alloy smelter. Not very efficient, but there will be a better way later.
+  - [合成] gregtech:gt.blockmachines:2000 x3
+  - [合成] gregtech:gt.blockmachines:1240 x7
+  - [合成] gregtech:gt.blockmachines:1360 x24
+  - [合成] gregtech:gt.metaitem.02:19035 x8
+  - [提交] gregtech:gt.blockmachines:2006 x3, gregtech:gt.blockmachines:1246 x7
+  > 奖励: harvestcraft:fruitcrumbleItem x3 | dreamcraft:CoinTechnician x15
+
+### [493] §c§lWiremill v0.2 Alpha
+Small gears require a wire cutter to be made, so let's craft one.
+  - [可选提交] gregtech:gt.metaitem.01:17032 x3 (ore:plateIron), gregtech:gt.metaitem.01:23032 x2, gregtech:gt.metaitem.01:27032
+  - [合成] gregtech:gt.metatool.01:26
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [69] §c§lWire-Wrap
+Placing wires without insulation seems to be a bad idea. Now that you have an extractor to extract raw rubber out of sticky resin and an alloy smelter to further process it using sulfur, you should work on getting some insulating rubber bars.
+  - [可选提交] gregtech:gt.metaitem.01:2896 x120, gregtech:gt.metaitem.01:2022 x40 (ore:dustSulfur)
+  - [提交] gregtech:gt.metaitem.01:11880 x40
+  > 奖励: bq_standard:choice | harvestcraft:onionsoupItem x2 | dreamcraft:CoinChemist x15
+
+### [68] §c§lYour First Electronic Circuit
+Steam machines are quite stupid, they just do one thing over and over again. As you advance into the electrical age, you've decided that you want the machines to have more features, like automatic output in order to create some automation. For that, you need electronic circuits.
+  - [合成] IC2:itemPartCircuit
+  > 奖励: harvestcraft:icecreamItem x2 | dreamcraft:CoinTechnician x15
+

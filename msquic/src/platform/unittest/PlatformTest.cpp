@@ -1,0 +1,348 @@
+/*++
+
+    Copyright (c) Microsoft Corporation.
+    Licensed under the MIT License.
+
+Abstract:
+
+    QUIC Platform Unit test
+
+--*/
+
+#include "main.h"
+
+#include "msquic.h"
+#ifdef QUIC_CLOG
+#include "PlatformTest.cpp.clog.h"
+#endif
+
+uint32_t
+CxPlatEventQDequeueAndReturn(
+    _In_ CXPLAT_EVENTQ* queue,
+    _Out_ CXPLAT_CQE* events,
+    _In_ uint32_t count,
+    _In_ uint32_t wait_time // milliseconds
+    )
+{
+    uint32_t Result = ::CxPlatEventQDequeue(queue, events, count, wait_time);
+    ::CxPlatEventQReturn(queue, Result);
+    return Result;
+}
+
+TEST(PlatformTest, QuicAddrParsing)
+{
+    struct TestEntry {
+        const char* Input;
+        uint16_t DefaultPort;
+        int Family;
+        uint16_t ExpectedPort;
+        uint32_t ExpectedScope;
+        uint8_t ExpectedAddress[16];
+    };
+
+    const TestEntry TestData[] = {
+        { "0.0.0.0", 0, QUIC_ADDRESS_FAMILY_INET, 0, 0, { 0, 0, 0, 0 } },
+        { "127.0.0.1", 443, QUIC_ADDRESS_FAMILY_INET, 443, 0, { 127, 0, 0, 1 } },
+        { "127.0.0.1:90", 443, QUIC_ADDRESS_FAMILY_INET, 90, 0, { 127, 0, 0, 1 } },
+        { "255.255.255.255:65535", 0, QUIC_ADDRESS_FAMILY_INET, 65535, 0, { 255, 255, 255, 255 } },
+        { "::", 0, QUIC_ADDRESS_FAMILY_INET6, 0, 0, {} },
+        { "::1", 443, QUIC_ADDRESS_FAMILY_INET6, 443, 0,
+          { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } },
+        { "[::1]:80", 443, QUIC_ADDRESS_FAMILY_INET6, 80, 0,
+          { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 } },
+        { "::ffff:192.0.2.128", 0, QUIC_ADDRESS_FAMILY_INET6, 0, 0,
+          { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 192, 0, 2, 128 } },
+        { "fe80::9c3a:b64d:6249:1de8%3", 0, QUIC_ADDRESS_FAMILY_INET6, 0, 3,
+          { 254, 128, 0, 0, 0, 0, 0, 0, 156, 58, 182, 77, 98, 73, 29, 232 } },
+        { "[fe80::9c3a:b64d:6249:1de8%3]:443", 0, QUIC_ADDRESS_FAMILY_INET6, 443, 3,
+          { 254, 128, 0, 0, 0, 0, 0, 0, 156, 58, 182, 77, 98, 73, 29, 232 } },
+        { "[ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff%4294967295]:65535", 0,
+          QUIC_ADDRESS_FAMILY_INET6, 65535, UINT32_MAX,
+          { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 } }
+    };
+
+    for (const auto& Entry : TestData) {
+        QUIC_ADDR Addr{};
+        ASSERT_TRUE(QuicAddrFromString(Entry.Input, Entry.DefaultPort, &Addr)) << Entry.Input;
+        ASSERT_EQ(Entry.ExpectedPort, QuicAddrGetPort(&Addr)) << Entry.Input;
+        ASSERT_EQ(Entry.Family, QuicAddrGetFamily(&Addr)) << Entry.Input;
+        if (Entry.Family == QUIC_ADDRESS_FAMILY_INET6) {
+            ASSERT_EQ(Entry.ExpectedScope, Addr.Ipv6.sin6_scope_id) << Entry.Input;
+        }
+        const void* ActualAddress =
+            Entry.Family == QUIC_ADDRESS_FAMILY_INET ?
+                (void*)&Addr.Ipv4.sin_addr :
+                (void*)&Addr.Ipv6.sin6_addr;
+        ASSERT_EQ(
+            0,
+            memcmp(
+                Entry.ExpectedAddress,
+                ActualAddress,
+                Entry.Family == QUIC_ADDRESS_FAMILY_INET ? 4 : 16)) << Entry.Input;
+    }
+
+    QUIC_ADDR Addr{};
+    ASSERT_FALSE(QuicAddrFromString("fe80::1%", 0, &Addr));
+    ASSERT_FALSE(QuicAddrFromString("fe80::1%abc", 0, &Addr));
+    ASSERT_FALSE(QuicAddrFromString("fe80::1%4294967296", 0, &Addr));
+}
+
+TEST(PlatformTest, QuicAddrToString)
+{
+    struct TestEntry {
+        const char* Input;
+        const char* Expected;
+    };
+
+    const TestEntry TestData[] = {
+        { "0.0.0.0", "0.0.0.0" },
+        { "127.0.0.1:443", "127.0.0.1:443" },
+        { "127.0.0.1:90", "127.0.0.1:90" },
+        { "255.255.255.255:65535", "255.255.255.255:65535" },
+        { "::", "::" },
+        { "[::1]:443", "[::1]:443" },
+        { "[::1]:80", "[::1]:80" },
+        { "::ffff:192.0.2.128", "::ffff:192.0.2.128" },
+        { "fe80::9c3a:b64d:6249:1de8%3", "fe80::9c3a:b64d:6249:1de8" },
+        { "[fe80::9c3a:b64d:6249:1de8%3]:443", "[fe80::9c3a:b64d:6249:1de8]:443" },
+        // Maximum scope, port and uncompressed IPv6 literal.
+        { "[ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff%4294967295]:65535",
+          "[ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff]:65535" }
+    };
+
+    static_assert(sizeof(((QUIC_ADDR_STR*)nullptr)->Address) == 65);
+    for (const auto& Entry : TestData) {
+        QUIC_ADDR Addr{};
+        QUIC_ADDR_STR AddrStr{};
+        ASSERT_TRUE(QuicAddrFromString(Entry.Input, 0, &Addr)) << Entry.Input;
+        ASSERT_TRUE(QuicAddrToString(&Addr, &AddrStr));
+        ASSERT_STREQ(Entry.Expected, AddrStr.Address) << Entry.Input;
+    }
+}
+
+TEST(PlatformTest, QuicAddrIpToString)
+{
+    struct TestEntry {
+        const char* Input;
+        const char* Expected;
+    };
+
+    const TestEntry TestData[] = {
+        { "0.0.0.0", "0.0.0.0" },
+        { "127.0.0.1:443", "127.0.0.1" },
+        { "255.255.255.255:65535", "255.255.255.255" },
+        { "[::]:65535", "::" },
+        { "[::1]:443", "::1" },
+        { "[::ffff:192.0.2.128]:443", "::ffff:192.0.2.128" },
+        { "[fe80::9c3a:b64d:6249:1de8%3]:443", "fe80::9c3a:b64d:6249:1de8" },
+        // Maximum scope, port and uncompressed IPv6 literal.
+        { "[ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff%4294967295]:65535",
+          "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff" }
+    };
+
+    for (const auto& Entry : TestData) {
+        QUIC_ADDR Addr{};
+        QUIC_ADDR_STR AddrStr{};
+        ASSERT_TRUE(QuicAddrFromString(Entry.Input, 0, &Addr)) << Entry.Input;
+        ASSERT_TRUE(QuicAddrIpToString(&Addr, &AddrStr));
+        ASSERT_STREQ(Entry.Expected, AddrStr.Address) << Entry.Input;
+    }
+
+    QUIC_ADDR InvalidAddr{};
+    QUIC_ADDR_STR AddrStr{};
+    ASSERT_FALSE(QuicAddrIpToString(&InvalidAddr, &AddrStr));
+}
+
+TEST(PlatformTest, CxPlatIsIpLiteral)
+{
+    struct TestEntry {
+        const char* Input;
+        bool IsIpLiteral;
+    };
+
+    TestEntry TestData[] = {
+        { "127.0.0.1", true },
+        { "192.168.1.11", true },
+        { "::1", true },
+        { "fc00::1:11", true },
+        { "::ffff:192.0.2.128", true },
+        { "localhost", false },
+        { "net.host", false },
+        { "128.net.host", false },
+        { "127.0.0.1:443", false },
+        { "[::1]", false },
+        { "[::1]:443", false }
+    };
+
+    for (const auto& Entry : TestData) {
+        ASSERT_EQ(Entry.IsIpLiteral, CxPlatIsIpLiteral(Entry.Input)) << Entry.Input;
+    }
+}
+
+TEST(PlatformTest, EventQueue)
+{
+    struct my_sqe : public CXPLAT_SQE {
+        uint32_t data;
+        static void my_completion_1(CXPLAT_CQE* Cqe) {
+            CXPLAT_SQE* Sqe = CxPlatCqeGetSqe(Cqe);
+            ASSERT_TRUE(((my_sqe*)Sqe)->data == 0x1234);
+        }
+        static void my_completion_2(CXPLAT_CQE* Cqe) {
+            CXPLAT_SQE* Sqe = CxPlatCqeGetSqe(Cqe);
+            ASSERT_TRUE(((my_sqe*)Sqe)->data == 0x5678);
+        }
+        static void my_completion_3(CXPLAT_CQE* Cqe) {
+            CXPLAT_SQE* Sqe = CxPlatCqeGetSqe(Cqe);
+            ASSERT_TRUE(((my_sqe*)Sqe)->data == 0x90);
+        }
+    };
+
+    CXPLAT_EVENTQ queue;
+    ASSERT_TRUE(CxPlatEventQInitialize(&queue));
+
+    // Empty queue tests
+    CXPLAT_CQE events[2];
+    ASSERT_EQ(0u, CxPlatEventQDequeueAndReturn(&queue, events, 2, 0));
+    ASSERT_EQ(0u, CxPlatEventQDequeueAndReturn(&queue, events, 2, 100));
+
+    my_sqe sqe1, sqe2, sqe3;
+    sqe1.data = 0x1234;
+    ASSERT_TRUE(CxPlatSqeInitialize(&queue, my_sqe::my_completion_1, &sqe1));
+    sqe2.data = 0x5678;
+    ASSERT_TRUE(CxPlatSqeInitialize(&queue, my_sqe::my_completion_2, &sqe2));
+    sqe3.data = 0x90;
+    ASSERT_TRUE(CxPlatSqeInitialize(&queue, my_sqe::my_completion_3, &sqe3));
+
+    // Single queue/dequeue tests
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe1));
+    ASSERT_EQ(1u, CxPlatEventQDequeueAndReturn(&queue, events, 2, 0));
+    ASSERT_EQ(&sqe1, (my_sqe*)CxPlatCqeGetSqe(&events[0]));
+
+    // Multiple queue/dequeue tests
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe1));
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe2));
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe3));
+    ASSERT_EQ(2u, CxPlatEventQDequeueAndReturn(&queue, events, 2, 100));
+    ASSERT_EQ(1u, CxPlatEventQDequeueAndReturn(&queue, events, 2, 0));
+    ASSERT_EQ(0u, CxPlatEventQDequeueAndReturn(&queue, events, 2, 0));
+
+    struct EventQueueContext {
+        CXPLAT_EVENTQ* queue;
+        CXPLAT_SQE* sqe;
+        static CXPLAT_THREAD_CALLBACK(EventQueueCallback, Context) {
+            auto ctx = (EventQueueContext*)Context;
+            CxPlatSleep(100);
+            CxPlatEventQEnqueue(ctx->queue, ctx->sqe);
+            CXPLAT_THREAD_RETURN(0);
+        }
+    };
+
+    // Async queue/dequeue tests
+    EventQueueContext context = { &queue, &sqe1 };
+    CXPLAT_THREAD_CONFIG config = { 0, 0, NULL, EventQueueContext::EventQueueCallback, &context };
+    CXPLAT_THREAD thread;
+    ASSERT_TRUE(QUIC_SUCCEEDED(CxPlatThreadCreate(&config, &thread)));
+    ASSERT_EQ(1u, CxPlatEventQDequeueAndReturn(&queue, events, 2, 1000));
+    ASSERT_EQ(&sqe1, (my_sqe*)CxPlatCqeGetSqe(&events[0]));
+    CxPlatThreadWait(&thread);
+    CxPlatThreadDelete(&thread);
+
+    CxPlatSqeCleanup(&queue, &sqe1);
+    CxPlatSqeCleanup(&queue, &sqe2);
+    CxPlatSqeCleanup(&queue, &sqe3);
+
+    CxPlatEventQCleanup(&queue);
+}
+
+TEST(PlatformTest, EventQueueWorker)
+{
+    typedef struct EventQueueContext EventQueueContext;
+
+    struct my_sqe : public CXPLAT_SQE {
+        EventQueueContext* context;
+        uint32_t data;
+    };
+
+    struct EventQueueContext {
+        CXPLAT_EVENTQ* queue;
+        uint32_t counts[3];
+        bool running;
+        static CXPLAT_THREAD_CALLBACK(EventQueueCallback, Context) {
+            auto ctx = (EventQueueContext*)Context;
+            CXPLAT_CQE events[4];
+            while (ctx->running) {
+                uint32_t count = CxPlatEventQDequeueAndReturn(ctx->queue, events, ARRAYSIZE(events), UINT32_MAX);
+                for (uint32_t i = 0; i < count; i++) {
+                    auto sqe = CxPlatCqeGetSqe(&events[i]);
+#ifdef CXPLAT_USE_EVENT_BATCH_COMPLETION
+                    sqe->ClassicCompletion(&events[i]);
+#else
+                    sqe->Completion(&events[i]);
+#endif
+                }
+            }
+            CXPLAT_THREAD_RETURN(0);
+        }
+        static void shutdown_completion(CXPLAT_CQE* Cqe) {
+            auto Sqe = (my_sqe*)CxPlatCqeGetSqe(Cqe);
+            Sqe->context->running = false;
+        }
+        static void my_completion(CXPLAT_CQE* Cqe) {
+            auto Sqe = (my_sqe*)CxPlatCqeGetSqe(Cqe);
+            Sqe->context->counts[Sqe->data]++;
+        }
+    };
+
+    CXPLAT_EVENTQ queue;
+    ASSERT_TRUE(CxPlatEventQInitialize(&queue));
+
+    EventQueueContext context = { &queue, {0}, true };
+    CXPLAT_THREAD_CONFIG config = { 0, 0, NULL, EventQueueContext::EventQueueCallback, &context };
+    CXPLAT_THREAD thread;
+    ASSERT_TRUE(QUIC_SUCCEEDED(CxPlatThreadCreate(&config, &thread)));
+
+    my_sqe shutdown, sqe1, sqe2, sqe3;
+    shutdown.context = &context;
+    ASSERT_TRUE(CxPlatSqeInitialize(&queue, EventQueueContext::shutdown_completion, &shutdown));
+    sqe1.context = &context;
+    sqe1.data = 0;
+    ASSERT_TRUE(CxPlatSqeInitialize(&queue, EventQueueContext::my_completion, &sqe1));
+    sqe2.context = &context;
+    sqe2.data = 1;
+    ASSERT_TRUE(CxPlatSqeInitialize(&queue, EventQueueContext::my_completion, &sqe2));
+    sqe3.context = &context;
+    sqe3.data = 2;
+    ASSERT_TRUE(CxPlatSqeInitialize(&queue, EventQueueContext::my_completion, &sqe3));
+
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe1));
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe2));
+    CxPlatSleep(100);
+    ASSERT_TRUE(context.counts[0] == 1u);
+    ASSERT_TRUE(context.counts[1] == 1u);
+    ASSERT_TRUE(context.counts[2] == 0u);
+
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe1));
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe2));
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe3));
+    CxPlatSleep(100);
+    ASSERT_TRUE(context.counts[0] == 2u);
+    ASSERT_TRUE(context.counts[1] == 2u);
+    ASSERT_TRUE(context.counts[2] == 1u);
+
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &sqe3));
+    ASSERT_TRUE(CxPlatEventQEnqueue(&queue, &shutdown));
+
+    CxPlatThreadWait(&thread);
+    CxPlatThreadDelete(&thread);
+
+    ASSERT_TRUE(context.counts[0] == 2u);
+    ASSERT_TRUE(context.counts[1] == 2u);
+    ASSERT_TRUE(context.counts[2] == 2u);
+
+    CxPlatSqeCleanup(&queue, &shutdown);
+    CxPlatSqeCleanup(&queue, &sqe1);
+    CxPlatSqeCleanup(&queue, &sqe2);
+    CxPlatSqeCleanup(&queue, &sqe3);
+
+    CxPlatEventQCleanup(&queue);
+}

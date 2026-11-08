@@ -1,0 +1,15 @@
+type: embed
+
+colour: black
+embed:
+    title: Minecraft Dev for IntelliJ (MCDEV)
+    image:
+        url: "https://raw.githubusercontent.com/FabricMC/community/main/images/mcdev-autocomplete.gif"
+
+---
+
+MCDEV is an open source IntelliJ IDEA plugin that provides first class support for Minecraft development. It provides useful functionalities like Mixin method/target autocompletion, Mixin debugging capabilities and other common Fabric/Minecraft related inspections.
+
+* JetBrains Marketplace: [Minecraft Development](<https://plugins.jetbrains.com/plugin/8327-minecraft-development>)
+* Website: [mcdev.io](<https://mcdev.io/>)
+* GitHub: [minecraft-dev/MinecraftDev](<https://github.com/minecraft-dev/MinecraftDev>)

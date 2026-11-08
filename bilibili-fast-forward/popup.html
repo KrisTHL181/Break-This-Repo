@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>B站一键快进 - 设置</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="header">
+    <img src="icons/icon32.png" alt="" class="logo">
+    <h1>B站一键快进</h1>
+  </header>
+
+  <main>
+    <section class="field">
+      <label for="seconds">快进秒数</label>
+      <div class="row">
+        <input id="seconds" type="number" min="1" max="3600" step="1" value="85">
+        <span class="unit">秒（默认 85）</span>
+      </div>
+    </section>
+
+    <section class="field">
+      <label for="recorder">触发快捷键</label>
+      <div id="recorder" class="recorder" tabindex="0" role="button"
+           title="点击后按下想要的按键组合">Shift + →</div>
+      <p class="hint">点击上面的框，然后按下想要的按键组合（支持 Ctrl / Alt / Shift 修饰键，默认 Shift + →）。按 Esc 恢复默认。修改后点击「保存设置」即立即生效，无需刷新页面。</p>
+    </section>
+
+    <footer class="buttons">
+      <button id="save" class="primary" type="button">保存设置</button>
+      <button id="reset" class="secondary" type="button">恢复默认</button>
+    </footer>
+    <div id="status" class="status" aria-live="polite"></div>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>

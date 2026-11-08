@@ -1,0 +1,456 @@
+/*
+ * Copyright 2023 Hongen Wang All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:proxypin/ui/component/multi_window_compat.dart';
+import 'package:proxypin/network/components/manager/environment_manager.dart';
+import 'package:proxypin/network/http/http.dart';
+import 'package:proxypin/network/util/cache.dart';
+import 'package:proxypin/network/util/logger.dart';
+import 'package:proxypin/network/util/url_pattern.dart';
+import 'package:proxypin/network/util/random.dart';
+import 'package:proxypin/storage/path.dart';
+import 'package:proxypin/ui/component/device.dart';
+import 'package:http/http.dart' as http;
+
+import '../js/script_engine.dart';
+
+/// @author wanghongen
+/// 2023/10/06
+/// js脚本
+class ScriptManager {
+  static String template = """
+// e.g. Add/Update/Remove：Queries、Headers、Body
+async function onRequest(context, request) {
+  console.log(request.url);
+  //Update or add Header
+  //request.headers["X-New-Headers"] = "My-Value";
+  
+  // Update Body use fetch API request，具体文档可网上搜索fetch API
+  //request.body = await fetch('https://www.baidu.com/').then(response => response.text());
+  return request;
+}
+
+//You can modify the Response Data here before it goes to the client
+async function onResponse(context, request, response) {
+  // response.statusCode = 200;
+
+  //var body = JSON.parse(response.body);
+  //body['key'] = "value";
+  //response.body = JSON.stringify(body);
+  return response;
+}
+  """;
+
+  static String separator = Platform.pathSeparator;
+  static ScriptManager? _instance;
+  bool enabled = true;
+  List<ScriptItem> list = [];
+
+  final ExpiringCache<ScriptItem, String> _scriptMap = ExpiringCache<ScriptItem, String>(Duration(minutes: 15));
+
+  static late JavaScriptRuntimePool flutterJsPool;
+
+  static String? deviceId;
+
+  static final List<LogHandler> _logHandlers = [];
+
+  ScriptManager._();
+
+  ///单例
+  static Future<ScriptManager> get instance async {
+    if (_instance == null) {
+      _instance = ScriptManager._();
+      await _instance?.reloadScript();
+      flutterJsPool = JavaScriptRuntimePool(size: JavaScriptEngine.defaultRuntimePoolSize, consoleLog: consoleLog);
+      deviceId = await DeviceUtils.deviceId();
+
+      logger.d('init script manager $deviceId');
+    }
+    return _instance!;
+  }
+
+  static void registerConsoleLog(String fromWindowId) {
+    LogHandler logHandler = LogHandler(
+        channelId: fromWindowId,
+        handle: (logInfo) {
+          DesktopMultiWindow.invokeMethod(fromWindowId, "consoleLog", logInfo.toJson()).onError((e, t) {
+            logger.e("consoleLog error: $e");
+            removeLogHandler(fromWindowId);
+          });
+        });
+    registerLogHandler(logHandler);
+  }
+
+  static void registerLogHandler(LogHandler logHandler) {
+    if (_logHandlers.any((it) => it.channelId == logHandler.channelId)) {
+      _logHandlers.removeWhere((it) => it.channelId == logHandler.channelId);
+    }
+    _logHandlers.add(logHandler);
+  }
+
+  static void removeLogHandler(String channelId) {
+    _logHandlers.removeWhere((element) => channelId == element.channelId);
+  }
+
+  static dynamic consoleLog(dynamic args) async {
+    if (_logHandlers.isEmpty) {
+      return;
+    }
+
+    var level = args.removeAt(0);
+    String output = args.join(' ');
+    if (level == 'info') level = 'warn';
+    LogInfo logInfo = LogInfo(level, output);
+    for (int i = 0; i < _logHandlers.length; i++) {
+      _logHandlers[i].handle.call(logInfo);
+    }
+  }
+
+  ///重新加载脚本
+  Future<void> reloadScript() async {
+    List<ScriptItem> scripts = [];
+    var file = await _path;
+    logger.d("reloadScript ${file.path}");
+
+    if (await file.exists()) {
+      var content = await file.readAsString();
+      if (content.isEmpty) {
+        return;
+      }
+      var config = jsonDecode(content);
+      enabled = config['enabled'] == true;
+      for (var entry in config['list']) {
+        scripts.add(ScriptItem.fromJson(entry));
+      }
+    }
+    list = scripts;
+    _scriptMap.clear();
+  }
+
+  static Future<File> get _path async {
+    final path = await Paths.homePath();
+    var file = File('$path${separator}script.json');
+    if (!await file.exists()) {
+      await file.create();
+    }
+    return file;
+  }
+
+  Future<String?> getScript(ScriptItem item) async {
+    // Local script (existing behavior)
+    if (_scriptMap.containsKey(item)) {
+      return _scriptMap[item]!;
+    }
+
+    // Remote script
+    if (item.remoteUrl != null && item.remoteUrl!.trim().isNotEmpty) {
+      var script = await _fetchRemoteScript(item);
+      if (script != null) {
+        _scriptMap[item] = script;
+      }
+      return script;
+    }
+
+    final home = await Paths.homePath();
+    var script = await File(home + item.scriptPath!).readAsString();
+    _scriptMap[item] = script;
+    return script;
+  }
+
+  Future<String?> _fetchRemoteScript(ScriptItem item) async {
+    final url = item.remoteUrl!.trim();
+    if (!_isHttpUrl(url)) {
+      return null;
+    }
+
+    final resp = await http.get(Uri.parse(url));
+
+    final bytes = resp.bodyBytes;
+
+    final content = utf8.decode(bytes);
+    _scriptMap[item] = content;
+
+    return content;
+  }
+
+  bool _isHttpUrl(String url) {
+    final uri = Uri.tryParse(url);
+    if (uri == null) return false;
+    return uri.scheme == 'http' || uri.scheme == 'https';
+  }
+
+  ///添加脚本
+  Future<void> addScript(ScriptItem item, String? script) async {
+    // Remote script: script is treated as initial cache (optional)
+    if (item.remoteUrl != null && item.remoteUrl!.trim().isNotEmpty) {
+      list.add(item);
+      return;
+    }
+
+    script ??= template;
+    final path = await Paths.homePath();
+    String scriptPath = "${separator}scripts$separator${RandomUtil.randomString(16)}.js";
+    var file = File(path + scriptPath);
+    await file.create(recursive: true);
+    file.writeAsString(script);
+    item.scriptPath = scriptPath;
+    list.add(item);
+    _scriptMap[item] = script;
+  }
+
+  ///更新脚本
+  Future<void> updateScript(ScriptItem item, String script) async {
+    // Remote scripts: update cache file (treat as local override of cache)
+    if (item.remoteUrl != null && item.remoteUrl!.trim().isNotEmpty) {
+      _scriptMap[item] = script;
+      return;
+    }
+
+    if (_scriptMap[item] == script) {
+      return;
+    }
+
+    final home = await Paths.homePath();
+    File(home + item.scriptPath!).writeAsString(script);
+    _scriptMap[item] = script;
+  }
+
+  ///删除脚本
+  Future<void> removeScript(int index) async {
+    var item = list.removeAt(index);
+    _scriptMap.remove(item);
+
+    if (item.scriptPath != null) {
+      final home = await Paths.homePath();
+      File(home + item.scriptPath!).delete();
+    }
+  }
+
+  Future<void> clean() async {
+    _scriptMap.clear();
+    while (list.isNotEmpty) {
+      var item = list.removeLast();
+      if (item.scriptPath != null) {
+        final home = await Paths.homePath();
+        File(home + item.scriptPath!).delete();
+      }
+    }
+    await flushConfig();
+  }
+
+  ///刷新配置
+  Future<void> flushConfig() async {
+    await _path.then((value) => value.writeAsString(jsonEncode({'enabled': enabled, 'list': list})));
+  }
+
+  Map<dynamic, dynamic> scriptSession = {};
+
+  ///脚本上下文
+  Map<String, dynamic> scriptContext(ScriptItem item) {
+    final env = EnvironmentManager.instanceOrNull?.flatMap() ?? const <String, String>{};
+    return {
+      'scriptName': item.name,
+      'os': Platform.operatingSystem,
+      'session': scriptSession,
+      'deviceId': deviceId,
+      'env': env,
+    };
+  }
+
+  /// 处理脚本可能修改的 env:diff 后写回 EnvironmentManager 并持久化。
+  Future<void> _applyScriptEnv(Map<String, String> envBefore, Map<dynamic, dynamic>? scriptContextResult) async {
+    if (scriptContextResult == null) return;
+    final envAfter = scriptContextResult['env'];
+    if (envAfter is! Map) return;
+    final mgr = EnvironmentManager.instanceOrNull;
+    if (mgr == null || !mgr.enabled) return;
+    final changed = mgr.applyScriptEnvChanges(envBefore, envAfter);
+    if (changed) {
+      await mgr.flushConfig();
+    }
+  }
+
+  ///运行脚本
+  Future<HttpRequest?> runScript(HttpRequest request) async {
+    if (!enabled) {
+      return request;
+    }
+    var url = request.domainPath;
+    for (var item in list) {
+      if (item.enabled && item.match(url)) {
+        final ctxMap = scriptContext(item);
+        // 记录脚本运行前的 env 快照,便于运行后做 diff
+        final envBefore = Map<String, String>.from(ctxMap['env'] as Map);
+        var context = jsonEncode(ctxMap);
+        var jsRequestMap = await JavaScriptEngine.convertJsRequest(request);
+        var jsRequest = jsonEncode(jsRequestMap);
+        String? script = await getScript(item);
+        if (script == null) {
+          continue;
+        }
+
+        var result = await flutterJsPool.run((flutterJs) async {
+          var jsResult = await flutterJs.evaluateAsync(
+              """var request = $jsRequest, context = $context;  request['scriptContext'] = context; $script\n  onRequest(context, request)""");
+          return await JavaScriptEngine.jsResultResolve(flutterJs, jsResult);
+        });
+        if (result == null) {
+          return null;
+        }
+        request.attributes['scriptContext'] = result['scriptContext'];
+        scriptSession = result['scriptContext']['session'] ?? {};
+        await _applyScriptEnv(envBefore, result['scriptContext']);
+        // 脚本未改动请求时保留原始字节，避免 query 重编码/header 重排破坏签名
+        if (!JavaScriptEngine.isRequestUnchanged(jsRequestMap, result)) {
+          request = JavaScriptEngine.convertHttpRequest(request, result);
+        }
+      }
+    }
+    return request;
+  }
+
+  ///运行脚本
+  Future<HttpResponse?> runResponseScript(HttpResponse response) async {
+    if (!enabled || response.request == null) {
+      return response;
+    }
+
+    var request = response.request!;
+    var url = request.domainPath;
+    for (var item in list) {
+      if (item.enabled && item.match(url)) {
+        // 响应阶段:优先复用请求阶段设置好的 scriptContext(含中途修改过的 env),
+        // 否则新构建一个。用于 diff 的 envBefore 从最终传给 JS 的 context 中取。
+        final ctxMap =
+            (request.attributes['scriptContext'] as Map?)?.cast<String, dynamic>() ?? scriptContext(item);
+        final envBefore = Map<String, String>.from(((ctxMap['env'] as Map?) ?? const {}).map(
+          (k, v) => MapEntry(k.toString(), v?.toString() ?? ''),
+        ));
+        var context = jsonEncode(ctxMap);
+        var jsRequest = jsonEncode(await JavaScriptEngine.convertJsRequest(request));
+        var jsResponse = jsonEncode(await JavaScriptEngine.convertJsResponse(response));
+        String? script = await getScript(item);
+        if (script == null) {
+          continue;
+        }
+
+        var result = await flutterJsPool.run((flutterJs) async {
+          var jsResult = await flutterJs.evaluateAsync(
+              """var response = $jsResponse, context = $context;  response['scriptContext'] = context; $script
+            \n  onResponse(context, $jsRequest, response);""");
+          return await JavaScriptEngine.jsResultResolve(flutterJs, jsResult);
+        });
+        if (result == null) {
+          return null;
+        }
+        scriptSession = result['scriptContext']['session'] ?? {};
+        await _applyScriptEnv(envBefore, result['scriptContext']);
+        response = JavaScriptEngine.convertHttpResponse(response, result);
+      }
+    }
+    return response;
+  }
+}
+
+class LogHandler {
+  final String channelId;
+  final Function(LogInfo logInfo) handle;
+
+  LogHandler({required this.channelId, required this.handle});
+}
+
+class LogInfo {
+  final DateTime time;
+  final String level;
+  final String output;
+
+  LogInfo(this.level, this.output, {DateTime? time}) : time = time ?? DateTime.now();
+
+  factory LogInfo.fromJson(Map<String, dynamic> json) {
+    return LogInfo(json['level'], json['output'], time: DateTime.fromMillisecondsSinceEpoch(json['time']));
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'time': time.millisecondsSinceEpoch, 'level': level, 'output': output};
+  }
+
+  @override
+  String toString() {
+    return '{time: $time, level: $level, output: $output}';
+  }
+}
+
+class ScriptItem {
+  bool enabled = true;
+  String? name;
+  List<String> urls;
+  String? scriptPath;
+  List<RegExp?>? urlRegs;
+
+  String? remoteUrl;
+
+  ScriptItem(this.enabled, this.name, dynamic urls, {this.scriptPath, this.remoteUrl})
+      : urls = urls is String
+            ? (urls.contains(',') ? urls.split(',').map((e) => e.trim()).toList() : [urls])
+            : (urls is List<String> ? urls : <String>[]);
+
+  // 匹配url，任意一个规则匹配即可
+  bool match(String url) {
+    urlRegs ??= urls.map((u) => UrlPattern.toHostRegExp(u)).toList();
+    for (final reg in urlRegs!) {
+      if (reg!.hasMatch(url)) return true;
+    }
+    return false;
+  }
+
+  factory ScriptItem.fromJson(Map<dynamic, dynamic> json) {
+    final urlField = json['url'];
+    List<String> urls;
+    if (urlField is List) {
+      urls = urlField.cast<String>();
+    } else if (urlField is String) {
+      urls = urlField.contains(',') ? urlField.split(',').map((e) => e.trim()).toList() : [urlField];
+    } else {
+      urls = <String>[];
+    }
+
+    return ScriptItem(
+      json['enabled'],
+      json['name'],
+      urls,
+      scriptPath: json['scriptPath'],
+      remoteUrl: json['remoteUrl'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'enabled': enabled,
+      'name': name,
+      'url': urls.length == 1 ? urls[0] : urls,
+      'scriptPath': scriptPath,
+      if (remoteUrl != null) 'remoteUrl': remoteUrl,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'ScriptItem{enabled: $enabled, name: $name, url: $urls, scriptPath: $scriptPath, remoteUrl: $remoteUrl}';
+  }
+}

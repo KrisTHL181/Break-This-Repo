@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "café.txt"
+Precomposed e-acute (U+00E9).

@@ -1,0 +1,7 @@
+{
+  "parent": "fabric-model-loading-api-v1-testmod:template_half",
+  "textures": {
+    "half1": "minecraft:block/sand",
+    "half2": "minecraft:block/red_sand"
+  }
+}

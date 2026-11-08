@@ -1,0 +1,8 @@
+type: text
+
+---
+
+Fabric doesn't support subfolders in the mods folder (and since 1.13 neither does Forge)
+Instead, you can use separate installations to separate your mods, or use the MultiMC launcher, see the following tutorials:
+https://fabricmc.net/wiki/player:tutorials:install_mcl:windows#step_2_optionaledit_the_game_directory_of_the_new_fabric_installation
+https://fabricmc.net/wiki/player:tutorials:install_multimc:windows

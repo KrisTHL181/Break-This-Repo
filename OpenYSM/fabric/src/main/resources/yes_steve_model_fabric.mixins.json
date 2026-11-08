@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.elfmcys.yesstevemodel.fabric.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "client.PlayerRendererHandMixin",
+    "client.PlayerRendererMixin",
+    "client.YSMSoundInstanceFabricMixin"
+  ],
+  "mixins": [
+    "LivingEntityEffectMixin"
+  ]
+}

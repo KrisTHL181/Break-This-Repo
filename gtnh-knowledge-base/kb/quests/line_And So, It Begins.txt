@@ -1,0 +1,173 @@
+# 任务线: And So, It Begins
+### [442] §9§l"Baked" Potatoes
+Eating raw potatoes isn't that healthy, as you might have noticed. Some potatoes are green and poisonous already. After you get a furnace you can make delicious baked potatoes as another food alternative. Put a baked potato on a stick to make it even more delicious.
+  - [提交] minecraft:potato
+  - [提交] minecraft:baked_potato
+  - [可选提交] minecraft:stick (ore:stickWood)
+  - [合成] gregtech:gt.metaitem.02:32201
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x2 | dreamcraft:CoinFarmer x2
+
+### [946] §9§lBamboo Fence
+Maybe you're lucky and started in a bamboo forest. Bamboo is a very useful tree since it grows really fast and when you break the bottom-most block, the whole thing comes apart.  You can use them as sticks, or you can place the bamboo sticks to grow and make a three-block-tall wall to protect your base. You can also use Berry Bushes for that, assuming you don't want to spend materials on fences.
+  - [提交] BiomesOPlenty:bamboo x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x5
+
+### [470] §9§lBerry Medley
+Hmmm... what can you do with all those berries? Just eating? You will see that they have a very low saturation level. Let's plant the new berry bushes and mix the berries to make some better food.
+  - [提交] Natura:berry:1, Natura:berry:3, Natura:berry:2, Natura:berry
+  - [提交] minecraft:stick (ore:stickWood), minecraft:flint
+  - [合成] gregtech:gt.metatool.01:34 (ore:craftingToolKnife), minecraft:bowl x2
+  - [合成] Natura:berryMedley x2
+  > 奖励: bq_standard:choice | Natura:BerryBush:1 x5 | Natura:BerryBush x5 | Natura:BerryBush:2 x5 | Natura:BerryBush:3 x5 | dreamcraft:CoinCook x2 | dreamcraft:CoinFarmer x2
+
+### [484] §9§lCan You Hear the Carrots Grow?
+Tired of waiting since your carrots grow sooooo slowly?  Bone meal will help you to grow food in seconds.  Chop down some trees to get a bit of bone meal as a reward.
+  - [提交] minecraft:log x64 (ore:logWood)
+  - [提交] minecraft:log x10 (ore:logWood)
+  > 奖励: minecraft:dye:15 x10 | bq_standard:choice
+
+### [1843] §9§lCaught in the Web
+Some spiders have nasty modifiers:  Witch spiders reflect missile damage back at you. If you see a red X on their back, draw your melee weapon and prepare for close combat...  Mother spiders will spawn a lot of baby spiders on death, some of which may be infernal.  A flying spider can grab the oblivious flier.  Ghost spiders are partially invisible and can pass through thin walls.
+  - [勾选确认]
+  > 奖励: minecraft:string x8
+
+### [469] §9§lCollecting Some Berries
+Are you waiting for the carrots to grow? Go and find some berry bushes and berries.  The berries are a good source of food, and you can put these bushes around your house to make a wall. It should provide a good protection against all those monsters that want to come into your house and kill you.
+  - [提交] Natura:berry:1 x5, Natura:berry x5
+  - [提交] Natura:BerryBush x5, Natura:BerryBush:1 x5
+  > 奖励: Natura:BerryBush:3 x2 | Natura:BerryBush:2 x2 | dreamcraft:CoinFarmer x2
+
+### [1475] §9§lCows Are Supposed to Moo!
+What the...? You noticed that sometimes when you kill something, even a cow or chicken, it explodes! What madness!  To stop it, use a proper GregTech Knife or Butchery Knife to kill them. Craft a flint GregTech knife with a stick and a piece of flint.  To see its recipe, see how a generic knife is made - NEI should show you many pages. The recipe you need should be on the last page. You can scroll pages with your mouse wheel.  [note]Alternatively you can use the search bar to search for a specific tool material, in this case flint![/note]  As a reward, here's an iron knife to use once the flint one wears out.
+  - [提交] gregtech:gt.metatool.01:34
+  > 奖励: gregtech:gt.metatool.01:34 | minecraft:porkchop x5 | dreamcraft:CoinSurvivor x5
+
+### [1204] §9§lCrafting Time
+It's time to get yourself a 3x3 crafting area. Use your flint and some wood to build one!
+  - [合成] minecraft:crafting_table
+  > 奖励: minecraft:apple x2 | dreamcraft:CoinTechnician x5
+
+### [1842] §9§lCreeping Dread
+Creepers can make you have a baaaad time.  Drowning Creeper - when it explodes, it surrounds you in a ball of cobble filled with water. Not only do you have to escape, but the cobble is infested with silverfish! And those silverfish are all infernal! The best way to deal with it is to first escape up or down. If you have to clear the cobble ball, first clear the water. Surrounding the cobble with a dirt moat will keep the silverfish inside and unable to hide. Put down punjis, quicksand, or lava, and/or spectral glass. Make a wall with a 1x1 window and use that to break the cobbles - fishing silverfish is especially dangerous.  Concussion Creeper - Randomly teleports you a short distance - possibly deep underground.
+  - [勾选确认]
+  > 奖励: minecraft:gunpowder x4
+
+### [397] §9§lEven more challenges needed?
+You have played through most of the pack a few times already? Maybe you even made a Stargate? Or are you just looking for something a bit different? Don't worry, we have a few options for you:  - Play in Hardcore. Either Minecraft Hardcore, or BetterQuesting Hardcore. The latter is a bit more forgiving. Maybe this seems impossible, but people have indeed reached UEV+ in Minecraft Hardcore. Better be prepared to restart a few times. This is obviously not for everybody.  - Never make a rocket. The so called §ono-rocket run§r is somewhat supported by now, you will be able to do almost everything in the pack. Use bees, crops, and blood magic meteors as your main resource production. Be warned though that such a challenge is grindy and slow. For instance, you might need to collect large amounts of andradite ore or via the aluminium bauxite slag route to get your first titanium. Or have to start breeding bees early without much technology to help.  - Skyblock. Yes, really. It is also known as Garden of Grind and it is absolutely brutal. There is no actually supported skyblock version of the pack but some players have figured out the minimal amount of changes needed to make it work. Ask around or search on the official discord channel for all the details. But don't expect any fun down this road.  - Speedrunning. A few players have designed some basic rules and have started to record speedruns to early game goals like the Coke Oven. Ask around or search on the official discord channel for all the details. Maybe you just want to watch how they do it.
+  - [勾选确认]
+  > 奖励: xp:10
+
+### [9] §9§lFire, Fire, Grandpa!
+Time to burn some stuff, isn't it? You can't make charcoal in it, but you sure will find some usage for it soon™.
+  - [合成] minecraft:furnace
+  > 奖励: enhancedlootbags:lootbag:1 | dreamcraft:CoinTechnician x5
+
+### [12] §9§lFluffy and Red
+Epic quest: Kill some sheep! (And try to get some wool, for a bed, obviously...)
+  - [提交] minecraft:wool x6 (ore:blockWool)
+  > 奖励: enhancedlootbags:lootbag:1 | dreamcraft:CoinSurvivor x5
+
+### [471] §9§lFood Variants
+Maybe you noticed already that eating the same food too often is very boring and not as healthy. Some food like Grapes can be cooked into other unique foods. You can also smelt Fresh Water into Boiling Water and combine that with a Tea Leaf for a delicious cup of tea.
+  - [提交] harvestcraft:tealeafItem, harvestcraft:grapeItem
+  - [提交] harvestcraft:teaItem, harvestcraft:raisinsItem
+  > 奖励: gregtech:gt.metaitem.01:2817 x10 | harvestcraft:butterItem x5 | dreamcraft:CoinCook x2 | dreamcraft:CoinFarmer x2
+
+### [8] §9§lGet That Stone
+Look at you, with your shiny wooden pickaxe!  Time to mine some cobblestone. Yay! You can even improve your dirt hut!
+  - [提交] minecraft:cobblestone x64
+  > 奖励: minecraft:flint | dreamcraft:CoinAdventure x5
+
+### [396] §9§lGoals
+GregTech New Horizons is a long and intricate mod pack with massive amounts of custom content and over three thousand quests to guide you through it.  We recommend you set yourself small goals from tier to tier and see how far your journey takes you.  The ultimate late game goal is to craft a Stargate or two, but the recipe is outrageous, and very few players have ever done so.  If you need a big goal for your run, we suggest to aim for something less crazy. Like going to the moon if it's your first time playing. Or making and automating an Assembly Line if you have never done so. Or crafting the Tier 8 Rocket which is the last regular rocket and is reached in UHV.
+  - [勾选确认]
+  > 奖励: minecraft:fireworks x4
+
+### [-7688742850291984857] In-game Guide
+Check out the in-game guide! It'll tell you what's new in each version and has in-depth tutorials, visualizations, and more details than you'll find anywhere else in the pack!  To open it, bind the §aOpen Guide Home§r hotkey.  [img height=200]midnight:textures/gui/guide-nh-pictures/guide-nh-image.png[/img]
+  - [勾选确认]
+
+### [2874] §9§lLoading the Chunks
+Minecraft works in chunks - the 16x16 columns of blocks from bedrock to sky. The chunks in a radius around you are simulated or, in other words, chunkloaded. If a chunk is not loaded, nothing happens in it - crops don't grow, machines don't work. Thus, you want to have your base chunkloaded when you're off exploring. Later on, you want your base chunkloaded so things don't spontaneously blow up, especially multi-block machines.  You can chunkload in a few ways:  1) The ServerUtilities mod. With default settings, you will not be able to chunkload. Feel free to change that in the config if you are in singleplayer (SP) or running your own server.  2) Use four types of Anchors from Railcraft, although they are not craftable until the Low Voltage (LV) tier. In SP, or a server you run, cheat in Admin Anchors to chunkload forever, for free. They're limited on servers to prevent TPS dropping from people chunkloading a base forever when they aren't even there. On the officials, you need to use Ender Fragments, Ender Pearls, or Coins to fuel them. Look at the tooltip on each for how long it will work, and in what chunkloader.  3) Use one of the blocks that chunkloads itself. If you do this on a server, expect the admins to possibly get very mad at you if it's not something you're allowed to do. Same for vanilla methods.  Don't use chicken chunks to get anchor-like blocks. It's buggy.
+  - [勾选确认]
+  > 奖励: minecraft:cookie
+
+### [865] §9§lMonster Trap
+If you're lucky enough to spawn near a sand- or rainforest biome, you can find some quicksand.  Collect a stack of it, dig a small ditch, and fill it with the quicksand to protect your "dirt base" home. Just don't fall in!
+  - [提交] BiomesOPlenty:mud:1 x64
+  > 奖励: bq_standard:choice
+
+### [440] §9§lOak Trees Are Not Apple Trees
+Oak trees that give apples? Who the hell added this to minecraft? You found a way of combining an oak sapling and an apple to get an apple tree sapling. Try to plant one to get a permanent source of food.
+  - [可选提交] minecraft:sapling, minecraft:apple
+  - [合成] harvestcraft:pamappleSapling
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestry x2 | dreamcraft:CoinFarmer x2
+
+### [-5633785243568862283] §9§lPermanent Offhand!
+The modern offhand slot has been backported.  This feature also works with any item that opens a GUI, like a backpack for example. This makes inventory management easier and helps with certain tedious tasks.  Default Keybind to swap between mainhand and offhand: §9F§r  [note]You can also toggle various Torch Tweaks in Backhand's mod client configs. They are disabled by default, but you may find them useful if you love holding torches in your offhand.[/note]
+  - [勾选确认]
+  > 奖励: gregtech:gt.metaitem.02:32565
+
+### [1844] §9§lPorkchops With Attitude
+The only zombie pigman to watch out for is the Vampire Pigman. He hardly takes any damage unless you use a wooden sword as a stake, or have a magical sword.
+  - [勾选确认]
+  > 奖励: minecraft:porkchop x8
+
+### [10] §9§lRest in Pieces
+It's GLOPPing time! Go kill some pigs to gather meat.
+  - [击杀] target=Pig n=
+  > 奖励: minecraft:cooked_porkchop | dreamcraft:CoinSurvivor x5
+
+### [444] §9§lSoft Mallet Adventure
+You now have some melon slices or pumpkins but what can you do with them?  You can just eat them or... use a mallet to get some seeds. OK, let's craft one. Perhaps you can use this mallet for some other things too.  [note]Once you complete this quest, check out the rest of the Quest Tabs. A new one, "... Without Dying", has unlocked. You'll want to look through all the quest tabs to make sure something new hasn't unlocked somewhere else occasionally. There are lots of tabs, so be sure to scroll down![/note]
+  - [可选提交] minecraft:stick (ore:stickWood), minecraft:planks x6 (ore:plankWood)
+  - [合成] gregtech:gt.metatool.01:14
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x5
+
+### [13] §9§lSO...TIRED...MUST...SLEEP...
+Sleepy time, and the end of the tutorial.  Congratulations! You've built your first hideout, and you should have a steady supply of food by now.  See you again in Tier 0!  [note](Any color bed will complete this quest)[/note]
+  - [合成] etfuturum:white_bed (ore:bedWood)
+  > 奖励: minecraft:cookie | minecraft:wooden_door | enhancedlootbags:lootbag:1 | dreamcraft:CoinTechnician x10
+
+### [1856] §9§lStaying Cool in the Heat
+If you happen to be near a snowy biome, you can harvest the snow to make delicious smoothies. They are more satiating than eating the berries by themselves.
+  - [可选提交] Natura:berry:1 x4, minecraft:snowball x4
+  - [提交] harvestcraft:blueberrysmoothieItem x4
+  > 奖励: harvestcraft:melonsmoothieItem x4
+
+### [2] §9§lSticks 'n Stones
+This book has a built-in reading light, lucky you! You can read about quests while you're waiting for the night to be over, but for now, you may want to get the basics done. If it isn't dark already, go out and collect some gravel and wood.  Keep in mind that you need food, so look for Pam's Harvestcraft gardens. Save some of the drops from them for seeds. Alternatively, right-click the gardens with an empty hand to get the garden item itself. If you place it somewhere else, it will spread into more of the same garden up to a limit within that area.  Make sure to read the info-quests linked to the first quest, they have important info!
+  - [提交] minecraft:gravel x9, minecraft:log x5 (ore:logWood)
+  - [提交] minecraft:log x2 (ore:logWood)
+  > 奖励: minecraft:torch | dreamcraft:CoinSurvivor x5
+
+### [1849] §9§lTell Me When We Reach 20
+Jumping all the time is exhausting and makes you really hungry. To reduce your food depletion, you might want to use stairs instead.
+  - [提交] minecraft:oak_stairs x8 (ore:stairWood), minecraft:stone_stairs x8
+  > 奖励: minecraft:ladder x64 | harvestcraft:suaderoItem x4 | dreamcraft:CoinForestry x10
+
+### [5] §9§lTools
+Now that you've got a shelter and a crafting table, you should make some tools, unless you'd like to continue punching trees with your bare hands.  You should probably make the axe first so you can get wood for the rest more easily.
+  - [合成] minecraft:wooden_pickaxe, minecraft:wooden_shovel, minecraft:wooden_axe, minecraft:wooden_hoe
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x5 | dreamcraft:CoinTechnician x5
+
+### [7] §9§l...What You Sow
+If, by chance, you did read the previous quest and planted the carrots, then you're fine.  Meanwhile, you should turn some more fruits and vegetables into seeds, and increase the size of your farm to get a steady supply of food.
+  - [提交] minecraft:carrot x10
+  > 奖励: minecraft:potato x5 | enhancedlootbags:lootbag:1 | dreamcraft:CoinFarmer x5
+
+### [1] §9§lWhere's the Flint?
+As you might have noticed when collecting gravel, no Flint dropped for you.  Well, there is a... recipe for that. Look up Flint in Not Enough Items (NEI) and craft some!  The search field of NEI is at the bottom of the screen when you open your inventory. The results are on the right side.
+  - [合成] minecraft:flint x3
+  > 奖励: minecraft:flint
+
+### [6] §9§lYou Reap...
+You won't always get food rewards from the quests, so it might be a good idea to take care of that problem.  As you've crafted a hoe already, go and find some water nearby to make a field. With this modpack you can only make farmland within range of water. Let's trade some sticks for a carrot, so you can start your own farm.  To get other wheat, use a hoe on grass away from water. You'll get Witchery seeds too - save those for later.  Start planting a Cotton field because it's a key early-game resource.  You can also get seeds from villages, and grow the seeds from the Pam's garden food.
+  - [提交] minecraft:stick x8 (ore:woodStick)
+  > 奖励: minecraft:carrot x5
+
+### [0] §9§lYour First Night
+Hello, friend, and welcome to GTNH!  Don't get used to things being nice and comfy, because in about ten minutes the sun will set, and unlike Vanilla Minecraft, there's no light whatsoever at night but plenty of Infernal mobs coming to get you. So your first task is to find food and shelter for the night.  But by the end of this quest tab you will have a bed to make things easier.  You don't need to keep this book. Even if you don't have the item, you can press Tilde (~) to view it at any time...unless you decided to change the keybind.  If you need any extra help or just want to hang out, feel free to visit our Discord server at [url]https://discord.gg/gtnh[/url]. And yes, the links are clickable! On the Discord, select your tech tier in #role-select - it will help people to tailor their advice to your situation.  Many GTNH topics are explained in our Wiki at [url]https://wiki.gtnewhorizons.com/wiki/Main_Page[/url]. It does not have the same extent and structure as the Questbook, but some things are much better with pictures and tables! The wiki also has tips on extra topics like what additional mods might work with the pack, how GTNH can be installed for modern Java versions or how to set up a server.  Additionally, there is a spreadsheet at [url]https://www.gtnewhorizons.com/spreadsheet[/url] for the info you would want a spreadsheet for.  If you play through a launcher that relies on [warn]CurseForge[/warn], be aware that it doesn't always work properly. It doesn't play well with all the custom versions of mods that this pack has. So if you have any problems, first switch to another launcher like MultiMC, Prism, or Technic. The wiki has instructions there as well. The latest version of the pack is available on the Discord channel from #announcements or with the !download command.  Hopefully you didn't get munched by a monster while reading this, good luck!
+  - [提交] minecraft:dirt x8
+  > 奖励: minecraft:apple
+

@@ -1,0 +1,11 @@
+type: text
+
+---
+
+**FINDING THE MINECRAFT APPLICATION FOLDER:**
+Windows: Press Win+R and type ``%%appdata%%\.minecraft`` and press Ok
+Mac OS X: In Finder, in the Go menu, select "Go to Folder" and enter ``~/Library/Application Support/minecraft``
+Linux: ``~/.minecraft`` or ``/home/<your username>/.minecraft/``
+
+**FINDING THE MINECRAFT LOGS:**
+``.minecraft\crash-reports`` or ``.minecraft\logs\latest.log``

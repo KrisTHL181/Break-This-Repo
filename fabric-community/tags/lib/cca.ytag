@@ -1,0 +1,9 @@
+type: text
+
+---
+
+Cardinal-Components-API is an api that allows mod authors to store data as NBT to various places such as world, entity, item stack, and more.
+
+https://github.com/OnyxStudios/Cardinal-Components-API
+
+Note: Fabric API's Data Attachments API can be used in place of CCA in many places.

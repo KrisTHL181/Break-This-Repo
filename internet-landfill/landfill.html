@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>互联网垃圾填埋场 — 36 件标本的价格单</title>
+<style>
+:root{--bg:#fff;--panel:#F1EFE8;--ink:#2C2C2A;--mut:#5F5E5A;--dim:#888780;
+--bd:rgba(0,0,0,.12);--grid:rgba(0,0,0,.09);--raw:#D3D1C7;--cmid:#B5D4F4;--comp:#378ADD}
+@media (prefers-color-scheme:dark){:root{--bg:#1b1b19;--panel:#262624;--ink:#F1EFE8;
+--mut:#B4B2A9;--dim:#888780;--bd:rgba(255,255,255,.14);--grid:rgba(255,255,255,.10);
+--raw:#4a4a46;--cmid:#0C447C;--comp:#85B7EB}}
+*{box-sizing:border-box}
+body{margin:0;padding:56px 24px 80px;background:var(--bg);color:var(--ink);
+font:400 15px/1.7 ui-sans-serif,system-ui,"Segoe UI",Roboto,"Noto Sans SC",sans-serif}
+main{max-width:760px;margin:0 auto}
+h1{font-size:30px;font-weight:500;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:19px;font-weight:500;margin:56px 0 4px}
+h3{font-size:15px;font-weight:500;margin:32px 0 4px}
+p{margin:10px 0;color:var(--mut)}
+p.lead{font-size:17px;color:var(--ink);margin:14px 0 0}
+strong{color:var(--ink);font-weight:500}
+code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;
+background:var(--panel);padding:2px 5px;border-radius:4px;color:var(--ink)}
+.kicker{font-size:13px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+gap:12px;margin:26px 0 0}
+.card{background:var(--panel);border-radius:10px;padding:14px 16px}
+.card .k{font-size:12px;color:var(--mut)}
+.card .v{font-size:22px;font-weight:500;margin-top:3px}
+figure{margin:22px 0;padding:18px 18px 10px;border:1px solid var(--bd);
+border-radius:12px;background:var(--bg)}
+figcaption{font-size:13px;color:var(--dim);margin-top:8px}
+table{width:100%;border-collapse:collapse;margin:18px 0;font-size:14px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--bd)}
+th{font-weight:500;color:var(--mut);font-size:13px}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+svg{display:block;width:100%;height:auto}
+.grid{stroke:var(--grid);stroke-width:1}
+.breakeven{stroke:var(--dim);stroke-width:1;stroke-dasharray:4 4;opacity:.7}
+.ax{fill:var(--dim);font-size:11px}
+.note{fill:var(--dim);font-size:11px}
+.lbl{fill:var(--ink);font-size:12px}
+.sub{fill:var(--dim);font-size:11px}
+.val{fill:var(--ink);font-size:12px;font-variant-numeric:tabular-nums}
+.raw{fill:var(--raw)}
+.cmid{fill:var(--cmid)}
+.comp{fill:var(--comp)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12px;
+color:var(--mut)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;
+margin-right:5px;vertical-align:1px}
+footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--bd);
+font-size:13px;color:var(--dim)}
+</style></head><body><main>
+
+<p class="kicker">internet-landfill</p>
+<h1>互联网垃圾填埋场</h1>
+<p class="lead">这个仓库里最小的那 40 块随机砖，每一块是 104,857,600 字节。<br>
+下面这 32 件从真实互联网捡回来的垃圾，压缩后一共 64,604 字节 ——
+是任意一块砖的 <strong>1/1,623</strong>。</p>
+
+<div class="cards">
+<div class="card"><div class="k">标本</div><div class="v">32</div></div>
+<div class="card"><div class="k">原始字节</div><div class="v">251.8 KiB</div></div>
+<div class="card"><div class="k">实付（压缩后）</div><div class="v">64,604</div></div>
+<div class="card"><div class="k">综合压缩比</div><div class="v">0.2506</div></div>
+</div>
+
+<h2>规律：垃圾越大越便宜</h2>
+<p>按体积排序后压缩比单调下降。原因不是玄学 —— gzip 的容器头加尾约 20 字节，
+与内容无关，在 noise-uuid 那 33 字节上就是 60% 的税：<code>gzip(uuid) = 53 字节 &gt; 33 字节</code>。
+压缩算法在那件事上是亏的。</p>
+<figure><svg viewBox="0 0 660 300" width="100%" role="img" aria-label="标本体积与压缩比散点图"><line x1="56" y1="260" x2="636" y2="260" class="grid"/><text x="48" y="264" class="ax" text-anchor="end">0.0</text><line x1="56" y1="190.857" x2="636" y2="190.857" class="grid"/><text x="48" y="194.857" class="ax" text-anchor="end">0.5</text><line x1="56" y1="121.714" x2="636" y2="121.714" class="grid"/><text x="48" y="125.714" class="ax" text-anchor="end">1.0</text><line x1="56" y1="52.5714" x2="636" y2="52.5714" class="grid"/><text x="48" y="56.5714" class="ax" text-anchor="end">1.5</text><line x1="56" y1="121.714" x2="636" y2="121.714" class="breakeven"/><text x="636" y="115.714" class="note" text-anchor="end">比 1.0 高 = 压缩后反而更大</text><line x1="149.541" y1="18" x2="149.541" y2="260" class="grid"/><text x="149.541" y="278" class="ax" text-anchor="middle">100 B</text><line x1="318.74" y1="18" x2="318.74" y2="260" class="grid"/><text x="318.74" y="278" class="ax" text-anchor="middle">1 KB</text><line x1="487.94" y1="18" x2="487.94" y2="260" class="grid"/><text x="487.94" y="278" class="ax" text-anchor="middle">10 KB</text><text x="346" y="296" class="ax" text-anchor="middle">原始体积（对数轴）</text><text x="16" y="139" class="ax" transform="rotate(-90 16 139)" text-anchor="middle">压缩比</text><circle cx="626.1" cy="226.3" r="4" fill="#E24B4A" fill-opacity=".82" stroke="#E24B4A" stroke-width="1"><title>error-apple-404 · 错误页 · 65536 B · 比 0.2440</title></circle><circle cx="622.2" cy="238.2" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-ads-bing · 管道文件 · 62172 B · 比 0.1579</title></circle><circle cx="598.7" cy="231.4" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-ads-cnn · 管道文件 · 45166 B · 比 0.2065</title></circle><circle cx="577.5" cy="210.9" r="4" fill="#7F77DD" fill-opacity=".82" stroke="#7F77DD" stroke-width="1"><title>filler-lipsum-page · 填充文本 · 33810 B · 比 0.3549</title></circle><circle cx="539.8" cy="226.7" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-ads-imdb · 管道文件 · 20245 B · 比 0.2410</title></circle><circle cx="457.3" cy="223.2" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-robots-google · 管道文件 · 6587 B · 比 0.2660</title></circle><circle cx="415.7" cy="188.7" r="4" fill="#7F77DD" fill-opacity=".82" stroke="#7F77DD" stroke-width="1"><title>filler-httpbin-moby · 填充文本 · 3741 B · 比 0.5156</title></circle><circle cx="391.1" cy="223.4" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-robots-bing · 管道文件 · 2676 B · 比 0.2649</title></circle><circle cx="380.8" cy="191.7" r="4" fill="#7F77DD" fill-opacity=".82" stroke="#7F77DD" stroke-width="1"><title>filler-asdfast · 填充文本 · 2328 B · 比 0.4940</title></circle><circle cx="379.0" cy="227.6" r="4" fill="#1D9E75" fill-opacity=".82" stroke="#1D9E75" stroke-width="1"><title>placeholder-todos · 占位数据 · 2271 B · 比 0.2343</title></circle><circle cx="351.8" cy="194.5" r="4" fill="#E24B4A" fill-opacity=".82" stroke="#E24B4A" stroke-width="1"><title>error-google-404 · 错误页 · 1568 B · 比 0.4739</title></circle><circle cx="349.2" cy="232.0" r="4" fill="#BA7517" fill-opacity=".82" stroke="#BA7517" stroke-width="1"><title>noise-httpbin-links · 无意义数据 · 1513 B · 比 0.2022</title></circle><circle cx="348.6" cy="205.4" r="4" fill="#1D9E75" fill-opacity=".82" stroke="#1D9E75" stroke-width="1"><title>placeholder-comments · 占位数据 · 1501 B · 比 0.3951</title></circle><circle cx="336.5" cy="224.3" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-ads-spotify · 管道文件 · 1273 B · 比 0.2584</title></circle><circle cx="331.3" cy="228.9" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-sitemap-bing · 管道文件 · 1187 B · 比 0.2249</title></circle><circle cx="328.4" cy="190.1" r="4" fill="#7F77DD" fill-opacity=".82" stroke="#7F77DD" stroke-width="1"><title>filler-bacon · 填充文本 · 1140 B · 比 0.5053</title></circle><circle cx="325.9" cy="216.7" r="4" fill="#1D9E75" fill-opacity=".82" stroke="#1D9E75" stroke-width="1"><title>placeholder-photos · 占位数据 · 1102 B · 比 0.3131</title></circle><circle cx="320.5" cy="118.6" r="4" fill="#BA7517" fill-opacity=".82" stroke="#BA7517" stroke-width="1"><title>noise-httpbin-bytes · 无意义数据 · 1024 B · 比 1.0225</title></circle><circle cx="276.0" cy="164.0" r="4" fill="#D4537E" fill-opacity=".82" stroke="#D4537E" stroke-width="1"><title>boilerplate-example-domain · 样板文本 · 559 B · 比 0.6941</title></circle><circle cx="269.3" cy="173.0" r="4" fill="#1D9E75" fill-opacity=".82" stroke="#1D9E75" stroke-width="1"><title>placeholder-users · 占位数据 · 510 B · 比 0.6294</title></circle><circle cx="236.4" cy="169.6" r="4" fill="#888780" fill-opacity=".82" stroke="#888780" stroke-width="1"><title>dead-geocities · 死链墓园 · 326 B · 比 0.6534</title></circle><circle cx="228.3" cy="163.4" r="4" fill="#1D9E75" fill-opacity=".82" stroke="#1D9E75" stroke-width="1"><title>placeholder-post · 占位数据 · 292 B · 比 0.6986</title></circle><circle cx="226.8" cy="162.3" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-humans-google · 管道文件 · 286 B · 比 0.7063</title></circle><circle cx="212.3" cy="162.9" r="4" fill="#378ADD" fill-opacity=".82" stroke="#378ADD" stroke-width="1"><title>plumbing-crossdomain-google · 管道文件 · 235 B · 比 0.7021</title></circle><circle cx="180.8" cy="157.9" r="4" fill="#E24B4A" fill-opacity=".82" stroke="#E24B4A" stroke-width="1"><title>error-httpstat-404 · 错误页 · 153 B · 比 0.7386</title></circle><circle cx="173.7" cy="124.7" r="4" fill="#888780" fill-opacity=".82" stroke="#888780" stroke-width="1"><title>dead-loripsum · 死链墓园 · 139 B · 比 0.9784</title></circle><circle cx="172.1" cy="122.7" r="4" fill="#888780" fill-opacity=".82" stroke="#888780" stroke-width="1"><title>dead-catfact-heroku · 死链墓园 · 136 B · 比 0.9926</title></circle><circle cx="142.6" cy="105.0" r="4" fill="#E24B4A" fill-opacity=".82" stroke="#E24B4A" stroke-width="1"><title>error-httpbin-404 · 错误页 · 91 B · 比 1.1209</title></circle><circle cx="142.6" cy="105.0" r="4" fill="#E24B4A" fill-opacity=".82" stroke="#E24B4A" stroke-width="1"><title>error-httpbin-503 · 错误页 · 91 B · 比 1.1209</title></circle><circle cx="141.0" cy="109.3" r="4" fill="#BA7517" fill-opacity=".82" stroke="#BA7517" stroke-width="1"><title>noise-catfact · 无意义数据 · 89 B · 比 1.0899</title></circle><circle cx="109.5" cy="78.8" r="4" fill="#D85A30" fill-opacity=".82" stroke="#D85A30" stroke-width="1"><title>corporate-bullshit · 企业黑话 · 58 B · 比 1.3103</title></circle><circle cx="68.1" cy="37.9" r="4" fill="#BA7517" fill-opacity=".82" stroke="#BA7517" stroke-width="1"><title>noise-uuid · 无意义数据 · 33 B · 比 1.6061</title></circle><text x="630" y="48" class="note" text-anchor="end">最重：error-apple-404 · 65,536 B · 比 0.2440</text><text x="630" y="66" class="note" text-anchor="end">最轻：noise-uuid · 33 B · 比 1.6061</text></svg>
+<div class="legend"><span><i style="background:#378ADD"></i>管道文件</span><span><i style="background:#E24B4A"></i>错误页</span><span><i style="background:#7F77DD"></i>填充文本</span><span><i style="background:#1D9E75"></i>占位数据</span><span><i style="background:#BA7517"></i>无意义数据</span><span><i style="background:#888780"></i>死链墓园</span><span><i style="background:#D4537E"></i>样板文本</span><span><i style="background:#D85A30"></i>企业黑话</span></div>
+<figcaption>横轴对数，纵轴为实测 gzip 比。<strong>比 1.0 高的点，压缩后反而更大。</strong></figcaption>
+</figure>
+
+<h2>同样是零信息，价格差 997 倍</h2>
+<p>同样 1 MiB、同样信息量为零：一份完全可以预测，一份完全不可预测。
+存储它们的代价分处价格表两端。</p>
+<figure><svg viewBox="0 0 660 150" width="100%" role="img" aria-label="同样 1 MiB 的两种垃圾，压缩后体积对比"><rect x="150" y="26" width="1" height="24" rx="3" fill="#1D9E75"/><text x="140" y="43" class="lbl" text-anchor="end">全是字母 a</text><text x="159" y="43" class="val">1,052 B</text><rect x="150" y="78" width="414" height="24" rx="3" fill="#E24B4A"/><text x="140" y="95" class="lbl" text-anchor="end">真随机字节</text><text x="572" y="95" class="val">1,048,628 B</text><text x="8" y="134" class="ax">原始体积两者完全相同：1,048,576 B。横轴线性，差 997 倍。</text><text x="8" y="152" class="note">上面那一条在本图比例下宽 1 像素 —— 这就是「最便宜的垃圾」的样子。</text></svg>
+<figcaption>横轴线性。上面那条绿条按真实比例宽 1 像素。</figcaption>
+</figure>
+
+<h2>这个仓库自己的账本</h2>
+<p>上一轮量过：工作树 <strong>25.45 GiB</strong>，而 GitHub 报的 <code>size</code> 是
+<strong>15.09 GiB</strong> —— 差 5.3 倍。这一轮多问了一句：这里面有多少压得掉？</p>
+<figure><svg viewBox="0 0 660 388" width="100%" role="img" aria-label="各桶原始体积与压缩后体积对比"><text x="200" y="41" class="lbl" text-anchor="end">novel/ 网络小说正文</text><text x="200" y="57" class="sub" text-anchor="end">11.49 GiB · 45.16%</text><rect x="210" y="30" width="372" height="13" rx="2" class="raw"/><rect x="210" y="49" width="148.093" height="13" rx="2" class="comp"/><text x="590" y="60" class="val">0.3981</text><text x="200" y="99" class="lbl" text-anchor="end">人工随机数据（40×100 MiB）</text><text x="200" y="115" class="sub" text-anchor="end">3.91 GiB · 15.35%</text><rect x="210" y="88" width="126.445" height="13" rx="2" class="raw"/><rect x="210" y="107" width="126.445" height="13" rx="2" class="comp"/><text x="590" y="118" class="val">1.0000</text><text x="200" y="157" class="lbl" text-anchor="end">rust-corpus/ Rust 源码</text><text x="200" y="173" class="sub" text-anchor="end">2.98 GiB · 11.70%</text><rect x="210" y="146" width="96.3762" height="13" rx="2" class="raw"/><rect x="210" y="165" width="23.0532" height="13" rx="2" class="comp"/><text x="590" y="176" class="val">0.2392</text><text x="200" y="215" class="lbl" text-anchor="end">未测的其余 188 项</text><text x="200" y="231" class="sub" text-anchor="end">2.65 GiB · 10.41%</text><rect x="210" y="204" width="85.7332" height="13" rx="2" class="raw"/><rect x="210" y="223" width="85.7332" height="13" rx="2" class="cmid"/><rect x="210" y="223" width="21.4333" height="13" rx="2" class="comp"/><text x="590" y="234" class="val">0.25–1.00</text><text x="200" y="273" class="lbl" text-anchor="end">dotnet/ 源码与产物</text><text x="200" y="289" class="sub" text-anchor="end">2.60 GiB · 10.23%</text><rect x="210" y="262" width="84.2591" height="13" rx="2" class="raw"/><rect x="210" y="281" width="17.8039" height="13" rx="2" class="comp"/><text x="590" y="292" class="val">0.2113</text><text x="200" y="331" class="lbl" text-anchor="end">已压缩媒体（3 个目录）</text><text x="200" y="347" class="sub" text-anchor="end">1.82 GiB · 7.16%</text><rect x="210" y="320" width="58.9413" height="13" rx="2" class="raw"/><rect x="210" y="339" width="58.9413" height="13" rx="2" class="comp"/><text x="590" y="350" class="val">1.0000</text><text x="210" y="380" class="ax">细条＝压缩后。未抽样的那一条给出区间而非点估计。</text></svg>
+<figcaption>粗条＝原始体积，细条＝压缩后。未抽样的桶给出区间。</figcaption>
+</figure>
+
+<table>
+<tr><th>桶</th><th class="n">原始</th><th class="n">占工作树</th>
+<th class="n">压缩比</th><th class="n">压缩后</th><th>依据</th></tr>
+<tr><td>novel/ 网络小说正文</td><td class='n'>11.49 GiB</td><td class='n'>45.16%</td><td class='n'>0.3981</td><td class='n'>4.58 GiB</td><td>measured</td></tr><tr><td>人工随机数据（000.RANDOM.FILES/ + Break-This-Repo/ 的 40 个 100 MiB 文件）</td><td class='n'>3.91 GiB</td><td class='n'>15.35%</td><td class='n'>1.0</td><td class='n'>3.91 GiB</td><td>measured</td></tr><tr><td>rust-corpus/ Rust 源码</td><td class='n'>2.98 GiB</td><td class='n'>11.70%</td><td class='n'>0.2392</td><td class='n'>729.3 MiB</td><td>measured</td></tr><tr><td>未测的其余 188 项根条目</td><td class='n'>2.65 GiB</td><td class='n'>10.41%</td><td class='n'>0.25–1.00</td><td class='n'>678.0 MiB–2.65 GiB</td><td>EXTRAPOLATED —— 未抽样。取 [文本比, 完全不可压] 作为上下界</td></tr><tr><td>dotnet/ .NET 源码与产物</td><td class='n'>2.60 GiB</td><td class='n'>10.23%</td><td class='n'>0.2113</td><td class='n'>563.2 MiB</td><td>measured</td></tr><tr><td>已压缩媒体（琵琶曲/ + wallpapers/ + 彼方的他Aliya/）</td><td class='n'>1.82 GiB</td><td class='n'>7.16%</td><td class='n'>1.0</td><td class='n'>1.82 GiB</td><td>measured</td></tr>
+</table>
+
+<p><strong>25.45 GiB → 约 12.23 GiB–14.21 GiB，回收 44%–52%。</strong></p>
+<p>但真正要紧的是另一行：压缩不掉的部分（人工随机数据 3.91 GiB + 已压缩媒体 1.82 GiB）
+合计 <strong>5.73 GiB</strong> —— 只占原始体积的 <strong>22.5%</strong>，
+却吃掉压缩后体积的 <strong>47%–40%</strong>。</p>
+<p>如果只删掉那 40 个 100 MiB 随机文件：原始体积减少 <strong>15.3%</strong>，
+而压缩后体积减少 <strong>32%–27%</strong>。
+<strong>删掉 15% 的体积，换来三成的真实代价。</strong></p>
+
+<h2>标本明细</h2>
+<table>
+<tr><th>分类</th><th class="n">件数</th><th class="n">原始字节</th>
+<th class="n">压缩后</th><th class="n">压缩比</th></tr>
+<tr><td>对照</td><td class='n'>4</td><td class='n'>1,051,608</td><td class='n'>1,234</td><td class='n'>0.0012</td></tr><tr><td>管道文件</td><td class='n'>9</td><td class='n'>139,827</td><td class='n'>27,449</td><td class='n'>0.1963</td></tr><tr><td>错误页</td><td class='n'>5</td><td class='n'>67,439</td><td class='n'>17,054</td><td class='n'>0.2529</td></tr><tr><td>填充文本</td><td class='n'>4</td><td class='n'>41,019</td><td class='n'>15,655</td><td class='n'>0.3817</td></tr><tr><td>占位数据</td><td class='n'>5</td><td class='n'>5,676</td><td class='n'>1,995</td><td class='n'>0.3515</td></tr><tr><td>无意义数据</td><td class='n'>4</td><td class='n'>2,659</td><td class='n'>1,503</td><td class='n'>0.5653</td></tr><tr><td>死链墓园</td><td class='n'>3</td><td class='n'>601</td><td class='n'>484</td><td class='n'>0.8053</td></tr><tr><td>样板文本</td><td class='n'>1</td><td class='n'>559</td><td class='n'>388</td><td class='n'>0.6941</td></tr><tr><td>企业黑话</td><td class='n'>1</td><td class='n'>58</td><td class='n'>76</td><td class='n'>1.3103</td></tr>
+<tr><td><strong>合计</strong></td><td class="n"><strong>32</strong></td>
+<td class="n"><strong>257,838</strong></td><td class="n"><strong>64,604</strong></td>
+<td class="n"><strong>0.2506</strong></td></tr>
+</table>
+
+<footer>采集于 2026-09-22。仓库 HEAD <code>181c7e49f2</code>。
+每件标本的来源 URL 与抓取时刻见 <code>manifest.json</code>；
+仓库侧账本的依据见 <code>ledger.json</code>。
+全部为只读 API 访问，未 clone，未下载任何 100 MiB 级文件。</footer>
+
+</main></body></html>

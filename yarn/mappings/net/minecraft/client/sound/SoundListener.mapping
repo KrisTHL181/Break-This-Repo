@@ -1,0 +1,6 @@
+CLASS net/minecraft/class_4227 net/minecraft/client/sound/SoundListener
+	FIELD field_47670 transform Lnet/minecraft/class_9054;
+	METHOD method_19673 init ()V
+	METHOD method_55584 setTransform (Lnet/minecraft/class_9054;)V
+		ARG 1 transform
+	METHOD method_55585 getTransform ()Lnet/minecraft/class_9054;

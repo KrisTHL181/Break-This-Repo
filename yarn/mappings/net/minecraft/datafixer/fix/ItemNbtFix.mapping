@@ -1,0 +1,15 @@
+CLASS net/minecraft/class_7505 net/minecraft/datafixer/fix/ItemNbtFix
+	FIELD field_39403 name Ljava/lang/String;
+	FIELD field_39404 itemIdPredicate Ljava/util/function/Predicate;
+	METHOD <init> (Lcom/mojang/datafixers/schemas/Schema;Ljava/lang/String;Ljava/util/function/Predicate;)V
+		ARG 1 outputSchema
+		ARG 2 name
+		ARG 3 itemIdPredicate
+	METHOD method_56970 (Lcom/mojang/datafixers/OpticFinder;Ljava/util/function/Predicate;Lcom/mojang/datafixers/OpticFinder;Ljava/util/function/UnaryOperator;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
+		ARG 4 itemStackTyped
+	METHOD method_56971 fixNbt (Lcom/mojang/datafixers/types/Type;Ljava/util/function/Predicate;Ljava/util/function/UnaryOperator;)Ljava/util/function/UnaryOperator;
+		ARG 0 itemStackType
+		ARG 1 itemIdPredicate
+		ARG 2 nbtFixer
+	METHOD method_66067 fix (Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
+		ARG 1 typed

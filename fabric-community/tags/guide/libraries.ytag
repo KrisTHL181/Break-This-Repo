@@ -1,0 +1,61 @@
+type: embed
+
+colour: black
+embed:
+    title: Non-Mod Dependencies and You
+
+    fields:
+        - name: Wait, huh?
+          inline: false
+          value: |
+            Sometimes you want to add a library that is _not_ a Fabric mod. There are 2 ways to do this:
+            * Using `include`
+            * Using `shadow`
+
+        - name: What's `include`?
+          inline: false
+          value: |
+            `include` allows you to simply package the library JAR into your own mod file.
+            Using `include` is very simple, just add this to your `build.gradle` file:```gradle
+            dependencies {
+                include "org.example:library:1.0.0"
+            }```Note that if two mods both `include` the same library, the two copies might conflict.
+
+        - name: ...and what's `shadow`?
+          inline: false
+          value: |
+            `shadow` allows you to package a _local relocated copy_ of the library into your mod,
+            which means that your copy of the library won't conflict with another mod's `shadow`ed (or even `include`d) copy of said library.
+            Using `shadow` with Loom, Fabric's Gradle plugin, is a four-step process:
+            First, add the `shadow` plugin to your `build.gradle` file, as such:```gradle
+            plugins {
+                id 'com.github.johnrengelman.shadow' version '6.1.0'
+            }
+            ```Then, `shadow` your library:```gradle
+            dependencies {
+                shadow "org.example:library:1.0.0"
+            }
+            ```Then, to configure relocation:```gradle
+            shadowJar {
+                relocate "library.original.root.package" "library.new.root.package"
+            }
+            ```It's recommended to make the `"library.new.root.package"` a subpackage of your mod for clarity.
+            If your mod's root package is `"modmaker.coolmod"`, it'd be a good idea to relocate your library to `"modmaker.coolmod.shadowed.library"`.
+            Finally, to integrate it all with Loom, add this funky code:```gradle
+            remapJar {
+              input = tasks.shadowJar.outputs.first()
+            }
+            tasks.remapJar.dependsOn tasks.shadowJar
+            ````shadow` will now automagically relocate that library to its new local spot, and will make your code point to said local spot!
+            `shadow` can also do a bunch of other cool things! More information can be found here: https://imperceptiblethoughts.com/shadow/introduction/
+            
+        - name: So... which one should I use?
+          inline: false
+          value: |
+            While both of these methods work perfectly well, using `shadow` with relocation is the recommended method
+            due to a lesser chance of conflicts caused by two mods including the same library.
+
+---
+
+Want to add some cool Java library you found to your Fabric mod?
+No problem, just read on!

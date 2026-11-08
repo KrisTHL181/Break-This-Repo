@@ -1,0 +1,328 @@
+# 任务线: Storing and Transforming EU
+### [664] 16 Slot LV Battery Buffer
+Upgrade your battery buffer to hold 16 batteries for primary storage.  You can use different buffers - probably with fewer batteries - for your EBF, Thermal Centrifuge, and so on.
+  - [提交] gregtech:gt.blockmachines:191
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinTechnicianI x3
+
+### [-6434507911289406845] §6§lAt last, the final capacitor!
+This is the last capacitor so we can't get much higher unfortunately.
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:10
+
+### [619] Battery Buffer
+Batteries work pretty much the same in a battery buffer as in a regular machine's battery slot. Battery buffers are used to buffer power to stabilize output.  They come in different sizes: 1, 4, 9(!) and 16 slots. They can draw 2A and output 1A per battery inserted - watch your wire amperage! Cables come in 1x, 2x, 4x, 8x, 12x, and 16x, with tin transferring 1A per size. Make sure not to mess up, or your cable will melt, becoming a fire, and possibly an explosion.  Remember that there's loss when outputting EU from any GT machine, so putting 4 4-slot ones in a row loses 8 power compared to 2 from 1 16-slot one. And this is for every amp too.  [note]You can import batteries into one, but ONLY empty acid batteries can be exported from one. No, you can't get around this.[/note]
+  - [提交] gregtech:gt.blockmachines:171
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinTechnicianI x3
+
+### [-6876851311040355991] Can we get much higher?
+With the EU transfer rates!
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:9
+
+### [-8483351188359370115] Energized Wireless Dynamo Hatch
+The §5§lEnergized Wireless Dynamo Hatch§r acts just as you may expect; it will inject EU directly from an energy-producing multiblock into your wireless EU network. No need for those pesky laser conduits and LSC middlemen!  [warn]The dynamo transfer rate is the same as the laser source it's crafted with: §l65kA UMV§r. Also has a very large internal storage and will transfer to the wireless network every 100s.[/warn]  [note]Great for §lDyson§r & §lLarge Naquadah Reactor§r.[/note]
+  - [提交] gregtech:gt.blockmachines:15040
+
+### [2049] Energy Buffers
+Your research into energy has led you to energy buffers - a single block that can store enormous amounts, and is also portable. Better than a battery, these devices can be configured to output 1-16A. Using a high-amp transformer, that means you can up tier 2 tiers with these devices. This HV energy buffer can power an HV machine for several hours, or an EV machine for almost an hour. Perfect for mining operations in far off dimensions.
+  - [提交] gregtech:gt.blockmachines:773
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [789] Energy Crystals
+Make energium out of ruby and redstone dusts in the MV mixer. Then use the autoclave to make Energy Crystals. Energy crystals can store 1 million EU and work as an HV battery.
+  - [可选提交] IC2:itemDust2:2 x36
+  - [提交] IC2:itemBatCrystal:26 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2148] Engraved Lapotrons
+IV tier batteries require a large investment. First, you will need to laser engrave 8 Lapotrons.
+  - [可选提交] IC2:itemBatLamaCrystal:26 x8
+  - [提交] gregtech:gt.metaitem.01:32714 x24
+  > 奖励: gregtech:gt.metaitem.01:32714 x8
+
+### [1418] EU packets flowing everywhere...
+...in my dreams. What if instead of having battery packs on every generator, we could centralize all the generation in one location? Put it away from the well traveled parts of the base? Out in the country somewhere? Let the animals deal with the pollution. Anyways, let's start working on a Power Sub-Station to store EU and deliver it to our base.
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:7 x19
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:8 x80
+  - [提交] gregtech:gt.blockmachines:812
+  - [可选提交] gregtech:gt.blockmachines:34, gregtech:gt.blockmachines:44
+  - [可选提交] miscutils:bookGT:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-8290416396327675508] EV 16A Hatches
+These ones can extract and insert 16A.
+  - [提交] gregtech:gt.blockmachines:15119, gregtech:gt.blockmachines:15219
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [-6671981679462427921] EV 4A Hatches
+To insert and extract many amps from your LSC, make these special hatches.  Some multiblocks can also accept multi-amp hatches.
+  - [提交] gregtech:gt.blockmachines:15109, gregtech:gt.blockmachines:15209
+  > 奖励: dreamcraft:CoinTechnicianII x2
+
+### [-6359478362695243961] EV 64A Hatches
+You get the idea, these ones do 64A!
+  - [提交] gregtech:gt.blockmachines:15129, gregtech:gt.blockmachines:15229
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [1262] EV Battery Buffer
+It's EV, OK?  [note]Make one of these.[/note]
+  - [提交] gregtech:gt.blockmachines:164, gregtech:gt.blockmachines:174, gregtech:gt.blockmachines:184, gregtech:gt.blockmachines:194
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1265] EV GT++ Batteries
+Want cheaper EV batteries? Mash your old ones together, and somehow it works!
+  - [可选提交] gregtech:gt.metaitem.01:32538 x4, IC2:itemPartCircuitAdv x2 (ore:circuitAdvanced), gregtech:gt.blockmachines:23, gregtech:gt.blockmachines:1428 x2
+  - [提交] miscutils:MU-metaitem.01:32054
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1264] EV Sunnarium Battery
+Small Sunnarium batteries are EV tier. Some might think they're cheaper than Lapotrons, but it depends on Sunnarium. And they hold less energy.
+  - [可选提交] gregtech:gt.metaitem.01:32503
+  - [可选提交] gregtech:gt.metaitem.01:2318 x4
+  - [提交] gregtech:gt.metaitem.01:32540
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [3295] Extremely Ultimate and Ultimately Extreme
+An even more expensive capacitor but it has the same storage? You are reading that right. But it has much faster transfer rates to your wireless power network!
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:8
+
+### [2972] Gotta Pump It Up
+If you made it this far you may have already noticed that you cannot pour vanilla water into the dam. That's what a HydroEnergy Pump is for. This multi-block exists in multiple tiers and will allow you to reach higher water levels (= more energy capacity). Provide the pump with vanilla water as input and pipe the fluid output into the dam. Then the dam will slowly fill up. If the dam is full or full for a pump's voltage tier, it will void the water and energy.  That's all folks! Nothing too fancy here.
+  - [提交] gregtech:gt.blockmachines:17003
+  - [可选提交] gregtech:gt.blockmachines:51, gregtech:gt.blockmachines:61, gregtech:gt.blockmachines:90, gregtech:gt.blockmachines:42
+  - [可选提交] gregtech:gt.blockcasings2:1 x21
+  - [可选提交] structurelib:item.structurelib.constructableTrigger
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1144] HV Battery
+Better machines need some better batteries. Lithium is the best material to use when making batteries, at least for LV-HV.  [note]You only need four batteries of one listed type.[/note]
+  - [提交] gregtech:gt.metaitem.01:32539 x4, gregtech:gt.metaitem.01:32538 x4
+  > 奖励: gregtech:gt.metaitem.01:17315 x16 | enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5
+
+### [1142] HV Battery Buffers
+You'll probably want HV battery buffers as well.  [note]You only need to make one of these.[/note]
+  - [提交] gregtech:gt.blockmachines:163, gregtech:gt.blockmachines:173, gregtech:gt.blockmachines:183, gregtech:gt.blockmachines:193
+  > 奖励: gregtech:gt.metaitem.01:11306 x8 | enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5
+
+### [1143] HV Battery Hulls
+Better machines need better batteries. Let's make some HV battery hulls for new batteries.  It's up to you what kind of battery to make, but realistically you'll probably make Sodium or Lithium.
+  - [提交] gregtech:gt.metaitem.01:32502 x4
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5
+
+### [2971] Infinite Energy Storage
+You shouldn't click on links from strangers! Although this sounds like clickbait it is true. From a certain point of view.  Use the (potential) force! And store energy that way. Simply construct a dam and flood vast areas with water. You may add energy to your storage by pumping more water into it or just drain it back into energy whenever you need. This works especially well with fluctuating energy sources like wind, water, and solar. Or you dump excess energy into it so you can use it another time. The capacity is huge and the choice is yours.  Sounds great! But...? - Indeed. There is a catch: Pumps and Turbines will have efficiency correlated loss. Still interested? Let's get to crafting!  The multi-block has an unusual shape: the back is open. The lake will spawn inside the multi-block and spread block-by-block as far as it can/is allowed. It will replace plants like water (make sure to secure your Crops!) but not replace any solid blocks. Additionally, you can specify limits in any direction. The water will NEVER spread past these limits. You can set those limits in a second GUI by right-clicking the controller with a screwdriver.  When you enter a limit, it will correct itself to the nearest valid setting. Especially if you try to spread past the server limits. You may talk your admin into raising these limits (these limits are designed to limit griefing). Further, water is not able to spread into foreign towns. You will also find 3 magical buttons in the top-right of this GUI. From left to right: The first will slowly despawn the lake blocks. You can use this to shrink the lake if it spread past a barrier for example. The multi-block will also initialize with this configuration so there is no accidental flooding. The second and third buttons will slowly spawn more lake blocks. Additionally, the second button will render those lake blocks pink so you see where they are so you may plug holes and such. In this "debug" mode you can walk/breathe/act in the lake like in air. This should make it easy to create a sunken village for decoration purposes. The third button is for normal operations so you can see the water and enjoy a swim in your energy buffer.  Of course, there is also a normal GUI (simple right-click). It shows you the energy stored in the dam. To reach higher water levels you are required to use stronger pumps. For this purpose, you may configure the voltage tier of the GUI with a circuit in the circuit slot. Don't worry: It is only optical. You cannot void any energy if you set a low voltage tier. It is only for the player information. You may give it a try with the reward you earn...  If you have any further questions, find missing information, or have suggestions please do not hesitate to post on the official GT New Horizons Discord. Please add '@SinTh0r4s' to your post to make sure I'll see it.  [warn]A warning though: there have been a lot of mentions of bugs and even world corruptions caused by the Hydro Dam. Use at your own risk. If you have more detailed information, please report these problems on the GTNH GitHub.[/warn]
+  - [提交] gregtech:gt.blockmachines:17000
+  - [可选提交] gregtech:gt.blockmachines:51, gregtech:gt.blockmachines:61
+  - [可选提交] gregtech:gt.blockconcretes:8 x89
+  - [可选提交] structurelib:item.structurelib.constructableTrigger
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [-5394963145209394286] IV 16A Hatches
+These ones do 16A.
+  - [提交] gregtech:gt.blockmachines:15110, gregtech:gt.blockmachines:15210
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-4811681098047879827] IV 4A Hatches
+Same as the EV Multi-amp hatches, use these to extract and insert many amps from your LSC.
+  - [提交] gregtech:gt.blockmachines:15100, gregtech:gt.blockmachines:15200
+  > 奖励: dreamcraft:CoinTechnicianIII
+
+### [-7768747276085375941] IV 64A Hatches
+The final multi-amp hatches for IV, 64A!
+  - [提交] gregtech:gt.blockmachines:15120, gregtech:gt.blockmachines:15220
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [806] Lapotron Crystal
+With your new HV mixer you can make lapotron dust. Place it in an autoclave to make some raw lapotron crystals. With an EV assembler and advanced circuits you can make lapotron crystals which store up to 10 million EU.
+  - [可选提交] dreamcraft:LapotronDust x120
+  - [可选提交] IC2:itemPartCircuitAdv x8 (ore:circuitAdvanced), dreamcraft:RawLapotronCrystal x4
+  - [提交] IC2:itemBatLamaCrystal:26 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII | dreamcraft:CoinTechnicianII
+
+### [2734] Lapotronic Capacitor (ZPM)
+It holds more than the previous tier, other than that there is no difference. Your LSC can hold between 540B and 8.1T EU with these.  [note]Requires EV-tier Glass.[/note]
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:3
+
+### [2733] Lapotronic Capacitor (LuV)
+It holds more than the previous tier, other than that there is no difference. Your LSC can hold between 54B and 810B EU with these.
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:2
+
+### [2735] Lapotronic Capacitor (UV)
+It holds more than the previous tier, other than that there is no difference. Your LSC can hold between 5.4T and 81T EU with these.  [note]Requires IV-tier Glass.[/note]
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:4
+
+### [2894] Lapotronic Capacitor (IV)
+It holds more than the previous tier, other than that there is no difference. Your LSC can hold between 5.4B and 81B EU with these.
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:1
+
+### [1820] Lapotronic Energy Storage Unit
+The L.E.S.U. is one of the oldest machines still available in GregTech. Its origins are in Minecraft 1.3.X but has been redone to fit into this modpack. You can add a nearly infinite number of LESU casings to it and you'll have a huge Energy Storage. You might also live inside your Battery.  [note]PS: It sucks, don't make it. Maybe somebody will rework or buff it some day.[/note]
+  - [提交] gregtech:gt.blockmachines:12600
+  > 奖励: dreamcraft:CoinTechnicianII x2 | gregtech:gt.integrated_circuit x4 | bq_standard:choice
+
+### [2149] Lapotronic Energy Orb
+The Lapotronic Energy Orb is the IV tier battery item. It can store 100M EU.
+  - [可选提交] gregtech:gt.metaitem.03:32103, gregtech:gt.metaitem.03:32051 x4, gregtech:gt.metaitem.01:32714 x24, gregtech:gt.metaitem.03:32055 x2, gregtech:gt.metaitem.02:19085 x16, gregtech:gt.metaitem.01:17085 x8
+  - [提交] gregtech:gt.metaitem.01:32597
+  > 奖励: gregtech:gt.metaitem.03:32103 x16
+
+### [1828] L.E.S.U. Upgrade - EV Tier
+Close to 8 Stacks of LESU Casings, this upgrade enables EV Voltage on your LESU. It's easy until now.
+  - [提交] bartworks:GT_LESU_CASING x477
+  > 奖励: enhancedlootbags:lootbag:7 | ThaumicHorizons:focusIllumination:12 | dreamcraft:CoinTechnicianIII
+
+### [1827] L.E.S.U. Upgrade - HV Tier
+The HV Tier upgrade first needs over a Stack of Casings. More Casings, more Energy, more Capacity.
+  - [提交] bartworks:GT_LESU_CASING x96
+  > 奖励: enhancedlootbags:lootbag:6 | gregtech:gt.metaitem.01:32438 | gregtech:gt.metaitem.01:17526 | dreamcraft:CoinTechnicianII
+
+### [1829] L.E.S.U. Upgrade - IV Tier
+24 Stacks of LESU Casings. These do fit in your Inventory, but crafting them is another problem.  [note]If you don't want to clear out your inventory, just check the box when you have enough.[/note]
+  - [可选提交] bartworks:GT_LESU_CASING x1536
+  - [勾选确认]
+  > 奖励: minecraft:lapis_block x64
+
+### [1830] L.E.S.U. Upgrade - LuV Tier
+To reach the highest Voltage Tier the LESU can offer, you need to add an additional amount of LESU Casings. 8193 Casings in total (all upgrades below and these additional) enable the LuV Input Voltage.  [note]I mean you could do that, but maybe just check the box once your autocrafting is done.[/note]
+  - [可选提交] bartworks:GT_LESU_CASING x6144
+  - [勾选确认]
+  > 奖励: Avaritia:Singularity:2
+
+### [1825] L.E.S.U. Upgrade - LV Tier
+Adding this many Cells anywhere to your LESU will upgrade it from ULV to LV.
+  - [提交] bartworks:GT_LESU_CASING x8
+  > 奖励: IC2:itemDustSmall:9 | dreamcraft:CoinTechnician | enhancedlootbags:lootbag:4 | IC2:itemToolPainterBlue
+
+### [1826] L.E.S.U. Upgrade - MV Tier
+Adding an additional amount of Cells will not only cause your storage capacity to rise, but also will enable MV Voltage.
+  - [提交] bartworks:GT_LESU_CASING x24
+  > 奖励: adventurebackpack:adventureBackpack:12 | minecraft:dye:4 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnicianI
+
+### [2973] Let it flow, let it floww ...
+... can't hold it back anymore. It is time to collect the rewards of your hard work. Connect the fluid output hatch from the dam to the fluid input hatch of this turbine and finally enjoy the power! You can pause this multiblock if you cut the fluid input or use a machine controller. Oh, and you will get your water back in the fluid output hatch.  Congratulations to making it this far! Enjoy your ginormous energy buffer!  If you have any further questions, missing information or suggestions please do not hesitate to post on the official GT New Horizons Discord. Please add '@SinTh0r4s' to your post to make sure I'll see it.
+  - [提交] gregtech:gt.blockmachines:17019
+  - [可选提交] gregtech:gt.blockmachines:51, gregtech:gt.blockmachines:61, gregtech:gt.blockmachines:90, gregtech:gt.blockmachines:32
+  - [可选提交] gregtech:gt.blockcasings2:1 x21
+  - [可选提交] structurelib:item.structurelib.constructableTrigger
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [1269] Low Voltage Power Transformer
+If you need even more amps then craft a power transformer. This one is 16A -> 64A. The soft mallet is still how you change modes.
+  - [提交] gregtech:gt.blockmachines:12001
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1266] Low Voltage Transformer
+It is possible to run MV machines while still in LV - build a transformer and use 4 power sources 32 EU/t to power one 128 EU/t machine.  It transforms power up or down, depending on the mode, which you can switch with a soft mallet. Step-up means 4A LV in, 1A MV out, while step-down means the reverse.  Make sure you understand the following if you prefer your base not being a crater: A step-down mode is the default one. In this mode, the large dot is the input. In a step-up mode, it's the output. Do not mix it up. LV machines that receive MV power will explode.  If the transformer is connected to power, or was in the past, then do not change the mode with stuff connected. It's better to break and place it again to get rid of the stored power rather than rotate it with the wrench and blow things up. Make sure to also disconnect the nearby wires with a wire cutter.  As a reminder, machines don't blow up if they are given more amps than they can consume. They blow up from higher voltage tier.
+  - [提交] gregtech:gt.blockmachines:21
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinTechnicianI x3
+
+### [2700] LSC = MC^2
+This is the final upgrade to the LSC when it comes to storage. You can use either the Ultimate or Really Ultimate batteries to craft it, it costs about the same either way.
+  - [提交] kekztech:kekztech_lapotronicenergyunit_block:5
+
+### [1268] LV High-Amp Transformer
+If you need a transformer with more than 4A you need a high amp transformer. You can input 4A MV and output 16A LV. Useful for running lots of LV machines. Its mode can be changed with a soft mallet, just like before.
+  - [提交] gregtech:gt.blockmachines:878
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1822] Manual Transformer
+Annoyed by building chains of transformers? Don't want an Explosion Risk at your base? Want to use these fancy 64A Hatches and Dynamos from TecTech to convert your power? Make a Manual Dynamo and convert it all!  Hatches placed must be touching a Transformer-Winding block, with dynamo hatches being on the top and energy hatches being on the bottom. The height of the Transformer-Winding blocks can be optionally extended up to 8 blocks.  [note]Also needs a muffler, energy hatch, and dynamo. Not guaranteed to work, wishing you all the best though.[/note]
+  - [可选提交] bartworks:BW_Machinery_Casings, bartworks:BW_Machinery_Casings:1 x8, gregtech:gt.blockmachines:90, gregtech:gt.blockcasings:2 x13
+  - [提交] gregtech:gt.blockmachines:12697
+  > 奖励: dreamcraft:CoinTechnicianII x2 | enhancedlootbags:lootbag:7 x2
+
+### [1267] Medium Voltage Transformer
+These work the same as the LV ones, but 1 tier higher.
+  - [提交] gregtech:gt.blockmachines:22
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1924] More Than 4 Amps? Crazy!
+For the truly insane, there is a 16 to 64 A power amp transformer. Just ludicrous!
+  - [提交] gregtech:gt.blockmachines:12003
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII
+
+### [1083] MV Batteries
+Better machines need some better batteries. Lithium is the best material to use when making batteries.  [note]You only need four batteries of one listed type.[/note]
+  - [提交] gregtech:gt.metaitem.01:32529 x4, gregtech:gt.metaitem.01:32528 x4
+  > 奖励: gregtech:gt.metaitem.01:17315 x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1082] MV Battery Buffers
+You'll probably want MV battery buffers as well.  [note]You only need to make one of these battery buffers.[/note]
+  - [提交] gregtech:gt.blockmachines:162, gregtech:gt.blockmachines:172, gregtech:gt.blockmachines:182, gregtech:gt.blockmachines:192
+  > 奖励: gregtech:gt.metaitem.01:11019 x8 | enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [758] MV Battery Hulls
+Better machines need better batteries. Let's make some MV battery hulls for new batteries.  It's up to you what kind of battery to make, but realistically you'll probably make Sodium or Lithium.
+  - [提交] gregtech:gt.metaitem.01:32501 x4
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [1923] Not Enough Amps?
+How about 4x more? A Hi-Amp transformer will transform 4A to 16A. Great for setting up a large power grid and locating polluting power generators further from your base.
+  - [提交] gregtech:gt.blockmachines:880
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianII
+
+### [2150] One BILLION EU
+If you want a stationary battery, you can make an AFSU capable of storing up to 1 billion EU and charging items. You can pick it up with a wrench, but you'll lose a percentage of the stored EU. Make sure you right-click, not left-click. Left-clicking will cause it to lose all stored EU.  As an alternative, if you can afford them, try the GT++ Energy Buffers. They are more expensive and cannot charge items, but store more, don't lose any EU, and can be configured from 1-16A.  [note]These can apparently draw infinite amps, so maybe use a diode or something if you like having the power on.[/note]
+  - [可选提交] AFSU:ALC
+  - [提交] AFSU:AFSU
+  > 奖励: IC2:itemBatLamaCrystal:26 x4
+
+### [-5284198952195300317] Power Goggles
+Wanna see how your LSC is doing but don't want to run to it or your information panel every time? Get yourself a pair of §6§oPower Goggles§r to see your energy storage straight from the HUD!  By §adefault§r the goggles are §cunlinked§r and will monitor the amount of energy in your wireless network.  To link the goggles to an LSC, §cRight+Click§r the controller with the goggles in your hand. §cShift+Right Click§r air to unlink.  If you wish to move or modify the display you can do so by opening the power goggles config menu!  [warn]Make sure to check your keybinds! There's also a keybind for toggling the power chart!  Or, if you don't wanna deal with that, you can use the /powergoggles command[/warn]
+  - [提交] gregtech:gt.Power_Goggles
+
+### [614] Reusable Battery: Cadmium
+This is the Cadmium one.
+  - [提交] gregtech:gt.metaitem.01:32517
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x15 | dreamcraft:CoinTechnician x15
+
+### [615] Reusable Battery: Lithium
+...and the Lithium one.  [note]Lithium is the one that stores the most EU of the 3 rechargeable batteries.[/note]
+  - [提交] gregtech:gt.metaitem.01:32518
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x3 | dreamcraft:CoinTechnicianI x3
+
+### [613] Reusable Battery: Sodium
+Sodium, cadmium, and lithium batteries are rechargeable batteries. They're crafted without stored energy, but can be charged in any gregtech machine. If unneeded, they can be placed in an extractor and converted back into small battery hulls, but their contents are lost.  If placed in a machine, it will fill up if there's excess power, and drain if the machine can't get enough. Handy for high-EU machines you don't want to choke.  [note]Sodium is the one that stores the least EU of the 3 rechargeable batteries, but is definitely the easiest to get.[/note]
+  - [提交] gregtech:gt.metaitem.01:32519
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x15 | dreamcraft:CoinTechnician x15
+
+### [611] Single Use Battery: Mercury
+Mercury and acid batteries are single-use batteries. They are crafted fully charged but cannot be re-charged. Once their stored energy is depleted, they can be placed in an extractor to be converted back into small battery hulls.
+  - [提交] gregtech:gt.metaitem.01:32511
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x15 | dreamcraft:CoinTechnician x15
+
+### [612] Single Use Battery: Acid
+Mercury and acid Batteries are single-use batteries. They are crafted fully charged but cannot be re-charged. Once their stored energy is depleted, they can be placed in an extractor to be converted back into small battery hulls.
+  - [提交] gregtech:gt.metaitem.01:32510
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x15 | dreamcraft:CoinTechnician x15
+
+### [2586] Storage of the Gods
+Who needs a PSS when this bad boy holds over 600,000x as much.
+  - [提交] gregtech:gt.metaitem.01:32605
+
+### [2732] Take charge!
+The Lapotronic Supercapacitor is your best option for massive power storage.  It can have maintenance issues which increase its power loss by 20% more each, so try not to let that slide. Though at most it's still only 2.2%  For the first, smallest one, you'll need the following, plus an Energy Hatch and a Dynamo. Remember that you can get your Lapos back if you run the capacitor through an unpackager. Finally a reason to make one!  You can use Laser Hatches, that can output very high amperage. You need at least UV Glass to use them.  Your LSC can hold between 300 MEU and 25.38 GEU using only the EV capacitors. Remember that you need more than half the blocks to be non-empty capacitors for it to be valid.
+  - [可选提交] bartworks:BW_TieredGlass x41, kekztech:kekztech_lapotronicenergyunit_block x46, gregtech:gt.blockmachines:90
+  - [可选提交] kekztech:kekztech_lapotronicenergyunit_block:7 x5, kekztech:kekztech_lapotronicenergyunit_block:6 x4
+  - [提交] gregtech:gt.blockmachines:13106
+  > 奖励: enhancedlootbags:lootbag:8 | gregtech:gt.metaitem.01:32714 x15 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1922] Transformers, Roll Out!
+When you get to HV you'll want to start thinking about centralizing power generation and delivering power over longer distances. An HV to EV transformer will let you send power across your base without too much penalty.
+  - [提交] gregtech:gt.blockmachines:23
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5
+
+### [-9053228741363665471] Turbo Charger
+This block accepts up to 64 amps and can output up to 16 amps at its tier. Items inside it are charged at a rate of 120 amps using its pre-filled internal buffer. It can also hold up to 4 different items.  [note]The full internal buffer can sustain charging one item at maximum speed for about 10 seconds, or four items for about 2.5 seconds![/note]
+  - [提交] gregtech:gt.blockmachines:12041, gregtech:gt.blockmachines:12042, gregtech:gt.blockmachines:12043, gregtech:gt.blockmachines:12044, gregtech:gt.blockmachines:12045, gregtech:gt.blockmachines:12046, gregtech:gt.blockmachines:12047, gregtech:gt.blockmachines:12048, gregtech:gt.blockmachines:12049
+  > 奖励: dreamcraft:CoinTechnicianI x10 | bq_standard:choice
+
+### [1419] Who Cares About a Little Cancer...
+...when it means you don't have to strip naked to recharge your nanosuit? The Wireless Charger will keep your armor and tools charged up without having to put them into a battery buffer.  It will charge armor and tools at the tier and below.  You didn't want kids anyways...
+  - [提交] gregtech:gt.blockmachines:892
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [-7126666155324853443] Wireless Power!?
+Are you sick and tired of having cables all around your base? Are you tired of having to upgrade your cables constantly to handle different amperage amounts? Are you a fan of lightning bolts zapping around your base?  Then this multiblock is for you, the Tesla Tower comes with high amperage output and full TecTech energy hatch support with this powerful multiblock.  To get started you will need to fill the tower with capacitors matching the tier of the Primary Tesla Windings within the capacitor bank. The Tesla Winding determines the tier of power that the tower transfers power at and the amount of capacitors determines the maximum amperage that can be output.  A total of 16 capacitors can be placed into one capacitor bank so you might need many banks depending on your power needs.  Once the tower is constructed click open the controller to configure the maximum transfer distance of the tower to fit the needs of your base. The range setting is currently buggy which means that at least for now you can do so without needing any plasmas. This option is called “Tesla Towers Transfer Radius Setting”.  Now that your tower is all configured how do you get power out of it to your machines? Well I am glad you asked. To get power to the machines of the base you will need to use the Tesla Coil Covers. Place them on the tops of your machines, energy hatches and even transformers to get power flowing from the tower. Energy hatches are a bit picky however and the hatch likes to be facing upwards to receive power.  [warn]Warning! The Tesla Tower will output only one tier of amp such as EV, IV etc. When upgrading the Primary Tesla Windings, please make sure to check that all of your coil covers and transceivers in the base can handle the upgraded power. Failure to do so will result in a machine explosion.[/warn]  [warn]Failure to turn off the controller before adjustment can also cause an explosion.[/warn]
+  - [提交] gregtech:gt.blockmachines:15314
+  - [可选提交] gregtech:gt.blockmachines:15452, tectech:gt.blockcasingsBA0:8 x12, tectech:gt.blockcasingsBA0:7 x128, tectech:gt.blockcasingsBA0:6 x17, gregtech:gt.blockframes:28 x12
+  > 奖励: tectech:item.tm.teslaCover x10
+

@@ -1,0 +1,35 @@
+CLASS net/minecraft/class_9934 net/minecraft/client/gui/screen/recipebook/GhostRecipe
+	FIELD field_52827 items Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;
+	FIELD field_52828 currentIndexProvider Lnet/minecraft/class_9938;
+	METHOD <init> (Lnet/minecraft/class_9938;)V
+		ARG 1 currentIndexProvider
+	METHOD method_62029 clear ()V
+	METHOD method_62030 (ZLnet/minecraft/class_332;Lnet/minecraft/class_310;Lnet/minecraft/class_1735;Lnet/minecraft/class_9934$class_9935;)V
+		ARG 4 slot
+		ARG 5 item
+	METHOD method_62032 drawTooltip (Lnet/minecraft/class_332;Lnet/minecraft/class_310;IILnet/minecraft/class_1735;)V
+		ARG 1 context
+		ARG 2 client
+		ARG 3 x
+		ARG 4 y
+		ARG 5 slot
+	METHOD method_62033 draw (Lnet/minecraft/class_332;Lnet/minecraft/class_310;Z)V
+		ARG 1 context
+		ARG 2 client
+		ARG 3 resultHasPadding
+	METHOD method_64872 addInputs (Lnet/minecraft/class_1735;Lnet/minecraft/class_10352;Lnet/minecraft/class_10302;)V
+		ARG 1 slot
+		ARG 2 context
+		ARG 3 display
+	METHOD method_64873 addItems (Lnet/minecraft/class_1735;Lnet/minecraft/class_10352;Lnet/minecraft/class_10302;Z)V
+		ARG 1 slot
+		ARG 2 context
+		ARG 3 display
+		ARG 4 resultSlot
+	METHOD method_64874 addResults (Lnet/minecraft/class_1735;Lnet/minecraft/class_10352;Lnet/minecraft/class_10302;)V
+		ARG 1 slot
+		ARG 2 context
+		ARG 3 display
+	CLASS class_9935 CyclingItem
+		METHOD method_62035 get (I)Lnet/minecraft/class_1799;
+			ARG 1 index

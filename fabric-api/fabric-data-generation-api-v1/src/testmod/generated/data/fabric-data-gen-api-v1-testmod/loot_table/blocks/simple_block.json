@@ -1,0 +1,26 @@
+{
+  "fabric:load_conditions": [
+    {
+      "condition": "fabric:not",
+      "value": {
+        "condition": "fabric:false"
+      }
+    },
+    {
+      "condition": "fabric:true"
+    }
+  ],
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "condition": "minecraft:tool/can_silk_touch",
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "fabric-data-gen-api-v1-testmod:simple_block"
+        }
+      ],
+      "rolls": 1
+    }
+  ]
+}

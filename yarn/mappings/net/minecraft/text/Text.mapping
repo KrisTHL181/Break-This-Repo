@@ -1,0 +1,127 @@
+CLASS net/minecraft/class_2561 net/minecraft/text/Text
+	COMMENT A text. Can be converted to and from JSON format.
+	COMMENT
+	COMMENT <p>Each text has a tree structure, embodying all its {@link
+	COMMENT #getSiblings() siblings}. To iterate contents in the text and all
+	COMMENT its siblings, call {@code visit} methods.
+	COMMENT
+	COMMENT <p>This interface does not expose mutation operations. For mutation,
+	COMMENT refer to {@link MutableText}.
+	COMMENT
+	COMMENT @see MutableText
+	METHOD method_10851 getContent ()Lnet/minecraft/class_7417;
+		COMMENT {@return the content of the text}
+	METHOD method_10855 getSiblings ()Ljava/util/List;
+		COMMENT Returns the siblings of this text.
+	METHOD method_10858 asTruncatedString (I)Ljava/lang/String;
+		COMMENT Returns the full string representation of this text, truncated beyond
+		COMMENT the supplied {@code length}.
+		ARG 1 length
+			COMMENT the max length allowed for the string representation of the text
+	METHOD method_10866 getStyle ()Lnet/minecraft/class_2583;
+		COMMENT Returns the style of this text.
+	METHOD method_27655 (ILjava/lang/StringBuilder;Ljava/lang/String;)Ljava/util/Optional;
+		ARG 2 string
+	METHOD method_27661 copy ()Lnet/minecraft/class_5250;
+		COMMENT Copies the text's content, the style, and the siblings.
+		COMMENT
+		COMMENT <p>A shallow copy is made for the siblings.
+	METHOD method_27662 copyContentOnly ()Lnet/minecraft/class_5250;
+		COMMENT Copies the text's content, excluding the styles or siblings.
+	METHOD method_30163 of (Ljava/lang/String;)Lnet/minecraft/class_2561;
+		COMMENT Creates a literal text with the given string as content.
+		ARG 0 string
+	METHOD method_30937 asOrderedText ()Lnet/minecraft/class_5481;
+	METHOD method_36135 (Ljava/util/List;Lnet/minecraft/class_2583;Ljava/lang/String;)Ljava/util/Optional;
+		ARG 1 styleOverride
+		ARG 2 text
+	METHOD method_36136 getWithStyle (Lnet/minecraft/class_2583;)Ljava/util/List;
+		ARG 1 style
+	METHOD method_43466 score (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/class_5250;
+		ARG 0 name
+		ARG 1 objective
+	METHOD method_43467 selector (Lnet/minecraft/class_10104;Ljava/util/Optional;)Lnet/minecraft/class_5250;
+		ARG 0 selector
+		ARG 1 separator
+	METHOD method_43468 nbt (Ljava/lang/String;ZLjava/util/Optional;Lnet/minecraft/class_7419;)Lnet/minecraft/class_5250;
+		ARG 0 rawPath
+		ARG 1 interpret
+		ARG 2 separator
+		ARG 3 dataSource
+	METHOD method_43469 translatable (Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/class_5250;
+		COMMENT {@return a translatable text with arguments}
+		COMMENT
+		COMMENT <p>The arguments passed <strong>must be either numbers, booleans, strings, or another
+		COMMENT {@link Text}</strong>. Use {@link #stringifiedTranslatable} to construct texts with
+		COMMENT other objects as arguments. Alternatively, convert them using static methods here
+		COMMENT like {@link #of(Identifier)}.
+		ARG 0 key
+		ARG 1 args
+	METHOD method_43470 literal (Ljava/lang/String;)Lnet/minecraft/class_5250;
+		ARG 0 string
+	METHOD method_43471 translatable (Ljava/lang/String;)Lnet/minecraft/class_5250;
+		ARG 0 key
+	METHOD method_43472 keybind (Ljava/lang/String;)Lnet/minecraft/class_5250;
+		ARG 0 string
+	METHOD method_43473 empty ()Lnet/minecraft/class_5250;
+	METHOD method_44745 contains (Lnet/minecraft/class_2561;)Z
+		COMMENT {@return whether the text contains {@code text}, without considering styles}
+		ARG 1 text
+	METHOD method_44746 withoutStyle ()Ljava/util/List;
+	METHOD method_48321 translatableWithFallback (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/class_5250;
+		ARG 0 key
+		ARG 1 fallback
+	METHOD method_48322 translatableWithFallback (Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/class_5250;
+		ARG 0 key
+		ARG 1 fallback
+		ARG 2 args
+	METHOD method_54154 of (Lnet/minecraft/class_2960;)Lnet/minecraft/class_2561;
+		COMMENT {@return a text representing {@code id}}
+		COMMENT
+		COMMENT <p>The returned text has the format {@code namespace:path}.
+		COMMENT Namespace is always included.
+		ARG 0 id
+	METHOD method_54155 of (Lcom/mojang/brigadier/Message;)Lnet/minecraft/class_2561;
+		COMMENT {@return a text with {@code message}}
+		COMMENT
+		COMMENT <p>If a text instance is passed, this method returns {@code message} itself;
+		COMMENT otherwise this creates a new literal text with the message content.
+		ARG 0 message
+	METHOD method_54156 of (Lnet/minecraft/class_1923;)Lnet/minecraft/class_2561;
+		COMMENT {@return a text representing chunk {@code pos}}
+		COMMENT
+		COMMENT <p>The returned text has the format {@code [X, Z]}.
+		ARG 0 pos
+	METHOD method_54157 of (Ljava/util/Date;)Lnet/minecraft/class_2561;
+		COMMENT {@return a {@linkplain #literal literal} text representing {@code date}}
+		COMMENT
+		COMMENT @implNote The date is converted to a string using {@link Date#toString}.
+		COMMENT Notably, it does not localize the date format.
+		ARG 0 date
+	METHOD method_54158 of (Ljava/util/UUID;)Lnet/minecraft/class_2561;
+		COMMENT {@return a text representing {@code uuid}}
+		COMMENT
+		COMMENT <p>The UUID is converted to a string like {@code 12345678-90AB-CDEF-1234-567890ABCDEF}.
+		COMMENT
+		COMMENT @see UUID#toString
+		ARG 0 uuid
+	METHOD method_54159 stringifiedTranslatable (Ljava/lang/String;[Ljava/lang/Object;)Lnet/minecraft/class_5250;
+		COMMENT {@return a translatable text with arguments}
+		COMMENT
+		COMMENT <p>Arguments that are not numbers, booleans, strings, or another {@link Text} are
+		COMMENT converted to strings using {@link String#valueOf(Object)}.
+		ARG 0 key
+		ARG 1 args
+	METHOD method_54160 getLiteralString ()Ljava/lang/String;
+		COMMENT {@return the string of the literal text, or {@code null} if this text is not
+		COMMENT a literal}
+		COMMENT
+		COMMENT <p>A literal text is an unstyled {@link PlainTextContent} without any siblings.
+		COMMENT Such texts are serialized as a string instead of an object.
+	METHOD method_61110 of (Ljava/net/URI;)Lnet/minecraft/class_2561;
+		ARG 0 uri
+	METHOD method_62790 score (Lnet/minecraft/class_10104;Ljava/lang/String;)Lnet/minecraft/class_5250;
+		ARG 0 selector
+		ARG 1 objective
+	METHOD method_74062 object (Lnet/minecraft/class_11724;)Lnet/minecraft/class_5250;
+		ARG 0 object

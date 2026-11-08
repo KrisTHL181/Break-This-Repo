@@ -1,0 +1,7 @@
+No extension, no problem.
+
+This file intentionally has no suffix. GitHub and local tools must infer that
+it is plain text without the usual `.md`, `.txt`, or source-language hint.
+
+Nothing here is a configuration file or an instruction to execute anything;
+the ambiguity is the whole repository-local experiment.

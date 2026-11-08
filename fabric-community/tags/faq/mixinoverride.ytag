@@ -1,0 +1,57 @@
+type: text
+
+---
+
+When writing mixins, you may be tempted to override methods from superclasses in mixins like so:
+```java
+@Mixin(Player.class)
+class PlayerMixin extends Avatar {
+  @Override
+  public Pose getPose() {
+    return Pose.SWIMMING;
+  } 
+}
+```
+
+For mod compatibility reasons, you should not do this. Instead, you should use one of the following methods:
+```java
+
+// Mixin the parent, and use instanceof to check what `this` is
+@Mixin(Entity.class)
+abstract class EntityMixin {
+  @ModifyReturnValue(
+    method = "getPose",
+    at = @At("RETURN")
+  )
+  private Pose overrideForPlayer(Pose pose) {
+    // the compiler doesn't believe `this` can ever be `Player`, so a cast to `Object` is required
+    return (Object) this instanceof Player ? Pose.SWIMMING : pose;
+  }
+```
+
+```java
+
+// use submixin to conditionally modify the parent
+@Mixin(Entity.class)
+abstract class EntityMixin {
+  // 1. define a dummy handler in a mixin to the superclass, that does nothing, but is protected
+  @WrapMethod(
+    method = "getPose"
+  )
+  protected Pose overrideForPlayer(Operation<Pose> original) {
+    return original.call();
+  }
+}
+@Mixin(Player.class)
+abstract class PlayerMixin extends EntityMixin /* !important! */ {
+  // 2. Override the handler in the child mixin, and make the actual changes
+  @Override
+  protected Pose overrideForPlayer(Operation<Pose> original) {
+    return Pose.SWIMMING;
+  }
+}
+```
+
+Both of the above patterns can work for any mixin injector, and even when you just need to make small changes to the superclass.
+
+The `instanceof` pattern is more direct, and can be simpler to understand, while the submixin pattern can lead to a code structure more similar to just overriding the target method and keeps all code relevant to a given class in a mixin to that class. the general agreement is that it doesn't matter which you pick; either is better than `@Override`.

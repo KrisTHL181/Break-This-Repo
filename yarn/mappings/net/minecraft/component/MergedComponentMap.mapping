@@ -1,0 +1,42 @@
+CLASS net/minecraft/class_9335 net/minecraft/component/MergedComponentMap
+	COMMENT A {@link Component Map} that has a base map and changes to be applied on top of it.
+	FIELD field_49654 baseComponents Lnet/minecraft/class_9323;
+	FIELD field_49655 changedComponents Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;
+	FIELD field_49656 copyOnWrite Z
+	METHOD <init> (Lnet/minecraft/class_9323;)V
+		ARG 1 baseComponents
+	METHOD <init> (Lnet/minecraft/class_9323;Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;Z)V
+		ARG 1 baseComponents
+		ARG 2 changedComponents
+		ARG 3 copyOnWrite
+	METHOD equals (Ljava/lang/Object;)Z
+		ARG 1 o
+	METHOD method_57933 setAll (Lnet/minecraft/class_9323;)V
+		ARG 1 components
+	METHOD method_57934 shouldReuseChangesMap (Lnet/minecraft/class_9323;Lit/unimi/dsi/fastutil/objects/Reference2ObjectMap;)Z
+		ARG 0 baseComponents
+		ARG 1 changedComponents
+	METHOD method_57935 create (Lnet/minecraft/class_9323;Lnet/minecraft/class_9326;)Lnet/minecraft/class_9335;
+		ARG 0 baseComponents
+		ARG 1 changes
+	METHOD method_57936 applyChanges (Lnet/minecraft/class_9326;)V
+		ARG 1 changes
+	METHOD method_57937 applyChange (Lnet/minecraft/class_9331;Ljava/util/Optional;)V
+		ARG 1 type
+		ARG 2 optional
+	METHOD method_57938 set (Lnet/minecraft/class_9331;Ljava/lang/Object;)Ljava/lang/Object;
+		ARG 1 type
+		ARG 2 value
+	METHOD method_57939 remove (Lnet/minecraft/class_9331;)Ljava/lang/Object;
+		ARG 1 type
+	METHOD method_57940 getChanges ()Lnet/minecraft/class_9326;
+	METHOD method_57941 copy ()Lnet/minecraft/class_9335;
+	METHOD method_57942 onWrite ()V
+	METHOD method_59772 setChanges (Lnet/minecraft/class_9326;)V
+		ARG 1 changes
+	METHOD method_62714 clearChanges ()V
+	METHOD method_65769 immutableCopy ()Lnet/minecraft/class_9323;
+	METHOD method_65890 hasChanged (Lnet/minecraft/class_9331;)Z
+		ARG 1 type
+	METHOD method_74942 set (Lnet/minecraft/class_9336;)Ljava/lang/Object;
+		ARG 1 component

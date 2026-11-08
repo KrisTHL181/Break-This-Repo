@@ -1,0 +1,18 @@
+type: embed
+
+colour: yellow
+embed:
+    title: Obtaining a Spark Report
+---
+
+For support with performance issues, please provide a link to a relevant Spark report.
+1. Ensure the mod [Spark](https://modrinth.com/mod/spark) is installed on the client or the server depending on which side is experiencing the issue.
+2. Launch the game.
+
+The more that happens during the profiling, the better the report will be. The profiler should run for a minimum of 1 minute to help capture the issue.
+However, if the issue is not consistently occurring, it may be worthwhile to run the profiler for longer until it does.
+The [Spark Docs](https://spark.lucko.me/docs/Command-Usage) list each available command to run.
+
+3. Run the command. For a quick report, use `/spark profiler start --timeout 60`. For clientside issues, use `/sparkc` instead of `/spark`.
+4. Wait for the profiler to finish. If a time interval wasn't specified, use `/spark profiler stop` to stop the profiler.
+5. Share the link to the report. Please do not upload screenshots of the report.

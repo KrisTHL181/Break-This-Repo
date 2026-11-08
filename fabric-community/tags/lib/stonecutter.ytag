@@ -1,0 +1,5 @@
+type: text
+
+---
+
+Stonecutter is a Gradle plugin for multi-version development. Code can be labeled with the right versions using special comments. Stonecutter can then build multiple versions simultaneously. It offers an alternative to managing separate Git branches for each version. Learn more at https://stonecutter.kikugie.dev/.

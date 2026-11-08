@@ -1,0 +1,50 @@
+CLASS net/minecraft/class_1321 net/minecraft/entity/passive/TameableEntity
+	FIELD field_6320 OWNER_UUID Lnet/minecraft/class_2940;
+	FIELD field_6322 TAMEABLE_FLAGS Lnet/minecraft/class_2940;
+		COMMENT The tracked flags of tameable entities. Has the {@code 1} flag for {@linkplain
+		COMMENT #isInSittingPose() sitting pose} and the {@code 4} flag for {@linkplain
+		COMMENT #isTamed() tamed}.
+	FIELD field_21974 sitting Z
+	FIELD field_57595 DEFAULT_SITTING Z
+	METHOD method_6170 setTamedBy (Lnet/minecraft/class_1657;)V
+		ARG 1 player
+	METHOD method_6171 isOwner (Lnet/minecraft/class_1309;)Z
+		ARG 1 entity
+	METHOD method_6172 isInSittingPose ()Z
+	METHOD method_6173 setTamed (ZZ)V
+		ARG 1 tamed
+		ARG 2 updateAttributes
+	METHOD method_6174 setOwner (Lnet/minecraft/class_1309;)V
+		ARG 1 owner
+	METHOD method_6178 canAttackWithOwner (Lnet/minecraft/class_1309;Lnet/minecraft/class_1309;)Z
+		ARG 1 target
+		ARG 2 owner
+	METHOD method_6179 setInSittingPose (Z)V
+		ARG 1 inSittingPose
+	METHOD method_6180 showEmoteParticle (Z)V
+		ARG 1 positive
+	METHOD method_6181 isTamed ()Z
+	METHOD method_24345 isSitting ()Z
+	METHOD method_24346 setSitting (Z)V
+		ARG 1 sitting
+	METHOD method_56996 updateAttributesForTamed ()V
+	METHOD method_60711 tryTeleportTo (III)Z
+		ARG 1 x
+		ARG 2 y
+		ARG 3 z
+	METHOD method_60712 tryTeleportNear (Lnet/minecraft/class_2338;)V
+		ARG 1 pos
+	METHOD method_60713 tryTeleportToOwner ()V
+	METHOD method_60714 shouldTryTeleportToOwner ()Z
+	METHOD method_60715 cannotFollowOwner ()Z
+	METHOD method_60716 canTeleportOntoLeaves ()Z
+	METHOD method_60717 canTeleportTo (Lnet/minecraft/class_2338;)Z
+		ARG 1 pos
+	METHOD method_66288 setOwner (Lnet/minecraft/class_10583;)V
+		ARG 1 owner
+	CLASS class_9788 TameableEscapeDangerGoal
+		METHOD <init> (Lnet/minecraft/class_1321;D)V
+			ARG 2 speed
+		METHOD <init> (Lnet/minecraft/class_1321;DLnet/minecraft/class_6862;)V
+			ARG 2 speed
+			ARG 4 dangerousDamageTypes

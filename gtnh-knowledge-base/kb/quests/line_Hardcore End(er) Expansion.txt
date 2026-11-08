@@ -1,0 +1,259 @@
+# 任务线: Hardcore End(er) Expansion
+### [2366] Advanced Gem Enchantment
+Transference Gem and Spatial Dash Gems can be enhanced in a similar manner, using End Powder and the enhancement item.  Right-click the End Powder, choose an enchantment, and fill with four End Powder and four Ectoplasm to teleport a monster, four Leather to teleport a whole group of players, and four Endium Ingots to increase the capacity of the gem.
+  - [提交] HardcoreEnderExpansion:transference_gem, HardcoreEnderExpansion:end_powder x12
+  - [提交] HardcoreEnderExpansion:endium_ingot x4, HardcoreEnderExpansion:endoplasm x4, minecraft:leather x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2362] Blank Gem
+The Blank Gem doesn't do anything on its own, but is used to create higher level Gems.
+  - [可选提交] HardcoreEnderExpansion:endium_block, HardcoreEnderExpansion:arcane_shard x8, HardcoreEnderExpansion:endoplasm x4, HardcoreEnderExpansion:essence x16, HardcoreEnderExpansion:end_powder x16, gregtech:gt.metaitem.98:4 x10
+  - [提交] HardcoreEnderExpansion:blank_gem
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII | dreamcraft:CoinDarkWizardII | HardcoreEnderExpansion:knowledge_note
+
+### [2384] Charm Master
+You think you're charming? Craft all these Charms to be the true Master of Charms.
+  - [提交] HardcoreEnderExpansion:charm_pouch
+  - [提交] HardcoreEnderExpansion:charm:2, HardcoreEnderExpansion:charm:5, HardcoreEnderExpansion:charm:8, HardcoreEnderExpansion:charm:11, HardcoreEnderExpansion:charm:14, HardcoreEnderExpansion:charm:18, HardcoreEnderExpansion:charm:21, HardcoreEnderExpansion:charm:24, HardcoreEnderExpansion:charm:73, HardcoreEnderExpansion:charm:27
+  - [提交] HardcoreEnderExpansion:charm:30, HardcoreEnderExpansion:charm:36, HardcoreEnderExpansion:charm:43, HardcoreEnderExpansion:charm:76, HardcoreEnderExpansion:charm:50, HardcoreEnderExpansion:charm:53, HardcoreEnderExpansion:charm:56, HardcoreEnderExpansion:charm:64, HardcoreEnderExpansion:charm:70, HardcoreEnderExpansion:charm:79
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardIII | dreamcraft:CoinSmithIII
+
+### [2368] Charms
+Charms are player enchantments, used and crafted in the Charm Pouch. If you are lucky you may find a pouch in the Dungeons.  This magical pouch allows creating, holding and activating Charms.  Sneaking and using the pouch activates or deactivates the Charms.  Only one pouch can be active at a time.
+  - [提交] HardcoreEnderExpansion:charm_pouch
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII x5 | dreamcraft:CoinSmithII x5
+
+### [2378] Curse Amulet
+The Curse Amulet reveals all nearby Curses placed on blocks and depletes Curses quicker when held.  It is created by throwing End Powder, Gold Ingot, Ectoplasm and String into Ender Goo.
+  - [可选提交] HardcoreEnderExpansion:end_powder, HardcoreEnderExpansion:endoplasm, minecraft:gold_ingot, minecraft:string, HardcoreEnderExpansion:bucket_ender_goo
+  - [提交] HardcoreEnderExpansion:curse_amulet
+  > 奖励: HardcoreEnderExpansion:living_matter | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x3 | dreamcraft:CoinSurvivorII x3
+
+### [2383] Curse Master
+Curse of Teleportation Teleport Entities around randomly.  Curse of Confusion Confuses mobs. Creepers just explode and have no fuse time or mobs fight each other.  Curse of Tranquillity Prevent mobs from attacking you. Doesn't work on Boss mobs.  Curse of Slowness Inflicts slow on mobs.  Curse of Weakness Inflicts weakness on mobs.  Curse of Blindness Inflicts blindness on mobs.  Curse of Death Does 1.5 magical damage to mobs. Mobs bleed for a while and lose health.  Curse of Decay Items and armor get damaged over time.  Curse of Vampire Mobs become sensitive to sunlight and take more damage.  Curse of Rebound Adds reflection damage to a mob.  Curse of Loss Items will be removed out of your inventory and get destroyed or fall on the ground.
+  - [提交] HardcoreEnderExpansion:living_matter x11, HardcoreEnderExpansion:end_powder x44
+  - [提交] HardcoreEnderExpansion:curse x4, HardcoreEnderExpansion:curse:1 x4, HardcoreEnderExpansion:curse:2 x4, HardcoreEnderExpansion:curse:3 x4, HardcoreEnderExpansion:curse:4 x4, HardcoreEnderExpansion:curse:5 x4, HardcoreEnderExpansion:curse:6 x4, HardcoreEnderExpansion:curse:7 x4, HardcoreEnderExpansion:curse:8 x4, HardcoreEnderExpansion:curse:9 x4, HardcoreEnderExpansion:curse:10 x4
+  - [提交] HardcoreEnderExpansion:stardust x11, gregtech:gt.metaitem.01:2807 x11, HardcoreEnderExpansion:arcane_shard x11, gregtech:gt.metaitem.01:506 x11
+  - [提交] HardcoreEnderExpansion:curse:256, HardcoreEnderExpansion:curse:257, HardcoreEnderExpansion:curse:258, HardcoreEnderExpansion:curse:259, HardcoreEnderExpansion:curse:260, HardcoreEnderExpansion:curse:261, HardcoreEnderExpansion:curse:262, HardcoreEnderExpansion:curse:263, HardcoreEnderExpansion:curse:264, HardcoreEnderExpansion:curse:265, HardcoreEnderExpansion:curse:266
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistIII | dreamcraft:CoinDarkWizardIII | HardcoreEnderExpansion:knowledge_note x10
+
+### [2376] Curses
+A Curse is a magical powder that attaches itself to an area of blocks, a mob, or a player, crafted using living matter, End Powder and specific ingredients.  It can be either placed right on a block or an entity, or thrown. If it gets thrown into a group of entities, it will have a chance to hit more than one at the same time.  Curses eventually disappear, but they can be made eternal by crafting them with stardust and an arcane shard. Eternal Curses will stay forever on blocks and mobs, and longer than normal Curses on players.  Curses placed on blocks are only visible to the player who cast it, and for a short duration to players affected by it.  Getting very close to a Curse makes it visible without having it affect you, but it requires extreme carefulness.  It is possible to remove Curses by using a Potion of Purity.
+  - [提交] HardcoreEnderExpansion:living_matter, HardcoreEnderExpansion:end_powder x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x5 | dreamcraft:CoinDarkWizardII x5 | HardcoreEnderExpansion:knowledge_note x6
+
+### [2371] Death Flowers
+The purple flowers found on top of Endstone Blobs are known as Death Flowers. They can be planted on End Stone, Dirt, Grass or inside Flower Pots.  Outside the End, the flower will slowly decay, even if in a Flower Pot.  After some time spent decaying, it starts to occasionally attract Angry Endermen.  When the flower decays completely, it turns dark, propagates a massive amount of decay to nearby blocks and spawns an Energy Cluster.  Partial decay can be healed a little using End Powder.
+  - [提交] HardcoreEnderExpansion:death_flower, minecraft:flower_pot
+  - [提交] HardcoreEnderExpansion:death_flower:15
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureII | dreamcraft:CoinForestryII | HardcoreEnderExpansion:knowledge_note
+
+### [603] Dimensional Chest
+You've heard rumors that the Endermen had built laboratories in the End to invent new machines and weapons in order to attack the Overworld. One of their inventions is a chest, which is somehow linked to all instances of itself. Go and try to find one of those.
+  - [提交] minecraft:ender_chest
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinDarkWizardII
+
+### [2351] Dragon Essence Altar
+To create a Dragon Essence Altar, a player has to use Dragon Essence on the Basic Essence Altar (right-click the altar with the Essence).  After that, the Altar will request 8 random items to be fed into it, one at a time.  The Dragon Essence Altar may request the following items: Obsidian, Stone Bricks, Map, Book, Bookshelf, Iron Bars, End Stone, Ender Pearl, Eye of Ender, Enderman Head.  After this, the Altar will transform into a Dragon Essence Altar, and now you can store more Essence inside the Altar.
+  - [提交] HardcoreEnderExpansion:essence_altar, HardcoreEnderExpansion:essence
+  - [可选提交] minecraft:ender_pearl x4, minecraft:ender_eye x4, minecraft:map x4, minecraft:iron_bars x4, minecraft:book x4, minecraft:obsidian x4, minecraft:bookshelf x4, minecraft:stonebrick x4, minecraft:end_stone x4, HardcoreEnderExpansion:essence x32
+  - [提交] HardcoreEnderExpansion:essence_altar:1
+  > 奖励: HardcoreEnderExpansion:essence x16 | enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSmithII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2381] Enderpearl Enchantments
+Enhanced Ender Pearls are a special version of vanilla Ender Pearls with one or more special effects (enhancements).  The way to make enhanced pearls is to right-click with End Powder in your hand to modify your ender pearl. You can continue adding as many effects to one pearl as you want.  These effects are useful when throwing the pearl, for pearl teleportation effects.  Natural occurrence: It is possible to find pearls with random effects in a Dungeon Tower's loot chests.  Enhancements: No fall damage (Wool) Upon the pearl's landing, the player will not receive any fall damage.  No gravity (Feather) The pearl will not follow the rules of gravity, which makes it possible to throw it straight up. After 10 seconds of flight, the pearl is automatically destroyed without any teleportation or fall damage.  Increased range (String) Unlike the no gravity effect, the pearl will fall down due to gravity, but will do so 25% slower. If the pearl has the no gravity effect too, it will override this effect.  Double speed (Gold Nugget) Increases the pearl's speed by a factor of 2, but won't change the flight trajectory. This can be helpful if you are in a bad situation (fell in lava, swarm of mobs around...) and need to be saved very quickly. In combination with the riding effect, you may notice slight stuttering on a server.  Explosive (Gunpowder) Upon landing, the pearl will explode with radius of 2.7 (TNT has radius of 4). This will not harm the thrower as long as they are far enough from the landing spot.  Freeze (Snowball) The pearl will freeze mobs and players within 5 blocks of the landing spot for at least 4 seconds. Just as with the explosive effect, this will not affect the thrower unless they throw the pearl close to them, or have the riding effect applied. This effect is also followed by ice cracking sound and snow particles.  Riding (Lead) The thrower will "ride" the pearl to its destination. During the ride, if another pearl with this effect is thrown, the previous pearl will destroy itself and deal fall damage (unless No fall damage effect is applied).  Trivia: The Enhanced Ender Pearls can still be used for crafting an Eye of Ender.
+  - [提交] minecraft:ender_pearl x7
+  - [提交] minecraft:wool, minecraft:feather, minecraft:string, minecraft:gold_nugget, minecraft:gunpowder, minecraft:snowball, minecraft:lead
+  - [提交] HardcoreEnderExpansion:end_powder x14
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSmithII | HardcoreEnderExpansion:knowledge_note
+
+### [2349] Ender Towers
+Once you've explored a bit, you'll find large towering buildings that increase in difficulty as you go upwards, culminating in a dangerous boss fight.  Be wary and bring strong protective armor!  If you are incredibly lucky, these towers can also offer rare items or blocks.
+  - [提交] HardcoreEnderExpansion:obsidian_special:2, HardcoreEnderExpansion:obsidian_special, HardcoreEnderExpansion:obsidian_special_glow, HardcoreEnderExpansion:obsidian_special_glow:1
+  - [提交] minecraft:ender_pearl x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureII | dreamcraft:CoinSurvivorII | HardcoreEnderExpansion:knowledge_note
+
+### [2357] Energy Clusters and the Energy Wand
+Energy Clusters, the little glowing orbs you may have seen floating around, have different health levels, which affect the regeneration (or leaking) speed.  Clusters can be moved using an Energy Wand. Moving them too far or across dimensions can have negative effects on their health.  Blocks that use Energy will take it from Clusters up to 16 blocks away, and from the environment if placed in the End.  Items that use Energy automatically refill in the End, or can be used on a Cluster to start and stop draining the Energy.
+  - [可选提交] HardcoreEnderExpansion:auricion x8, HardcoreEnderExpansion:endium_block
+  - [提交] HardcoreEnderExpansion:energy_wand_core
+  - [提交] HardcoreEnderExpansion:obsidian_fragment x2
+  - [可选提交] HardcoreEnderExpansion:energy_wand_core, HardcoreEnderExpansion:obsidian_rod x2, gregtech:gt.metaitem.01:27028 x4
+  - [提交] HardcoreEnderExpansion:energy_wand
+  > 奖励: HardcoreEnderExpansion:obsidian_fragment x32 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinAdventureII x2 | HardcoreEnderExpansion:knowledge_note x2
+
+### [2354] Enhanced Brewing Stand
+After the Altar creation is complete, a player has to place up to 8 matching solid blocks (of any kind) near the altar. These blocks require 1 block of air above them and no solid blocks touching them on the sides and diagonally. These blocks are the pedestals. The Dragon Essence Altar will project purple particles to all the pedestals connected to it.  Dropping an item onto the pedestal will place it there. After the item has been placed on top of the pedestal, the altar will start "infusing" the item using Dragon Essence stored in the altar itself. Adding more essence to the altar is done by right-clicking.  Infusing makes items repair themselves (this does not work for items that require Energy), increases the level of existing enchantments (up to 4 enchantments per item) and can even add new enchantments.  There are two items in this mod that can be obtained only by Dragon Essence infusion:  Enhanced Brewing Stand - by infusing a vanilla Brewing Stand, requires 20 pieces of Dragon Essence.  Temple Caller - by infusing a vanilla Eye of Ender, requires 50 pieces of Dragon Essence. [warn]It's disabled though, so don't bother.[/warn]
+  - [可选提交] minecraft:brewing_stand
+  - [提交] HardcoreEnderExpansion:enhanced_brewing_stand
+  > 奖励: HardcoreEnderExpansion:essence x16 | enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSmithII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2352] Essence Altar
+This little enchanting table like-block doesn't do much on its own, but has two other separate paths that can be taken (the third has no uses currently) to accomplish different tasks.  It is up to you where and how you want your personal Essence Altar to be upgraded. Firstly and more importantly, make the Basic Essence Altar.  [note]One of the upgrades uses Dragon Essence, but if you play on a public server and someone else killed the Dragon, that stuff can be difficult to come by without external help. Here's some to get you started.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:17500 x5, minecraft:ender_eye x4
+  - [可选提交] HardcoreEnderExpansion:altar_nexus, minecraft:bookshelf x2, Thaumcraft:ItemResource:1, Thaumcraft:ItemResource, minecraft:leather, IC2:itemDensePlates:7 x2 (ore:plateDenseObsidian), TConstruct:MetalBlock:10
+  - [提交] HardcoreEnderExpansion:essence_altar
+  > 奖励: HardcoreEnderExpansion:essence x16 | enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSmithII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2353] Find all the Ores in the End
+End Powder Ore: Generated in the End in between End Stone at every height level. When the ore is mined with any type of pickaxe, it will drop one or two pieces of End Powder.  Endium Ore: Rare ore that starts to appear near Dungeon Towers, and gets more common the further you travel.  Igneous Rock Ore: Generated in the End in the Burning Mountains and sometimes in the Endstone Blobs. This block emits lava particles but does no damage to the player. When the ore is mined with an Iron Pickaxe or better, it will drop one Igneous Rock.  [note]Note: the Fortune enchantment does not affect Igneous Rock Ore. However, the Silk Touch enchantment does work with this block. You can get better output with a Macerator.[/note]  Instability Ore: Generated in the End in the Biome Islands, especially common in the Fiery Mines. When the ore is mined with an Advanced Pickaxe, it has a 40% chance to drop one Instability Orb, otherwise it breaks without providing any items.  [note]Note: the Fortune enchantment increases the chance of getting an Instability Orb by 4% per level, and the Silk Touch enchantment also works with this block. You can get better output with a Forge Hammer.[/note]  Stardust Ore: Generated in the End in the Biome Islands. When the ore is mined with an Advanced Pickaxe, it has a chance to drop 0-4 pieces of Stardust. Even though this ore comes in clusters, two ore blocks from the same cluster can be generated away from each other, making Stardust Ore a rare resource which requires thorough exploration and mining.  [note]Note: the Stardust Ore block has different textures on its sides.[/note]  Sphalerite: Often found floating in the open space around Endstone Blobs. You can macerate it for crushed normal Sphalerite.
+  - [提交] HardcoreEnderExpansion:end_powder x64, HardcoreEnderExpansion:igneous_rock x16, HardcoreEnderExpansion:instability_orb x16, HardcoreEnderExpansion:stardust x32, HardcoreEnderExpansion:endium_ore x16, HardcoreEnderExpansion:sphalerite x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureII | dreamcraft:CoinSurvivorII | HardcoreEnderExpansion:knowledge_note
+
+### [2365] Gem Enchantment
+Spatial Dash Gems and Transference Gems can be enhanced in a similar manner, using End Powder and the enhancement item.  Right-click the End Powder, choose an enchantment, and fill four End Powder and four Instability Orbs for instant teleport, four Lapis Lazuli for a longer teleport range, and four Endium Ingots to increase the capacity of the gem.
+  - [提交] HardcoreEnderExpansion:spatial_dash_gem, HardcoreEnderExpansion:end_powder x12
+  - [提交] HardcoreEnderExpansion:endium_ingot x4, HardcoreEnderExpansion:instability_orb x4, minecraft:dye:4 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2361] Ghost Amulet
+The Ghost Amulet (Impure) is an item that can only be obtained by throwing one Emerald, one String and one End Powder into Ender Goo.  Once you have that, you can purify it with a TC infusion, but that's expensive, so maybe the Ender Compendium has a more traditional way to infuse it.  As long as it stays anywhere in the inventory, it protects players from Forest Ghosts, and thus provides a way of acquiring Ectoplasm.
+  - [可选提交] minecraft:emerald, minecraft:string, HardcoreEnderExpansion:end_powder, HardcoreEnderExpansion:bucket_ender_goo
+  - [可选提交] HardcoreEnderExpansion:ghost_amulet
+  - [提交] HardcoreEnderExpansion:ghost_amulet:1
+  > 奖励: enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSurvivorII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2355] HEE Biome Compass
+The Biome Compass is a special type of compass, which points to the nearest Biome Islands as long as one exists and the player is in the End. Right-clicking will scroll through all existing biomes.  Holding the compass shows all biomes of the selected type as markers on the screen. The markers are small rectangles with the color of the selected biome. The rectangles also get bigger the closer you are to the island (they also disappear if you reach the island, and reappear when you leave it).  [note]The Fiery Island is orange, the Enchanted Island (both variants) is purple, and the Infested Island is dark red.[/note]
+  - [可选提交] HardcoreEnderExpansion:end_powder, gregtech:gt.metaitem.01:28770 x2, gregtech:gt.metaitem.01:17770, gregtech:gt.metaitem.01:27770 x2, gregtech:gt.metaitem.01:26770, gregtech:gt.metaitem.01:26308
+  - [提交] HardcoreEnderExpansion:biome_compass
+  > 奖励: HardcoreEnderExpansion:endium_ore x16 | enhancedlootbags:lootbag:57 | etfuturum:elytra | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSmithII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2369] Hot Puzzle
+Some of the islands have a Dungeon Puzzle inside them, usually near the surface and with a small cave leading to it. The dungeon consists of special blocks which the player can interact with by throwing Igneous Rock, causing a chain reaction during which the lit blocks will become unlit, unlit blocks will become lit and the walls will propagate the reaction into adjacent blocks.  Once all of the blocks are lit, a Fire Fiend is spawned below. It will make its way to the surface, breaking the dungeon in the process.  [warn]Kill it with... well, probably not fire![/warn]
+  - [提交] HardcoreEnderExpansion:igneous_rock x16
+  - [击杀] target=HardcoreEnderExpansion.FireFiend n=
+  - [提交] HardcoreEnderExpansion:essence:1 x16
+  > 奖励: HardcoreEnderExpansion:igneous_rock x64 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x3 | dreamcraft:CoinSurvivorII x3 | HardcoreEnderExpansion:knowledge_note x5
+
+### [2374] Infestation Remedy
+Infestation Remedy is a drinkable (or throwable) item used to shorten effects of the Infestation.  Obtaining: The Infestation Remedy is brewed in an Enhanced Brewing Stand, using Silverfish Blood as the brewing ingredient and an Awkward Potion.  Usage: When drunk, the remedy will shorten each of the Infestation effects by 150 to 180 seconds.  You can make splash potions with gunpowder and 3 more End Powder as well.
+  - [可选提交] minecraft:potion:16 x3, HardcoreEnderExpansion:silverfish_blood, HardcoreEnderExpansion:end_powder x16
+  - [提交] HardcoreEnderExpansion:infestation_remedy x3
+  > 奖励: HardcoreEnderExpansion:silverfish_blood x4 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinChemistII x2
+
+### [2382] Infused Altar
+You can upgrade your Altar with one or more special effects (enhancements).  The way to make an enhanced Altar is to right-click your Altar with End Powder in your hand, then supplying End Powder and the enhancement material in the UI. You can continue adding as many effects to one Altar as you want.  Enhancements: Range (Block of Lapis) Increase the range at which an item can be infused by the Altar.  Speed (Block of Redstone) Increase the working speed of the Altar.  Efficiency (Block of Emerald) Reduce the cost of Dragon Essence used by Altar recipes.
+  - [提交] HardcoreEnderExpansion:essence_altar
+  - [提交] HardcoreEnderExpansion:end_powder x12, minecraft:lapis_block x3, minecraft:redstone_block x3, minecraft:emerald_block x3
+  > 奖励: HardcoreEnderExpansion:essence x32 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinSmithII x2 | HardcoreEnderExpansion:knowledge_note x2
+
+### [2379] Infused Brewing Stand
+A Brewing Stand with one or more special effects (enhancements).  You can upgrade your Enhanced Brewing Stand with End Powder to modify it like other HEE items.  You can continue adding as many effects to one Brewing Stand as you want.  Enhancements: Tier (Ectoplasm) Your potion can have a higher tier and a longer potion duration than vanilla ones. (Tier IV is up to 12 mins)  Speed (Igneous Rock) Increases the speed of the Brewing Stand.  Cost (Emerald) Reduces the cost of End Powder used in a brewing cycle.
+  - [提交] HardcoreEnderExpansion:enhanced_brewing_stand
+  - [提交] HardcoreEnderExpansion:end_powder x6, HardcoreEnderExpansion:endoplasm x5, HardcoreEnderExpansion:igneous_rock x5, minecraft:emerald x5
+  > 奖励: HardcoreEnderExpansion:essence x32 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinSmithII x2 | HardcoreEnderExpansion:knowledge_note x2
+
+### [986] Is This the End? No, it's the END Dimension
+You investigated the pearls, and managed to reactivate them to become eyes. This has shown you that the source of the disturbance seems to be coming out of the portal frames inside the strongholds, deep underground. They seem strangely drawn towards its mysterious depths. Perhaps they can be used to reactivate it?  Hint: Throwing Ender Eyes in the air in the Overworld will guide you to the nearest stronghold. From time to time Ender Eyes are destroyed in this process, so make extras. Try to do so in a place without obstructions so you can see where it went.
+  - [可选提交] minecraft:ender_pearl x12, minecraft:blaze_powder x12
+  - [提交] minecraft:ender_eye x12
+  - [到达] 
+  > 奖励: enhancedlootbags:lootbag:6 | BiomesOPlenty:helmetAmethyst | BiomesOPlenty:chestplateAmethyst | BiomesOPlenty:leggingsAmethyst | BiomesOPlenty:bootsAmethyst | dreamcraft:CoinAdventureII | dreamcraft:CoinDarkWizardII | HardcoreEnderExpansion:knowledge_note x2
+
+### [2372] Living Matter
+Living Matter is a combination of microorganisms used to craft curses.
+  - [可选提交] HardcoreEnderExpansion:spectral_tear, HardcoreEnderExpansion:silverfish_blood, minecraft:spider_eye, minecraft:bone, minecraft:egg, HardcoreEnderExpansion:instability_orb, minecraft:blaze_powder, minecraft:rotten_flesh, gregtech:gt.metaitem.01:2815
+  - [提交] HardcoreEnderExpansion:living_matter
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x3 | dreamcraft:CoinDarkWizardII x3 | HardcoreEnderExpansion:knowledge_note x5
+
+### [2385] Master Grinder
+After conquering most of the content inside the End, it is time for a Master Quest.  Bring forth and slay the following and you shall receive some moderately great loot.
+  - [提交] minecraft:ender_pearl x1024, minecraft:ender_eye x512, HardcoreEnderExpansion:auricion x64, HardcoreEnderExpansion:enderman_head x64, HardcoreEnderExpansion:essence:1 x512, HardcoreEnderExpansion:igneous_rock x256, HardcoreEnderExpansion:fire_shard x256, HardcoreEnderExpansion:altar_nexus x32, minecraft:bookshelf x64, minecraft:ender_chest x8
+  - [提交] minecraft:enchanting_table x8, HardcoreEnderExpansion:silverfish_blood x16, HardcoreEnderExpansion:rune x16, HardcoreEnderExpansion:rune:1 x16, HardcoreEnderExpansion:rune:2 x16, HardcoreEnderExpansion:rune:3 x16, HardcoreEnderExpansion:rune:4 x16, HardcoreEnderExpansion:rune:5 x4, HardcoreEnderExpansion:obsidian_fragment x512
+  - [提交] dreamcraft:CoinSurvivorIV, dreamcraft:CoinAdventureIV, dreamcraft:CoinDarkWizardIV
+  - [击杀] target=HardcoreEnderExpansion.EnderGuardian n=
+  - [击杀] target=HardcoreEnderExpansion.Endermage n=
+  - [击杀] target=HardcoreEnderExpansion.AngryEnderman n=
+  - [击杀] target=Enderman n=
+  - [击杀] target=Silverfish n=
+  - [击杀] target=HardcoreEnderExpansion.Louse n=
+  - [击杀] target=HardcoreEnderExpansion.FireGolem n=
+  - [击杀] target=HardcoreEnderExpansion.ScorchedLens n=
+  - [击杀] target=HardcoreEnderExpansion.HauntedMiner n=
+  > 奖励: bq_standard:choice | HardcoreEnderExpansion:endoplasm x64 | HardcoreEnderExpansion:instability_orb x128 | minecraft:nether_star x32 | HardcoreEnderExpansion:auricion x64 | HardcoreEnderExpansion:arcane_shard x64 | minecraft:fish:3
+
+### [2375] Potion of Instability
+The Potion of Instability is a special type of potion, which can be brewed by putting an Instability Orb into an Enhanced Brewing Stand with an Awkward Potion. The brewing process requires End Powder in the stand's special slot.  Usage: As any other potion, the Potion of Instability can be drunk (or thrown, if it's a splash potion). Unlike regular potions, this potion gives a random potion effect of random tier and duration to each player it affects. It can also apply potion effects which aren't available in vanilla potions, such as Jump or Hunger.  Trivia: The item tooltip contains ???, as opposed to a potion effect and duration.  You can make splash potions with gunpowder and 3 more End Powder as well.
+  - [可选提交] minecraft:potion:16 x3, HardcoreEnderExpansion:instability_orb, HardcoreEnderExpansion:end_powder x16
+  - [提交] HardcoreEnderExpansion:potion_of_instability x3
+  > 奖励: HardcoreEnderExpansion:instability_orb x4 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinChemistII x2
+
+### [2377] Potion of Purity
+The Potion of Purity is a drinkable (or throwable) potion that removes Curses.  Obtaining: This potion is brewed in an Enhanced Brewing Stand, using Ectoplasm as the brewing ingredient and an Awkward Potion.  You can make splash potions with gunpowder and 3 more End Powder as well.
+  - [可选提交] minecraft:potion:16 x3, HardcoreEnderExpansion:endoplasm x3, HardcoreEnderExpansion:end_powder x24
+  - [提交] HardcoreEnderExpansion:potion_of_purity x3
+  > 奖励: HardcoreEnderExpansion:endoplasm x4 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x3 | dreamcraft:CoinChemistII x3
+
+### [2367] Runes
+There are 6 types of Runes found in the Ravaged Dungeons on the Infested Islands:  Power Vigor Magic Defense Agility Void  The Void rune is less common than other types.  Runes are used to create Charms, which are crafted in a Charm Pouch.  Basic Runes increase attributes, such as strength, speed or health. Void Rune (gray) gives the Louse one of several special and extremely dangerous abilities.
+  - [提交] HardcoreEnderExpansion:rune, HardcoreEnderExpansion:rune:2, HardcoreEnderExpansion:rune:4, HardcoreEnderExpansion:rune:3, HardcoreEnderExpansion:rune:1, HardcoreEnderExpansion:rune:5
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinAdventureII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2370] Scorching Pickaxe
+The Scorching Pickaxe is a special type of pickaxe that smelts blocks and applies fortune effect to ores.  It only works on smeltable blocks and ores. Blocks that smelt into items are affected by fortune, including for example Iron Ore and Cactus.  Compatible blocks are also mined much faster.  GT Ores are not affected. You can find Vanilla Ores in the Twilight Forest inside Hollow Hills.  [note]So basically, it's useless.[/note]
+  - [可选提交] minecraft:golden_pickaxe, HardcoreEnderExpansion:fire_shard x8
+  - [提交] HardcoreEnderExpansion:schorching_pickaxe
+  > 奖励: HardcoreEnderExpansion:fire_shard x32 | enhancedlootbags:lootbag:58 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinSmithII x2 | HardcoreEnderExpansion:knowledge_note
+
+### [2373] Silverfish Blood
+The Infested Island and its dungeons are swarming with Silverfish, and they have a 1 in 56 chance of leaving a drop of their blood behind after you kill them. Golden swords increase the chance to 1 in 14.  This rare material is used to brew Infestation Remedy, as well as in the crafting of some curses.
+  - [可选提交] minecraft:golden_sword
+  - [提交] HardcoreEnderExpansion:silverfish_blood x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinDarkWizardII x2 | HardcoreEnderExpansion:knowledge_note x3
+
+### [2363] Spatial Dash Gem
+The Spatial Dash Gem is used for enderpearl-like teleportation.  The Spatial Dash Gem uses Energy and can be charged in an Energy Extraction Table. Right-clicking with the gem in hand sends a purple beam straight to where the player is aiming. When the beam hits a block, the player will be teleported to it. Maximum travel distance is 75 blocks horizontally. The teleportation doesn't hurt the player, unlike Ender Pearls.  The Spatial Dash Gem always tries to place the player on top of the block, even if the beam hits the side or bottom of it.  The Spatial Dash Gem can teleport the player through 7 solid blocks in a row, making the gem a good way of teleporting through cave walls and ceilings. If the wall is thicker than 7 blocks, the gem then tries to find 2 air blocks inside the wall. If the air blocks are not found, the player will be teleported into a wall, leading to suffocation.  [note]A Spatial Dash Gem is also dropped by the Ender Eye mini-boss upon death.[/note]
+  - [可选提交] HardcoreEnderExpansion:blank_gem, HardcoreEnderExpansion:arcane_shard x16, HardcoreEnderExpansion:endoplasm x8, HardcoreEnderExpansion:essence x32, HardcoreEnderExpansion:end_powder x32, gregtech:gt.metaitem.98:4 x3
+  - [提交] HardcoreEnderExpansion:spatial_dash_gem
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII | dreamcraft:CoinDarkWizardII | HardcoreEnderExpansion:knowledge_note x2
+
+### [602] Spatial Distortions
+You detected a weird disturbance in the air around an Enderman. I suggest you try to steal some of their pearls and research them further.
+  - [提交] minecraft:ender_pearl x16
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinDarkWizardI x5
+
+### [2380] TNT Enchantments
+Enhanced TNT is a special version of vanilla TNT with one or more special effects (enhancements).  The way to make enhanced TNT is to right-click with End Powder in your hand to modify your TNT. You can continue adding as many effects to one TNT as you want.  Enhancements: No block damage (Feather) TNT explodes with no block damage.  No Entity damage (Slime) TNT explodes with no entity damage.  Extra Damage (Gunpowder) TNT explodes with extra damage.  Trap (Redstone) TNT explodes when a hostile mob touches or walks over the TNT block.  No Clip (Enderpearls) TNT falls through solid blocks and explodes after a few seconds.  Fire (Igneous Rock) TNT explodes with a big fire spread.  No Fuse (Redstone Torch) TNT explodes immediately.
+  - [提交] minecraft:tnt x7
+  - [提交] minecraft:feather x2, minecraft:slime_ball x2, minecraft:gunpowder x2, minecraft:redstone x2, minecraft:ender_pearl x2, HardcoreEnderExpansion:igneous_rock x2, minecraft:redstone_torch x2
+  - [提交] HardcoreEnderExpansion:end_powder x28
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSmithII | HardcoreEnderExpansion:knowledge_note
+
+### [2364] Transference Gem
+The Transference Gem is used to teleport to a marked location.  The Transference Gem uses Energy and can be charged in an Energy Extraction Table. Shift-right-clicking on a block with a Transference Gem in hand will link the gem to that block. The state of the gem itself will then switch to "Linked", as seen in its tooltip.  After linking, the player can right-click with a Transference Gem in hand to teleport to the linked block, using some of the Energy stored in the gem.  Using F3+H to enable detailed item tooltips makes the Transference Gem show the exact coordinates and the dimension of the linked location.  Once the charge of the Transference Gem becomes lower than 44%, negative effects will appear:  Deflection - the player will be teleported to a random location instead of the linked block.  Various negative potion effects, the lower the charge is - the longer they will last:  Slowness II Nausea I Weakness II Hunger I  Endermen - Angry Endermen will spawn and attack the player.  Item drop - a random amount of items in player's inventory will drop to the ground.  Storm - will cause a 2-3 minute storm. This is the rarest effect.
+  - [可选提交] HardcoreEnderExpansion:spatial_dash_gem, HardcoreEnderExpansion:arcane_shard x32, HardcoreEnderExpansion:endoplasm x16, HardcoreEnderExpansion:essence x64, HardcoreEnderExpansion:end_powder x64, gregtech:gt.metaitem.98:4 x6
+  - [提交] HardcoreEnderExpansion:transference_gem
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII x2 | dreamcraft:CoinDarkWizardII x2 | HardcoreEnderExpansion:knowledge_note x4
+
+### [2356] Visit the (Enchanted) Laboratory Island
+The Laboratory is a large structure used by Endermages to experiment with magical items from the End, and is also in the Enchanted biome found via the HEE Compass.  There are also regular chests with loot. Those can contain Obsidian Fragments and Auricion, amongst several other items.
+  - [提交] HardcoreEnderExpansion:end_stone_terrain:2 x8, HardcoreEnderExpansion:laboratory_obsidian x8
+  - [提交] HardcoreEnderExpansion:auricion x2, HardcoreEnderExpansion:obsidian_fragment x2, HardcoreEnderExpansion:stardust x8
+  > 奖励: HardcoreEnderExpansion:obsidian_fragment x32 | enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSurvivorII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2358] Visit the (Enchanted) Homeland Island
+A very flat biome with small amount of caves.  The Homeland variant has lakes of Ender Goo, piles of Falling Obsidian and a strange Obsidian road-like structure.  You can often find a Homeland Cache, a floating transparent cube that can be broken for some goodies, most importantly Arcane Shards. Endermen, Baby Endermen, and Ender Guardians spawn here.
+  - [提交] HardcoreEnderExpansion:end_stone_terrain:2 x8
+  - [提交] minecraft:obsidian x16, gregtech:gt.metaitem.98:4 x16
+  - [提交] HardcoreEnderExpansion:arcane_shard x8, HardcoreEnderExpansion:crossed_decoration:13 x8
+  > 奖励: HardcoreEnderExpansion:arcane_shard x8 | enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSurvivorII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2360] Visit the Fiery Island
+A Fire-oriented biome with huge mountains and a large amount of caves and ores. Apart from default ores, this biome also has common Igneous Rock ore. There are 2 variations of the biome - Scorching and Mine.  The Scorching variation has large blobs of cinder, streams and pools of Lava and Lilyfires. This is the only place where Fire Golems and Scorching Lenses spawn. Each island can contain a Dungeon Puzzle.  The Mine variation spawns Haunted Miners, which protect Resource Pits (holes with ores from the End and Lava) and long patches of Overworld ores. Not all Overworld ores are present on a single island, usually one or two random ores are missing.
+  - [提交] HardcoreEnderExpansion:end_stone_terrain:1 x8, HardcoreEnderExpansion:cinder x4
+  - [提交] HardcoreEnderExpansion:fire_shard x8, HardcoreEnderExpansion:igneous_rock x16, HardcoreEnderExpansion:instability_orb x8
+  > 奖励: HardcoreEnderExpansion:fire_shard x8 | enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSurvivorII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2359] Visit the Infested Island
+The Infested Islands are mostly a flat biome with occasional hills, long caves and a decent amount of ores. There are 2 variations of the biome - Deep and Ravaged. Both of these variations contain Silverfish, Infested Bats and occasionally Endermen.  The Deep variation is massively populated with Spooky Trees that can have faces on them, which are how you get Ectoplasm. The ground has all types of infested plants, including Thorny Bushes.  The Ravaged variation has patches of infested plants and occasional Spooky Trees, but the most important feature is the Ravaged Dungeon which is an open gate to getting your Charms.  About Infestation: Simply by standing on the Infested End Stone, the infestation level will rise. After leaving the area for several minutes, if the infestation level is low, it will reset and won't do any harm to the player.  However, if the infestation level gets high enough, it will trigger one or more potion effects, which include weakness, slowness and mining fatigue, and if the player's level is severe, blindness, confusion and/or poison may take place as well. These effects cannot be cured using milk; however you can drink Infestation Remedy to shorten them.
+  - [提交] HardcoreEnderExpansion:end_stone_terrain x8, HardcoreEnderExpansion:ravaged_brick x16, HardcoreEnderExpansion:ravaged_brick_glow x2
+  - [提交] HardcoreEnderExpansion:dry_splinter x32
+  - [提交] HardcoreEnderExpansion:endoplasm x8, HardcoreEnderExpansion:stardust x16
+  > 奖励: HardcoreEnderExpansion:endoplasm x16 | enhancedlootbags:lootbag:57 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSurvivorII | dreamcraft:CoinAdventureII | HardcoreEnderExpansion:knowledge_note
+
+### [2350] Welcome to the End!
+Welcome to the End! And more importantly, Hardcore Ender Expansion.  If you've already fought the Ender Dragon, you'll have noticed that the fight itself was challenging, far more than usual. Though much of the island may be destroyed, have no worry, there are plenty of End blobs out there for you to gather ore or endstone from.  First, you will want to gather some End Powder, a key catalyst for most of HEE. Any means of flight is also highly recommended.  Hint: Press the P key (unless you rebound it) for a key list of information about HEE related stuff. Once you've looked through it you'll realize you need knowledge in order to unlock pages. Looking at blocks or items or certain things will also grant you knowledge. Consuming Knowledge Notes will also grant you knowledge points. Here are some for you to get started on. Good luck!  You can also search for the Adventurer's Diary for some lore if you want.  [note]PS: Hold shift and whack the egg with a vanilla sword to get it to drop.[/note]  [warn]The End has invisible rain, cover up your miners, and then complain on Discord.[/warn]
+  - [提交] minecraft:end_stone x64, HardcoreEnderExpansion:end_powder x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventureII | dreamcraft:CoinSurvivorII | HardcoreEnderExpansion:knowledge_note
+

@@ -1,0 +1,2 @@
+CLASS net/minecraft/class_5894 net/minecraft/network/packet/s2c/play/OverlayMessageS2CPacket
+	FIELD field_47967 CODEC Lnet/minecraft/class_9139;

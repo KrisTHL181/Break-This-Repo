@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-registry-sync-v0-v1-testmod",
+  "name": "Fabric Registry Sync (v0) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-registry-sync-v0": "*"
+  },
+  "mixins": [
+    "fabric-registry-sync-v0-testmod.mixins.json"
+  ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.registry.sync.CustomDynamicRegistryTest",
+      "net.fabricmc.fabric.test.registry.sync.RegistrySyncTest",
+      "net.fabricmc.fabric.test.registry.sync.RegistryAliasTest",
+      "net.fabricmc.fabric.test.registry.sync.RegistryEntryWorldValidationTestInit"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.registry.sync.client.DynamicRegistryClientTest",
+      "net.fabricmc.fabric.test.registry.sync.client.RegistrySyncClientTest"
+    ],
+    "fabric-client-gametest": [
+      "net.fabricmc.fabric.test.registry.sync.client.RegistryEntryWorldValidationClientTest"
+    ]
+  }
+}

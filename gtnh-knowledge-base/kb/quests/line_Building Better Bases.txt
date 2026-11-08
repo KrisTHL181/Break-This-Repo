@@ -1,0 +1,419 @@
+# 任务线: Building Better Bases
+### [1958] §a§l80 New Colors to Play With
+When you plant a vanilla flower, it is already mature. Cut it with shears to get a germling you can replant to make more. Break the flower to get a mature flower. Turn the flower into pigment using a crafting table.  To get crosses, plant flowers next to empty soil blocks. Keep an eye out for weeds. Eventually a small germling will start growing.  Remember, do this underground or in an enclosure or your TPS will regret it.
+  - [提交] Botany:pigment:59 x4, Botany:pigment:78 x4
+  > 奖励: bq_standard:choice
+
+### [-8895157193571960177] §8§lAdvanced Concrete Backfiller
+The §5Advanced Concrete Backfiller§r has the same general functionality as the regular one except it boasts an impressive §364§r block radius and operates at §24x§r the speed.   It's a good idea to consider using one of these as your base continues to expand across more area. Filled space saves TPS!
+  - [提交] gregtech:gt.blockmachines:144
+  - [可选提交] gregtech:gt.blockframes:28 x15, gregtech:gt.blockcasings4:2 x6
+
+### [-8137664697343933653] §2§lAdvanced Filing Cabinet
+The advanced filing cabinet can store twice as many items as the regular one, and is much less restrictive on what can be stored inside.
+  - [提交] ExtraUtilities:filing:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x3 | dreamcraft:CoinDarkWizardI x3
+
+### [-8955940478007720167] §a§lA Modern Technology
+Concrete. Eh sorry, Hempcrete! A new modern technology brought to you via the GTNH Chisel mod. All 16 colors.  There are a lot of other nice blocks in Chisel. Just type "@chisel" in NEI and look around.
+  - [可选提交] chisel:hempcretesand x64
+  - [提交] chisel:hempcrete x64
+  > 奖励: chisel:glotek:11 x8
+
+### [-6347981504780433561] §c§lBarrel Upgrades
+Better Barrels have tiers which increase the amount of upgrades a barrel can hold. They are mainly used to increase their storage capacity, although there are a few upgrades which give the barrels extra functionality.  Barrels can only be upgraded one tier at a time, so be prepared to make lots of lower tier structural upgrades if you plan to continue using Better Barrels for your storage needs!
+  - [提交] JABBA:upgradeStructural, JABBA:upgradeStructural:1
+  - [可选提交] JABBA:upgradeCore, JABBA:upgradeCore:2, JABBA:upgradeCore:3, JABBA:upgradeCore:7
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [952] §2§lBase Too Big? I've Got a Fix For You!
+Keeping a base spread apart for pollution or explosion prevention can really wear you out, so why not make some concrete to get around faster?  Harvest some Marble and centrifuge it into Calcite, and mix up some concrete in your Mixer. Next output it into a Fluid Solidifier with a block mold to make concrete blocks.  You'll move faster on top of these blocks. They can even be turned into bricks to prevent unwanted spawns! Hint: 10 buckets of wet mix converts to exactly 160 blocks. These blocks can also be Chiseled into different varieties.
+  - [可选提交] gregtech:gt.blockstones:1 x24
+  - [可选提交] gregtech:gt.metaitem.01:2845 x24
+  - [可选提交] gregtech:gt.metaitem.01:2823 x21, gregtech:gt.metaitem.01:2939 x10 (ore:dustQuartzSand), gregtech:gt.metaitem.01:2299 x10, gregtech:gt.metaitem.01:2805 x10
+  - [可选提交] gregtech:gt.metaitem.01:32308
+  - [提交] gregtech:gt.blockconcretes:8 x160
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [1942] §a§lBasic Blocks
+Chisel offers a wide variety of blocks. Searching NEI for "chisel" gives pages and pages. Here's a small sample.
+  - [提交] chisel:antiBlock:15, chisel:carpet, chisel:brickCustom:5
+  - [提交] chisel:grimstone, chisel:lavastone, chisel:waterstone
+  > 奖励: minecraft:lava_bucket
+
+### [1945] §c§lBasic Builder's Wand
+The only thing going for the stone builder's wand is that it's cheap. It doesn't offer much in special modes, and doesn't last long either. But you can make a lot!  To use, right-click on a block while holding more of that block in your inventory. An outline will show you what it will do.  [note]Tip: /wandoops will undo any block placements you make with the wand, just in case you misclick.[/note]
+  - [提交] betterbuilderswands:wandStone
+  > 奖励: betterbuilderswands:wandStone x4
+
+### [1973] §2§lBasic ProjectRed Illumination
+The basic ProjectRed Illumination lamps only need an LV mixer to make. The normal version needs a redstone signal to turn on. The inverted version is on unless a redstone signal is applied.
+  - [提交] ProjRed|Illumination:projectred.illumination.lamp:1
+  > 奖励: ProjRed|Illumination:projectred.illumination.lamp:16 x8
+
+### [1981] BetterIO?
+The Powered and Wireless Powered lights from EnderIO provide light up to 10 blocks away vs the normal 7 for a torch. They will require centrifuging liquid air to get the bulbs.
+  - [提交] EnderIO:blockElectricLight:1, EnderIO:blockElectricLight:5
+  > 奖励: EnderIO:blockElectricLight:1 x7 | EnderIO:blockElectricLight:5 x7
+
+### [1952] §a§lBotany
+The Botany mod offers more colors for blocks and glass, and simple tile patterns or more complex patterns using a Tileworker. For now, we'll make an iron trowel.  This mod will make lots of butterflies, so make sure to do your gardening underground or under glass. The butterflies will spread and infect leaves around your area, making more butterflies, causing lag.
+  - [提交] Botany:trowelIron
+  > 奖励: minecraft:clay_ball x63
+
+### [601] §c§lBuilding Made Easy
+Placing blocks by hand can be tedious. Wouldn't it be nice to be able to place blocks like "Another 9 here"? Well, good news. Get yourself some of the various building blocks, and I shall reward you with something nice.  You could also just craft it (or the better one) with unstable ingots yourself, too.  You can upgrade to the various other BBWs too.
+  - [提交] chisel:rebel x16, chisel:laboratoryblock x16, chisel:holystone x16, chisel:grimstone x16, chisel:hexPlating x16, chisel:fantasyblock2 x16, chisel:fantasyblock x16, chisel:factoryblock x16, chisel:concrete x16, chisel:technical x16, chisel:tyrian x16, chisel:waterstone x16, chisel:voidstone2 x16, chisel:templeblock x16, chisel:valentines x16, chisel:voidstone x16, chisel:warningSign x16
+  - [提交] chisel:diamond_block:12, chisel:emerald_block:5, chisel:lapis_block:8, chisel:redstone_block:9, chisel:gold_block:6
+  > 奖励: ExtraUtilities:builderswand
+
+### [-8720934616008906102] §a§lBuilding with Style
+Ztones is another mod which adds loads of new building blocks. Each craftable block also has many variants which can be made using a chisel.  §cUnlike many other decorative blocks, Ztones blocks do not prevent mob spawns. Make sure you are spawnproofing your builds when using them!
+  - [提交] Ztones:tile.bittBlock, Ztones:tile.glaxx, Ztones:tile.zoeaBlock, Ztones:tile.korpBlock:11, Ztones:tile.azurBlock, Ztones:tile.venaBlock:9, Ztones:tile.ztylBlock:6, Ztones:tile.zetaBlock:12
+  - [可选提交] chisel:chisel
+  > 奖励: Ztones:tile.laveBlock:12 x128
+
+### [1983] §2§lBuild it Bigger
+You can build it! The Building Guide helps show you an outline of simple geometric shapes. Provide it with a redstone signal to activate.
+  - [提交] OpenBlocks:guide
+  > 奖励: minecraft:glass x64
+
+### [2160] §a§lCarpenter's Blocks
+Yet another custom block system! Carpenter's blocks are crafted blank and placed in-world, and then plain block textures applied to them. The blocks must not be Tile Entities, so Botany blocks don't work correctly with them, but GT Stones like Red Granite, and any colored clay or vanilla glass block will work. Some Chisel glass types will work, and Ztones blocks and Tinted Glass also work.  The Garage Door requires a block at the top to hang "down" from, but can pretty much be any length. A redstone signal on any block next to the Garage Door blocks will open or close the door. The open/close will propagate across multiple vertical doors, so you can set up non-square doors. Sneaking and right-clicking with an empty hand will change the door's polarity.  The pressure plates are player-only activation, making them great for doors into your base.  The hatches must be clicked on the side of a block to place. They can be handy for protecting you from crucible...byproducts.  There is a lot more block shapes possible, check NEI for "Carpenter's" to see the options.  The Chisel allows you to chisel blocks while attached to a Carpenter's block.  The Hammer allows various functions.  Hammer on door - changes door shape type Sneak Hammer on door - Changes from iron to wooden behavior Sneak Hammer on lever - Changes polarity (which direction is on/off)
+  - [提交] CarpentersBlocks:blockCarpentersBlock x16
+  - [提交] CarpentersBlocks:blockCarpentersButton x2, CarpentersBlocks:blockCarpentersLever x2, CarpentersBlocks:blockCarpentersPressurePlate x2, CarpentersBlocks:blockCarpentersGarageDoor x10
+  > 奖励: CarpentersBlocks:itemCarpentersHammer | CarpentersBlocks:itemCarpentersChisel
+
+### [3294] §c§lCatwalks
+The Catwalks Mod adds several cosmetic blocks to deck out your factory.  Scaffolds and Builder's Scaffolds are useful for building up in the air before you get access to flight. They can be climbed like ladders, and break instantly when punched. You will also not fall off of them if you let go of movement keys while climbing. If you right-click the Builder's Scaffold with a solid block, the scaffold will be replaced by that block.  Catwalks can connect to each other to form a wide passageway. You can decorate them by attaching Caution Tape or Rope Lights, the latter provide dim lighting.  Caged Ladders give you a way to move up and down without a risk of falling off. Climbing them is much faster than vanilla ladders.  Support Columns are purely decorative. They connect to each other in all directions. They also work as ladders.  Sturdy Rails let you run minecart tracks across gaps without supports. Right-click the Sturdy Powered Rail with a Blowtorch to power it permanently, you don't need a redstone torch. If you don't have enough distractions already, use them to build a rollercoaster!  The Blowtorch lets you remove railings or even the floor from a catwalk by right-clicking. Use it to make an opening to let you walk onto the catwalk, or if you don't know what an "OSHA violation" is. The same function can be performed by a GT or Forge-compatible wrench, so you don't actually need to make this.
+  - [可选提交] catwalks:blowtorch
+  - [提交] catwalks:scaffold x4, catwalks:catwalk_unlit x6, catwalks:cagedLadder_north_unlit x6
+  > 奖励: gregtech:gt.metaitem.01:11305 x16
+
+### [1960] §a§lCeramics
+With some clay and pigments, you can make pigmented clay. Put the pigmented clay in a furnace to get basic ceramic blocks. These blocks are great if you want an area of nice even colors.
+  - [提交] Botany:clay:78 x4, Botany:clay:59 x4
+  - [提交] Botany:ceramic:78 x4, Botany:ceramic:59 x4
+  > 奖励: bq_standard:choice
+
+### [-6589720656538575343] §c§lChests Had Quite the Glow-up!
+Compartments are fancy chests with extra features that make them much easier to navigate.  Their inventory is split into different folders, which can be named and color-coded. They also come with a search feature that allows you to search for items in any of the compartment's folders.  The largest compartment can store up to 400 stacks of items.  [note]Place a compartment next to a crafting station for easy access to its entire storage space![/note]
+  - [提交] BinnieCore:storage, BinnieCore:storage:1, BinnieCore:storage:2, BinnieCore:storage:3, BinnieCore:storage:4, BinnieCore:storage:5
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x3
+
+### [1935] §a§lChisel
+Chisel is one of the main building mods in this pack. It adds hundreds of new blocks which will help make your base beautiful!  The mod also adds different variants of many vanilla blocks. Make a chisel to check them out!
+  - [提交] chisel:chisel, chisel:obsidianChisel, chisel:diamondChisel, chisel:netherStarChisel
+  > 奖励: minecraft:diamond x2
+
+### [1939] §2§lChisel All the Things
+If, for some reason, you need to chisel a large number of items, the autochisel is what you want.
+  - [提交] chisel:autoChisel
+
+### [1940] §2§lChisel as Fast as You Can
+The autochisel speed is pretty slow. Craft some upgrades to make it faster.
+  - [提交] chisel:upgrade, chisel:upgrade:1, chisel:upgrade:2
+  > 奖励: chisel:upgrade:3
+
+### [-5996677402577937429] §2§lChiseling the Way Greg Intended
+Another way to automatically chisel blocks to your heart's content, this time sponsored by GregoriousT himself!
+  - [提交] gregtech:gt.blockmachines:31066, gregtech:gt.blockmachines:31067, gregtech:gt.blockmachines:31068
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinTechnician x20
+
+### [1944] §a§lConcrete and GT Stones
+Chisel can also transform Concrete and GT stones into new interesting blocks. Some of the GT stone blocks will even prevent mobs from spawning on top. Concrete will let you run faster.
+  - [提交] gregtech:gt.blockconcretes:8, chisel:concrete, chisel:concrete:10
+  - [提交] gregtech:gt.blockstones:5, gregtech:gt.blockgranites:12, gregtech:gt.blockstones:14
+
+### [-6276617063343808005] §6§lConcrete Backfiller
+Tired of all those mob noises coming from the depths? Consider making the §5Concrete Backfiller§r. This multiblock will fill the area underneath it with concrete in a §316§r block radius; patching all caves and air spots that might be lying underneath.   Simply provide it with Light Concrete and let it do the rest!
+  - [提交] gregtech:gt.blockmachines:143
+  - [可选提交] gregtech:gt.blockframes:305 x15, gregtech:gt.blockcasings2 x6
+
+### [-8321627444342603894] §2§lCopper Shulker Box
+The portable equivalent of the Copper Barrel.  Has §n45§r slots.  [note]Can be dyed![/note]
+  - [提交] etfuturum:shulker_box
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [-5235602628658218321] §b§lCrystal Chest
+You've created a chest that allows you to see what's inside, isn't that useful?  [note]Just as with the previous chests you can also upgrade with a fitting upgrade item.[/note]
+  - [提交] IronChest:BlockIronChest:5
+
+### [-5758781817576436666] §6§lCrystal Shulker Box
+An enhanced version of the Diamond Shulker that allows you to see the contents within.  Has §n108§r slots.  [note]Can be dyed![/note]
+  - [提交] etfuturum:shulker_box
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [-6508607048488154369] §6§lDark Steel Barrel
+The Dark Steel barrel holds 135 items! And is also immune to explosions.
+  - [提交] etfuturum:darksteel_barrel
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x3
+
+### [-8177551156102963581] §5§lDiamond Shulker Box
+The portable equivalent of the Diamond Barrel, you'll need to either upgrade your wand or take advantage of the Gold to Diamond Shulker Box Upgrade.  Has §n108§r slots.  [note]Can be dyed![/note]
+  - [提交] etfuturum:shulker_box
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [-4980171706292986537] §6§lDraconic Chest
+The Draconic Chest is a special upgrade of the compressed chest. In addition to a large inventory size and being able to retain its contents, it has a crafting station and a furnace integrated directly into it.   The smelting module can be powered by EU or RF and has an internal buffer of its own. It can smelt up to 5 items at a time.
+  - [提交] DraconicEvolution:draconiumChest
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5 | dreamcraft:CoinSmithI x5
+
+### [1980] §2§lEnderIO Lights
+EnderIO also has its own lights. These lights have a radius of 8 blocks vs the normal 7.
+  - [提交] EnderIO:blockElectricLight:3
+  > 奖励: EnderIO:blockElectricLight:3 x7 | EnderIO:blockElectricLight:2 x8
+
+### [1972] §c§lEven small Glowstone shines bright
+Now that you've been to the nether and gathered Glowstone, you can use that for light as well. You can color it to make the block color change (unfortunately 1.7.10 does not support colored lights) or you can use the Forge Microblocks saw to cut it up into tiny nooks to light up areas without taking up much space.  There are also various glowing plants you can find or breed, such as glowflowers.
+  - [提交] ForgeMicroblock:microblock:513, ExtraUtilities:color_lightgem:13
+  > 奖励: minecraft:glowstone x16
+
+### [-5119728323472026576] §8§lExcavation Upgrade
+Mining out large chunks of stone can be a huge pain when it comes to creating bases. Why not craft the excavator upgrade for your Prototype Matter Manipulator so that you have the ability to remove blocks quickly?
+  - [提交] matter-manipulator:metaitem:25
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [1974] §2§lFancier ProjectRed Illumination
+The fancier ProjectRed Illumination lamps, lanterns, and fixtures require the Forming Press and Assembler to create.
+  - [提交] ProjRed|Illumination:projectred.illumination.lantern:3, ProjRed|Illumination:projectred.illumination.fixture:4, ProjRed|Illumination:projectred.illumination.cagelamp2:5, ProjRed|Illumination:projectred.illumination.cagelamp:6
+  > 奖励: ProjRed|Core:projectred.core.part:21 x64 | ProjRed|Core:projectred.core.part:30 x64 | ProjRed|Core:projectred.core.part:19 x64 | ProjRed|Core:projectred.core.part:34 x64
+
+### [1971] §c§lFancy Lanterns
+Bibliocraft offers fancy looking lanterns. Make the candles from candleberries or beeswax.
+  - [提交] BiblioCraft:BiblioIronLantern
+  > 奖励: BiblioCraft:BiblioLantern:3
+
+### [1968] §2§lFancy Woods
+With the woodworker, you can create fancy looking types of wood blocks. You can use wood planks from Vanilla, Forestry, and Extra Trees.
+  - [提交] ExtraTrees:machine:1, ExtraTrees:misc:4 x8
+
+### [1984] §6§lFaster, Better, Buildi-er
+The Enhanced Building Guide offers more features than the standard model. Most importantly, you can right-click on any white part of the block with the item you want placed and the block will place in the world. It needs a redstone signal to activate.
+  - [提交] OpenBlocks:builder_guide
+  > 奖励: minecraft:redstone_block x16
+
+### [-8715851602927843049] §4§l§nFinally, Some Real Power!
+The Energy Tunnel Manipulator Upgrade is incredibly useful for the heavy potential Matter Manipulator usage in UHV+.   You can now link directly with either the §5§lQuantum Link§r or a §5§lLaser Target Hatch§r for much quicker recharging. No need to rely on those slow wireless chargers any longer!
+  - [提交] matter-manipulator:metaitem:24
+  > 奖励: dreamcraft:CoinTechnicianIII x5
+
+### [1953] §a§lFinding Flowers
+To start, you'll need to find some flowers. Then take your trowel and use it on some dirt blocks to turn it into soil. Next place your flowers on the soil to turn them into Botany flowers. If you've reached MV tier, check out the How to Be(e) tab for info on Genetics.
+  - [提交] minecraft:red_flower, minecraft:yellow_flower
+  > 奖励: minecraft:red_flower:3 | minecraft:red_flower:1
+
+### [1976] §2§lFlat Lamps
+These simple lamps from Ztones are a nice, subdued looking lamp style. I like using them on ceilings for the "office" look.
+  - [提交] Ztones:lampf
+  > 奖励: Ztones:lampb x16
+
+### [1943] §a§lFun Party Blocks
+There's also some really funky blocks available.
+  - [提交] chisel:warningSign:6, chisel:obsidian_snakestone:1, chisel:jackolantern16
+  - [提交] chisel:technical3 x9, chisel:laboratoryblock, chisel:hexPlating
+  - [提交] chisel:futura:3, chisel:futura:4, chisel:futuraCircuit:1
+  > 奖励: IC2:itemCellEmpty:2 x4
+
+### [1959] §a§lGlass of Many Colors
+The pigments color an amazing variety of glass. Just one warning - unlike normal glass, this glass isn't fireproof.
+  - [提交] Botany:stained:59 x4, Botany:stained:78 x4
+  > 奖励: bq_standard:choice
+
+### [1965] §2§lGlassworker
+Want some custom glass shapes and configurations? A glassworker can provide some unique patterns to put in your windows. You'll need to make some glass fittings to hold the glass together.
+  - [提交] ExtraTrees:machine:3, ExtraTrees:misc:5 x4
+  > 奖励: Botany:stained:66 x16 | Botany:stained:23 x16
+
+### [1977] §2§lGlowstone & Chisel torches, space rated
+When traveling off-world, you want the best in torches. Torches that will work in no-oxygen environments like the Moon. For that, you need glowstone torches. You can chisel these torches into a variety of torch types, also proven to work in deep space.
+  - [提交] GalacticraftCore:tile.glowstoneTorch, chisel:torch4
+  > 奖励: chisel:torch8 x64
+
+### [-5188884833545587110] §3§lGold Shulker Box
+The portable equivalent of the Gold Barrel.  Has §n81§r slots.  [note]Can be dyed![/note]
+  - [提交] etfuturum:shulker_box
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [-7818274023635649048] §6§lGotta Go Fast!
+Yet another block you can use to get around your base much more efficiently. Unlike concrete, you don't have to fill your floor with these to get their full benefit.  You can also stack the speed boost from both boosters and concrete for an even bigger speed boost!  [note]Place your boosters 18 blocks apart - or 33 blocks if you're using concrete - for optimal boosting.[/note]
+  - [提交] Ztones:booster x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25
+
+### [-5578396721046097458] §9§lHigh-tier Wand
+Do you ever wish that you were able to place 16,000 blocks with the click of a button? No??..  Well now you can!  [note]It's unbreakable too![/note]
+  - [提交] betterbuilderswands:wandUnbreakable:14
+  > 奖励: ExtraUtilities:unstableingot x32 | enhancedlootbags:lootbag:8 | dreamcraft:CoinDarkWizardII x5
+
+### [-6351818268137717740] §2§lIron Shulker Box
+The portable equivalent of the Iron Barrel.  Has §n54§r slots.  [note]Can be dyed![/note]
+  - [提交] etfuturum:shulker_box
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [2105] §6§lKeeping Track of Your Findings (Flowers)
+This handy device will keep track of the flowers you have discovered so far, and their properties.
+  - [提交] Botany:database
+  > 奖励: minecraft:diamond x2
+
+### [1956] §a§lKilling Weeds and Growing Flowers
+Nobody likes weeds. Weedkiller will keep the weeds off your soil.  Bone meal can be applied to germling flowers to make them mature faster.
+  - [提交] minecraft:dye:15, Botany:misc:7
+  > 奖励: bq_standard:choice
+
+### [-6067160993200988432] §a§lLet it Glow!
+Chisel adds a couple new sets of glowing blocks to enhance your builds.   If you've ever seen a cool looking futuristic base on the loading screen, it likely used one of these blocks!  [note]Unlike Neonite and Antiblocks, Lapis Caelestis blocks do emit light - and different colors emit different amounts of it.[/note]
+  - [提交] chisel:neonite, chisel:antiBlock:15, ExtraUtilities:greenscreen
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizard x10
+
+### [-5583348153901815662] §a§lLet's get Building!
+This pack features many mods which add lots of new building blocks and/or QOL features which make building much easier.  This questline will go over a few of the major additions.
+  - [勾选确认]
+
+### [1978] §6§lLighting Up a Large Area, Without Electricity
+If you have a relatively large area you need to light up without using electricity, you can use these floodlights. They can take normal furnace fuels, including blocks and compressed blocks. They do require some electronic components to make, but can send out a beam a long ways, or various cone shapes a shorter distance. Use the wrench to change modes, and shift-right-click to invert.
+  - [提交] FloodLights:carbonFloodlight
+  > 奖励: FloodLights:carbonFloodlight x4 | dreamcraft:CompressedCharcoal x64
+
+### [1979] §5§lLighting Up a Large Area, With Electricity
+Now that you have a vacuum freezer, you can liquefy compressed air cells and centrifuge them for rare gases. You'll need those to make the incandescent bulb for these lights. As long as they have EU, these lights can shoot a beam or do narrow or wide cones. Use the wrench to change modes, and shift-right-click to invert.  It's better to provide power to an Ender IO capacitor and then power these machines with RF, instead of powering directly with GT EU, because they don't work well with GT's EU amp system, and will draw a whole EU packet for a single RF.
+  - [提交] FloodLights:electricFloodlight
+  > 奖励: FloodLights:electricFloodlight x4
+
+### [1957] §6§lLike Having a County Extension Office in Your Hand
+The soil meter will tell you the soil stats - how dry, how many nutrients, etc. You can amend the soil with the various powders so that it matches the requirements for your flower.
+  - [提交] Botany:soilMeter
+  > 奖励: minecraft:red_flower:2 | minecraft:double_plant:4
+
+### [1969] §a§lLook Mom, No Torches!
+Tired of a base using nothing but torches? This set of quests will go through the various options available to light up your beautiful base.  First up, Railcraft lanterns. These come in stone and metallic varieties. The stone varieties don't need much to craft. One plus/minus for these lanterns is that they are solid blocks - while you cannot walk through them, they also do not fall if the surrounding blocks are removed. Search "lantern" in NEI for more varieties. They are a bit annoying to craft now, but if you check NEI you can make them pretty easily with assemblers later.
+  - [提交] Railcraft:lantern.stone:9 x4, Railcraft:lantern.stone:8 x4
+  > 奖励: Railcraft:lantern.metal:1 x8 | minecraft:stone
+
+### [1946] §c§lLow-Tier Wand
+The Iron wand will last longer than the stone wand, and has a few modes.
+  - [提交] betterbuilderswands:wandIron
+  > 奖励: betterbuilderswands:wandIron x2
+
+### [2138] §a§lMaking Sense of Spaghetti
+Nobody likes an untidy base. Why don't you use some color to organize things a little! The paint brush, painter, and spray cans can be used to color machines, wires, cables, pipes, wool, stained glass, and more!  Colored pipes, wires, and cables can only connect to uncolored cables/pipes/wires, or those of the same color.  Input buses and hatches can also be colored, and multiblock machines will enforce input separation based on their colors. Inputs of the same color can only see each other, and un-colored inputs work with any color. While outbut buses and hatches can be colored as well, doing so will have no effect on where the machine sends outputs.  Any painted block can be painted over with another color, but to remove the color entirely you need to break the block while sneaking or use a can of solvent.  The paint brush is the cheapest to make paint for, only requiring one piece of colored dye. The painter requires distilled water and a chemical bath to create paint for. The spray can uses chemical dye, which requires an MV chemical reactor to make. The color applicator uses paint balls and can store all 16 colors at once.  [note]Sneaking while using a spray can or paint brush will color an entire line of blocks![/note]  [note]The priority of colored hatches is the same as the order of vanilla dyes in NEI, from highest (black) to lowest (white).[/note]
+  - [提交] BuildCraft|Core:paintbrush, IC2:itemToolPainter, gregtech:gt.metaitem.01:32402, appliedenergistics2:item.ToolColorApplicator, gregtech:gt.metaitem.01:32468
+  > 奖励: BuildCraft|Core:paintbrush | BuildCraft|Core:paintbrush | BuildCraft|Core:paintbrush | enhancedlootbags:lootbag:1
+
+### [-7564657505094199890] §8§lManipulator Upgrades
+Now that you have a Matter Manipulator... why not make it better?  These upgrades will give huge quality of life improvements when using should you choose to craft them.   [note]Pay attention to the applicable tier of MM before you do so![/note]
+  - [提交] matter-manipulator:metaitem:27, matter-manipulator:metaitem:26
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [-8254917636897972566] Marking Your Base
+The ModernMarkings mod gives you plenty of ways to sign up your base. Great way to warn everyone about that upcoming nuclear reactor project...  Simply craft an exit wall marking, and chisel this marking to unlock all other markings!
+  - [提交] modernmarkings:tile.wall_marking_exit
+  - [提交] modernmarkings:tile.wall_marking_warning_danger
+  > 奖励: minecraft:torch x12
+
+### [1947] §6§lMid-Tier Wand
+The next tier up wand is the Diamond wand. Has all kinds of fun modes. Just be careful using it, would hate to place a bunch of blocks accidentally!
+  - [提交] betterbuilderswands:wandDiamond
+  > 奖励: betterbuilderswands:wandDiamond
+
+### [1966] §2§lMo' Hammers Mo' Problems
+Yes indeed, time for another type of hammer. The master carpentry hammer will allow you to rotate the blocks from the various workers.  Sneak to rotate the blocks vertically.  Why is the lower tier hammer the master hammer? Who knows??
+  - [提交] ExtraTrees:hammer
+  > 奖励: ExtraTrees:durableHammer
+
+### [1986] §a§lMore Like Ouch-i-tect
+The sawbench can turn most full cube blocks into amazing shapes of various kinds.  Right-click with the hammer to rotate 90 degrees. Shift-right-click with the hammer to change the orientation of the "bottom" face.  The Chisel is used to alter the structure of blocks in various ways. Some blocks automatically form connections with adjacent blocks. These connections can be disabled and re-enabled by right-clicking with a chisel near the side that you want to change.  Some blocks can have a secondary material applied to them. The secondary material can be removed by right-clicking on the center of the block with a chisel.  You can also right-click on a vanilla Glass, Glass Pane, Glowstone or Ice block with a chisel to harvest the block without breaking it.
+  - [提交] ArchitectureCraft:sawbench
+  > 奖励: ArchitectureCraft:hammer | ArchitectureCraft:chisel
+
+### [1961] §a§lMortar and Tiles
+To make ceramic tile patterns, you need to convert your blocks into tiles. First make mortar, and then use the mortar with your blocks in a 3 block + 1 mortar pattern in the crafting table to get ceramic tiles.
+  - [提交] Botany:misc:6 x4
+  - [提交] Botany:ceramicBrick:15163 x3
+  > 奖励: bq_standard:choice
+
+### [1941] §a§lMy Ancient Enemy
+The one place Chisel is weak is in stairs. It would be nice to have more variety, but later I'll show you how to make any block into a custom stair.  You can also search NEI for "stairs" to find stairs from other mods.
+  - [提交] chisel:packedice_stairs.0, chisel:marble_stairs.1:8, chisel:limestone_stairs.0
+  > 奖励: minecraft:lava_bucket
+
+### [-8876130790529141535] §6§lObsidian Barrel
+The Obsidian barrel holds as many items as the Diamond one, and is also immune to explosions.
+  - [提交] etfuturum:obsidian_barrel
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x3
+
+### [-5548813088822417447] §8Obsidian Chest
+Combining diamond chest with obsidian allowed you to create a chest that is blast proof!  [note]Just as with the previous chests you can also upgrade with a fitting upgrade item.[/note]
+  - [提交] IronChest:BlockIronChest:6
+
+### [-7942941687928335173] §6§lObsidian Shulker Box
+The portable equivalent of the Obsidian Barrel that retains it's explosion-proof qualities.  Has §n108§r slots.  [note]Can be dyed![/note]
+  - [提交] etfuturum:shulker_box
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [1967] §2§lPanels to Cover Your...Everything
+The panelworker will create wood flooring pieces for you to use.
+  - [提交] ExtraTrees:machine:2
+  > 奖励: ExtraTrees:misc:4 x64
+
+### [1955] §a§lPowder Power
+Botany uses various powders to enhance soil properties.  Raise Ph - Ash Powder, Pulp Powder Lower Ph - Mulch Powder, Sulphur Powder Increase Nutrients - Fertilizer Powder, Compost Powder
+  - [提交] Botany:misc, Botany:misc:1, Botany:misc:2
+  - [提交] Botany:misc:3, Botany:misc:4, Botany:misc:5
+  > 奖励: bq_standard:choice
+
+### [1975] §2§lProjectRed Lights With a Purpose
+ProjectRed offers a couple of special lights that can be used as buttons. The normal buttons are always lit up. The Feedback buttons are lit up when powered by any redstone signal.
+  - [提交] ProjRed|Illumination:projectred.illumination.lightbutton:9
+  > 奖励: ProjRed|Illumination:projectred.illumination.flightbutton:8
+
+### [1970] §a§lSecond Saw
+Forge Microblocks can be really handy to make custom pieces. There are many saw tiers available. If you make me an iron one, I'll give you a diamond one.
+  - [提交] ForgeMicroblock:sawIron
+  > 奖励: ForgeMicroblock:sawDiamond
+
+### [-6185205082821488463] §3§lShulker Upgrades
+Shulker boxes in need of an upgrade? Now that you're in MV and have access to §dCrystalline Pink Slime§r dust they can be! No need to gather all new shells, there are 9 upgrade items available. They will preserve the inventory of your shulker so there is no need to empty it beforehand.  §lAvailable Upgrades:§r Vanilla -> Copper Vanilla -> Iron Copper -> Iron Copper -> Silver Iron -> Gold Silver -> Gold Gold -> Diamond Diamond -> Crystal Diamond -> Obsidian
+  - [勾选确认]
+
+### [-4655984694965074482] §3§lSilver Shulker Box
+The portable equivalent of the Silver Barrel.  Has §n72§r slots.  [note]Can be dyed![/note]
+  - [提交] etfuturum:shulker_box
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [1938] §a§lSome Handy Uses
+The TiCon chisel doesn't have a lot of uses, but here are a couple of interesting ones. Use NEI to see other options for more decorations. You can also slab these blocks if you want something monsters cannot spawn on.  You can also use the chisel in-world on Tinkers' blocks to change them into different variants - just be aware that sometimes you can't change them back!  [note]Brownstone roads are slightly faster than rough brownstone.[/note]  [note]Using the chisel on seared stone allows you to turn it into seared bricks.[/note]
+  - [提交] TConstruct:SpeedBlock:1, TConstruct:decoration.multibrick:10, TConstruct:decoration.multibrick:8
+  - [可选提交] TConstruct:Smeltery:4, TConstruct:Smeltery:2
+  > 奖励: minecraft:lava_bucket
+
+### [-5335654271047265477] §9§lThe Beginnings of a Humble Chest Monster
+Did you really think a single chest would suffice for your storage needs? Come back when you've made at least a few.  [note]You can place chests next to each other by chiseling every other chest into a trapped chest![/note]
+  - [合成] minecraft:chest x8
+  - [可选提交] minecraft:trapped_chest x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x10
+
+### [1936] §a§lThe Right Tool for the Job
+Tinker's Construct has their own chisel tool variant, for converting Tinker blocks into different types. Not a lot of uses, but if you check NEI you can see what you can do.
+  - [提交] TConstruct:metalPattern:13
+  > 奖励: dreamcraft:ZincGravelOre x4
+
+### [1962] §a§lTile Patterns
+Now that you have tiles, you can make simple tile patterns. A 2x2 of red/yellow and yellow/red makes a simple checkerboard. Using the checkerboard again in a 2x2 makes a checkerboard with smaller tiles. Use Binnie's Botany wiki page to find more patterns you can make with just tiles.
+  - [提交] Botany:ceramicBrick x4, Botany:ceramicBrick x4
+  > 奖励: bq_standard:choice
+
+### [1963] §2§lTileworker
+The tileworker can take the single-color ceramic blocks and turn them into pretty patterned blocks.  And contrary to the name, you use ceramic blocks here, not tiles.
+  - [提交] ExtraTrees:machine:4, Botany:misc:6 x4
+  > 奖励: Botany:itemFlower | Botany:itemFlower | Botany:itemFlower
+
+### [1937] §a§lTinker's Blocks
+Tinker's Construct offers a couple of useful blocks from the smeltery. Rough Brownstone takes Tin and Gravel and makes a block that lets you move a little faster. Cobblestone can be turned into Seared Stone, usable in the smeltery walls to make it larger without having to use clay.
+  - [提交] TConstruct:SpeedBlock, TConstruct:Smeltery:4
+  > 奖励: minecraft:lava_bucket
+
+### [1982] §2§lWhat's Behind Door #3?
+The Malisis Door Factory lets you go crazy with all kinds of ideas for custom doors.  A Player Sensor is a nice way of opening a door. Better than pushing a button or stepping on a plate!  Maybe you can find a use for this block mixer, it's kinda weird and doesn't work right.  There are some craftable Malisis items as well, check them out in NEI.
+  - [提交] malisisdoors:door_factory, malisisdoors:player_sensor
+  > 奖励: malisisdoors:block_mixer
+

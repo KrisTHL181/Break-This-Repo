@@ -1,0 +1,105 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.mixin.client.rendering;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.PolygonMode;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.ShaderType;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.client.renderer.ShaderDefines;
+import net.minecraft.resources.Identifier;
+
+import net.fabricmc.fabric.api.client.rendering.v1.FabricRenderPipeline;
+import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineImpl;
+import net.fabricmc.fabric.impl.client.rendering.FabricRenderPipelineInternals;
+
+@Mixin(RenderPipeline.Builder.class)
+class RenderPipelineBuilderMixin implements FabricRenderPipeline.Builder {
+	@Unique
+	private Optional<Boolean> usePipelineDrawModeForGui = Optional.empty();
+
+	@Override
+	public RenderPipeline.Builder withUsePipelineDrawModeForGui(boolean usePipelineDrawMode) {
+		this.usePipelineDrawModeForGui = Optional.of(usePipelineDrawMode);
+		return (RenderPipeline.Builder) (Object) this;
+	}
+
+	@Override
+	public RenderPipeline.Builder withoutUsePipelineDrawModeForGui() {
+		this.usePipelineDrawModeForGui = Optional.empty();
+		return (RenderPipeline.Builder) (Object) this;
+	}
+
+	@Inject(
+			method = "withSnippet",
+			at = @At("TAIL")
+	)
+	private void copyUsePipelineDrawModeForGuiFromSnippet(RenderPipeline.Snippet snippet, CallbackInfoReturnable<RenderPipeline.Builder> cir) {
+		((FabricRenderPipeline.Snippet) (Object) snippet).usePipelineDrawModeForGui().ifPresent(value -> this.usePipelineDrawModeForGui = Optional.of(value));
+	}
+
+	@WrapOperation(
+			method = "buildSnippet",
+			at = @At(
+					value = "NEW",
+					target = "Lcom/mojang/renderpearl/api/pipeline/RenderPipeline$Snippet;"
+			)
+	)
+	private RenderPipeline.Snippet copyUsePipelineDrawModeForGuiToSnippet(
+			Map<ShaderType, Identifier> shaders,
+			Optional<ShaderDefines> shaderDefines,
+			Optional<List<BindGroupLayout>> bindGroupLayouts,
+			@Nullable ColorTargetState[] colorTargetStates,
+			int activeColorTargetStateCount,
+			Optional<DepthStencilState> depthStencilState,
+			Optional<PolygonMode> polygonMode,
+			Optional<Boolean> cull,
+			@Nullable VertexFormat[] vertexFormatPerBuffer,
+			Optional<PrimitiveTopology> vertexFormatMode,
+			int pushConstantSize,
+			Operation<RenderPipeline.Snippet> original
+	) {
+		return FabricRenderPipelineInternals.withSnippetUsePipelineVertexFormatForGui(() -> original.call(shaders, shaderDefines, bindGroupLayouts, colorTargetStates, activeColorTargetStateCount, depthStencilState, polygonMode, cull, vertexFormatPerBuffer, vertexFormatMode, pushConstantSize), usePipelineDrawModeForGui);
+	}
+
+	@ModifyReturnValue(
+			method = "build",
+			at = @At("RETURN")
+	)
+	private RenderPipeline copyUsePipelineDrawModeForGuiToPipeline(RenderPipeline original) {
+		((FabricRenderPipelineImpl) original).fabric$setUsePipelineDrawModeForGuiSetter(this.usePipelineDrawModeForGui.orElse(false));
+		return original;
+	}
+}

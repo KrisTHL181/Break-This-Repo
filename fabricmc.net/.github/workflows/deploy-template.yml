@@ -1,0 +1,93 @@
+name: Deploy to Fabric Example Mod
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: 37 7 * * SAT
+
+jobs:
+  build:
+    name: Build Fabric CLI
+    runs-on: ubuntu-24.04
+    outputs:
+      versions: ${{ steps.versions-lookup.outputs.result }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+      - name: Setup NodeJS
+        uses: actions/setup-node@v6
+        with:
+          node-version: 18
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.9.4"
+      - name: Install NPM dependencies
+        run: npm i
+        working-directory: scripts
+      - name: Build template library
+        run: npm run buildLib
+        working-directory: scripts
+      - name: Build Fabric CLI
+        run: make build
+        working-directory: cli
+      - name: Upload Fabric CLI
+        uses: actions/upload-artifact@v7
+        with:
+          name: cli
+          path: cli/bundled.ts
+      - name: Look up template versions
+        run: echo "result=$(deno run --allow-net .github/scripts/template-versions.ts)" >> "$GITHUB_OUTPUT"
+        id: versions-lookup
+  deploy:
+    name: Deploy ${{ matrix.version }} template
+    runs-on: ubuntu-24.04
+    needs: build
+    concurrency:
+      group: deploy-${{ matrix.version }}
+    strategy:
+      matrix:
+        version: ${{ fromJSON(needs.build.outputs.versions) }}
+    steps:
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: "2.9.4"
+      - name: Download Fabric CLI
+        uses: actions/download-artifact@v8
+        with:
+          name: cli
+      - name: Checkout template repository
+        uses: actions/checkout@v6
+        id: existing-checkout
+        with:
+          repository: ${{ github.repository_owner }}/fabric-example-mod
+          path: repo
+          ssh-key: ${{ secrets.EXAMPLE_MOD_DEPLOY_KEY }}
+      - name: Switch to ${{ matrix.version }} branch
+        run: |
+          if git ls-remote --exit-code --quiet origin '${{ matrix.version }}'
+          then
+            git fetch origin '${{ matrix.version }}'
+            git switch '${{ matrix.version }}'
+          else
+            git switch --orphan '${{ matrix.version }}'
+          fi
+        working-directory: repo
+      - name: Create template directory
+        run: mkdir gen
+      - name: Generate ${{ matrix.version }} template
+        run: deno run -A ../bundled.ts init -n 'Example Mod' -m modid -p 'com.example' -v '${{ matrix.version }}' -o splitSources -o mojangMappings
+        working-directory: gen
+      - name: Set commit user
+        run: |
+          git config user.name 'Fabric Bot'
+          git config user.email 159731069+FabricMCBot@users.noreply.github.com
+        working-directory: repo
+      - name: Commit changes
+        run: |
+          git --work-tree ../gen add .
+          git diff-index --quiet --cached HEAD || git commit -m 'Deployment from commit ${{ github.repository }}@${{ github.sha }}'
+        working-directory: repo
+      - name: Push to ${{ matrix.version }}
+        run: git push -u origin '${{ matrix.version }}'
+        working-directory: repo

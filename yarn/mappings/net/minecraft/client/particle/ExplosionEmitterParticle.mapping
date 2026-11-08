@@ -1,0 +1,2 @@
+CLASS net/minecraft/class_689 net/minecraft/client/particle/ExplosionEmitterParticle
+	CLASS class_690 Factory

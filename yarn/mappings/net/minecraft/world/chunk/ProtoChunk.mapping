@@ -1,0 +1,49 @@
+CLASS net/minecraft/class_2839 net/minecraft/world/chunk/ProtoChunk
+	FIELD field_12918 status Lnet/minecraft/class_2806;
+	FIELD field_12926 carvingMask Lnet/minecraft/class_6643;
+	FIELD field_12929 entities Ljava/util/List;
+	FIELD field_17105 lightingProvider Lnet/minecraft/class_3568;
+	FIELD field_35473 belowZeroRetrogen Lnet/minecraft/class_6746;
+	FIELD field_35474 blockTickScheduler Lnet/minecraft/class_4296;
+	FIELD field_35475 fluidTickScheduler Lnet/minecraft/class_4296;
+	FIELD field_60377 LOGGER Lorg/slf4j/Logger;
+	METHOD <init> (Lnet/minecraft/class_1923;Lnet/minecraft/class_2843;[Lnet/minecraft/class_2826;Lnet/minecraft/class_4296;Lnet/minecraft/class_4296;Lnet/minecraft/class_5539;Lnet/minecraft/class_11897;Lnet/minecraft/class_6749;)V
+		ARG 1 pos
+		ARG 2 upgradeData
+		ARG 3 sections
+		ARG 4 blockTickScheduler
+		ARG 5 fluidTickScheduler
+		ARG 6 world
+		ARG 7 palettesFactory
+		ARG 8 blendingData
+	METHOD <init> (Lnet/minecraft/class_1923;Lnet/minecraft/class_2843;Lnet/minecraft/class_5539;Lnet/minecraft/class_11897;Lnet/minecraft/class_6749;)V
+		ARG 1 pos
+		ARG 2 upgradeData
+		ARG 3 world
+		ARG 4 palettesFactory
+		ARG 5 blendingData
+	METHOD method_12025 getCarvingMask ()Lnet/minecraft/class_6643;
+	METHOD method_12295 getEntities ()Ljava/util/List;
+	METHOD method_12300 getPackedSectionRelative (Lnet/minecraft/class_2338;)S
+		ARG 0 pos
+	METHOD method_12302 addEntity (Lnet/minecraft/class_2487;)V
+		ARG 1 entityNbt
+	METHOD method_12307 setCarvingMask (Lnet/minecraft/class_6643;)V
+		ARG 1 carvingMask
+	METHOD method_12308 setStatus (Lnet/minecraft/class_2806;)V
+		ARG 1 status
+	METHOD method_12309 getBlockEntities ()Ljava/util/Map;
+	METHOD method_12314 joinBlockPos (SILnet/minecraft/class_1923;)Lnet/minecraft/class_2338;
+		ARG 0 sectionRel
+		ARG 1 sectionY
+		ARG 2 chunkPos
+	METHOD method_12316 getBlockEntityNbts ()Ljava/util/Map;
+	METHOD method_17032 setLightingProvider (Lnet/minecraft/class_3568;)V
+		ARG 1 lightingProvider
+	METHOD method_28510 getOrCreateCarvingMask ()Lnet/minecraft/class_6643;
+	METHOD method_39307 getBlockProtoTickScheduler ()Lnet/minecraft/class_6755;
+	METHOD method_39308 getFluidProtoTickScheduler ()Lnet/minecraft/class_6755;
+	METHOD method_39309 setBelowZeroRetrogen (Lnet/minecraft/class_6746;)V
+		ARG 1 belowZeroRetrogen
+	METHOD method_39310 createProtoTickScheduler (Lnet/minecraft/class_4296;)Lnet/minecraft/class_6755;
+		ARG 0 tickScheduler

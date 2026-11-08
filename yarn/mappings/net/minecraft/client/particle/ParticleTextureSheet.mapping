@@ -1,0 +1,7 @@
+CLASS net/minecraft/class_3999 net/minecraft/client/particle/ParticleTextureSheet
+	COMMENT Defines rendering setup and draw logic for particles based on their requirements for depth checking, textures, and transparency.
+	COMMENT
+	COMMENT <p>
+	COMMENT Each {@link Particle} returns a sheet in {@link Particle#getType()}.
+	COMMENT When particles are rendered, each sheet will be drawn once.
+	FIELD field_17832 NO_RENDER Lnet/minecraft/class_3999;

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-model-loading-api-v1",
+  "name": "Fabric Model Loading API (v1)",
+  "version": "${version}",
+  "environment": "client",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-model-loading-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.model.loading.CustomUnbakedBlockStateModelInit"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "fabric-api-base": "*",
+    "fabric-renderer-api-v1": "*"
+  },
+  "description": "Provides hooks for model loading.",
+  "mixins": [
+    {
+      "environment": "client",
+      "config": "fabric-model-loading-api-v1.mixins.json"
+    }
+  ],
+  "accessWidener": "fabric-model-loading-api-v1.classtweaker",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

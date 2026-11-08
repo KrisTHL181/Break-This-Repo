@@ -1,0 +1,4 @@
+CLASS net/minecraft/class_4978 net/minecraft/datafixer/fix/JigsawRotationFix
+	FIELD field_23213 ORIENTATION_UPDATES Ljava/util/Map;
+	METHOD <init> (Lcom/mojang/datafixers/schemas/Schema;)V
+		ARG 1 outputSchema

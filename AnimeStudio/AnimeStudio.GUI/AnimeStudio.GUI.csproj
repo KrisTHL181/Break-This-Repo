@@ -1,0 +1,71 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>net9.0-windows;net10.0-windows</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ApplicationIcon>Resources\as.ico</ApplicationIcon>
+		<Copyright>Copyright © Escartem 2024-2026; Copyright © yarik0chka 2024-2025; Copyright © Hashblen 2024-2025; Copyright © Razmoth 2022-2024; Copyright © Perfare 2018-2022</Copyright>
+		<DebugType>embedded</DebugType>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\AnimeStudio.Utility\AnimeStudio.Utility.csproj" />
+		<ProjectReference Include="..\AnimeStudio\AnimeStudio.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+		</Compile>
+		<Compile Update="Properties\Settings.Designer.cs">
+		  <DesignTimeSharedInput>True</DesignTimeSharedInput>
+		  <AutoGen>True</AutoGen>
+		  <DependentUpon>Settings.settings</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ContentWithTargetPath Include="..\LICENSE">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>LICENSE</TargetPath>
+		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ContentWithTargetPath Include="..\AnimeStudio.Libraries\AnimeStudio.FMOD.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>AnimeStudio.FMOD.dll</TargetPath>
+		</ContentWithTargetPath>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="OpenTK" Version="4.9.4" />
+		<PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Properties\Settings.settings">
+	    <Generator>SettingsSingleFileGenerator</Generator>
+	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<Target Name="RemoveSkiaSharpPdb" AfterTargets="ResolveAssemblyReferences;Build">
+		<ItemGroup>
+			<NativePdbFiles Include="$(OutDir)*.pdb" />
+			<NativePdbFiles Include="$(PublishDir)*.pdb" Condition="'$(PublishDir)' != ''" />
+		</ItemGroup>
+		<Delete Files="@(NativePdbFiles)" />
+	</Target>
+
+</Project>

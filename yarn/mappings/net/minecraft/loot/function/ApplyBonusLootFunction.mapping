@@ -1,0 +1,66 @@
+CLASS net/minecraft/class_94 net/minecraft/loot/function/ApplyBonusLootFunction
+	FIELD field_1009 formula Lnet/minecraft/class_94$class_96;
+	FIELD field_1010 FACTORIES Ljava/util/Map;
+	FIELD field_1011 enchantment Lnet/minecraft/class_6880;
+	FIELD field_45806 CODEC Lcom/mojang/serialization/MapCodec;
+	FIELD field_45807 TYPE_CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_45808 FORMULA_CODEC Lcom/mojang/serialization/MapCodec;
+	METHOD <init> (Ljava/util/List;Lnet/minecraft/class_6880;Lnet/minecraft/class_94$class_96;)V
+		ARG 1 conditions
+		ARG 2 enchantment
+		ARG 3 formula
+	METHOD method_453 (Lnet/minecraft/class_6880;Ljava/util/List;)Lnet/minecraft/class_117;
+		ARG 1 conditions
+	METHOD method_455 oreDrops (Lnet/minecraft/class_6880;)Lnet/minecraft/class_120$class_121;
+		ARG 0 enchantment
+	METHOD method_456 uniformBonusCount (Lnet/minecraft/class_6880;)Lnet/minecraft/class_120$class_121;
+		ARG 0 enchantment
+	METHOD method_457 (Lnet/minecraft/class_6880;Ljava/util/List;)Lnet/minecraft/class_117;
+		ARG 1 conditions
+	METHOD method_459 (Lnet/minecraft/class_6880;IFLjava/util/List;)Lnet/minecraft/class_117;
+		ARG 3 conditions
+	METHOD method_461 uniformBonusCount (Lnet/minecraft/class_6880;I)Lnet/minecraft/class_120$class_121;
+		ARG 0 enchantment
+		ARG 1 bonusMultiplier
+	METHOD method_462 (Lnet/minecraft/class_6880;ILjava/util/List;)Lnet/minecraft/class_117;
+		ARG 2 conditions
+	METHOD method_463 binomialWithBonusCount (Lnet/minecraft/class_6880;FI)Lnet/minecraft/class_120$class_121;
+		ARG 0 enchantment
+		ARG 1 probability
+		ARG 2 extra
+	METHOD method_53298 (Lnet/minecraft/class_2960;)Lcom/mojang/serialization/DataResult;
+		ARG 0 id
+	METHOD method_53299 (Lnet/minecraft/class_94;)Lnet/minecraft/class_94$class_96;
+		ARG 0 function
+	METHOD method_53301 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	METHOD method_53302 (Lnet/minecraft/class_94;)Lnet/minecraft/class_6880;
+		ARG 0 function
+	CLASS class_95 BinomialWithBonusCount
+		FIELD comp_1848 extra I
+		FIELD field_1013 TYPE Lnet/minecraft/class_94$class_8752;
+		FIELD field_45811 CODEC Lcom/mojang/serialization/Codec;
+		METHOD <init> (IF)V
+			ARG 1 extra
+			ARG 2 probability
+		METHOD comp_1848 extra ()I
+		METHOD method_53307 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 0 instance
+	CLASS class_96 Formula
+		METHOD method_466 getType ()Lnet/minecraft/class_94$class_8752;
+		METHOD method_467 getValue (Lnet/minecraft/class_5819;II)I
+			ARG 1 random
+			ARG 2 initialCount
+			ARG 3 enchantmentLevel
+	CLASS class_98 OreDrops
+		FIELD field_1015 TYPE Lnet/minecraft/class_94$class_8752;
+		FIELD field_45812 CODEC Lcom/mojang/serialization/Codec;
+		FIELD field_64391 INSTANCE Lnet/minecraft/class_94$class_98;
+	CLASS class_100 UniformBonusCount
+		FIELD field_45813 CODEC Lcom/mojang/serialization/Codec;
+		FIELD field_45814 TYPE Lnet/minecraft/class_94$class_8752;
+		METHOD <init> (I)V
+			ARG 1 bonusMultiplier
+		METHOD method_53308 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 0 instance
+	CLASS class_8752 Type

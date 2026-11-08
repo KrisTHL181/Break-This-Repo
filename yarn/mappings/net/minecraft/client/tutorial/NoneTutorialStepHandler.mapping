@@ -1,0 +1,3 @@
+CLASS net/minecraft/class_1150 net/minecraft/client/tutorial/NoneTutorialStepHandler
+	METHOD <init> (Lnet/minecraft/class_1156;)V
+		ARG 1 manager

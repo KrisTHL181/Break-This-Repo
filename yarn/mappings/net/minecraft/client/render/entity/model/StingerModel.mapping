@@ -1,0 +1,4 @@
+CLASS net/minecraft/class_9942 net/minecraft/client/render/entity/model/StingerModel
+	METHOD <init> (Lnet/minecraft/class_630;)V
+		ARG 1 root
+	METHOD method_62062 getTexturedModelData ()Lnet/minecraft/class_5607;

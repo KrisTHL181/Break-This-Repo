@@ -1,0 +1,47 @@
+CLASS net/minecraft/class_3922 net/minecraft/block/CampfireBlock
+	FIELD field_17351 SHAPE Lnet/minecraft/class_265;
+	FIELD field_17352 LIT Lnet/minecraft/class_2746;
+	FIELD field_17353 SIGNAL_FIRE Lnet/minecraft/class_2746;
+	FIELD field_17354 WATERLOGGED Lnet/minecraft/class_2746;
+	FIELD field_17564 FACING Lnet/minecraft/class_2754;
+	FIELD field_21580 SMOKEY_SHAPE Lnet/minecraft/class_265;
+		COMMENT The shape used to test whether a given block is considered 'smokey'.
+	FIELD field_23881 emitsParticles Z
+	FIELD field_25182 fireDamage I
+	FIELD field_46297 CODEC Lcom/mojang/serialization/MapCodec;
+	METHOD <init> (ZILnet/minecraft/class_4970$class_2251;)V
+		ARG 1 emitsParticles
+		ARG 2 fireDamage
+		ARG 3 settings
+	METHOD method_17455 spawnSmokeParticle (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;ZZ)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 isSignal
+		ARG 3 lotsOfSmoke
+	METHOD method_17456 isSignalFireBaseBlock (Lnet/minecraft/class_2680;)Z
+		ARG 1 state
+	METHOD method_23895 isLitCampfireInRange (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;)Z
+		ARG 0 world
+		ARG 1 pos
+	METHOD method_23896 isLitCampfire (Lnet/minecraft/class_2680;)Z
+		ARG 0 state
+	METHOD method_29288 extinguish (Lnet/minecraft/class_1297;Lnet/minecraft/class_1936;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 0 entity
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 state
+	METHOD method_30034 (Lnet/minecraft/class_4970$class_4971;)Z
+		ARG 0 statex
+	METHOD method_30035 canBeLit (Lnet/minecraft/class_2680;)Z
+		ARG 0 state
+	METHOD method_53986 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	METHOD method_53987 (Lnet/minecraft/class_3922;)Ljava/lang/Integer;
+		ARG 0 block
+	METHOD method_53988 (Lnet/minecraft/class_3922;)Ljava/lang/Boolean;
+		ARG 0 block
+	METHOD method_64781 (Lnet/minecraft/class_3218;Lnet/minecraft/class_1863$class_7266;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_3924;)V
+		ARG 2 world
+		ARG 3 pos
+		ARG 4 state
+		ARG 5 blockEntity

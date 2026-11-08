@@ -1,0 +1,2472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>台风模拟器 · Typhoon Simulator</title>
+<style>
+  :root{
+    --bg:#03070f;
+    --panel:rgba(10,18,33,.80);
+    --panel-line:rgba(120,190,255,.20);
+    --text:#d7eaff;
+    --text-dim:#8ba6c4;
+    --accent:#4fd6e8;
+    --accent2:#ffd166;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0; width:100%; height:100%;
+    background:var(--bg); color:var(--text); overflow:hidden;
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei","Hiragino Sans GB",system-ui,sans-serif;
+    -webkit-text-size-adjust:100%;
+    -webkit-tap-highlight-color:transparent;
+  }
+  #stage{ position:fixed; inset:0; z-index:0; width:100%; height:100%; display:block; touch-action:none; }
+  #stage.paused{ filter:saturate(.78) brightness(.93); }
+
+  /* ---------- 控制面板 ---------- */
+  #panel{
+    position:fixed; top:12px; right:12px; width:306px;
+    max-height:calc(100vh - 24px);
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:14px;
+    backdrop-filter:blur(12px) saturate(140%);
+    -webkit-backdrop-filter:blur(12px) saturate(140%);
+    box-shadow:0 10px 34px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    display:flex; flex-direction:column; z-index:10;
+    transition:transform .25s ease;
+  }
+  #panel.folded{ transform:translateX(calc(100% - 46px)); }
+  #panel.folded .fold-arrow{ transform:rotate(180deg); }
+  .phead{
+    display:flex; align-items:center; gap:8px;
+    padding:10px 12px; border-bottom:1px solid rgba(120,190,255,.14);
+    user-select:none;
+  }
+  .phead h1{
+    font-size:14px; margin:0; letter-spacing:2px; font-weight:600; flex:1;
+    background:linear-gradient(90deg,#6fe3ff,#ffd166);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .phead .sub{ font-size:10px; color:var(--text-dim); letter-spacing:1px; }
+  .fold-arrow{
+    width:26px; height:26px; border-radius:8px; cursor:pointer; flex:none;
+    border:1px solid var(--panel-line); background:rgba(255,255,255,.04);
+    color:var(--text); font-size:11px; line-height:1; display:grid; place-items:center;
+    transition:transform .25s ease, background .2s;
+  }
+  .fold-arrow:hover{ background:rgba(120,190,255,.18); }
+  .pbody{
+    overflow-y:auto; overflow-x:hidden; padding:6px 12px 14px;
+    scrollbar-width:thin; scrollbar-color:#2b4a6e transparent;
+  }
+  .pbody::-webkit-scrollbar{ width:8px; }
+  .pbody::-webkit-scrollbar-thumb{ background:#2b4a6e; border-radius:4px; }
+
+  details.sect{ border-top:1px solid rgba(120,190,255,.10); padding:6px 0 2px; }
+  details.sect:first-of-type{ border-top:none; }
+  details.sect>summary{
+    cursor:pointer; list-style:none; font-size:11.5px; letter-spacing:1.5px;
+    color:#9fd8ff; padding:5px 2px; user-select:none;
+  }
+  details.sect>summary::-webkit-details-marker{ display:none; }
+  details.sect>summary::before{ content:"▸ "; color:var(--accent); }
+  details.sect[open]>summary::before{ content:"▾ "; }
+
+  .ctl{ margin:7px 0 9px; }
+  .ctl-top{ display:flex; justify-content:space-between; align-items:baseline; font-size:11px; margin-bottom:3px; }
+  .ctl-top .k{ color:#bcd8f2; letter-spacing:.5px; }
+  .ctl-top .v{ color:var(--accent); font-variant-numeric:tabular-nums; }
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:16px;
+    background:transparent; margin:0; cursor:pointer;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height:4px; border-radius:3px; background:linear-gradient(90deg,#1f6f8b,#2b3f57);
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:13px; height:13px; margin-top:-5px; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#eafcff,#4fd6e8 60%,#1c7f96);
+    border:1px solid rgba(255,255,255,.5); box-shadow:0 0 8px rgba(79,214,232,.65);
+  }
+  input[type=range]::-moz-range-track{ height:4px; border-radius:3px; background:#2b3f57; }
+  input[type=range]::-moz-range-thumb{
+    width:13px; height:13px; border-radius:50%; border:1px solid rgba(255,255,255,.5);
+    background:radial-gradient(circle at 35% 35%,#eafcff,#4fd6e8 60%,#1c7f96);
+  }
+
+  .btns{ display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:9px; }
+  button.b{
+    font-family:inherit; font-size:11.5px; letter-spacing:1px; color:var(--text);
+    background:linear-gradient(180deg,rgba(60,120,170,.30),rgba(20,45,75,.45));
+    border:1px solid rgba(120,190,255,.28); border-radius:9px; padding:7px 6px;
+    cursor:pointer; transition:all .16s; white-space:nowrap;
+  }
+  button.b:hover{ background:linear-gradient(180deg,rgba(90,180,230,.42),rgba(30,70,110,.55)); transform:translateY(-1px); }
+  button.b:active{ transform:translateY(0); }
+  button.b.wide{ grid-column:1 / -1; }
+  button.b.on{ border-color:rgba(255,209,102,.75); color:#ffe6a8; background:linear-gradient(180deg,rgba(160,120,30,.42),rgba(70,50,10,.5)); }
+  button.b.danger{ border-color:rgba(255,120,120,.5); color:#ffd0d0; }
+
+  /* ---------- 状态栏 ---------- */
+  #status{
+    position:fixed; left:12px; top:12px; z-index:10; min-width:214px;
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:14px;
+    backdrop-filter:blur(12px) saturate(140%); -webkit-backdrop-filter:blur(12px);
+    box-shadow:0 10px 30px rgba(0,0,0,.5); padding:10px 12px 11px;
+    font-size:11.5px; line-height:1.62; user-select:none;
+  }
+  #status .stitle{
+    font-size:10px; letter-spacing:2px; color:var(--text-dim);
+    border-bottom:1px solid rgba(120,190,255,.14); padding-bottom:5px; margin-bottom:6px;
+  }
+  #status .row{ display:flex; justify-content:space-between; gap:10px; }
+  #status .row .l{ color:var(--text-dim); }
+  #status .row .r{ color:#e6f5ff; font-variant-numeric:tabular-nums; text-align:right; }
+  #stGrade{ padding:1px 7px; border-radius:6px; font-weight:600; color:#04222c; background:#4fd6e8; }
+  #status .bar{ height:5px; border-radius:3px; background:rgba(255,255,255,.10); margin-top:7px; overflow:hidden; }
+  #status .bar>i{ display:block; height:100%; width:0%; border-radius:3px;
+    background:linear-gradient(90deg,#3ddc97,#4fd6e8,#ffd166,#ff6b4a); transition:width .25s; }
+  #hint{
+    position:fixed; left:50%; bottom:12px; transform:translateX(-50%); z-index:9;
+    font-size:11px; color:#7f9cbd; letter-spacing:.6px; text-align:center;
+    background:rgba(8,14,26,.55); border:1px solid rgba(120,190,255,.14);
+    padding:5px 14px; border-radius:20px; backdrop-filter:blur(8px);
+    pointer-events:none; transition:opacity 1.4s ease;
+  }
+  #hint.fade{ opacity:0; }
+  /* 运行期错误捕获：出错时把信息显示在左下角，而不是只丢进控制台 */
+  #errlog{
+    position:fixed; left:12px; bottom:12px; z-index:40; margin:0; max-width:46vw; max-height:30vh;
+    overflow:auto; display:none; white-space:pre-wrap; font:11px/1.5 ui-monospace,Consolas,monospace;
+    color:#ffb4b4; background:rgba(40,6,10,.86); border:1px solid rgba(255,120,120,.45);
+    border-radius:10px; padding:8px 10px;
+  }
+  #errlog.show{ display:block; }
+
+  @media (max-width:760px){
+    #panel{ width:auto; left:8px; right:8px; top:auto; bottom:8px; max-height:56vh; }
+    #panel.folded{ transform:translateY(calc(100% - 44px)); }
+    #status{ left:8px; right:8px; top:8px; min-width:0; font-size:11px;
+      display:grid; grid-template-columns:1fr 1fr; gap:0 14px; }
+    #status .stitle,#status .bar{ grid-column:1 / -1; }
+    #hint{ display:none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="status"></div>
+<div id="panel"></div>
+<div id="hint">拖动平移 · 滚轮/双指缩放 · 面板「放置模式」点地图选位置 · 空格暂停 / N 新台风</div>
+<pre id="errlog"></pre>
+
+<script>
+/* ============================================================================
+ *  台风模拟器 Typhoon Simulator
+ *  单文件 / 原生 Canvas 2D / 零外部依赖
+ *
+ *  代码结构：
+ *    CONFIG 配置对象  →  数学与颜色工具  →  精灵纹理缓存
+ *    Particle 粒子类  →  Typhoon 台风类  →  World 世界（自动生成 / 粒子池）
+ *    Renderer 渲染器  →  Camera 相机与交互  →  UI 控制绑定  →  主循环
+ *
+ *  物理与视觉要点：
+ *    · 风场 = 修正 Rankine 涡（切向风）+ 边界层径向入流 + 环境风切变扰动 + 引导气流
+ *    · 粒子随该风场平流，切向风自然缠绕成螺旋雨带；云层略有滞后 → 云带更厚实
+ *    · 强度按海表温度/风切变决定的潜在强度演化，实时被滑块牵引
+ *    · 地图为西北太平洋（100°E–180°E / 0°N–60°N，等距圆柱投影，1° ≈ 111 km）；
+ *      台风默认在 5–20°N、122–158°E 的暖池生成，走"西北偏西 → 转向东北"的抛物线路径
+ *
+ *  时间尺度：强度按 m/s·h 的气象速率计算后再乘一个时间压缩系数，因此
+ *  1 倍速下约 10 秒明显增强、约 45 秒成熟、整条生命周期约 1.5–2 分钟；
+ *  想看更慢更真实的过程，把「时间流速」调到 0.2–0.5 即可。
+ * ========================================================================== */
+(function () {
+  'use strict';
+
+  /* ==========================================================================
+   * 0. 常量与 CONFIG 配置对象
+   * ======================================================================== */
+  var TWO_PI = Math.PI * 2;
+  var D2R = Math.PI / 180;
+
+  /** 全局可视化参数（非随机台风属性） */
+  var VIEW = {
+    particleScale: 0.95,   // 风场粒子运动速度倍率（粒子被风平流的快慢）
+    cloudDrift: 0.42,      // 云（高层）跟随低层风的权重，越小越滞后，云带越厚
+    spinSwirl: 0.0012,     // 云带自旋附加项，帮助螺旋结构连续
+    trailFade: 0.16,       // 每帧粒子轨迹衰减（透视残影，形成流线感）
+    maxDPR: 2,             // 高 DPI 上限，保证性能
+    maxParticles: 12000,
+    adaptive: true         // 帧率偏低时自动降一档渲染倍率（掉帧自动回补）
+  };
+
+  /* —— 西北太平洋地图域 ——
+     地图范围与内置的海岸线 / 地表色块数据一致：90°E–190°E、10°S–80°N，
+     等距圆柱投影，世界坐标原点取地图左上角 (90°E, 80°N)，1° ≈ 111 km。
+     世界坐标单位仍是 km，所以台风尺度、粒子速度等物理量都不受影响。 */
+  var KM_PER_DEG = 111;
+  var GEO = {
+    lon0: 90, lat0: -10,                   // 投影原点（世界坐标零点对应的经纬度）
+    lonMin: 90, lonMax: 190,               // 地图东西范围 90°E - 190°E
+    latMin: -10, latMax: 80,               // 地图南北范围 10°S - 80°N
+    /* 生成区：西北太平洋暖池主开发区（国际日期变更线以西、菲律宾以东的洋面）。
+       历史上的台风绝大多数在这里生成，再向西北偏西移动影响东亚、东南亚。 */
+    genesis: { lon: [128, 168], lat: [5, 20] }
+  };
+  GEO.worldW = (GEO.lonMax - GEO.lon0) * KM_PER_DEG;
+  GEO.worldH = (GEO.latMax - GEO.lat0) * KM_PER_DEG;
+
+  /** 经纬度 → 世界坐标(km) */
+  function lonToX(lon) { return (lon - GEO.lon0) * KM_PER_DEG; }
+  function latToY(lat) { return (GEO.latMax - lat) * KM_PER_DEG; }
+  /** 世界坐标(km) → 经纬度 */
+  function xToLon(x) { return GEO.lon0 + x / KM_PER_DEG; }
+  function yToLat(y) { return GEO.latMax - y / KM_PER_DEG; }
+  function fmtLon(lon) {
+    return Math.abs(lon).toFixed(1) + '°' + (lon >= 0 ? 'E' : 'W');
+  }
+  function fmtLat(lat) {
+    return Math.abs(lat).toFixed(1) + '°' + (lat >= 0 ? 'N' : 'S');
+  }
+
+  var CONFIG = {
+    panelOpen: true,
+    follow: true,          // 视角自动跟随台风中心（可在「操作」里关闭）
+    visible: { wind: false, isobar: true, band: true, path: true, wcircle: true, fps: true },
+    maxWind: 45,           // 最大风速目标值 m/s（实时牵引当前台风强度）
+    pressure: 955,         // 中心气压 hPa（手动调整后进入手动模式）
+    eyeRadius: 15,         // 台风眼半径 km
+    spinRate: 1.00,        // 旋转速度倍率
+    bandCount: 5,          // 螺旋雨带条数 0-8
+    particleCount: 2600,   // 粒子总数
+    sst: 29.0,             // 海表温度 ℃
+    shear: 6,              // 环境垂直风切变 m/s
+    moveSpeed: 16,         // 移动速度 km/h
+    curvature: 3.0,        // 路径弯曲程度
+    rainRate: 1.00,        // 降雨强度倍率
+    timeScale: 1.0         // 时间流速
+  };
+  var DEFAULTS = JSON.parse(JSON.stringify(CONFIG));
+
+  /* ==========================================================================
+   * 1. 数学与颜色工具
+   * ======================================================================== */
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function randInt(a, b) { return (a + Math.random() * (b - a + 1)) | 0; }
+  /** Irwin–Hall 近似正态分布，让随机属性更集中、更像真实观测 */
+  function gauss() {
+    return (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 0.816;
+  }
+
+  /** 风速 m/s → RGB：弱风蓝绿、中风青黄、强风橙红 */
+  function windRGB(v) {
+    var S = [
+      [8, 46, 96, 128],
+      [17, 62, 190, 196],
+      [30, 64, 224, 128],
+      [42, 236, 212, 86],
+      [58, 255, 142, 52],
+      [78, 255, 74, 46],
+      [95, 255, 236, 220]
+    ];
+    if (v <= S[0][0]) return [S[0][1], S[0][2], S[0][3]];
+    for (var i = 1; i < S.length; i++) {
+      if (v <= S[i][0]) {
+        var t = (v - S[i - 1][0]) / (S[i][0] - S[i - 1][0]);
+        return [
+          Math.round(lerp(S[i - 1][1], S[i][1], t)),
+          Math.round(lerp(S[i - 1][2], S[i][2], t)),
+          Math.round(lerp(S[i - 1][3], S[i][3], t))
+        ];
+      }
+    }
+    var L = S[S.length - 1];
+    return [L[1], L[2], L[3]];
+  }
+
+  /* ==========================================================================
+   * 2. 精灵（软粒子纹理）缓存
+   *    运行期不创建渐变对象，粒子绘制只是一次 drawImage
+   * ======================================================================== */
+  var SPR = (function () {
+    var map = {};
+    var SIZE = 32;
+
+    function build(hex, key) {
+      var c = document.createElement('canvas');
+      c.width = c.height = SIZE;
+      var g = c.getContext('2d');
+      var grd = g.createRadialGradient(SIZE * .5, SIZE * .5, 0, SIZE * .5, SIZE * .5, SIZE * .5);
+      grd.addColorStop(0.00, 'rgba(255,255,255,1)');
+      grd.addColorStop(0.22, 'rgba(255,255,255,0.78)');
+      grd.addColorStop(0.50, 'rgba(255,255,255,0.30)');
+      grd.addColorStop(0.78, 'rgba(255,255,255,0.075)');
+      grd.addColorStop(1.00, 'rgba(255,255,255,0)');
+      g.fillStyle = grd;
+      g.fillRect(0, 0, SIZE, SIZE);
+      if (hex !== '255,255,255') {
+        g.globalCompositeOperation = 'source-atop';
+        g.fillStyle = 'rgba(' + hex + ',0.96)';
+        g.fillRect(0, 0, SIZE, SIZE);
+      }
+      map[key] = c;
+    }
+
+    // 云：8 档冷白蓝，按局部风速挑选（强风速下云体更亮更"爆"）
+    for (var t = 0; t < 8; t++) {
+      var o = (t - 3.5) * 2.6;
+      build(
+        clamp(146 + o, 112, 255).toFixed(0) + ',' +
+        clamp(200 + o * 1.25, 148, 255).toFixed(0) + ',' +
+        clamp(240 + o * 0.5, 190, 255).toFixed(0), 'cloud' + t);
+    }
+    // 风：14 档风速色谱
+    for (var w = 0; w < 14; w++) build(windRGB(8 + w * 6.5).join(','), 'w' + w);
+    build('255,255,255', 'white');
+
+    return {
+      cloud: function (idx) { return map['cloud' + idx]; },
+      wind: function (v) { return map['w' + clamp(Math.round((v - 8) / 6.5), 0, 13)]; },
+      white: map.white
+    };
+  })();
+
+  /* ==========================================================================
+   * 3. Particle 粒子类
+   *    cloud 云 · rain 雨 · spray 眼墙喷沫，全部被风场平流
+   * ======================================================================== */
+  function Particle() { this.dead = true; }
+
+  Particle.prototype.reset = function (P, seeded, slot) {
+    var core = P.rMax;
+    var r, kind;
+    /* 用槽位（对象池下标）决定粒子类型，而不是每次重掷随机数：
+       否则云（寿命 10-26s）几乎不会死，而雨/眼墙（2-14s）不停重掷，
+       长期平衡下画面会被云占满、雨带消失。分槽后三类比例恒定。 */
+    var si = (((slot | 0) % 10) + 10) % 10;
+
+    if (si < 3) {                          // 30% 眼墙区：最强回波
+      kind = (si === 1) ? 'cloud' : 'spray';
+      r = core * rand(0.84, 1.32);
+    } else if (si < 7) {                   // 40% 螺旋雨带
+      kind = (si === 5) ? 'cloud' : 'rain';
+      r = core * rand(1.45, 5.0);
+    } else {                               // 30% 外围弥散云系
+      kind = (si === 9) ? 'rain' : 'cloud';
+      r = core * rand(4.0, 9.5);
+    }
+
+    var a = Math.random() * TWO_PI;
+    if (kind !== 'spray' && P.bands > 0 && r > core * 1.4 && Math.random() < 0.74) {
+      // 对数螺旋约束方位角：让雨带连续可辨，而不是均匀糊成一团
+      var band = randInt(0, P.bands - 1);
+      var m = Math.log(Math.max(r / core, 1.02)) / P.spiralTight;
+      a = ((band + m) / P.bands) * TWO_PI + rand(-0.11, 0.11);
+    }
+
+    this.kind = kind;
+    this.a = a;
+    this.r = r;
+    this.x = P.x + Math.cos(a) * r;
+    this.y = P.y + Math.sin(a) * r;
+    this.age = seeded ? Math.random() * 0.9 : 0;
+    this.vmag = 0;
+
+    if (kind === 'cloud') {
+      this.life = rand(10, 26);
+      this.size = rand(4.5, 14);
+      this.grow = rand(0.10, 0.42);
+      this.alpha = rand(0.10, 0.26);
+      // 云层跟随低层风的权重更低 → 相对涡旋"滞后"，螺旋云带更厚实、卷曲更明显
+      this.driftK = rand(0.26, 0.54) * VIEW.cloudDrift / 0.42;
+      this.alphaK = rand(0.70, 1.00);
+      this.spin = rand(1.2, 2.4);
+    } else if (kind === 'rain') {
+      // 雨粒子寿命较长：保证稳态下"降雨粒子"始终在场，而不是瞬间消散
+      this.life = rand(6, 14);
+      this.size = rand(1.8, 5.0);
+      this.grow = rand(-0.06, 0.10);
+      this.alpha = rand(0.18, 0.45);
+      this.driftK = rand(0.86, 1.14);
+      this.alphaK = rand(0.55, 0.95);
+      this.spin = rand(1.6, 2.8);
+    } else {
+      this.life = rand(2.4, 6.0);
+      this.size = rand(1.2, 3.0);
+      this.grow = rand(0, 0.08);
+      this.alpha = rand(0.28, 0.62);
+      this.driftK = rand(0.90, 1.20);
+      this.alphaK = rand(0.70, 1.00);
+      this.spin = rand(1.6, 2.6);
+    }
+    this.dead = false;
+    return this;
+  };
+
+  /** 推进一个粒子：采样风场 → 叠加自身特性 → 位移 */
+  Particle.prototype.step = function (P, dt, envK) {
+    this.age += dt;
+    var t = this.age / this.life;
+    if (t >= 1) { this.dead = true; return; }
+
+    var w = P.windAt(this.x, this.y, envK);
+    this.vmag = w.mag;
+
+    var k = this.driftK * VIEW.particleScale;
+    var vx = w.x * k, vy = w.y * k;
+    /* 台风的平移分量要按原速叠加，不能跟着 driftK 打折：
+       windCore 返回的是"平移 + 涡旋相对风"，若整体乘 k，粒子就只以 0.25~1.14 倍
+       的移速跟着走 —— 台风移动越快，云系被拖在身后的尾巴越长，快速移动时
+       连眼墙都会甩到风眼后面。这里把平移补足到 1 倍，涡旋相对风仍按 k 缩放。 */
+    vx += P.vx * (1 - k);
+    vy += P.vy * (1 - k);
+    var dx = this.x - P.x, dy = this.y - P.y;
+
+    if (this.kind === 'cloud') {
+      // 云带自旋：层叠的云在切向上持续缠绕，螺旋更清晰
+      vx += -dy * VIEW.spinSwirl * this.spin;
+      vy += dx * VIEW.spinSwirl * this.spin;
+    } else if (this.kind === 'rain') {
+      // 雨区向外沉降（雨带甩出感），同时略向下坠落
+      var rr = Math.sqrt(dx * dx + dy * dy) || 1;
+      vx += (dx / rr) * 0.055;
+      vy += (dy / rr) * 0.055 - 0.018;
+    }
+
+    // 随机扰动：云雨边缘更自然
+    var turb = this.kind === 'cloud' ? 0.05 : 0.03;
+    this.x += (vx + rand(-turb, turb)) * dt;
+    this.y += (vy + rand(-turb, turb)) * dt;
+
+    if (Math.abs(dx) > 1700 || Math.abs(dy) > 1700) this.dead = true;
+  };
+
+  /** 绘制（生命周期淡入淡出 + 视野裁剪；绘制时依赖相机把世界坐标换算到屏幕） */
+  Particle.prototype.draw = function (ctx, cam, flashK) {
+    var t = this.age / this.life;
+    var fade = clamp(t / 0.14, 0, 1) * clamp((1 - t) / 0.26, 0, 1);
+    var a = this.alpha * fade * this.alphaK;
+    if (a <= 0.004) return;
+
+    var size = this.size * (1 + this.grow * this.age) * cam.zoom;
+    if (size < 0.7) size = 0.7;
+    else if (size > 96) size = 96;
+
+    var sx = (this.x - cam.cx) * cam.zoom + cam.vw * 0.5;
+    var sy = (this.y - cam.cy) * cam.zoom + cam.vh * 0.5;
+    var hid = size * 1.05;
+    if (sx < -hid || sy < -hid || sx > cam.vw + hid || sy > cam.vh + hid) return;
+
+    var img;
+    if (this.kind === 'cloud') {
+      img = SPR.cloud(clamp(Math.round((this.vmag - 10) / 9), 0, 7));
+      ctx.globalAlpha = clamp(a * (1 + flashK * 0.5), 0, 1);
+    } else {
+      img = SPR.wind(this.vmag);
+      ctx.globalAlpha = clamp(a * (1 + flashK * 0.30), 0, 1);
+    }
+    var s = size * 2;
+    ctx.drawImage(img, sx - size, sy - size, s, s);
+  };
+
+  /* ==========================================================================
+   * 4. Typhoon 台风类
+   *    生命周期：生成 → 增强 → 成熟 → 减弱 → 消散
+   * ======================================================================== */
+  var STAGES = ['生成', '增强', '成熟', '减弱', '消散'];
+  /* CMA（中央气象台）台风等级配色：黄=热带低压、蓝=热带风暴、绿=强热带风暴、
+     橙=台风、粉=强台风、红=超强台风；门限用《热带气旋等级》GB/T 19201 的 m/s 值。
+     路径上的时次圆点、HUD 的强度等级都用这套色，和预报图对得上。 */
+  var GRADE_TABLE = [
+    [17.2, '热带低压', '#ffd24d'],
+    [24.5, '热带风暴', '#4d9bff'],
+    [32.7, '强热带风暴', '#35c759'],
+    [41.5, '台风', '#ff9a2e'],
+    [51.0, '强台风', '#ff7bc4'],
+    [999, '超强台风', '#ff3b30']
+  ];
+  function gradeOf(v) {
+    for (var i = 0; i < GRADE_TABLE.length; i++) if (v < GRADE_TABLE[i][0]) return GRADE_TABLE[i];
+    return GRADE_TABLE[GRADE_TABLE.length - 1];
+  }
+
+  function Typhoon(world, spawn) {
+    /* 默认在西北太平洋暖池生成（约 5-20°N, 122-158°E），
+       这也是真实台风在该海区的常见源地；用户点选位置时传入 spawn。 */
+    if (spawn) {
+      this.x = clamp(spawn.x, 40, world.w - 40);
+      this.y = clamp(spawn.y, 40, world.h - 40);
+    } else {
+      this.x = lonToX(rand(GEO.genesis.lon[0], GEO.genesis.lon[1]));
+      this.y = latToY(rand(GEO.genesis.lat[0], GEO.genesis.lat[1]));
+    }
+
+    this.vx = 0; this.vy = 0;
+    this.hemi = 1;                                   // 1 = 北半球(逆时针)，-1 = 南半球
+    this.flipSpin = false;
+
+    // —— 随机属性 ——
+    /* 引导气流：西北太平洋台风在低纬受副热带高压南侧的偏东气流引导，
+       以“西北偏西”路径为主；逼近副高西脊（22~31°N）后转向东北进入西风带，
+       形成教科书上的抛物线路径。
+       这里存的是**罗盘方位角**（0=北、90=东），换算成屏幕角度时才 -90°。 */
+    this.steerB = rand(280, 308);                    // 初始引导方位：西 ~ 西北偏西
+    this.recB = rand(38, 62);                        // 转向后的方位：东北
+    this.recurve = latToY(rand(22, 31));             // 转向纬度（y 越小纬度越高）
+    this.curve = 0;                                  // 路径弯曲程度（每次新台风重掷）
+    this.curvPhase = 0;
+    this.eye = clamp(CONFIG.eyeRadius * rand(0.78, 1.25), 3, 60);
+    this.sst = clamp(CONFIG.sst + gauss() * 0.8, 20, 36);
+    this.shear = clamp(CONFIG.shear + gauss() * 2.0, 0, 30);
+    this.shearDir = Math.random() * TWO_PI;          // 切变方向（决定不对称方位）
+    this.bands = clamp(Math.round(CONFIG.bandCount + gauss() * 0.7), 0, 8);
+    /* 雨带数的连续量：不能直接用 this.bands 做 lerp——
+       它每帧被四舍五入回整数，连续增量会被反复丢弃（5 → 5.045 → 5 → …），
+       结果永远卡在初始值，滑块形同虚设。故单独保存连续值。 */
+    this.bandsF = this.bands;
+    this.rain = clamp(CONFIG.rainRate * rand(0.82, 1.22), 0.15, 2.5);
+    this.pressureManual = false;
+
+    this.wind = rand(12.5, 19);                      // 初始为弱低压
+    this.targetWind = clamp(CONFIG.maxWind, 8, 90);
+    this.pressure = 1010 - Math.pow(this.wind / 3.65, 1.42);
+
+    this.t = 0;                                      // 已存活时长（模拟秒）
+    this.stage = 0;
+    this.arc = 0;                                    // 累计旋转相位
+    this.peak = this.wind;
+    this.lastWind = this.wind;
+    this.vGrowth = 0.01;                             // 初始给正增长趋势，使弱涡能进入"增强"阶段
+    this.rMax = 0;
+    this.spiralTight = 1.02;
+    this.envF = 1;
+    this.repel = 1;                                  // 1 = 正常，0 = 已消散（不再产生风场）
+    this.dissipating = false;
+    this.overLand = false;                           // 中心是否已在陆地上（登陆后迅速减弱）
+    /* 海洋热焓预算：1 = 能量充沛，越小越难维持强度。
+       它随生命周期单调消耗，保证台风一定会从成熟走向减弱、消散。 */
+    this.oceanEnergy = 1;
+    this.stageT = 0;                                 // 当前阶段已持续时长（模拟秒）
+    this.ceiling = this.targetWind;                  // 当前强度上限（每帧由 oceanEnergy 重算）
+
+    this.path = [{ x: this.x, y: this.y }];          // 路径轨迹
+    this.pathTimer = 0;
+    this.flash = { t: 0, a: 0, x: this.x, y: this.y };
+    this.custom = null;                              // 生成中被替换时，由 World 指定的收尾时序
+
+    this.updateSpiral();
+    this.rMax = this.calcRMax();
+  }
+
+  Typhoon.prototype.updateSpiral = function () {
+    this.bands = clamp(Math.round(this.bands), 0, 8);
+    this.spiralTight = 1.02 + this.bands * 0.055;
+  };
+
+  /** 最大风速半径：越强核心越小；同时保证台风眼占比合理 */
+  Typhoon.prototype.calcRMax = function () {
+    var core = 20 + 46 * Math.tanh((38 - this.wind) / 24);
+    return Math.max(core, this.eye * 3.6, 18);
+  };
+
+  /** 内部：给定相对坐标得到风矢量（m/s） */
+  Typhoon.prototype.windCore = function (px, py, ex, ey, K) {
+    var dx = px - this.x, dy = py - this.y;
+    var r = Math.sqrt(dx * dx + dy * dy);
+    var mx = this.vx + ex * this.shear * 0.03;       // 环境引导气流 + 背景风
+    var my = this.vy + ey * this.shear * 0.03;
+    if (r < 0.05) return { x: mx, y: my, mag: 0, tan: 0, r: r, rl: 0 };
+
+    var ux = dx / r, uy = dy / r;
+    var sgn = this.hemi * (this.flipSpin ? -1 : 1);
+    var tx, ty, tan, rl = Math.log(r / this.rMax);
+
+    if (r < this.rMax) {
+      // 眼内：近似固体旋转（切向风近线性增长）；留极少残余气流，眼不至于死寂
+      tan = this.wind * (r / this.rMax) * 0.85;
+      tx = -uy * tan * sgn;
+      ty = ux * tan * sgn;
+    } else {
+      // 眼墙外：修正 Rankine 涡 r^-beta 衰减 + 远场缓冲
+      var W = this.wind * Math.pow(this.rMax / r, 0.60);
+      W *= 1 / (1 + Math.pow(r / (this.rMax * 9), 2.1));
+      // 切变造成的方位角不对称：下切变侧对流被抑制
+      W *= clamp(1 + 0.22 * K * Math.cos(Math.atan2(dy, dx) - this.shearDir), 0.55, 1.45);
+      tan = W;
+      tx = -uy * W * sgn;
+      ty = ux * W * sgn;
+
+      // 径向风：边界层入流（形成螺旋雨带）+ 切变偶极
+      var M = Math.exp(-(rl * rl) / (2 * 0.80 * 0.80));
+      tx += ux * (-tan * (0.26 * M + 0.05)) + ex * (-tan * M * 0.16 * K);
+      ty += uy * (-tan * (0.26 * M + 0.05)) + ey * (-tan * M * 0.16 * K);
+    }
+
+    var vx = tx + mx, vy = ty + my;
+    return { x: vx, y: vy, mag: Math.sqrt(vx * vx + vy * vy), tan: tan, r: r, rl: rl };
+  };
+
+  /** 对外：完整风场（已消散的台风不再产生任何风） */
+  Typhoon.prototype.windAt = function (px, py, envK) {
+    if (this.repel < 0.02) return { x: 0, y: 0, mag: 0, tan: 0, r: 1, rl: 0 };
+    var K = envK === undefined ? this.shearK() : envK;
+    return this.windCore(px, py, Math.cos(this.shearDir), Math.sin(this.shearDir), K * this.repel);
+  };
+
+  /** 切变强度归一化系数 */
+  Typhoon.prototype.shearK = function () {
+    return clamp(this.shear / 22, 0, 1);
+  };
+
+  /** 强度变化速率（m/s 每小时）；cap = 当前可达到的强度上限 */
+  Typhoon.prototype.dIntensity = function (envK, M, cap) {
+    if (this.dissipating) return -6.5;
+    var top = cap === undefined ? M : cap;
+    if (this.stage === 0) return 0.75;                       // 生成期缓慢组织
+    if (this.stage === 1) {                                  // 增强
+      var rate = this.wind < 24 ? 1.75 : 1.15;               // 弱涡阶段更易快速增强
+      rate *= 1 - 0.75 * envK;                               // 强切变抑制增强
+      rate *= clamp((top - this.wind) / 30, 0.05, 1.6);       // 越接近潜在强度越慢
+      return clamp(rate, -1.8, 2.8);
+    }
+    if (this.stage === 2) {                                  // 成熟：在上限附近小幅震荡
+      return clamp((top - this.wind) * 0.06, -0.55, 0.55) + gauss() * 0.05;
+    }
+    if (this.stage === 3) return clamp(-(0.85 + envK * 2.1), -3.4, -0.35); // 减弱
+    return -4.5;                                             // 消散
+  };
+
+  /** 海表温度与风切变决定的最大潜在强度 (m/s) */
+  Typhoon.prototype.potential = function () {
+    return clamp(16 + (this.sst - 24) * 10.5 - this.shear * 0.95, 12, 92);
+  };
+
+  /** 请求消散（手动换台 / 移出计算域） */
+  Typhoon.prototype.forceDissipate = function () {
+    this.dissipating = true;
+    this.repel = 0;
+  };
+
+  /**
+   * 风圈半径（km）：七级 / 十级 / 十二级风圈。
+   * 量级按中央气象台实况公报标定 —— 中心风速 45 m/s 的强台风：
+   * 七级风圈半径 180~200 公里、十级 70~100 公里、十二级 40 公里。
+   * 于是：七级 46+3.2v（45→190）、十级 2.6v-32（45→85）、十二级 2.2v-59（45→40）。
+   */
+  Typhoon.prototype.windR = function (level) {
+    var v = this.wind;
+    if (level === 7) return clamp(46 + 3.2 * v, 0, 420);
+    if (level === 10) return Math.max(0, 2.6 * v - 32);
+    return Math.max(0, 2.2 * v - 59);
+  };
+
+  /** 每帧推进台风状态；simDt = 模拟步长(秒)，为时间流速折算后的真实秒数 */
+  Typhoon.prototype.update = function (simDt, world) {
+    this.t += simDt;
+
+    var envK = this.shearK();
+    var dtHours = simDt / 3600;
+    var targetWind = clamp(CONFIG.maxWind, 8, 90);
+    this.targetWind = targetWind;
+    /* 发展上限取"用户设定的最大风速"与"环境潜在强度×剩余海洋能量"的较小者：
+       海温低/切变大时台风到不了滑块目标值，但必须在潜在强度附近转为成熟，
+       否则会永远卡在"增强"阶段。 */
+    var M = this.potential() * this.oceanEnergy;
+    var ceiling = Math.max(8, Math.min(targetWind, M));
+    this.ceiling = ceiling;
+
+    /* —— 海洋能量预算 ——
+       真实台风靠海表热焓维持，成熟期只能撑两三天。本模拟把时间压缩了数千倍，
+       所以这里做一个同样加速的"热焓"消耗：成熟期持续越久、强度越高，衰减越快。
+       它是台风必然走完"成熟 → 减弱 → 消散"的驱动力：
+       少了它，成熟期 vGrowth 恒为 0，台风会永远停在成熟阶段。
+       发展期（stage 0/1）几乎不消耗，保证台风能充分增强到环境允许的强度。 */
+    if (this.stage === 2) this.stageT += simDt;
+    var drain;
+    if (this.stage === 2) drain = 0.0020 + (this.wind / 90) * 0.0034 + this.stageT * 0.00005;
+    else if (this.stage === 3) drain = 0.0075;
+    else if (this.stage === 4) drain = 0.0150;
+    else drain = 0.0002;
+    this.oceanEnergy = clamp(this.oceanEnergy - drain * simDt, 0.10, 1);
+
+    /* —— 强度演化 —— */
+    var diff = 0;
+    if (this.stage <= 3 && !this.dissipating) {
+      /* 时间压缩系数：把"气象时间"压成肉眼可观察的演化节奏。
+         取 6000 时，1 倍速下约 10 秒就明显增强、约 45 秒发展为成熟台风、
+         整条生命周期约 2 分钟；想更慢更真实可把时间流速调低。 */
+      diff = this.dIntensity(envK, M, ceiling) * dtHours * 6000;
+      this.wind += diff;
+    }
+    // 冷海温 / 强切变造成的持续衰减
+    if (this.sst < 26.5) this.wind -= (26.5 - this.sst) * 0.012 * simDt;
+    if (this.shear > 15) this.wind -= (this.shear - 15) * 0.010 * simDt;
+    /* 高纬冷海面：西北太平洋 28°N 以北海温迅速下降，转向东北的台风
+       一旦进入中纬就失去能量来源、很快变性减弱 —— 这是历史上台风
+       极少以台风强度越过 45°N 的原因。 */
+    var latNow = yToLat(this.y);
+    if (latNow > 28) this.wind -= (latNow - 28) * 0.035 * simDt;
+
+    /* —— 登陆摩擦：中心移到陆地上就断了热焓与水汽供应，强度迅速下降 ——
+       按同一时间压缩比加速：1 模拟秒 ≈ 1.67 气象小时，
+       所以 1.35 m/s 每模拟秒 ≈ 登陆后十几个气象小时腰斩，与实况量级相符。 */
+    this.overLand = landAt(xToLon(this.x), yToLat(this.y)) === 1;
+    if (this.overLand && !this.dissipating) {
+      this.wind -= 1.35 * simDt;
+      this.oceanEnergy = clamp(this.oceanEnergy - 0.016 * simDt, 0.10, 1);
+    }
+
+    if (this.dissipating) {
+      // 快速收尾：风与气压一起降下来
+      this.wind -= 5.5 * simDt;
+      this.repel = clamp(this.repel - simDt * 0.5, 0, 1);
+    }
+    // 风速上限受滑块实时牵引
+    this.wind = clamp(this.wind, 3, this.targetWind);
+
+    /* —— 中心气压：与风速按统计关系耦合，手动调节优先 —— */
+    if (this.pressureManual) {
+      this.pressure = lerp(this.pressure, clamp(CONFIG.pressure, 860, 1013), clamp(simDt * 2.4, 0, 1));
+    } else {
+      var pT = clamp(1010 - Math.pow(this.wind / 3.65, 1.42), 865, 1013);
+      this.pressure = lerp(this.pressure, pT, clamp(simDt * 0.9, 0, 1));
+    }
+
+    /* —— 结构参数实时跟随滑块 —— */
+    var kk = clamp(simDt * 0.9, 0, 1);
+    this.eye = lerp(this.eye, clamp(CONFIG.eyeRadius, 3, 60), kk);
+    /* 雨带数收敛到滑块值：连续量存在 bandsF 里，bands 只是取整后的显示/绘制值。
+       若直接对 this.bands 做 lerp，每帧的四舍五入会丢掉连续增量而不动。 */
+    var bandTarget = clamp(CONFIG.bandCount, 0, 8);
+    this.bandsF = lerp(this.bandsF, bandTarget, kk);
+    if (Math.abs(this.bandsF - bandTarget) < 0.05) this.bandsF = bandTarget;
+    this.bands = clamp(Math.round(this.bandsF), 0, 8);
+    this.updateSpiral();
+    this.rain = lerp(this.rain, clamp(CONFIG.rainRate, 0.1, 2.5), kk);
+    this.sst = lerp(this.sst, clamp(CONFIG.sst, 20, 36), clamp(simDt * 0.25, 0, 1));
+    this.shear = lerp(this.shear, clamp(CONFIG.shear, 0, 30), clamp(simDt * 0.25, 0, 1));
+    this.rMax = this.calcRMax();
+
+    /* —— 生命周期阶段判定 —— */
+    this.vGrowth = lerp(this.vGrowth, diff, clamp(kk, 0, 1));
+    this.peak = Math.max(this.peak, this.wind);
+
+    if (this.dissipating) {
+      this.stage = 4;
+    } else if (this.t < 45 && this.wind < 20) {
+      this.stage = 0;                                        // 生成
+    } else if (this.stage === 2 && this.stageT < 26) {
+      this.stage = 2;                                        // 成熟期至少维持一段时间
+    } else if (this.stage === 3) {
+      this.stage = this.wind < 20 ? 4 : 3;                   // 一旦减弱就不再回转
+      if (this.stage === 4) this.forceDissipate();
+    } else if (this.wind >= ceiling - 3 && this.oceanEnergy > 0.30) {
+      this.stage = 2;                                        // 成熟
+    } else if (this.vGrowth > 1e-7 && this.wind < ceiling - 3) {
+      this.stage = 1;                                        // 增强
+    } else {
+      this.stage = this.wind < 20 ? 4 : 3;                   // 减弱 / 消散
+      /* 自然耗尽的台风也必须进入消散流程（dissipating = true），
+         否则主循环里的"消散 → 自动生成下一个台风"永远不会触发：它只认 dissipating。 */
+      if (this.stage === 4) this.forceDissipate();
+    }
+
+    /* —— 旋转相位 —— */
+    this.arc += (40 + this.wind * 1.42) * CONFIG.spinRate * simDt * this.hemi;
+
+    /* —— 移动：引导气流 + 副高西缘转向 + 路径摆动 ——
+       西北太平洋台风的典型路径：先从暖池向西北偏西移动，
+       到 22~31°N 一带受西风带引导转向东北，形成抛物线路径。
+       坐标约定：世界 x 向东、y 向南，所以屏幕角度 θ（方向向量 = cosθ, sinθ）
+       与罗盘方位 b 的换算是 θ = b - 90°。 */
+    this.curvPhase += simDt / 26;
+    var curvK = clamp(CONFIG.curvature / 6, -1.2, 1.6);
+    /* 转向因子：纬度越高越偏向东北（0 = 未转向，1 = 完全转向） */
+    var rec = clamp((this.recurve - this.y) / 1100, 0, 1);
+    rec = rec * rec * (3 - 2 * rec);                          // 平滑过渡
+    /* 方位角必须在罗盘空间插值：290° → 410°(=50°)，途经正北，
+       才是真实的顺时针转向；直接在屏幕角度上线性插值会经过正南，画出一个假回环。 */
+    var brg = this.steerB + (this.recB + 360 - this.steerB) * rec
+            + (Math.sin(this.curvPhase * 0.9) * 26
+             + Math.sin(this.curvPhase * 0.37 + 1.7) * 14) * curvK;   // 路径摆动（有界）
+    var steerEff = (brg - 90) * D2R;
+    /* 时间压缩比：强度演化按 dtHours*6000 推进，即 1 模拟秒 = 6000/3600 ≈ 1.67 气象小时。
+       移动速度必须用同一个压缩比，否则台风一辈子只挪两三个纬度，
+       看不出“从太平洋深处一路走向亚太”的历史规律。 */
+    var spd = clamp(CONFIG.moveSpeed, 0, 42) * (6000 / 3600);   // km/h → km/模拟秒
+    var tx = Math.cos(steerEff) * spd;
+    var ty = Math.sin(steerEff) * spd;
+    var kv = clamp(simDt * 0.6, 0, 1);
+    this.vx = lerp(this.vx, tx, kv);
+    this.vy = lerp(this.vy, ty, kv);
+    this.x += this.vx * simDt;
+    this.y += this.vy * simDt;
+
+    /* 出界处理：计算域就是地图范围（90°E–190°E / 10°S–80°N）。
+       台风中心越过地图边界一定距离后判定为"移出预报区"，进入消散流程；
+       北侧进入中高纬西风带被斜压能掏空、南侧靠近赤道失去科氏力支撑，同样消散。
+       两个必须留意的坑：
+       ① 世界 y 轴**向南为正**，所以"北上过高纬"是 y 很小、"南下近赤道"是 y 很大，
+          旧版两者写反了；
+       ② 旧版末尾还有四条反弹钳制把台风夹在 x∈[0,w]、y∈[0,h]，
+          于是"越过边界 pad 公里才消散"的条件永远不可能满足（整段是死代码）。 */
+    var pad = 500, w = world.w, h = world.h, drift = 0;
+    if (this.y < -pad) drift = 1;                                    // 北上过高纬
+    else if (this.y > h + pad) drift = 0;                            // 南下近赤道
+    else if (this.x < -pad) drift = 2;                               // 向西移出预报区
+    else if (this.x > w + pad) drift = 3;                            // 向东移出预报区
+
+    if (!this.dissipating && drift !== 0) {
+      this.dissipating = true;
+      this.driftType = drift;
+    }
+
+    if (drift) {
+      // 消散中不再拉回，只夹在画面外不远处，任其淡出
+      if (drift === 1) this.y = Math.max(this.y, -pad);
+      if (drift === 0) this.y = Math.min(this.y, h + pad);
+      if (drift === 2) this.x = Math.max(this.x, -pad);
+      if (drift === 3) this.x = Math.min(this.x, w + pad);
+    }
+
+    /* —— 路径采样 —— */
+    this.pathTimer += simDt;
+    if (this.pathTimer > 0.55) {
+      this.pathTimer = 0;
+      this.path.push({ x: this.x, y: this.y, w: this.wind, r7: this.windR(7) });
+      if (this.path.length > 1200) this.path.shift();
+    }
+
+    /* —— 雷暴闪光：眼墙随机位置，低频、短促 —— */
+    if (!this.dissipating && this.stage >= 1 && this.stage <= 3 && this.wind > 28) {
+      if (Math.random() < 0.14 * simDt) {
+        var aa = Math.random() * TWO_PI;
+        var rr = this.rMax * rand(0.9, 1.6);
+        this.flash.t = 1;
+        this.flash.a = 1;
+        this.flash.x = this.x + Math.cos(aa) * rr;
+        this.flash.y = this.y + Math.sin(aa) * rr;
+      }
+    }
+    if (this.flash.a > 0) this.flash.a = Math.max(0, this.flash.a - simDt * 1.6);
+  };
+
+  /* ==========================================================================
+   * 5. World 世界：粒子池、自动生成、重生
+   * ======================================================================== */
+  function World() {
+    this.w = GEO.worldW;                 // 计算域 = 西北太平洋地图范围（km）
+    this.h = GEO.worldH;
+    this.pool = [];
+    this.used = 0;
+    this.typhoon = new Typhoon(this);
+    this._seeded = 0;
+    this._deadTime = 0;
+  }
+
+  /** 按需扩展粒子对象池（对象只增不减，运行期零分配） */
+  World.prototype.ensurePool = function (n) {
+    var cap = Math.min(n, VIEW.maxParticles);
+    while (this.pool.length < cap) this.pool.push(new Particle());
+  };
+
+  /** 维持粒子总数：复用死亡对象，保持粒子群年龄分散 */
+  World.prototype.maintain = function () {
+    var want = clamp(Math.round(CONFIG.particleCount), 0, VIEW.maxParticles);
+    this.ensurePool(want);
+    var seeded = this._seeded === 0;
+    for (var i = 0; i < want; i++) {
+      var p = this.pool[i];
+      if (p.dead) p.reset(this.typhoon, seeded || i % 3 === 0, i);
+    }
+    if (seeded) this._seeded = 1;
+    this.used = want;
+  };
+
+  World.prototype.step = function (simDt) {
+    var t = this.typhoon;
+    var envK = t.shearK();
+    this.maintain();
+    for (var i = 0; i < this.used; i++) {
+      var p = this.pool[i];
+      if (!p.dead) p.step(t, simDt, envK);
+    }
+  };
+
+  /** 生成新台风：旧台风快速消散后自然移交。spawn 可选，指定落点(世界坐标 km) */
+  World.prototype.newTyphoon = function (spawn) {
+    if (this.typhoon) this.typhoon.forceDissipate();
+    var nt = new Typhoon(this, spawn);
+    nt.custom = { born: performance.now(), fadeAt: 850, takeOver: 7500 };
+    this.typhoon = nt;
+    this._seeded = 0;
+    this._deadTime = 0;
+    return nt;
+  };
+
+  World.prototype.reset = function () {
+    for (var i = 0; i < this.pool.length; i++) this.pool[i].dead = true;
+    this.used = 0;
+    this.typhoon = new Typhoon(this);
+    this._seeded = 0;
+    this._deadTime = 0;
+  };
+
+  /** 等待旧台风消散，随后自动接上新台风 */
+  World.prototype.onDissipated = function (simDt) {
+    if (this._suppressAuto) return;
+    this._deadTime += simDt;
+    if (this._deadTime > 3.5) this.newTyphoon();
+  };
+
+  /* ==========================================================================
+   * 6. Renderer 渲染器
+   * ======================================================================== */
+  function Renderer(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d', { alpha: false });
+    this.dpr = 1;
+    this._quality = 1;                   // 渲染倍率（自适应降档用）
+    this._qt = 0;
+    this.w = 1; this.h = 1;
+    this.ocean = document.createElement('canvas');
+    this.octx = this.ocean.getContext('2d');
+    this._oceanZ = 0;                    // 当前贴图对应的缩放（跨过阈值才重建）
+    this.fps = 0; this._frames = 0; this._fpsT = 0;
+    this._isoCache = null;
+  }
+
+  Renderer.prototype.resize = function () {
+    var w = window.innerWidth, h = window.innerHeight;
+    this.dpr = clamp(window.devicePixelRatio || 1, 1, VIEW.maxDPR) * this._quality;
+    this.w = w; this.h = h;
+    this.canvas.width = Math.round(w * this.dpr);
+    this.canvas.height = Math.round(h * this.dpr);
+    this.canvas.style.width = w + 'px';
+    this.canvas.style.height = h + 'px';
+    this._vig = null;                    // 尺寸变化后重建暗角渐变
+    this.buildOcean(TILE_PX);
+  };
+
+  /** 自适应渲染倍率：帧率偏低时降到 0.68 倍分辨率（像素工作量约减半），
+      帧率恢复到 52 以上再逐级升回来。低倍率时略微提高粒子透明度补偿观感。 */
+  Renderer.prototype.autoQuality = function (dtReal) {
+    if (!VIEW.adaptive) return;
+    this._qt = (this._qt || 0) + dtReal;
+    if (this._qt < 2.2) return;                   // 每 2.2 秒最多调整一次
+    this._qt = 0;
+    var f = this.fps;
+    if (f <= 0) return;
+    if (f < 34 && this._quality > 0.60) {
+      this._quality = Math.max(0.60, this._quality - 0.20);
+      this.resize();
+    } else if (f > 52 && this._quality < 1) {
+      this._quality = Math.min(1, this._quality + 0.20);
+      this.resize();
+    }
+  };
+
+  /* 深海贴图是"平铺单元"，这里规定它在**屏幕**上的边长（CSS px）。
+     世界边长 = TILE_PX / zoom，所以平铺格子不论怎么缩放都只有 384 屏幕像素。
+     早先贴图固定 900 世界 km，放大到 1.5~3 倍后一个格子被拉到 1300~2700 屏幕
+     像素，7 个大斑块就变成满屏重复的蓝色方块 —— 这就是那个网格 bug 的根因。 */
+  var TILE_PX = 384;
+  var OCEAN_BASE = '#04042c';
+
+  /** 生成"按像素对齐"的回绕噪声采样表：给每个像素位置预先算好双线性混合的
+      四个格点值与权重。格点用整数坐标哈希，i0+N 与 i0 取到同一个值，所以表在
+      左右/上下边界首尾相连 → 平铺无缝。
+      （坑：格点若先归一化成 0~1 小数再取模，整数格点会全部塌成 0，
+        整层噪声变成常数、斑块完全不出现。）
+      做成"按像素查表"而不是每个像素现算，是因为现算噪声重建一次要 1 秒以上，
+      缩放时整页会卡住；查表版把热循环压到只剩乘加。 */
+  function buildNoiseAxis(S, N, seed) {
+    var v0 = new Float32Array(S), v1 = new Float32Array(S);
+    var w0 = new Float32Array(S), w1 = new Float32Array(S);
+    var f = N / S;
+    for (var p = 0; p < S; p++) {
+      var x = p * f;
+      var i0 = Math.floor(x);
+      var fr = x - i0;
+      var sm = fr * fr * (3 - 2 * fr);
+      i0 = ((i0 % N) + N) % N;
+      v0[p] = i0; v1[p] = (i0 + 1) % N;
+      w0[p] = 1 - sm; w1[p] = sm;
+    }
+    return { N: N, seed: seed, v0: v0, v1: v1, w0: w0, w1: w1 };
+  }
+  function hashAt(seed, i, j) {
+    var n = Math.sin(i * 127.1 + j * 311.7 + seed * 74.7) * 43758.5453;
+    return n - Math.floor(n);
+  }
+  function buildNoiseVal(ax, S) {
+    var N = ax.N, seed = ax.seed;
+    var val = new Float32Array(N * N);
+    for (var j = 0; j < N; j++) {
+      for (var i = 0; i < N; i++) {
+        val[j * N + i] = hashAt(seed, i, j);
+      }
+    }
+    return val;
+  }
+
+  /** 预渲染深海贴图（深浅起伏 + 散点噪点）。S = 贴图像素边长。
+      两条硬约束：① 左右上下必须无缝；② 不能烤进任何与屏幕尺寸相关的东西
+      （屏幕暗角由 render 末尾统一加），否则平铺会出现明暗硬边。
+      做法：低频起伏全部来自回绕噪声，不用 createRadialGradient 画圆、
+      也不用 stroke 画长条 —— 圆和长条在贴图边界会被裁掉一半，平铺后就是接缝。 */
+  Renderer.prototype.buildOcean = function (S) {
+    this.ocean.width = S;
+    this.ocean.height = S;
+    var g = this.octx;
+    if (!this._oceanImg || this._oceanImg.width !== S) {
+      this._oceanImg = g.createImageData(S, S);      // 复用缓冲区，避免每次重建都分配
+    }
+    var img = this._oceanImg;
+    var d = img.data;
+    var BR = 4, BG = 5, BB = 44;                   // 基色 #04052c：参考图的深海就是这个蓝
+
+    /* 两层起伏：大尺度每贴图 3 个（深海层次）+ 细尺度每贴图 13 个（海面细纹）。
+       采样位置按像素预算好（含回绕），热循环里只剩乘加。 */
+    var layers = [
+      { ax: buildNoiseAxis(S, 3, 3.1), amp: 0.26 },
+      { ax: buildNoiseAxis(S, 13, 7.7), amp: 0.12 },
+    ];
+    for (var a = 0; a < layers.length; a++) layers[a].val = buildNoiseVal(layers[a].ax, S);
+
+    for (var py = 0; py < S; py++) {
+      var rowB = py * S;
+      /* 纵向的两个格点行与权重（每行只算一次） */
+      var j0a = layers[0].ax.v0[py], j1a = layers[0].ax.v1[py], wya = layers[0].ax.w1[py];
+      var j0b = layers[1].ax.v0[py], j1b = layers[1].ax.v1[py], wyb = layers[1].ax.w1[py];
+      var Na = layers[0].ax.N, Nb = layers[1].ax.N;
+      var va = layers[0].val, vb = layers[1].val;
+      var r0a = j0a * Na, r1a = j1a * Na, r0b = j0b * Nb, r1b = j1b * Nb;
+      for (var px = 0; px < S; px++) {
+        var v0a = layers[0].ax.v0[px], v1a = layers[0].ax.v1[px], wxa = layers[0].ax.w1[px];
+        var v0b = layers[1].ax.v0[px], v1b = layers[1].ax.v1[px], wxb = layers[1].ax.w1[px];
+        var ta = va[r0a + v0a] + (va[r0a + v1a] - va[r0a + v0a]) * wxa;
+        var ba = va[r1a + v0a] + (va[r1a + v1a] - va[r1a + v0a]) * wxa;
+        var tb = vb[r0b + v0b] + (vb[r0b + v1b] - vb[r0b + v0b]) * wxb;
+        var bb = vb[r1b + v0b] + (vb[r1b + v1b] - vb[r1b + v0b]) * wxb;
+        var k1 = (ta + (ba - ta) * wya) - 0.5;
+        var k2 = (tb + (bb - tb) * wyb) - 0.5;
+        var k = k1 * 0.26 + k2 * 0.12;
+        var i = (rowB + px) * 4;
+        d[i] = BR + (k > 0 ? 9 * k : 0);
+        d[i + 1] = BG + (k > 0 ? 13 * k : 0);
+        d[i + 2] = BB + (k > 0 ? 30 * k : 0);
+        d[i + 3] = 255;
+      }
+    }
+    // 散点噪点：打散大面积渐变的色带感（只提亮蓝通道，保持"纯蓝深海"的观感）
+    for (var t = 0, n = Math.floor(S * S / 900); t < n; t++) {
+      var nx = Math.floor(Math.random() * S), ny = Math.floor(Math.random() * S);
+      var jj = (ny * S + nx) * 4, up = 6 + Math.random() * 10;
+      d[jj] += up * 0.15; d[jj + 1] += up * 0.35; d[jj + 2] += up;
+    }
+    g.putImageData(img, 0, 0);
+  };
+
+  /** 缩放明显变化时按新的世界尺寸重烤贴图，保证屏幕上的重复周期恒定。
+      只在跨过 1.25 倍阈值时重建（烤一次 384×384 约 5 ms），
+      否则每帧重建会白白吃掉帧时间。 */
+  Renderer.prototype.ensureOceanScale = function (zoom) {
+    if (this._oceanZ > 0 && zoom / this._oceanZ < 1.25 && zoom / this._oceanZ > 0.80) return;
+    this._oceanZ = zoom;
+    this.buildOcean(TILE_PX);
+  };
+
+  /** 海面：把贴图按世界坐标平铺满可视范围。
+      贴图的世界边长 = TILE_PX / zoom，屏幕边长恒为 TILE_PX。 */
+  Renderer.prototype.drawOcean = function (ctx, cam) {
+    var left = cam.cx - cam.vw * 0.5 / cam.zoom;
+    var top = cam.cy - cam.vh * 0.5 / cam.zoom;
+    var right = cam.cx + cam.vw * 0.5 / cam.zoom;
+    var bottom = cam.cy + cam.vh * 0.5 / cam.zoom;
+    var S = TILE_PX / cam.zoom;              // 贴图的世界边长（km）
+    /* 缩到很小时贴图数量会爆炸（每帧几百次 drawImage），
+       此时改用底色铺满：深海本来就接近纯色，视觉上无差别。 */
+    if ((right - left) / S * ((bottom - top) / S) > 420) {
+      ctx.fillStyle = OCEAN_BASE;
+      ctx.fillRect(left, top, right - left, bottom - top);
+      return;
+    }
+    var x0 = Math.floor(left / S) * S, y0 = Math.floor(top / S) * S;
+    for (var wy = y0; wy < bottom; wy += S) {
+      for (var wx = x0; wx < right; wx += S) {
+        ctx.drawImage(this.ocean, wx, wy, S, S);
+      }
+    }
+  };
+
+  /** 经纬网：每 10° 一条细线（每 20° 稍亮），交点处标"160E / 20N"。
+      参考图里经纬网是压在陆地上层的，所以本函数在 drawMap 之后调用；
+      线条按可视范围动态铺满（不再受 GEO 边界限制），缩得极小时整体不画。 */
+  Renderer.prototype.drawGrid = function (ctx, cam) {
+    var z = cam.zoom;
+    var left = cam.cx - cam.vw * 0.5 / z, right = cam.cx + cam.vw * 0.5 / z;
+    var top = cam.cy - cam.vh * 0.5 / z, bottom = cam.cy + cam.vh * 0.5 / z;
+    var lon10 = Math.ceil(xToLon(left) / 10) * 10, lon10e = Math.floor(xToLon(right) / 10) * 10;
+    var lat10 = Math.ceil(yToLat(bottom) / 10) * 10, lat10e = Math.floor(yToLat(top) / 10) * 10;
+    if (lon10e - lon10 > 360 || lat10e - lat10 > 180) return;   // 缩得极小：线密到没有意义
+
+    ctx.save();
+    ctx.lineWidth = 1 / z;
+    var lon, lat, gx, gy;
+    /* 20° 的整数倍：亮一档，也是标注所在的那一档 */
+    ctx.beginPath();
+    for (lon = Math.ceil(xToLon(left) / 20) * 20; lon <= lon10e; lon += 20) {
+      gx = lonToX(lon); ctx.moveTo(gx, top); ctx.lineTo(gx, bottom);
+    }
+    for (lat = Math.ceil(yToLat(bottom) / 20) * 20; lat <= lat10e; lat += 20) {
+      gy = latToY(lat); ctx.moveTo(left, gy); ctx.lineTo(right, gy);
+    }
+    ctx.strokeStyle = 'rgba(96,178,232,0.30)';
+    ctx.stroke();
+    /* 剩下的 10° 线：暗一档，只是把格子再切细 */
+    ctx.beginPath();
+    for (lon = lon10; lon <= lon10e; lon += 10) {
+      if (lon % 20 === 0) continue;
+      gx = lonToX(lon); ctx.moveTo(gx, top); ctx.lineTo(gx, bottom);
+    }
+    for (lat = lat10; lat <= lat10e; lat += 10) {
+      if (lat % 20 === 0) continue;
+      gy = latToY(lat); ctx.moveTo(left, gy); ctx.lineTo(right, gy);
+    }
+    ctx.strokeStyle = 'rgba(96,178,232,0.13)';
+    ctx.stroke();
+
+    /* 交点标注：一个交点只写一个（经度/纬度交替），和参考图一样疏朗；
+       字太小会糊，缩得很小时整块不画。
+       标注要屏幕恒定字号，所以先回到屏幕空间再画（线宽用 1/z 抵消缩放，
+       文字没法这样抵消，必须换坐标系）。 */
+    if (z > 0.25) {
+      var ox = cam.vw * 0.5 - cam.cx * z, oy = cam.vh * 0.5 - cam.cy * z;
+      ctx.save();
+      ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      ctx.font = '10px "Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      ctx.lineWidth = 2.8;
+      ctx.strokeStyle = 'rgba(3,12,26,0.72)';      // 深色描边 + 浅灰字：压在陆地/海洋上都读得清
+      ctx.fillStyle = 'rgba(198,206,216,0.62)';
+      var c0 = Math.ceil(xToLon(left) / 20) * 20, r0 = Math.ceil(yToLat(bottom) / 20) * 20;
+      for (lon = c0; lon <= lon10e; lon += 20) {
+        gx = lonToX(lon) * z + ox;
+        if (gx < -20 || gx > cam.vw + 20) continue;
+        for (lat = r0; lat <= lat10e; lat += 20) {
+          gy = latToY(lat) * z + oy;
+          if (gy < 8 || gy > cam.vh + 8) continue;
+          /* 棋盘式交替：偶数格写经度、奇数格写纬度 */
+          var txt = (((lon / 20) + (lat / 20)) % 2 === 0)
+            ? (lon === 180 || lon === -180 ? '180' : (lon < 0 ? -lon + 'W' : lon + 'E'))
+            : (lat === 0 ? '0N' : (lat < 0 ? -lat + 'S' : lat + 'N'));
+          ctx.strokeText(txt, gx + 3, gy - 3);
+          ctx.fillText(txt, gx + 3, gy - 3);
+        }
+      }
+      ctx.restore();
+    }
+    ctx.restore();
+  };
+
+  /* ==========================================================================
+   * 6.5 西北太平洋地图（真实海岸线 + 卫星影像地表色）
+   *
+   *   海岸线与地表色都取自一张真实的西北太平洋卫星影像，提取后内联在这里，
+   *   运行时不依赖任何外部文件、图片或接口。
+   *   影像是等距圆柱投影：lon = 90 + x/21.6、lat = 80 - y/21.6，
+   *   即经度 90°E~190°E、纬度 10°S~80°N，21.6 像素 = 1°（每 10° 一条经纬网）。
+   *   换算成本项目的世界坐标（km）后再绘制，所以缩放平移天然正确。
+   * ======================================================================== */
+  /* —— 海岸线数据（由西北太平洋卫星影像提取，内联，不依赖任何外部资源）——
+     等距圆柱投影，lon = 90 + x/21.6、lat = 80 - y/21.6（216px = 10°，21.6px/度）。
+     编码：可打印 ASCII，每字符 6 bit（低 5 位数据 + 最高位续位）；
+     轮廓数 → 每轮廓点数、首点经纬度、后续各点经纬度增量（单位 1/64 度，zigzag）。 */
+  var COAST_CODE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-';
+  var COAST_DATA = '8JimC81Bs2JkBFkBXyCAMLLLMLmDLjBhBkBRdAFXpBMpBLRXGd2BGAMRA2BGeLSeiBAGGXwBGMLGeASWkBALFSPeAMWcAAR-BDFRSFLFeR0BAMXYFSAMYqBGSe6BLzBFLLWdzBRlDGbdhCGFRXGYGLM7BLJLtCMALYAjBRYP2GAcWuHAYqBsCAMYqBYFSdAXRtBGRLpBAFSeSmCFSMSRmDAMXRXSLgCkBFkBSAkBXeMuBLeG2B1BmCMYX2BLjBtBAR1BjBtEXnBpBMLuBFeM2BLiBMqBLGLLJnBARLpEAVLSRuBASLuCMsCvBmDAQMkJA6BLoCAeMcLkEAcRqBALdSL6CA0BVmDAQM6CKsCJYQASdSMemDkBkBAcY0CLeX0BAqBXkGAYLgCYSjBwBAMFFLkBXuBSuC3CAL7B1BvDLFFMLkBAjBAAbeLejBiBAuCvBmCAkBXuCYMMAe2D+CmCAGbkBX8DASMmNAiBGASMEFMMGSFFLYDMR2BuBRe0BY8BASLYMYLuBMSMLYGMwBAYL4ML6CX0BASLyDAQL+IAuBXiCLwBViBAeX8BLmCvBejBgKASMiCASMiGASL6CASL0EAuBRSRAPzBMLLGdXRMLuBF6CjBqBAiBjBqBASMYLqBAgCkBqGASM+CjB+FASL4CAwEoC0EASLARdjBvBAvBYLXGPYXmDFcpB2BAeSFM8BGQSASPQdMjBFXYMMeFqBkBsCAqBL6EGSLmCF4DGWLmDA6BMSLwBAyCX2BAiCX8DAmF-BqBA6BdwBAqDvB6CLqBhBsCASLeA4C1BYGGRkBXmFFgCX+DAQJeAepBqDRwBRARpBLbjB1BFRPnEAXXYjBjBRjBARRMXYASRjBFXPtBAXKpBApBkBnEY-BYjB2BpBS9CKpBVhEAtC+CxCAXXAXSRqBFMJLRzC1BXArCjBnCLjBnB2B7BApBqBjBkBLGnBiBXLRhBAdRnEY5EFRLtCLXX9CLtChBnBARL7BGzBpBlDdjBdnBA1BpBhCDlChCdAxCiCvEE7DPxCjB1BvBXGASkBqBRY9CpBvBFLpBvBAAkBRMPFdpBRGASXAnCvBJREhBVdtCjBRRARzBpBiBbmDGoBLAXPRdAXdMRAjBSPeAKLG1BLLpDGvBRnB1BAb6BnCLRnBRhCAjBM7D5BRXAdMRFXSdjBFXMPLvBA1BhBRRG7B3CxCdF1BjBtBvBRqBdeMyCjBqBAkBjBkBA4CXeMehBuBKwBVkBAmCiBqBAwBkBwBkBEYkBSAoBkBVkBASgCF8Be0BAiCiBeAqBwBcGoCuCiCiB4CYwBwBSAWqB2BG8BuB0BFSSLeqBASYFS2BkBF0BeSWAeYRS-BGdR1BAhBjBAdXdMPWAARhBAXSnCFRvBzBA1BjB1BLVjB1BAFMMSLS1BAMGAeoC8BRWnCbXAnBcjBARLnCAPJzCGXRpBAzB1BvBdRAjBvBxCVnCpBVjBjBXFLMR+CGeLMJLR9CARLpBAXSdAxCdpBAXMvBXxCALMMSqDGAWXDlCiB1BAdRvDwBpBA5BjBdAXbvBQzBARLrFMjBhBRAXiBvKAzCnB7BLnBpBxDvBhBhB9DzClCXnE9CdpB1D1BdApBtBXAdXzBRXXMXqBL6EAARXhBAXSRoBAMMFkBqBQYzBjBdMdYMwBAuBwBYASkBoEASFepB+CvB8BLkDMYLkB2BASjBkBMMkBAYRRpBwB1BAdWhBA1BhBdAXWdGnBedA1BkBzBAjBedkB9CoBpBLFbkBvBYtCKtBhBLRGXpB1BLdAzBwBpBARuB5BYEMJM1BXLhBqBhCe1BnCdRhB2BuBgCASVeAkBiBqBAoBtBwBAYiB2BAuBSeF8BhBuBoBkBAMFede-BiBRDGL7BRnBvBGXddFbRKjBJREdbMX6Cde1BdbRzC1BpBRd5BtBXpBnC7BLPAjBxCtCLXzCtBpDrDpBXrC9CjD7BpBApBhB1BL1DALoB-BSRFvB5BtCpBnBARRARnC5BA5CdLvD3C-BLXddARRAdRVGLuCjBuBpBGjB8BzBMjB6BhCA-BVdARoBjBALbjBKPzBvBXAdvB5BMxD7BjDJhCiBXeYwBkBeAoBkBeG2BhCwBYiBASXerCqBRLRGFkBXWRJXKeeAekBYLkBeeRWhCM-BkBhCARLjBA5BjBdApBtBzBAhCjB1BmCeqBiCYAYRStCMhBRdpBtCSjBRVXL5BpBXdARXSRuCAiBkBmDMMLLRhCLLLMRqBAALpBAdjBAPkBXMpBSAeYAkBYFccqBVkBvB2BL0BMYLwBAMLjBjBAdnCA3CVpBXdvBbAnCvBRRFbjBLVXiB7BgDFwBtBEdSRmDA0BXLRPGRRAXYbApBXXgCnCFbqB7BFjBYdF5BRpBjBdMdtBzBFLMdd1BRLGb5C1BRvBlCzBAjBvBjBAdRdqBhBRR1BAPpB7BdnClCPAvBjBXXAdzCLjD3C7DARL1BAzBvB7BLARhCR-BhBnEA7BR9CnCM5BRRvBFjBSXWAkB-B8BFelDGhBpBjBFhCvBXFzBlC7BvBARjBjBhBrCuBjBAXYX2BhBA7BmCvBYtB6CvB+CrDAPwB5CAjBYbApEWnBVdAvBRXMnB1B1BhCRFFSF-BvBpBVdAlChCjBtC1DtBRpBjBR1BARSkByCLYAYSYFMLMlCMdFFeRSjBEzB2BKYtBiCGWLSjBARMlC0C3DALMYoBAYRSrCARLMpBjBzBYpBjBpBFnBpBhCGdtB-BGpBLjBYXAXMLgCFMSdeqBGMLFXXLAlCYdkBRL-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-B-CzCbevBALMkBkBLSAiBqBqBAMdMFXdRLYeMMSRSpBFzB6BFSKMoCGqBSSYYAcYAkBMKYAqBYeAoBwBmDoCeAGKiBJuCAwBW8DAYPiBKYYAYYkBiCwBGyCSSiBMYAML-B1BKbqBAuCuBiBAqBYwBoCqBMYWK8BwBwBFeqBoBAMRSdALSwBqBAYRWlE8qDkccRkBGeJY7BYXoBLqBvBuCVSdjBd-CGPRGRQR8BLMXjDPvBde1BjBRRXkBbApBwBvBX1BoBnBYAGjBeLSdLLhEFLLAbvBvBAdqBdMXRRAhBvBFjBjBtBXAjBXdkBhBAXhCzCALqBnBRvBLLXAAkBdM-BvBdApBXXAM2BRSzBYvBAdWXDbW7BnB1BGnBddAReMMYAWWPSjBARMjBLSRARpBVrCSLKGMjBeM0CpBiBAYYeFSlCAjB2BeYpBuBAYkBSAY7BqBA0BYeAwB0B6BeA2BV2BASLWGqBiBA8BkB2BwBAuBW8BAeMuBkBSkBoCiCAiBSSkBAiBewBS2BLSYdeASSKoBAYYMqB8B8BAYrCigC9WwBAeLSjBWMPe0BGevB4CAyDzCsFLSSAYiBe8BXqBAgCvBgFA0CMqBVWAARtBMRLzELLXSRSL6EAWRARSRqBFSMkBASFYhBvBjBXApBkBjBAAjBPF5CqB7BGJQXVhCARM-BAjBLpBWvDYvBeXF-BYXLjBMjBLvDMdYjDMRMGkBLKvBARMXLnBARMLSMMwBAiBkBAe3C82DAeLLjBkBzBSRSAiBvBkBA8B8BsCLkBkBwBFqBcWAYRAPXRVSpBRRdnC7BnBRjBMXLSb8BjBAdvBAXdeL0BeMFwBvBARpBbGRoChCeASMWAMLRRhBFXRXMdFjBzB5BARSASkB0BRSpBALejBeGYYWFqBRS5BLpBdetBGpBFzEXpBYjBLL5CLbYAYoBwDAkBXYAkBPSpBFRMLYGoBLewBeAkBkBoBAYXqByCqDRkBvCk7D6qCoCFwBpBWAeqBeXvBlCAdkBjBYvBvB-BAdXRhBAXXApBXbqB1BF7B0B5B2BkB2BAqBjBFLKLeMwBAGLXFRXkBdAXqBVFpBRARYvBYd0BxCoCRLGXejBARRLLMAYlC8BXAvBXpBAXSnBGMkBuBoBAMRSRAbjBdSFejB8BMcFejBkBASSYSASpBYFSSLqBAeMQAuCLeMMAeYcAY1BwuG81FuBAeL8BnCyC5B0CXqBXuBAoC0BGPpB7BSXqBXoBAnBdvBARJjDArD5CAdLLhBA5E0CXAhCjBRAdYbAjBjBkBdcAkBRMPrCF7BjBLMeoBASpBeLwB2BMwBqBdcGMYAoBX2BAYYRwB2BqBLuBkBqBhCwBxBqvD7fYFiBnBYM2BAkBdiBSkBL2BYsCAuCXiCMiBLuCSAiBMGkBV6BASKMJvBdlCA-CjB-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-L4rI-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-FwvIRGFRYLEw-FkkHXGFRSJE+6D87CPAEXYGEo7K6tIRGLReFEw4G2qIRGLReFEswCokFXGLLeLE2kHhgBdGFLYJE6mE+0FXGLLkBFE+rD+sFPGRLiBFE+WywHVGFRWFEkzHmwHVGFRWFF4yCy8HPGLPSLQSF2uC47FFGRPSLSQFq3FlPFGRRMRSMFqmGypIRGFRSLMMEu5ByxEFGXXSFEiRi8DLAGXWSEmoB0JLGLRYLEgtGi5HLAMdMMFowDoiGRGFLeLEGEqVkyFXGLLSLFugB2vEFGFLQLSME2zB64FRGRLeFF8zGymIFGRPYLMMFipEwvILGLRSLMMFuwI0jIRGFRMLQSF80J29HLGLRSLMMFy5K87HLGLRMLSMFswCktEFGRXSFMMF6T63DFGLLMRSGF+gB4mDLGJPQLMMFkcu8CFEPJKRSSE2mGotIXAYRMGEyR2tFbASRQMEi3Co8HFGRRYFE+jC+vGVGFLQJE6vCk8FLAAVSEEuT4-DXGFLSJEolBu6DLAAXSGEsoB2nDLGLRYFE0iBkhBXGFLSLEwnDi7FXGFLYFEk2C8hFXGFLYFE86Bk2CXGFLYFEsoBmeRAGXMG';
+
+  /* 地表色块：1°×1° 网格，每格 4bit 调色板索引，0 = 无数据（透明） */
+  var TERRAIN_GEO = { lon0: 88, lat0: 84, cols: 216, rows: 196, step: 0.5 };
+  var TERRAIN_PAL = [[0,0,0],[16,46,14],[48,80,16],[84,112,40],[16,80,16],[80,112,16],[48,48,16],[80,80,16],[112,112,48],[144,144,80],[176,144,112],[112,80,48],[80,48,16],[112,112,112],[170,178,186],[232,238,244]];
+  var TERRAIN_B64 = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAzMZ8ZmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMfGfHzGzAAAAAZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcfGd3d3ZszMcAx2ZmwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB3zMbMbHxnfHzLu3d3x3xmZ8zGZmJncAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGfMx2AAZmd3AAAAAAcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB8d3d8Z7t3d3d3e3u3d8d3zMfGx8bMZmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGdsfBAABmZ2AHx8xndwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd3d3d3u3y7u7e3dhZsZ2ZsfGd8d3d2ZmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADHdwAAAGAAAAAAB3cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd3d7e7t3d3fHxszGHHx8xsx3d3JmFhx2AABmAAAAAAAAAAYAERAAAAAAAAAAAAAAAAAHd3cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd7u3u3e3d3dnx3fBZ3fHd3fMxmZnzGEWZhZmZwABAAAAAGZhERFhEAAAAAAAAAAAAAAAd3dwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd8d3d3d3e3d7t7x3d3d3d8ZmbHxnu3d2Zmd7d3YRF3cAZnZmZmZmERAAAAAAAAAAAAAAB7t2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd3d3d7d3d7d3d7d3d3d2ZmbMd3xnd3d3d3did3d3d3d2ZndmZmZmYRAAAAAAAAAAAAAAB2Z3zABmAHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd3d3d3d3d3d3YiJ3ZmZmZiJ3d3d3d3e3d3d3dmZ3d3d3d3d3d2xmERAAAAAAAAAQABEWLHdmJnZmZ3fBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd3d3d3d8ZiJmJmZmZmZid7u3d3t3Zmx3diJ2JyYid3IiIiIiu7Z3YQAABmFmZmERYWEWYiYiYiZmxmZmFmYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAAB3x8ZmZmZmZmZmZmZmZ7u7d3d3d3d3ciZiInYmJmZmJiK3t3e3Z3d2cABmZmZmZmYWZmYmYmZnJ3ZmJmZmZmZmAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAABnd8fAAAAAAAAAAAAAAAAAAAAABmJmZmZmZmZmZmZmd3xyd3t3fHfHd3J2IiIiZiImZmJmZ3dyZmZnfHd2d2ZmdmZmZmZmZ2ZmfGxiZnZidmZmZmZ8d8x2ZgAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAAAAAAAAAADMbMzMZmFmxmZmd7fGZmbHZmfMzMZmZmZmZmZmZhZmZmZmZmFmZmZmZ3ZmJnZmdmZmFmZmJmZmZmZmZ3d3JmZmZszMxmFmAAAAAAAAAAAAAAAAAHd3d3AAAAAAAAAAAAAAAAAAAAAAAAAAAABmZsZmZmYWbHd3d3dmZmbMfHd3zMZmZmZmZmZmZmZmZmZmYRZmZmZmZmZmZmZmZ8d3d3d3d3cmZmZszHd3xsZmbGZmZmZmEAAWfGcAB3xmEBbGx3d3d3d3AAAAAAAAAAAAAAAAAAAAAAAAAABmEWxmZszGzGd2d3fMZmZmJiIszGZiJiZmZmZmIiZmZmZmEWZmZmZndyYnZmZmZmxnd3ZyImZsZmZmYmZmZmZmZmZmZmFmFmfHd3d8d3dswRHHfMfHd3d3didwAAAAAAAAAAAAAAAAAAAAAAARERZmZmZmZmZmZmZmZmZmZmZiZiYid2ZmZmZmZmZmZmZmZmZmZhbHcmdmZmZmZmxmZ3cmJmZ2JmZmZmZmZhZmZmZmZmZmZmZsZmxnfHd3zBZmx3d3dsZ3d3d3cAAAAAAAAAAAAAAAAAAAAABhERFmZmxmZmZmZmZmZmJmZmZmJ3d2ZmZmZmYiIiYmIiZmZmZmZmZmd2ZmZmZmZmYmZ2Z2ZmZmZmZmZmZmYWZmYWZmZmZmZmYmZmZmZnzGx3x2x3x3d3d3dmx3d2YAAAAAAAAAAAAAAAAAAAZmERFmxmZmxmZmZmZmZmZmYndnd2Zmx8diZmZiYiZiZiZmZmZmYRZmZmZmZmZmZmZmZmZmZmZmZmZmYmZmZmZmZmZmIiInImZmZmxmZmZsxnd3d3zHd3xmZmbMd3d0IAAAAAAAAAAAAAAAAAZhZhFmZmZmdmZmYmZmZiYiZmZiZmYiJnZmIiYmZiYiImZmJmZmYWdmZmZmZmZmZmZmZixmZmZmZmZmZmJiZmZmZ2ZmZmYiZmZmZmZmxmZsbHd3d3d3d3d3zMd3d3d3dxAABwAAAAAAAAAAAAZmZmZhZmZmZmZmZmZmZmZmZmZmZmZnJiZmJiZmYiIiJmZmZmZmZmZmJmZmZmZmZmZmZsZmZmZmZmZmZmImZmZmZmZmZmZmZmZmZmZiZmYnd3d3d8fHd3d3d3d3zMd3t3F8d3dwAAAAAAAAAAZmFmZiZmZmZmZmJmZmZmZmZiZmZmZmdmYmZmZmZmYmZmZhZmZhFmZ2ZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZmZsfMd3d3fMd3d3d3d3fBF3d3d3Z3d3d3AAAAAAAAAAZmZmZmZmZmZmYmYmIiYmZmImYiJiImciciYiIiImYiZmYmZiZmZmZnZnZmxmJmZmZmZ2ZmZmYmJmbGJmJmYmZmZmImZmJmZmZmZnx3xmciJ3d3d3d3Ind3d3dwZ3d3d3d3JnZ3AAAAAAAAAAZmYmZmZmZmZmImZmYiYiJiIiIiZmYiIiIiZmIiJmYiImZmZmZmZmbHZmYmYnZmZnYmZmZmYWZmZmZsZmJmZmZmZmZmZmZiZmbHbHd2ImIiIiImdyJ3d3Z3d3xgAHd3d3d3ZgAAAAAAAAAAAAZmZmZmZmZmZiZmZmYiIiIiJmImIiIiJiZiImZmZmZiZmZmZmZmZmZmZmZiJ3dyInd8ZmZmZmZmZ2ZmZmZmZmZmZmZmZmZmYmx3xnd3d3IiJyZidyZmIhYmF3AAAAAAB2d2YAAAAAAAAAAAAABmZmZmYRZmZmZmZmIiIiZmZmZiYiJmIiIiJiZmYiYmZmZmZmZmZmZmZmZmZmZmZmZmd3ZmZmZmZndmZiZmJmZmZmZmYnZndmZncmZiIiJ3dyJidydidmJmZgAAAAAAAAAGYAAAAAAAAAAAAAARZmZmZmERZhZmZmIiIiZmZmJiImYmIiZmImZmZmZmYRZmZhYWZmZiZmZmZmZmZmZmd2JmZmbHZid2YmZmZmZmZmZmZnLGYnIndyJmYiJ3cnwid3InJ3IiZgAAAAAAAAAAAGAAAAAAAAAAAAEREWZmZmYWFmZmZmZmZmYmZmZiJhERZmZmYiImZmYmZmZmZmZiZiZmZhZmZmZmZmZmZ2ZmIiJmZmJmZmYmZmZmZmZmbHwiIiZmJmZmJmYidyIiIiIiImYiImAAAAAAAAAAAAACAAAAAAAAAAEWYRZmZmZmZmZmJmZmIiImJiZmJiEWZmJiZmZmZmZmZmZmZmZiJiJmZmZmYmZiImFmZmZiZmZiZmZmZmZmZiYmYnYidmZiIiIiIiZmJiJ3d3JyIiIiJmYWdmAAAAAAAAAAAAAAAAAAAAAAAAEWERFhFmZmZmZmZmZmZmJmZiZiJmYSZmZmZmZmZmZmZmZmZmJmYmZmZmJmZiYmYmYWZmbMd8d3ZmZmZmZmYmZmZnYiZmZiZyciIiZmZmJyd2dmYmLCJmAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREWERZmZmZmZmJmZmZmZiJiZmZmZmZmZmZmZmZmZmZmZmZmZmZmYmZmJmZmZmZmZmZmZ3ZmZmZmZmIiZmInZmEWYHJmZmAGJmdmZmZmZmZmYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERFhEREREREWZmZmZmZmZmYiZiJiZmZmZmZmZmZmZmZiZmZiJmZmZiIiJmYiZmZmZmZmZmZmZmZmZmZmZmIiImZmZmAAAAYmFgEXZiZmZmJmJmYWAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREWYRERERERZmZmZmZmZmYWYWZmZhZhEREWZmYRFmZmZmZmZiZmYmImZmJiJmZmZmZmZmZmZmZmZmZmZmYmZmZmEAAAAAERARF3JmYmZmYmZmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREREREREREREREREREREREREREWERERERERERFhFhEWZmYWERFmYRFmZmFhERYREWEWYWYWYWFhEQAAAAAAERFmYmYmZmZmAhYAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAARERERERERERERERERERERFhEREWYREREWYWZmZhYRFmZmZmZmZmZmImZmZhEWZmZmZmZhFmZmZmYWZhIWZhYWEQAAAAAAARZmEAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhEREREREREREREREREREWZmERERERERFmZmZmZmFmZmJmZmZmZmJmImZmYWFmZmZmYmZmEWZmZmAAYAAAYmYWEQAAAAAAFmZmAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERERERERERFmZhERERERERZmZmZmZmZmZmZmZmZmZmZmYREWZmZmJmZmZmYREAAAAAAAAAAAAAAAAAAAAAAiZmZmARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERERERERERERERERERERERZhERERERYRZmZmZmZmZmZmZmZmZmZmZmFhZmZmZmZmYmJhEQAAAAAAAAAAAAAAAAAAAAACIiZmIgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREWZhERERERERERERERYRZmYREREWYRZmEWZmZmZmZmZmZmZhZmZmZmZmZmZmZmZmZgAAAAAAAAAAAAAAAAAAAAAAYiIiZiISAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERERERERERERERERERERFhZhERFmZmZmZmYREWZmZmZmJmZmZmZmZmZmZmZmYRZmZmEAAAAAAAAAAAAAAAAAAAAAAGJmIiYiIiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWERFhEWZhZhERERERYREREREWZmFmZmZmFmZhZmYWZmZmZmZmYWZmZmZmZmZmJmYQAAAAAAAAAAAAAAAAAAAAAAIiIiZmFmJhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABhERZhESYRFhEREREREREREWEWZhZmFmYWZmFmZmZmZmZmZmZmZmFhZmZmZmZmZmEAAAAAAAAAAAAAAAAAAAAAAAIiImZhZkERQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhEREWYiEREREREREREREREWEWERERZmZmZmZmZmZmZmZmZmZmZmZmYWZmYWZmZmAAAAAAAAAAAAAAAAAAAAAAAAYiJmYSFmIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABiYRERFhERERFhERERERERFmEWERYWZmZmZmZmZmZmZmZmZmZmZmYRERFmZmZhYAAAAAAAAAAAAAAAAAAAAAAAAAIiZmFhFmQAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmERERERERERFmYRERERERZhEREWFmZiZmJmZmZmZmZmZmZmFmZhFmYREREREREREAAAAAAAAAAAAAAAAAAAAAAAYiYRYWYUEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIidiERERERFmFmZmZmEREWZmERERFmYmImZmZmZmZmZmZmZhEREWImYmFmERERERERYRAAAQAAAAAAAAAAAAAAAAYiZmEWYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArJhYREREWYRERERFmERZmZhERERZiIiZiZmZmZmZmZmZmFmEWERFhERERERYWYREREREQEQAAAAAAAAAAAAAAAAIiZmERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABnJhEREREWFmYRERFiJhFiERERERYmIiIiJmZmZmFmFiJiZmYiJiYSZhERERERERYRZhERZgAAAAAAAAAAAAAAAAIiZhYRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERERERERZmZhERZmZhYREREWZmIiZmZmZmZmZmZmZmZmZiYiJmJmERZmYRYRFhFhERZhAAAAAAAAAAAAAAAAAiJhEAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREREWERERERZmZmERERFhFhEWZmZmJmZiYiJmZmZhFmZmZmZmIiImYmYRZhERZhERFhEWFhAAAAAAAAAAAAAAAAAiJhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABmEWFhwhEREWZmZhERERERERFmFmZmZmZmZmFmZmEWZmZmZmZmIiImYREREREWYRERJhERERAAAAAAAAAAAAAAAAACYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAAAAAAAAAAAZnJBEREmEREWZmYmZmYRERFmERERERYWIid2ZmYSJmZmZhZmIiIiIiIRFmERERZhERFhEREREAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmZnZmYREREWZmYWZmZmZiZmERERERZmYnu3IiYiEWYWEWZiIiIiImYREREWERFmZhERABEREAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC8e3Bmi7YWZmZhYWZmYRFiYhERERERZiIne7d3d2YRERERIiJiIiIiERERERERFhERERABEREAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB3e4uIt3t2Z3t3dmZmZmIidmERFmZmJnuIu4i3e7ciJmYiIiIiIiIiERERERFiZhERERABEREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC4u4gLcri7ZyYibCImZmZ7ZhERZmYiJ3u4iIg3i7tyJmZiIiIiIiJiIREREREiIRERERABEREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB7e9AAAJh3uyd3Znd3Ind3dmYWYiJ3d4iIuIgot3siZiYiIiIiJmYRYRERIiImYRERERABEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC7i0cAAAB3ciIiwiJ3J3dyJmZmJ3u3uIiIiImIizYiZiJyIiIiImEWYRYiIiYWEREREQABEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4uzuwAAC3d7t3fGeIiIi4u3e3K7iLi7iIiYiBuyJmIidyciIiJhERIiIiZmYREREREQABEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAru4u7AAAIu7i7dmYniLjYiI2IiJmIiIiIiJiLt3JiIncnJyIiImFmIiIiImERERFhEAABERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC3t4u4kAeIiAmIt3ZjiJmZmZnYmYiImJiImYiDdyIiIrsndyIiIhESIiIiZhEREREQAAABERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIt4iJiAiIiAAJCLuJmZmZmZmZmZmZDYiIiIuLN3J3d4g3M3dyIhEiIkIiImEREREQAAABEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIi7iIiICLiAAAAAAJmZmZmZkACZmQAIgzO4i4i7ciI7I3dyIiJiIWJiIiJmEREREAAAABEAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC4u7uIuAu4cLAAAAAAAAAAAAAAAAAAAJkzuIiLN3Iis4eIciIiZmERIiIiIRERERAAAAABEQAAAAABEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIuLu7iLsAAAAAAAAAAAAAAAAAAAAAAJiZCIg3Iid3OIM3dyIiIRFiJmIiEREREQAAAAARERAAAQARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiImd3QAAAAAAAAAAAAAAAAAAAAAAAAsIh3IneDiId3JyIiERYhFiIhFhFhEAAAAAARYRERERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAru4t7jd0JDdAAAAALCNAAAAAAAAAAAAAAC5sidzuDdydyIiIhYWEREWYREREQAAAAAAERYREREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHuHd3u9AAAN0ACNAAANgAAAAAAAAAAAAAC7d3uLM3g4hyYiJmEWYWEREREREAAAAAABERERESEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdwB9AAAAAAAJkAAAAAAAAAAAAAAAAAiYgiOIODs3dyIiImEREmYREREQAAAAAAABEWESEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACYiIdic3N3d3cmYmZhYREREQAAAAAAAAAAAREQERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAJkJiIg3IiYnd3ciJiYWIREREREAAAAAAAAAAAABEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiDiNibu42LcmIiIiJyImZmERYRERERAAAAAAAAAAAAABEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADg3c7fDuIt3ZmYmZmImFmImJmERERERAAAAAAAAAAAAABERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAmDWIi7e7JmJmISYRESYiJhEREREAAAAAAAAAAAAAARERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALuwAAAAAAAAAAAAAJmZmYi4J2ZnIiIiABFyZiESIWYQAAAAAAAAAAAAAAARFhEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALu8tmcAAAAAAAswAJmZiIfGZiIiIiIhAAFhAAARImZgAAAAAAAAAAAAAAARZhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAi7d2ZgAAAAAGIAAACZh2Z2YiInciEREAAAAAAGIiZhAAAAAAAAAAAAAAAWYRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiId3ZiuAAAAAIACQiJhnYmIiIiJ3RBEQAAAAASIiYREAAAAAAAAAAAAAERYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAi4d3ciZrAAAAAIiImIgmd3IiIiJ3d0ERAAAAABFiZhEAAAAAAAAAAAAGERZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALs3cmZmK7AACIiLu4hnJmYiciIiIkF3ciAAAAERImYQAAAAAAAAAREWYWYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAuyJ2JmiYgAiIi3J4giZ2JyIiIiJycnFAAAAAASJmYRAAAAAAAAFhEREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALuJAJAAAAC4i7d3IniImYmYgmZrYnYiYiIiInJydhAAAAAAAGZmEQAAAAAAARERERImEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC7iIgAmLiIu7iHd3Ziu4mdeIhmZmZyYmYiIiIiIiIAAAAAAAAWYRFgAAAAERERERERFyEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAImIi4uIiIu4NyJ3ImIriIJntxa3chZiIiIiIiIiIAAAAAAAAmEREQAAAREREREhERERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiYi4t3e7d4h2ZiciZiJ7ZmZ3IiZnciIiIiIiImIAAAAAAAQiEREAABERZhZmEREREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiImId3d3dzd3IiImFmJxERYiJmZhIiIiIiIiIiIiAAAAAAAEAQAAAREREREREREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4iIiHd3dmd3dyIiIiYRZmERERZmZmEiInIiIiIiIiRAAAAAAAAAABEREREREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiHi4u3d2Yid3ciIiIRZhFmYWZmIiIiIiInIiIiIiMgAAAAARAAABEWEREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACYi7d3d3IiZiYiJmYiYREWYWFmZmZiInJ3JyInIiInMgAAAAAAAAABFhEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIh3d3fHdmJhZmJiFhERFiZmZhZmYSJyJ3d3JyIiIiJwAAAAAAAAABEREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACLd3dmZmZmYmFmZhERERYnIiYRERFmIiIiIiIiIiJyJxAAAAAAAAABERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC3d3d2ZhZmZmFiZmERESciIiZmZhFmYiciZmYiIiIndyAAAAAAAAAAERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3d8dnYWZiZnZmFmERYiIiciZiIRFiIiIiIhIiJmYiIyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMJmZmYRFmZmYWYRYRYiImJmZmFhESIiIiJiIRERFmK2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB2dmZmERFrZmZmZmYRYiIiImZmYRFiIiIiIiIWEREkIiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAd2ZmYRYREGZhZmYREREiIiImZmIhYiIiEREhZhESZmZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB3t3ZhERERYhZmYRFmYWIiZiIiImYiIiERIiIRZmZhZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGZ7AREREREWEWERFmEWImIiImIiZmIiFiIiISERFmIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERFiIREWEWFmZmZiIiIiIhJmYiIiZiJiERYRESAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERIiJhFmFmZmZmYiIiIiIiImYiIiESJhYRZmZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIiIiIiZmEhFmZmZmZmIiIiImImIiImESZmERFmZAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAInIiIiJhESJhFmZmZmZmZiIiJiJhEmEmESIiZmYWRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiIiIiYSZiZmZmZmZmYiIiIiIiJhZiIhESIiYWZmQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiFiJmJmYmJmZmZmZmIiJiIiImZiFmZmYSZmFmYkAARgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB3YiJiIiImJmZmZhZmIiYiIiIiIiJmZhYWIiZmJAAEEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdyJyIiIiIiJmFmJmFmJiJiIiIiImZhEiERIiIiAAAGEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByIiFiIidiZmZmZmYWInImIiIiIiJmYWERYWJAAAAhEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiJyJmcoMiIhZmZhYRZiYmIiIiIiIiYiIiFiIAAAIhEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiJyJiJ4MiIiIiImZhYmZiIiIiIiIiIncUQQAAAAAhEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB3JCJmI4hyIiIiYmJmJiJmYiIiIiIiInQAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABCBCJmI4giIiIiImImIhIiIiInd1ciRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACImaJgnIiIiYiIiJiInciEAEnEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACcmKIh3IiIiIiIiIiZidwAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIiY4NyJmJidmFmImESIAAAIiIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIjVyIiIiciIiJiZiIAACIiIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACcld3IiIiIiIiJiYiIAACIiIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIldyIiIiJyIiIiIiIAACIiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIlVyIiIiIiIiIiIiIAAAQgAAAAAAAAAAAAACYhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIjNzIiIiIid3dyIiYgAAAAAAAAAAAAAAAAAWEiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjM3ImInInInNydyIiAAAAAAAAAAAAAAAABmYhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4NwJyIiIiIndycyIiAAAAAAAAAAAAAAAAAmIhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIzgAAmJidyZ7N3NyIhEAAAAAAAAAAAAAAAEiYQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAByInJ3c4dXdyImFgAAAAAAAAAAAAAAInEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiInJ3N3d3NyIiYWAAAAAAAAAAAAAAAnIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAidnJyd3JydyIiIRAAAAAAAAAAAAAAAWIRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACInJyIWYiIiImImEAAAAAAAAAAAAAABIRIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGInIndydyIiIiIhEAAAAAAAAAAAAAAAIiYREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAACIiJ3IiRmIiIiIiIAAAAAAAAAAAAAAEYABhEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAACIiIHciJhEiIiImEAAAAAAAAAAAAAAAYAABEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIiAAAWERIiIiJhEAAAAAAAAAAAAAAQAAEWAhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAACImAAABZid3dyIREAAAAAAAAAAAAAAAABEAASAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiAAAAFhcndyFAAAAAAAAAAAAAAAAAACIgEhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABIgAAAAEWImIiIAAAAAAAAAAAAAABAAACEiERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIgAAAAAEEiISAAAAAAAAAAAAAAAQAAAAYREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIiAAAAAAQncAAAAAAAAAAAAAABEQAAAAIRIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACYiAAAAAAZ0AAAAAAAAAAAAAAABEQAAAAAAABEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACImAAAAAAYgAAAAAAAAAAAAAAARAAAAAAAAERIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQiQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEhFmIRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIAAAAAAAAAAAAAAAAAAAAAAAAAAAABYWEiIRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiIgAAAAAAAAAAAAAAAAAAAAAAAAAAABEAIiEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIiIAAAAAAAAAAAAAAAAAAAERAAAAAAAAYmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIWIgAAAAAAAAAAAAAAAAAGERAAAAAAAAFiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAARhFhAAAAAAAAAAAAAAAAAREWEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREQAAIRERYAAAAAAAAAAAAAABFmZmZgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREQAAEREREAAAAAAAAAAAAAEREREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBEUAAAWFhEQAAAAAQAAAAAAEREREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEWIgAREREQAAAAAAAAAAABYREREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEWIkABEREQAAAAAAAAABERERERERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQERERQREWEQAAAAAAAAARERERERERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERFhEmYQAAAAAAAREREREREREREAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABEWFmERZmAAAAAAEREREREREREREQAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARAERISFmERAAAAABERERERERERJmEQABEREREQAAERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQARFiYRdAAAAAABFhEhERERESImAAAREREREAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARERERIBAAAAABEWZhERYRESIiAAARERERAAAAERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABERFhYREAAAABERZiEREREmIgAAEQAAEAAAAAEQAAAREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERYRYREAAAAAEREWYRZhERZgABEREREQAAAAERAAARERERABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAERYmYREQAAAAERERYmYRERQAABEREUEQAAAAARAABBERERAAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARFmJhEWAAAAARZmIhERERAAARERERAAAQEAAQAAEBFhERAAAREREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARESYiYRIAAAARJmIhERIWAAARERERAAAAAAABERAAERZhAAEREREREQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEEEWJiIkZAZgABYRZhFmIUAAARFhFhAAAAAAABEREAARYRERERJhERERAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARhJiZiQAAAAAERFhFmERAAAREREREAAAARABEREAAREREREREREREWFBEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBFmIiAAAAAAAAAABmERAAAAIREREAAAAAAAEREQABERERERERERYWZiERAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGEWIhAAAAAAAAAAAAAAAAAAYgEREAAAAAAAAAAAAAAAERERFhEREREREREAAAAAAAAREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEWZ0AAAAAAAAAAAAAAAAAAYiAREQAAAAAAAAAAAAAAABEiIiJhEREREREQAAAAAAEREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREiAAAAAAAAAAAAAAAAAAIgAREAAAAAAAAAAAAAAAAAACZmIiZhERERERAAARERERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABABEAAAZiIiIiEREREREREREREQAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARImQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARYAAAAWYiIiIRERFmERERIRAAAAAREAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARZmZkImYiIAcAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAWZmZmJhERERYQAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhFmFmIiJmEAAAAAAAAAAAAAAAAAAAAAABEAAAAAAAAREWZiZmZiYREQAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAWJmZhERAAERAAAAAAAAAAAQAAABABEAAAAABEJmZhYRYWFhIRERAAAAAAAAAAAAEQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARYREREBERFgAmAAEQEQYCAAAAAAAAAAAAACYRZmZmZmYAAGEREAAAAAAAAAAAEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABERACEREQERIQAABmZgAAAAAAAAAAAAAAAAAGZmZmYAAAEREQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAREAAQAAAGYmYAAAAAAAAAAAAAAAAAAAZmZmAAAAEREREQAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGZgAAAAAAAAAAAAAAAAAAAAAGYAAAAAAREREAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAERAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+
+  /* —— 海岸线解码 ——
+     每字符 6 bit（低 5 位是数据、最高位是续位），整数用 zigzag 编码；
+     每个轮廓先写点数、再写首点经纬度、之后是各点的经纬度增量（单位 1/64 度）。
+     解码在第一次画地图时做一次，之后一直复用。 */
+  var _dcStr = COAST_DATA, _dcPos = 0;
+  function dcU() {
+    var v = 0, sh = 0, c;
+    do { c = COAST_CODE.indexOf(_dcStr.charAt(_dcPos++)); v += (c & 31) << sh; sh += 5; } while (c & 32);
+    return v;
+  }
+  function dcZ() { var v = dcU(); return (v % 2) ? -(v + 1) / 2 : v / 2; }
+
+  /** 解码 → [{pts: 世界坐标 x,y 交替的 Float64Array, box}] */
+  function decodeCoast() {
+    _dcPos = 0;                 // 复位读指针，保证可以重复调用（否则第二次会解出空表）
+    var list = [], n = dcU(), i, j;
+    for (i = 0; i < n; i++) {
+      var cnt = dcU();
+      var pts = new Float64Array(cnt * 2);
+      var qx = dcZ(), qy = dcZ();
+      pts[0] = lonToX(90 + qx / 64);
+      pts[1] = latToY(qy / 64);
+      var x0 = pts[0], y0 = pts[1], x1 = x0, y1 = y0;
+      for (j = 1; j < cnt; j++) {
+        qx += dcZ(); qy += dcZ();
+        var wx = lonToX(90 + qx / 64), wy = latToY(qy / 64);
+        pts[j * 2] = wx; pts[j * 2 + 1] = wy;
+        if (wx < x0) x0 = wx; else if (wx > x1) x1 = wx;
+        if (wy < y0) y0 = wy; else if (wy > y1) y1 = wy;
+      }
+      list.push({ pts: pts, box: [x0, y0, x1, y1] });
+    }
+    return list;
+  }
+
+  /** 轮廓 → Path2D；step>1 时按步长抽稀，供缩小时的粗糙档使用 */
+  function buildCoastPath(list, step) {
+    var path = new Path2D(), i, j;
+    for (i = 0; i < list.length; i++) {
+      var pts = list[i].pts, n = pts.length / 2;
+      path.moveTo(pts[0], pts[1]);
+      for (j = step; j < n; j += step) path.lineTo(pts[j * 2], pts[j * 2 + 1]);
+      path.closePath();
+    }
+    return path;
+  }
+
+  var _coastList = null, _coastFull = null, _coastLite = null;
+  /** 全部轮廓放在同一条 Path2D 里用 even-odd 填充：
+      大陆外圈是第 1 层（填），湖/内海是第 2 层（不填），湖中岛是第 3 层（填）……
+      嵌套层级天然正确，不需要手工把陆地切成好几块。 */
+  function coastPath(z) {
+    if (!_coastList) {
+      _coastList = decodeCoast();
+      _coastFull = buildCoastPath(_coastList, 1);
+      _coastLite = buildCoastPath(_coastList, 2);
+    }
+    return z < 0.55 ? _coastLite : _coastFull;
+  }
+
+  /* —— 地表色 ——
+     1°×1° 网格，每格 4bit 调色板索引（0 = 无数据，透明）。
+     放大时开双线性，于是变成植被 → 草原 → 荒漠 → 雪线的连续过渡。 */
+  var _terrainCv = null;
+  function terrainCanvas() {
+    if (_terrainCv) return _terrainCv;
+    var raw = atob(TERRAIN_B64);
+    var cols = TERRAIN_GEO.cols, rows = TERRAIN_GEO.rows;
+    var cv = document.createElement('canvas');
+    cv.width = cols; cv.height = rows;
+    var g = cv.getContext('2d');
+    var img = g.createImageData(cols, rows), d = img.data, i;
+    for (i = 0; i < cols * rows; i++) {
+      var b = raw.charCodeAt(i >> 1);
+      var v = (i & 1) ? (b & 15) : (b >> 4);
+      var c = TERRAIN_PAL[v] || TERRAIN_PAL[0];
+      d[i * 4] = c[0]; d[i * 4 + 1] = c[1]; d[i * 4 + 2] = c[2];
+      d[i * 4 + 3] = v ? 255 : 0;
+    }
+    g.putImageData(img, 0, 0);
+    _terrainCv = cv;
+    return cv;
+  }
+  /** 地表网格在世界坐标里的位置（km） */
+  function terrainRect() {
+    return {
+      x: lonToX(TERRAIN_GEO.lon0),
+      y: latToY(TERRAIN_GEO.lat0),
+      w: lonToX(TERRAIN_GEO.lon0 + TERRAIN_GEO.cols * TERRAIN_GEO.step) - lonToX(TERRAIN_GEO.lon0),
+      h: latToY(TERRAIN_GEO.lat0 - TERRAIN_GEO.rows * TERRAIN_GEO.step) - latToY(TERRAIN_GEO.lat0)
+    };
+  }
+
+  /* —— 1° 海陆栅格：判断台风中心是否已经登陆 ——
+     直接由上面解码出来的海岸线多边形做 even-odd 扫描线填充得到，
+     行/列各 1°（≈111 km），覆盖 90°E–190°E / 10°S–80°N，共 100×90 格。
+     为什么要单独做一张栅格：真实台风登陆后失去海面热焓与水汽供应，12 小时内
+     强度通常腰斩，而地图数据里的地表色块只有"颜色"，不能直接当海陆掩膜用
+     （透明格既可能是海、也可能是无数据的陆地）。 */
+  var LG_LON0 = 90, LG_LAT0 = 80, LG_COLS = 100, LG_ROWS = 90;
+  var _landGrid = null;
+  function landGrid() {
+    if (_landGrid) return _landGrid;
+    var g = new Uint8Array(LG_COLS * LG_ROWS);
+    var list = decodeCoast();
+    for (var r = 0; r < LG_ROWS; r++) {
+      var y = latToY(LG_LAT0 - r - 0.5);              // 该行格心的世界 y（行 r 覆盖纬度 80-r-1 ~ 80-r）
+      var xs = [];
+      for (var i = 0; i < list.length; i++) {
+        var p = list[i].pts, n = p.length / 2;
+        for (var k = 0; k < n; k++) {
+          var j = (k + 1) % n;
+          var y1 = p[k * 2 + 1], y2 = p[j * 2 + 1];
+          if ((y1 <= y && y2 > y) || (y2 <= y && y1 > y)) {
+            var f = (y - y1) / (y2 - y1);
+            xs.push(p[k * 2] + f * (p[j * 2] - p[k * 2]));
+          }
+        }
+      }
+      xs.sort(function (a, b) { return a - b; });
+      for (var m = 0; m + 1 < xs.length; m += 2) {
+        var c0 = Math.floor(xToLon(xs[m]) - LG_LON0);
+        var c1 = Math.floor(xToLon(xs[m + 1]) - LG_LON0);
+        for (var c = Math.max(0, c0); c <= Math.min(LG_COLS - 1, c1); c++) g[r * LG_COLS + c] = 1;
+      }
+    }
+    _landGrid = g;
+    return g;
+  }
+  /** 该经纬度是否落在陆地上（1 = 陆，0 = 海或超出栅格范围） */
+  function landAt(lon, lat) {
+    if (!(lon >= LG_LON0 && lon < LG_LON0 + LG_COLS && lat > LG_LAT0 - LG_ROWS && lat <= LG_LAT0)) return 0;
+    return landGrid()[((LG_LAT0 - lat) | 0) * LG_COLS + ((lon - LG_LON0) | 0)];
+  }
+
+  /* —— 陆地起伏 ——
+     一张可无缝平铺的程序化噪声（16×16 格点、首尾回绕），
+     叠在色块上让大陆有山地的颗粒感。屏幕重复周期固定，不随缩放变化。 */
+  var _reliefCv = null, RELIEF_PX = 256, RELIEF_SCREEN = 430;
+  function reliefCanvas() {
+    if (_reliefCv) return _reliefCv;
+    var S = RELIEF_PX, N = 16;
+    var cv = document.createElement('canvas');
+    cv.width = S; cv.height = S;
+    var g = cv.getContext('2d');
+    var img = g.createImageData(S, S), d = img.data;
+    var grid = new Float32Array(N * N), i, j;
+    for (j = 0; j < N; j++) for (i = 0; i < N; i++) grid[j * N + i] = hashAt(11.3, i, j);
+    for (var py = 0; py < S; py++) {
+      var fy = py / S * N, jy = Math.floor(fy), wy = fy - jy;
+      var sy = wy * wy * (3 - 2 * wy);
+      var j0 = jy % N, j1 = (jy + 1) % N, r0 = j0 * N, r1 = j1 * N;
+      for (var px = 0; px < S; px++) {
+        var fx = px / S * N, jx = Math.floor(fx), wx = fx - jx;
+        var sx = wx * wx * (3 - 2 * wx);
+        var i0 = jx % N, i1 = (jx + 1) % N;
+        var a = grid[r0 + i0] + (grid[r0 + i1] - grid[r0 + i0]) * sx;
+        var b = grid[r1 + i0] + (grid[r1 + i1] - grid[r1 + i0]) * sx;
+        var t = 128 + ((a + (b - a) * sy) - 0.5) * 170;
+        var o = (py * S + px) * 4;
+        d[o] = t; d[o + 1] = t; d[o + 2] = t; d[o + 3] = 255;
+      }
+    }
+    g.putImageData(img, 0, 0);
+    _reliefCv = cv;
+    return cv;
+  }
+
+  /* 地名标注：[经度, 纬度, 名称, 最小缩放, 是否点出城市圆点] */
+  var PLACES = [
+    [116.4, 39.9, '北京', 0.30, 1], [121.5, 31.2, '上海', 0.30, 1],
+    [113.3, 23.1, '广州', 0.55, 1], [114.2, 22.3, '香港', 0.34, 1],
+    [121.5, 25.0, '台北', 0.40, 1], [127.0, 37.5, '首尔', 0.32, 1],
+    [139.7, 35.7, '东京', 0.28, 1], [135.5, 34.7, '大阪', 0.50, 1],
+    [130.4, 33.6, '福冈', 0.58, 1], [129.9, 32.8, '长崎', 0.58, 1],
+    [141.4, 43.1, '札幌', 0.46, 1], [121.0, 14.6, '马尼拉', 0.30, 1],
+    [100.5, 13.8, '曼谷', 0.34, 1], [105.8, 21.0, '河内', 0.40, 1],
+    [106.7, 10.8, '胡志明市', 0.44, 1], [103.8, 1.35, '新加坡', 0.34, 1],
+    [125.6, 7.1, '达沃', 0.62, 1], [110.4, 1.5, '古晋', 0.62, 1],
+    [120.3, 22.6, '高雄', 0.62, 1], [144.8, 13.5, '关岛', 0.44, 1],
+    [119.9, 15.0, '南海', 0.50, 0], [131.0, 20.0, '菲律宾海', 0.42, 0],
+    [160.0, 22.0, '西北太平洋', 0.42, 0], [142.0, 28.0, '小笠原群岛', 0.42, 0],
+    [128.0, 25.5, '琉球群岛', 0.52, 0]
+  ];
+
+  /** 陆地上的起伏质感：把可平铺的噪声按"屏幕固定周期"叠在陆地里，
+      让大陆不至于是一块死板色块。噪声周期固定在屏幕上（RELIEF_SCREEN 像素），
+      不随缩放变化 —— 贴图周期若跟着世界坐标走，放大后会变成满屏重复的方块。
+      path 用 even-odd 裁剪，岛屿和大陆都吃得上。 */
+  Renderer.prototype.drawLandRelief = function (ctx, path, cam) {
+    var z = cam.zoom;
+    if (z < 0.35) return;
+    var S = RELIEF_SCREEN / z;               // 屏幕周期换算成世界边长（km）
+    var left = cam.cx - cam.vw * 0.5 / z, top = cam.cy - cam.vh * 0.5 / z;
+    var right = cam.cx + cam.vw * 0.5 / z, bottom = cam.cy + cam.vh * 0.5 / z;
+    /* 可见范围里塞得下多少块，太多就跳过（省 drawImage 调用） */
+    if ((right - left) / S * ((bottom - top) / S) > 260) return;
+    var img = reliefCanvas();
+    ctx.save();
+    ctx.clip(path, 'evenodd');
+    ctx.globalCompositeOperation = 'overlay';
+    ctx.globalAlpha = 0.22;
+    ctx.imageSmoothingEnabled = true;
+    var x0 = Math.floor(left / S) * S, y0 = Math.floor(top / S) * S;
+    for (var wy = y0; wy < bottom; wy += S) {
+      for (var wx = x0; wx < right; wx += S) ctx.drawImage(img, wx, wy, S, S);
+    }
+    ctx.restore();
+  };
+
+  /** 地图：陆地填色 → 卫星影像地表色 → 起伏质感 → 海岸线 → 地名 */
+  Renderer.prototype.drawMap = function (ctx, cam) {
+    var z = cam.zoom, i, k;
+    var path = coastPath(z);
+
+    ctx.save();
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.globalCompositeOperation = 'source-over';
+
+    /* ① 陆地底色：没有地表色数据的格子（冰盖、常年云区）用它兜底。
+          取色板里最常见的植被绿，这样放大色块后露出的底不会与邻格有色差。 */
+    ctx.fillStyle = '#305010';
+    ctx.fill(path, 'evenodd');
+
+    /* ② 地表色：0.5° 网格直接放大（开双线性），得到植被→荒漠→雪线的连续过渡；
+          用 even-odd 裁进陆地，所以海岸线的精度只由轮廓决定，与色块粗细无关。 */
+    var rect = terrainRect();
+    ctx.save();
+    ctx.clip(path, 'evenodd');
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(terrainCanvas(), rect.x, rect.y, rect.w, rect.h);
+    ctx.restore();
+
+    /* ③ 山地颗粒感 */
+    this.drawLandRelief(ctx, path, cam);
+
+    /* ④ 海岸线：细亮线，是"地图感"的主要来源。
+          线宽按屏幕像素恒定，但缩放小于 0.34 时不再继续变粗，
+          否则整幅海图会被一圈发光的小岛糊住（参考图里海岸线本来就极细）。 */
+    var zc = Math.max(z, 0.34);
+    ctx.strokeStyle = 'rgba(110,196,246,0.30)';
+    ctx.lineWidth = clamp(2.4 / zc, 0.34, 40);      // 外晕
+    ctx.stroke(path);
+    ctx.strokeStyle = 'rgba(198,238,255,0.62)';
+    ctx.lineWidth = clamp(0.85 / zc, 0.24, 14);     // 细芯线
+    ctx.stroke(path);
+    ctx.restore();
+
+    /* 地名与城市点：屏幕空间标注，字号恒定。
+       注意 drawMap 是在世界变换下被调用的，坐标与字号都会被 zoom 缩放，
+       所以这里必须先用 setTransform 回到屏幕空间，否则标注会跑到世界原点上。 */
+    if (z > 0.24) {
+      ctx.save();
+      ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.font = '11px "Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      for (k = 0; k < PLACES.length; k++) {
+        var pl = PLACES[k];
+        if (z < pl[3]) continue;
+        var sx = (lonToX(pl[0]) - cam.cx) * z + cam.vw * 0.5;
+        var sy = (latToY(pl[1]) - cam.cy) * z + cam.vh * 0.5;
+        if (sx < -40 || sy < -20 || sx > cam.vw + 40 || sy > cam.vh + 20) continue;
+        if (pl[4]) {
+          ctx.beginPath();
+          ctx.arc(sx, sy, 2.2, 0, TWO_PI);
+          ctx.fillStyle = 'rgba(160,220,255,0.85)';
+          ctx.fill();
+        }
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(2,8,16,0.88)';           // 描边保证在任何底色上都看得清
+        ctx.strokeText(pl[2], sx + 6, sy);
+        ctx.fillStyle = pl[4] ? 'rgba(196,226,250,0.88)' : 'rgba(150,190,224,0.62)';
+        ctx.fillText(pl[2], sx + 6, sy);
+      }
+      ctx.restore();
+    }
+  };
+
+  /** 每帧绘制：海洋 → 等压线 → 风场 → 路径 → 粒子（残影层） → 眼 → 闪光 → 标记 */
+  Renderer.prototype.render = function (world, cam) {
+    var ctx = this.ctx;
+    var t = world.typhoon;
+
+    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+
+    var z = cam.zoom;
+
+    /* —— 粒子残影层：把上一帧整幅内容按固定比例削弱，形成流线拖尾 ——
+     * destination-out 会同时削弱背景，但海洋、等压线、风场、路径每帧都重绘，
+     * 因此只有粒子留下有限长度的拖尾（不会无限累积成一片亮斑）。 */
+    ctx.save();
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = 'rgba(0,0,0,' + VIEW.trailFade + ')';
+    ctx.fillRect(0, 0, this.w, this.h);
+    ctx.restore();
+
+    /* —— 海洋背景 + 地图（海岸线 + 地名）+ 经纬网格 —— */
+    this.ensureOceanScale(z);            // 缩放过阈值时按新比例重烤海面贴图
+    ctx.save();
+    ctx.translate(cam.vw * 0.5 - cam.cx * z, cam.vh * 0.5 - cam.cy * z);
+    ctx.scale(z, z);
+    this.drawOcean(ctx, cam);
+    this.drawMap(ctx, cam);
+    this.drawGrid(ctx, cam);        // 经纬网压在陆地上层，和参考图一致
+    ctx.restore();
+
+    var envK = t.shearK() * t.repel;
+    var flashK = t.flash.a;
+
+    if (CONFIG.visible.isobar) this.drawIsobars(ctx, cam, t);
+    if (CONFIG.visible.wind) this.drawWindField(ctx, cam, t, envK);
+    if (CONFIG.visible.path) this.drawPath(ctx, cam, t);
+
+    /* —— 粒子：云 + 雨 + 眼墙喷沫，加色混合 —— */
+    this.drawParticles(ctx, cam, world, flashK);
+
+    /* —— 风圈：画在云系之上，保证七/十/十二级风圈任何时候都看得见 —— */
+    if (CONFIG.visible.wcircle) this.drawWindCircles(ctx, cam, t);
+
+    /* —— 台风眼（留空 + 眼墙高亮） —— */
+    this.drawEye(ctx, cam, t, flashK);
+
+    /* —— 雷暴闪光 —— */
+    if (flashK > 0.01) this.drawFlash(ctx, cam, t);
+
+    /* —— 中心标记 —— */
+    this.drawMarker(ctx, cam, t);
+
+    /* —— 放置模式准星（在屏幕空间绘制，字号恒定） —— */
+    if (flags.place) {
+      var mx = flags.mx, my = flags.my;
+      if (mx > 0 && my > 0 && mx < this.w && my < this.h) {
+        var wz = { x: cam.cx + (mx - cam.vw * 0.5) / z, y: cam.cy + (my - cam.vh * 0.5) / z };
+        ctx.save();
+        ctx.strokeStyle = 'rgba(120,230,255,0.85)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(mx - 16, my); ctx.lineTo(mx - 5, my);
+        ctx.moveTo(mx + 5, my);  ctx.lineTo(mx + 16, my);
+        ctx.moveTo(mx, my - 16); ctx.lineTo(mx, my - 5);
+        ctx.moveTo(mx, my + 5);  ctx.lineTo(mx, my + 16);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(mx, my, 4.5, 0, TWO_PI);
+        ctx.stroke();
+        var txt = '放置台风 · ' + fmtLon(xToLon(wz.x)) + ' ' + fmtLat(yToLat(wz.y));
+        ctx.font = '11px ui-monospace, Consolas, monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(3,10,18,0.9)';
+        ctx.strokeText(txt, mx + 12, my + 22);
+        ctx.fillStyle = 'rgba(150,235,255,0.95)';
+        ctx.fillText(txt, mx + 12, my + 22);
+        ctx.restore();
+      }
+    }
+
+    /* —— 全局暗角（把注意力收到台风中心，渐变对象缓存复用） —— */
+    if (!this._vig) {
+      var vg = ctx.createRadialGradient(this.w * .5, this.h * .5, Math.min(this.w, this.h) * .34,
+                                        this.w * .5, this.h * .5, Math.max(this.w, this.h) * .82);
+      vg.addColorStop(0, 'rgba(0,0,0,0)');
+      vg.addColorStop(1, 'rgba(0,0,0,0.42)');
+      this._vig = vg;
+    }
+    ctx.save();
+    ctx.fillStyle = this._vig;
+    ctx.fillRect(0, 0, this.w, this.h);
+    ctx.restore();
+
+    if (CONFIG.visible.fps) this.drawHud(ctx, world, cam);
+  };
+
+  var _p1 = { x: 0, y: 0 }, _p2 = { x: 0, y: 0 };
+  function W2S(cam, wx, wy, out) {
+    out.x = (wx - cam.cx) * cam.zoom + cam.vw * 0.5;
+    out.y = (wy - cam.cy) * cam.zoom + cam.vh * 0.5;
+    return out;
+  }
+
+  /** 等压线：以台风为中心的闭合环，越靠近中心越密、越亮 */
+  Renderer.prototype.drawIsobars = function (ctx, cam, t) {
+    var r0 = Math.max(t.eye * 1.2, 4);
+    var rMaxDraw = 620;
+    var N = 13;
+    ctx.save();
+    ctx.lineJoin = 'round';
+    for (var i = 1; i <= N; i++) {
+      var f = i / N;
+      var r = r0 + (rMaxDraw - r0) * Math.pow(f, 1.7);   // 非线性间距
+      var p = t.pressure + 6 * i * (1 + f * 1.4);
+      if (p > 1016) continue;
+      var alp = clamp((0.30 - f * 0.20) * (0.55 + (1000 - t.pressure) / 300), 0.03, 0.36);
+      var ex = Math.cos(t.shearDir) * clamp(t.shear / 22, 0, 1) * r * 0.10;  // 切变椭圆化
+      var ey = Math.sin(t.shearDir) * clamp(t.shear / 22, 0, 1) * r * 0.04;
+
+      ctx.globalAlpha = alp;
+      ctx.strokeStyle = i % 2 === 0 ? 'rgba(160,235,255,1)' : 'rgba(110,180,235,1)';
+      ctx.lineWidth = i % 2 === 0 ? 1.25 : 0.85;
+      ctx.beginPath();
+      var seg = 56;
+      for (var s = 0; s <= seg; s++) {
+        var a = s / seg * TWO_PI;
+        var rr = r * (1 + 0.045 * Math.cos(a * 2 + t.arc * 0.05));
+        W2S(cam, t.x + Math.cos(a) * rr + ex * Math.cos(a),
+                t.y + Math.sin(a) * rr * 0.96 + ey * Math.sin(a), _p2);
+        if (s === 0) ctx.moveTo(_p2.x, _p2.y); else ctx.lineTo(_p2.x, _p2.y);
+      }
+      ctx.closePath();
+      ctx.stroke();
+
+      // 每 3 条标注一次气压
+      if (i % 3 === 0 && cam.zoom > 0.32) {
+        W2S(cam, t.x, t.y - r + 6, _p2);
+        ctx.globalAlpha = clamp(alp * 2.6, 0, 0.72);
+        ctx.fillStyle = 'rgba(190,240,255,1)';
+        ctx.font = '10px "Segoe UI",system-ui,sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(Math.round(p) + ' hPa', _p2.x + 3, _p2.y);
+      }
+    }
+    ctx.restore();
+  };
+
+  /** 风场箭头：规则网格采样风矢量，箭长与颜色随风速变化 */
+  Renderer.prototype.drawWindField = function (ctx, cam, t, envK) {
+    var step = 80;                                        // 世界坐标间距（km）
+    var halfW = cam.vw * 0.5 / cam.zoom + step;
+    var halfH = cam.vh * 0.5 / cam.zoom + step;
+    var x0 = Math.floor((cam.cx - halfW) / step) * step;
+    var y0 = Math.floor((cam.cy - halfH) / step) * step;
+    var x1 = cam.cx + halfW, y1 = cam.cy + halfH;
+
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1.1;
+    for (var wx = x0; wx <= x1; wx += step) {
+      for (var wy = y0; wy <= y1; wy += step) {
+        var w = t.windAt(wx, wy, envK);
+        if (w.mag < 1.2) continue;
+        var ang = Math.atan2(w.y, w.x);
+        var L = clamp(7 + Math.log(1 + w.mag) * 7, 7, 30) * cam.zoom;   // 箭长按风速对数缩放
+        W2S(cam, wx, wy, _p1);
+        var dx = Math.cos(ang), dy = Math.sin(ang);
+        var xa = _p1.x - dx * L * .5, ya = _p1.y - dy * L * .5;
+        var xb = _p1.x + dx * L * .5, yb = _p1.y + dy * L * .5;
+        var rgb = windRGB(w.mag);
+        ctx.strokeStyle = 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')';
+        ctx.globalAlpha = 0.34;
+        ctx.beginPath();
+        ctx.moveTo(xa, ya); ctx.lineTo(xb, yb);
+        ctx.stroke();
+        // 箭头
+        ctx.globalAlpha = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(xb, yb); ctx.lineTo(xb + Math.cos(ang - 2.5) * 4.2, yb + Math.sin(ang - 2.5) * 4.2);
+        ctx.moveTo(xb, yb); ctx.lineTo(xb + Math.cos(ang + 2.5) * 4.2, yb + Math.sin(ang + 2.5) * 4.2);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  };
+
+  /**
+   * 台风路径：照中央气象台预报图的画法 ——
+   * ① 半透明的影响带（宽度随当时七级风圈变化，越靠近当前越实）
+   * ② 紫色主线
+   * ③ 按强度等级着色的时次圆点（黄/蓝/绿/橙/粉/红）
+   * ④ 起点空心圈标记生成位置
+   */
+  Renderer.prototype.drawPath = function (ctx, cam, t) {
+    var path = t.path, n = path.length;
+    if (n < 2) return;
+    var i, j, k;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    /* ① 影响带：逐段描边，宽度随当时的七级风圈走，透明度沿路径渐显；
+          末端 8 个采样点不再画带，免得糊住台风眼 */
+    ctx.strokeStyle = 'rgba(168,116,226,1)';
+    var bandEnd = Math.max(2, n - 8);
+    for (i = 1; i < bandEnd; i += 3) {
+      k = i / n;
+      W2S(cam, path[i - 1].x, path[i - 1].y, _p1);
+      W2S(cam, path[i].x, path[i].y, _p2);
+      ctx.globalAlpha = clamp(Math.pow(k, 1.8) * 0.085, 0.004, 0.085);
+      var r7 = path[i].r7 || 120;
+      ctx.lineWidth = Math.max(2, r7 * 0.20 * clamp(cam.zoom, 0.05, 4));
+      ctx.beginPath();
+      ctx.moveTo(_p1.x, _p1.y);
+      ctx.lineTo(_p2.x, _p2.y);
+      ctx.stroke();
+    }
+
+    /* ② 紫色主线 */
+    ctx.strokeStyle = 'rgba(190,126,246,1)';
+    for (i = 1; i < n; i++) {
+      k = i / n;
+      W2S(cam, path[i - 1].x, path[i - 1].y, _p1);
+      W2S(cam, path[i].x, path[i].y, _p2);
+      ctx.globalAlpha = clamp(Math.pow(k, 1.3) * 0.95, 0.08, 0.95);
+      ctx.lineWidth = (0.7 + k * 1.7) * clamp(cam.zoom, 0.4, 1.6);
+      ctx.beginPath();
+      ctx.moveTo(_p1.x, _p1.y);
+      ctx.lineTo(_p2.x, _p2.y);
+      ctx.stroke();
+    }
+
+    /* ③ 时次圆点：颜色 = 当时强度等级（CMA 六色等级图例） */
+    var dotR = clamp(2.6 * clamp(cam.zoom, 0.5, 2.0), 2.0, 5.0);
+    for (j = 0; j < n; j += 4) {
+      var wj = path[j].w;
+      if (wj === undefined) wj = t.wind;
+      W2S(cam, path[j].x, path[j].y, _p1);
+      ctx.globalAlpha = 0.95;
+      ctx.fillStyle = gradeOf(wj)[2];
+      ctx.beginPath();
+      ctx.arc(_p1.x, _p1.y, dotR, 0, TWO_PI);
+      ctx.fill();
+    }
+
+    /* ④ 起点：空心圈 + 实心点（生成位置） */
+    W2S(cam, path[0].x, path[0].y, _p1);
+    ctx.globalAlpha = 0.9;
+    ctx.strokeStyle = 'rgba(255,255,255,.9)';
+    ctx.lineWidth = 1.3;
+    ctx.beginPath();
+    ctx.arc(_p1.x, _p1.y, 6, 0, TWO_PI);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.95)';
+    ctx.beginPath();
+    ctx.arc(_p1.x, _p1.y, 1.7, 0, TWO_PI);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  /**
+   * 风圈：七级 / 十级 / 十二级风圈（CMA 实况图里的三圈）。
+   * 半径由中心风速标定（见 Typhoon.prototype.windR），并按"危险半圆"——
+   * 行进方向右侧——做四象限偏心，和实况风圈的不对称一致。
+   */
+  Renderer.prototype.drawWindCircles = function (ctx, cam, t) {
+    if (t.dissipating && t.wind < 10) return;
+    W2S(cam, t.x, t.y, _p1);
+    var far = 900 + 460 * cam.zoom;
+    if (_p1.x < -far || _p1.y < -far || _p1.x > this.w + far || _p1.y > this.h + far) return;
+
+    var sp = Math.sqrt(t.vx * t.vx + t.vy * t.vy);
+    var danger = sp > 0.5 ? Math.atan2(t.vy, t.vx) + Math.PI * 0.5 : 0.0;
+    var asym = sp > 0.5 ? clamp(sp / 70, 0.05, 0.18) : 0.05;
+    var LV = [
+      [t.windR(7), '96,178,255', 1.1, 0.075],
+      [t.windR(10), '255,206,74', 1.3, 0.095],
+      [t.windR(12), '255,86,72', 1.5, 0.115]
+    ];
+    ctx.save();
+    ctx.lineJoin = 'round';
+    for (var i = 0; i < LV.length; i++) {
+      var R = LV[i][0];
+      if (R * cam.zoom < 3.5) continue;
+      ctx.beginPath();
+      for (var s = 0; s <= 72; s++) {
+        var a = s / 72 * TWO_PI;
+        var rr = R * (1 + asym * Math.cos(a - danger));
+        W2S(cam, t.x + Math.cos(a) * rr, t.y + Math.sin(a) * rr, _p2);
+        if (s === 0) ctx.moveTo(_p2.x, _p2.y); else ctx.lineTo(_p2.x, _p2.y);
+      }
+      ctx.closePath();
+      ctx.globalAlpha = LV[i][3];
+      ctx.fillStyle = 'rgba(' + LV[i][1] + ',1)';
+      ctx.fill();
+      ctx.globalAlpha = 0.72;
+      ctx.strokeStyle = 'rgba(' + LV[i][1] + ',1)';
+      ctx.lineWidth = LV[i][2];
+      ctx.stroke();
+    }
+    ctx.restore();
+  };
+
+  /** 粒子层：云 / 雨 / 眼墙喷沫全部用加色混合，拖尾由主循环的淡化实现。
+      自适应降画质时整体略微降低不透明度，避免"少画了但看着更脏"。 */
+  Renderer.prototype.drawParticles = function (ctx, cam, world, flashK) {
+    var n = world.used, i, p;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalAlpha = this._quality < 1 ? 0.88 : 1;
+    for (i = 0; i < n; i++) {
+      p = world.pool[i];
+      if (p.dead) continue;
+      if (!CONFIG.visible.band && p.kind === 'cloud') continue;
+      p.draw(ctx, cam, flashK);
+    }
+    ctx.restore();
+  };
+
+  /** 台风眼：抹掉眼内粒子保证眼区干净，再叠一圈眼墙辉光 */  Renderer.prototype.drawEye = function (ctx, cam, t, flashK) {
+    var r = Math.max(t.eye, 1.5) * cam.zoom;
+    if (r < 0.6) return;
+    W2S(cam, t.x, t.y, _p1);
+
+    ctx.save();
+    ctx.globalAlpha = 0.92 * t.repel;
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(_p1.x, _p1.y, r, 0, TWO_PI);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    var halo = ctx.createRadialGradient(_p1.x, _p1.y, r * 0.86, _p1.x, _p1.y, r * 2.9);
+    halo.addColorStop(0, 'rgba(120,200,255,' + (0.16 + flashK * 0.18).toFixed(3) + ')');
+    halo.addColorStop(0.35, 'rgba(70,150,220,0.07)');
+    halo.addColorStop(1, 'rgba(30,80,140,0)');
+    ctx.fillStyle = halo;
+    ctx.beginPath();
+    ctx.arc(_p1.x, _p1.y, r * 2.9, 0, TWO_PI);
+    ctx.fill();
+
+    ctx.globalAlpha = 0.32;
+    ctx.strokeStyle = 'rgba(170,225,255,1)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(_p1.x, _p1.y, r * 1.02, 0, TWO_PI);
+    ctx.stroke();
+    ctx.restore();
+  };
+
+  /** 雷暴闪光：眼墙附近的短促辉光 */
+  Renderer.prototype.drawFlash = function (ctx, cam, t) {
+    var a = t.flash.a;
+    W2S(cam, t.flash.x, t.flash.y, _p1);
+    var R = t.rMax * cam.zoom * 1.4;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    var g = ctx.createRadialGradient(_p1.x, _p1.y, 0, _p1.x, _p1.y, R);
+    g.addColorStop(0, 'rgba(226,244,255,' + (0.55 * a).toFixed(3) + ')');
+    g.addColorStop(0.35, 'rgba(150,205,255,' + (0.22 * a).toFixed(3) + ')');
+    g.addColorStop(1, 'rgba(90,150,255,0)');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(_p1.x, _p1.y, R, 0, TWO_PI);
+    ctx.fill();
+    ctx.restore();
+  };
+
+  /** 中心十字标记 + 名称标牌 */
+  Renderer.prototype.drawMarker = function (ctx, cam, t) {
+    W2S(cam, t.x, t.y, _p1);
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(_p1.x - 9, _p1.y); ctx.lineTo(_p1.x - 3, _p1.y);
+    ctx.moveTo(_p1.x + 3, _p1.y); ctx.lineTo(_p1.x + 9, _p1.y);
+    ctx.moveTo(_p1.x, _p1.y - 9); ctx.lineTo(_p1.x, _p1.y - 3);
+    ctx.moveTo(_p1.x, _p1.y + 3); ctx.lineTo(_p1.x, _p1.y + 9);
+    ctx.stroke();
+    if (cam.zoom > 0.3) {
+      ctx.globalAlpha = 0.72;
+      ctx.fillStyle = 'rgba(215,240,255,1)';
+      ctx.font = '11px "Segoe UI",system-ui,sans-serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(gradeOf(t.wind)[1] + ' · ' + t.wind.toFixed(0) + ' m/s · ' +
+                   t.pressure.toFixed(0) + ' hPa', _p1.x + 13, _p1.y + 6);
+    }
+    ctx.restore();
+  };
+
+  /** 右下角 HUD：FPS / 粒子数 / 缩放 / 自适应画质 */
+  Renderer.prototype.drawHud = function (ctx, world, cam) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.font = '11px ui-monospace,Consolas,monospace';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.fillStyle = 'rgba(150,210,255,0.75)';
+    ctx.fillText('FPS ' + this.fps.toFixed(0) + '  |  粒子 ' + world.used +
+                 '  |  缩放 ' + (cam.zoom * 100).toFixed(0) + '%' +
+                 (this._quality < 1 ? '  |  自适应画质 ' + Math.round(this._quality * 100) + '%' : ''),
+                 this.w - 14, this.h - 12);
+    ctx.restore();
+  };
+
+  /* ==========================================================================
+   * 7. Camera 相机 + 鼠标 / 触摸交互
+   * ======================================================================== */
+  /* minZoom 取 0.14：地图宽 100 个经度（11100 km），1920 宽的屏幕上 0.17 左右就能看全整幅图 */
+  var cam = { cx: 0, cy: 0, zoom: 1, vw: 1, vh: 1, minZoom: 0.14, maxZoom: 8 };
+
+  function setupControls(canvas, renderer, world, flags) {
+    var dragging = false, lastX = 0, lastY = 0;
+    var pointers = {}, nPointers = 0, pinchDist = 0;
+
+    /** 把相机钳制在地图范围内（允许露出半个视口，但不至于把地图甩出屏幕） */
+    function clampCam() {
+      var mx = Math.max(0, cam.vw * 0.5 / cam.zoom * 0.9);
+      var my = Math.max(0, cam.vh * 0.5 / cam.zoom * 0.9);
+      cam.cx = clamp(cam.cx, -mx, world.w + mx);
+      cam.cy = clamp(cam.cy, -my, world.h + my);
+    }
+    /** 以屏幕某点为锚点缩放，保证该点对应的世界坐标不动 */
+    function zoomAt(sx, sy, k) {
+      var old = cam.zoom;
+      var nz = clamp(old * k, cam.minZoom, cam.maxZoom);
+      if (nz === old) return;
+      var wx = cam.cx + (sx - cam.vw * 0.5) / old;
+      var wy = cam.cy + (sy - cam.vh * 0.5) / old;
+      cam.zoom = nz;
+      cam.cx = wx - (sx - cam.vw * 0.5) / nz;
+      cam.cy = wy - (sy - cam.vh * 0.5) / nz;
+      clampCam();
+    }
+    function touchDist() {
+      var ks = Object.keys(pointers);
+      if (ks.length < 2) return 0;
+      var a = pointers[ks[0]], b = pointers[ks[1]];
+      return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
+    }
+    function touchMid() {
+      var ks = Object.keys(pointers);
+      var a = pointers[ks[0]], b = pointers[ks[1]];
+      return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    }
+    function holdFollow() {
+      if (!CONFIG.follow) return;                // 用户已关闭自动跟随 → 手动视角保持不动
+      flags.dragging = true;
+      clearTimeout(flags._t);
+      flags._t = setTimeout(function () { flags.dragging = false; }, 2400);
+    }
+    /** 屏幕坐标 → 世界坐标(km) */
+    function screenToWorld(sx, sy) {
+      return { x: cam.cx + (sx - cam.vw * 0.5) / cam.zoom,
+               y: cam.cy + (sy - cam.vh * 0.5) / cam.zoom };
+    }
+    /** 在指定世界坐标处放置台风（旧台风快速消散、新台风淡入） */
+    function placeAt(wx, wy) {
+      var t = world.newTyphoon({ x: clamp(wx, 0, world.w), y: clamp(wy, 0, world.h) });
+      cam.cx = t.x; cam.cy = t.y;
+      return t;
+    }
+
+    /* —— 鼠标拖动平移 / 点选放置台风 —— */
+    var downX = 0, downY = 0, moved = 0;
+    canvas.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return;
+      dragging = true; lastX = e.clientX; lastY = e.clientY;
+      downX = e.clientX; downY = e.clientY; moved = 0;
+      canvas.style.cursor = 'grabbing';
+      holdFollow();
+    });
+    window.addEventListener('mousemove', function (e) {
+      flags.mx = e.clientX; flags.my = e.clientY;
+      if (!dragging) return;
+      moved += Math.abs(e.clientX - lastX) + Math.abs(e.clientY - lastY);
+      cam.cx -= (e.clientX - lastX) / cam.zoom;
+      cam.cy -= (e.clientY - lastY) / cam.zoom;
+      lastX = e.clientX; lastY = e.clientY;
+      clampCam();
+      holdFollow();
+    });
+    window.addEventListener('mouseup', function (e) {
+      dragging = false;
+      canvas.style.cursor = flags.place ? 'crosshair' : 'grab';
+      /* 放置模式：按下与抬起几乎在同一点（不是拖动视角）才判定为"选点" */
+      if (flags.place && moved < 6 &&
+          Math.abs(e.clientX - downX) < 6 && Math.abs(e.clientY - downY) < 6) {
+        var w = screenToWorld(e.clientX, e.clientY);
+        placeAt(w.x, w.y);
+      }
+    });
+    canvas.style.cursor = 'grab';
+
+    /* —— 滚轮缩放 —— */
+    canvas.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.0014));
+      holdFollow();
+    }, { passive: false });
+
+    /* —— 触摸：单指拖动 / 双指捏合缩放 —— */
+    canvas.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      for (var i = 0; i < e.changedTouches.length; i++) {
+        var tt = e.changedTouches[i];
+        pointers[tt.identifier] = { x: tt.clientX, y: tt.clientY };
+      }
+      nPointers = Object.keys(pointers).length;
+      if (nPointers === 1) {
+        var p0 = pointers[Object.keys(pointers)[0]];
+        lastX = p0.x; lastY = p0.y;
+        moved = 0;                                  // 用于区分"轻点放置"与"拖动平移"
+      } else if (nPointers >= 2) {
+        pinchDist = touchDist();
+        moved = 999;                                // 双指操作不当作放置
+      }
+      holdFollow();
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', function (e) {
+      e.preventDefault();
+      for (var i = 0; i < e.changedTouches.length; i++) {
+        var tt = e.changedTouches[i];
+        if (pointers[tt.identifier]) { pointers[tt.identifier].x = tt.clientX; pointers[tt.identifier].y = tt.clientY; }
+      }
+      nPointers = Object.keys(pointers).length;
+      if (nPointers === 1) {
+        var p0 = pointers[Object.keys(pointers)[0]];
+        moved += Math.abs(p0.x - lastX) + Math.abs(p0.y - lastY);
+        cam.cx -= (p0.x - lastX) / cam.zoom;
+        cam.cy -= (p0.y - lastY) / cam.zoom;
+        lastX = p0.x; lastY = p0.y;
+        clampCam();
+      } else if (nPointers >= 2) {
+        moved = 999;
+        var d = touchDist();
+        if (pinchDist > 0 && d > 0) {
+          var mid = touchMid();
+          zoomAt(mid.x, mid.y, d / pinchDist);
+        }
+        pinchDist = d;
+      }
+      holdFollow();
+    }, { passive: false });
+
+    function endTouch(e) {
+      var wasSingle = nPointers === 1;
+      var p0 = wasSingle ? pointers[Object.keys(pointers)[0]] : null;
+      for (var i = 0; i < e.changedTouches.length; i++) delete pointers[e.changedTouches[i].identifier];
+      nPointers = Object.keys(pointers).length;
+      /* 放置模式下的"轻点"（几乎没移动）＝选点放台风；拖动则只平移视角 */
+      if (flags.place && wasSingle && p0 && moved < 10 && e.changedTouches.length === 1) {
+        var ct = e.changedTouches[0];
+        var w = screenToWorld(ct.clientX, ct.clientY);
+        placeAt(w.x, w.y);
+      }
+      if (nPointers === 1) {
+        var p1 = pointers[Object.keys(pointers)[0]];
+        lastX = p1.x; lastY = p1.y;
+      }
+      pinchDist = 0;
+      holdFollow();
+    }
+    canvas.addEventListener('touchend', endTouch, { passive: false });
+    canvas.addEventListener('touchcancel', endTouch, { passive: false });
+
+    /* —— 双击快速居中到台风 —— */
+    canvas.addEventListener('dblclick', function () {
+      var t = world.typhoon;
+      cam.cx = t.x; cam.cy = t.y;
+      holdFollow();
+    });
+
+    return { zoomAt: zoomAt };
+  }
+
+  /* ==========================================================================
+   * 8. UI 控制绑定
+   * ======================================================================== */
+  var simPaused = false;
+  var timeScale = CONFIG.timeScale;
+  var world, renderer, flags = { dragging: false, _t: 0, place: false, mx: 0, my: 0 };
+
+  var LABELS = {
+    maxWind:       ['最大风速', ' m/s', 8, 88, 1, 0],
+    pressure:      ['中心气压', ' hPa', 870, 1012, 1, 0],
+    eyeRadius:     ['台风眼半径', ' km', 3, 45, 0.5, 1],
+    spinRate:      ['旋转速度', ' ×', 0.2, 3, 0.05, 2],
+    bandCount:     ['螺旋雨带数量', ' 条', 0, 8, 1, 0],
+    particleCount: ['粒子数量', ' 个', 0, 9000, 100, 0],
+    sst:           ['海表温度', ' ℃', 20, 36, 0.1, 1],
+    shear:         ['风切变', ' m/s', 0, 30, 0.5, 1],
+    moveSpeed:     ['移动速度', ' km/h', 0, 42, 0.5, 1],
+    curvature:     ['路径弯曲', '', -6, 6, 0.1, 1],
+    rainRate:      ['降雨强度', ' ×', 0.1, 2.5, 0.05, 2],
+    timeScale:     ['时间流速', ' ×', 0, 5, 0.05, 2]
+  };
+
+  var SECTIONS = [
+    { title: '强度与结构', keys: ['maxWind', 'pressure', 'eyeRadius', 'spinRate', 'bandCount', 'particleCount'] },
+    { title: '海洋与大气环境', keys: ['sst', 'shear', 'moveSpeed', 'curvature', 'rainRate', 'timeScale'] }
+  ];
+
+  var TOGGLES = [
+    ['wind', '显示风场'], ['isobar', '显示等压线'], ['band', '显示雨带'],
+    ['path', '显示路径'], ['wcircle', '显示风圈'], ['fps', '显示 FPS']
+  ];
+
+  function fmt(key, v) {
+    var L = LABELS[key];
+    return (L[5] === 0 ? Math.round(v) : v.toFixed(L[5])) + L[1];
+  }
+
+  function ctlHTML(key) {
+    var L = LABELS[key], v = CONFIG[key];
+    return '<div class="ctl">' +
+      '<div class="ctl-top"><span class="k">' + L[0] + '</span>' +
+      '<span class="v" id="v_' + key + '">' + fmt(key, v) + '</span></div>' +
+      '<input type="range" data-key="' + key + '" id="s_' + key + '" min="' + L[2] +
+      '" max="' + L[3] + '" step="' + L[4] + '" value="' + v + '">' +
+      '</div>';
+  }
+
+  function buildPanel() {
+    var el = document.getElementById('panel');
+    var html = '';
+    html += '<div class="phead"><h1>台风模拟器</h1><span class="sub">TYPHOON SIM</span>' +
+            '<button class="fold-arrow" id="foldBtn" title="折叠 / 展开面板">◀</button></div>';
+    html += '<div class="pbody">';
+    for (var s = 0; s < SECTIONS.length; s++) {
+      html += '<details class="sect" open><summary>' + SECTIONS[s].title + '</summary>';
+      var keys = SECTIONS[s].keys;
+      for (var i = 0; i < keys.length; i++) html += ctlHTML(keys[i]);
+      html += '</details>';
+    }
+    html += '<details class="sect" open><summary>显示图层</summary><div class="btns" id="toggleWrap">';
+    for (var t = 0; t < TOGGLES.length; t++) {
+      html += '<button class="b" data-toggle="' + TOGGLES[t][0] + '">' + TOGGLES[t][1] + '</button>';
+    }
+    html += '</div></details>';
+    html += '<details class="sect" open><summary>操作</summary><div class="btns">' +
+            '<button class="b wide" id="btnPlace">放置模式：关（点地图选位置）</button>' +
+            '<button class="b" id="btnNew">生成新台风</button>' +
+            '<button class="b" id="btnPause">暂停</button>' +
+            '<button class="b" id="btnReset">重置</button>' +
+            '<button class="b danger" id="btnClear">清除粒子</button>' +
+            '<button class="b wide" id="btnSpin">旋转方向：北半球 · 逆时针</button>' +
+            '<button class="b wide" id="btnFollow">自动跟随：开</button>' +
+            '<button class="b wide" id="btnCenter">视角居中到台风</button>' +
+            '</div></details>';
+    html += '</div>';
+    el.innerHTML = html;
+
+    if (!CONFIG.panelOpen) el.classList.add('folded');
+    document.getElementById('foldBtn').addEventListener('click', function () {
+      el.classList.toggle('folded');
+      CONFIG.panelOpen = !el.classList.contains('folded');
+    });
+
+    // 滑块：input 事件即时生效
+    el.addEventListener('input', function (e) {
+      var inp = e.target;
+      if (inp && inp.tagName === 'INPUT' && inp.dataset && inp.dataset.key) {
+        applyParam(inp.dataset.key, parseFloat(inp.value), true);
+      }
+    });
+
+    // 按钮
+    el.addEventListener('click', function (e) {
+      var b = e.target && e.target.closest ? e.target.closest('button') : null;
+      if (!b) return;
+      if (b.dataset.toggle) {
+        var key = b.dataset.toggle;
+        CONFIG.visible[key] = !CONFIG.visible[key];
+        syncToggles();
+      } else if (b.id === 'btnNew') {
+        world.newTyphoon();
+      } else if (b.id === 'btnPlace') {
+        flags.place = !flags.place;
+        b.textContent = flags.place ? '放置模式：开（点地图选位置）' : '放置模式：关（点地图选位置）';
+        b.classList.toggle('on', flags.place);
+        /* 注意：这里不能用 setupControls 里的局部变量 canvas，作用域不同 */
+        renderer.canvas.style.cursor = flags.place ? 'crosshair' : 'grab';
+      } else if (b.id === 'btnPause') {
+        simPaused = !simPaused;
+        b.textContent = simPaused ? '继续' : '暂停';
+        b.classList.toggle('on', simPaused);
+        document.getElementById('stage').classList.toggle('paused', simPaused);
+      } else if (b.id === 'btnReset') {
+        doReset();
+      } else if (b.id === 'btnClear') {
+        for (var i = 0; i < world.pool.length; i++) world.pool[i].dead = true;
+      } else if (b.id === 'btnSpin') {
+        var t = world.typhoon;
+        t.flipSpin = !t.flipSpin;
+        t.hemi = t.flipSpin ? -1 : 1;
+        b.textContent = '旋转方向：' + (t.flipSpin ? '南半球 · 顺时针' : '北半球 · 逆时针');
+      } else if (b.id === 'btnFollow') {
+        CONFIG.follow = !CONFIG.follow;
+        b.textContent = '自动跟随：' + (CONFIG.follow ? '开' : '关');
+        b.classList.toggle('on', CONFIG.follow);
+        if (CONFIG.follow) {
+          /* 立刻恢复跟随，否则要等上一次拖动/缩放的暂停计时器走完 */
+          clearTimeout(flags._t);
+          flags.dragging = false;
+        }
+      } else if (b.id === 'btnCenter') {
+        cam.cx = world.typhoon.x;
+        cam.cy = world.typhoon.y;
+      }
+    });
+    syncToggles();
+  }
+
+  /** 参数实时生效：写入 CONFIG 并同步显示 */
+  function applyParam(key, val, fromUI) {
+    if (!isFinite(val)) return;
+    CONFIG[key] = val;
+    if (key === 'pressure') world.typhoon.pressureManual = true;
+    if (key === 'timeScale') timeScale = val;
+    if (key === 'particleCount') world.ensurePool(clamp(Math.round(val), 0, VIEW.maxParticles));
+    if (key === 'maxWind' && world.typhoon.wind > val) world.typhoon.wind = val;
+    var lab = document.getElementById('v_' + key);
+    if (lab) lab.textContent = fmt(key, val);
+  }
+
+  function syncToggles() {
+    var wrap = document.getElementById('toggleWrap');
+    if (!wrap) return;
+    var bs = wrap.querySelectorAll('button');
+    for (var i = 0; i < bs.length; i++) {
+      bs[i].classList.toggle('on', !!CONFIG.visible[bs[i].dataset.toggle]);
+    }
+  }
+
+  function syncPanelValues() {
+    for (var key in LABELS) {
+      if (!LABELS.hasOwnProperty(key)) continue;
+      var s = document.getElementById('s_' + key);
+      if (s) s.value = CONFIG[key];
+      var lab = document.getElementById('v_' + key);
+      if (lab) lab.textContent = fmt(key, CONFIG[key]);
+    }
+  }
+
+  function doReset() {
+    var keepOpen = CONFIG.panelOpen;
+    CONFIG = JSON.parse(JSON.stringify(DEFAULTS));
+    CONFIG.panelOpen = keepOpen;
+    timeScale = CONFIG.timeScale;
+    /* 初始缩放：既要能看清台风结构，又要能看到"从太平洋深处走向亚太"的整条路径。
+       这里取约 4600 km 宽（≈41 个经度），一条台风的一生基本都落在这个视野里。 */
+    cam.zoom = clamp(Math.min(cam.vw / 4600, cam.vh / 2800), cam.minZoom, 2.4);
+    var bp = document.getElementById('btnPause');
+    if (bp) { bp.textContent = '暂停'; bp.classList.remove('on'); }
+    var sp = document.getElementById('btnSpin');
+    if (sp) sp.textContent = '旋转方向：北半球 · 逆时针';
+    var bpl = document.getElementById('btnPlace');
+    if (bpl) { bpl.textContent = '放置模式：关（点地图选位置）'; bpl.classList.remove('on'); }
+    var bfo = document.getElementById('btnFollow');
+    if (bfo) { bfo.textContent = '自动跟随：' + (CONFIG.follow ? '开' : '关'); bfo.classList.toggle('on', CONFIG.follow); }
+    flags.dragging = !CONFIG.follow;
+    flags.place = false;
+    document.getElementById('stage').classList.remove('paused');
+    world.reset();
+    cam.cx = world.typhoon.x;
+    cam.cy = world.typhoon.y;
+    syncPanelValues();
+    syncToggles();
+    for (var i = 0; i < 13000; i++) if (world.pool[i]) world.pool[i].dead = true;
+  }
+
+  /* ==========================================================================
+   * 9. 状态栏
+   * ======================================================================== */
+  var statusEl = document.getElementById('status');
+  var _st = { wind: -1, press: -1, grade: '', stage: -1, pos: '', ring: '', perf: '' };
+
+  function buildStatus() {
+    statusEl.innerHTML =
+      '<div class="stitle">实时状态 · STATUS</div>' +
+      '<div class="row"><span class="l">强度等级</span><span class="r"><span id="stGrade">—</span></span></div>' +
+      '<div class="row"><span class="l">最大风速</span><span class="r" id="stWind">—</span></div>' +
+      '<div class="row"><span class="l">中心气压</span><span class="r" id="stPress">—</span></div>' +
+      '<div class="row"><span class="l">生命周期</span><span class="r" id="stStage">—</span></div>' +
+      '<div class="row"><span class="l">中心位置</span><span class="r" id="stPos">—</span></div>' +
+      '<div class="row"><span class="l">风圈 7/10/12 级</span><span class="r" id="stRing">—</span></div>' +
+      '<div class="row"><span class="l">粒子 / FPS</span><span class="r" id="stPerf">—</span></div>' +
+      '<div class="bar"><i id="stBar"></i></div>';
+  }
+
+  /** 只在数值变化时写 DOM，避免每帧触发重排 */
+  function updateStatus() {
+    var t = world.typhoon;
+    var wv = Math.round(t.wind * 10) / 10;
+    if (wv !== _st.wind) {
+      _st.wind = wv;
+      document.getElementById('stWind').textContent = wv.toFixed(1) + ' m/s';
+      document.getElementById('stBar').style.width = clamp(t.wind / 90 * 100, 0, 100) + '%';
+    }
+    var pv = Math.round(t.pressure);
+    if (pv !== _st.press) {
+      _st.press = pv;
+      document.getElementById('stPress').textContent = pv + ' hPa';
+    }
+    var g = gradeOf(t.wind);
+    if (g[1] !== _st.grade) {
+      _st.grade = g[1];
+      var ge = document.getElementById('stGrade');
+      ge.textContent = g[1];
+      ge.style.background = g[2];
+    }
+    if (t.stage !== _st.stage || simPaused) {
+      _st.stage = t.stage;
+      document.getElementById('stStage').textContent = STAGES[t.stage] + (simPaused ? '（已暂停）' : '');
+    }
+    /* 中心位置：以经纬度显示（等距圆柱投影，111 km/°） */
+    var lv = fmtLon(xToLon(t.x)) + '  ' + fmtLat(yToLat(t.y));
+    if (lv !== _st.pos) {
+      _st.pos = lv;
+      document.getElementById('stPos').textContent = lv;
+    }
+    /* 风圈半径：按 CMA 公报的写法给出七/十/十二级风圈（公里） */
+    var r7v = Math.round(t.windR(7)), r10v = Math.round(t.windR(10)), r12v = Math.round(t.windR(12));
+    var rv = r7v + ' / ' + r10v + ' / ' + (r12v > 0 ? r12v : '—') + ' km';
+    if (rv !== _st.ring) {
+      _st.ring = rv;
+      document.getElementById('stRing').textContent = rv;
+    }
+    var perf = world.used + ' 个 / ' + renderer.fps.toFixed(0);
+    if (perf !== _st.perf) {
+      _st.perf = perf;
+      document.getElementById('stPerf').textContent = perf;
+    }
+  }
+
+  /* ==========================================================================
+   * 10. 主循环
+   * ======================================================================== */
+  var lastTime = 0;
+
+  function frame(now) {
+    requestAnimationFrame(frame);
+    var dtReal = (now - lastTime) * 0.001;
+    lastTime = now;
+    if (!(dtReal > 0)) dtReal = 1 / 60;
+    dtReal = Math.min(dtReal, 0.06);                 // 防止切换标签页后跳变
+
+    var t = world.typhoon;
+
+    /* —— 视角平滑跟随台风（关闭自动跟随、或用户拖动后 2.4 秒内都不打扰） —— */
+    if (!flags.dragging && CONFIG.follow) {
+      var fk = clamp(dtReal * 1.2, 0, 1) * 0.30;
+      /* 一阶跟随天生带 v·dtSim/fk 的稳态滞后：台风移速按 6000/3600 的时间压缩折算后，
+         这个滞后可达数百公里（时间流速 5× 时约 790 km），台风会明显偏离画面中心。
+         补一个速度前馈（提前量 = 每帧位移 / fk）把它抵掉 —— 镜头依旧平滑，但咬得住台风。 */
+      var lead = clamp(dtReal * clamp(timeScale, 0, 5), 0, 0.5) / Math.max(fk, 1e-4);
+      cam.cx = lerp(cam.cx, t.x + t.vx * lead, fk);
+      cam.cy = lerp(cam.cy, t.y + t.vy * lead, fk);
+    }
+
+    /* —— 生成过渡：旧台风快速消散，新台风淡入 —— */
+    if (t.custom) {
+      var el = now - t.custom.born;
+      t.repel = clamp((el - t.custom.fadeAt) / 900, 0, 1);
+      if (el > t.custom.takeOver && t.wind < 24) t.repel = 1;
+    }
+
+    /* —— 推进模拟（拆子步，保证高时间流速下运动稳定） —— */
+    if (!simPaused) {
+      var dtSim = dtReal * clamp(timeScale, 0, 5);
+      var steps = clamp(Math.ceil(dtSim / 0.075), 1, 3);
+      var sub = dtSim / steps;
+      for (var s = 0; s < steps; s++) {
+        t.update(sub, world);
+        world.step(sub);
+      }
+      if (t.dissipating && t.repel <= 0 && t.wind <= 4.5) world.onDissipated(dtSim);
+    }
+
+    /* —— FPS 统计 —— */
+    renderer._frames++;
+    renderer._fpsT += dtReal;
+    if (renderer._fpsT >= 0.5) {
+      renderer.fps = renderer._frames / renderer._fpsT;
+      renderer._frames = 0;
+      renderer._fpsT = 0;
+    }
+
+    renderer.render(world, cam);
+    renderer.autoQuality(dtReal);
+    updateStatus();
+  }
+
+  /* ==========================================================================
+   * 11. 启动
+   * ======================================================================== */
+  /** 运行期错误捕获：任何未处理异常都直接显示在页面上（并保留在控制台） */
+  function installErrorCatcher() {
+    var el = document.getElementById('errlog');
+    var n = 0;
+    function show(msg) {
+      n++;
+      if (!el) return;
+      el.classList.add('show');
+      el.textContent = '⚠ 运行期错误 ×' + n + '\n' + msg + '\n\n（点此关闭）';
+      if (!el._bound) {
+        el._bound = true;
+        el.addEventListener('click', function () { el.classList.remove('show'); });
+      }
+    }
+    window.addEventListener('error', function (e) {
+      show((e && e.message ? e.message : '未知错误') +
+           (e && e.filename ? '\n' + e.filename + ':' + (e.lineno || 0) + ':' + (e.colno || 0) : ''));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      var r = e && e.reason;
+      show('未处理的 Promise 拒绝：' + (r && r.message ? r.message : String(r)));
+    });
+  }
+
+  function boot() {
+    installErrorCatcher();
+    var canvas = document.getElementById('stage');
+
+    renderer = new Renderer(canvas);
+    renderer.resize();
+    world = new World();
+    cam.vw = renderer.w; cam.vh = renderer.h;
+    /* 初始缩放：既要能看清台风结构，又要能看到"从太平洋深处走向亚太"的整条路径。
+       这里取约 4600 km 宽（≈41 个经度），一条台风的一生基本都落在这个视野里。 */
+    cam.zoom = clamp(Math.min(cam.vw / 4600, cam.vh / 2800), cam.minZoom, 2.4);
+    cam.cx = world.typhoon.x;
+    cam.cy = world.typhoon.y;
+
+    setupControls(canvas, renderer, world, flags);
+
+    buildPanel();
+    buildStatus();
+
+    window.addEventListener('resize', function () {
+      renderer.resize();
+      cam.vw = renderer.w;
+      cam.vh = renderer.h;
+    });
+
+    // 键盘快捷键
+    window.addEventListener('keydown', function (e) {
+      if (e.target && e.target.tagName === 'INPUT') return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        var bp = document.getElementById('btnPause');
+        if (bp) bp.click();
+      } else if (e.key === 'n' || e.key === 'N') {
+        world.newTyphoon();
+      } else if (e.key === 'r' || e.key === 'R') {
+        doReset();
+      } else if (e.key === 'ArrowUp') {
+        applyParam('timeScale', clamp(timeScale + 0.25, 0, 5), true);
+        syncPanelValues();
+      } else if (e.key === 'ArrowDown') {
+        applyParam('timeScale', clamp(timeScale - 0.25, 0, 5), true);
+        syncPanelValues();
+      }
+    });
+
+    var hint = document.getElementById('hint');
+    if (hint) setTimeout(function () { hint.classList.add('fade'); }, 6000);
+
+    lastTime = performance.now();
+    requestAnimationFrame(frame);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+</body>
+</html>

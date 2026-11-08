@@ -1,0 +1,11 @@
+type: embed
+
+colour: blurple
+embed:
+    title: Fabric for older Minecraft versions
+
+---
+
+While the toolchains for Fabric (such as Loom and Loader) do support versions before 1.14, most Fabric mods, including Fabric API, do not support them. You probably want Rift, Forge, LiteLoader or ModLoader, as that is what most mods for 1.13 and older use.
+
+If you definitely want Fabric, the third-party [Cursed Legacy](https://minecraft-cursed-legacy.github.io/) or [Legacy Fabric](https://github.com/Legacy-Fabric) projects may be what you want, however they don't have many mods and aren't currently known to be compatible with Forge or ModLoader.

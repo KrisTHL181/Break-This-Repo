@@ -1,0 +1,209 @@
+#include<iostream>
+#include<cstdio>
+#include<ctime>
+#include<cstdlib>
+#include<algorithm>
+#include<queue>
+#include<windows.h>
+#include<conio.h>
+#define ninf(x) ((x)==1000000000?-1:(x))
+using namespace std;
+void gotoxy(int x,int y);
+struct S{
+	int x,y;
+};
+int g[22][22];
+queue<S> dq;
+int mde=0,p=100,maxp[4],l=1,maxl[4],mint[4]={-1,1000000000,1000000000,1000000000};
+int N=-1;
+int main(){
+	srand(time(0));
+	gotoxy(0,0);
+	cout<<"加载中";
+	for(int i=1;i<=30;i++){
+		cout<<".";
+		Sleep(rand()%180+1);
+	}
+	start:
+	system("cls");
+	gotoxy(25,0);
+	cout<<"手动贪吃蛇2.0.1版本";
+	gotoxy(29,1);
+	cout<<"作者：张博雅";
+	gotoxy(0,3);
+	cout<<"规则："<<endl;
+	cout<<"1、按wasd移动，按q退出，按其他键直接失败；碰墙可以到另一边；"<<endl;
+	cout<<"2、吃到食物可以增加长度；"<<endl;
+	cout<<"3、占满整个格子就胜利；"<<endl;
+	cout<<"4、初始分数为x*20，每走1格分数减1，吃到食物可加分；"<<endl;
+	cout<<"5、头碰到自己或分数为0就失败。"<<endl;
+	gotoxy(0,10);
+	cout<<"你的最高分："<<" e: "<<maxp[1]<<" , m: "<<maxp[2]<<" , h: "<<maxp[3]<<endl;
+	gotoxy(0,11);
+	cout<<"你的最大长度："<<" e: "<<maxl[1]<<" , m: "<<maxl[2]<<" , h: "<<maxl[3]<<endl;
+	gotoxy(0,12);
+	cout<<"你的最小时间："<<" e: "<<ninf(mint[1])<<" , m: "<<ninf(mint[2])<<" , h: "<<ninf(mint[3])<<endl;
+	gotoxy(20,15);
+	cout<<"s:开始游戏";
+	gotoxy(40,15);
+	cout<<"q:退出游戏";
+	gotoxy(0,20);
+	cout<<"代码长度：209行";
+	gotoxy(0,0);
+	char c='m';
+	while(c!='s'&&c!='q')c=getch();
+	if(c=='q')return 0;
+	system("cls");
+	gotoxy(0,0);
+	c='t';
+	cout<<"请选择难度：e简单，m普通，h困难，s自定义"<<endl;
+	while(c!='e'&&c!='m'&&c!='h'&&c!='s')c=getch();
+	if(c=='e'){
+		N=6;
+		mde=1;
+	}
+	if(c=='m'){
+		N=8;
+		mde=2;
+	}
+	if(c=='h'){
+		N=10;
+		mde=3;
+	}
+	if(c=='s'){
+		cout<<"请输入边长（5<=x<=20）";
+		int xxx=-1;
+		while(xxx<5||xxx>20)cin>>xxx;
+		N=xxx;
+		mde=0;
+	}
+	system("cls"); 
+	p=N*20;
+	S h;
+	h.x=N/2;
+	h.y=N/2;
+	dq.push(h);
+	for(int i=0;i<=N+1;i++){
+		for(int j=0;j<=N+1;j++){
+			if(i==0||i==N+1||j==0||j==N+1){
+				gotoxy(i*2,j);
+				cout<<"@";
+			}
+			g[i][j]=0;
+		}
+	}
+	g[h.x][h.y]=1;
+	int fx=rand()%N+1,fy=rand()%N+1;
+	while(g[fx][fy]!=0||(fx==h.x||fy==h.y)){
+		fx=rand()%N+1;
+		fy=rand()%N+1;
+	}
+	g[fx][fy]=2;
+	gotoxy(fx*2,fy);
+	cout<<"X";
+	gotoxy(0,N+3);
+	cout<<"分数:";
+	if(p>=1000)cout<<p;
+	else if(p>=100)cout<<"0"<<p;
+	else if(p>=10)cout<<"00"<<p;
+	else cout<<"000"<<p;
+	gotoxy(0,N+4);
+	cout<<"长度:"<<l;
+	int tm=time(0);
+	while(1){
+		h=dq.back();
+		g[h.x][h.y]=1;
+		gotoxy(h.x*2,h.y);
+		cout<<"O";
+		char c=getch();
+		if(c=='w')h.y--;
+		if(c=='s')h.y++;
+		if(c=='a')h.x--;
+		if(c=='d')h.x++;
+		if(c=='q')goto start;
+		if(h.x>N)h.x=1;
+		if(h.x<1)h.x=N;
+		if(h.y>N)h.y=1;
+		if(h.y<1)h.y=N;
+		if(g[h.x][h.y]==0){
+			dq.push(h);
+			h=dq.front();
+			dq.pop();
+			g[h.x][h.y]=0;
+			gotoxy(h.x*2,h.y);
+			cout<<" ";
+		}
+		else if(g[h.x][h.y]==1)break;
+		else if(g[h.x][h.y]==2){
+			dq.push(h);
+			g[h.x][h.y]=0;
+			int fx=rand()%N+1,fy=rand()%N+1;
+			while(g[fx][fy]!=0||(fx==h.x&&fy==h.y)){
+				fx=rand()%N+1;
+				fy=rand()%N+1;
+			}
+			g[fx][fy]=2;
+			gotoxy(fx*2,fy);
+			cout<<"X";
+			p+=N+1;
+			l++;
+		}
+		if(l==N*N-1){
+			system("cls");
+			gotoxy(0,0);
+			cout<<"你赢了！！！按r再玩一次"<<endl;
+			cout<<"分数:"<<p<<endl;
+			cout<<"时间:"<<time(0)-tm<<endl;
+			cout<<"长度:"<<l<<endl;
+			maxp[mde]=max(maxp[mde],p);
+			maxl[mde]=max(maxl[mde],l);
+			mint[mde]=min(mint[mde],int(time(0)-tm));
+			system("color F0");
+			Sleep(500);
+			system("color 0F");
+			Sleep(500);
+			system("color F0");
+			Sleep(500);
+			system("color 07");
+			l=1;
+			while(!dq.empty())dq.pop();
+			char c='s';
+			while(c!='r')c=getch();
+			system("cls");
+			goto start;
+		}
+		p--;
+		if(p==0)break;
+		gotoxy(0,N+3);
+		cout<<"分数:";
+		if(p>=1000)cout<<p;
+		else if(p>=100)cout<<"0"<<p;
+		else if(p>=10)cout<<"00"<<p;
+		else cout<<"000"<<p;
+		gotoxy(0,N+4);
+		cout<<"长度:"<<l;
+	}
+	system("cls");
+	gotoxy(0,0);
+	cout<<"你输了！按r再玩一次"<<endl;
+	cout<<"分数:"<<p<<endl;
+	cout<<"时间:"<<time(0)-tm<<endl;
+	cout<<"长度:"<<l<<endl;
+	maxp[mde]=max(maxp[mde],p);
+	maxl[mde]=max(maxl[mde],l);
+	l=1;
+	while(!dq.empty())dq.pop();
+	c='s';
+	while(c!='r')c=getch();
+	system("cls");
+	goto start;
+	return 0;
+}
+void gotoxy(int x,int y){
+	HANDLE hdl;
+	COORD crd;
+	crd.X=x;
+	crd.Y=y;
+	hdl=GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(hdl,crd);
+}

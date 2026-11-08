@@ -1,0 +1,169 @@
+CLASS net/minecraft/class_1293 net/minecraft/entity/effect/StatusEffectInstance
+	FIELD field_5889 showIcon Z
+	FIELD field_5890 showParticles Z
+	FIELD field_5892 ambient Z
+	FIELD field_5893 amplifier I
+	FIELD field_5895 duration I
+	FIELD field_5896 type Lnet/minecraft/class_6880;
+	FIELD field_5897 LOGGER Lorg/slf4j/Logger;
+	FIELD field_21830 hiddenEffect Lnet/minecraft/class_1293;
+		COMMENT The effect hidden when upgrading effects. Duration decreases with this
+		COMMENT effect.
+		COMMENT
+		COMMENT <p>This exists so that long-duration low-amplifier effects reappears
+		COMMENT after short-duration high-amplifier effects run out.
+	FIELD field_42106 INFINITE I
+	FIELD field_47739 fading Lnet/minecraft/class_1293$class_9063;
+	FIELD field_48821 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_49014 MIN_AMPLIFIER I
+	FIELD field_49015 MAX_AMPLIFIER I
+	FIELD field_49207 PACKET_CODEC Lnet/minecraft/class_9139;
+	METHOD <init> (Lnet/minecraft/class_1293;)V
+		ARG 1 instance
+	METHOD <init> (Lnet/minecraft/class_6880;)V
+		ARG 1 effect
+	METHOD <init> (Lnet/minecraft/class_6880;I)V
+		ARG 1 effect
+		ARG 2 duration
+	METHOD <init> (Lnet/minecraft/class_6880;II)V
+		ARG 1 effect
+		ARG 2 duration
+		ARG 3 amplifier
+	METHOD <init> (Lnet/minecraft/class_6880;IIZZ)V
+		ARG 1 effect
+		ARG 2 duration
+		ARG 3 amplifier
+		ARG 4 ambient
+		ARG 5 visible
+	METHOD <init> (Lnet/minecraft/class_6880;IIZZZ)V
+		ARG 1 effect
+		ARG 2 duration
+		ARG 3 amplifier
+		ARG 4 ambient
+		ARG 5 showParticles
+		ARG 6 showIcon
+	METHOD <init> (Lnet/minecraft/class_6880;IIZZZLnet/minecraft/class_1293;)V
+		ARG 1 effect
+		ARG 2 duration
+		ARG 3 amplifier
+		ARG 4 ambient
+		ARG 5 showParticles
+		ARG 6 showIcon
+		ARG 7 hiddenEffect
+	METHOD <init> (Lnet/minecraft/class_6880;Lnet/minecraft/class_1293$class_9195;)V
+		ARG 1 effect
+		ARG 2 parameters
+	METHOD compareTo (Ljava/lang/Object;)I
+		ARG 1 that
+	METHOD equals (Ljava/lang/Object;)Z
+		ARG 1 o
+	METHOD method_5578 getAmplifier ()I
+	METHOD method_5579 getEffectType ()Lnet/minecraft/class_6880;
+	METHOD method_5581 shouldShowParticles ()Z
+	METHOD method_5584 getDuration ()I
+	METHOD method_5585 update (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;Ljava/lang/Runnable;)Z
+		ARG 1 world
+		ARG 2 entity
+		ARG 3 hiddenEffectCallback
+	METHOD method_5586 getTranslationKey ()Ljava/lang/String;
+	METHOD method_5588 updateDuration ()V
+	METHOD method_5590 upgrade (Lnet/minecraft/class_1293;)Z
+		ARG 1 that
+	METHOD method_5591 isAmbient ()Z
+	METHOD method_5592 shouldShowIcon ()Z
+	METHOD method_24276 copyFrom (Lnet/minecraft/class_1293;)V
+		ARG 1 that
+	METHOD method_48557 isDurationBelow (I)Z
+		ARG 1 duration
+	METHOD method_48558 mapDuration (Lit/unimi/dsi/fastutil/ints/Int2IntFunction;)I
+		ARG 1 mapper
+	METHOD method_48559 isInfinite ()Z
+	METHOD method_48560 (I)I
+		ARG 0 duration
+	METHOD method_48561 lastsShorterThan (Lnet/minecraft/class_1293;)Z
+		ARG 1 effect
+	METHOD method_48562 isActive ()Z
+	METHOD method_48563 getDurationString ()Ljava/lang/String;
+	METHOD method_52523 onApplied (Lnet/minecraft/class_1309;)V
+		ARG 1 entity
+	METHOD method_55653 getFadeFactor (Lnet/minecraft/class_1309;F)F
+		COMMENT {@return the factor (multiplier) for effect fade-in and fade-out}
+		COMMENT
+		COMMENT <p>The return value is between {@code 0.0f} and {@code 1.0f} (both inclusive).
+		COMMENT
+		COMMENT @see StatusEffect#fadeTicks(int)
+		ARG 1 entity
+		ARG 2 tickProgress
+	METHOD method_55654 equals (Lnet/minecraft/class_6880;)Z
+		ARG 1 effect
+	METHOD method_55656 copyFadingFrom (Lnet/minecraft/class_1293;)V
+		ARG 1 effect
+	METHOD method_55657 skipFading ()V
+		COMMENT Skips fade-in or fade-out currently in progress, instantly setting it
+		COMMENT to the final state (factor {@code 1.0f} or {@code 0.0f}, depending on the
+		COMMENT effect's duration).
+	METHOD method_56666 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	METHOD method_56667 (Lnet/minecraft/class_6880;Lnet/minecraft/class_1293$class_9195;)Lnet/minecraft/class_1293;
+		ARG 1 parametersx
+	METHOD method_56668 asParameters ()Lnet/minecraft/class_1293$class_9195;
+	METHOD method_58148 createParticle ()Lnet/minecraft/class_2394;
+	METHOD method_58621 onEntityDamage (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;Lnet/minecraft/class_1282;F)V
+		ARG 1 world
+		ARG 2 entity
+		ARG 3 source
+		ARG 4 amount
+	METHOD method_58622 onEntityRemoval (Lnet/minecraft/class_3218;Lnet/minecraft/class_1309;Lnet/minecraft/class_1297$class_5529;)V
+		ARG 1 world
+		ARG 2 entity
+		ARG 3 reason
+	METHOD method_58623 playApplySound (Lnet/minecraft/class_1309;)V
+		ARG 1 entity
+	METHOD method_66227 withScaledDuration (F)Lnet/minecraft/class_1293;
+		ARG 1 durationMultiplier
+	METHOD method_66228 (FI)I
+		ARG 1 duration
+	METHOD method_66229 tickClient ()V
+	METHOD method_66230 tickHiddenEffect ()Z
+	CLASS class_9063 Fading
+		COMMENT Computes the factor (multiplier) for effect fade-in and fade-out.
+		COMMENT
+		COMMENT <p>This is used by {@link StatusEffects#DARKNESS} in vanilla.
+		COMMENT
+		COMMENT @see StatusEffect#fadeTicks(int)
+		COMMENT @see StatusEffect#getFadeInTicks
+		COMMENT @see StatusEffect#getFadeOutTicks
+		FIELD field_47740 factor F
+		FIELD field_47741 lastFactor F
+		METHOD method_55658 copyFrom (Lnet/minecraft/class_1293$class_9063;)V
+			ARG 1 fading
+		METHOD method_55659 skipFading (Lnet/minecraft/class_1293;)V
+			COMMENT Skips fade-in or fade-out currently in progress, instantly setting it
+			COMMENT to the final state (factor {@code 1.0f} or {@code 0.0f}, depending on the
+			COMMENT effect's duration).
+			ARG 1 effect
+		METHOD method_55660 calculate (Lnet/minecraft/class_1309;F)F
+			ARG 1 entity
+			ARG 2 tickProgress
+		METHOD method_55661 update (Lnet/minecraft/class_1293;)V
+			ARG 1 effect
+		METHOD method_66231 shouldFadeIn (Lnet/minecraft/class_1293;)Z
+			ARG 0 effect
+	CLASS class_9195 Parameters
+		FIELD field_48822 CODEC Lcom/mojang/serialization/MapCodec;
+		FIELD field_49208 PACKET_CODEC Lnet/minecraft/class_9139;
+		METHOD method_56669 create (IIZZLjava/util/Optional;Ljava/util/Optional;)Lnet/minecraft/class_1293$class_9195;
+			ARG 0 amplifier
+			ARG 1 duration
+			ARG 2 ambient
+			ARG 3 showParticles
+			ARG 4 showIcon
+			ARG 5 hiddenEffect
+		METHOD method_56670 (Lnet/minecraft/class_1293$class_9195;)Ljava/util/Optional;
+			ARG 0 parameters
+		METHOD method_56671 (Lcom/mojang/serialization/Codec;)Lcom/mojang/serialization/MapCodec;
+			ARG 0 codec
+		METHOD method_56672 (Lcom/mojang/serialization/Codec;Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 1 instance
+		METHOD method_57279 (Lnet/minecraft/class_9139;)Lnet/minecraft/class_9139;
+			ARG 0 packetCodec

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sparkle's Morpher：为 Minecraft 带来可共享的自定义模型、动画与音效。">
+    <meta name="theme-color" content="#a70f27">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Sparkle's Morpher — 花火火的变身器</title>
+    <style>
+      :root {
+        --red: #a70f27;
+        --red-dark: #751020;
+        --red-pale: #f6e9e9;
+        --ink: #2a1a1d;
+        --soft-ink: #725e61;
+        --paper: #fffdfa;
+        --cream: #f7f2eb;
+        --line: #e6d8d4;
+        --shadow: 0 20px 50px rgba(72, 25, 31, .12);
+      }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body { margin: 0; min-width: 320px; color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; background: var(--paper); }
+      a { color: inherit; text-decoration: none; }
+      .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+      .serif { font-family: Georgia, "Times New Roman", "Noto Serif SC", "Songti SC", serif; }
+
+      header { position: sticky; top: 0; z-index: 10; border-bottom: 1px solid transparent; background: rgba(255, 253, 250, .89); transition: border-color .2s, box-shadow .2s; backdrop-filter: blur(14px); }
+      header.scrolled { border-color: var(--line); box-shadow: 0 5px 20px rgba(69, 30, 34, .06); }
+      nav { display: flex; align-items: center; justify-content: space-between; height: 76px; gap: 24px; }
+      .wordmark { display: inline-flex; align-items: center; gap: 11px; color: var(--red-dark); font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; font-weight: bold; letter-spacing: -.035em; }
+      .wordmark img { width: 38px; height: 38px; border: 1px solid #ebd5d7; border-radius: 50%; object-fit: cover; image-rendering: pixelated; }
+      .nav-links { display: flex; align-items: center; gap: 27px; color: #554146; font-size: .89rem; }
+      .nav-links a { transition: color .2s; }
+      .nav-links a:hover { color: var(--red); }
+      .nav-links .sponsor-link { padding: 10px 15px; border: 1px solid var(--red); border-radius: 2px; color: var(--red); font-weight: 700; }
+      .nav-links .sponsor-link:hover { background: var(--red); color: white; }
+      .nav-links .download { padding: 10px 15px; border: 1px solid var(--red); border-radius: 2px; color: var(--red); font-weight: 700; }
+      .nav-links .download:hover { background: var(--red); color: white; }
+
+      .hero { position: relative; overflow: hidden; min-height: 625px; background: var(--cream); }
+      .hero::before { position: absolute; top: 0; bottom: 0; left: calc(50% + 155px); width: 1px; background: #e7d9d5; content: ""; }
+      .hero::after { position: absolute; top: -115px; right: -110px; width: 500px; height: 500px; border: 1px solid rgba(167,15,39,.12); border-radius: 50%; content: ""; }
+      .hero-inner { position: relative; display: grid; grid-template-columns: 1fr .89fr; align-items: center; min-height: 625px; gap: 58px; }
+      .hero-copy { position: relative; z-index: 1; padding: 74px 0; }
+      .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--red); font-size: .73rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+      .eyebrow::before { width: 38px; height: 1px; background: currentColor; content: ""; }
+      h1 { max-width: 620px; margin: 21px 0 22px; color: #351d21; font-size: clamp(3rem, 6vw, 5.65rem); font-weight: 500; line-height: .99; letter-spacing: -.065em; }
+      h1 em { color: var(--red); font-style: italic; }
+      .hero-copy p { max-width: 510px; margin: 0; color: var(--soft-ink); font-size: 1.04rem; line-height: 1.85; }
+      .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+      .button { display: inline-flex; align-items: center; justify-content: center; min-height: 49px; padding: 0 20px; border: 1px solid var(--red); border-radius: 2px; font-size: .9rem; font-weight: 750; transition: transform .2s, background .2s, color .2s, box-shadow .2s; }
+      .button:hover { transform: translateY(-2px); box-shadow: 0 9px 20px rgba(132, 22, 39, .15); }
+      .button.primary { background: var(--red); color: white; }
+      .button.primary:hover { background: var(--red-dark); }
+      .button.ghost { color: var(--red); background: transparent; }
+      .button.ghost:hover { background: white; }
+      .hero-meta { display: flex; gap: 28px; margin-top: 45px; color: var(--soft-ink); font-size: .79rem; }
+      .hero-meta span { display: block; margin-bottom: 4px; color: var(--red); font-family: Georgia, "Times New Roman", serif; font-size: 1.22rem; font-weight: bold; }
+
+      .hero-art { position: relative; z-index: 1; display: grid; place-items: center; min-height: 520px; }
+      .art-frame { position: relative; display: grid; place-items: center; width: min(380px, 76vw); aspect-ratio: 1; border: 1px solid #ddc8c8; background: var(--paper); box-shadow: var(--shadow); }
+      .art-frame::before, .art-frame::after { position: absolute; width: 92%; height: 92%; border: 1px solid #ecdede; content: ""; }
+      .art-frame::after { width: 84%; height: 84%; border-color: rgba(167,15,39,.19); transform: rotate(45deg); }
+      .art-frame img { position: relative; z-index: 1; width: 82%; height: 82%; object-fit: contain; image-rendering: pixelated; }
+      .art-caption { position: absolute; right: -29px; bottom: 40px; z-index: 2; padding: 11px 16px; border-left: 3px solid var(--red); background: var(--paper); box-shadow: 0 10px 24px rgba(57, 22, 27, .11); color: #65484d; font-size: .76rem; line-height: 1.4; }
+      .art-caption strong { display: block; color: var(--red); font-family: Georgia, "Times New Roman", serif; font-size: .98rem; }
+
+      section { padding: 108px 0; }
+      .section-intro { max-width: 640px; margin-bottom: 48px; }
+      .label { color: var(--red); font-size: .73rem; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+      h2 { margin: 14px 0 15px; color: #3a2125; font-size: clamp(2.1rem, 4.1vw, 3.55rem); font-weight: 500; line-height: 1.05; letter-spacing: -.055em; }
+      .section-intro p { margin: 0; color: var(--soft-ink); line-height: 1.8; }
+      .features { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+      .feature { min-height: 252px; padding: 31px 29px 27px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: white; }
+      .feature-number { display: block; margin-bottom: 47px; color: var(--red); font-family: Georgia, "Times New Roman", serif; font-size: 1.15rem; font-style: italic; }
+      .feature h3 { margin: 0 0 10px; color: #3c2529; font-family: Georgia, "Times New Roman", "Noto Serif SC", serif; font-size: 1.26rem; font-weight: 600; }
+      .feature p { margin: 0; color: var(--soft-ink); font-size: .9rem; line-height: 1.72; }
+
+      .story { background: #411d24; color: white; }
+      .story-grid { display: grid; grid-template-columns: .78fr 1.22fr; gap: 82px; align-items: center; }
+      .story .label { color: #f1b9be; }
+      .story h2 { color: #fff9f7; }
+      .story-copy { color: #e6cfd1; line-height: 1.85; }
+      .story-copy p { margin: 0 0 18px; }
+      .story-copy a { border-bottom: 1px solid #e69aa2; color: white; }
+      .support { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.18); }
+      .support-item { padding: 25px; background: rgba(78,32,42,.78); }
+      .support-item small { display: block; margin-bottom: 8px; color: #efb5bb; font-size: .7rem; font-weight: 800; letter-spacing: .13em; }
+      .support-item strong { color: white; font-family: Georgia, "Times New Roman", serif; font-size: 1.17rem; font-weight: 500; }
+
+      .download-area { text-align: center; }
+      .download-area .section-intro { margin: 0 auto 31px; }
+      .download-area .actions { justify-content: center; }
+      .site-icon { display: block; width: 78px; height: 78px; margin: 0 auto 23px; border: 1px solid #e5cfd1; border-radius: 50%; object-fit: cover; image-rendering: pixelated; box-shadow: 0 8px 20px rgba(119,24,38,.12); }
+      footer { border-top: 1px solid var(--line); }
+      .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 82px; color: #89767a; font-size: .79rem; }
+      .footer-inner a { color: var(--red); }
+
+      @media (max-width: 800px) {
+        nav { height: 66px; } .nav-links { gap: 14px; } .nav-links a:not(.download):not(.sponsor-link) { display: none; }
+        .hero::before { display: none; } .hero-inner { grid-template-columns: 1fr; gap: 0; text-align: center; } .hero-copy { padding: 74px 0 28px; } .eyebrow, .actions, .hero-meta { justify-content: center; } .hero-copy p { margin-inline: auto; }
+        .hero-art { min-height: 390px; padding-bottom: 55px; } .art-frame { width: min(315px, 79vw); } .art-caption { right: -2px; bottom: 16px; text-align: left; }
+        section { padding: 78px 0; } .features { grid-template-columns: 1fr; } .feature { min-height: auto; } .feature-number { margin-bottom: 26px; }
+        .story-grid { grid-template-columns: 1fr; gap: 35px; } .footer-inner { flex-direction: column; justify-content: center; padding: 19px 0; text-align: center; }
+      }
+      @media (max-width: 410px) { .wrap { width: min(100% - 28px, 1120px); } .wordmark { font-size: 1rem; } h1 { font-size: 3rem; } .hero-meta { gap: 16px; } .support { grid-template-columns: 1fr; } }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+    </style>
+  </head>
+  <body>
+    <header id="top">
+      <nav class="wrap" aria-label="主导航">
+        <a class="wordmark" href="#top"><img src="assets/sparkle_morpher.png" alt="Sparkle's Morpher 模组图标"><span>Sparkle's Morpher</span></a>
+        <div class="nav-links"><a href="#features">功能</a><a href="#versions">版本</a><a class="sponsor-link" href="sponsor.html">赞助支持</a><a href="https://github.com/sdf123098/Sparkle-Morpher" target="_blank" rel="noreferrer">GitHub</a><a class="download" href="https://www.curseforge.com/minecraft/mc-mods/sparkles-morpher" target="_blank" rel="noreferrer">CurseForge 下载</a></div>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="wrap hero-inner">
+          <div class="hero-copy"><div class="eyebrow">A Minecraft model experience</div><h1 class="serif" id="hero-title">塑造角色，<br><em>留住你的光。</em></h1><p>Sparkle's Morpher 为 Minecraft 带来可共享的自定义模型、动画与音效。每一种外观，都可以成为你在方块世界里的独特署名。</p><div class="actions"><a class="button primary" href="https://www.curseforge.com/minecraft/mc-mods/sparkles-morpher" target="_blank" rel="noreferrer">前往 CurseForge 下载</a><a class="button ghost" href="sponsor.html">赞助支持</a><a class="button ghost" href="https://github.com/sdf123098/Sparkle-Morpher" target="_blank" rel="noreferrer">查看 GitHub 项目</a></div><div class="hero-meta"><div><span>多人可见</span>把形象带入联机世界</div><div><span>自由装载</span>模型、动画与声音</div></div></div>
+          <div class="hero-art"><div class="art-frame"><img src="assets/sparkle_morpher.png" alt="Sparkle's Morpher 模组图标"></div><div class="art-caption"><strong>花火火的变身器</strong>让冒险者拥有自己的样子</div></div>
+        </div>
+      </section>
+      <section class="wrap" id="features" aria-labelledby="features-title"><div class="section-intro"><div class="label">A personal presence</div><h2 class="serif" id="features-title">一位冒险者，不必只有一种模样。</h2><p>从角色模型到表情动作，再到声音细节，创建、收藏并切换属于你的形象。</p></div><div class="features"><article class="feature"><span class="feature-number">I.</span><h3>专属模型</h3><p>导入自定义模型与材质，让角色的每个轮廓都更接近你的想象。</p></article><article class="feature"><span class="feature-number">II.</span><h3>动作与表情</h3><p>以动画转盘快速切换动作，让待机、技能与情绪都有恰当的表达。</p></article><article class="feature"><span class="feature-number">III.</span><h3>声音的细节</h3><p>将音效和语音与模型一同带入游戏，使每个角色真正拥有自己的回响。</p></article></div></section>
+      <section class="story" id="versions" aria-labelledby="versions-title"><div class="wrap story-grid"><div><div class="label">Across your worlds</div><h2 class="serif" id="versions-title">为不同世界，保留同一份风格。</h2></div><div><div class="story-copy"><p>无论选择 Fabric 还是 NeoForge，都可以继续带着自己的角色前行。支持本地文件、文件夹与 URL 导入，并提供模型分组、收藏与服务器同步。</p><p>需要了解开发进展、问题反馈或源码细节？请访问 <a href="https://github.com/sdf123098/Sparkle-Morpher" target="_blank" rel="noreferrer">GitHub 项目页</a>。</p></div><div class="support" role="group" aria-label="支持的加载器与 Minecraft 版本"><div class="support-item"><small>LOADERS</small><strong>Fabric · NeoForge</strong></div><div class="support-item"><small>MINECRAFT</small><strong>1.21.1 · 26.1.2 · 26.2</strong></div></div></div></div></section>
+      <section class="wrap download-area" aria-labelledby="download-title"><img class="site-icon" src="assets/sparkle_morpher.png" alt="Sparkle's Morpher 模组图标"><div class="section-intro"><div class="label">Begin your next form</div><h2 class="serif" id="download-title">让角色，成为冒险的一部分。</h2><p>下载 Sparkle's Morpher，开始制作并分享属于你的 Minecraft 形象。</p></div><div class="actions"><a class="button primary" href="https://www.curseforge.com/minecraft/mc-mods/sparkles-morpher" target="_blank" rel="noreferrer">在 CurseForge 获取模组</a><a class="button ghost" href="https://github.com/sdf123098/Sparkle-Morpher" target="_blank" rel="noreferrer">浏览源码</a></div></section>
+    </main>
+    <footer><div class="wrap footer-inner"><span>© 2026 Sparkle's Morpher · MIT License</span><span><a href="sponsor.html">赞助</a> · <a href="https://github.com/sdf123098/Sparkle-Morpher" target="_blank" rel="noreferrer">GitHub</a> · <a href="https://www.curseforge.com/minecraft/mc-mods/sparkles-morpher" target="_blank" rel="noreferrer">CurseForge</a></span></div></footer>
+    <script>const header=document.querySelector('header');addEventListener('scroll',()=>header.classList.toggle('scrolled',scrollY>6),{passive:true});</script>
+  </body>
+</html>

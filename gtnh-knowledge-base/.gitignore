@@ -1,0 +1,16 @@
+# 生成物：可由本包数据重建，不入库
+kb/data/index.pkl
+kbweb/data/
+wiki-html/
+assets/
+i18n/
+
+# Python
+__pycache__/
+*.pyc
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

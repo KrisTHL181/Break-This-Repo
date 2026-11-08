@@ -1,0 +1,16 @@
+type: embed
+
+colour: fabric
+embed:
+    title: Reporting a Yarn bug
+
+---
+
+If you've encountered a misleading or incorrect mapping in a recent version of Yarn, please report it to [the issue tracker](https://github.com/FabricMC/yarn/issues/new).
+
+Please provide the following information in your bug report:
+
+• The incorrect mapping itself
+• Why the mapping is incorrect
+• The version of Yarn you are using
+• Relevant code snippets, if any

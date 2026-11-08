@@ -1,0 +1,6 @@
+CLASS net/minecraft/class_3571 net/minecraft/datafixer/fix/BlockEntityIdFix
+	FIELD field_15824 RENAMED_BLOCK_ENTITIES Ljava/util/Map;
+	METHOD method_15575 (Ljava/util/HashMap;)V
+		ARG 0 map
+	METHOD method_15577 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 oldName

@@ -1,0 +1,104 @@
+CLASS net/minecraft/class_3193 net/minecraft/server/world/ChunkHolder
+	FIELD field_13862 level I
+	FIELD field_13863 lightingProvider Lnet/minecraft/class_3568;
+	FIELD field_13865 entityTickingFuture Ljava/util/concurrent/CompletableFuture;
+	FIELD field_13870 skyLightUpdateBits Ljava/util/BitSet;
+	FIELD field_13871 blockLightUpdateBits Ljava/util/BitSet;
+	FIELD field_16427 UNLOADED_WORLD_CHUNK Lnet/minecraft/class_9259;
+	FIELD field_16429 UNLOADED_WORLD_CHUNK_FUTURE Ljava/util/concurrent/CompletableFuture;
+	FIELD field_16431 accessibleFuture Ljava/util/concurrent/CompletableFuture;
+	FIELD field_16432 lastTickLevel I
+	FIELD field_17208 completedLevel I
+	FIELD field_17209 levelUpdateListener Lnet/minecraft/class_3193$class_3896;
+	FIELD field_17210 playersWatchingChunkProvider Lnet/minecraft/class_3193$class_3897;
+	FIELD field_19238 accessible Z
+	FIELD field_19333 tickingFuture Ljava/util/concurrent/CompletableFuture;
+	FIELD field_25803 pendingBlockUpdates Z
+		COMMENT Indicates that {@link #blockUpdatesBySection} contains at least one entry.
+	FIELD field_25804 blockUpdatesBySection [Lit/unimi/dsi/fastutil/shorts/ShortSet;
+		COMMENT Contains the packed chunk-local positions that have been marked for update
+		COMMENT by {@link #markForBlockUpdate}, grouped by their vertical chunk section.
+		COMMENT <p>
+		COMMENT Entries for a section are null if the section has no positions marked for update.
+	FIELD field_26929 world Lnet/minecraft/class_5539;
+	FIELD field_26930 levelIncreaseFuture Ljava/util/concurrent/CompletableFuture;
+	FIELD field_46085 postProcessingFuture Ljava/util/concurrent/CompletableFuture;
+	FIELD field_51858 savingFuture Ljava/util/concurrent/CompletableFuture;
+	METHOD <init> (Lnet/minecraft/class_1923;ILnet/minecraft/class_5539;Lnet/minecraft/class_3568;Lnet/minecraft/class_3193$class_3896;Lnet/minecraft/class_3193$class_3897;)V
+		ARG 1 pos
+		ARG 2 level
+		ARG 3 world
+		ARG 4 lightingProvider
+		ARG 5 levelUpdateListener
+		ARG 6 playersWatchingChunkProvider
+	METHOD method_13992 sendPacketToPlayers (Ljava/util/List;Lnet/minecraft/class_2596;)V
+		ARG 1 players
+		ARG 2 packet
+	METHOD method_13996 (Lnet/minecraft/class_2596;Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_14000 getSavingFuture ()Ljava/util/concurrent/CompletableFuture;
+	METHOD method_14002 markForBlockUpdate (Lnet/minecraft/class_2338;)Z
+		ARG 1 pos
+	METHOD method_14003 getEntityTickingFuture ()Ljava/util/concurrent/CompletableFuture;
+	METHOD method_14006 flushUpdates (Lnet/minecraft/class_2818;)V
+		ARG 1 chunk
+	METHOD method_14007 updateFutures (Lnet/minecraft/class_3898;Ljava/util/concurrent/Executor;)V
+		COMMENT Updates {@code Futures} indicating the expected loading state of the underlying chunk of this {@code ChunkHolder}.
+		COMMENT Note that the method merely makes actual loading process possible, but do not perform these actions.
+		ARG 1 chunkLoadingManager
+		ARG 2 executor
+	METHOD method_14009 sendBlockEntityUpdatePacket (Ljava/util/List;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;)V
+		ARG 1 players
+		ARG 2 world
+		ARG 3 pos
+	METHOD method_14012 markForLightUpdate (Lnet/minecraft/class_1944;I)Z
+		ARG 1 lightType
+		ARG 2 y
+			COMMENT chunk section y coordinate
+	METHOD method_15890 setLevel (I)V
+		ARG 1 level
+	METHOD method_16144 getWorldChunk ()Lnet/minecraft/class_2818;
+	METHOD method_16145 getTickingFuture ()Ljava/util/concurrent/CompletableFuture;
+	METHOD method_17207 setCompletedLevel (I)V
+		ARG 1 level
+	METHOD method_20384 isAccessible ()Z
+	METHOD method_20385 updateAccessibleStatus ()V
+	METHOD method_20725 getAccessibleFuture ()Ljava/util/concurrent/CompletableFuture;
+	METHOD method_30311 tryUpdateBlockEntityAt (Ljava/util/List;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 players
+		ARG 2 world
+		ARG 3 pos
+		ARG 4 state
+	METHOD method_30312 (Ljava/util/List;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 3 pos
+		ARG 4 state
+	METHOD method_31408 decreaseLevel (Lnet/minecraft/class_3898;Lnet/minecraft/class_3194;)V
+		ARG 1 chunkLoadingManager
+		ARG 2 target
+	METHOD method_31409 increaseLevel (Lnet/minecraft/class_3898;Ljava/util/concurrent/CompletableFuture;Ljava/util/concurrent/Executor;Lnet/minecraft/class_3194;)V
+		ARG 1 chunkLoadingManager
+		ARG 2 chunkFuture
+		ARG 3 executor
+		ARG 4 target
+	METHOD method_31410 (Ljava/util/concurrent/CompletableFuture;Lnet/minecraft/class_2818;)V
+		ARG 1 chunk
+	METHOD method_39966 (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+		ARG 1 thenResult
+	METHOD method_53680 combinePostProcessingFuture (Ljava/util/concurrent/CompletableFuture;)V
+		ARG 1 postProcessingFuture
+	METHOD method_53681 getPostProcessingFuture ()Ljava/util/concurrent/CompletableFuture;
+	METHOD method_53682 getPostProcessedChunk ()Lnet/minecraft/class_2818;
+	METHOD method_57117 (Ljava/util/concurrent/CompletableFuture;Lnet/minecraft/class_9259;)V
+		ARG 1 optionalChunk
+	METHOD method_60436 isSavable ()Z
+	METHOD method_65077 hasPendingUpdates ()Z
+	CLASS class_3896 LevelUpdateListener
+		METHOD method_17209 updateLevel (Lnet/minecraft/class_1923;Ljava/util/function/IntSupplier;ILjava/util/function/IntConsumer;)V
+			ARG 1 pos
+			ARG 2 levelGetter
+			ARG 3 targetLevel
+			ARG 4 levelSetter
+	CLASS class_3897 PlayersWatchingChunkProvider
+		METHOD method_17210 getPlayersWatchingChunk (Lnet/minecraft/class_1923;Z)Ljava/util/List;
+			ARG 1 chunkPos
+			ARG 2 onlyOnWatchDistanceEdge

@@ -1,0 +1,7 @@
+type: text
+
+---
+
+If you're getting `NoClassDefFoundError: io/netty/util/ResourceLeakDetector$Level` when running your project:
+  1. update to Loom 12 (usually declared in `build.gradle`)
+  2. run gradle with `--refresh-dependencies`

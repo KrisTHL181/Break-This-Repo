@@ -1,0 +1,5 @@
+You found the hidden document.
+
+The leading dot is intentional. It tests whether repository browsers and
+development tools show hidden paths consistently. This is plain text only; it
+does not configure ignore rules or hide any real data.

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="210mm" height="297mm" viewBox="0 0 595.32 841.92" role="img" aria-labelledby="title desc">
+  <title id="title">关于文明如厕的倡议书</title>
+  <desc id="desc">依据原始 PDF 版式重制的可搜索矢量版本，保留上下两份倒置拼版、蓝色提示、黄色高亮、红色警示及右侧圆角提示框。</desc>
+  <rect width="100%" height="100%" fill="#fff"/>
+  <defs>
+    <g id="copy">
+      <text x="319.06" y="52.3" text-anchor="middle" font-family="Microsoft YaHei, Microsoft YaHei UI, Noto Sans CJK SC, sans-serif" font-size="18" font-weight="700" fill="#000">关于文明如厕的倡议书</text>
+
+      <g font-family="DengXian, Microsoft YaHei UI, Noto Sans CJK SC, sans-serif" font-size="14.04" fill="#000">
+        <text x="67.70" y="81.8">目前，由于各种原因，许多同学喜欢在大便坑中小便，在此问题无法得到根本</text>
+        <text x="39.60" y="100.8">解决之前，我们向如厕的同学提出以下倡议：</text>
+
+        <text x="39.60" y="125.8">(1) 人流量少时（午休时）就在小便池解决，给需要大便的同学安静、卫生的环境。</text>
+
+        <text x="39.60" y="150.8">(2) 在坑中小便时，</text>
+        <rect x="158.07" y="136.44" width="72" height="18" fill="none" stroke="#00B050" stroke-width="2"/>
+        <text x="158.90" y="150.8" fill="#0070C0">尽量往后站</text>
+        <text x="229.01" y="150.8">，不要把尿溅到各个档之间的挡板上。</text>
+
+        <text x="67.70" y="175.8">（或者</text>
+        <rect x="110.22" y="160.44" width="42.75" height="19.5" fill="#FFFF00"/>
+        <text x="111.0" y="175.8">侧着站</text>
+        <text x="153.30" y="175.8">，宁可溅墙不可溅人 ）</text>
+
+        <text x="39.60" y="200.8">(3) 等待在大便坑小便的同学站成一条队，便于需要直接小便池如厕的同学使用，节</text>
+        <text x="60.86" y="219.8">省时间。戴好口罩，不交头接耳。</text>
+
+        <text x="67.70" y="244.8">挡板上的尿液有如下危害：</text>
+        <text x="67.70" y="269.8">(1)尿往下滴，不美观，影响校园形象；</text>
+        <text x="67.70" y="294.8">(2)长期粘附，不卫生，容易滋生细菌；</text>
+        <text x="67.70" y="319.8" fill="#FF0000">(3)容易将液体溅到正在大便中的人的身上。</text>
+
+        <text x="67.70" y="344.8">同学们，美好的校园环境需要大家共同维护。美好校园为大家，美好校园靠大</text>
+        <text x="39.60" y="363.8">家，让我们从文明如厕做起，共同做文明</text>
+        <text x="322.30" y="363.8">人！</text>
+
+        <text x="453.94" y="388.8">        市        中学</text>
+        <text x="458.62" y="413.8">202  年   月    日</text>
+      </g>
+
+      <rect x="358.47" y="207.69" width="150.75" height="118.20" rx="19.70" ry="19.70" fill="#fff" stroke="#000" stroke-width="2"/>
+      <g font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="10.56" font-weight="700" fill="#000">
+        <text x="365.95" y="224.6">请文明如厕　尽量不在此小便</text>
+        <text x="365.95" y="243.8">若在此小便　稍微往后站一点</text>
+        <text x="365.95" y="262.9">拉尿的时候　别把尿溅到墙上</text>
+        <text x="365.95" y="282.1">内急请注意　别撒到别人屁股</text>
+        <text x="365.95" y="301.3">多换位思考　给蹲坑人以安全</text>
+        <text x="365.95" y="320.4">大家都遵守　文明卫生还省时</text>
+      </g>
+    </g>
+  </defs>
+
+  <use href="#copy"/>
+  <use href="#copy" transform="rotate(180 297.66 420.96)"/>
+</svg>

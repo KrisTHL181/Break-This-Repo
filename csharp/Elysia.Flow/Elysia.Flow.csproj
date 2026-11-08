@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Elysia.Flow</AssemblyName>
+    <RootNamespace>Elysia.Flow</RootNamespace>
+    <Description>Async streaming: IAsyncEnumerable, bounded Channels, ValueTask fast paths, cooperative cancellation.</Description>
+  </PropertyGroup>
+
+  <!--
+    No PackageReference on purpose.
+
+    System.Threading.Channels ships inside the shared framework (Microsoft.NETCore.App),
+    so the bounded pipeline below costs exactly zero restore work and zero third-party
+    dependencies. The equivalent Java story is a reactive library on the classpath; the
+    equivalent Rust story is tokio + tokio-stream + futures, i.e. a runtime *and* a
+    combinator crate, and the combinator crate is not in std.
+  -->
+
+</Project>

@@ -1,0 +1,7 @@
+type: text
+
+---
+
+JMX (or json model extensions) is an api that allows you to add more features to the vanilla json models, and is compatible with canvas allowing for bloom and other effects. 
+
+https://github.com/vram-guild/json-model-extensions

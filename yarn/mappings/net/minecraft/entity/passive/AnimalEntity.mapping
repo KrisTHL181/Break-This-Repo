@@ -1,0 +1,38 @@
+CLASS net/minecraft/class_1429 net/minecraft/entity/passive/AnimalEntity
+	FIELD field_6744 lovingPlayer Lnet/minecraft/class_10583;
+	FIELD field_6745 loveTicks I
+	FIELD field_30270 BREEDING_COOLDOWN I
+	FIELD field_57599 DEFAULT_LOVE_TICKS I
+	METHOD method_6474 canBreedWith (Lnet/minecraft/class_1429;)Z
+		ARG 1 other
+	METHOD method_6476 setLoveTicks (I)V
+		ARG 1 loveTicks
+	METHOD method_6477 resetLoveTicks ()V
+	METHOD method_6478 getLovingPlayer ()Lnet/minecraft/class_3222;
+	METHOD method_6479 isInLove ()Z
+	METHOD method_6480 lovePlayer (Lnet/minecraft/class_1657;)V
+		ARG 1 player
+	METHOD method_6481 isBreedingItem (Lnet/minecraft/class_1799;)Z
+		ARG 1 stack
+	METHOD method_6482 canEat ()Z
+	METHOD method_20663 isValidNaturalSpawn (Lnet/minecraft/class_1299;Lnet/minecraft/class_1936;Lnet/minecraft/class_3730;Lnet/minecraft/class_2338;Lnet/minecraft/class_5819;)Z
+		ARG 0 type
+		ARG 1 world
+		ARG 2 spawnReason
+		ARG 3 pos
+		ARG 4 random
+	METHOD method_24650 breed (Lnet/minecraft/class_3218;Lnet/minecraft/class_1429;)V
+		ARG 1 world
+		ARG 2 other
+	METHOD method_29270 getLoveTicks ()I
+	METHOD method_39448 isLightLevelValidForNaturalSpawn (Lnet/minecraft/class_1920;Lnet/minecraft/class_2338;)Z
+		ARG 0 world
+		ARG 1 pos
+	METHOD method_49794 breed (Lnet/minecraft/class_3218;Lnet/minecraft/class_1429;Lnet/minecraft/class_1296;)V
+		ARG 1 world
+		ARG 2 other
+		ARG 3 baby
+	METHOD method_49795 (Lnet/minecraft/class_1429;Lnet/minecraft/class_1296;Lnet/minecraft/class_3222;)V
+		ARG 3 player
+	METHOD method_61457 createAnimalAttributes ()Lnet/minecraft/class_5132$class_5133;
+	METHOD method_61458 playEatSound ()V

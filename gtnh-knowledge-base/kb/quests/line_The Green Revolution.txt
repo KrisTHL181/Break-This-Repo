@@ -1,0 +1,813 @@
+# 任务线: The Green Revolution
+### [-7328065676341450717] Acacia Bonsai
+Easy acacia wood!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-8102572719313281434] A Knightly Snack
+Tired of raiding all those dungeons for your armor shards? Use these!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockmetal4
+
+### [-7140032311327849799] Aluminium Berries
+Maybe this will stop you from tearing down entire mesas worth of terracotta.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:19 x8
+
+### [1800] A Proposal?!
+Need to impress a lady or gent? How about growing diamonds on reeds...
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 x2 | gregtech:gt.blockores2:500 x16
+
+### [-8043747193160963068] Ardite Berries
+Ardite oreberries!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:382 x8
+
+### [-6992648934799322327] Argentia
+A great source of silver.  Argentia leaves will 4x your silver ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:54 x16
+
+### [-4631197653832881856] A Summary of Crossbreeding
+When crops breed, the resulting stats are the average of the parents' stats plus a random value between -2 and 4.  Essentially, the variation in stats is a fixed (-2 -> +4). If all parents have fertilizer in them, stat loss is prevented in all cases (0 -> 4).   Deterministic breeding is similar to how bees work, where you must bring the right species together. Some situations require more than two parents.  [note]Advanced crops (§5MV§r and above materials) will require the breeding machine.[/note]  Most crops will also have access to breeding pools. Breeding pools are like a set of tags associated with each crop. When breeding, if none of the parents produce a deterministic mutation, but some share one or more breeding pools, a random mutation may occur. The resulting offspring will always be a species tagged with one of the shared pools.  [note]Once you've obtained your first 31/31/31 seed, it can be helpful to use these random pool mutations to collect many different types of crops.[/note]
+  - [勾选确认]
+
+### [-7372928745863888730] Auronia
+A great source of gold.  Auronia leaves will 4x your gold ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:86 x16
+
+### [1542] Babies First Harvest Automaton
+The Crop Manager is a single-block machine that will monitor crops in an area around itself and automatically apply fertilizer (fluid or item), Weed-EX, and water as needed. The water, fertilizer, and Weed-Ex can be pumped in directly, or use IC2 Universal water cells, normal cells aren't returned when they're used.  Just like any other single block machine, Crop Managers are NOT rainproof, but you can cover them with a water source block just fine!  Tilled dirt still requires a nearby water block to be hydrated as the Manager will only water the crop, not the soil. Try putting a lily pad on top so it isn't annoying to walk on.
+  - [可选提交] gregtech:gt.blockmachines:50, gregtech:gt.blockmachines:11, gregtech:gt.metaitem.01:17305 x2, gregtech:gt.metaitem.01:32650 x2, gregtech:gt.metaitem.01:32690, gregtech:gt.blockmachines:1246 x2
+  - [提交] gregtech:gt.blockmachines:28001, gregtech:gt.blockmachines:28002
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x30 | dreamcraft:CoinFarmer x30
+
+### [-8104884875696713099] Bamboo "Bonsai"
+I mean, it's technically a grass, but close enough.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-6304584555687571745] Basalt Lilies
+Basalt dust, as with Granite dusts, has lots of minerals within it. In this case, note the large amount of flint dust which for your glass needs.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-8052354536896412020] Basic Lilies
+These Liliums aren't the most useful, but if you're wanting to build with say Tuff or Andesite this should ease your search for resources somewhat.  Remember that these crops can only be bred when their environmental requirements are met. In this case, use those stones from before as your sub-soil.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-7282032669849766963] Bauxia
+A great source of bauxite.  Bauxia leaves will 4x your aluminum ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:822 x16
+
+### [725] Becoming a Florist
+Time to get in touch with your inner florist, arrange these flowers well and they will help you breed more useful species!  [note]If you actually want these for dyes, go make the rainbow cactus instead.[/note]
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [1949] Better Put On That Rubber Suit
+Troll plant! What does it do? Troll you!    And give you cancer. Sorry!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | bartworks:gt.bwMetaGenerateddust:10035
+
+### [-4783772834963964792] Birch Bonsai
+Easy birch wood!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [1799] Blazes Too Hard to Kill?
+Then grow some Blazereed to save yourself the trouble.
+  - [提交] cropsnh:genericSeed
+  > 奖励: bq_standard:choice | enhancedlootbags:lootbag:51 | dreamcraft:CoinFarmerI x5
+
+### [-6640373965889455709] Breeding With Technology
+The Crop Breeder is a single-block machine that allows you to breed new crops deterministically. It will consume the parent seeds, some §2Enriched Fertilizer§r and a catalyst item for material-based crops.  The stats of an offspring created by the breeder will always be the rounded down average of seeds that were consumed to create it. [note]Breeding two or more maxed-out crops will always give a maxed-out offspring.[/note]  The §2Enriched Fertilizer§r cost is 144L per tier of the offspring crop + 72L for each stat point on the new seed. So a 31/31/31 tier 5 offspring would cost roughly 7.4KL to breed.  Some crops require a minimum machine tier to be bred: - Iridine, Osmianth and Stargatium are all §5IV§r recipes - Titania is §5EV§r - Bauxia is §5MV§r - An §5HV§r machine is required to breed 31/31/31  [note]Success chance starts at 40% and increases by 10% for every tier past §5LV§r, meaning that at §5ZPM§r, it's guaranteed. A failed breed will void the parent seeds used.[/note]  As a final note: when two crops share breeding requirements (ie Tearstalks and Evil Ore), be careful to insert the seeds in the proper order as to not trigger the mutation with fewer parents.  §r§oYou only need one of the machines for this quest.
+  - [提交] gregtech:gt.blockmachines:28025, gregtech:gt.blockmachines:28026, gregtech:gt.blockmachines:28027, gregtech:gt.blockmachines:28028, gregtech:gt.blockmachines:28029
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmerI x8 | dreamcraft:CoinTechnicianI x6
+
+### [-8930386809519358871] Cacti
+Surely you will be the one to reach Stargate on cactus power, surely.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-7745473970651262794] Caffeine
+I promise you won't be dissapointed, so try some coffee. Yes, more than one at a time.  [warn]Just, don't drink too much[/warn]
+  - [提交] cropsnh:mug, cropsnh:genericSeed
+  > 奖励: cropsnh:mug:3 x6 | enhancedlootbags:lootbag:28
+
+### [-8613513165363217437] Carrot Stock
+Now that you've stolen the food from your harmless neighbors, or found it in nature like a considerate person, you must now plant these carrots onto crop sticks. Wait until the crop is §3fully grown§r and left-click it for the best chance to obtain the seeds.  No, the undomesticated Wild Carrot won't work. What are you, a rabbit?
+  - [提交] cropsnh:genericSeed
+  > 奖励: cropsnh:fertilizer x8 | minecraft:red_flower:5
+
+### [-8293900210563685041] Cindering Pearls
+Cinderpearls make for a good source of blaze powder.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockgem3:5
+
+### [-6758463176381943518] Clay Lilies
+These should help with building more BBFs, your local riverbeds and riparian zones will thank you.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-8580846703989165113] Cobalt Berries
+Too blue blueberries. Probably wouldn't want to eat these.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:33 x8
+
+### [-6490422473091123453] Controlled Breeding
+With your Stone Lily in hand, get ready to breed all the other species of §oLilliums§r! You can use deterministic breeding of course, but with pools and some undersoil management it shouldn't take too long at all.  Remember that whether by pools or determinism, new crops will only be produced if the environment of the relevant double crop sticks matches the required environment of the new crop.
+  - [提交] minecraft:stone, chisel:andesite, chisel:diorite, etfuturum:tuff, etfuturum:deepslate
+  - [提交] minecraft:cobblestone x64
+  > 奖励: dreamcraft:CoinFarmer x16
+
+### [-7225943873443082236] Copper Berries
+Copper oreberries!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockores2:35 x8
+
+### [-7693300146585122775] Coppon
+Coppon fiber, while it won't make a nice sweater, it will 4x your copper ore. It can also be processed directly to copper dust.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:35 x16
+
+### [1808] Cover Crops? Who Needs Those?
+This crop can produce its own fertilizer! Alongside other byproducts, making it one of the best crops to get statted up early. Once you have infinite fertilizer, breeding for stats gets a lot easier.
+  - [提交] cropsnh:genericSeed
+  > 奖励: cropsnh:fertilizer x256 | enhancedlootbags:lootbag:51
+
+### [2048] Creeping Climbers
+Here are a few crops to spice up your solarpunk base, or help you climb up a treehouse.  No thousand block treck to the nearest Temperate Rainforest required here!
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-5649529308977957755] Crop Nutrients
+The speed at which a crop grows is based on its Nutrient Score. There are a number of different ways to obtain Nutrient Points for your crops, but to keep your crops from getting sick try to make sure they are always receiving at least a couple of the below bonuses:  §l- +10 Points§r can be gained from having water in your crop sticks (scales 1-10 based on hydration level). §l- +10 Points§r can be gained from having fertilizer in your crop sticks (scales 1-10 based on fertilizer level). §l- +2 Points§r can be gained from allowing the crop to see the sky.        - Crops in the Industrial Farm will always have this bonus. §l- +28 Points§r can be gained from preferred biome tags        - [warn]If no preferred tags are found[/warn], high humidity will §rgive up to §l+14 Points.§r         - See more on this in the Environmental Preferences quest.  All crops have a base Nutrient Score of 5.  You can check the Nutrient Score of a crop by using a Portable Scanner on any crop sticks or Industrial Farm controller, even if it's empty.  Crop tier determines the Nutrient Score requirements for growth.  The following cutoffs apply:  §lTier 4 §r- Last tier where crops can be planted anywhere  §lTier 5 §r- Last tier where crops can be planted anywhere as long as they can see the sky  §lTier 11 §r- Last tier where crop can be anywhere as long as crops are in an 80%+ humidity biome  §lTier 12 §r- Last tier where crops can be anywhere as long as crops are in a 80%+ humidity biome and can see the sky
+  - [勾选确认]
+
+### [2770] Crop Stats
+A key part of CropsNH is improving the stats of your crops. There is always a chance for this to occur whenever a new crop grows - whether by self propagation or crossing...  §lGrowth§r: §2Improves growth speed§r - Increases the number of progress points per growth tick by up to about 525% with some variation depending on the tier of the crop. §4Can cause weeds to spawn§r - When growth is above 23 (or 7 for Necrobloom), crops will begin spreading weeds and diseases to nearby crops. - You can prevent this by either using Weed-EX or by increasing the resistance stat so it's equal to or above the growth stat.  §lGain§r: §2Improves harvest size§r - Up to 2.5x per harvest at 31 gain. - Has a gain/100 chance of increasing the stack size of any drop by 1.  §lResistance§r: §2Improves seed harvest chances§r - A resistance of 10 will guarantee a seed drop when harvesting a mature crop with a reinforced spade. - This scales by rate of resistance/10:   - 20: 2 seeds   - 25: 2 seeds + 50% chance for a 3rd   - 31: 3 seeds + 10% chance for a 4th - A resistance of 31 will guarantee a seed drop even without a spade. §2Increases weed resistance§r - When a crop's growth is above 23, resistance will prevent weed spreading as long as it's greater than or equal to the growth stat. §2Improves a crop's resistance to diseases§r - Each point reduces a crop's chance of becoming infected. - With 31 resistance, crops are immune to diseases. §2This includes sickness from lack of Nutrient Score, however, the crop still will not grow without the necessary nutrient level being reached. 
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-7881005862838025770] Crop Sticks
+To do anything in CropsNH, you first need crop sticks. These will act as the supports for your plants to grow upon. Empty crop sticks can be doubled by right-clicking another crop stick onto them. These double-crop sticks allow you to breed any adjacent mature crops.  As new species grow on your crop sticks, you can harvest them by right-clicking, which won't remove the seed. Left-clicking harvests the crop and removes it, potentially dropping a seed depending on the resistance. Spades will help you improve your chances of obtaining seeds when you do this, as will the Resistance trait.  §r§r[note]§l§r§lThe chance to drop a seed from any crop §nwithout a spade§r§l is measured as resistance/31. §rSo crops with a maxed resistance stat will always drop a seed when broken.§r[/note]  [warn]Note in NEI the varying types of soil, sub-soil, and environmental requirements for different crops![/warn]  §oIf you're already an experienced farmhand, collect a single stonelily seed and I'll let you skip subsequent introductory trainings for now.
+  - [提交] cropsnh:cropSticks x32
+  > 奖励: bq_standard:choice
+
+### [-8779930429156243358] Crops to Mobs
+Save your serverhost a headache, crop a mob!... Mob a crop?  Or don't, I'm not your parent.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-8591089507591247492] Dark Oak Bonsai
+Easy dark oak wood!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [2265] Deep Blue Sea of Sapphires
+You'll need a block of Sapphire beneath these beauties to get them to maturity. They can be a good source of aluminium and oxygen in late LV once you've gotten your first EBF but there are better options...
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:503 x16
+
+### [-5111650797641982357] Don't Forget Your Veggies
+Have you eaten your veggies today? That's what I thought.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | harvestcraft:mixedsaladItem x3
+
+### [-8021557892290272573] Enderbloom
+As soon as you've got some endstone to grow it above, Enderblooms can be a great source for passive Nitrogen.  [note]If you're wondering how to get this crop through deterministic mutations, (as End Stone Lily also requires Enderbloom to breed deterministically) consider taking a look at the End Stone Lily quest for a quick primer on quasi-deterministic breeding through random pools.[/note]
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | EnderIO:blockEndermanSkull
+
+### [-8913563967345830799] End Stone Lilies
+Once you can actually get your hands on some endstone, these babies will allow for a §olot §o§rof high level passive material production.  Since Enderbloom requires End Stone Lily to be bred deterministically and End Stone Lily requires Enderbloom for its deterministic mutation, you'll need to use your mastery of the mutation pools to obtain either of them.  [note]Tip #1: If you're lost and don't know what to do, remember that you can trigger pool mutation even when breeding 2 crops of the same species together.[/note]  [note]Tip #2: Also remember that crops require all their growth requirements to be met in order to breed, even when breeding via mutation pools.[/note]  [note]Tip #3: This requirement can actually be used to filter the outcome of a pool mutation so that only a subset of them may appear. Though this doesn't actually reduce number of crops that can be picked from the pools shared by the parents. (and therefore doesn't directly increase your chance of getting what you want).§r[/note]  [note]Tip #4: If you want to properly increase your chance of getting something through mutation pools, try lowering the number of shared pools between the parents.[/note]
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59
+
+### [-8623991914351216440] Enriched Fertilizer
+§2Enriched fertilizer§r allows you to advance to the next stage of crop technology!   It is used in countless ways moving forward, for example:  - Apply it to your crops for more efficient fertilization. - Used to breed novel crops in the §dCrop Breeder§r. - Used to replicate seeds in the §dSeed Generator§r.  §2Enriched Fertilizer§r is 10 times more potent than regular Fertilizer when applied.  - With a §dCrop Manager§r, a single unit of fluid adds 10 fertilizer units to the machine's internal storage. - With an §dIndustrial Farm§r, you only need to provide 1/10th of the amount indicated on the tooltips. (Except when using a Fertilization Unit.)  It will always be superior to the item based Fertilizers of the past, so moving forward you should be using it whenever possible.  When using the §dCrop Breeder§r or §dSeed Generator§r, the §2Enriched Fertilizer§r recipe costs scale with the stats of the resulting seeds. [warn]Keep this in mind as early tier machines all have a lower than usual fluid capacity.[/warn] You'll need at least §5HV§r machines in order to create maxed seeds. By default NEI shows you the costs for a maxed seed, so keep this in mind when looking up recipes.
+  - [提交] cropsnh:enrichedFertilizerCell x8
+  > 奖励: Botania:fertilizer x16 | Forestry:fertilizerCompound x16 | cropsnh:fertilizer x16
+
+### [-8567606770791078099] Environmental Preferences
+Each crop has a set of preferred biome tags. These can be viewed in NEI along with the other growth requirements.  Having the proper biome tags will provide a significant Nutrient Point boost to your crops (§l+14 Points§r per tag).  You can only benefit from up to 2 biome tags (§l+28 Points§r).  It is possible to emulate a single preferred biome tag by planting your crops in a high-humidity location. The bonus scales linearly with humidity between 50% and 80%. Values below 50% provide no bonus, while values above 80% will hit the cap at an equivalent of 1 preferred biome tag (§l+14 Points).  §l§rIf any favored biome tag is present in the current biome, the high humidity bonus will be ignored.   §4§n§n§r§4The Nature's Compass will allow you to view the tags of each biome as subtext within its menu. Sorting biomes by tags is the simplest method.
+  - [勾选确认]
+
+### [-8399621369076699016] Environmental Upgrades
+These modules each simulate a single favored biome tag for the crops in your IF.
+  - [勾选确认]
+  - [可选提交] cropsnh:environmentalModule:18, cropsnh:environmentalModule:17, cropsnh:environmentalModule:20, cropsnh:environmentalModule:19, cropsnh:environmentalModule:7, cropsnh:environmentalModule:15, cropsnh:environmentalModule:16, cropsnh:environmentalModule:4, cropsnh:environmentalModule:8, cropsnh:environmentalModule:6, cropsnh:environmentalModule:13, cropsnh:environmentalModule:21, cropsnh:environmentalModule:11, cropsnh:environmentalModule:28, cropsnh:environmentalModule:27, cropsnh:environmentalModule:9, cropsnh:environmentalModule:10, cropsnh:environmentalModule:12, cropsnh:environmentalModule:14, cropsnh:environmentalModule:1, cropsnh:environmentalModule:2, cropsnh:environmentalModule:3, cropsnh:environmentalModule:5, cropsnh:environmentalModule:22, cropsnh:environmentalModule:24, cropsnh:environmentalModule:25, cropsnh:environmentalModule:23, cropsnh:environmentalModule:26
+
+### [-4647782313926468003] Evil...
+While it can't produce certus quartz crystals, it will give you plenty of the relevant nether crystal dusts as well as straight nether quartz.  §2Only needs netherrack soil, no sub-soil necessary here.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:netherrack x16
+
+### [-4703713609563940543] Evil Berries
+Why you would want to grow these eludes me, but sure: go for it!
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [1932] Explosive Growth
+Creeperweed can supply your gunpowder without needing to deal with bothersome explosions.
+  - [提交] cropsnh:genericSeed
+  > 奖励: minecraft:gunpowder x16 | enhancedlootbags:lootbag:51
+
+### [-8754285803236338546] Farming the Graveyard
+While surveying species in the wild, you found some unique sproutlings reaching from a corpse. I wonder what these will provide.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | TConstruct:CraftedSoil:3 x4
+
+### [1603] Feeling a Little Like a Noob?
+You should grow some essence berries to level up!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-5632891840085144549] Ferrofern
+A great source of iron.  Ferrofern leaves will 4x your iron ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:32 x16
+
+### [-7731912212106168781] Fish Oil Supplement
+Just make sure you put in ear-plugs first. These guys can be surprisingly useful if you know what to do with them.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:fish:3
+
+### [-7053636352513754868] Flower Power!
+It's time to collect them all~!  Well, all 12 different basic flowers.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: bq_standard:choice | enhancedlootbags:lootbag:51 x2
+
+### [-8933080890065003588] Free Torches!
+The Torchberry!  Does it make sense?  Not at all!   Is it helpful?  Certainly!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:glowstone_dust x8
+
+### [-5815279763353499952] Galvania
+A great source of zinc.  Galvania leaves will 4x your zinc ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:36 x16
+
+### [-8748016081769452107] Gem Crops
+These crops crystalize and produce their related crystals and dusts straight from the soil.  §4Most of these crops will need a sub-soil of their related material whether block or ore.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-7739393154643532398] Gene Extractor
+The Crop Gene Extractor and Crop Synthesizers can be made in §5EV§r and allows you to create new seeds using UU-Matter and a few Data Orbs.  §lCrop Gene Extractor§r The §nCrop Gene Extractor§r is used to extract "Genes" from a crop. You can control which gene is extracted from a crop by using a programmed circuit: 1. Species 2. Growth 3. Gain 4. Resistance  Extracting will usually have a base recipe time of 150 seconds (with the exception of the species gene, taking 300 seconds at base)  §lCrop Synthesizer§r§r The §nCrop Synthesizer§r is used to create new seeds from the extracted genes at the cost of some UU-Matter.  The UU-Matter cost will depend on the stats and tier of the seed being synthesized. - 750L per crop tier. - 100L per stat point on the seed.  [note]Using the Crop Synthesizer is the only way to obtain and replicate maxed out Primordial Berry seeds.[/note]
+  - [提交] gregtech:gt.blockmachines:28046, gregtech:gt.blockmachines:28037
+  > 奖励: gregtech:gt.metaitem.01:32704 x3
+
+### [-5040051978056922064] Genus Lilium
+Lilies are a key set of species in CropsNH. They produce the dusts and materials otherwise created by the stones beneath your feet. Even far beneath your feet, or far far far above your feet.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-6181610685332966026] Getting Dusty
+These crops will all collect and produce certain mineral dusts from the soil like pollen for B**s.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-4971847490447094237] Golden Berries
+It's like a golden goose but... not.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockores2:86 x8
+
+### [-5535861176622880905] Granitic Lilies
+Granite dust has a hefty amount of minerals trapped within it, you just need enough processing power to actually separate them out.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-7827313852847375747] Growing Spiders
+There are two different species of crop able to produce the products of those pesky spiders. Definitely easier than building a two-block wide mob farm chute if you ask me.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:string x16
+
+### [-5439170394839090099] Hemp
+Genuinely one of the most impressive crops in the world, this one plant can do nearly everything. From tea to clothing, rope to concrete.  For you, it will play a key role in the creation of Industrial Farm in MV.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [1288] Hops, The Source of Beer
+If you don't want pure alcohol, but beer, breed some hops!
+  - [提交] cropsnh:genericSeed
+  > 奖励: dreamcraft:CoinFarmerI x6 | enhancedlootbags:lootbag:51
+
+### [-5003858900155751248] Iridine
+A source of iridium.  Iridine leaves will 4x your iridium ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:84 x16
+
+### [-9141737037254133982] Iron Berries
+Really they're closer to jawbreakers or gobsmackers than berries.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockores2:32 x8
+
+### [-7499076709146625740] Is That Really a Flower?
+Everything can be beautiful, even the mycolo...logical.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:bowl
+
+### [-8761360186467432126] Jack, is that you?
+Magic beans! Unfortunately no stalks into the sky here though.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | BiomesOPlenty:saplings:3
+
+### [-7852603457220321627] Jungle Bonsai
+Easy jungle wood!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-8514153992335365410] Keeping The Sprouts Healthy
+Weeds are a constant threat, whether in large automated fields or small crossbreeding plots.  Lets deal with them.
+  - [勾选确认]
+  > 奖励: TConstruct:heartCanister:1
+
+### [-8061024007119815443] Last Universal Common Seed
+Before going further into CropsNH, there is but one chore I need you to do. §6To prevent future hardship, collect a fully statted 31/31/31 seed.§r  This may seem daunting at first, but with enough blood, sweat, and bonemeal (see the fertilizer quest), you can do it. I believe in you!  §4Ensure you pick a species which is related via mutation pools and determinism to other Crops you want.§r If you don't know what to choose, may I suggest the Potato or Cactus crops which will give you access to the Root or Danger pools respectively.  While there is a reason behind keeping some seeds low statted (lowering enriched fertilizer costs in machines), the time saved by working with max stat crops compared to low stat crops is just too significant to ignore.  §oThis quest will accept any CropsNH seed with a perfect statline.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 x2
+
+### [-8598569364354364400] Leafy... Grains?
+All of the above could be useful for the production of certain drinks. But really all you'll be using them for is getting to the next crop,
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-8109482488081046964] Lucky!
+Lazulia will produce Lapis Lazuli and Lapis Dust.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockores2:526 x16
+
+### [-7574096466507254892] Magical Agriculture
+These crops all stem from the magical side of our realm...  ... get it? Stem?
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-5950602660040417650] Marble Lilies
+For the Greco-Romans among us, lots of magnesium can be found in this dust.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-8617387070152930098] Metallic Crops
+Metallic crops are probably the most useful crops for late game. Thanks to the leaves harvested from these species, you can create tons of raw resources and even multiply the yield of your ores.  Most metallic crops can be thrown into a forge hammer with some acid to create raw resources, or used in a chemical reactor with dirty crushed ores in order to increase your ore yields by up to 400%.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x16
+
+### [-7817395637218765708] Micadia
+A great source of mica.  Micadia leaves will 4x your mica ore.   [note]Just like for the bee, Micadia also allows you to use a cupronickel coil as it's sub-soil block instead of a mica ore.[/note]
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:901 x16
+
+### [-6874605612464082782] More Copper
+Some easy copper for your steam age machines.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockmetal2:7
+
+### [-4902674348745410722] More Flowers
+These flowers reach beyond the basics of the initial 12, and may have some slightly more niche uses.  [warn]Necrobloom's poisonous thorns aren't the only thing you'll have to worry about, it also starts spreading weeds when its growth stat is above 7.[/warn]
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [1737] More Red, Less Wheat
+Simple, easy, redstone-girl.  [note]Redstone torches are great to get the light level just right.[/note]
+  - [提交] cropsnh:genericSeed
+  > 奖励: dreamcraft:CoinFarmerII | enhancedlootbags:lootbag:51 | minecraft:redstone_block
+
+### [-9111345011448692116] More Tin
+Some easy tin for your steam age machines.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockmetal7:7
+
+### [-4988597485722821620] Multiblock Farming
+Now this... this is how you show those §6B**keepers§r what's what.   The Industrial Farm (IF) is a long term, scalable, solution to Crop production. At its most basic, it will grow, harvest, and hydrate your crops, but with several upgrades and tier based size scaling, it is not a simple machine to make use of. The IF has three modes:  §lInput§r - Pulls seeds and sub-soil blocks into the machine from an Input Bus. §lFarm§r - Grows the seeds and pushes products into an Output Bus. §lOutput§r - Exports the seeds and undersoil blocks from the machine into an Output Bus.  You can cycle through them in the machine menu by clicking on the mode button.  To start, you should construct the most basic IF possible. Once you've done that, place your seeds (and any relevant sub-soil blocks) into the Input Bus.   [warn]Seeds that have sub-soil requirements won't be inserted into the farm unless a block of the sub-soil is also available to the machine. The sub-soil block doesn't need to be in the same Input Bus as the seeds for it to work.[/warn]§r§r  Once you've input your seeds (and sub-soil blocks), you can begin using Farm mode to grow your crops.  When you wish to switch out seeds, enter Output mode before re-inserting the new seeds via the Input mode.  The length of your IF is controlled by the tier of your Seed Bed. An MV farm will require MV Seed Beds and therefore can only have one row of Seed Beds. This also means you can only insert one upgrade block (by replacing the wooden frame on the top layer). Each subsequent tier of Seed Bed increases the length of the machine, the base power consumption, the number of upgrades you can install and the number of seeds that can be inserted into the controller.  [note]The power, water and fertilizer consumption of the industrial farm do not scale with the number of seeds inside the farm, so there is no benefit to running the farm under capacity.[/note]  Crops grown in the Industrial Farm are assumed to grow in the following environment: - They have sky access (§l+2 Nutrient Points§r)§r - They have 200 water (§l+10 Nutrient Points§r)§r - They have 200 fertilizer when using fertilizer (§l+10 Nutrient Points§r) - The biome at the location of the controller controls the biome tags and humidity with the biome tags added by the env modules (§lup to +28 Nutrient Points§r)
+  - [提交] gregtech:gt.blockmachines:28055
+  - [可选提交] cropsnh:cropsnh.casings1 x26, cropsnh:cropsnh.seedBed:2 x3, minecraft:glass x4, gregtech:gt.blockframes:809, gregtech:gt.blockmachines:52, gregtech:gt.blockmachines:72, gregtech:gt.blockmachines:82, gregtech:gt.blockmachines:42, gregtech:gt.blockmachines:90
+  > 奖励: gregtech:gt.metaitem.01:32702 x3 | enhancedlootbags:lootbag:59 | dreamcraft:CoinTechnicianII x3 | dreamcraft:CoinFarmerII x2
+
+### [-5427043695285873838] Mutation Titration
+Before going any further you really should craft a lot,[note] and I mean a lot[/note], of crop sticks. Hope you like chopping trees and crafting saws! §o§oYou should've seen the old recipe...  §o§rEach of the adjacent quest groupings represent a different category of crops found within the mod. If you haven't yet, I would highly recommend you review the in depth guide quests focusing on [warn]Crop Stats[/warn] and [warn]Crop Nutrients[/warn].  While not every crop will produce a useful harvest, they very well may deterministically breed into a useful crop or open up a useful pool. So don't throw away new species just because they don't seem immediately useful.  Certain crops need more than just two parents to breed. For those crops, simply surround a single double cropstick with all 3-4 crops needed and continue as normal.  [note]Be free farmhand~![/note]
+  - [提交] cropsnh:cropSticks x256
+  > 奖励: dreamcraft:CoinFarmer x64 | cropsnh:fertilizer x16 | enhancedlootbags:lootbag:51
+
+### [-8415339337870169786] Netherrack Lilies
+If you somehow don't already have enough netherrack from mining all that sulfur, this should help pad your coffers.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [1797] New Threads
+Tired of killing spiders for string? Grow some flax for an easy non-biting source of string, add in some cotton and weave them together and you're almost to tanned leather! Just need some Corium now...
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: minecraft:string x64 | enhancedlootbags:lootbag:51
+
+### [-6005958925180876305] Nickelback
+A great source of nickel, and a horrible source of auditory stimulation. Nickelback leaves will 4x your nickel ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:34 x16
+
+### [-8747006296782565281] Nightshade
+With the intense amount of magical energy the Nightshade emanates, you will need an Industrial Farm to produce and harvest it.  [note]You can optionally just right-click Magic Essence into a cropstick instead of breeding the seed.[/note]
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 x2
+
+### [-6006304926840151513] Not A Mandrake
+This live root won't scream when you harvest it. At least, I don't think it will.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | TwilightForest:tile.TFRoots
+
+### [-8458296535866482138] Not So Evil Berries
+Fruits are a key part of a balanced diet too y'know.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | Natura:berryMedley x3
+
+### [-4698806407864149638] Not The Pipes
+Stop using this for your pipes please. I swear. It's like you don't want a working brain. The throughput of potin just isn't worth it!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockmetal4:2
+
+### [-7297043836321935541] Oak Bonsai
+No, they won't produce Bonsai scale apples as well.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-7527867140491770915] Oh-Oh-Oh-Olivia
+You know-oh-oh Olivine?  §mIf you or a loved one has put the output of this crop and some distilled water in an autoclave, you may be entitled to financial compensation.§r
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:505 x16
+
+### [-5357559570736815524] Ore Berries
+Ore Berries are a shockingly diverse and useful set of crops, a number of which you'll have already received from previous questbook rewards. However, they can give more than just the basic minerals.  All of these crops will only grow in dark enviroments, with a sub-soil of their related material whether block or ore.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-6847258699087917302] Organic Materials
+This is a wide ranging category, but each crop here has some amount of utility. Almost all will likely be helpful as you develop.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-7398625877271277985] Osmianth
+A source of osmium.  Osmianth leaves will 4x your osmium ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:83 x16
+
+### [-7503645549656584711] Other Fruits
+Yes, tomatoes and chillies are technically fruits.  One of these crops is not like the other...
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:wool:6
+
+### [-7649216937537907564] Pam's Who?
+Lots and lots of food crops. While they may be less useful than other species you can grow, when compared to basic food crops the ability to stat these guys should make them pretty nice no matter the reason you need them.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-5129205527319374097] Paper
+Papyrus represents one of the easiest ways to automate paper production in the game, if you needed that for some reason.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-8137730701819231368] Passive Production
+One of the main reasons for getting into CropsNH is the passive production of resources.  The many crops attached to this quest will generally provide you the direct resource you are looking for. This can be perfect for getting that extra bit of aluminium you need to push through MV, or for generating a passive amount of basic minerals long before any other techniques become available.  §4Keep in mind the sub-soil requirements for these crops especially. §rTo passively produce aluminium, you will first need blocks of aluminium or bauxite ore.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x16
+
+### [-5732100976064223270] Plant Based Meats
+Somehow this plant has developed the ability to produce a number of different types of meat. Don't ask me how it does it, or how it smells.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | BloodArsenal:blood_cookie
+
+### [1933] Plant Based Milk
+Oat Milk? Nay. Soy Milk? Nay.  Wart Milk. Say goodbye to your cattle.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | harvestcraft:icecreamItem
+
+### [-8999941513443428594] Plant Diseases
+Plant Cure is used to cure sickly crops. Crops will get sick in two scenarios:  1. A weed has grown and overtaken the crop. 2. A crop does not reach minimum environmental requirements.  You must spray the cure manually, it will apply a minimal amount of fertilizer so that crops don't immediately become sickly again.
+  - [提交] cropsnh:plantCure
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x30 | dreamcraft:CoinFarmer x30 | enhancedlootbags:lootbag:59
+
+### [-6944841682528065138] Platina
+A source of platinum.  Platina leaves will 4x your plat line ores.  [note]Using Platina will create a surplus of aqua regia if you just use it in your existing plat line, you'll need some extra infrastructure to handle the excess.[/note]
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:85 x16
+
+### [-8513610112817591024] Plumbilia
+A great source of lead.  Plumbilia leaves will 4x your lead ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:89 x16
+
+### [1806] Positively Glowing
+There are a number of different ways to produce that wonderous material known as glowstone dust, pick your poison.   No matter which crop you end up picking, the mass centrifuging of glowstone dust can produce a number of useful materials passively.
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: minecraft:glowstone x64 | enhancedlootbags:lootbag:51
+
+### [-7525738023791412446] Potato Stock
+Now that you've stolen the food from your harmless neighbors, or found it in nature like a considerate person, you must now plant these potatoes onto crop sticks. Wait until the crop is §3fully grown§r and left-click it for the best chance to obtain the seeds.
+  - [提交] cropsnh:genericSeed
+  > 奖励: cropsnh:cropSticks x16 | minecraft:red_flower:8
+
+### [-4999558315758680615] Primordial "Berries"
+These bad boys are the most advanced species you can imagine. They will require extensive technological investment to breed, and take extremely long to produce their harvest.  They will require an Industrial Farm to grow.  [warn]Water, fertilizer and sky access alone won't cut it for this crop, you'll need at least 1 biome tag or a high humidity biome or else your crop will get sick.[/warn]
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 x4
+
+### [1604] Put the Petal to the Metal...
+... with the Bio Diesel you produce from Canola!   While some still see Canola as nothing but a younger brother to the Goldfish, maybe you will find something greater hiding behind its oily guise.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:35 x2 | dreamcraft:CoinFarmerI x5 | enhancedlootbags:lootbag:51
+
+### [-8540774018857603168] Pyrolusium
+A great source of manganese.  Pyrolusium leaves will 4x your manganese and tantalite ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:943 x16
+
+### [1929] Reactoria
+A great source of uranium and Pitchblende.  Reactoria crops will drop Reactoria leaves which will 4x your Pitchblende ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: gregtech:gt.blockores2:873 x16 | enhancedlootbags:lootbag:59 x2
+
+### [2266] Red Touch Yellow
+Garnets are actually more valuable than Sapphires. They're an early source of Chrome and Manganese, which you'll need for HV machines. You can also centrifuge Pyrope, Almandine, and Spessartine Dust with Nitric Acid to obtain a variety of additional passive resources. To reach maturity, you will need a block of Garnet (either type) beneath this crop. You can get Garnets from the HV macerator and Spessartine Ore, or you can use an Implosion Compressor to turn Garnet Sands into crystals to make blocks.  To process all products of Garnydiania, you may find those steam multiblock machines quite useful! Though, to be honest, it will likely be much longer until you can make the most of this crop with the chemicals required.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:527 x8 | gregtech:gt.blockores2:528 x8
+
+### [1809] Renewable Oil - No Diagenesis Required
+Oil from crops? Makes as much sense as oil from bees!  If you're looking for passive oil before the §5MV§r Crop Breeder, there is another crop that can help but it is §omuch§r slower.  [warn]You can't use an §5MV§r Crop Breeder or Seed Generator in order to breed 31/31/31 seeds since their fluid capacity is too low.[/warn]  You'll need to follow these steps in order to get your hands on oil-berry seeds if your parents have maxed stats:  1. Down-stat one of the parents via manual breeding. 2. Use a spade to get some spare seeds. 3. Use the lower stat seeds to create an oil berry seed using the §5MV§r Crop Breeder. 4. Max out the stats of the oil berry seed like you originally did when you got your first maxed crop. 5. Use a spade to farm enough seeds to fill your fields.  Alternatively, if you don't want to bother with this process you can just wait until you can get your hands on the §5HV§r Breeder and Seed Generator.  [note]If you want to go with the §5MV§r route, using random breeding is the easiest way to get your hands on a mid-stat version of the parents. For oil berry, the simplest solution simply involves breeding withereed with a 1/1/1 sugar cane until you breed a new mid-stat withereed.[/note]
+  - [提交] cropsnh:genericSeed
+  > 奖励: gregtech:gt.metaitem.01:30707 x64 | enhancedlootbags:lootbag:59
+
+### [-9186904680195988689] Rubber Bonsai
+Easy rubber wood and sticky resin! These bonsai present a more complicated alternative to other rubber production methods, while providing additional useful materials.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-7523556840373785915] Rubyne
+This new species will present a more direct route to the Chrome you need for Stainless Steel production. Just don't make any pies with it.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockores2:502 x16
+
+### [-5796057485807024714] Salty!
+These Salty Roots will break down into bountiful materials once you're able to separate them in a Chemical Bath.  You'll need a multiblock in order to get your hands on the borax dust.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-9098407421297960062] Sand Lilies
+No longer will sand be such a difficult resource to obtain in bulk. Thank Greg.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-9095629033766155119] Scheelinium
+A great source of tungsten.  Scheelinium leaves will 4x your scheelite, tungsten, lithium, and more.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:81 x16
+
+### [-7925499133285634726] Seed Generator
+The Seed Generator is a single-block machine that can clone §omost§r existing seeds (with some very rare exceptions).  In order to clone a seed, you'll need to provide the following: - 36L of §2Enriched Fertilizer§r per stat point; So a 31/31/31 seed will require just under 3.4KL of §2Enriched Fertilizer§r per seed. - Some crops may require an additional catalyst item based on the material produced by the seed.  The seed generator has an NEI tab so feel free to consult it.  The fluid storage capacity of the Seed Generator is §omuch smaller§r than most machines, [note]you'll need at least an §5HV§r machine to replicate crops with maxed stats.[/note]  §oYou only need one of the machines for this quest.
+  - [提交] gregtech:gt.blockmachines:28013, gregtech:gt.blockmachines:28014, gregtech:gt.blockmachines:28015, gregtech:gt.blockmachines:28016, gregtech:gt.blockmachines:28017
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmerI x8 | dreamcraft:CoinTechnicianI x6
+
+### [-8483419409772042412] Shimmering Leaves
+Shimmerleaf can get you easy quicksilver, no Cinnabar required!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | thaumicbases:quicksilverBlock
+
+### [-7047969802169458754] Silver And... Silver
+Silver dust! Exciting! (not)
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockmetal6:10
+
+### [-6245410396428699989] Simple Propagation
+Propagating your plants is as easy as placing a double crop-stick adjacent to a mature plant and waiting.   As long as there are no other plants adjacent to the double cropstick, your plant should simply grow into it.  [note]Just like crossbreeding, spreading also applies the usual stat variation to new offsprings. This can be especially useful when statting up crops.[/note]
+  - [勾选确认]
+  > 奖励: minecraft:red_flower:1
+
+### [-8355730757275340251] Slimy Bonsai
+Easy slime blocks and therefore easy glue and rubber, no need to horse around anymore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | TConstruct:slime.gel:2 | TConstruct:slime.gel | TConstruct:slime.gel:1
+
+### [-4876966440568043552] Slimy Seeds
+The slime plant represents yet another way to produce those sticky materials needed for rubber and therefore electronic components.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | TConstruct:materials:1
+
+### [1928] Son of Odin One-Eye
+The God of Thunder crop lets you increase your Thorium ore from the Nether to 4x. It also will give you Uranium you can use for Reactoria crops.
+  - [提交] cropsnh:genericSeed
+  > 奖励: gregtech:gt.blockores2:96 x16 | enhancedlootbags:lootbag:59
+
+### [-7127981018709104733] Soul Sand Lilies
+Oh hey, don't void that stuff, centrifuge it into something useful? (◕‿↼)   Seriously though, as soon as you can: use these and some enriched fertilizer to breed Oil Berries in the MV Crop Breeder.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-5433099124388336069] Space Flowers!
+Space Flowers can be used to synthesize and 4x some intergalactic materials: - Meteoric Iron and Steel - Desh - Mytryl - Oriharukon - Ledox - Callisto Ice - Deep Iron - Mysterious Crystal - Black Plutonium
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | GalacticraftCore:tile.moonBlock:5 x16
+
+### [722] Speed Up Your Plant Growth
+Fertilizer is a foundational resource to produce and consume when farming. It has two key uses:  First, it speeds up crop growth by boosting the nutrient score.  Second, it prevents stat loss during crop breeding. This simply prevents stat loss; it doesn't increase the likelihood of a stat increase.  Four separate items can be used to apply fertilizer to your crops, each providing a different amount of fertilizer points:  - Crops NH Fertilizer: 100 points - Forestry Compost: 50 points - Forestry Fertilizer: 25 points - Bone Meal: 5 points  [note]While Bone Meal may seem weak, its ability to still prevent stat loss when breeding is key if you intend to start crops before you can make a Chemical Reactor.[/note]  The Crop Managers and the Industrial Farm both also accept liquid fertilizers. There are currently two of them:  - Fertilizer: 1 point per L - Enriched Fertilizer: 10 points per L
+  - [提交] cropsnh:fertilizer x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x15
+
+### [-7679726294619612110] Speedy Berries
+The BOP Berry crop plays a nice role as the fastest growing crop you will get access to.  This makes it the perfect crop for breeding up stats with before crossing to other species which share pools.
+  - [提交] cropsnh:genericSeed x3
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-6677893547735443518] Spruce Bonsai
+Easy spruce wood!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51
+
+### [-5469976981948704145] Stargatium
+A great source of §mstargates§r naquadah.  Stargatium leaves will 4x your naquadah ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:324 x16
+
+### [-8257233919665802400] Star Wart
+Passive Nether Stars?! Impossible. To grow crops which hold such immense power, you will require the Industrial Farm with high tier seed-beds, and maybe an upgrade or 2 as it's quite slow to grow.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 x2 | gregtech:gt.metaitem.01:2506
+
+### [-8227836960381291077] Steelyamom
+Get it?  §2(つ▀^▀ )つ
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockmetal8:12
+
+### [1600] Sticky Canes
+While Sugarcane alone is quite useful, its close relative Sticky Cane is even moreso! Thanks to its production of sticky resin, it is a near universally used crop for the production of rubber in all sorts of electronics.
+  - [提交] cropsnh:genericSeed
+  > 奖励: cropsnh:fertilizer x64 | enhancedlootbags:lootbag:51
+
+### [-8232047064591166893] Stone from the Soil
+Now for something a bit more complicated, Stone Lilies.  This species from the clade §oLilium§o §rproduces stone dust from its petals.  To determine how you can breed it, just check the NEI page for Stone Lily Seeds. The required prerequisite species can be obtained either by breeding, or directly from the overworld (if you are [warn]boring[/warn])  [note]Remember that deterministic breeding will always take priority over pool based breeding[/note]. So unless you have access to a small pool including the Stone Lily, it will likely be quicker to follow the direct path.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:red_flower:3
+
+### [1606] Sweet Tooth
+Sugarcane not keeping up with your sugary needs? Sugar beets give 8 sugar per beet.  Hmm, now I want some candy. Give me some sugar from your beets. I'll share some with you.  [note]Electrolyze the sugar into O2 for an easy source.[/note]
+  - [提交] cropsnh:genericSeed, cropsnh:berry:1
+  - [提交] minecraft:sugar x64
+  > 奖励: MagicBees:jellyBabies x64 | harvestcraft:honeycombchocolatebarItem x64 | enhancedlootbags:lootbag:51
+
+### [-4946731059756850162] Taking Pools Seriously
+With that 31/31/31 seed now in hand you will (ideally) §lnever have to complete  the entire statting process again. §r  Once replicated, you can cross this perfect seed with itself (keep them fertilized!) to access the pools that it has access to! §c§c§4§nThis is the intended path for early game crop discovery. §rWhile it is much more random than deterministic breeding, it will let you collect a wider range of species quicker.  Keep in mind that: when pool breeding occurs, the offspring has a chance to be any crop found within any of the pools shared by 2 or more of the parent crops.§lThe mutation selection occurs prior to the check for environment. §rIn practice this means that if you're searching for a specific species in say, the Food pool, it will take much longer to appear than one in the Reed pool because there are fewer alternative species. [warn]No matter the environment.[/warn]  Once you've gotten your hands on a solid number of species, deterministic breeding becomes a simpler and more effective method for obtaining new species.
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x8
+
+### [-9216669097939010236] Thauminite Berries
+Less blue blueberries. Thauminite oreberries!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | thaumicbases:thauminiteBlock
+
+### [-5758299271822333013] Thaumium Berries
+Thaumium oreberries! No trapdoor-ed crucible required.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | Thaumcraft:blockCosmeticSolid:4
+
+### [-8979320435122571827] The Advanced Harvesting Unit
+The Advanced Harvesting Unit increases the production rate of your Industrial Farm. Only two are allowed per Industrial Farm. Each one increases the number of drops by 20%, and power usage by 50%.  [note]Unlike the bonuses given by the Seed Beds and Fertilization Units, the bonuses given by the Advanced Harvesting Unit is applied as a final multiplier. This means that each Advanced Harvesting Unit will always increase your overall production by 20 to 40% depending on how many upgrades you're using.[/note]  As with all upgrades, the tier of the upgrade must match the tier of the Seed Bed.
+  - [提交] cropsnh:cropsnh.advancedHarvestingUnit:2, cropsnh:cropsnh.advancedHarvestingUnit:3, cropsnh:cropsnh.advancedHarvestingUnit:4, cropsnh:cropsnh.advancedHarvestingUnit:5, cropsnh:cropsnh.advancedHarvestingUnit:6, cropsnh:cropsnh.advancedHarvestingUnit:7
+  > 奖励: IC2:itemPartCircuitAdv x2 | enhancedlootbags:lootbag:59 | dreamcraft:CoinTechnicianII x3 | dreamcraft:CoinFarmerII
+
+### [2405] The Art of Bonsai
+By simply planting saplings onto crop sticks, you've found you can create miniature versions of the matching trees! How cute!  Bonsai trees will give you drops just like a regular tree, but without the wasted server processing time of placing all the tree blocks just to chop them down again. This can be significant overhead on a server, so if you want to be nice to your host, breed some bonsai. 
+  - [勾选确认]
+  > 奖励: dreamcraft:CoinFarmer x16
+
+### [-5237416962205861199] The Environmental Enhancement Unit
+If you don't want to use magic to change the biome for your IF, you will have to apply some advanced biome simulation technology to your Industrial Farm.  Each Environmental Enhancement Unit allows you to insert an Environmental Module inside of your IF controller. (You can only have up to 2 of these upgrades at a time). Environmental Modules can only be inserted while the machine is powered off. Each one increases the power usage by 50% (even if you don't have a module installed).   As with all upgrades, the tier of the upgrade must match the tier of the seedbed.
+  - [提交] cropsnh:cropsnh.environmentalEnhancementUnit:2, cropsnh:cropsnh.environmentalEnhancementUnit:3, cropsnh:cropsnh.environmentalEnhancementUnit:4, cropsnh:cropsnh.environmentalEnhancementUnit:5, cropsnh:cropsnh.environmentalEnhancementUnit:6, cropsnh:cropsnh.environmentalEnhancementUnit:7
+  - [提交] cropsnh:environmentalModule x4
+  > 奖励: gregtech:gt.metaitem.01:32702 x3 | enhancedlootbags:lootbag:59 | dreamcraft:CoinFarmerII x3 | dreamcraft:CoinTechnicianII x2
+
+### [-8197109997969989693] The Fertilization Unit
+The Fertilization Unit provides a massive boost to production, but requires you to use §2Enriched Fertilizer§r, and disables its 10x potency bonus. You'll need a steady supply of it in order to use this upgrade. It also increases power usage by 50%.  In exchange for the increased cost, the Fertilization Unit will increase the farm's harvest bonus by 50% and §omultiply§r it's growth speed bonus by 50%.  Only one Fertilization Unit is allowed per Industrial Farm  [note]The growth speed increase is applied as a final multiplier. This means that it's even more effective when used in conjunction with other upgrades.[/note]  As with all upgrades, the tier of the upgrade must match the tier of the seed bed.
+  - [提交] cropsnh:cropsnh.fertilizerUnit:2, cropsnh:cropsnh.fertilizerUnit:3, cropsnh:cropsnh.fertilizerUnit:4, cropsnh:cropsnh.fertilizerUnit:5, cropsnh:cropsnh.fertilizerUnit:6, cropsnh:cropsnh.fertilizerUnit:7
+  > 奖励: cropsnh:enrichedFertilizerCell x8 | IC2:itemPartCircuitAdv x2 | enhancedlootbags:lootbag:59 | dreamcraft:CoinFarmerII
+
+### [1798] The Ground is Crying
+Need an alternate source of Chlorine? Breed some Tearstalks to get Ghast Tears for making salt water.  ;-;
+  - [提交] cropsnh:genericSeed
+  > 奖励: minecraft:ghast_tear x64 | enhancedlootbags:lootbag:51
+
+### [-5531967092809179181] The Growth Acceleration Unit
+The Growth Acceleration Unit increases the growth speed of the crops found within the Industrial Farm. Each one increases growth speed by 100% and power usage by 125%.  The Growth Acceleration Unit will not work if an Overclocked Growth Acceleration Unit is installed.  As with all upgrades, the tier of the upgrade must match the tier of the seedbed.
+  - [提交] cropsnh:cropsnh.growthAccelerationUnit:2, cropsnh:cropsnh.growthAccelerationUnit:3, cropsnh:cropsnh.growthAccelerationUnit:4, cropsnh:cropsnh.growthAccelerationUnit:5, cropsnh:cropsnh.growthAccelerationUnit:6, cropsnh:cropsnh.growthAccelerationUnit:7
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII | dreamcraft:CoinFarmerII
+
+### [-5395512100500841577] The Overclocked Growth Acceleration Unit
+The Overclocked Growth Acceleration Unit allows for the overclocking of the Industrial Farm as with other Multiblocks, and enables the use of a single Multi-Amp Energy Hatch. Each overclock doubles production and input costs.  [warn]You cannot use regular Energy Hatches when using a Multi-Amp Energy Hatch.[/warn]  You may only install one of these units per Industrial Farm.  The Overclocked Growth Acceleration Unit will not work if a Growth Acceleration Unit is installed.  As with all upgrades, the tier of the upgrade must match the tier of the seedbed.
+  - [提交] cropsnh:cropsnh.overclockedGrowthAccelerationUnit:7, cropsnh:cropsnh.overclockedGrowthAccelerationUnit:8, cropsnh:cropsnh.overclockedGrowthAccelerationUnit:9, cropsnh:cropsnh.overclockedGrowthAccelerationUnit:10, cropsnh:cropsnh.overclockedGrowthAccelerationUnit:11, cropsnh:cropsnh.overclockedGrowthAccelerationUnit:12
+  > 奖励: gregtech:gt.metaitem.03:32088 x4 | gregtech:gt.metaitem.01:32724 x2 | gregtech:gt.metaitem.01:32725
+
+### [-5938528175067609951] The Queen of Crops
+A great source of titanium!  Titania leaves will 4x your titanium ores (including Bauxite!).
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:28 x16
+
+### [-7925560376673894102] Thiosulfine
+Thiosulfine is a complicated crop. At its simplest it will 4x your sulfur ore!! However, you can further process it alongside Galvania or Plumbilia leaves you can obtain additional rare materials. Notably, with Galvania, you get a chance to produce gallium dust.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:22 x16
+
+### [-9072284088418881518] Tin Berries
+Tin oreberries!
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | gregtech:gt.blockores2:57 x8
+
+### [-7369424354394695589] Tine
+A great source of tin.  Tine leaves will 4x your tin ore.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:57 x16
+
+### [1270] Tools of the Trade 1 - Less Dirty Hands
+This tool is a combined Trowel, Hoe, and Shovel. The basic spade will allow you to easily clear weeds from your sticks, till soil, and potentially obtain bonus seeds from simply harvesting the crops (right-click) without breaking them. Each point of resistance increases the chance of getting a seed when harvesting with the basic spade as follows:  1 Resist = 3% 10 Resist = 32% 31 Resist = 100%  [note]If you're removing a crop with your spade, sneaking will let you remove the crop without having to worry about the spade breaking the crop stick.[/note]
+  - [提交] cropsnh:spade
+  > 奖励: bq_standard:choice
+
+### [1920] Tools of the Trade 2 - Mendelian Identification
+When breeding new crops, you will come upon hundreds of different species! While every species has a unique texture which a dedicated farmhand will be able to discern between, this tool will clear things up much quicker for you.   After using it you can tell the following: - Species - Stats - Crop tier - Whether it can grow (many crops have special requirements) - Whether you can harvest it - Growth progress
+  - [提交] cropsnh:plantLens
+  > 奖励: minecraft:red_flower:7 | dreamcraft:CoinFarmer x10
+
+### [-8681683102750732132] Tools of the Trade 3 - Feeding(?) Your Crops
+That water source block doesn't really do it for your little guys. They will need a bit more attention, so use a watering can to increase their water stat.
+  - [提交] ExtraUtilities:watering_can, ExtraUtilities:watering_can:1, ExtraUtilities:watering_can:3
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:red_flower:2
+
+### [-7980938121407202457] Tools of the Trade 4 - Reinforced Spade
+The reinforced spade will do everything the basic spade does, but better. It further increases your chances of bonus seeds based on the resistance stat. Every ten points of resistance increases the MINIMUM seed drop by one. That means:  1 Resist = 10% seed drop 10 Resist = 1 guaranteed seed drop 15 Resist = 1 guaranteed seed drop + 50% chance for a second seed drop! 31 Resist = 3 guaranteed seed drops + 10% chance for a fourth seed drop!!  Time to scale up farmhand.  [note]If you're removing a crop with your spade, sneaking will let you remove the crop without having to worry about the spade breaking the crop stick.[/note]
+  - [提交] cropsnh:reinforcedSpade
+  > 奖励: enhancedlootbags:lootbag:59 x2
+
+### [1794] Tools Of The Trade 5 - Electronic Scanning
+The portable scanner is a direct upgrade to the plant lens.  Just like the lens, the scanner can tell you all the information about a crop growing inside of a crop stick, but unlike the plant lens it also displays the exact Nutrient Score provided by the crop stick.  [note]The portable scanner isn't just for crops, it can tell you a lot of information about basically everything! Look for the Portable Scanner quest after the EBF quest in Multiblock Goals tab for more information![/note]
+  - [提交] gregtech:gt.metaitem.01:32762
+  > 奖励: cropsnh:genericSeed | enhancedlootbags:lootbag:59 x2
+
+### [-5456341270835760086] UU Berries
+These special berries somehow have gained the atomic properties of UU-Matter. Due to their inherent genetic instability, they will require the Industrial Farm to harvest with high tier seed-beds.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59
+
+### [-8562078815102132877] Vanilla Agriculture
+Most plants from vanilla Minecraft can simply be placed onto crop sticks to create their associated CropsNH crop. This is especially helpful when it comes to Bonsais, which will allow you to more easily (and less laggily) produce the hectares of wood you will need for your progression.  [warn]Note the soil requirements for your bonsai in NEI, §nyou cannot plant§r these on normal tilled farmland.[/warn]
+  - [提交] minecraft:sapling, cropsnh:genericSeed
+  > 奖励: bq_standard:choice
+
+### [1931] Vegan Leather?
+If you want to save your cows and horses for milk and... glue... you can use Corium to produce your leather instead.
+  - [提交] cropsnh:genericSeed
+  > 奖励: minecraft:beef x64 | enhancedlootbags:lootbag:51
+
+### [1803] Void Berries
+Like little mini black holes.  Don't try to eat them, you'll never feel full again.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:59 | thaumicbases:voidBlock
+
+### [1605] Warts!
+I haven't been feeling well lately. Would you grow me some Gaia Wart? They're better than milk, since they only remove negative effects, and stack to 64. Really nice when fighting that Alchemist infernal! Or moving super tanks.  They also have some quite rare essentia on them, very useful for the budding thaumaturge.  [note]In order to get your hands on some Gaia Warts, you'll need to right-click some snow onto some Netherwart until it transforms[/note]
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: cropsnh:genericSeed | enhancedlootbags:lootbag:51 | dreamcraft:CoinFarmerI x5
+
+### [1543] Weed-EX
+Weed-EX is used to prevent the growth and spread of weeds on empty crop sticks.  You can either spray it manually using a spray can, or supply it to a Crop Manager to automatically apply it to all crops in range.
+  - [提交] cropsnh:weedEX x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemist x30 | dreamcraft:CoinFarmer x30 | enhancedlootbags:lootbag:59
+
+### [-8242495261997181441] Weeds
+Weeds will show up from time to time on empty single or double crop sticks. They will spread from there and sicken all your precious crops, so clear weeds with your spade (or fist) before you start desiring to reload the last backup.   Using smaller fields will make things a lot easier, at least until you can make Weed-Ex, so if you forget about them you only lose one or two seeds. If your crops have already become sick, you'll need Plant-Cure to heal them. Otherwise you'll just have to risk breaking them if you want the seeds back before then.
+  - [勾选确认]
+  > 奖励: minecraft:yellow_flower
+
+### [1950] Who the Heck is Bob?
+Want some emeralds for trading or other uses? These are the source.
+  - [提交] cropsnh:genericSeed
+  > 奖励: gregtech:gt.metaitem.02:29501 | enhancedlootbags:lootbag:59 | gregtech:gt.blockores2:501 x16
+
+### [1801] Why Does My Plant Bawk Like a Chicken?
+Because it can lay eggs!
+  - [提交] cropsnh:genericSeed
+  > 奖励: minecraft:feather x256 | enhancedlootbags:lootbag:51
+
+### [-4936357607339989362] Witchery Seeds
+In case you needed to mass produce witchery crops... for some reason
+  - [提交] cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed, cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 x2
+
+### [1927] Wither Skulls Easy Style
+Withereed is a rare species which produces coal but, rarely, can also produce fully formed wither skulls!
+  - [提交] cropsnh:genericSeed
+  > 奖励: minecraft:coal x64 | enhancedlootbags:lootbag:51 | dreamcraft:CoinFarmerI x5
+
+### [-5430924456326445571] Your First Deterministic Cross
+With both carrot and potato seeds in hand, you are now ready to deterministically breed your first new species. Sugarcane.  Plant your potato and carrot seeds next to a double crop stick placed on one of the fitting soil types shown in NEI.  [warn]Always check NEI for what soil to use when breeding a new crop.[/warn]  When breeding, it's important to ensure that the crop stick that will contain the new crop meets all the growth requirements of said new crop. [warn]Crops with special growth requirements will not appear unless all their growth requirements are met.[/warn] This includes things like soil, sub-soil, and light level.
+  - [提交] cropsnh:genericSeed
+  > 奖励: enhancedlootbags:lootbag:51 | minecraft:red_flower
+

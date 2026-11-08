@@ -1,0 +1,243 @@
+# 任务线: Tier 10 - UEV
+### [-8724430134020257656] §5§l§nAssembling in Space
+This new Space Elevator module can be used to make lapotron orbs more easily, and to make the raw components for optical circuits.
+  - [提交] gregtech:gt.blockmachines:14004
+
+### [467] §5§l§nAwakened Core
+There was something sleeping deep inside all the draconic material you have made and researched so far. It is time to AWAKE it!
+  - [提交] kubatech:kubaitems:40
+  - [提交] DraconicEvolution:awakenedCore
+
+### [-5495064271200344269] §5§l§nBiocatalyzed Propulsion Fluid
+Now that you have access to Sekhmet, the moon orbiting Maahes, you can finally start making §5§lBiocatalyzed Propulsion Fluid§r.   BPF is a superior fuel for the §9Spinmatron-2737§r, granting an additional §2§l1.25x§r parallels and allowing you to finally have access to §a§lHeavy mode§r dependent recipes.  [note]If you happen to be avoiding rockets; check out the §nLumipod Sapling§r recipe or try using Herba-infused seeds.[/note]
+  - [提交] gregtech:gt.metaitem.01:30166
+
+### [-8754088215918060056] §5§l§nCapturing Light on a Circuit Board
+Using various carefully picked materials, you've managed to create a circuit board that will be able to contain the flows of photons in these new circuit parts.
+  - [提交] gregtech:gt.metaitem.03:32728
+
+### [-8363105124200355806] §5§l§nCheaper ZPM Circuits
+Living bio chip can perform multiple tasks at once and will make your ZPM circuits cheaper!  [note]This does cost quite a bit of hypogen, perhaps hold off on using these until you can make hypogen easily.[/note]
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:32746, bartworks:gt.bwMetaGeneratedItem0:32699, gregtech:gt.blockmachines:1722 x16, miscutils:itemBoltChromaticGlass x64
+  - [提交] gregtech:gt.metaitem.03:32097 x16
+
+### [-9064439369025459403] §5§l§nDimensional Breach Imminent
+At last, you have done it. The DTPF is a mighty multiblock fueled by large amounts of power and catalyst. Running it constantly for 8 hours or longer reduces catalyst consumption by 50%, so you will want to find a way to automate this to save on expensive catalyst.  You will need 2112 coil blocks in total. Accepted coil tiers are  - Awakened Draconium - Infinity - Hypogen - Eternal  While you can start with Awakened Draconium coils, you will need at least infinity coils to make tesseracts for UIV, so it may be worth it to skip to those immediately  [note]Perhaps it can be used to bake exotic cookies?[/note]
+  - [提交] gregtech:gt.blockmachines:1004, gregtech:gt.blockcasings:12, gregtech:gt.blockcasings:13, gregtech:gt.blockcasings:14
+  > 奖励: harvestcraft:peanutbuttercookiesItem
+
+### [-7084124104927191421] §5§l§nDownload More RAM
+Only the most advanced memory chips will do when working with optical computers.
+  - [提交] gregtech:gt.metaitem.03:32725
+
+### [3248] §5§l§nDragonblood
+For your first batch of Hypogen you will need some Dragonblood. Maybe you already have some lying around somewhere from killing the dragon a long time ago. You have 2 other options though. Bees and the DE Fusion Crafter.  For the bee path you have to go very deep into the breeding tree, but maybe you have already done that? Check the Bee Breeding tab either way.  In the DE Fusion Crafter you have 2 recipes. The better one uses an Infinity Egg from Witchery. Without any Witchery you can also just use a normal dragon egg for the weaker recipe.  Once you have a bit of Hypogen you can then use that as a starting point to make more in your DTPF without any Dragonblood. I don't know why it works that way, complain to Colen.  However, you will still need more Dragonblood eventually for UMV superconductors.  [note]There is actually another way to get Dragonblood which is similar to the DE Fusion Crafter recipes but in the mixer instead. It's even slower and less resource efficient. In particular, the dragon egg does not survive the process. So only use that if you are absolutely trying to avoid magic and bees.[/note]  [note]Just a reminder: a fluid task just needs you to have the fluid in some container in your inventory. (cell, universal cell, large cell, volumetric cell, etc.)[/note]
+  - [流体]  x
+
+### [-8063346062660766612] §5§l§nDreams of Rainbow... Stargates?
+UEV energy hatches? Great! Time for stargate trophy number two. Once again, to get your trophy you have to submit two stargates' worth of materials.  §3Trophy number two brings us to chapter two of our journey through GTNHs past, the early UEV era.  The year 2022 has just begun and the UEV tier, albeit still quite empty, has become more useful than before. UEV-UMV energy hatches now have proper recipes (although with UEV parts) and optical SMDs are a thing now, hooray. There finally are better powergen options than regular plasma turbine spam, namely naq fuel and compact fusions + XL plasma turbine spam. Technically dyson too, but that is horribly bugged and its 'legit' power output reasonably can't exceed around 6 billion EU/t (around the same as a compact MK4 running helium plasma). Some useful newly introduced multis are the PrAss, MCR & Mega Oil Cracker and overclocks past MAX voltage are possible on megas now. Stargate has once again become a distant goal, as it now requires exorbitant amounts of infinity catalyst and bio circuits, requiring the player to utilize the new tech to its fullest.  Two players, §aPhineasor§3 & §aGDCloud§3 were determined to be first to completing this goal, and after months of a close friendly race, the winner had been decided. §a GDCloud§3 won the race and conquered this round of nerfs on the §a27th of May, 2022§3.  P.S.: Once again, if you want to be faithful to the challenge, try completing it without these additions: -PCB Factory, Space Elevator, Component Assemblyline, AAL, EEC, EIG, MABS -Any bee related GT machines -Any UEV or above multis (except weak dyson and naq refineries) -LEG -Sub 1-tick OC, Batch Mode, inbuilt Void Protection on multis -Level Maintainer, AE Fluid Crafting, Stocking Buses/Hatches, Crafting Input Buses, ME Output Hatches  P.P.S.: Again the chaotic capacitor banks have been left out for the same reason as stated in the UV gate quest. Oh and the stargate parts used to be UXV recipes, but since UMV hatches are not craftable in UEV anymore, they have been downtiered to UIV to make them craftable in UEV.
+  - [提交] dreamcraft:PolychromeGatePlate x625, dreamcraft:PolychromeChevron x342, dreamcraft:PolychromeFramePart x1470, dreamcraft:PolychromeQuantumCircuit x82, dreamcraft:StargateCrystalAncients x2, gregtech:gt.metaitem.01:32649 x436, gregtech:gt.metaitem.01:32699 x138, gregtech:gt.metaitem.01:32689 x10, gregtech:gt.metaitem.01:32679 x736, gregtech:gt.blockcasings:15 x124, gregtech:gt.blockmetal4:13 x1590, gregtech:gt.blockmetal7:9 x1960
+  > 奖励: minecraft:paper:2
+
+### [-7372044556205145504] §5§l§nEnergised Tesseract
+Using high amounts of energy and the strange properties of a Quantum Anomaly, Tesseracts can become energised, unlocking hidden potential.  [note]You better love crafting these...[/note]
+  - [提交] gregtech:gt.metaitem.01:32415
+  - [提交] gregtech:gt.metaitem.01:32417
+
+### [-8867368593153737538] §5§l§nFemto Power ICs
+You need Femto Power ICs for UIV -> UMV transformers, and UEV Energy/Dynamo Hatches.  [note]You'll need a UEV Cutting Machine or an OC'd multi to actually cut the wafers.  Perhaps invest in Beamline to craft these, the Infinity Catalyst takes a long time to smelt.[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32164, bartworks:gt.bwMetaGenerateddust:11012 x64 (ore:dustIodine), gregtech:gt.metaitem.99:394 x4
+  - [提交] gregtech:gt.metaitem.03:32266
+
+### [-8533404977696523804] §5§l§nFueling the DTPF
+To run the DTPF, you will need to feed it excited catalyst. There are four tiers of catalyst you can make right now, and one more to unlock later. Making these catalysts requires a lot of power and time, so you will almost certainly want to passive this with many machines.  In UIV, you will unlock the §p§oplasma mixer§r, a dedicated multiblock that can make catalyst much faster than you currently can, although this comes at an enormous power cost. Either way, it's probably a good idea to get this as soon as you can.
+  - [可选提交] gregtech:gt.metaitem.01:30748, gregtech:gt.metaitem.01:30747, gregtech:gt.metaitem.01:30746, gregtech:gt.metaitem.01:30745
+  - [可选提交] gregtech:gt.metaitem.01:30109, gregtech:gt.metaitem.01:30113, gregtech:gt.metaitem.01:30121, gregtech:gt.metaitem.01:30126
+  - [勾选确认]
+
+### [2583] §5§l§nGalaxy in a Bottle...?
+Good luck with this one, it is many times harder than the previous tiers. It is required to make extremely endgame materials such as hypogen.  The MK IV reactor grants 4/4 OCs for every machine tier above the minimum recipe tier instead of the 2/2 OCs from the previous tiers. That means the speed and power consumption are both quadrupled instead of doubled each time.  Regardless, you may notice the MK IV recipes are §oquite§o §rslow, perhaps consider making a Compact Fusion Reactor instead?  [note]You only have to make one type of reactor to finish the quest.[/note]
+  - [提交] gregtech:gt.blockmachines:965, gregtech:gt.blockmachines:32022
+  - [可选提交] miscutils:gtplusplus.blockcasings.3:12 x108, miscutils:gtplusplus.blockcasings.3:13 x32, gregtech:gt.blockmachines:49 x16
+
+### [2584] §5§l§nHypogen
+Here it is, the most high tier GT++ material. You will need UIV to process it. Your Fluid Shaper will do that job just fine for you.  [note]With your first ingot obtained, you can turn to the DTPF to make more. I think that recipe should be a lot better than the MK4 reactor.[/note]  [note]You can also have this cake as a reward for coming this far.[/note]
+  - [提交] miscutils:itemIngotHypogen
+  > 奖励: minecraft:cake
+
+### [-9129674536551875363] §5§l§nInfinity Boots
+An armor set worthy of a God. These boots provide a permanent jump boost and increased running speed.  While wearing the complete set, you are completely unkillable.
+  - [提交] Avaritia:Infinity_Shoes
+
+### [-5257993220658042190] §5§l§nInfinity Breastplate
+An armor set worthy of a God. This breastplate provides the user infinite creative flight and removes all negative debuffs.  While wearing the complete set, you are completely unkillable.
+  - [提交] Avaritia:Infinity_Chest
+
+### [2568] §5§l§nInfinity Helmet
+An armor set worthy of a God. This helmet provides infinite saturation.  While wearing the complete set, you are completely unkillable.
+  - [提交] Avaritia:Infinity_Helm
+
+### [-7064938304558843391] §5§l§nInfinity Pants
+An armor set worthy of a God. These pants have no special effects on their own but are required to complete the full infinity set.  While wearing the complete set, you are completely unkillable.
+  - [提交] Avaritia:Infinity_Pants
+
+### [-6966981174478510993] §5§l§nIntroducing the NAC§r§5§n™§r§5§n§l
+You've gotten this far, you know the drill. You've made more circuits than you can count, but what if that isn't enough? It's time to stop scaling the old way, and start manufacturing like the late game engineer you are.  The Nanochip Assembly Complex isn't just a fancier CAL or Assembly Line - it is the core of your entire operation. For the low price of a small craft* for your machines to chew on, you can be the proud owner of the latest innovation in circuit crafting technology!   §oNote*: "Small craft" may not accurately reflect the state of your industrialization and the company holds no accountability or liability for professional mishaps like "that's way too much UHV Superconductor" or "we need to scale our HILEs yesterday"§r  §oNAC™ sold as-is. Functionality available via separately crafted modules
+  - [提交] gregtech:gt.blockmachines:9500
+  > 奖励: TwilightForest:item.tfspawnegg:191
+
+### [2716] §5§l§nLongbow of the Heavens
+Weak compared to both weapons of its tier, and the weapons it's made of, this bow doesn't use arrows, never breaks, does 10 damage, and has an AoE of 10 more arrows that do 10 damage each fly down each time it strikes.
+  - [提交] Avaritia:Infinity_Bow
+
+### [-6117290316329622558] §5§l§nMetastable Oganesson
+Metastable Oganesson is a very important endgame material that you will need for a variety of machines, like the MK5 Fusion Reactor and the NAC.  [note]You can't use it yet, but keep in mind that there is a much cheaper recipe unlocked in late UIV![/note]
+  - [提交] bartworks:gt.bwMetaGeneratedcellMolten:10111
+
+### [-6022104266947009874] §5§l§nMy Eyes Hurt! #1
+Finally, you are ready to assemble these new circuits. This is a UV-tier circuit.  [note]It's highly recommended that you invest in a NAC before starting with Optical Circuits[/note]
+  - [提交] gregtech:gt.metaitem.03:32154
+
+### [-6407498567809638090] §5§l§nMy Eyes Hurt! #2
+The optical assembly is the second optical circuit. It is a UHV-tier circuit.
+  - [提交] gregtech:gt.metaitem.03:32155
+
+### [-6963947838860379704] §5§l§nMy Eyes Hurt! #3
+The optical supercomputer is the third optical circuit. It is a UEV-tier circuit
+  - [提交] gregtech:gt.metaitem.03:32156
+
+### [3236] §5§l§nMy Eyes Hurt! #4
+So you finally did it... but there's so much more to do. Onwards comrade!
+  - [提交] gregtech:gt.metaitem.03:32157
+
+### [-7701138951227448008] §5§l§nNAC§r§5§n™§r§5§n§l: Advanced Routing Package
+Sometimes, basic automation isn't enough. We've heard you - we are now offering the §5§nAdvanced Routing Package§r to allow more complex automation of your components!  The Nanopart Splitter allows splitting, merging and filtering of your components between different colored VCI and VCO hatches. In the configuration GUI, you can define rules such as: - Merging any colors of your choice into one color - Evenly splitting inputs from one color into many output colors - Filtering specific components from one color to another and many more!  Additionally, if you purchase the Premium Package, you gain access to the Splitter Redstone Input hatch, allowing for fine-grained redstone control of your routing. Each redstone hatch has a "channel" setting, which can then be configured in a rule for it to use that specific hatch's redstone signal.
+  - [提交] gregtech:gt.blockmachines:9510
+  - [可选提交] gregtech:gt.blockmachines:9515
+  > 奖励: harvestcraft:cabbageItem | miscutils:blockFrameGtOctiron
+
+### [-6453735162456699346] §5§l§nNAC§r§5§n™§r§5§n§l: Assembling Package
+You might be saying, "So I've just purchased this thing, now what?" We have just the solution for you!  The §5§nAssembling Package§r is the most important upgrade to the NAC™ platform, allowing for the creation of circuits with your processed components. This isn't just another assembler - it's the most important machine you'll ever own.  Provide the Nanochip Assembly Matrix with a Vacuum Conveyor Input (sold separately) containing the necessary components, and all the circuits you have ever wanted will be yours!  §oPower costs may be high. The NAC™ offers a guarantee that modules will not powerfail, but offers no guarantees on your existing power network. 
+  - [提交] gregtech:gt.blockmachines:9504
+  > 奖励: minecraft:spawn_egg:506
+
+### [-7441919343799596181] §5§l§nNAC§r§5§n™§r§5§n§l: Automation Package
+Our most popular addon for the NAC™ platform, the §5§nAutomation Package§r allows for easily routing components between modules* for all your processing needs! Simply attach a Vacuum Conveyor Output to the core of the NAC, color it the same color as your input bus(es), and now you can route components to modules using Vacuum Conveyor Pipes!  §oNote*: Modules sold separately§r
+  - [提交] gregtech:gt.blockmachines:9501, gregtech:gt.blockmachines:9502, gregtech:gt.blockmachines:9503
+  > 奖励: minecraft:spawn_egg:98
+
+### [-6592545949574353296] §5§l§nNAC§r§5§n™§r§5§n§l: Crystal Package
+Now that you have the core pieces of the NAC™ platform, it's time to decide what circuit you would like to make. The §5§nCrystal Package§r allows for the creation of Crystal Circuits much more efficiently than other methods. See the attached owner's manual for installation instructions.  §oIf you purchase in the next 72 hours, this package is 50% off! Please... make a NAC™ for crystal circuits, CALs aren't as good we promise...§r   §n§lUltra-high Energy Etching Array Owner's Manual:§r  The NAC™ will track the most recent 100,000 circuits crafted, and can be calibrated to a specific circuit type by reaching a certain percentage of circuits of this type. At 60% (60,000) crystal circuits crafted, the NAC™ will become "fully calibrated" to crystal circuits.  Once that has been met, the Laser Source Hatch on the Etching Array will provide two bonuses: - The §nEU Cost§r will be divided by each amperage interval over 256A. Example - 1,024A will divide by 2, 4,096A will divide by 3, etc. - The §nRecipe Duration§r will be divided by (hatch tier - 9). Example - UIV will divide by 2, UMV will divide by 3, etc.
+  - [提交] gregtech:gt.blockmachines:9507
+  > 奖励: holoinventory:Hologlasses
+
+### [-4924680785183971301] §5§l§nNAC§r§5§n™§r§5§n§l: Fundamentals Package
+We get it, this isn't the most exciting piece of the puzzle. However, the §5§nFundamentals Package§r is essential to the entire operation.  Allowing things such as: - Part Preparation for your surface mounted devices - Wafer Cutting for your advanced silicon parts among others - Wire Tracing for all your fine wires - Superconductor Splitting for your most expensive circuits - Encasement Wrapping for all your mainframe needs - Board Immersion for the base of your circuits*  §oNote*: The Full-Board Immersion Device requires a proper setup to ensure fluid purity. Read the owner's manual (tooltip) to see how to properly utilize this module.§r
+  - [提交] gregtech:gt.blockmachines:9505, gregtech:gt.blockmachines:9508, gregtech:gt.blockmachines:9509, gregtech:gt.blockmachines:9511, gregtech:gt.blockmachines:9513, gregtech:gt.blockmachines:9506
+  > 奖励: harvestcraft:octopusrawItem | universalsingularities:universal.general.singularity:32 | chisel:marble
+
+### [-5596355718593382116] §5§l§nNAC§r§5§n™§r§5§n§l: Optical Package
+You may have noticed that Optical Circuits the way you're used to in the CAL and Assembly Line are far more expensive than any other circuit line. The NAC™ has just the solution for you!  We are offering the new §5§nOptical Package§r, allowing for much more efficient production of your optical circuits! See the attached owner's manual for installation instructions.  §oAn external review has been conducted and has found the company §nnot responsible§r§o for changes to other methods of producing optical circuits. The benefits of a NAC™ for optical circuits are merely coincidental.§r§r  §l§nOptically Optimized Organizer Owner's Manual§r  The Optically Optimized Organizer requires two different grades of purified water to function. However, these are not just an extra running cost! Each grade of water 3 and above provides a bonus to the module's running stats: - Grade 3 (1000L/s): 0.8x Water Cost (applies to both) - Grade 4 (800L/s): 0.6x Water Cost (applies to both) - Grade 5 (800L/s): 0.9x Recipe Duration Modifier - Grade 6 (600L/s): 0.7x Recipe Duration Modifier - Grade 7 (600L/s): 0.9x Recipe EU Cost - Grade 8 (400L/s): 0.7x Recipe EU Cost  Water is only consumed while the module is running. Similar water bonuses (such as Grade 5 + Grade 6) can be applied together.  The NAC™ will track the most recent 100,000 circuits crafted, and can be calibrated to a specific circuit type by reaching a certain percentage of circuits of this type. At 60% (60,000) optical circuits crafted, the NAC™ will become "fully calibrated" to optical circuits.  Once that has been met, the bonuses from each chosen water type are applied twice.
+  - [提交] gregtech:gt.blockmachines:9512
+  > 奖励: gregtech:gt.metaitem.01:2030
+
+### [-6982069182951646233] §5§l§nNAC§r§5§n™§r§5§n§l: Wetware and Bioware Package
+So you've chosen the §5§nWetware and Bioware Package§r for your newly purchased NAC™. A wise choice, as these are some of the most important circuits you will make. See the attached owner's manual for installation instructions.  §oGet it while you can! A two-for-one deal on circuit lines!§r  §n§lAccelerated Biological Coordinator Owner's Manual:§r  The NAC™ will track the most recent 100,000 circuits crafted, and can be calibrated to a specific circuit type by reaching a certain percentage of circuits of this type. At 60% (60,000) wetware circuits crafted, the NAC™ will become "fully calibrated" to wetware circuits, and the same applies to bioware circuits.  Depending on which calibration has been achieved, the Biological Coordinator will provide one of two bonuses: - If calibrated to §nWetware§r, usage of Growth Catalyst Medium is reduced to zero - If calibrated to §nBioware§r, usage of both Growth Catalyst Medium and Bio Catalyst Medium is reduced to zero
+  - [提交] gregtech:gt.blockmachines:9514
+  > 奖励: modernmarkings:tile.wall_marking_number_4
+
+### [2578] §5§l§nNature's Ruin
+Infinity axe, never breaks and capable of chopping down an entire tree instantly.  [note]Cuz a levelled up and modified lumber axe is totally not capable of that.[/note]
+  - [提交] Avaritia:Infinity_Axe
+
+### [-8557295371763424843] §5§l§nOne Last Time
+For the final circuit line currently in the game, you will need to either make one last circuit assembler, or a UEV hatch for your circuit assembly machine.
+  - [提交] gregtech:gt.blockmachines:12090, gregtech:gt.blockmachines:11300
+
+### [-6772057045989436864] §5§l§nOptically Enriched Boules
+With high amounts of UU-Matter, and various lenses to cover all spectrums of light, Optically Enriched Crystalline Boules can be engraved using Americium Boules.
+  - [可选提交] gregtech:gt.metaitem.03:32721
+  - [提交] gregtech:gt.metaitem.03:32722
+
+### [2579] §5§l§nPlanet Eater
+Infinity shovel, never breaks and capable of mining a 16x16x16 area instantly.
+  - [提交] Avaritia:Infinity_Shovel
+
+### [-6062908746963570458] §5§l§nSomething From Nothing, Part 3?
+Suck up liquids like never before! This module replaces the infinite fluid drilling rig, but has the convenience of being inside your space elevator. Look at the NEI recipes to see which fluids you can pump with this.  [note]Will require MK-II motors on Space Elevator to function.[/note]
+  - [提交] gregtech:gt.blockmachines:14010
+
+### [-5419019742266243031] §5§l§nStabilized Baryonic Matter
+After automating Absolute Baryonic Perfection Purification Unit, you slowly start getting Stabilized Baryonic Matter, at a rate of 500mb/parallel every 120 seconds.
+  - [可选提交] gregtech:gt.metaitem.01:30569
+  - [勾选确认]
+
+### [-8014877735925203463] §5§l§nStopping the Infinity Bleed
+Already struggling to keep up with infinity demand? Not to worry, the component assembly line may just be what you need. You probably have one already. Upgrade it to UEV to allow creating UEV components at a significantly reduced cost.
+  - [提交] GoodGenerator:componentAssemblylineCasing:9 x43
+
+### [2580] §5§l§nSword of the Cosmos
+Able to kill anything, in one hit except another player in full infinity gear. Essentially runs the /kill command on the entity you hit.
+  - [提交] Avaritia:Infinity_Sword
+
+### [3239] §5§l§nTesseract
+Engineering beyond your comprehension. Destroying this strange higher dimensional object in a macerator is very easy though.  [note]You may proceed to UIV now. Best of luck.[/note]
+  - [提交] gregtech:gt.metaitem.01:32415
+  - [提交] gregtech:gt.metaitem.01:2581 x8
+
+### [-5095508056809418717] §5§l§nThe Final Frontier!
+With the §1§lMothership§r (see the Space Race tab for how to build one) you can visit the truly last system: the Amun-Ra system. It has six planets and moons you can visit, each with at least one unique ore vein.  §l§nAnubis§r Infinity Catalyst vein (Neutronium, Adamantium, Infinity Catalyst, Bedrockium)  §l§nHorus§r Cosmic Neutronium vein (Neutronium, Cosmic Neutronium, Black Plutonium, Bedrockium)  §l§nMaahes§r Naquadria vein (Naquadah, Enriched Naquadah, Naquadria, Trinium)  §l§nMehen Belt§r Awakened Draconium vein (Draconium, Draconium, Awakened Draconium, Nether Star)  §l§nNeper§r Dilithium (Dilithium, Dilithium, Mysterious Crystal, Vinteum)  §l§nSeth§r Raw Tengam (Raw Tengam, Raw Tengam, Electrotine, Samarium)  Raw Tengam is the vein you will want the most, as you can process Raw Tengam into Attuned Tengam, which is the UEV+ replacement for Magnetic Samarium. On Horus and Neper generate Certus Quartz veins (Certus Quartz, Certus Quartz, Charged Certus Quartz, Quartz Sand) as well §mI can't imagine why you would still need that though§r.
+  - [提交] gregtech:gt.blockores2:110 x64, gregtech:gt.metaitem.03:5110 x64, gregtech:gt.metaitem.01:2110 x64
+
+### [-5973404310081765177] §5§l§nThe Perfect CPU?
+Using your new optically enhanced boards and chips, you've managed to create what looks like the perfect CPU! Surely this will be able to handle even the advanced computations you need to perform to breach dimensional boundaries.
+  - [可选提交] gregtech:gt.metaitem.03:32727
+  - [提交] gregtech:gt.metaitem.03:32726
+
+### [-5399646287042766590] §5§l§nTier 10 (UEV)
+Welcome to Extremely Ultimate Voltage! Now that you've started making your first infinity, it's time to start scaling up. In this tier, every component will require infinity. Be prepared to make tons. Your main goal to advance will be to build the Dimensionally Transcendent Plasma Forge, also known as the DTPF. This massive multiblock will unlock new powerful recipes to create infinity, neutronium and other special materials.
+  - [提交] gregtech:gt.blockmachines:11230
+
+### [-5753871526049634361] §5§l§nUEV Energy Hatch
+Another tier, another energy hatch. You can use these to overclock your assembly lines to UIV voltage and speed them up.
+  - [提交] gregtech:gt.blockmachines:11300
+
+### [-5115695210744173999] §5§l§nUEV Field Generator
+Expensive but worth it. These will allow you to create powerful machines like the QFT and the Foundry.
+  - [提交] gregtech:gt.metaitem.01:32679
+
+### [-9196591828784291176] §5§l§nUEV Superconductors
+UEV Superconductors, another great Infinity sink. You can make the Celestial Tungsten and Advanced Nitinol in a laser engraver directly, but this is quite slow. Perhaps consider using the Celestial Tungsten plasma line?
+  - [提交] gregtech:gt.blockmachines:2026 x27
+
+### [-9196647558105735406] §5§l§nUsing... Goop To Compute?
+Using Hypogen's strange slime-like properties, and Bio Catalyst Medium, a new wafer can be manufactured.  [note]These wafers are not that useful currently, only being used for cheaper ZPM circuits, however they will come up again in UIV[/note]  §dWhere were you when these took 60 seconds at UHV...
+  - [可选提交] gregtech:gt.metaitem.03:32722, miscutils:itemDustHypogen
+  - [提交] gregtech:gt.metaitem.03:32188
+  > 奖励: minecraft:cake
+
+### [-8039439592690034003] §5§l§nUsing Light to Compute
+Carefully treating raw computer parts with purified water allows you to make optically enhanced chips. These use light waves to do computations at a speed you previously couldn't imagine. Making them is quite an involved process however.
+  - [可选提交] gregtech:gt.metaitem.03:32723
+  - [提交] gregtech:gt.metaitem.03:32724
+
+### [2593] §5§l§nWelcome to Hell!
+Congratulations, you've beaten most of the pack! Here we have some absolutely outrageous final challenges for you. Maybe start by showing us your certificate.
+  - [提交] dreamcraft:NANCertificate
+
+### [2588] §5§l§nWell This Looks... Shiny?
+Eternal singularity, requires nearly every resource in GTNH to construct. A stargate will require hundreds of thousands of these in total.  §3It can be mass produced after spacetime. 4 eternal singularity is enough for now to move on.
+  - [提交] eternalsingularity:eternal_singularity
+
+### [-5083942162575521758] §5§l§nWireless Data for Your Assembly Lines!
+Wireless Data Bank Transmission Connector and Wireless Assembly line Reception Connector lets you avoid building and connecting dozens of Data Banks and Optical Fiber Cable for the upcoming Assembly Lines you might have to build.  To use it, you have to screwdriver the Data Bank that is storing the data sticks, place a Wireless Data Bank Transmission Connector into the Data Bank, then Wireless Assembly line Reception Connector for the Assembly Lines.  [note]These Wireless Data Hatches are N:M (Many:Many)[/note]
+  - [提交] gregtech:gt.blockmachines:15447, gregtech:gt.blockmachines:15446
+
+### [2581] §5§l§nWorld Breaker
+Infinity pickaxe, never breaks, able to break bedrock and capable of mining a 16x16x16 area instantly.
+  - [提交] Avaritia:Infinity_Pickaxe
+
+### [2590] §5§l§nYou Know the Drill
+You know how this works. Prepare for everything to cost large amounts of infinity.
+  - [提交] gregtech:gt.metaitem.01:32619, gregtech:gt.metaitem.01:32639, gregtech:gt.metaitem.01:32649, gregtech:gt.metaitem.01:32659, gregtech:gt.metaitem.01:32689, gregtech:gt.metaitem.01:32699
+

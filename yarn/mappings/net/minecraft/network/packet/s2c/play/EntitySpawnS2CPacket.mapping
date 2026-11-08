@@ -1,0 +1,51 @@
+CLASS net/minecraft/class_2604 net/minecraft/network/packet/s2c/play/EntitySpawnS2CPacket
+	FIELD field_11946 y D
+	FIELD field_11947 pitch B
+	FIELD field_11948 x D
+	FIELD field_11952 uuid Ljava/util/UUID;
+	FIELD field_11953 entityId I
+	FIELD field_11954 entityData I
+	FIELD field_11955 entityType Lnet/minecraft/class_1299;
+	FIELD field_11956 z D
+	FIELD field_11957 yaw B
+	FIELD field_38817 headYaw B
+	FIELD field_47896 CODEC Lnet/minecraft/class_9139;
+	FIELD field_61886 velocity Lnet/minecraft/class_243;
+	METHOD <init> (ILjava/util/UUID;DDDFFLnet/minecraft/class_1299;ILnet/minecraft/class_243;D)V
+		ARG 1 entityId
+		ARG 2 uuid
+		ARG 3 x
+		ARG 5 y
+		ARG 7 z
+		ARG 9 pitch
+		ARG 10 yaw
+		ARG 11 entityType
+		ARG 12 entityData
+		ARG 13 velocity
+		ARG 14 headYaw
+	METHOD <init> (Lnet/minecraft/class_1297;ILnet/minecraft/class_2338;)V
+		ARG 1 entity
+		ARG 2 entityData
+		ARG 3 pos
+	METHOD <init> (Lnet/minecraft/class_1297;Lnet/minecraft/class_3231;)V
+		ARG 1 entity
+		ARG 2 entityTrackerEntry
+	METHOD <init> (Lnet/minecraft/class_1297;Lnet/minecraft/class_3231;I)V
+		ARG 1 entity
+		ARG 2 entityTrackerEntry
+		ARG 3 entityData
+	METHOD <init> (Lnet/minecraft/class_9129;)V
+		ARG 1 buf
+	METHOD method_11164 getUuid ()Ljava/util/UUID;
+	METHOD method_11166 getEntityData ()I
+	METHOD method_11167 getEntityId ()I
+	METHOD method_11168 getYaw ()F
+	METHOD method_11169 getEntityType ()Lnet/minecraft/class_1299;
+	METHOD method_11171 getPitch ()F
+	METHOD method_11174 getY ()D
+	METHOD method_11175 getX ()D
+	METHOD method_11176 getZ ()D
+	METHOD method_43233 getHeadYaw ()F
+	METHOD method_55855 write (Lnet/minecraft/class_9129;)V
+		ARG 1 buf
+	METHOD method_73084 getVelocity ()Lnet/minecraft/class_243;

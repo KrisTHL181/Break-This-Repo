@@ -1,0 +1,175 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.mixin.entity.event;
+
+import java.util.Optional;
+
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import org.jspecify.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.CollisionGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AbstractBedBlock;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+
+import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.util.EventResult;
+
+@Mixin(LivingEntity.class)
+abstract class LivingEntityMixin {
+	@Shadow
+	public abstract boolean isDeadOrDying();
+
+	@Shadow
+	public abstract Optional<BlockPos> getSleepingPos();
+
+	@WrapOperation(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;killedEntity(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/damagesource/DamageSource;)Z"))
+	private boolean onEntityKilledOther(Entity entity, ServerLevel serverLevel, @Nullable LivingEntity attacker, DamageSource damageSource, Operation<Boolean> original) {
+		boolean result = original.call(entity, serverLevel, attacker, damageSource);
+		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(serverLevel, entity, attacker, damageSource);
+		return result;
+	}
+
+	@Inject(method = "die", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;broadcastEntityEvent(Lnet/minecraft/world/entity/Entity;B)V"))
+	private void notifyDeath(DamageSource source, CallbackInfo ci) {
+		ServerLivingEntityEvents.AFTER_DEATH.invoker().afterDeath((LivingEntity) (Object) this, source);
+	}
+
+	@Redirect(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isDeadOrDying()Z", ordinal = 1))
+	boolean beforeEntityKilled(LivingEntity livingEntity, ServerLevel level, DamageSource source, float amount) {
+		return isDeadOrDying() && ServerLivingEntityEvents.ALLOW_DEATH.invoker().allowDeath(livingEntity, source, amount);
+	}
+
+	@Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z"), cancellable = true)
+	private void beforeDamage(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+		if (!ServerLivingEntityEvents.ALLOW_DAMAGE.invoker().allowDamage((LivingEntity) (Object) this, source, amount)) {
+			cir.setReturnValue(false);
+		}
+	}
+
+	@Inject(method = "hurtServer", at = @At("TAIL"))
+	private void afterDamage(ServerLevel level, DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir, @Local(name = "originalDamage") float originalDamage, @Local(name = "blocked") boolean blocked) {
+		if (!isDeadOrDying()) {
+			ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage((LivingEntity) (Object) this, source, originalDamage, amount, blocked);
+		}
+	}
+
+	@Inject(method = "startSleeping", at = @At("RETURN"))
+	private void onSleep(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+		if (cir.getReturnValueZ()) {
+			EntitySleepEvents.START_SLEEPING.invoker().onStartSleeping((LivingEntity) (Object) this, pos);
+		}
+	}
+
+	@Inject(method = "stopSleeping", at = @At("HEAD"))
+	private void onWakeUp(CallbackInfo info) {
+		BlockPos sleepingPos = getSleepingPos().orElse(null);
+
+		// If actually asleep - this method is often called with data loading, syncing etc. "just to be sure"
+		if (sleepingPos != null) {
+			EntitySleepEvents.STOP_SLEEPING.invoker().onStopSleeping((LivingEntity) (Object) this, sleepingPos);
+		}
+	}
+
+	@Inject(method = "checkBedExists", at = @At("RETURN"), cancellable = true)
+	private void onIsSleepingInBed(CallbackInfoReturnable<Boolean> info) {
+		BlockPos sleepingPos = getSleepingPos().orElse(null);
+
+		if (sleepingPos == null) {
+			return;
+		}
+
+		BlockState bedState = ((LivingEntity) (Object) this).level().getBlockState(sleepingPos);
+		EventResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, bedState, info.getReturnValueZ());
+
+		if (result != EventResult.PASS) {
+			info.setReturnValue(result.allowAction());
+		}
+	}
+
+	@WrapOperation(method = "getBedOrientation", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/BedBlock;getBedOrientation(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Lnet/minecraft/core/Direction;"))
+	private Direction onGetSleepingDirection(BlockGetter level, BlockPos sleepingPos, Operation<Direction> operation) {
+		final Direction sleepingDirection = operation.call(level, sleepingPos);
+		return EntitySleepEvents.MODIFY_SLEEPING_DIRECTION.invoker().modifySleepDirection((LivingEntity) (Object) this, sleepingPos, sleepingDirection);
+	}
+
+	// This is needed 1) so that the vanilla logic in wakeUp runs for modded beds and 2) for the injector below.
+	// The injector is shared because lambda$stopSleeping$0 and sleep share much of the structure here.
+	@ModifyVariable(method = {"lambda$stopSleeping$0", "startSleeping"}, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/Level;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"))
+	private BlockState modifyBedForOccupiedState(BlockState state, BlockPos sleepingPos) {
+		EventResult result = EntitySleepEvents.ALLOW_BED.invoker().allowBed((LivingEntity) (Object) this, sleepingPos, state, state.getBlock() instanceof AbstractBedBlock);
+
+		// If a valid bed, replace with vanilla red bed so that the vanilla instanceof check succeeds.
+		return result.allowAction(false) ? Blocks.BED.red().defaultBlockState() : state;
+	}
+
+	// The injector is shared because lambda$stopSleeping$0 and sleep share much of the structure here.
+	@Redirect(method = {"lambda$stopSleeping$0", "startSleeping"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"))
+	private boolean setOccupiedState(Level level, BlockPos pos, BlockState state) {
+		// This might have been replaced by a red bed above, so we get it again.
+		// Note that we *need* to replace it so the state.with(OCCUPIED, ...) call doesn't crash
+		// when the bed doesn't have the property.
+		BlockState originalState = level.getBlockState(pos);
+		boolean occupied = state.getValue(BedBlock.OCCUPIED);
+
+		if (EntitySleepEvents.SET_BED_OCCUPATION_STATE.invoker().setBedOccupationState((LivingEntity) (Object) this, pos, originalState, occupied)) {
+			return true;
+		} else if (originalState.hasProperty(BedBlock.OCCUPIED)) {
+			// This check is widened from (instanceof BedBlock) to a property check to allow modded blocks
+			// that don't use the event.
+			return level.setBlockAndUpdate(pos, originalState.setValue(BedBlock.OCCUPIED, occupied));
+		} else {
+			return false;
+		}
+	}
+
+	@Redirect(method = "lambda$stopSleeping$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/AbstractBedBlock;findStandUpPosition(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/CollisionGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;F)Ljava/util/Optional;"))
+	private Optional<Vec3> modifyWakeUpPosition(EntityType<?> type, CollisionGetter level, BlockPos pos, Direction direction, float yaw) {
+		Optional<Vec3> original = Optional.empty();
+		BlockState bedState = level.getBlockState(pos);
+
+		if (bedState.getBlock() instanceof AbstractBedBlock) {
+			original = AbstractBedBlock.findStandUpPosition(type, level, pos, direction, yaw);
+		}
+
+		Vec3 newPos = EntitySleepEvents.MODIFY_WAKE_UP_POSITION.invoker().modifyWakeUpPosition((LivingEntity) (Object) this, pos, bedState, original.orElse(null));
+		return Optional.ofNullable(newPos);
+	}
+}

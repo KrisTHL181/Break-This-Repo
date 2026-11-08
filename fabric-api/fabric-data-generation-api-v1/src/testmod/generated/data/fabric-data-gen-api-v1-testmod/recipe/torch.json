@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "fabric:type": "fabric:all",
+      "ingredients": [
+        "#minecraft:coals",
+        "minecraft:charcoal"
+      ]
+    }
+  ],
+  "result": {
+    "id": "minecraft:torch"
+  }
+}

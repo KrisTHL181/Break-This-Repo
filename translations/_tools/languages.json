@@ -1,0 +1,1290 @@
+[
+  {
+    "code": "aa",
+    "bcp47": "aa",
+    "en": "Afar",
+    "native": "Afaraf",
+    "file": "README.aa.md"
+  },
+  {
+    "code": "ab",
+    "bcp47": "ab",
+    "en": "Abkhaz",
+    "native": "аԥсшәа",
+    "file": "README.ab.md"
+  },
+  {
+    "code": "ae",
+    "bcp47": "ae",
+    "en": "Avestan",
+    "native": "avesta",
+    "file": "README.ae.md"
+  },
+  {
+    "code": "af",
+    "bcp47": "af",
+    "en": "Afrikaans",
+    "native": "Afrikaans",
+    "file": "README.af.md"
+  },
+  {
+    "code": "ak",
+    "bcp47": "ak",
+    "en": "Akan",
+    "native": "Akan",
+    "file": "README.ak.md"
+  },
+  {
+    "code": "am",
+    "bcp47": "am",
+    "en": "Amharic",
+    "native": "አማርኛ",
+    "file": "README.am.md"
+  },
+  {
+    "code": "an",
+    "bcp47": "an",
+    "en": "Aragonese",
+    "native": "aragonés",
+    "file": "README.an.md"
+  },
+  {
+    "code": "ar",
+    "bcp47": "ar",
+    "en": "Arabic",
+    "native": "العربية",
+    "file": "README.ar.md"
+  },
+  {
+    "code": "as",
+    "bcp47": "as",
+    "en": "Assamese",
+    "native": "অসমীয়া",
+    "file": "README.as.md"
+  },
+  {
+    "code": "av",
+    "bcp47": "av",
+    "en": "Avaric",
+    "native": "авар мацӀ",
+    "file": "README.av.md"
+  },
+  {
+    "code": "ay",
+    "bcp47": "ay",
+    "en": "Aymara",
+    "native": "aymar aru",
+    "file": "README.ay.md"
+  },
+  {
+    "code": "az",
+    "bcp47": "az",
+    "en": "Azerbaijani",
+    "native": "azərbaycan dili",
+    "file": "README.az.md"
+  },
+  {
+    "code": "ba",
+    "bcp47": "ba",
+    "en": "Bashkir",
+    "native": "башҡорт теле",
+    "file": "README.ba.md"
+  },
+  {
+    "code": "be",
+    "bcp47": "be",
+    "en": "Belarusian",
+    "native": "беларуская мова",
+    "file": "README.be.md"
+  },
+  {
+    "code": "bg",
+    "bcp47": "bg",
+    "en": "Bulgarian",
+    "native": "български език",
+    "file": "README.bg.md"
+  },
+  {
+    "code": "bh",
+    "bcp47": "bh",
+    "en": "Bihari",
+    "native": "भोजपुरी",
+    "file": "README.bh.md"
+  },
+  {
+    "code": "bi",
+    "bcp47": "bi",
+    "en": "Bislama",
+    "native": "Bislama",
+    "file": "README.bi.md"
+  },
+  {
+    "code": "bm",
+    "bcp47": "bm",
+    "en": "Bambara",
+    "native": "bamanankan",
+    "file": "README.bm.md"
+  },
+  {
+    "code": "bn",
+    "bcp47": "bn",
+    "en": "Bengali",
+    "native": "বাংলা",
+    "file": "README.bn.md"
+  },
+  {
+    "code": "bo",
+    "bcp47": "bo",
+    "en": "Tibetan",
+    "native": "བོད་ཡིག",
+    "file": "README.bo.md"
+  },
+  {
+    "code": "br",
+    "bcp47": "br",
+    "en": "Breton",
+    "native": "brezhoneg",
+    "file": "README.br.md"
+  },
+  {
+    "code": "bs",
+    "bcp47": "bs",
+    "en": "Bosnian",
+    "native": "bosanski jezik",
+    "file": "README.bs.md"
+  },
+  {
+    "code": "ca",
+    "bcp47": "ca",
+    "en": "Catalan",
+    "native": "Català",
+    "file": "README.ca.md"
+  },
+  {
+    "code": "ce",
+    "bcp47": "ce",
+    "en": "Chechen",
+    "native": "нохчийн мотт",
+    "file": "README.ce.md"
+  },
+  {
+    "code": "ch",
+    "bcp47": "ch",
+    "en": "Chamorro",
+    "native": "Chamoru",
+    "file": "README.ch.md"
+  },
+  {
+    "code": "co",
+    "bcp47": "co",
+    "en": "Corsican",
+    "native": "corsu",
+    "file": "README.co.md"
+  },
+  {
+    "code": "cr",
+    "bcp47": "cr",
+    "en": "Cree",
+    "native": "ᓀᐦᐃᔭᐍᐏᐣ",
+    "file": "README.cr.md"
+  },
+  {
+    "code": "cs",
+    "bcp47": "cs",
+    "en": "Czech",
+    "native": "čeština",
+    "file": "README.cs.md"
+  },
+  {
+    "code": "cu",
+    "bcp47": "cu",
+    "en": "Church Slavic",
+    "native": "ѩзыкъ словѣньскъ",
+    "file": "README.cu.md"
+  },
+  {
+    "code": "cv",
+    "bcp47": "cv",
+    "en": "Chuvash",
+    "native": "чӑваш чӗлхи",
+    "file": "README.cv.md"
+  },
+  {
+    "code": "cy",
+    "bcp47": "cy",
+    "en": "Welsh",
+    "native": "Cymraeg",
+    "file": "README.cy.md"
+  },
+  {
+    "code": "da",
+    "bcp47": "da",
+    "en": "Danish",
+    "native": "dansk",
+    "file": "README.da.md"
+  },
+  {
+    "code": "de",
+    "bcp47": "de",
+    "en": "German",
+    "native": "Deutsch",
+    "file": "README.de.md"
+  },
+  {
+    "code": "dv",
+    "bcp47": "dv",
+    "en": "Divehi",
+    "native": "ދިވެހި",
+    "file": "README.dv.md"
+  },
+  {
+    "code": "dz",
+    "bcp47": "dz",
+    "en": "Dzongkha",
+    "native": "རྫོང་ཁ",
+    "file": "README.dz.md"
+  },
+  {
+    "code": "ee",
+    "bcp47": "ee",
+    "en": "Ewe",
+    "native": "Eʋegbe",
+    "file": "README.ee.md"
+  },
+  {
+    "code": "el",
+    "bcp47": "el",
+    "en": "Greek",
+    "native": "Ελληνικά",
+    "file": "README.el.md"
+  },
+  {
+    "code": "en",
+    "bcp47": "en",
+    "en": "English",
+    "native": "English",
+    "file": "README.en.md"
+  },
+  {
+    "code": "eo",
+    "bcp47": "eo",
+    "en": "Esperanto",
+    "native": "Esperanto",
+    "file": "README.eo.md"
+  },
+  {
+    "code": "es",
+    "bcp47": "es",
+    "en": "Spanish",
+    "native": "Español",
+    "file": "README.es.md"
+  },
+  {
+    "code": "et",
+    "bcp47": "et",
+    "en": "Estonian",
+    "native": "eesti",
+    "file": "README.et.md"
+  },
+  {
+    "code": "eu",
+    "bcp47": "eu",
+    "en": "Basque",
+    "native": "euskara",
+    "file": "README.eu.md"
+  },
+  {
+    "code": "fa",
+    "bcp47": "fa",
+    "en": "Persian",
+    "native": "فارسی",
+    "file": "README.fa.md"
+  },
+  {
+    "code": "ff",
+    "bcp47": "ff",
+    "en": "Fulah",
+    "native": "Fulfulde",
+    "file": "README.ff.md"
+  },
+  {
+    "code": "fi",
+    "bcp47": "fi",
+    "en": "Finnish",
+    "native": "suomi",
+    "file": "README.fi.md"
+  },
+  {
+    "code": "fj",
+    "bcp47": "fj",
+    "en": "Fijian",
+    "native": "vosa Vakaviti",
+    "file": "README.fj.md"
+  },
+  {
+    "code": "fo",
+    "bcp47": "fo",
+    "en": "Faroese",
+    "native": "føroyskt",
+    "file": "README.fo.md"
+  },
+  {
+    "code": "fr",
+    "bcp47": "fr",
+    "en": "French",
+    "native": "Français",
+    "file": "README.fr.md"
+  },
+  {
+    "code": "fy",
+    "bcp47": "fy",
+    "en": "Western Frisian",
+    "native": "Frysk",
+    "file": "README.fy.md"
+  },
+  {
+    "code": "ga",
+    "bcp47": "ga",
+    "en": "Irish",
+    "native": "Gaeilge",
+    "file": "README.ga.md"
+  },
+  {
+    "code": "gd",
+    "bcp47": "gd",
+    "en": "Scottish Gaelic",
+    "native": "Gàidhlig",
+    "file": "README.gd.md"
+  },
+  {
+    "code": "gl",
+    "bcp47": "gl",
+    "en": "Galician",
+    "native": "Galego",
+    "file": "README.gl.md"
+  },
+  {
+    "code": "gn",
+    "bcp47": "gn",
+    "en": "Guarani",
+    "native": "Avañe'ẽ",
+    "file": "README.gn.md"
+  },
+  {
+    "code": "gu",
+    "bcp47": "gu",
+    "en": "Gujarati",
+    "native": "ગુજરાતી",
+    "file": "README.gu.md"
+  },
+  {
+    "code": "gv",
+    "bcp47": "gv",
+    "en": "Manx",
+    "native": "Gaelg",
+    "file": "README.gv.md"
+  },
+  {
+    "code": "ha",
+    "bcp47": "ha",
+    "en": "Hausa",
+    "native": "Hausa",
+    "file": "README.ha.md"
+  },
+  {
+    "code": "he",
+    "bcp47": "he",
+    "en": "Hebrew",
+    "native": "עברית",
+    "file": "README.he.md"
+  },
+  {
+    "code": "hi",
+    "bcp47": "hi",
+    "en": "Hindi",
+    "native": "हिन्दी",
+    "file": "README.hi.md"
+  },
+  {
+    "code": "ho",
+    "bcp47": "ho",
+    "en": "Hiri Motu",
+    "native": "Hiri Motu",
+    "file": "README.ho.md"
+  },
+  {
+    "code": "hr",
+    "bcp47": "hr",
+    "en": "Croatian",
+    "native": "Hrvatski",
+    "file": "README.hr.md"
+  },
+  {
+    "code": "ht",
+    "bcp47": "ht",
+    "en": "Haitian",
+    "native": "Kreyòl ayisyen",
+    "file": "README.ht.md"
+  },
+  {
+    "code": "hu",
+    "bcp47": "hu",
+    "en": "Hungarian",
+    "native": "magyar",
+    "file": "README.hu.md"
+  },
+  {
+    "code": "hy",
+    "bcp47": "hy",
+    "en": "Armenian",
+    "native": "Հայերեն",
+    "file": "README.hy.md"
+  },
+  {
+    "code": "hz",
+    "bcp47": "hz",
+    "en": "Herero",
+    "native": "Otjiherero",
+    "file": "README.hz.md"
+  },
+  {
+    "code": "ia",
+    "bcp47": "ia",
+    "en": "Interlingua",
+    "native": "Interlingua",
+    "file": "README.ia.md"
+  },
+  {
+    "code": "id",
+    "bcp47": "id",
+    "en": "Indonesian",
+    "native": "Bahasa Indonesia",
+    "file": "README.id.md"
+  },
+  {
+    "code": "ie",
+    "bcp47": "ie",
+    "en": "Interlingue",
+    "native": "Interlingue",
+    "file": "README.ie.md"
+  },
+  {
+    "code": "ig",
+    "bcp47": "ig",
+    "en": "Igbo",
+    "native": "Asụsụ Igbo",
+    "file": "README.ig.md"
+  },
+  {
+    "code": "ii",
+    "bcp47": "ii",
+    "en": "Sichuan Yi",
+    "native": "ꆈꌠꉙ",
+    "file": "README.ii.md"
+  },
+  {
+    "code": "ik",
+    "bcp47": "ik",
+    "en": "Inupiaq",
+    "native": "Iñupiaq",
+    "file": "README.ik.md"
+  },
+  {
+    "code": "io",
+    "bcp47": "io",
+    "en": "Ido",
+    "native": "Ido",
+    "file": "README.io.md"
+  },
+  {
+    "code": "is",
+    "bcp47": "is",
+    "en": "Icelandic",
+    "native": "Íslenska",
+    "file": "README.is.md"
+  },
+  {
+    "code": "it",
+    "bcp47": "it",
+    "en": "Italian",
+    "native": "Italiano",
+    "file": "README.it.md"
+  },
+  {
+    "code": "iu",
+    "bcp47": "iu",
+    "en": "Inuktitut",
+    "native": "ᐃᓄᒃᑎᑐᑦ",
+    "file": "README.iu.md"
+  },
+  {
+    "code": "ja",
+    "bcp47": "ja",
+    "en": "Japanese",
+    "native": "日本語",
+    "file": "README.ja.md"
+  },
+  {
+    "code": "jv",
+    "bcp47": "jv",
+    "en": "Javanese",
+    "native": "basa Jawa",
+    "file": "README.jv.md"
+  },
+  {
+    "code": "ka",
+    "bcp47": "ka",
+    "en": "Georgian",
+    "native": "ქართული",
+    "file": "README.ka.md"
+  },
+  {
+    "code": "kg",
+    "bcp47": "kg",
+    "en": "Kongo",
+    "native": "Kikongo",
+    "file": "README.kg.md"
+  },
+  {
+    "code": "ki",
+    "bcp47": "ki",
+    "en": "Kikuyu",
+    "native": "Gĩkũyũ",
+    "file": "README.ki.md"
+  },
+  {
+    "code": "kj",
+    "bcp47": "kj",
+    "en": "Kuanyama",
+    "native": "Kuanyama",
+    "file": "README.kj.md"
+  },
+  {
+    "code": "kk",
+    "bcp47": "kk",
+    "en": "Kazakh",
+    "native": "қазақ тілі",
+    "file": "README.kk.md"
+  },
+  {
+    "code": "kl",
+    "bcp47": "kl",
+    "en": "Kalaallisut",
+    "native": "kalaallisut",
+    "file": "README.kl.md"
+  },
+  {
+    "code": "km",
+    "bcp47": "km",
+    "en": "Khmer",
+    "native": "ខេមរភាសា",
+    "file": "README.km.md"
+  },
+  {
+    "code": "kn",
+    "bcp47": "kn",
+    "en": "Kannada",
+    "native": "ಕನ್ನಡ",
+    "file": "README.kn.md"
+  },
+  {
+    "code": "ko",
+    "bcp47": "ko",
+    "en": "Korean",
+    "native": "한국어",
+    "file": "README.ko.md"
+  },
+  {
+    "code": "kr",
+    "bcp47": "kr",
+    "en": "Kanuri",
+    "native": "Kanuri",
+    "file": "README.kr.md"
+  },
+  {
+    "code": "ks",
+    "bcp47": "ks",
+    "en": "Kashmiri",
+    "native": "कॉशुर",
+    "file": "README.ks.md"
+  },
+  {
+    "code": "ku",
+    "bcp47": "ku",
+    "en": "Kurdish",
+    "native": "Kurdî",
+    "file": "README.ku.md"
+  },
+  {
+    "code": "kv",
+    "bcp47": "kv",
+    "en": "Komi",
+    "native": "коми кыв",
+    "file": "README.kv.md"
+  },
+  {
+    "code": "kw",
+    "bcp47": "kw",
+    "en": "Cornish",
+    "native": "Kernewek",
+    "file": "README.kw.md"
+  },
+  {
+    "code": "ky",
+    "bcp47": "ky",
+    "en": "Kirghiz",
+    "native": "Кыргызча",
+    "file": "README.ky.md"
+  },
+  {
+    "code": "la",
+    "bcp47": "la",
+    "en": "Latin",
+    "native": "latine",
+    "file": "README.la.md"
+  },
+  {
+    "code": "lb",
+    "bcp47": "lb",
+    "en": "Luxembourgish",
+    "native": "Lëtzebuergesch",
+    "file": "README.lb.md"
+  },
+  {
+    "code": "lg",
+    "bcp47": "lg",
+    "en": "Ganda",
+    "native": "Luganda",
+    "file": "README.lg.md"
+  },
+  {
+    "code": "li",
+    "bcp47": "li",
+    "en": "Limburgan",
+    "native": "Limburgs",
+    "file": "README.li.md"
+  },
+  {
+    "code": "ln",
+    "bcp47": "ln",
+    "en": "Lingala",
+    "native": "Lingála",
+    "file": "README.ln.md"
+  },
+  {
+    "code": "lo",
+    "bcp47": "lo",
+    "en": "Lao",
+    "native": "ພາສາລາວ",
+    "file": "README.lo.md"
+  },
+  {
+    "code": "lt",
+    "bcp47": "lt",
+    "en": "Lithuanian",
+    "native": "lietuvių kalba",
+    "file": "README.lt.md"
+  },
+  {
+    "code": "lu",
+    "bcp47": "lu",
+    "en": "Luba-Katanga",
+    "native": "Kiluba",
+    "file": "README.lu.md"
+  },
+  {
+    "code": "lv",
+    "bcp47": "lv",
+    "en": "Latvian",
+    "native": "latviešu valoda",
+    "file": "README.lv.md"
+  },
+  {
+    "code": "mg",
+    "bcp47": "mg",
+    "en": "Malagasy",
+    "native": "fiteny malagasy",
+    "file": "README.mg.md"
+  },
+  {
+    "code": "mh",
+    "bcp47": "mh",
+    "en": "Marshallese",
+    "native": "Kajin M̧ajeļ",
+    "file": "README.mh.md"
+  },
+  {
+    "code": "mi",
+    "bcp47": "mi",
+    "en": "Maori",
+    "native": "te reo Māori",
+    "file": "README.mi.md"
+  },
+  {
+    "code": "mk",
+    "bcp47": "mk",
+    "en": "Macedonian",
+    "native": "македонски јазик",
+    "file": "README.mk.md"
+  },
+  {
+    "code": "ml",
+    "bcp47": "ml",
+    "en": "Malayalam",
+    "native": "മലയാളം",
+    "file": "README.ml.md"
+  },
+  {
+    "code": "mn",
+    "bcp47": "mn",
+    "en": "Mongolian",
+    "native": "Монгол хэл",
+    "file": "README.mn.md"
+  },
+  {
+    "code": "mr",
+    "bcp47": "mr",
+    "en": "Marathi",
+    "native": "मराठी",
+    "file": "README.mr.md"
+  },
+  {
+    "code": "ms",
+    "bcp47": "ms",
+    "en": "Malay",
+    "native": "Bahasa Melayu",
+    "file": "README.ms.md"
+  },
+  {
+    "code": "mt",
+    "bcp47": "mt",
+    "en": "Maltese",
+    "native": "Malti",
+    "file": "README.mt.md"
+  },
+  {
+    "code": "my",
+    "bcp47": "my",
+    "en": "Burmese",
+    "native": "ဗမာစာ",
+    "file": "README.my.md"
+  },
+  {
+    "code": "na",
+    "bcp47": "na",
+    "en": "Nauru",
+    "native": "Dorerin Naoero",
+    "file": "README.na.md"
+  },
+  {
+    "code": "nb",
+    "bcp47": "nb",
+    "en": "Norwegian Bokmål",
+    "native": "Norsk bokmål",
+    "file": "README.nb.md"
+  },
+  {
+    "code": "nd",
+    "bcp47": "nd",
+    "en": "North Ndebele",
+    "native": "isiNdebele",
+    "file": "README.nd.md"
+  },
+  {
+    "code": "ne",
+    "bcp47": "ne",
+    "en": "Nepali",
+    "native": "नेपाली",
+    "file": "README.ne.md"
+  },
+  {
+    "code": "ng",
+    "bcp47": "ng",
+    "en": "Ndonga",
+    "native": "Owambo",
+    "file": "README.ng.md"
+  },
+  {
+    "code": "nl",
+    "bcp47": "nl",
+    "en": "Dutch",
+    "native": "Nederlands",
+    "file": "README.nl.md"
+  },
+  {
+    "code": "nn",
+    "bcp47": "nn",
+    "en": "Norwegian Nynorsk",
+    "native": "Norsk nynorsk",
+    "file": "README.nn.md"
+  },
+  {
+    "code": "no",
+    "bcp47": "no",
+    "en": "Norwegian",
+    "native": "Norsk",
+    "file": "README.no.md"
+  },
+  {
+    "code": "nr",
+    "bcp47": "nr",
+    "en": "South Ndebele",
+    "native": "isiNdebele",
+    "file": "README.nr.md"
+  },
+  {
+    "code": "nv",
+    "bcp47": "nv",
+    "en": "Navajo",
+    "native": "Diné bizaad",
+    "file": "README.nv.md"
+  },
+  {
+    "code": "ny",
+    "bcp47": "ny",
+    "en": "Chichewa",
+    "native": "chiCheŵa",
+    "file": "README.ny.md"
+  },
+  {
+    "code": "oc",
+    "bcp47": "oc",
+    "en": "Occitan",
+    "native": "occitan",
+    "file": "README.oc.md"
+  },
+  {
+    "code": "oj",
+    "bcp47": "oj",
+    "en": "Ojibwa",
+    "native": "ᐊᓂᔑᓈᐯᒧᐎᓐ",
+    "file": "README.oj.md"
+  },
+  {
+    "code": "om",
+    "bcp47": "om",
+    "en": "Oromo",
+    "native": "Afaan Oromoo",
+    "file": "README.om.md"
+  },
+  {
+    "code": "or",
+    "bcp47": "or",
+    "en": "Oriya",
+    "native": "ଓଡ଼ିଆ",
+    "file": "README.or.md"
+  },
+  {
+    "code": "os",
+    "bcp47": "os",
+    "en": "Ossetian",
+    "native": "ирон æвзаг",
+    "file": "README.os.md"
+  },
+  {
+    "code": "pa",
+    "bcp47": "pa",
+    "en": "Panjabi",
+    "native": "ਪੰਜਾਬੀ",
+    "file": "README.pa.md"
+  },
+  {
+    "code": "pi",
+    "bcp47": "pi",
+    "en": "Pali",
+    "native": "पाऴि",
+    "file": "README.pi.md"
+  },
+  {
+    "code": "pl",
+    "bcp47": "pl",
+    "en": "Polish",
+    "native": "polski",
+    "file": "README.pl.md"
+  },
+  {
+    "code": "ps",
+    "bcp47": "ps",
+    "en": "Pashto",
+    "native": "پښتو",
+    "file": "README.ps.md"
+  },
+  {
+    "code": "pt",
+    "bcp47": "pt",
+    "en": "Portuguese",
+    "native": "Português",
+    "file": "README.pt.md"
+  },
+  {
+    "code": "qu",
+    "bcp47": "qu",
+    "en": "Quechua",
+    "native": "Runa Simi",
+    "file": "README.qu.md"
+  },
+  {
+    "code": "rm",
+    "bcp47": "rm",
+    "en": "Romansh",
+    "native": "rumantsch grischun",
+    "file": "README.rm.md"
+  },
+  {
+    "code": "rn",
+    "bcp47": "rn",
+    "en": "Rundi",
+    "native": "Ikirundi",
+    "file": "README.rn.md"
+  },
+  {
+    "code": "ro",
+    "bcp47": "ro",
+    "en": "Romanian",
+    "native": "Română",
+    "file": "README.ro.md"
+  },
+  {
+    "code": "ru",
+    "bcp47": "ru",
+    "en": "Russian",
+    "native": "Русский",
+    "file": "README.ru.md"
+  },
+  {
+    "code": "rw",
+    "bcp47": "rw",
+    "en": "Kinyarwanda",
+    "native": "Ikinyarwanda",
+    "file": "README.rw.md"
+  },
+  {
+    "code": "sa",
+    "bcp47": "sa",
+    "en": "Sanskrit",
+    "native": "संस्कृतम्",
+    "file": "README.sa.md"
+  },
+  {
+    "code": "sc",
+    "bcp47": "sc",
+    "en": "Sardinian",
+    "native": "sardu",
+    "file": "README.sc.md"
+  },
+  {
+    "code": "sd",
+    "bcp47": "sd",
+    "en": "Sindhi",
+    "native": "सिन्धी",
+    "file": "README.sd.md"
+  },
+  {
+    "code": "se",
+    "bcp47": "se",
+    "en": "Northern Sami",
+    "native": "Davvisámegiella",
+    "file": "README.se.md"
+  },
+  {
+    "code": "sg",
+    "bcp47": "sg",
+    "en": "Sango",
+    "native": "yângâ tî sängö",
+    "file": "README.sg.md"
+  },
+  {
+    "code": "si",
+    "bcp47": "si",
+    "en": "Sinhala",
+    "native": "සිංහල",
+    "file": "README.si.md"
+  },
+  {
+    "code": "sk",
+    "bcp47": "sk",
+    "en": "Slovak",
+    "native": "slovenčina",
+    "file": "README.sk.md"
+  },
+  {
+    "code": "sl",
+    "bcp47": "sl",
+    "en": "Slovenian",
+    "native": "slovenščina",
+    "file": "README.sl.md"
+  },
+  {
+    "code": "sm",
+    "bcp47": "sm",
+    "en": "Samoan",
+    "native": "gagana fa'a Samoa",
+    "file": "README.sm.md"
+  },
+  {
+    "code": "sn",
+    "bcp47": "sn",
+    "en": "Shona",
+    "native": "chiShona",
+    "file": "README.sn.md"
+  },
+  {
+    "code": "so",
+    "bcp47": "so",
+    "en": "Somali",
+    "native": "Soomaaliga",
+    "file": "README.so.md"
+  },
+  {
+    "code": "sq",
+    "bcp47": "sq",
+    "en": "Albanian",
+    "native": "Shqip",
+    "file": "README.sq.md"
+  },
+  {
+    "code": "sr",
+    "bcp47": "sr",
+    "en": "Serbian",
+    "native": "српски језик",
+    "file": "README.sr.md"
+  },
+  {
+    "code": "ss",
+    "bcp47": "ss",
+    "en": "Swati",
+    "native": "SiSwati",
+    "file": "README.ss.md"
+  },
+  {
+    "code": "st",
+    "bcp47": "st",
+    "en": "Southern Sotho",
+    "native": "Sesotho",
+    "file": "README.st.md"
+  },
+  {
+    "code": "su",
+    "bcp47": "su",
+    "en": "Sundanese",
+    "native": "Basa Sunda",
+    "file": "README.su.md"
+  },
+  {
+    "code": "sv",
+    "bcp47": "sv",
+    "en": "Swedish",
+    "native": "Svenska",
+    "file": "README.sv.md"
+  },
+  {
+    "code": "sw",
+    "bcp47": "sw",
+    "en": "Swahili",
+    "native": "Kiswahili",
+    "file": "README.sw.md"
+  },
+  {
+    "code": "ta",
+    "bcp47": "ta",
+    "en": "Tamil",
+    "native": "தமிழ்",
+    "file": "README.ta.md"
+  },
+  {
+    "code": "te",
+    "bcp47": "te",
+    "en": "Telugu",
+    "native": "తెలుగు",
+    "file": "README.te.md"
+  },
+  {
+    "code": "tg",
+    "bcp47": "tg",
+    "en": "Tajik",
+    "native": "тоҷикӣ",
+    "file": "README.tg.md"
+  },
+  {
+    "code": "th",
+    "bcp47": "th",
+    "en": "Thai",
+    "native": "ไทย",
+    "file": "README.th.md"
+  },
+  {
+    "code": "ti",
+    "bcp47": "ti",
+    "en": "Tigrinya",
+    "native": "ትግርኛ",
+    "file": "README.ti.md"
+  },
+  {
+    "code": "tk",
+    "bcp47": "tk",
+    "en": "Turkmen",
+    "native": "Türkmençe",
+    "file": "README.tk.md"
+  },
+  {
+    "code": "tl",
+    "bcp47": "tl",
+    "en": "Tagalog",
+    "native": "Wikang Tagalog",
+    "file": "README.tl.md"
+  },
+  {
+    "code": "tn",
+    "bcp47": "tn",
+    "en": "Tswana",
+    "native": "Setswana",
+    "file": "README.tn.md"
+  },
+  {
+    "code": "to",
+    "bcp47": "to",
+    "en": "Tonga",
+    "native": "faka Tonga",
+    "file": "README.to.md"
+  },
+  {
+    "code": "tr",
+    "bcp47": "tr",
+    "en": "Turkish",
+    "native": "Türkçe",
+    "file": "README.tr.md"
+  },
+  {
+    "code": "ts",
+    "bcp47": "ts",
+    "en": "Tsonga",
+    "native": "Xitsonga",
+    "file": "README.ts.md"
+  },
+  {
+    "code": "tt",
+    "bcp47": "tt",
+    "en": "Tatar",
+    "native": "татар теле",
+    "file": "README.tt.md"
+  },
+  {
+    "code": "tw",
+    "bcp47": "tw",
+    "en": "Twi",
+    "native": "Twi",
+    "file": "README.tw.md"
+  },
+  {
+    "code": "ty",
+    "bcp47": "ty",
+    "en": "Tahitian",
+    "native": "Reo Tahiti",
+    "file": "README.ty.md"
+  },
+  {
+    "code": "ug",
+    "bcp47": "ug",
+    "en": "Uighur",
+    "native": "ئۇيغۇرچە",
+    "file": "README.ug.md"
+  },
+  {
+    "code": "uk",
+    "bcp47": "uk",
+    "en": "Ukrainian",
+    "native": "Українська",
+    "file": "README.uk.md"
+  },
+  {
+    "code": "ur",
+    "bcp47": "ur",
+    "en": "Urdu",
+    "native": "اردو",
+    "file": "README.ur.md"
+  },
+  {
+    "code": "uz",
+    "bcp47": "uz",
+    "en": "Uzbek",
+    "native": "Oʻzbek",
+    "file": "README.uz.md"
+  },
+  {
+    "code": "ve",
+    "bcp47": "ve",
+    "en": "Venda",
+    "native": "Tshivenḓa",
+    "file": "README.ve.md"
+  },
+  {
+    "code": "vi",
+    "bcp47": "vi",
+    "en": "Vietnamese",
+    "native": "Tiếng Việt",
+    "file": "README.vi.md"
+  },
+  {
+    "code": "vo",
+    "bcp47": "vo",
+    "en": "Volapük",
+    "native": "Volapük",
+    "file": "README.vo.md"
+  },
+  {
+    "code": "wa",
+    "bcp47": "wa",
+    "en": "Walloon",
+    "native": "walon",
+    "file": "README.wa.md"
+  },
+  {
+    "code": "wo",
+    "bcp47": "wo",
+    "en": "Wolof",
+    "native": "Wollof",
+    "file": "README.wo.md"
+  },
+  {
+    "code": "xh",
+    "bcp47": "xh",
+    "en": "Xhosa",
+    "native": "isiXhosa",
+    "file": "README.xh.md"
+  },
+  {
+    "code": "yi",
+    "bcp47": "yi",
+    "en": "Yiddish",
+    "native": "ייִדיש",
+    "file": "README.yi.md"
+  },
+  {
+    "code": "yo",
+    "bcp47": "yo",
+    "en": "Yoruba",
+    "native": "Yorùbá",
+    "file": "README.yo.md"
+  },
+  {
+    "code": "za",
+    "bcp47": "za",
+    "en": "Zhuang",
+    "native": "Vahcuengh",
+    "file": "README.za.md"
+  },
+  {
+    "code": "zh",
+    "bcp47": "zh",
+    "en": "Chinese",
+    "native": "中文",
+    "file": "README.zh.md"
+  },
+  {
+    "code": "zu",
+    "bcp47": "zu",
+    "en": "Zulu",
+    "native": "isiZulu",
+    "file": "README.zu.md"
+  }
+]

@@ -1,0 +1,59 @@
+CLASS net/minecraft/class_374 net/minecraft/client/toast/ToastManager
+	FIELD field_2238 client Lnet/minecraft/class_310;
+	FIELD field_2239 visibleEntries Ljava/util/List;
+	FIELD field_2240 toastQueue Ljava/util/Deque;
+	FIELD field_39929 SPACES I
+	FIELD field_39931 occupiedSpaces Ljava/util/BitSet;
+	FIELD field_55860 queuedToastSounds Ljava/util/Set;
+	FIELD field_60738 nowPlayingToast Lnet/minecraft/class_374$class_375;
+	METHOD <init> (Lnet/minecraft/class_310;Lnet/minecraft/class_315;)V
+		ARG 1 client
+		ARG 2 gameOptions
+	METHOD method_1995 getClient ()Lnet/minecraft/class_310;
+	METHOD method_1996 draw (Lnet/minecraft/class_332;)V
+		ARG 1 context
+	METHOD method_1997 getToast (Ljava/lang/Class;Ljava/lang/Object;)Lnet/minecraft/class_368;
+		ARG 1 toastClass
+		ARG 2 type
+	METHOD method_1999 add (Lnet/minecraft/class_368;)V
+		ARG 1 toast
+	METHOD method_2000 clear ()V
+	METHOD method_45073 getTopIndex (I)I
+		ARG 1 requiredSpaces
+	METHOD method_45076 getEmptySpaceCount ()I
+	METHOD method_48221 getNotificationDisplayTimeMultiplier ()D
+	METHOD method_61990 update ()V
+	METHOD method_61991 (Lorg/apache/commons/lang3/mutable/MutableBoolean;Lnet/minecraft/class_374$class_375;)Z
+		ARG 2 entry
+	METHOD method_61992 (Lnet/minecraft/class_368;)Z
+		ARG 1 toast
+	METHOD method_71815 onMusicTrackStart ()V
+	METHOD method_71816 onMusicTrackStop ()V
+	METHOD method_76619 onMusicToastModeUpdated (Lnet/minecraft/class_12345;)V
+		ARG 1 toastMode
+	METHOD method_76620 initMusicToast (Lnet/minecraft/class_12345;)V
+		ARG 1 toastMode
+	CLASS class_375 Entry
+		FIELD field_2241 instance Lnet/minecraft/class_368;
+		FIELD field_2242 showTime J
+		FIELD field_2243 startTime J
+		FIELD field_2244 visibility Lnet/minecraft/class_368$class_369;
+		FIELD field_32221 DISAPPEAR_TIME J
+		FIELD field_39933 requiredSpaceCount I
+		FIELD field_52787 topIndex I
+		FIELD field_52788 fullyVisibleTime J
+		FIELD field_52789 visibleWidthPortion F
+		FIELD field_52790 finishedRendering Z
+		METHOD <init> (Lnet/minecraft/class_374;Lnet/minecraft/class_368;II)V
+			ARG 2 instance
+			ARG 3 topIndex
+			ARG 4 requiredSpaceCount
+		METHOD method_2001 getInstance ()Lnet/minecraft/class_368;
+		METHOD method_2002 draw (Lnet/minecraft/class_332;I)V
+			ARG 1 context
+			ARG 2 scaledWindowWidth
+		METHOD method_61993 updateVisibleWidthPortion (J)V
+			ARG 1 time
+		METHOD method_61994 isFinishedRendering ()Z
+		METHOD method_61995 update ()V
+		METHOD method_71819 init ()V

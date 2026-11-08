@@ -1,0 +1,1 @@
+python -m PyInstaller icon_generator.spec

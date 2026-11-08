@@ -1,0 +1,357 @@
+CLASS net/minecraft/class_3222 net/minecraft/server/network/ServerPlayerEntity
+	FIELD field_13963 lastHealthScore F
+	FIELD field_13964 disconnected Z
+	FIELD field_13965 lastLevelScore I
+	FIELD field_13966 statHandler Lnet/minecraft/class_3442;
+	FIELD field_13968 lastAirScore I
+	FIELD field_13969 seenCredits Z
+	FIELD field_13970 advancementTracker Lnet/minecraft/class_2985;
+	FIELD field_13971 clientChatColorsEnabled Z
+	FIELD field_13972 syncedSaturationIsZero Z
+	FIELD field_13973 levitationStartTick I
+	FIELD field_13974 interactionManager Lnet/minecraft/class_3225;
+	FIELD field_13975 LOGGER Lorg/slf4j/Logger;
+	FIELD field_13976 lastActionTime J
+	FIELD field_13978 syncedExperience I
+	FIELD field_13979 syncedFoodLevel I
+	FIELD field_13980 lastExperienceScore I
+	FIELD field_13982 lastArmorScore I
+	FIELD field_13983 lastFoodScore I
+	FIELD field_13984 cameraEntity Lnet/minecraft/class_1297;
+	FIELD field_13985 inTeleportationState Z
+	FIELD field_13986 screenHandlerSyncId I
+	FIELD field_13987 networkHandler Lnet/minecraft/class_3244;
+	FIELD field_13989 notInAnyWorld Z
+	FIELD field_13990 watchedSection Lnet/minecraft/class_4076;
+		COMMENT A chunk section position indicating where the player's client is currently
+		COMMENT watching chunks from. Used referentially for the game to update the chunks
+		COMMENT watched by this player.
+		COMMENT
+		COMMENT @see #getWatchedSection()
+		COMMENT @see #setWatchedSection(ChunkSectionPos)
+	FIELD field_13992 levitationStartPos Lnet/minecraft/class_243;
+	FIELD field_13993 clientChatVisibility Lnet/minecraft/class_1659;
+	FIELD field_13994 enteredNetherPos Lnet/minecraft/class_243;
+	FIELD field_13995 server Lnet/minecraft/server/MinecraftServer;
+	FIELD field_13996 recipeBook Lnet/minecraft/class_3441;
+	FIELD field_13997 syncedHealth F
+	FIELD field_26821 textStream Lnet/minecraft/class_5513;
+	FIELD field_28860 filterText Z
+	FIELD field_29180 screenHandlerSyncHandler Lnet/minecraft/class_5916;
+	FIELD field_29181 screenHandlerListener Lnet/minecraft/class_1712;
+	FIELD field_35007 fallStartPos Lnet/minecraft/class_243;
+	FIELD field_35008 vehicleInLavaRidingPos Lnet/minecraft/class_243;
+	FIELD field_35566 allowServerListing Z
+	FIELD field_39985 sculkShriekerWarningManager Lnet/minecraft/class_7262;
+	FIELD field_39986 session Lnet/minecraft/class_7822;
+	FIELD field_44990 viewDistance I
+	FIELD field_44991 chunkFilter Lnet/minecraft/class_8603;
+	FIELD field_46156 language Ljava/lang/String;
+	FIELD field_47709 CREATIVE_BLOCK_INTERACTION_RANGE_MODIFIER Lnet/minecraft/class_1322;
+	FIELD field_47710 CREATIVE_ENTITY_INTERACTION_RANGE_MODIFIER Lnet/minecraft/class_1322;
+	FIELD field_49776 spawnExtraParticlesOnFall Z
+	FIELD field_50088 startRaidPos Lnet/minecraft/class_2338;
+	FIELD field_51875 movement Lnet/minecraft/class_243;
+	FIELD field_52358 particlesMode Lnet/minecraft/class_4066;
+	FIELD field_54048 playerInput Lnet/minecraft/class_10185;
+	FIELD field_54208 enderPearls Ljava/util/Set;
+	FIELD field_54209 ENDER_PEARLS_KEY Ljava/lang/String;
+	FIELD field_54210 ENDER_PEARLS_DIMENSION_KEY Ljava/lang/String;
+	FIELD field_54402 commandOutput Lnet/minecraft/class_2165;
+	FIELD field_56606 SET_SPAWN_TEXT Lnet/minecraft/class_2561;
+	FIELD field_56607 respawn Lnet/minecraft/class_3222$class_10766;
+	FIELD field_57112 DEFAULT_SEEN_CREDITS Z
+	FIELD field_57113 DEFAULT_SPAWN_EXTRA_PARTICLES_ON_FALL Z
+	FIELD field_59631 WAYPOINT_TRANSMIT_RANGE_CROUCH_MODIFIER Lnet/minecraft/class_1322;
+	FIELD field_60522 DIMENSION_KEY Ljava/lang/String;
+	FIELD field_62503 shoulderMountTime J
+	FIELD field_62504 leftShoulderNbt Lnet/minecraft/class_2487;
+	FIELD field_62505 rightShoulderNbt Lnet/minecraft/class_2487;
+	FIELD field_62842 subscribedTypes Ljava/util/Set;
+	METHOD <init> (Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/class_3218;Lcom/mojang/authlib/GameProfile;Lnet/minecraft/class_8791;)V
+		ARG 1 server
+		ARG 2 world
+		ARG 3 profile
+		ARG 4 clientOptions
+	METHOD method_7336 changeGameMode (Lnet/minecraft/class_1934;)Z
+		ARG 1 gameMode
+	METHOD method_14203 copyFrom (Lnet/minecraft/class_3222;Z)V
+		ARG 1 oldPlayer
+		ARG 2 alive
+	METHOD method_14206 getPlayerListName ()Lnet/minecraft/class_2561;
+	METHOD method_14208 isInTeleportationState ()Z
+	METHOD method_14209 getIp ()Ljava/lang/String;
+	METHOD method_14210 (Lnet/minecraft/class_2561;Lnet/minecraft/class_2583;)Lnet/minecraft/class_2583;
+		ARG 1 style
+	METHOD method_14212 updateScores (Lnet/minecraft/class_274;I)V
+		ARG 1 criterion
+		ARG 2 score
+	METHOD method_14213 setClientOptions (Lnet/minecraft/class_8791;)V
+		ARG 1 clientOptions
+	METHOD method_14217 markHealthDirty ()V
+	METHOD method_14219 getLastActionTime ()J
+	METHOD method_14221 (ILnet/minecraft/class_9014;)V
+		ARG 1 score
+	METHOD method_14222 lookAtEntity (Lnet/minecraft/class_2183$class_2184;Lnet/minecraft/class_1297;Lnet/minecraft/class_2183$class_2184;)V
+		ARG 1 anchorPoint
+		ARG 2 targetEntity
+		ARG 3 targetAnchor
+	METHOD method_14224 setCameraEntity (Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_14226 playerTick ()V
+	METHOD method_14227 updateScoreboardScore (Lnet/minecraft/class_9015;Lnet/minecraft/class_9015;[Lnet/minecraft/class_274;)V
+		ARG 1 targetScoreHolder
+		ARG 2 aboutScoreHolder
+		ARG 3 criterions
+	METHOD method_14228 setExperiencePoints (I)V
+		ARG 1 points
+	METHOD method_14230 isPvpEnabled ()Z
+	METHOD method_14231 onDisconnect ()V
+	METHOD method_14232 getWatchedSection ()Lnet/minecraft/class_4076;
+		COMMENT Returns the chunk section position the player's client is currently watching
+		COMMENT from. This may differ from the chunk section the player is currently in.
+		COMMENT
+		COMMENT <p>This is only for chunk loading (watching) purpose. This is updated together
+		COMMENT with entity tracking, but they are separate mechanisms.
+		COMMENT
+		COMMENT @see #watchedSection
+		COMMENT @see #setWatchedSection(ChunkSectionPos)
+	METHOD method_14234 updateLastActionTime ()V
+	METHOD method_14235 onScreenHandlerOpened (Lnet/minecraft/class_1703;)V
+		ARG 1 screenHandler
+	METHOD method_14236 getAdvancementTracker ()Lnet/minecraft/class_2985;
+	METHOD method_14237 incrementScreenHandlerSyncId ()V
+	METHOD method_14238 getClientChatVisibility ()Lnet/minecraft/class_1659;
+	METHOD method_14239 isDisconnected ()Z
+	METHOD method_14240 onTeleportationDone ()V
+	METHOD method_14242 getCameraEntity ()Lnet/minecraft/class_1297;
+	METHOD method_14248 getStatHandler ()Lnet/minecraft/class_3442;
+	METHOD method_14250 (ILnet/minecraft/class_9014;)V
+		ARG 1 innerScore
+	METHOD method_14252 setExperienceLevel (I)V
+		ARG 1 level
+	METHOD method_14253 getRecipeBook ()Lnet/minecraft/class_3441;
+	METHOD method_17668 setWatchedSection (Lnet/minecraft/class_4076;)V
+		COMMENT Sets the chunk section position the player's client is currently watching
+		COMMENT from. This is usually called when the player moves to a new chunk section.
+		COMMENT
+		COMMENT @see #watchedSection
+		COMMENT @see #getWatchedSection()
+		ARG 1 section
+			COMMENT the updated section position
+	METHOD method_18783 worldChanged (Lnet/minecraft/class_3218;)V
+		ARG 1 origin
+	METHOD method_19504 (Lnet/minecraft/class_3902;)V
+		ARG 1 unit
+	METHOD method_26283 (Lnet/minecraft/class_1588;)Z
+		ARG 1 entity
+	METHOD method_26284 setSpawnPoint (Lnet/minecraft/class_3222$class_10766;Z)V
+		COMMENT Sets the player's spawn point.
+		ARG 1 respawn
+		ARG 2 sendMessage
+	METHOD method_26285 isBedWithinRange (Lnet/minecraft/class_2338;Lnet/minecraft/class_2350;)Z
+		ARG 1 pos
+		ARG 2 direction
+	METHOD method_26286 isBedObstructed (Lnet/minecraft/class_2338;Lnet/minecraft/class_2350;)Z
+		ARG 1 pos
+		ARG 2 direction
+	METHOD method_26287 isBedWithinRange (Lnet/minecraft/class_2338;)Z
+		ARG 1 pos
+	METHOD method_29777 (Lnet/minecraft/class_1308;)V
+		ARG 1 entity
+	METHOD method_29778 (Lnet/minecraft/class_1308;)Z
+		ARG 0 entity
+	METHOD method_29779 forgiveMobAnger ()V
+	METHOD method_31273 getTextStream ()Lnet/minecraft/class_5513;
+	METHOD method_32745 gameModeFromData (Lnet/minecraft/class_11368;Ljava/lang/String;)Lnet/minecraft/class_1934;
+		ARG 0 view
+		ARG 1 key
+	METHOD method_32746 getServerGameMode (Lnet/minecraft/class_1934;)Lnet/minecraft/class_1934;
+		COMMENT Returns the server game mode the player should be set to, namely the forced game mode.
+		COMMENT
+		COMMENT <p>If the forced game mode is not set, returns the {@code backupGameMode} if not {@code null},
+		COMMENT or the server's default game mode otherwise.
+		COMMENT
+		COMMENT @see MinecraftServer#getForcedGameMode
+		ARG 1 backupGameMode
+	METHOD method_32749 writeGameModeData (Lnet/minecraft/class_11372;)V
+		ARG 1 view
+	METHOD method_33795 shouldFilterMessagesSentTo (Lnet/minecraft/class_3222;)Z
+		ARG 1 player
+	METHOD method_34225 onSpawn ()V
+	METHOD method_34879 areClientChatColorsEnabled ()Z
+	METHOD method_37412 (Lnet/minecraft/class_1661;I)V
+		ARG 2 index
+	METHOD method_37413 dropSelectedItem (Z)V
+		ARG 1 entireStack
+	METHOD method_38786 tickFallStartPos ()V
+	METHOD method_38787 tickVehicleInLavaRiding ()V
+	METHOD method_39426 allowsServerListing ()Z
+	METHOD method_43502 sendMessageToClient (Lnet/minecraft/class_2561;Z)V
+		ARG 1 message
+		ARG 2 overlay
+	METHOD method_43505 sendChatMessage (Lnet/minecraft/class_7604;ZLnet/minecraft/class_2556$class_7602;)V
+		COMMENT Sends a chat message to the player.
+		COMMENT
+		COMMENT <p>Chat messages have signatures. It is possible to use a bogus signature - such as
+		COMMENT {@link net.minecraft.network.message.SignedMessage#ofUnsigned} - to send a chat
+		COMMENT message; however if the signature is invalid (e.g. because the text's content differs
+		COMMENT from the one sent by the client, or because the passed signature is invalid) the client
+		COMMENT will show a warning and can discard it depending on the client's options.
+		COMMENT
+		COMMENT @see #sendMessage(Text)
+		COMMENT @see #sendMessage(Text, boolean)
+		ARG 1 message
+		ARG 2 filterMaskEnabled
+		ARG 3 params
+	METHOD method_43930 sendServerMetadata (Lnet/minecraft/class_2926;)V
+		ARG 1 metadata
+	METHOD method_44706 acceptsChatMessage ()Z
+	METHOD method_44707 acceptsMessage (Z)Z
+		ARG 1 overlay
+	METHOD method_45163 getSession ()Lnet/minecraft/class_7822;
+	METHOD method_46364 setSession (Lnet/minecraft/class_7822;)V
+		ARG 1 session
+	METHOD method_51468 setServerWorld (Lnet/minecraft/class_3218;)V
+		ARG 1 world
+	METHOD method_51469 getServerWorld ()Lnet/minecraft/class_3218;
+	METHOD method_52208 setMovement (Lnet/minecraft/class_243;)V
+		ARG 1 movement
+	METHOD method_52371 getViewDistance ()I
+	METHOD method_52372 getChunkFilter ()Lnet/minecraft/class_8603;
+	METHOD method_52373 setChunkFilter (Lnet/minecraft/class_8603;)V
+		ARG 1 chunkFilter
+	METHOD method_52374 createCommonPlayerSpawnInfo (Lnet/minecraft/class_3218;)Lnet/minecraft/class_8589;
+		ARG 1 world
+	METHOD method_53823 getClientOptions ()Lnet/minecraft/class_8791;
+	METHOD method_54720 increaseTravelMotionStats (DDD)V
+		ARG 1 deltaX
+		ARG 3 deltaY
+		ARG 5 deltaZ
+	METHOD method_54721 increaseRidingMotionStats (DDD)V
+		ARG 1 deltaX
+		ARG 3 deltaY
+		ARG 5 deltaZ
+	METHOD method_54722 isZero (DDD)Z
+		ARG 0 deltaX
+		ARG 2 deltaY
+		ARG 4 deltaZ
+	METHOD method_54934 (Lnet/minecraft/class_5321;)Ljava/util/stream/Stream;
+		ARG 1 recipeKey
+	METHOD method_55633 updateCreativeInteractionRangeModifiers ()V
+	METHOD method_58143 setSpawnExtraParticlesOnFall (Z)V
+		ARG 1 spawnExtraParticlesOnFall
+	METHOD method_58584 clearStartRaidPos ()V
+	METHOD method_58585 getStartRaidPos ()Lnet/minecraft/class_2338;
+	METHOD method_58586 setStartRaidPos (Lnet/minecraft/class_2338;)V
+		ARG 1 startRaidPos
+	METHOD method_60588 findRespawnPosition (Lnet/minecraft/class_3218;Lnet/minecraft/class_3222$class_10766;Z)Ljava/util/Optional;
+		ARG 0 world
+		ARG 1 respawn
+	METHOD method_60589 (Lnet/minecraft/class_2338;Lnet/minecraft/class_243;)Lnet/minecraft/class_3222$class_9773;
+		ARG 1 respawnPos
+	METHOD method_60590 getRespawnTarget (ZLnet/minecraft/class_5454$class_9823;)Lnet/minecraft/class_5454;
+		ARG 1 alive
+		ARG 2 postDimensionTransition
+	METHOD method_60592 setSpawnPointFrom (Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_60593 (Lnet/minecraft/class_2338;Lnet/minecraft/class_243;)Lnet/minecraft/class_3222$class_9773;
+		ARG 1 respawnPos
+	METHOD method_60594 detachForDimensionChange ()V
+	METHOD method_61272 getPlayerListOrder ()I
+	METHOD method_63561 setPlayerInput (Lnet/minecraft/class_10185;)V
+		ARG 1 playerInput
+	METHOD method_63562 getPlayerInput ()Lnet/minecraft/class_10185;
+	METHOD method_63563 getInputVelocityForMinecart ()Lnet/minecraft/class_243;
+	METHOD method_64123 addEnderPearlTicket (Lnet/minecraft/class_3218;Lnet/minecraft/class_1923;)J
+		ARG 0 world
+		ARG 1 chunkPos
+	METHOD method_64124 addEnderPearl (Lnet/minecraft/class_1684;)V
+		ARG 1 enderPearl
+	METHOD method_64125 readRootVehicle (Lnet/minecraft/class_11368;)V
+		ARG 1 view
+	METHOD method_64128 getEnderPearls ()Ljava/util/Set;
+	METHOD method_64130 removeEnderPearl (Lnet/minecraft/class_1684;)V
+		ARG 1 enderPearl
+	METHOD method_64131 readEnderPearls (Lnet/minecraft/class_11368;)V
+		ARG 1 view
+	METHOD method_64132 (Lnet/minecraft/class_3218;Lnet/minecraft/class_1297;)Lnet/minecraft/class_1297;
+		ARG 1 entity
+	METHOD method_64133 handleThrownEnderPearl (Lnet/minecraft/class_1684;)J
+		ARG 1 enderPearl
+	METHOD method_64134 sendMapPacket (Lnet/minecraft/class_1799;)V
+		ARG 1 stack
+	METHOD method_64135 writeRootVehicle (Lnet/minecraft/class_11372;)V
+		ARG 1 view
+	METHOD method_64136 writeEnderPearls (Lnet/minecraft/class_11372;)V
+		ARG 1 view
+	METHOD method_64396 getCommandSource ()Lnet/minecraft/class_2168;
+	METHOD method_64398 sendMessage (Lnet/minecraft/class_2561;)V
+		ARG 1 message
+	METHOD method_64401 getCommandOutput ()Lnet/minecraft/class_2165;
+	METHOD method_64579 (Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/class_5321;Ljava/util/function/Consumer;)V
+		ARG 1 key
+		ARG 2 adder
+	METHOD method_64580 (Lnet/minecraft/class_5321;)Z
+		ARG 1 recipeKey
+	METHOD method_67564 getRespawn ()Lnet/minecraft/class_3222$class_10766;
+	METHOD method_68174 (Lnet/minecraft/class_3218;Lnet/minecraft/class_1297;)Lnet/minecraft/class_1297;
+		ARG 1 enderPearl
+	METHOD method_68175 readEnderPearl (Lnet/minecraft/class_11368;)V
+		ARG 1 view
+	METHOD method_70637 canReceiveWaypoints ()Z
+	METHOD method_71330 (Lnet/minecraft/class_3441$class_11328;)V
+		ARG 1 recipeBook
+	METHOD method_74073 mountOntoShoulder (Lnet/minecraft/class_2487;)Z
+		ARG 1 shoulderNbt
+	METHOD method_74074 getLeftShoulderNbt ()Lnet/minecraft/class_2487;
+	METHOD method_74075 getRightShoulderNbt ()Lnet/minecraft/class_2487;
+	METHOD method_74076 setLeftShoulderNbt (Lnet/minecraft/class_2487;)V
+		ARG 1 leftShoulderNbt
+	METHOD method_74077 setRightShoulderNbt (Lnet/minecraft/class_2487;)V
+		ARG 1 rightShoulderNbt
+	METHOD method_74078 (Lnet/minecraft/class_3218;Lnet/minecraft/class_1297;)V
+		ARG 2 entity
+	METHOD method_74079 playShoulderEntitySound (Lnet/minecraft/class_2487;)V
+		ARG 1 nbt
+	METHOD method_74080 spawnShoulderEntity (Lnet/minecraft/class_2487;)V
+		ARG 1 nbt
+	METHOD method_74537 setSubscribedTypes (Ljava/util/Set;)V
+		ARG 1 subscribedTypes
+	METHOD method_74538 getSubscribedTypes ()Ljava/util/Set;
+	METHOD method_76789 copyInventoryAndExperienceFrom (Lnet/minecraft/class_1657;)V
+		ARG 1 other
+	CLASS 1
+		FIELD field_58076 componentHashCache Lcom/google/common/cache/LoadingCache;
+		METHOD method_68736 sendPropertyUpdate (Lnet/minecraft/class_1703;II)V
+			ARG 1 handler
+			ARG 2 property
+			ARG 3 value
+		CLASS 1
+			FIELD field_58078 hashOps Lcom/mojang/serialization/DynamicOps;
+			METHOD load (Ljava/lang/Object;)Ljava/lang/Object;
+				ARG 1 component
+			METHOD method_68738 (Lnet/minecraft/class_9336;Ljava/lang/String;)Ljava/lang/IllegalArgumentException;
+				ARG 1 error
+	CLASS class_9773 RespawnPos
+		FIELD comp_2811 pos Lnet/minecraft/class_243;
+		METHOD comp_2811 pos ()Lnet/minecraft/class_243;
+		METHOD method_60595 fromCurrentPos (Lnet/minecraft/class_243;Lnet/minecraft/class_2338;F)Lnet/minecraft/class_3222$class_9773;
+			ARG 0 respawnPos
+			ARG 1 currentPos
+		METHOD method_60596 getYaw (Lnet/minecraft/class_243;Lnet/minecraft/class_2338;)F
+			ARG 0 respawnPos
+			ARG 1 currentPos
+	CLASS class_10766 Respawn
+		FIELD field_56608 CODEC Lcom/mojang/serialization/Codec;
+		METHOD method_67565 posEquals (Lnet/minecraft/class_3222$class_10766;)Z
+			ARG 1 respawn
+		METHOD method_67566 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 0 instance
+		METHOD method_67567 getDimension (Lnet/minecraft/class_3222$class_10766;)Lnet/minecraft/class_5321;
+			ARG 0 respawn
+	CLASS class_11543 SavePos
+		FIELD field_61094 CODEC Lcom/mojang/serialization/MapCodec;
+		FIELD field_61095 EMPTY Lnet/minecraft/class_3222$class_11543;
+		METHOD method_72272 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+			ARG 0 instance

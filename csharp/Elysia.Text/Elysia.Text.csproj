@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Elysia.Text — the UTF-8-first module of the C# showcase.
+
+    Two properties are load-bearing and deliberate:
+
+      · zero <PackageReference> — everything here comes from the .NET 8 base class library
+        (System.Span<T>, System.Text.Json, System.Buffers, System.Text.Encodings.Web), so
+        `dotnet build` works with no NuGet restore and no network. Contrast Rust, where
+        serde + serde_json are third-party crates with proc-macro build dependencies.
+
+      · no <UnsafeBlocks> — the compilation stays in safe code. There is no `unsafe` block
+        in this assembly; the pointer-level speed comes from `Span<T>`, which the *runtime*
+        already knows how to treat as a byref.
+
+    AssemblyName/RootNamespace are pinned so the type identity is `Elysia.Text.*` even if the
+    directory is ever renamed, and TargetFramework/LangVersion/Nullable/Deterministic are
+    supplied by the shared Directory.Build.props one level up (net8.0, latest, enable, true).
+    `u8` literals need C# 11, which a `latest` LangVersion on the .NET 8 SDK satisfies.
+  -->
+
+  <PropertyGroup>
+    <AssemblyName>Elysia.Text</AssemblyName>
+    <RootNamespace>Elysia.Text</RootNamespace>
+    <Description>UTF-8-first, zero-allocation text handling: spans, u8 literals, ArrayPool and System.Text.Json over raw bytes.</Description>
+  </PropertyGroup>
+
+</Project>

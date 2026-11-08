@@ -1,0 +1,18 @@
+CLASS net/minecraft/class_2600 net/minecraft/network/NetworkThreadUtils
+	FIELD field_20318 LOGGER Lorg/slf4j/Logger;
+	METHOD method_11073 forceMainThread (Lnet/minecraft/class_2596;Lnet/minecraft/class_2547;Lnet/minecraft/class_3218;)V
+		ARG 0 packet
+		ARG 1 listener
+		ARG 2 world
+	METHOD method_11074 forceMainThread (Lnet/minecraft/class_2596;Lnet/minecraft/class_2547;Lnet/minecraft/class_11980;)V
+		ARG 0 packet
+		ARG 1 listener
+		ARG 2 batcher
+	METHOD method_59803 fillCrashReport (Lnet/minecraft/class_128;Lnet/minecraft/class_2547;Lnet/minecraft/class_2596;)V
+		ARG 0 report
+		ARG 1 listener
+		ARG 2 packet
+	METHOD method_59854 createCrashException (Ljava/lang/Exception;Lnet/minecraft/class_2596;Lnet/minecraft/class_2547;)Lnet/minecraft/class_148;
+		ARG 0 exception
+		ARG 1 packet
+		ARG 2 listener

@@ -1,0 +1,311 @@
+### [2159] Bees Template
+Get the princess bee and reward bag in NEI first. Copy this quest. Press Icon and set the icon to the bee. Change the name, description, and rewards.  Press Task, and select the stone, and replace it with the princess. Before closing, select the ... next to the bee name and press Raw NBT Go into Tag, Genome, Chromosomes. The first one is the name and must stay. Go inside there and delete the first entry, keep both of the species so players must have purebreeds. Delete the rest of the chromosomes. Delete the rest of the entries for Genome.  Press Requirements. Remove the Infinity unlock requirement and select the required bee quests. Use the common bees quest if nothing applies.  Change Show:Hidden to Show:Normal.  To reduce waste in the questbook file ideally you should also go into the advanced options, then press ... for the icon, and remove unnecessary NBT there as well. Just leave the species as above.  §3You can change the visibility of requirements by pressing the eye symbol in the requirements menu.
+  - [提交] minecraft:stone
+  > 奖励: enhancedlootbags:lootbag:25
+
+### [3247] Tool: Never complete
+This quest should never be complete which is useful to hide templates and other things.
+  - [勾选确认]
+
+### [-7149265881728135285] §6§lTrigger: Air-Filter
+No Description
+  - [提交] gregtech:gt.blockmachines:12021, gregtech:gt.blockmachines:12022
+  > 奖励: bq_standard:questcompletion
+
+### [1365] Trigger: Ballthingy
+Find? or make an LS
+  - [提交] EMT:EMTItems:6
+
+### [-5702321633427835969] Trigger: Boots of the Traveller Skip
+  - [提交] EMT:ElectricBootsTraveller:32767, thaumicboots:item.ItemElectricVoid:32767, thaumicboots:item.ItemElectricMeteor:32767, thaumicboots:item.ItemElectricComet:32767
+  > 奖励: bq_standard:questcompletion
+
+### [-4881689924052573016] Trigger: Cerium Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2065 x64, gregtech:gt.metaitem.01:11065 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5146709739534388423] Trigger: CN3H7O3 (Purple) Rocket Fuel Skip
+No Description
+  - [提交] miscutils:RocketFuelMixC x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5305468486873511794] Trigger: Dense Hydrazine Skip
+No Description
+  - [提交] miscutils:RocketFuelMixD x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-7016903441586523099] Trigger: Division Sigil
+No Description
+  - [提交] ExtraUtilities:divisionSigil
+  > 奖励: bq_standard:questcompletion
+
+### [-7101226382307633970] Trigger: Early Scribing Tools
+No Description
+  - [提交] Thaumcraft:ItemInkwell
+  > 奖励: bq_standard:questcompletion
+
+### [-5111612769669308238] Trigger: Electric Boots of the Traveller Skip
+  - [提交] EMT:NanoBootsTraveller:32767, thaumicboots:item.ItemNanoVoid:32767, thaumicboots:item.ItemNanoMeteor:32767, thaumicboots:item.ItemNanoComet:32767
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-7307419019532355732] Trigger: Enriched Naquadah Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:11326 x64, gregtech:gt.metaitem.01:2326 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [3035] Trigger: Epoxid Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:17470 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5953538534377220743] Trigger: Epoxy Board Skip
+No Description
+  - [提交] gregtech:gt.metaitem.03:32102 x64
+  > 奖励: bq_standard:questcompletion
+
+### [2900] Trigger: Flippers
+  - [提交] BiomesOPlenty:flippers
+
+### [-8654155786800122342] Trigger: Graphene Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2819 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5544061567531113456] Trigger: H8N4C2O4 (Green) Rocket Fuel Skip
+No Description
+  - [提交] miscutils:RocketFuelMixA x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5967676405221798893] Trigger: Hafnium Skip
+No Description
+  - [提交] bartworks:gt.bwMetaGeneratedingot:11000 x64, bartworks:gt.bwMetaGenerateddust:11000 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [456] Trigger: Life
+Triggers the Life Canister Quest after a Wither death.
+  - [击杀] target=WitherBoss n=
+
+### [454] Trigger: Life and Soul Shard
+Triggered by making a "Life Shard" and a "Soul Shard".
+  - [提交] AWWayofTime:bloodMagicBaseItems:28, AWWayofTime:bloodMagicBaseItems:29
+
+### [451] Trigger: LoC
+Triggered by having a "Lamp of Cinders" in your inventory.
+  - [提交] TwilightForest:item.lampOfCinders
+
+### [2875] Trigger: Loot Game
+Find a loot game room
+  - [提交] lootgames:LootGamesDungeonWall:32767, lootgames:LootGamesDungeonLight:32767
+
+### [-8875537553313490831] Trigger: LV Extruder Skip
+No Description
+  > 奖励: bq_standard:questcompletion
+
+### [1364] Trigger: Mjolnir
+Find a Mjolnir
+  - [提交] EMT:TaintedMjolnir
+
+### [-7894235233105515206] Trigger: NaK Skip
+No Description
+  - [提交] gregtech:gt.60k_NaK_Coolantcell x2
+  > 奖励: bq_standard:questcompletion
+
+### [-6860812645522504692] Trigger: Nano Boots of the Traveller Skip
+  - [提交] EMT:QuantumBootsTraveller:32767, thaumicboots:item.ItemQuantumVoid:32767, thaumicboots:item.ItemQuantumMeteor:32767, thaumicboots:item.ItemQuantumComet:32767
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [3036] Trigger: Naqline Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2324 x64, gregtech:gt.metaitem.01:11324 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-7942921725442614991] Trigger: Naquadria Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:11327 x64, gregtech:gt.metaitem.01:2327 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-4693777620824973844] Trigger: Netherite Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:22132, gregtech:gt.metaitem.03:32246 x64, etfuturum:netherite_ingot x16
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5649038508759348891] Trigger: Nether Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:11880 x128
+  > 奖励: bq_standard:questcompletion
+
+### [-5193610363268664517] Trigger: Nightvision Goggle Skip
+Skip is here for those who get the goggles in a lootbag
+  - [提交] IC2:itemNightvisionGoggles:32767
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-7803645922650823049] Trigger: Oblivion Frame
+No Description
+  - [提交] MagicBees:frameOblivion
+  > 奖励: bq_standard:questcompletion
+
+### [3078] Trigger: Obtain Sunnarium
+No Description
+  - [提交] gregtech:gt.metaitem.01:2318, gregtech:gt.metaitem.01:318, AdvancedSolarPanel:asp_crafting_items, AdvancedSolarPanel:asp_crafting_items:9
+
+### [2903] Trigger: PBI Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:17599 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2907] Trigger: Platline Iridium Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2084 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2908] Trigger: Platline Osmium Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2083 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2902] Trigger: Platline Platinum Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2085 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2904] Trigger: Platline Palladium Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2052 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2906] Trigger: Platline Ruthenium Skip
+No Description
+  - [提交] bartworks:gt.bwMetaGenerateddust:64 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2905] Trigger: Platline Rhodium Skip
+No Description
+  - [提交] bartworks:gt.bwMetaGenerateddust:78 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5858179176063986292] Trigger: Polyphenylene Sulfide Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:17631 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [3034] Trigger: Polystyrene Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:17636 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-9181481160617422869] Trigger: Prismarine Line Skip
+No Description
+  - [提交] gregtech:gt.metaitem.03:32251 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-6309502968054832809] Trigger: Profane Wand
+No Description
+  - [提交] Thaumcraft:WandCasting:12
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion
+
+### [3033] Trigger: PTFE Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:17473 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-7882117033435305169] Trigger: Rocket Shuttle Skip
+No Description
+  - [提交] GalacticraftAmunRa:item.itemShuttle:32767
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-7670507093015451151] Trigger: Rocket Tier 5 Skip
+No Description
+  - [提交] GalaxySpace:item.Tier5Rocket
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-5562501721408103228] Trigger: Rocket Tier 2 Skip
+No Description
+  - [提交] GalacticraftMars:item.spaceshipTier2
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-6942167828401391465] Trigger: Rocket Tier 7 Skip
+No Description
+  - [提交] GalaxySpace:item.Tier7Rocket
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-8070258895445230809] Trigger: Rocket Tier 3 Skip
+No Description
+  - [提交] GalacticraftMars:item.itemTier3Rocket
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-6651490154355584711] Trigger: Rocket Tier 4 Skip
+No Description
+  - [提交] GalaxySpace:item.Tier4Rocket
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-8249935204434628871] Trigger: Rocket Tier 1 Skip
+No Description
+  - [提交] GalacticraftCore:item.spaceship
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-4815790545779437985] Trigger: Rocket Tier 6 Skip
+No Description
+  - [提交] GalaxySpace:item.Tier6Rocket
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-8795362424814095107] Trigger: Rocket Tier 8 Skip
+No Description
+  - [提交] GalaxySpace:item.Tier8Rocket
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-7602912873087122222] Trigger: Runeforged Thaumaturge's Ring
+No Description
+  - [提交] randomboubles:combinationRing:8
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [-6516261901143125654] Trigger: Samarium Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:2069 x64, gregtech:gt.metaitem.01:11069 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [453] Trigger: Shard of Creation
+Triggered by making a "Shard of Creation".
+  - [提交] TaintedMagic:ItemMaterial:5
+
+### [3032] Trigger: Silicone Rubber Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:17471 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [452] Trigger: Singularity
+Triggered by making a singularity.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:47
+
+### [-8906686811687156040] Trigger: SMD Inductor Skip
+No Description
+  - [提交] gregtech:gt.metaitem.03:32182 x64
+  > 奖励: bq_standard:questcompletion
+
+### [-8590661961568913391] Trigger: Stonelily Tutorial Skip
+  - [提交] cropsnh:genericSeed
+
+### [-5216564544225015108] Trigger: Styrene-Butadiene Rubber Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:17635 x128
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2901] Trigger: Titanium Moon Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:11028 x64
+  > 奖励: bq_standard:questcompletion
+
+### [2909] Trigger: Tungstensteel Mars Skip
+No Description
+  - [提交] gregtech:gt.metaitem.01:11316 x64
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion
+
+### [455] Trigger: Unknown Crystal
+Triggered by finding a "Mysterious Crystal".
+  - [提交] GalaxySpace:item.UnknowCrystal
+
+### [-8522665945290817680] Trigger: Zirconium Skip
+No Description
+  - [提交] bartworks:gt.bwMetaGeneratedingot:3 x64, bartworks:gt.bwMetaGenerateddust:3 x64 (ore:dustZirconium)
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+

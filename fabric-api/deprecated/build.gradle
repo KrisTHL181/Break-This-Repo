@@ -1,0 +1,3 @@
+plugins {
+	id 'fabric-api.deprecated-bom'
+}

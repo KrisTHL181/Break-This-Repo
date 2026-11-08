@@ -1,0 +1,17 @@
+type: embed
+
+colour: blurple
+embed:
+  title: Using a Paste Site
+
+---
+
+When sharing long code or logs, it's best to upload it to a paste site and share the link. 
+This way, others don't have to download the file to read it, and it's easier to read previous messages. 
+
+**Paste sites and their size limits:**
+
+* [mclo.gs](<https://mclo.gs/>): 10 MiB / Anonymous (designed specifically for Minecraft logs)
+* [pastes.dev](<https://pastes.dev/>): 50 MiB / Anonymous
+* [Pastebin.com](<https://pastebin.com/>): 512 KiB / Account is optional
+* [GitHub Gist](<https://gist.github.com/>): 100 MiB / Requires an account

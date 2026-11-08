@@ -1,0 +1,4 @@
+[no response body]
+curl exit: n/a
+curl stderr: (empty)
+url: https://httpbin.org/status/503

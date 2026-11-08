@@ -1,0 +1,921 @@
+# 任务线: Applied Energistics
+### [2465] 1024k Component
+Same as 256k.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:58
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2473] 1024k Crafting Storage
+Component of the crafting CPU which provides 1,048,576 bytes of storage for crafting.
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingStorage:1
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [-5461816394932849813] 1024k Essentia Component
+Same as 1k.
+  - [提交] thaumicenergistics:storage.component:6
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-6699349212107946035] 1024k Essentia Storage Cell
+These hold 2,097,152 units of essentia.  And can hold 36 types.
+  - [提交] thaumicenergistics:storage.essentia:6
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2490] 1024k Fluid Component
+Same as 1k.
+  - [提交] ae2fc:fluid_part:5
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2493] 1024k Fluid Storage Cell
+These hold over 2 GL of a single fluid. A little more than a Quantum Tank V.
+  - [提交] ae2fc:fluid_storage1024
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2469] 1024k Item Storage Cell
+Again, they're just bigger.
+  - [提交] appliedenergistics2:item.ItemAdvancedStorageCell.1024k
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2467] 16384k Component
+The final tier back in the old ExtraCells days. Now we added more!
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:60
+  > 奖励: dreamcraft:EmeraldHighAdvancedCoreChip | dreamcraft:CoinTechnicianII x8
+
+### [2475] 16384k Crafting Storage
+Component of the crafting CPU which provides 16,777,216 bytes of storage for crafting.
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingStorage:3
+  > 奖励: dreamcraft:EmeraldHighAdvancedCoreChip | dreamcraft:CoinTechnicianII x8
+
+### [-4696434011398522032] 16384k Essentia Component
+Same as 1k.
+  - [提交] thaumicenergistics:storage.component:8
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-9071312821552184337] 16384k Essentia Storage Cell
+These hold 33,554,432 units of essentia.  And can hold 60 types.
+  - [提交] thaumicenergistics:storage.essentia:8
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-8598630939261560940] 16384k Fluid Component
+Final one (so far)
+  - [提交] ae2fc:fluid_part:7
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [-5536293655471471866] 16384k Fluid Storage Cell
+It holds over 32GL.
+  - [提交] ae2fc:fluid_storage16384
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2471] 16384k Item Storage Cell
+They may have a fancy texture, but the numbers are just higher. They hold about 133,169,152 of a single item, so about the same as a Quantum Chest I. If you want more storage, use Quantum Chests with storage buses.
+  - [提交] appliedenergistics2:item.ItemAdvancedStorageCell.16384k
+  > 奖励: dreamcraft:EmeraldHighAdvancedCoreChip | dreamcraft:CoinTechnicianII x8
+
+### [1253] 16k Component
+Second largest vanilla storage component, used to make 16k ME storage cells, or can be upgraded to make 64k ME storage components. Can be recovered from a crafted 16k ME storage cell by fully emptying the storage cell, and shift-clicking it in your hand.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:37 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1254] 16k Crafting Storage
+Component of the crafting CPU which provides 16,384 bytes of storage for crafting.
+  - [提交] appliedenergistics2:tile.BlockCraftingStorage:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2499] 16k Essentia Component
+Same as 1k.
+  - [提交] thaumicenergistics:storage.component:2
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2503] 16k Essentia Storage Cell
+These hold 32,768 units of essentia.
+  - [提交] thaumicenergistics:storage.essentia:2
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2480] 16k Fluid Component
+Same as 1k.
+  - [提交] ae2fc:fluid_part:2
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [2484] 16k Fluid Storage Cell
+These hold over 32 ML of a single fluid. Enough to match a Super Tank IV!
+  - [提交] ae2fc:fluid_storage16
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [180] 16k Item Storage Cell
+Middle tier storage cell, which can contain 16,384 bytes of storage. 16,384 bytes of storage can hold 2,032 stacks of a single item, or 1,040 stacks, while holding 63 different items. The 16k storage cell uses 128 bytes of data to store a single type.  When placed inside a drive or chest will consume 1.5 AE/t.
+  - [提交] appliedenergistics2:item.ItemBasicStorageCell.16k
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1314] 1k Component
+Smallest storage component, used to make 1k ME storage cells, or can be upgraded to make 4k ME storage components. Can be recovered from a crafted 1k ME storage cell by fully emptying the storage cell, and shift-clicking it in your hand.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:35 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1315] 1k Crafting Storage
+Component of the crafting CPU which provides 1024 bytes of storage for crafting. The Crafting Storage blocks are the only necessary part. Each crafting CPU multiblock allows for a separate crafting job (this is different from sub-tasks of the same job). The more items in the recipe and sub-recipes, the more crafting storage you'll need. Having one big and a couple small might be a good idea, but remember it will try to use the best one available first when you order a craft. They are also used when a crafting card requests a craft, so you'll need several separate ones if you intend to use those a lot. A crafting CPU multiblock uses only one channel, regardless of its size. It must be square to form.
+  - [提交] appliedenergistics2:tile.BlockCraftingStorage
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2497] 1k Essentia Component
+They work the same as the item one, but hold essentia.
+  - [提交] thaumicenergistics:storage.component
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2501] 1k Essentia Storage Cell
+Unlike the item version, these can only hold 12 types of essentia each. This tier holds 2,048 units if you fill it with a single type of essentia. If you fill it with 12 different types of essentia, you can have about 168 units of each. If you want one for every type of essentia, you'll need 69 of them. You'll want to make the essentia terminal to see what you have. They consume the same amount of AE as the item ones.
+  - [提交] thaumicenergistics:storage.essentia
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2478] 1k Fluid Component
+They work the same as the item one, but hold fluids.
+  - [提交] ae2fc:fluid_part
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [2482] 1k Fluid Storage Cell
+Unlike the item version, these can only hold one type of fluid each. They can hold a little over 2 ML. There is also another variant that can hold five different fluids, but it requires tungstensteel. You'll be able to view your stored fluid in the terminal.
+  - [提交] ae2fc:fluid_storage1
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [1313] 1k Item Storage Cell
+Lowest tier storage cell, which can contain 1,024 bytes of storage. 1,024 bytes of storage can hold 127 stacks of a single item, or 65 stacks, while holding 63 different items. The 1k storage cell uses 8 bytes of data to store a single type.  When placed inside a drive or chest will consume 0.5 AE/t. It must be in an ME drive or ME chest to be usable.  You can remove the 1k ME storage component by fully emptying the storage cell, and sneak-clicking it in your hand.  You can format it in the cell workbench.
+  - [提交] appliedenergistics2:item.ItemBasicStorageCell.1k
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2464] 256k Component
+They work the same as the previous ones, but hold more once you make it into something.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:57
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2472] 256k Crafting Storage
+Component of the crafting CPU which provides 262,144 bytes of storage for crafting.
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingStorage
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [-4728780650118080217] 256k Essentia Component
+Same as 1k.
+  - [提交] thaumicenergistics:storage.component:5
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-7584910742716174902] 256k Essentia Storage Cell
+These hold 524,288 units of essentia.  And can hold 24 types.
+  - [提交] thaumicenergistics:storage.essentia:5
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2489] 256k Fluid Component
+Same as 1k.
+  - [提交] ae2fc:fluid_part:4
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2492] 256k Fluid Storage Cell
+These hold 512 ML of a single fluid. They hold a bit more than a Quantum Tank III.
+  - [提交] ae2fc:fluid_storage256
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2468] 256k Item Storage Cell
+They're bigger.
+  - [提交] appliedenergistics2:item.ItemAdvancedStorageCell.256k
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2466] 4096k Component
+Also same as 256k.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:59
+  > 奖励: dreamcraft:EmeraldHighAdvancedCoreChip | dreamcraft:CoinTechnicianII x8
+
+### [2474] 4096k Crafting Storage
+Component of the crafting CPU which provides 4,194,304 bytes of storage for crafting.
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingStorage:2
+  > 奖励: dreamcraft:EmeraldHighAdvancedCoreChip | dreamcraft:CoinTechnicianII x8
+
+### [-7214976492058174101] 4096k Essentia Component
+Same as 1k.
+  - [提交] thaumicenergistics:storage.component:7
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-6004958964934582288] 4096k Essentia Storage Cell
+These hold 8,388,608 units of essentia.  And can hold 48 types.
+  - [提交] thaumicenergistics:storage.essentia:7
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2491] 4096k Fluid Component
+And another one.
+  - [提交] ae2fc:fluid_part:6
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2494] 4096k Fluid Storage Cell
+It holds over 8GL.
+  - [提交] ae2fc:fluid_storage4096
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2470] 4096k Item Storage Cell
+Are you expecting something? They just hold more.
+  - [提交] appliedenergistics2:item.ItemAdvancedStorageCell.4096k
+  > 奖励: dreamcraft:EmeraldHighAdvancedCoreChip | dreamcraft:CoinTechnicianII x8
+
+### [1317] 4k Component
+Second smallest storage component, used to make 4k ME storage cells, or can be upgraded to make 16k ME storage components. Can be recovered from a crafted 4k ME storage cell by fully emptying the storage cell, and shift-clicking it in your hand.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:36 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1318] 4k Crafting Storage
+Component of the crafting CPU which provides 4,096 bytes of storage for crafting.
+  - [提交] appliedenergistics2:tile.BlockCraftingStorage:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2498] 4k Essentia Component
+Same as 1k.
+  - [提交] thaumicenergistics:storage.component:1
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2502] 4k Essentia Storage Cell
+These hold 8,192 units of essentia.
+  - [提交] thaumicenergistics:storage.essentia:1
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2479] 4k Fluid Component
+Same as 1k.
+  - [提交] ae2fc:fluid_part:1
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [2483] 4k Fluid Storage Cell
+These hold over 8 ML of a single fluid.
+  - [提交] ae2fc:fluid_storage4
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [1316] 4k Item Storage Cell
+Second tier storage cell, which can contain 4,096 bytes of storage. 4,096 bytes of storage can hold 508 stacks of a single item, or 260 stacks, while holding 63 different items. The 4k storage cell uses 32 bytes of data to store a single type.  When placed inside a drive or chest will consume 1.0 ae/t.
+  - [提交] appliedenergistics2:item.ItemBasicStorageCell.4k
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1256] 64k Component
+Largest vanilla storage component, used to make 64k ME storage cells. Can be recovered from a crafted 64k ME storage cell by fully emptying the storage cell, and shift-clicking it in your hand.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:38 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1257] 64k Crafting Storage
+Component of the crafting CPU which provides 65,536 bytes of storage for crafting.
+  - [提交] appliedenergistics2:tile.BlockCraftingStorage:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2500] 64k Essentia Component
+Same as 1k.
+  - [提交] thaumicenergistics:storage.component:3
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2504] 64k Essentia Storage Cell
+These hold 131,072 units of essentia.
+  - [提交] thaumicenergistics:storage.essentia:3
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2481] 64k Fluid Component
+Same as 1k.
+  - [提交] ae2fc:fluid_part:3
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [2485] 64k Fluid Storage Cell
+These hold over 128 ML of a single fluid.
+  - [提交] ae2fc:fluid_storage64
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [1255] 64k Item Storage Cell
+Highest tier storage cell, which can contain 65,536 bytes of storage. 65,536 bytes of storage can hold 8,128 stacks of a single item, or 4,160 stacks, while holding 63 different items. The 64k storage cell uses 512 bytes of data to store a single type.  When placed inside a drive or chest will consume 2.0 ae/t.
+  - [提交] appliedenergistics2:item.ItemBasicStorageCell.64k
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [468] A Digital Singularity
+What? You filled up the Quantum storage cell? I hope it was with something better than Cobblestone. Anyway, you'd better make something EVEN bigger then.  Hmm, adding even more storage capacity to a single cell would result in something so dense with information that it would just collapse into a singularity. So why not be smart about it? Just use an already existing singularity! Build a sturdy casing around it and add some connecting components, and you should be good. Better use an eternal singularity, though, to make sure things remain stable.  [note]The Digital Singularity can store more than 4 quintillion items. If you manage to fill one up, please contact the dev team so that they can ban you for cheating... eh, I mean, congratulate you on your achievement, of course![/note]
+  - [提交] appliedenergistics2:item.ItemExtremeStorageCell.Singularity
+
+### [-7887020035666230346] Advanced Neutronium Tech
+Now that you've unlocked the neutronium energy cell, you can combine it with other objects to make powerful upgrades to your AE capabilities.  Combining with an ME controller gives you a controller with infinite energy.  Combining with a cable anchor & quartz fiber gives you a replacement for the quartz fiber cable that has infinite energy.  Combining with an advanced card will give you an energy card that will allow you to upgrade your wireless terminal to have infinite energy, wherever you go.  [note]It is HIGHLY recommended you use these tools wherever possible on main-nets and sub-nets as they are huge TPS savers[/note]
+  - [提交] appliedenergistics2:tile.BlockCreativeEnergyController
+  - [提交] appliedenergistics2:item.ItemMultiPart:690
+  - [提交] ae2fc:energy_card
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIV
+
+### [-5092663277638354864] Adv. Stocking Bus
+Stocking bus but better!  This one can pull first 16 types of items automatically from ME network, which can be useful for some automations. Minimum stack size and refresh time can be configured in the GUI.  [note]Using this on your main network is probably not a very good idea.[/note]
+  - [提交] gregtech:gt.blockmachines:2711
+
+### [2495] AE Essentia Storage
+The main processor for 1K, 4K, 16k, and 64k essentia cells.  Use your AE network to store all that nasty essentia! Remember, you need to do the research first.
+  - [提交] dreamcraft:EngineeringProcessorEssentiaPulsatingCore
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2506] AE Spatial Storage
+The main part of 2^3 spatial cells.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:32
+  > 奖励: dreamcraft:PulsatingSpatialCoreChip | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinAdventureII x2
+
+### [2505] AE Spatial Storage
+The main processor for 2^3, 16^3, and 128^3 spatial storage cells.  Have you ever wanted to pack up and move your entire base, but thought it was too much of a pain? Wish you could just teleport the whole thing? Well now you, uh, still can't, because GT blocks DO NOT PLAY WELL with being teleported by AE spatial stuff. Like, world corruption level bad. But you could make a teleporter I guess?
+  - [提交] dreamcraft:EngineeringProcessorSpatialPulsatingCore
+  > 奖励: dreamcraft:PulsatingSpatialCoreChip | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinAdventureII x2
+
+### [2507] AE Spatial Storage
+The main part of 16^3 spatial cells.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:33
+  > 奖励: dreamcraft:PulsatingSpatialCoreChip | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinAdventureII x2
+
+### [2508] AE Spatial Storage
+The main part of 128^3 spatial cells.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:34
+  > 奖励: dreamcraft:PulsatingSpatialCoreChip | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinAdventureII x2
+
+### [2510] AE Spatial Storage
+Contains up to a 16^3 area inside it. This is 4096 blocks.
+  - [提交] appliedenergistics2:item.ItemSpatialStorageCell.16Cubed
+  > 奖励: dreamcraft:PulsatingSpatialCoreChip | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinAdventureII x2
+
+### [2509] AE Spatial Storage
+Contains up to a 2^3 area inside it. This is 8 blocks, so if you just want to teleport yourself, you don't need to make the later ones.
+  - [提交] appliedenergistics2:item.ItemSpatialStorageCell.2Cubed
+  > 奖励: dreamcraft:PulsatingSpatialCoreChip | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinAdventureII x2
+
+### [2511] AE Spatial Storage
+Contains up to a 128^3 area inside it. This is 2,097,152 blocks. Teleport a village to the Moon to make them suffer!
+  - [提交] appliedenergistics2:item.ItemSpatialStorageCell.128Cubed
+  > 奖励: dreamcraft:PulsatingSpatialCoreChip | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinAdventureII x2
+
+### [2477] AE Tier 1 Fluid Storage
+The main Processor used for crafting 1K, 4K, 16K and 64K Fluid Storage Components. Additionally, it's used to craft Dual Interfaces, as well as some other useful tools from AE2FC, like the Level Maintainer.  Don't want to get rid of the Super Tanks you have been using up to now? Use the Fluid Storage Bus instead of the Fluid Storage Cells from AE2FC then. Super Tanks double in capacity each tier, but the Cells quadruple. They're also less expensive for sure. But you decide which to use.
+  - [提交] dreamcraft:EngineeringProcessorFluidDiamondCore
+  > 奖励: dreamcraft:DiamondFluidCoreChip | dreamcraft:CoinTechnicianII x2
+
+### [1311] AE Tier 1 Item Storage
+The main processor for 1K and 4K cells.  Storing items directly in AE cells is very performant and usually the best option.
+  - [提交] dreamcraft:LogicProcessorItemGoldCore x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-4667288543375339252] AE Tier 2 Fluid Storage
+This Processor allows you to craft 256k, 1024k, 4096 and 16384k Fluid Storage Components.  These Components need to be paired with Advanced Fluid Storage Housings to turn them into Fluid Storage Cells.
+  - [提交] dreamcraft:EngineeringProcessorFluidEmeraldCore
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [1319] AE Tier 2 Item Storage
+The main processor for 16k and 64k cells.
+  - [提交] dreamcraft:EngineeringProcessorItemDiamondCore x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2463] AE Tier 3 Item Storage
+The main processor for 256k and 1024k cells. You can make these in IV.  These Components need to be paired with Advanced Storage Housings to turn them into Storage Cells.
+  - [提交] dreamcraft:EngineeringProcessorItemEmeraldCore
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [2476] AE Tier 4 Item Storage
+The main processor for 4096k and 16384k cells. You'll need to be in LuV for these.
+  - [提交] dreamcraft:EngineeringProcessorItemAdvEmeraldCore
+  > 奖励: dreamcraft:EmeraldHighAdvancedCoreChip | dreamcraft:CoinTechnicianII x8
+
+### [2532] Alpha and Omega
+The ME Annihilation Plane destroys blocks as if you had mined them, and places them into the network. The Identity version acts as if silk touch was used.  The ME Formation Plane does the opposite, it places blocks into the world. You'll need to tell it what to place/drop though. This can work in both block and item mode.
+  - [提交] appliedenergistics2:item.ItemMultiPart:300, appliedenergistics2:item.ItemMultiPart:301, appliedenergistics2:item.ItemMultiPart:320
+  > 奖励: dreamcraft:CoinTechnicianII x2 | appliedenergistics2:item.ItemMultiPart:300 | appliedenergistics2:item.ItemMultiPart:320
+
+### [-7226135969109944920] And Another Digital Singularity
+Do you really need this?
+  - [提交] thaumicenergistics:storage.essentia:10
+
+### [1301] Annihilation and Formation
+Formation Core - a component which can convert energy back into matter. Annihilation Core - a component which can convert matter into energy. Gates all network I/O.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:44 x16, appliedenergistics2:item.ItemMultiMaterial:43 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-7261779885652482879] Another Digital Singularity
+You've probably drained quite a few of them at this point.  [note]Have you heard about YOTTanks?[/note]
+  - [提交] ae2fc:fluid_storage.singularity
+
+### [182] Applied Crafting
+Crafting can be a pain. So why not automate it? These can hold a single pattern each. However, if you place an ME interface against it, you can use it to craft any of the patterns in it. You can use multiple with the same MA, and given how expensive they are now, that might be a good idea. These do NOT require a channel, but do require network access.
+  - [提交] appliedenergistics2:tile.BlockMolecularAssembler
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2877] Applied Greg?
+ME Buses are a combination of technology and...other technology. Don't give me that look, it is, OK? With these, you can now directly I/O items between GregTech multiblock and ME network. They have §osignificantly§r less lag, so please start using them as soon as possible on servers.  You just pop off your GT bus + ME bus or ME interface combination, and replace both with the new bus and connect a ME cable directly to it. It uses 1 channel, same as the other options.  The output bus and hatch have limited output space. If you need more, you can upgrade them either by crafting them with storage components or putting a cell inside. A digital singularity cell will make the cache near infinite.  Note that the output bus must eject each item from its cache §oin order§r. If it cannot eject the topmost item, it will be stuck and cannot eject any other items.  If voiding is turned off, the multiblock will not void when the ME Outputs are full.  Inside of the ME Output bus you have the option to enable §2Cache Mode§r which will fill the storage cell rather than sending the items to the ME network. §9Checking Mode§r will verify the inserted storage cell can accept the output before the machine starts.  [note]For usage in some machines, i.e. the advanced assembly line, the configured item must be in the first slot in order for the multi to work.[/note]
+  - [提交] gregtech:gt.blockmachines:2718, gregtech:gt.blockmachines:2710, gregtech:gt.blockmachines:2713
+  > 奖励: gregtech:gt.blockmachines:2710 | dreamcraft:CoinTechnicianII
+
+### [2547] Autocrafting Magic Stuff
+The Arcane Assembler works like a combination of the Molecular Assembler and the Arcane Workbench, allowing you to autocraft anything crafted in the latter. You need to link a vis relay through the network to supply vis to it, and a Knowledge Core with recipes on it for it to work. Additionally, you can add vis discount gear into the interface to take advantage of the discount. The base discount starts at 20%. Each Acceleration Card reduces the time taken by 20% and increases power usage by 50%. For every point of warp on the discount gear, the power costs increase by 15%.  The Knowledge Core holds up to 21 patterns for use in the Arcane Assembler, but you need a new assembler for every Knowledge Core if you want to autocraft more than that.  To encode the patterns, you need a Knowledge Inscriber. It works exactly as you would expect. It doesn't connect to the network, so it doesn't need a channel. If you want to erase a pattern, select it and the save icon should become erase instead.
+  - [提交] thaumicenergistics:thaumicenergistics.block.arcane.assembler, thaumicenergistics:knowledge.core, thaumicenergistics:thaumicenergistics.block.knowledge.inscriber
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1312] Automating Crafting
+Is a component of the crafting CPU multiblock. This particular block provides the CPU with no additional features, but can be used as a "filler" block and as a crafting ingredient for the crafting storage, monitor and co-processing units.
+  - [提交] appliedenergistics2:tile.BlockCraftingUnit x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [185] Basic Terminals
+The ME Terminal is an interface which gives you access to an ME network's networked storage. It has the ability to sort and search, as well as filter by using a view cell. If inserting and taking fluid from the terminal, be sure to hold the control key when you click with a fluid storage container.  The ME Crafting Terminal is the upgraded version of the ME terminal which has an integrated crafting grid with access to an ME network's networked storage.  The ME Interface Terminal gives remote access to all interface pattern slots on your network separated by which type of machine they are on. It will show the type of machine in the terminal, however you can name the ME interface in the inscriber or an anvil to alter the name displayed in the ME interface terminal. If you use Ender Chests to send stuff elsewhere to be processed a lot, this may help with reducing confusion. You can also search for a specific device.
+  - [提交] appliedenergistics2:item.ItemMultiPart:380, appliedenergistics2:item.ItemMultiPart:360, appliedenergistics2:item.ItemMultiPart:480
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2529] Beam Me Up, Scotty
+If you want to teleport stuff around using these, you'll need a drive in the SIOP, and at least 6 pylons hooked up. The pylons need to indicate the X, Y and Z dimensions, with you needing 1 more than you would think. If the efficiency goes below 100%, the AE cost will balloon enormously, so add more pylons to counteract that. After using a redstone signal to activate the SIOP, the blocks will be moved to the spatial IO dim, and the drive will move to the output, so you can send it somewhere else. This is very important to do properly if you want to use it as a teleporter. Otherwise, you can get stuck there. Your network will need to be able to hold all the power needed to teleport at once, so you'll need at least one energy cell. You can only have one Pylon setup per controller, so consider putting them on a subnetwork.  Using 2 in the X and Z dimensions and 3 in the Y will give you a 1x2x1 teleporter to teleport yourself. You'll want a SIOP port on each side for sending and for receiving. But you'll still need to design a redstone contraption to activate them properly!  Read this if you want to know more about spatial IO in general, and larger setups: [url]https://old.reddit.com/r/feedthebeast/comments/3c2b2r/a_treatise_on_nocheat_smp_ae2_spatial_io/[/url] Also see this if you want to see a fancy teleporter: [url]https://old.reddit.com/r/feedthebeast/comments/2mhrf8/ae2_spatial_transporters/[/url]  [warn]Spatial cells, once used, will only work in the XYZ dimensions first used, with no way to format or recraft. Test in creative first![/warn]  [warn]Expect your world to lag for a second after using, blame AE.[/warn]
+  - [提交] appliedenergistics2:tile.BlockSpatialPylon x14, appliedenergistics2:tile.BlockSpatialIOPort x4
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2
+
+### [-8385708024862298701] Block Container
+Block Container Cells are a special variant of cell. They are unique because, despite using a 1k storage component, each one can hold up to 520k items rather than just 8.13k!  Of course, all of that power comes with the limitation that they can only store one type of item, so they aren’t quite as flexible. They are great for bulk storage or for scenarios where you might want only one item per drive- Assembly Line automation for example.
+  - [提交] appliedenergistics2:item.ItemExtremeStorageCell.Container
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [203] Bundled AE Channels
+P2P tunnels. You'll probably want a bunch of them! They act as teleport points from one place to another for the contained information.  They can pack up to 32 channels into 1 channel and transport those to the destination P2P bus. Each P2P tunnel requires 1 free channel. P2P connections cannot be nested, but one transport cable can carry multiple P2P connections. For a normal fluix cable, that's 4 P2P connections, and 16 for dense.  You can use separate cables to connect input P2Ps to the controller and to transport from the controller to around your base, allowing for 32 output P2Ps on one dense cable. Alternatively you can use an entirely separate controller as a transport network.  Generally, you'll want to have the first point be one side of an ME Controller block (remember you can add more!), and the other where some of your machines are.  A nice online guide can be found at [url]https://wiki.gtnewhorizons.com/wiki/Applied_Energistics_2[/url] under P2P tunnels.  If you want to use one of the P2P tunnels for something §oother§r than ME channels, use an applicable item on the center of the face of the tunnel, (for example, a GT cable for GT EU, redstone for RS signal, an RF conduit for RF, a torch for light, a bucket for fluid, a chest for items, or an OC cable for OC) and it will convert to that type, even if you pick it up. Use a fluix cable to change it back.
+  - [提交] appliedenergistics2:item.ItemMultiPart:460 x2
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinTechnicianII
+
+### [184] Cables
+To have access to your applied energistics network from your entire base, you'll need cables. A lot of them. For now, the basic ones will do, but eventually, you'll end up using dense cables and p2p channels. Glass and Covered cables are functionally identical, just different in looks. Each can carry 8 channels. Quartz fibers don't carry channels but can carry energy. This is useful for providing power from your main network to independent subnetworks.  You can also color your cables - cables with different colors will not connect, so those can be used to expand network capacity by running parallel cables. Only fluix colored cables connect to all other colors. Later it will probably be more efficient to use P2P channels to jam a bunch of channels into 1.  Anchors are like covers, keeping things from connecting when you don't want them to.
+  - [提交] appliedenergistics2:item.ItemMultiPart:140 x64
+  - [提交] appliedenergistics2:item.ItemMultiPart:16 x24
+  - [提交] appliedenergistics2:item.ItemMultiPart:36 x8
+  - [提交] appliedenergistics2:item.ItemMultiPart:120 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-8466584755593206866] Cards for AE2 Nerds!
+[quest]Equal Distribution, Fake Crafting, Locking, and Advanced Blocking Cards![/quest]  §6Equal Distribution Card:§r  The Equal Distribution Card will evenly divide a cell's capacity between types or partitions.  §6Fake Crafting Card:§r   The Fake Crafting Card will tell your ME System to complete a craft without expecting the final resulting item.   This can be handy for creating fake patterns for entire multiblocks or setups by collecting the individual items needed in one craft.  The card can only be inserted into:  §cME Dual Interface ME Interface P2P Tunnel - ME Dual Interface§r   §6Locking Card:§r   The Locking Card allows an interface to optionally block new crafts from being started for one of the following conditions:  §cWhile Redstone is low While Redstone is high After a craft has been pushed, until a redstone pulse is received After a craft has been pushed, until the results have returned to the same network§r  §6Advanced Blocking Card:§r  The Advanced Blocking Card is able to ignore non-consumables in a subnet for more complicated automations.   In a standard subnet, where two interfaces are facing each other, the Advanced Blocking Card is to be §9placed on the §lsubnet interface.§f
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:69, appliedenergistics2:item.ItemMultiMaterial:66, appliedenergistics2:item.ItemMultiMaterial:65, appliedenergistics2:item.ItemMultiMaterial:63
+  > 奖励: enhancedlootbags:lootbag:38
+
+### [2515] Centi-vis in your network
+You can use this device to either transfer the contents (CV) of a Vis Relay to another vis relay, an Arcane Assembler, or an Arcane Crafting Terminal. Either way, place the relay on the device (and send some CV to it), and use the memory card to link to the second device. If you send it to another Vis Relay Interface, you'll obviously need another Vis Relay on the other side.
+  - [提交] thaumicenergistics:part.base:6
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-8244171501543540704] Certified Geek, 7 Days a Week
+Needing to go to the terminal all the time to access your items can be a real pain. You ought to set up a Wireless Access Point (WAP) on your system to alleviate that inconvenience.  The WAP allows for both Wireless Terminals and the Matter Manipulator to see the contents of your system. You must have at least one WAP on your system for wireless to function.   Range and power usage is determined based on the number of Wireless Boosters installed in the WAP. A network can have any number of WAPs with any number of Wireless Boosters in each one, allowing you to optimize power usage and range by altering your setup.  [note]After setting this up, look to the next quest for getting a Wireless Terminal.[/note]
+  - [提交] appliedenergistics2:tile.BlockWireless, appliedenergistics2:item.ItemMultiMaterial:42 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1326] Co-Processing
+Component of the crafting CPU which provides additional item delivery from the CPU to the ME Interface for crafting.  This can be used to make more machines active in parallel for the job, and thus increase overall crafting speed.   Every Co-Processor adds one AE2 operation per tick. AE2 uses operations to push items to interfaces, this speeds up the rate at which it can push into your machines. As a side benefit, AE2 will split a task between multiple interfaces with the same pattern (or simulated pattern like with P2P Interface). This means if you have two interfaces with the same pattern for the same item AE2 with no co-processors will only push to one of those interfaces until it is full (so, if the craft is small it may not split it at all) whereas with a co-processor it will round robin between the two by splitting its operations per tick.
+  - [提交] appliedenergistics2:tile.BlockCraftingUnit:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-6453224221561522666] Co-Processing x1024
+No Description
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingUnit:2
+  > 奖励: dreamcraft:CoinTechnicianIV x2
+
+### [392] Co-Processing x16
+For an even more compact crafting CPU.
+  - [提交] appliedenergistics2:tile.BlockCraftingUnit:3
+  > 奖励: dreamcraft:CoinTechnicianIII
+
+### [-8918162941396499410] Co-Processing x256
+These are starting to get a little pricey...
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingUnit:1
+  > 奖励: dreamcraft:CoinTechnicianIII x10
+
+### [393] Co-Processing x4
+Your crafting CPU is massive and still can't keep up? Don't worry, we have a custom solution for that!
+  - [提交] appliedenergistics2:tile.BlockCraftingUnit:2
+  > 奖励: dreamcraft:CoinTechnicianII x4
+
+### [-6226703083228085975] Co-Processing x4096
+No Description
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingUnit:3
+  > 奖励: dreamcraft:CoinTechnicianIV x5
+
+### [-8472010944693294394] Co-Processing x64
+It gets even more compact??
+  - [提交] appliedenergistics2:tile.BlockAdvancedCraftingUnit
+  > 奖励: dreamcraft:CoinTechnicianIII x5
+
+### [1260] Crafting Monitor
+Component of the crafting CPU which displays the top level job and its current progress so you can monitor at a glance how your crafting jobs are progressing.
+  - [提交] appliedenergistics2:tile.BlockCraftingMonitor
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-5429883527448864555] Cribs
+Your latest research into Applied Greg has uncovered a way to integrate the ME interface's pattern processing ability directly inside of input buses: §lCrafting Input Buses§r! These allow you to directly place patterns into your input bus. Input buses alone lack sufficient item space and computational power to process items coming from your ME network, requiring additional storage and circuits. This task also requires the precision of the Assembly Line.  You can even place non-consumable items like lenses and molds inside! However, consumable items won't do anything.  You still lack technology sophisticated enough to directly process patterns containing fluids; they are just not good for electronics.  Each Crafting Input Bus is fully isolated from other buses and hatches, so you may have to change your patterns.  The following improvements will be unlocked in later tiers:  [warn]Crafting Input Buffer[/warn] is §9§owaterproof§r, supporting patterns with fluids. §lUEV-Tier§r  [warn]Crafting Input Proxy[/warn] can wirelessly connect to any Crafting Input Bus or Buffer, allowing many multiblocks to share the same patterns. §lUIV-Tier§r
+  - [提交] gregtech:gt.blockmachines:2715
+
+### [2544] Cut the Power!
+The ME Toggle Bus allows you to cut off access through a cable if it doesn't receive a redstone signal. The inverted version is, well, inverted. It must be placed between the cables, like a Quartz Fiber.
+  - [提交] appliedenergistics2:item.ItemMultiPart:80, appliedenergistics2:item.ItemMultiPart:100
+  > 奖励: dreamcraft:CoinTechnicianII | appliedenergistics2:item.ItemMultiPart:80
+
+### [2539] Deck of Cards
+These cards add additional functionality to certain devices or fixtures. They specify what devices they work on in the tooltip.  §6Redstone Card: §r  The Redstone Card adds redstone interactivity to the devices it can be used on, with the following options:   §cAlways active Active with redstone signal Active without redstone signal Activate once per pulse§r  §6Capacity Card: §r  The Capacity Card adds more slots for items that use them.   If you add this to an Export Bus, an icon is added to select item priority.  §6Crafting Card: §r  The Crafting Card allows you to automatically request autocrafting of items.  §9In an ME Interface: §r  If you put in items to be stocked, if there aren't enough, it'll craft them until it reaches the selected amount.   These crafts are being stocked for recipes that the ME Interface has.  [note]If you want them to be seen by the network, you'll need to put a storage bus on the ME Interface.[/note]  §9In an ME Level Emitter: §r  §aFirst Mode: §rIt'll emit a redstone signal while the specific item is being crafted.  §aSecond Mode: §rIt will emit a redstone signal once a crafting job for the item has been requested, [warn]but it won't send the items to be crafted.[/warn]   This is useful if you're using a dummy pattern, and are using the level emitter to tell something else to happen.   You still need to get the item(s) requested back into the system so it doesn't tie up a crafting CPU though.  §9In an ME Export Bus: §r  It'll attempt to send whatever item(s) are selected in the export bus' GUI.  §aFirst Mode: §rIt'll send available items first, then create crafting jobs for the rest.   §aSecond Mode: §rIt will only send crafted items.  §6Acceleration Card: §r  The Acceleration Card makes the device/fixture work faster.   [note]You'll probably want a lot of these.[/note]  §6Inverter Card: §r  The Inverter Card allows you to invert the item filter of certain fixtures.  §6Fuzzy Card: §r  The Fuzzy Card allows you to apply fuzzy logic to filtering to allow items with different NBT or damage data to be counted as the same. This is different from metadata.   If you just want it to be fuzzy for NBT, set to §9Match Any.§r   If it is set to §c99%§r, it will work on anything that is damaged. You can use the Inverter Card to reverse this.  When used in an ME Interface, each fuzzy card (up to 3) will control 3 slots of the interface, from right to left. 
+  - [可选提交] appliedenergistics2:item.ItemMultiMaterial:25 x3, appliedenergistics2:item.ItemMultiMaterial:28 x3
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:26, appliedenergistics2:item.ItemMultiMaterial:27, appliedenergistics2:item.ItemMultiMaterial:53, appliedenergistics2:item.ItemMultiMaterial:30, appliedenergistics2:item.ItemMultiMaterial:31, appliedenergistics2:item.ItemMultiMaterial:29
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [1299] Dense Boys
+Giving your network even more stability. Dense energy cells store AE energy up to 16 million units. They do not accept power directly but are used to buffer power in an already existing ME Network.
+  - [提交] appliedenergistics2:tile.BlockDenseEnergyCell
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2120] Dense cables
+Dense cables are going to be your network backbones. They can transfer 32 channels and display the number of channels in use. Buses and flat interfaces cannot be placed directly on them.
+  - [提交] appliedenergistics2:item.ItemMultiPart:76 x8
+  > 奖励: bq_standard:choice
+
+### [2512] Diffusion and Coalescence
+The Diffusion and Coalescence cores are basic components needed to make the Thaumic Energistics devices. They're made out of the Formation and Annihilation ones.
+  - [提交] thaumicenergistics:material x4, thaumicenergistics:material:1 x4
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2520] Easier AL Automation
+Unlike regular Pattern Terminals, the Processing Pattern Terminal doesn't have a crafting mode. Instead, you have a lot more slots for input and output, and the ability to swap them. Great for your Assembly Line patterns.  [note]If you need to rename an item for use in a specific pattern, you can use Ctrl + Middle-Click to set the name of the item straight from the terminal. Very handy for some Forming Press & Assembly Line recipes![/note]
+  - [提交] appliedenergistics2:item.ItemMultiPart:500
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2
+
+### [1309] Emptying Tanks
+Import Bus for Fluids only.
+  - [提交] ae2fc:part_fluid_import x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2136] Energy Acceptor
+The Energy Acceptor is an alternative place to inject energy into your AE2 network. You can form a "dumb" network with just an EA, but for real capability, you'll want a Controller.  [note]If you're making a subnet, just transfer power over with a Quartz Fiber.[/note]
+  - [提交] appliedenergistics2:tile.BlockEnergyAcceptor
+  > 奖励: appliedenergistics2:item.ItemMultiMaterial:7 x2 | enhancedlootbags:lootbag:37
+
+### [-6766405517321273132] Essentia Quantum Storage
+Seems like you really want to swim in essentia?
+  - [提交] thaumicenergistics:storage.essentia:9
+  > 奖励: dreamcraft:CoinTechnicianII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [2496] Essentia Storage Housing
+This is the essentia version, for storing essentia in your network.
+  - [提交] thaumicenergistics:storage.casing
+  > 奖励: dreamcraft:EssentiaCircuit | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [-6584722488019127656] Even More Basic Cards! 
+[quest]Overflow Void and Sticky Cards[/quest]  §6Overflow Void Card:§r   Overflow Void Cards will cause the ME Storage Cell to void excess inputs.  §6Sticky Card:§r   Sticky Cards are useful if you want your ME System to only store a filtered item in one location across your entire network.  [warn]Be careful where you use sticky cards, as they can cause your passive systems to jam.[/warn]
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:68, appliedenergistics2:item.ItemMultiMaterial:64
+  > 奖励: enhancedlootbags:lootbag:37
+
+### [2513] Exporting Essentia From the Network
+Does exactly what it says. But you probably won't need it much, if at all.
+  - [提交] thaumicenergistics:part.base:3
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1306] Extracting Items From the Network
+The ME export bus extracts items from the ME network's networked storage and places them into the inventory it faces. You must configure which items it will insert, leaving the configuration blank will result in nothing. The ME export bus will try to export any of the items on its list skipping over those it cannot fit into the destination. This is the functional opposite of the ME import bus.
+  - [提交] appliedenergistics2:item.ItemMultiPart:260 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1259] Filling Tanks
+Export bus for fluids only.
+  - [提交] ae2fc:part_fluid_export x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-7095756151271155560] Fluid Quantum Storage
+Are you draining an ocean?
+  - [提交] ae2fc:fluid_storage.quantum
+  > 奖励: dreamcraft:CoinTechnicianIII
+
+### [2540] Fluids of the Trade
+The ME Fluid Auto Filler will add crafting recipes for any fluid in your network that has a bucket version. When crafting a water bucket for example, it will send a bucket to it, and the filled water bucket back.
+  - [提交] ae2fc:fluid_auto_filler
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [-8955241440528385612] Fluid Void Cell
+[warn]Caution! Use with utmost care! This cell does exactly what it says. It deletes everything you put on there. So better make sure you have precise control over what can actually go there.[/warn]  [note]Will only void fluids, not items[/note]
+  - [提交] ae2fc:fluid_storage.void
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [181] Fluix Crystals
+Not "flux"! Even if the color is the same. You need to add redstone and nether quartz to a charged certus crystal.
+  - [可选提交] minecraft:redstone x64 (ore:dustRedstone), minecraft:quartz x64 (ore:crystalNetherQuartz), appliedenergistics2:item.ItemMultiMaterial:1 x64
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:7 x128
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII | dreamcraft:CoinTechnicianII
+
+### [1305] For Fluid Recipes
+Placing your fluid crafting patterns in a Dual Interface. That will allow AE2 to push the fluids and items both. Note. Fluids are being sent first, then items.
+  - [提交] ae2fc:fluid_interface
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [183] Getting Your First Processors
+There are 3 different ways to make AE2 processors. First, there's the AE2 Inscribers, which are slow, hold one of each item at a time, require inputs (and output) from specific directions, but can be sped up with cards. Second, there's the Advanced Inscribers, which are similar, but allow stacking, and do not require specific directions. Lastly, there's GT Assemblers (and later the multiblock) which can be very fast, but require a fluid input, and consume more power. Get 8 of each one for now.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:23 x8, appliedenergistics2:item.ItemMultiMaterial:22 x8, appliedenergistics2:item.ItemMultiMaterial:24 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-8441065433407616811] Get Your Priorities Straight
+You might find yourself setting up complicated systems involving many storage buses with differing priorities. To make it less tedious, grab a priority card!  This tool allows you to set many buses to the same priority with a single click... but better yet, it also features §nincrement and decrement modes!§r Every time you click on a bus, the priority will be set to one higher/lower than the previous bus you clicked, so setting up large arrays of descending priorities is a breeze.
+  - [提交] appliedenergistics2:item.ToolPriorityCard
+
+### [-7599953951282587810] Going Superluminal
+The Superluminal Acceleration card is the fastest AE card that you can use to transfer items or fluids.  [note]Superluminal Acceleration cards can only be placed in:[/note]  §cME IO Port (3)§r  In an IO Port, the Superluminal Acceleration Card will transfer items at a rate of:  §61x Cards: 33,554,432 items/tick 2x Cards: 2,147,483,648 items/tick 3x Cards: 137,438,953,472 items/tick  §rIn an IO Port, the Superluminal Acceleration Card will transfer fluids at a rate of:  §61x Cards: 33,554,432,000 mb/tick 2x Cards: 2,147,483,648,000 mb/tick 3x Cards: 137,438,953,472,000 mb/tick
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:67
+  > 奖励: enhancedlootbags:lootbag:38
+
+### [179] Gotta Find Them All
+There are a lot of meteors on the surface, but there are more underground. In order to find those, you'll want a compass. The compass will only tell you the chunk has an asteroid in it, with your ore finder wand you can get a better idea where in the chunk the meteor is hiding.  For more details on AE2, check out [url]https://wiki.gtnewhorizons.com/wiki/Applied_Energistics_2[/url].
+  - [提交] appliedenergistics2:tile.BlockSkyCompass
+  > 奖励: dreamcraft:CoinTechnicianII
+
+### [2487] Housing for Advanced Components
+You need to use this for the higher-tiered Cells.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:61
+  > 奖励: dreamcraft:EmeraldAdvancedCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [-8261255533218631311] Housing for Advanced Fluid Components
+You need to use this for the higher-tiered Fluid Cells.
+  - [提交] ae2fc:fluid_storage_housing:1
+  > 奖励: dreamcraft:EmeraldAdvancedFluidCoreChip | dreamcraft:CoinTechnicianII x4
+
+### [-8207540231386597249] Hyper Acceleration!
+Hyper-Acceleration cards are a faster version of the basic acceleration cards.   [note]Hyper-Acceleration cards can only be placed in:[/note]  §cME IO Port (3) ME Fluid Import Bus (4) ME Fluid Export Bus (4)  §rIn an IO Port, the Hyper-Acceleration Card will transfer items at a rate of:   §61x Cards: 4,096 items/tick 2x Cards: 32,768 items/tick 3x Cards: 262,144 items/tick  §rIn ME Fluid Buses, the Hyper-Acceleration Card will transfer fluids at a rate of:  §61x Cards: 4,096,000 mb/tick 2x Cards: 32,768,000 mb/tick 3x Cards: 262,144,000 mb/tick
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:56
+  > 奖励: enhancedlootbags:lootbag:37
+
+### [2519] Illuminated Panels
+All terminals are made from these. You'll probably want several.
+  - [提交] appliedenergistics2:item.ItemMultiPart:180
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [1290] Imma Chargin' My...
+Charged certus quartz is one of the basic components for a lot of AE recipes. Just mix some certus quartz and redstone dust to get charged certus quartz dust.  Use the autoclave to make crystals. Or if you have lots of sodium, you can use the chemical reactor recipe. You can also make the charger to go directly from crystal to charged crystal, but it's not very fast. The charger can connect directly to a GT cable or a fluix cable from the bottom.  [note]Note that some recipes only have a chance of producing a charged crystal, which is true of many of these.[/note]
+  - [可选提交] minecraft:redstone x32 (ore:dustRedstone), gregtech:gt.metaitem.01:2516 x32 (ore:dustCertusQuartz)
+  - [可选提交] dreamcraft:ChargedCertusQuartzDust x32
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:1 x32
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII
+
+### [1308] Inserting Items Into the Network
+Pulls items from the inventory it is pointed at and places them into the ME network's networked storage. You can specify which items it will pull out via the UI, else it tries to pull out any item in the adjacent inventory. The ME import bus will attempt to import any possible options, even if 1 or more of the configured items cannot be stored. This is the functional opposite of the ME export bus.  When your machines are very fast, it's better to have them output directly into an ME interface instead, since that works instantly.
+  - [提交] appliedenergistics2:item.ItemMultiPart:240 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [365] Insurgence
+Is your infusion very slow? And, alas, to resolve that you need a world accelerator. That probably causes a lot of lag.  Well no longer! Try out the new Infusion Intercepter. Placing it directly below the central pedestal of your existing infusion altar and supplying essentia to the bottom side of this block via Essentia Provider allows for instant essentia consumption from the network, drastically speeding up your infusions.  [note]You may still want to keep the world accelerator for the item phase of the infusion process.[/note]
+  - [提交] thaumicinsurgence:infusionIntercepter
+  > 奖励: enhancedlootbags:lootbag:10
+
+### [1303] Interfacing with Inventories
+The ME Storage Bus, when attached to another inventory block in the world lets you access that inventory via networked functions. This allows you to use chests, barrels, or other types of item storage in your networks.  The storage via the ME Storage Bus is bidirectional, it can both insert, or extract items from the inventory block it is attached to as long as the ME storage bus has its required channel.  The UI allows you to control which items are selected as storable items, this selection has no effect on what items can be extracted once they are in the storage.  The storage bus will function with nearly any inventory block, including ME Interfaces, EFR barrels, JABBA Barrels, Storage Drawers, etc. They can also be used to route items passively into Buildcraft pipes.  If you place a storage bus on an ME Interface the storage bus will be able to interact with the full contents of the target network, unless that interface is configured to store items inside itself, in which case it will see those stored items.
+  - [提交] appliedenergistics2:item.ItemMultiPart:220 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1302] Interfacing with Machines
+The ME Interface is the only component which can be used as a part, or as a Block. Crafting an ME interface in either form by itself produces the other form. The thin form is useful if you want to provide several different interfaces in a single block of physical space, but each will need its own channel. The block form lets multiple other blocks connect to a single ME interface, using only one channel for the interface. The ME Interface acts as an in between when working with pipes, tubes, networks, or machines from other mods.  [note]If you're using a resource pack and the interface's GUI doesn't show up properly, you'll need to delete the assets\appliedenergistics2\textures\guis\interface.png file in your resourcepack zip file.[/note]
+  - [提交] appliedenergistics2:item.ItemMultiPart:440 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1304] Interfacing with Tanks
+Storage bus for fluids only.
+  - [提交] ae2fc:part_fluid_storage_bus x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [374] Item Void Cell
+[warn]Caution! Use with utmost care! This cell does exactly what it says. It deletes everything you put on there. So better make sure you have precise control over what can actually go there.[/warn]  [note]Will only void items, not fluids[/note]
+  - [提交] appliedenergistics2:item.ItemVoidStorageCell
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [178] It's Storage Time!
+To make an AE system, you'll need all 4 patterns, collect them all! If you hit EV without getting all of them, you can also make them yourself.  [note]BTW, you need a ton of Titanium to do AE2, so if you can't make it, you won't get much of anywhere.[/note]
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:13, appliedenergistics2:item.ItemMultiMaterial:14, appliedenergistics2:item.ItemMultiMaterial:19, appliedenergistics2:item.ItemMultiMaterial:15
+  > 奖励: appliedenergistics2:tile.BlockSkyChest | dreamcraft:CoinTechnicianII
+
+### [1291] Keeping Your Network Happy
+Helps with fluctuating power. Energy cells store up to 2,000,000 AE. They do not accept power directly but are used to buffer some power in an already existing ME network. Energy Cells do not use a channel.
+  - [提交] appliedenergistics2:tile.BlockEnergyCell
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-7863286137106609104] Knowing your Throughput! 
+[quest]ME Throughput Monitor[/quest]  The ME Throughput Monitor will show the speed of items entering your network.  Clicking with an item will add it to the monitor.  Use a §aWrench§r to lock the monitor  When the monitor is locked, use §cShift+Right Click§r to change the measured time frame.   Modes:   §6Per Tick Per Second Per Minute Per Hour
+  - [提交] appliedenergistics2:item.ItemMultiPart:410
+  > 奖励: enhancedlootbags:lootbag:38
+
+### [-7597752225046936010] Level Maintainer
+The ME Level Maintainer is another cool addition of AE2FC. Choose an item or fluid and an amount to maintain, and the Level Maintainer will attempt to call patterns to keep crafting the item until it reaches the threshold you configured. You can also configure the crafting batch size.
+  - [提交] ae2fc:level_maintainer
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII x2
+
+### [2549] Magical Minions
+You can use the Wireless Golem Backpack to connect your golem to the network if it's close enough to an access point. See the Thaumonomicon for details.
+  - [提交] thaumicenergistics:golem.wifi.backpack
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2517] Magic Terminals
+The Arcane Crafting Terminal is the terminal version on the Arcane Workbench. It can hold a set of vis discount gear in its inventory in addition to a wand. You can also link a vis relay through the network to it to recharge the wand.
+  - [提交] thaumicenergistics:part.base:5
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII | dreamcraft:CoinDarkWizardII
+
+### [1298] Maximum Security
+Allows you to configure which users, and what permissions the users have with the ME System. By existing it enforces permissions on the usage of the system.  The security system does not prevent destructive tampering, removing cables / machines or breaking of drives. If you need to protect your system from physical vandalism you will need another form of physical security. This block provides network level security.  The player who places the ME security terminal has full control over the network and cannot exclude themselves any rights. By adding a blank biometric card you define a default behavior for every player who has no biometric card registered.  In addition to security on the software layer, you can link up your wireless terminal with the network and access it wirelessly if you have that setup already.  If you have one on your main network, your subnets may also need one to have access to your main network, but this is not always the case depending on how you set it up.
+  - [提交] appliedenergistics2:tile.BlockSecurity
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2137] ME Controller
+The heart of your ME network. You can inject energy into here as well to power your network, but you probably want to save all available spaces for networking. Without this, you're limited to 8 channels.  This is a multiblock, and can be expanded up to 7x7x7, and can have 2 adjacent blocks in at most 1 axis, or it will be disabled. Whatever that means, just try it out, OK? You can only have one per network.  About channels: Generally, every device uses a channel unless specified otherwise. If you don't have enough, that device will not function. If you can't determine what's causing your network problems, try looking at the lines on the smart and dense cables, or use a network visualizer.
+  - [提交] appliedenergistics2:tile.BlockController
+  > 奖励: appliedenergistics2:item.ItemMultiMaterial:8 x8 | enhancedlootbags:lootbag:37
+
+### [1329] ME in Your Cleanroom
+Wireless Connectors are a close range Quantum Network Bridge alternative.  Connections are point-to-point - you can't connect more than 2 blocks together. Each block will use 10 + distance * ln(distance^2 + 3) AE/t. Does not work across dimensions. Power needs to be provided on only one side. Up to 32 channels can be transferred through the connection. Can connect directly to dense cables. The Wireless Connector itself does not use any channels.  The Wireless Kit can be used to link the connectors together. There are three modes: Simple, Advanced, and Super. In Simple Mode, you §osimply§r right-click your source and target, and they will link. In Advanced Mode, you can do this in queue/binding groups instead of individually. In Super Mode, you can manage the connections through a menu that opens after you right-click.  [note]Also, these are more TPS friendly than large chains of dense cables![/note]
+  - [提交] appliedenergistics2:tile.BlockWirelessConnector x2
+  - [提交] appliedenergistics2:item.ToolWirelessKit
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2548] Miscellaneous AE Items
+There are several AE items that aren't particularly useful, but probably deserve mention, so here they are:  §lCertus Tanks§r: They hold 32B and are portable and easy to make.  §lView Cell§r: Format in a Cell Workbench to filter what you see in a terminal (when they're installed in it)  §lCertus/Nether Quartz Cutting Knive§rs: Right-click to open interface and choose a name. The press can be used in the Inscriber to name stuff without using an anvil. You can also rename p2p tunnels and interfaces in world with the knife.  §lME Block Container§r: Holds only one type of item, but the amount of a 64k drive. Can place the item in world, or replace in a 1x1 or 3x3 area. Blocks replaced will be dumped in world. This will be horizontal or vertical depending on which side of a block you select. Shift-right-click air to change mode, right-click a block to activate mode.  §lCharged Quartz Fixture§r: Emits light at the same level as a torch, but fancier.  §lLight Detecting Fixture§r: Emits redstone signal based on light. Since it only starts at 7, it's not as useful as the Light Sensor.  §lME Upgrade (Tier 1/2/3)§r: If you're an OC person, there are 3 upgrades you can make to add access to your network from robots and drones. T1: 0.5 access point range T2: Normal access point range T3: Unlimited range, any dim  §lEntropy Manipulator§r: Changes grass/dirt/dried dirt into each other, or starts fires. Or melts ice. Useless.  §lMatter Cannon§r: Shoots Matter Balls made in the Matter Condenser. Put it in an ME Chest or Drive and put items in a Terminal to fill. Decent I guess? But it destroys blocks every time you use it, so... Well, I guess you could use it with Paint Balls?  §lColor Applicator§r: Use dye items or Paint Balls (more efficient) to dye stuff. You can dye cables, or anything Forge-compatible, like wool or glass. Place items inside like the Matter Cannon. You can cycle through the colors by holding shift and right-clicking, or scrolling the mouse wheel. If you use snow balls, you can remove paint instead. You can also use it in a dispenser.  §6§lWalrus§r: It's a walrus, what were you expecting?
+  - [勾选确认]
+
+### [2534] Moar Patterns!
+You may have noticed that the ME Interface's GUI is different than before. That is because with this card you can have more patterns, adding 9 more per card up to a total of 36. HOWEVER, it also uses 4 times the energy for every item when crafting, and this is multiplicative for each new card. If doing large crafts, make sure you have some dense energy cells ready.  So basically: (sum of amounts of items in the pattern) * config multiplier (which is 10 for GTNH). With cards, it's also multiplied by 4^(number of upgrades)  E.g: (wood log -> planks) in the interface w/o upgrades would draw: 1*10 AE units, which is 5 EU (remember 1 EU = 2 AE) (9 charcoal -> charcoal block) compressor recipe in the interface with 3 upgrades will draw 9*10*4^3*0.5 = 2070 EU, but only 45EU without any cards  They're kind of expensive, so consider holding off if you can't afford the material or EU costs. If you remove it, all the extra patterns will pop out, so be careful of that when moving your stuff.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:54 x3
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII
+
+### [-5638703973738633044] Need More Information?
+A brand-new tool for you, amigo.  This little buddy not only has a larger card slot than the normal one, but also can show more information about your network storage.  Clicking the component icon can switch between ITEM, FLUID, and ESSENTIA details.  [warn]NOTE: |  unit  |      range   | |    B   |    0~2^10   | |   KB   | 2^10~2^20 | |   MB   | 2^20~2^30 | |   GB   | 2^30~2^40 | |   TB   | 2^40~2^50 | |   PB   | 2^50~2^60 | |   EB   | 2^60~2^70 | |   ZB   | 2^70~2^80 | |   YB   | 2^80~2^90 | |   BB   | over 2^90  |[/warn]
+  - [提交] appliedenergistics2:item.ToolAdvancedNetworkTool
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [-7041794358275821537] Oceans in a Bottle
+After managing to create an artificial universe capable of storing near-infinite amounts of items, you applied this same technology to your Fluid Digital Singularity Cell to create this truly magnificent piece of tech. This allows you to store up to 63 different types of fluids without the universe collapsing in on itself.
+  - [提交] ae2fc:fluid_storage.Universe
+
+### [-9120793416319577555] Optimizing Patterns in Late Game!
+You have probably already seen the button called §6Optimize Patterns§r when making an order in your AE system, now it's time to put it to good use!  To unlock this feature, just add a Pattern Optimization Matrix block to your AE system (you only need one).  §l# What does it do? §r This feature allows you to multiply patterns that are needed in large amounts.  1. After calculating a big order, just click §6Optimize Patterns§r and you will be welcomed by a new window. 2. There you specify how much you wish for a singular pattern to be ordered (maximum amount of steps), we recommend putting it at 1000 or 100, [warn]remember that over-optimizing patterns could lead to longer waiting times[/warn]. At this point, you can also disable singular patterns from optimization by clicking on them, but there shouldn't be any unwanted patterns anyway if you already excluded them by toggling a button in unwanted interfaces. §  3. Click §6Optimize§r and you are done! Try ordering again to see the changes in pattern steps  All changes are [warn]permanent and can't be reverted automatically[/warn] so make sure that you have excluded all unwanted interfaces (the §6Allow Pattern Optimization§r button is §7GRAY§r) like: - Single Assembly Line interfaces - Extreme Crafting interfaces - And any interface that doesn't have (almost) infinite buffer at the other side (inf. chest/storage cells) Patterns are only multiplied by powers of 2, so your AAL patterns should be safe.  [note]If you are still confused about maximum order steps here's an example: Ordering an EOH calculates that it will need 1,000,008 UHV superconductors crafted (41667 steps, 24 UHV SC patterned), now you proceed to optimize patterns and specify that you wish it to do 1000 steps maximum, it will multiply your pattern 64 times to achieve that goal (41667 / 64 ~= 652 which is lower or equal to 1000). After clicking optimize, UHV SC pattern will now output 1536 UHV SC (24 before).[/note]
+  - [提交] appliedenergistics2:tile.BlockPatternOptimizationMatrix
+
+### [2546] Ordering Essentia
+The Distillation Pattern Encoder allows you to automatically melt down items in your alchemical furnace to provide essentia. First, place something that is already scanned in the device, along with a blank pattern. You can create the pattern by clicking the button, or click the different aspects to select one that is not the highest. This will create a pattern of item -> essentia. Then use an ME Interface pointing at a furnace with the pattern in it. You can now craft that type of essentia the same way you would a normal craft.  [warn]There isn't a way to have the system craft essentia on demand for a craft, unfortunately.[/warn]
+  - [提交] thaumicenergistics:thaumicenergistics.block.distillation.encoder
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1330] Ore Dictionary Output
+The ME ore dictionary export card will attempt to push the configured item/fluid [From the same ore dictionary] from the ME network into a machine or other input inventory. To configure an item/liquid, type in the item's name [e.g. if you want to export all ores put "ore*"]. The rate of export is very fast.  [note]PS: Use crushed* & !crushedPurified* & !crushedCentrifuged* to get any crushed ore, but not ore that has been washed, then crushed (to get purified) or run through the thermal centrifuge.[/note]  The card can be used in more devices, and causes less lag, but works in a similar way. Put it inside a bus and set the filter using the T looking button that appears. The standalone bus is no longer craftable.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:55 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-7898610737511058363] Pattern Repeater
+The Pattern Repeater is a niche but useful tool. It allows recipes to be visible across networks.  When two networks are linked via a repeater, you could have a pattern that lives on network A and be able to see it in network B. In practice, you could request the item from network B (using items from network B), then those items would be transferred to the pattern destination on network A, and the resulting item would end up on network B when completed.  In order to set this up, simply make a pair of Pattern Repeaters (attached to separate networks) face into one another. You can then use a wrench to toggle each to the desired mode: either Provider or Accessor. You will need one of each.  The "§5Accessor§r" side is where the original pattern should sit. It will "send" the pattern to the other network. §3(Network A in the example above)§r  The "§5Provider§r" side is where the pattern is provided to. It "receives" the incoming pattern from the other network. §3(Network B in the example above)§r
+  - [提交] appliedenergistics2:item.ItemMultiPart:473 x2
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII
+
+### [1328] Pattern Terminal
+A specialized version of the ME crafting terminal designed to encode blank patterns into encoded patterns.  Lets you browse the contents of your network like other terminals, but also contains an area for designing patterns. There are two modes for pattern encoding. Crafting patterns, and processing patterns. Processing patterns are designed for use with machines that do not use standard crafting recipes - such as furnaces, or other machines. To select between modes, click the button to the right of the interface: when it shows a standard crafting table, it will create crafting patterns, and when it shows a furnace, it will create processing patterns.  For crafting patterns ("Crafts..."), you specify the input crafting materials on a standard 3x3 crafting grid, and the output materials are determined automatically.  For processing patterns ("Creates..."), you specify the input materials and output materials, including quantity, by placing stacks of items in the interface. If a processing operation is not guaranteed to succeed (such as secondary products from some machines), it will not work correctly as a processing pattern.  When designing crafting patterns you can click the output to extract a crafted item as long as you have the materials required to craft the item.  [warn]Be cautious about accidentally enabling oredict substitution, it's rarely used and you will keep it disabled 99% of the time.[/warn]  [note]Works exactly the same with items, fluids, and essentia.[/note]
+  - [提交] appliedenergistics2:item.ItemMultiPart:340
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1295] Perfecting Crystal Growth
+The §5§lCrystal Growth Chamber§r is used for fast crystal growth, and it is possible to increase its speed by installing acceleration cards in an upgrade slot. It works more like a normal device, with the crystals growing in its internal inventory. Unlike the more primitive versions, it doesn't use power when not in use. It also doesn't use a channel.
+  - [提交] appliedenergistics2:tile.BlockCrystalGrowthChamber
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2538] Portable Digital Storage
+They're exactly what they sound like.  The first is for items and acts like a terminal. It can hold 4,032 of a single item.  The second is for liquids, and also acts like a terminal. It can hold 128 buckets of a single liquid.  It costs AE to put things in, take them out, or have the interface open. Use the Wireless Charger from EIO if you don't want it to take forever.
+  - [提交] appliedenergistics2:item.ToolPortableCell, ae2fc:portable_fluid_cell
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [2545] Providing Essentia on Demand
+The Essentia and Infusion Providers both do basically the same thing, send essentia to a device that requests it for crafting.  The Essentia Provider needs to be next to the device, it's mostly for the Thaumatorium. Since it's effectively a magic ME Interface, you can also use it instead of an Essentia Import Bus next to your Alembics or the Advanced Alchemical Furnace.  The Infusion Provider is for devices that draw essentia through the air, like the Runic Matrix (infusion) or Overchanting Table. It doesn't need to be next to the device.  They both obviously need the essentia they request to be accessible by the network to work.
+  - [提交] thaumicenergistics:thaumicenergistics.block.essentia.provider, thaumicenergistics:thaumicenergistics.block.infusion.provider
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2514] Pulling Essentia Into the Network
+Attach to either Alembics or the output of the Advanced Alchemical Furnace. If that doesn't work, have them pipe to a jar and import from there. You can finally get rid of your shifty-eyed golems.
+  - [提交] thaumicenergistics:part.base
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1296] Purifying the Impure
+The purified versions of Nether, Certus and Fluix crystals can be grown from seeds made in the assembler from crystal dust and sand.  You may need the Pure Nether Quartz later, but for now let's create some Pure Fluix Crystal and Pure Certus Quartz Crystal.  They can be grown in-world for free by dropping them in water, or at a much faster rate in a GT Autoclave.  [note]Distilled water reduces the recipe time in the Autoclave by half.[/note]
+  - [可选提交] minecraft:sand x32, gregtech:gt.metaitem.01:2516 x16 (ore:dustCertusQuartz), appliedenergistics2:item.ItemMultiMaterial:8 x16 (ore:dustFluix)
+  - [可选提交] appliedenergistics2:item.ItemCrystalSeed x32, appliedenergistics2:item.ItemCrystalSeed:1200 x32
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:10 x24, appliedenergistics2:item.ItemMultiMaterial:12 x24
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII
+
+### [2536] Quantum Bridging Your Outposts
+A Quantum Network Bridge allows you to connect faraway places to your main AE network, even in other dimensions. So you can shove that pollution producing Mega EBF in the Void where it belongs, but still use it from the safety of your main base. To create this, you'll need a Quantum Link Chamber surrounded by Quantum Rings. Then put a Quantum Entangled Singularity in the link chamber, and connect to one of the 4 Quantum Rings around it with a fluix cable. They cost around 1000EU/t for each ring.  You can power the other side from the first, but you need to jumpstart it first, so bring an energy cell when setting it up. Remember that it's part of the same network, so you can only have one controller, and you're still limited by the channels of the cable you connected with, so you may wish to use the P2P Tunnel to bring more across.  If you use several, you may wish to rename the QESs.
+  - [提交] appliedenergistics2:tile.BlockQuantumLinkChamber x2, appliedenergistics2:tile.BlockQuantumRing x16, appliedenergistics2:item.ItemMultiMaterial:48 x2
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2
+
+### [-8494011482519438197] Quantum Entangled Singularities
+To make an entangled pair for usage in the quantum ring, put the Singularity and Enderpearl Dust on the ground, then use an explosion (Tiny TNT works well) to create two Quantum Entangled Singularities.  [note]QESs are each a unique pair and will only work with one another.[/note]
+  - [可选提交] appliedenergistics2:item.ItemMultiMaterial:47, appliedenergistics2:tile.BlockTinyTNT, gregtech:gt.metaitem.01:2532
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:48 x2
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2
+
+### [466] Quantum Storage
+Now you §ocould§r connect Quantum Chests to your ME System with Storage Buses, and maybe you are already doing that. But why not use all your new technology to make a Quantum Storage Cell?  It only takes a single item type, but you can store more than a billion items! That surely must be enough, right? RIGHT?
+  - [提交] appliedenergistics2:item.ItemExtremeStorageCell.Quantum
+  > 奖励: dreamcraft:CoinTechnicianIII
+
+### [1327] Recipe Patterns
+Save patterns onto these to do autocrafting. They go into molecular assemblers and ME interfaces.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:52 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2523] Redstone Based on Storage Level
+This device will turn on (or off) a redstone signal based on how much of an item, fluid, or energy you specify you have in your network. The 'Level Type' will toggle between Item / Fluid mode and Energy mode.  To add an item, left-click your desired item into the blank space between the 1000 numbers to add, click again while holding nothing to remove.   To add a fluid, left-control-click a cell containing your desired fluid into the blank space, removable in the same fashion.
+  - [提交] appliedenergistics2:item.ItemMultiPart:280
+  > 奖励: dreamcraft:CoinTechnicianII | appliedenergistics2:item.ItemMultiPart:280
+
+### [2753] Short Guide - A Basic AE2 System
+So you've unlocked AE2, but don't know how to use it? Not to worry, that's what this questline is for. For a basic (and not completely useless) ME system, make the items on the right first. After you go through the quests to get them normally of course.  [note]You could technically make one with an ME Chest, but there's no advantage over using a regular chest.[/note]  Connect power to the Energy Acceptor, place the ME Drive next to it, place a Fluix Cable on top of the ME Drive connect the ME Terminal to the cable. Just put in the Storage cells, and you're done! Remember you need a Network Tool to see how much power it actually uses. Also, it lets you pick up stuff easier.  To save power, let's do a little extra work. Place the Pressure Plate two spaces in front of the ME Terminal, place redstone next to it and beside the Energy Acceptor. Remove the EA and place a Fluix Cable there, and then place the ME Toggle Bus between the Drive and where the Energy Acceptor will be. Then plunk that back down and re-power it. This will cause it to only connect (and thus use power) when you stand on the plate. This tiny network uses about 38 EU by itself, so you should understand that an ME system is not cheap either in materials or power.  You should make either 1k or 4k storage cells to put into your ME Drive.
+  - [提交] appliedenergistics2:tile.BlockEnergyAcceptor, appliedenergistics2:tile.BlockDrive, appliedenergistics2:item.ItemMultiPart:380, appliedenergistics2:item.ItemMultiPart:16
+  - [提交] minecraft:stone_pressure_plate, minecraft:redstone x2, appliedenergistics2:item.ItemMultiPart:80
+  - [可选提交] appliedenergistics2:item.ItemBasicStorageCell.1k x10, appliedenergistics2:item.ItemBasicStorageCell.4k x10
+
+### [2755] Short Guide - Autocrafting
+This is the main purpose of AE2, so let's get to it. Plunk down the Crafting Storage and Molecular Assembler, connect the Pattern Terminal to a cable, and attach the ME Interface to the MA (make sure it has power from another side). You could run it without a ME Interface, but you can only do one recipe then. Place a Blank Pattern in the Pattern Terminal, and add the recipe for a Crafting Table, then click the arrow to save it to the pattern. Put this in the ME Interface and you can now request a craft of it. (if the items are in the network, otherwise it'll fail obviously)  For processing patterns (machines, anything not regular 3x3 crafting) click the button on the right. You'll need to specify all I/O for it yourself. You can use this on an ME Interface on a furnace (for example), combined with an ME Import Bus to collect the results. If it's a machine that auto-ejects (like multis) you can use a ME Interface to collect the results much faster (and with less lag).
+  - [提交] appliedenergistics2:tile.BlockCraftingStorage, appliedenergistics2:tile.BlockMolecularAssembler, appliedenergistics2:item.ItemMultiPart:340, appliedenergistics2:item.ItemMultiPart:440, appliedenergistics2:item.ItemMultiMaterial:52, minecraft:flint x2, minecraft:log x2
+  - [提交] appliedenergistics2:item.ItemMultiPart:440, appliedenergistics2:item.ItemMultiMaterial:52, appliedenergistics2:item.ItemMultiPart:240
+
+### [2754] Short Guide - External Storage
+Drawers are great, right? Well, let's connect your ME system to a bank of them. Set up some drawers nearby with a controller attached. Then place an ME Storage Bus against the controller and set the priority to +1. This will prioritize I/O to the drawer controller. Lock your drawers before they fill with random stuff. Now you have access to the whole thing! Great for the results of mining, and anything else you have thousands of, while keeping your ME system relatively empty.  You can also connect to chests and other things if you want. You can use an Ender Chest to send stuff into your network, which will then send it to the drawers, but you'll have stuff entering and exiting constantly, so it'll mess up your view in the Terminal. You can use filtered view cells, or process them before they go into your ME network (or in a different one) and/or send them to the DC directly via another EC. It depends on what you want to do and what it is.  [warn]Using the drawer controller with large amounts of I/O will tank TPS! If you're on a server, do not use drawer cubes, or expect the possibility of it being deleted or you getting banned.[/warn]
+  - [提交] StorageDrawers:controller, StorageDrawers:fullDrawers1 (ore:drawerBasic), appliedenergistics2:item.ItemMultiPart:220, appliedenergistics2:item.ItemMultiPart:16, StorageDrawers:upgradeLock
+
+### [2535] Singular Singularities Signify Something
+Quest names are hard sometimes, ok? To make a Singularity (for the Quantum Network Bridge), you'll need to dump 512,000 items into the Matter Condenser set to Singularity Mode, while using a 64k component or higher.  These singularities have a few purposes. Primarily they are used in creating quantum entangled singularities for the quantum ring, but they can also be used to create void cells and a couple other useful items.
+  - [提交] appliedenergistics2:tile.BlockCondenser, appliedenergistics2:item.ItemMultiMaterial:38
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:47
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2
+
+### [2119] Smart cables
+Smart cables are better than glass or covered cables because you can visually see many channels are in use.
+  - [提交] appliedenergistics2:item.ItemMultiPart:56 x8
+  > 奖励: bq_standard:choice
+
+### [1310] Something to Put Your Components in
+An empty storage container, you can insert the vanilla AE2 storage cell parts into it to create a usable storage cell.  You can also craft it with the storage components when making them to skip combining them.
+  - [提交] appliedenergistics2:item.ItemMultiMaterial:39
+  > 奖励: dreamcraft:CoinTechnicianII | enhancedlootbags:lootbag:6
+
+### [1294] Speeding Up Growth
+Used to accelerate the process of purifying crystals, which allows you to create pure certus quartz crystal, pure nether quartz crystal and pure fluix crystal. Must be powered by an ME Network via the sides with the +, and consumes a steady 8 ae/t while plugged in. Crystal Seeds must be in an adjacent water block to be affected - the seeds will shimmer more rapidly when in the presence of a powered crystal growth accelerator. These do not use a channel.
+  - [提交] appliedenergistics2:tile.BlockQuartzGrowthAccelerator x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2530] Spring Cleaning
+So, when you first started AE, maybe you dumped a bunch of your items into 1k drives, but now you want to clean them up, or empty them to reuse them in making higher tier ones. The ME IO Port will allow you to fill or empty your drives by connecting to the rest of the network.  You can use the Cell Workbench to format your drives, so they'll only contain the stuff you want. Remember, more item types mean less space overall. You can set them to lapis for example, then put them in the ME IO Port with the transfer direction to the drive to fill it with only that item. Don't put in an unformatted drive while using storage drawers to store tons of stuff! If you want to move your stuff around, put in new drives, then empty old ones, or disconnect your storage drawers temporarily.  You can use the Workbench to format fluid and essentia drives too.  Cell Workbenches do not connect to the network, so they don't need a channel.
+  - [提交] appliedenergistics2:tile.BlockIOPort, appliedenergistics2:tile.BlockCellWorkbench
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [-7099730498725039554] Starting Your AE2 Journey
+§nApplied Energistics 2 is an integral part of GTNH gameplay.  §r AE2 is the primary networking and logistics management mod in GTNH for Items, Fluids, and Crafting. You will use it starting from EV and onward for most automations you perform. Given the sheer density of this modpack there are a variety of unique tools and features added specifically to aid in your adventure. Most of these tools are covered in this quest tab.  There is a lot to learn, but don't feel overburdened! Your abilities will continue to grow the more time you spend with it. There are a wide variety of helpful resources to take advantage of in addition to this book when it comes to learning:  §21. The Wiki: §r[url]https://wiki.gtnewhorizons.com/wiki/Applied_Energistics_2[/url]  - The Wiki has a lot of great starter information on what various systems do. They also have a lot of machine specific automation tutorials so be sure to check the Wiki if you're struggling or want a point of reference.  §22. The Discord: §r[url]https://discord.gg/gtnh[/url]  - The Discord is full of experienced AE2ers', check out #ae2-help to find plenty of people who will take time to help you figure something out.  §23. Video Tutorials: §r[url]https://www.youtube.com/watch?v=LUYVmIAEC-I[/url]  - There are a lot of great GTNH content creators who make high quality video tutorials for this. Here is a link to AE2 Fundamentals by IX. There's an advanced version as well.
+  - [勾选确认]
+
+### [-6652765312740277196] Stocking Fluids
+Works like stocking input bus but for fluids.  [note]You need only one to complete the quest.[/note]
+  - [提交] gregtech:gt.blockmachines:2717, gregtech:gt.blockmachines:2712
+
+### [2516] Storing Essentia in Jars? Why, again?
+So apparently you can attach this to a void/oblivion jar and have it void overflow if you set the priority low. Neat, huh?  What? Store essentia in jars? Seriously? I guess you could, if you really wanted to, or if there were new, larger jars...
+  - [提交] thaumicenergistics:part.base:2
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1292] Storing Your ME Data
+The ME Drive is designed to do one thing, store storage cells. This block holds 10 storage cells so you can tightly pack your storage into a very small space. ME drives show their contents and the storage cell status on the front of the drive face.  The ME Chest which you used to craft the Drive is very similar, except it can only store 1 cell (though it comes with an in-built terminal!).  Red - Indicates the storage cell is full. Orange - Indicates the storage cell cannot hold any more types, but it can store more items. Green - Indicates the cell can hold more types, or more items. Black - Indicates there is no channel, or power is offline.  It's important to note, that without an ME Network this block does nothing. It's only useful when combined with a way to input, and output items, and requires 2 AE/t power to function, and additional power for each storage cell stored inside it.  About Priority: Many devices in AE2 have a priority setting, this determines what gets items first. This is useful in some situations, but not so much in others. Higher number = higher priority.
+  - [可选提交] appliedenergistics2:tile.BlockChest
+  - [提交] appliedenergistics2:tile.BlockDrive
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-6025086176596606172] Super Stock Replenisher
+The Super Stock Replenisher is an incredibly useful item, especially for those pesky loop automations!  To use, put a storage cell in the empty slot (item vs fluid & type amount do not matter) and you can set up to 63 items & 9 fluids to be stocked by the machine. The total quantity of both items and fluids are determined by the byte size of the storage cell.  When an item / fluid is stocked, it will pull it from the ME network it is attached to and those items / fluids will become invisible to your network. You can then use a storage bus to make these items visible to a subnet. Items will not be able to re-enter the SSR once pulled out. The SSR will automatically replenish its inventory from your AE network whenever the internal stock reaches less than 50% of the configured value.  [note]When an item or fluid is erased from the stocker or when the stocker is broken, everything will return to the network the stocker was attached too, so no need to panic about losing items.[/note]
+  - [提交] ae2fc:super_stock_replenisher
+
+### [1331] To Link P2P Buses
+A small item that can be used to store, copy, and paste settings. Shift-right-click on a configurable object to save the settings onto the memory card, then right-click on any other block of the same type to paste the settings. Shift-right-click on a non-configurable object (or the air) to clear. They are also used to link the input P2P tunnel to the corresponding output P2P tunnels. They can also link Vis Relays to compatible devices.  If you're doing more advanced operations in a large network of P2Ps, it's recommended you use the advanced memory card. It has a helpful UI that allows you to visualize and set names, inputs, and outputs of P2P tunnels.   [note]Remember P2Ps can only have 1 input! The only exception being fluid P2Ps whose input can function as an output and whose outputs can function as an input.[/note]  [warn]Make sure there aren't any cards in your network tool when you craft the Advanced Memory Card, they will be deleted![/warn]
+  - [提交] appliedenergistics2:item.ToolMemoryCard
+  - [可选提交] betterp2p:advanced_memory_card
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2537] Tools of the Trade
+The Network Tool is AE2's main utility tool.  Right-click on a network to see the power usage, and what makes up the network. Right-click on air to interact with its inventory to store cards or turn facades transparent. Shift-right-click to remove fixtures (import bus, interface, etc.) that don't take up a full block without removing the cable, or remove any AE block immediately the same way.  The Network Visualizer does exactly what it says, it allows you to visualize the channels of your network. First, right-click a network to select it. At first you'll see everything, but you can change the modes by holding shift and scrolling the mouse wheel up or down to see different things. Remember that if you have a subnetwork, like one that P2P tunnels go through for example, those nodes won't show up since it's a different network, but the P2P tunnels entrances and exits will. This goes through solid objects, so you can look at your whole base.
+  - [提交] appliedenergistics2:item.ToolNetworkTool, appliedenergistics2:item.ToolNetworkVisualiser
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [-5839827992902048320] §6§lUltimate Parallelization...
+Allows for parallelization of a single interface, you don't have to copy patterns for multiple interfaces anymore.
+  - [提交] appliedenergistics2:item.ItemMultiPart:471
+
+### [-4676551497712001940] Universe in a Bottle
+Those Digital Singularities, while offering a vast amount of space, felt constraining with their ability to store only one type of item... So you came up with something different this time. Having reached the peak of technology, you managed to create and contain an Artificial Universe within a Storage Cell. This allows you to store up to 63 different types of items without the universe collapsing in on itself.
+  - [提交] appliedenergistics2:item.ItemExtremeStorageCell.Universe
+
+### [-5528882106423578030] Vending Uplink Hatch
+Now that you've unlocked ME interfaces you can use this new technology to uplink with your Vending Machine!  The §5Vending Uplink Hatch§r can replace any of the pipe casing blocks and be connected directly to your AE network for automatically pulling required items.  It will also allow the Vending Machine access to coins in your AE network. When purchasing, it will prioritize using the coins in the wallet first, but then it will pull from AE. The number of coins in the UI is representative of both the coins in your wallet and the coins in your ME system when this hatch is installed.  [note]Will work for both consumable and non-consumable items.[/note]
+  - [提交] gregtech:gt.blockmachines:2742
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2522] Visualizing How Much Your Stuff
+The ME Storage Monitor allows you to visualize how much of an item or fluid you have. For example you can tell if you're running low on circuits and should make more, or how a long crafting process is proceeding. There are a couple of ways to use them.  Right-click with item or control-right-click with fluid container: Will display the current level of that item or fluid if not locked. Right-click with empty hand: Will reset the display if not locked. Right-click with AE2 wrench or network tool: Will toggle the lock.  The ME Conversion Monitor is the upgraded version of the ME Storage Monitor. It adds the ability to directly withdraw from or store items and fluids in the ME Network. It has the normal interactions, plus more.  Shift-right-clicking with item or fluid container: Attempts to insert the item stack into the network. This works even if it's not the displayed item! Shift-double-right-clicking: Attempts to insert all item and fluid stacks of the type displayed into the network. Right-clicking (while locked): Attempts to pull out a stack of the item displayed or fill held cell.
+  - [提交] appliedenergistics2:item.ItemMultiPart:400, appliedenergistics2:item.ItemMultiPart:420
+  > 奖励: enhancedlootbags:lootbag:37 | dreamcraft:CoinTechnicianII
+
+### [2542] Wireless 2.0
+This is the good wireless terminal. It allows you to combine 4 different types of terminals into one ultimate terminal for usage on the go; Crafting, Patterning, Interface, & Level.  If you make this combined version, it even allows you to program large processing patterns without needing LuV parts to make the Processing Pattern Terminal first.  [note]Recommended to set a keybind for this so you can keep it in your Baubles rather than in your hotbar.[/note]
+  - [提交] ae2fc:wireless_ultra_terminal
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x2
+
+### [1300] Wireless Applied Energistics Terminal
+After you link up the wireless terminal in the ME security terminal, it grants portable access to the ME network. Put it into a charger to recharge it.  Holds 1.6m AE in its battery and drains 1 AE/t for each block you are away from the nearest ME wireless access point.  Charge your Wireless Terminals (and the successors) with an EIO Wireless Charger if you don't want to wait a century for them to charge.
+  - [提交] appliedenergistics2:item.ToolWirelessTerminal
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-7407242535602196202] Wireless HUBs
+The Wireless Connector also has a HUB upgrade! These Wireless HUBs can be linked to many wireless connectors at once so you won't need to spam a chunk of 1:1 connectors into one spot. Keep in mind there is still a 32 channel limitation.  [note]Great for placing on controller faces![/note]
+  - [提交] appliedenergistics2:tile.BlockWirelessHub
+  > 奖励: enhancedlootbags:lootbag:38 | dreamcraft:CoinTechnicianII x10
+
+### [-4762456525753574104] §6§l...with Fluid Support!
+Now with fluid support!
+  - [提交] ae2fc:part_fluid_p2p_interface
+
+### [-7143266453897023303] Yet Another Singularity?!?!
+Ever wanted to order 10 million billion billion chests and noticed that your crafting storage was just not big enough?  Well, here is your solution, provided to you by the good folks over at GTNHCorp (Name Pending).  The §cSingularity Crafting Storage§r has a storage of 9,223,372,036,854,775,807 Bytes, which, if you can't read numbers, is a lot.  Enjoy crafting one :) You'll need to kill some Chaos Guardians for it.
+  - [提交] appliedenergistics2:tile.BlockSingularityCraftingStorage
+

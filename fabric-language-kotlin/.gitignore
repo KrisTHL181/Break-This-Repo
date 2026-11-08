@@ -1,0 +1,28 @@
+# Ignore everything
+/*
+
+# Folders
+!/gradle
+!/buildSrc
+!/src
+!/generated
+
+# Files
+!/.gitattributes
+!/.gitignore
+!/build.gradle
+!/gradle.properties
+!/gradlew
+!/gradlew.bat
+!/HEADER
+!/Jenkinsfile
+!/LICENSE
+!/README.md
+!/settings.gradle
+
+!/sample-mod
+!/templates/
+!/.github/
+
+build/
+.gradle/

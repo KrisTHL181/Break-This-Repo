@@ -1,0 +1,287 @@
+# 任务线: SFM and Computers
+### [2013] Advanced Cable Cluster
+The Advanced Cable Cluster will also act as an Inventory cable, extending the range of your MIM.
+  - [提交] StevesFactoryManager:BlockCableClusterName:8 x4
+  > 奖励: StevesFactoryManager:BlockCableClusterName:8 x4
+
+### [2004] Advanced Inventory Relay
+An Advanced Inventory Relay can add/remove items from a player's inventory.
+  - [提交] StevesFactoryManager:BlockCableRelayName:8
+  > 奖励: StevesFactoryManager:BlockCableRelayName:8 x2
+
+### [1749] All Your Card Are Belong To Us
+Card bases are just as you might think they are; they're the base part that each card you make will use to connect onto the motherboard.  I suggest making a handful of these for future cards.
+  - [可选提交] gregtech:gt.metaitem.01:23032, gregtech:gt.metaitem.03:32106, gregtech:gt.metaitem.01:29086
+  - [提交] OpenComputers:item:33
+  > 奖励: bq_standard:choice | enhancedlootbags:lootbag:45 | miscutils:itemGenericToken
+
+### [1748] Arithmetic Logic Circuits
+Arithmetic Logic Circuits are used in numerous parts, typically in groups of 8-16, and occasionally up to 64.  So be sure to make plenty.
+  - [可选提交] gregtech:gt.metaitem.03:32037 x64, gregtech:gt.metaitem.03:32106 x4
+  - [提交] OpenComputers:item:27 x8
+  > 奖励: bq_standard:choice | enhancedlootbags:lootbag:45 | miscutils:itemGenericToken
+
+### [1764] Basic Power Display
+For this part we will learn how to use our adapter, place it next to, let's say your EBFs battery buffer and connect it to the computer with cables. Now let's type in lua while on the computer to open the LUA environment where we can test things without worrying about saving and trying our program.  Type in 'component.list()' this will display a table of all of .list from component. What we're looking for is gt_batterybuffer. If you have too many nearby things it may not display and the way to search the entire list of components is too advanced for starters.  So now assign a variable to it; for example 'a = component.gt_batterybuffer'; now we can call 'a' to see what methods the batteryBuffer has. What we'll be using in this example is the 'getBatteryCharge' method. So type  'a.getBatteryCharge(1)' this will call the method getBatteryCharge from the first inventory slot on the gt_batterybuffer in component.  So if we're using a 2x2 battery buffer; we can type something like, 'for i=1, 4 do print(a.getBatteryCharge(i)) end' Poof you now see what all the batteries EU values. Now what can we do with this?  Try making a variable called 'batteryCharge = 0', now do 'for i=1, 4 do batteryCharge = batteryCharge + a.getBatteryCharge(i) end'  Now print(batteryCharge) will display the total charge. Here's a program example of this being used.  Place in your tape drive and type 'install', and follow the prompts to install it into C. Then edit it, test it, figure how it works.  I suppose that's enough for now; congrats! Experiment and learn, and don't forget to check google as much as possible! This questline will be updated again in the future; but I figure this is a good ending point for now.
+  - [勾选确认]
+  > 奖励: OpenComputers:item:4
+
+### [1758] BIOS
+The ROM disks are necessary to get your computer to start, they're also what you use to run a drone off from.  Your BIOS go onto these little disks, get a blank one and write the basic BIOS onto it.  You can do this later when you make more computers by flashing your existing BIOS onto new cards or combining a blank with the manual.
+  - [可选提交] gregtech:gt.metaitem.03:32106, OpenComputers:item:24, gregtech:gt.metaitem.01:32717 x6, gregtech:gt.metaitem.01:29086
+  - [提交] OpenComputers:eeprom
+  > 奖励: miscutils:itemGenericToken
+
+### [2017] Block Detector
+The Block Detector allows your MIM to detect when a Block update occurs.
+  - [提交] StevesFactoryManager:BlockCableBUDName
+  > 奖励: StevesFactoryManager:BlockCableBUDName
+
+### [2016] Block Gate
+The Block Gate can break, pickup, or place blocks.
+  - [提交] StevesFactoryManager:BlockCableBreakerName
+  > 奖励: StevesFactoryManager:BlockCableBreakerName
+
+### [2000] Cable Camouflage
+Camouflage blocks allow the faces of cable blocks to be made to imitate any other block. This works in the full workflow and thus can be updated on the fly.  Please note that this block is placed the same as all SFM cables. It does not act as an inventory cable and thus will need to be in an advanced cable cluster in many situations.
+  - [提交] StevesFactoryManager:BlockCableCamouflageName x4
+  > 奖励: StevesFactoryManager:BlockCableCamouflageName x4
+
+### [2012] Cable Cluster
+The cable cluster allows you to combine as many of the other cables together into one block. You could have a redstone receiver and emitter and an inventory relay all in one block.  This cable is a "terminal" cable. It does not extend the MIM beyond it.
+  - [提交] StevesFactoryManager:BlockCableClusterName x8
+  > 奖励: StevesFactoryManager:BlockCableClusterName x8
+
+### [1777] Coin Conversion
+Sell 32 of those Dogecoins for a Bitcoin.
+  - [提交] gregtech:gt.metaitem.01:32009 x32
+  > 奖励: miscutils:itemGenericToken
+
+### [1754] Computer Case
+100 Percent Waterproof.  The Computer Case is the HUB of all your computer parts essentially. It takes two memory sticks, a BIOs rom, a CPU, and a hard drive at the very least to run your computer.  The power converter allows you to power it from your GregTech power grid, and the floppy drive will allow you to install your operating system onto the hard drive.
+  - [可选提交] gregtech:gt.blockcasings:2, gregtech:gt.metaitem.01:17019 x2, gregtech:gt.metaitem.03:32106, OpenComputers:item:24, gregtech:gt.metaitem.02:21019 x2, gregtech:gt.metaitem.02:18019 x2
+  - [提交] OpenComputers:case1
+  - [可选提交] gregtech:gt.metaitem.01:32601, gregtech:gt.metaitem.01:24890, gregtech:gt.metaitem.01:23354, gregtech:gt.blockcasings:1, gregtech:gt.metaitem.02:23035, OpenComputers:item:24 x3
+  - [提交] OpenComputers:diskDrive
+  - [可选提交] OpenComputers:cable:32767 x2, gregtech:gt.metaitem.01:17019 x2 (ore:plateAluminium), OpenComputers:item:24 x2, gregtech:gt.metaitem.03:32106 x2, gregtech:gt.blockmachines:22
+  - [提交] OpenComputers:powerConverter
+  > 奖励: miscutils:itemGenericToken x2 | bq_standard:choice
+
+### [1752] Control Units
+Control Units are used for a variety of crafts, but most namely CPUs and GPUs. You will be needing quite a few of these, let's just make 16 for now.
+  - [可选提交] gregtech:gt.metaitem.01:32717 x64 (ore:componentCircuitTransistor), gregtech:gt.metaitem.01:32702 x16 (ore:circuitGood)
+  - [提交] OpenComputers:item:28 x16
+  > 奖励: enhancedlootbags:lootbag:45 | miscutils:itemGenericToken
+
+### [2002] Double Sided Cable Camouflage
+Double sided cable camouflage blocks allows setting the inside face of the cable block, allowing you to imitate glass.
+  - [提交] StevesFactoryManager:BlockCableCamouflageName:1 x2
+  > 奖励: StevesFactoryManager:BlockCableCamouflageName:1 x2
+
+### [2719] For All the Artists Out There
+These are the Creative components. Depending on what it is, there's also T2 and T3 components too.
+  - [提交] OpenComputers:item:103, OpenComputers:item:69
+  - [提交] OpenComputers:item:90, OpenComputers:item:91
+  - [提交] OpenComputers:item:93
+  - [提交] OpenComputers:item:114
+
+### [1756] HDD
+Your hard drive is where all your programs and data is stored.  You're playing minecraft, you should already know this though. Unless you use an SSD I guess.
+  - [可选提交] gregtech:gt.metaitem.02:18019 x2, OpenComputers:item:19 x2, OpenComputers:item:24 x2, OpenComputers:item:1 x4
+  - [提交] OpenComputers:item:5 (ore:oc:hdd1)
+  > 奖励: OpenComputers:item:4 | miscutils:itemGenericToken x2 | enhancedlootbags:lootbag:46
+
+### [1761] Hello World!
+First things first, let's install OpenOS to the computer so you don't always need disk in the drive. Type in 'install' and then type 'Y' when asked if you wish to install OpenOS.  When finished, remove the disk and toss it on your wall and reboot the computer.  Type 'df' to display all present file systems and mount points, you'll notice one named OpenOS; this is your hard drive's default name after installing the OS.  Let's change it with 'label -a OpenOS HDD', '-a' checks for names starting with what you type after it with that command. [note]<-- part of this is apparently wrong? Thanks for the non-ticket explaining what part, guys.[/note]  Now for fun, let's make your first program! How about something functional, make a with 'edit startup' this will bring you to an edit page for a new program called startup. Let's just have it do something simple, 'print("Hello World!")' Like that'll never get old.  Now press Ctrl+S to save, and Ctrl+W to get out of that screen. Back in your home root let's now type startup and you'll see it display "Hello World!" neat huh?  Let's now make startup actually work on startup. Type 'edit .shrc' .shrc is a mystic file that runs shell commands when booting your PC. So in .shrc type 'startup' save and reboot the computer. Now it should say "Hello World!" upon starting. Double neat right?
+  - [勾选确认]
+  > 奖励: gregtech:gt.metaitem.02:32002
+
+### [1762] I Love Pressing the F5 Key.
+It's so refreshing.  Place a keyboard facing a screen, or stuck to the back of a screen to make it able to interact with a computer.  Absolutely necessary to doing anything on your computer, but can safely be removed once you have an endlessly running program.
+  - [可选提交] minecraft:stone_button x104, gregtech:gt.metaitem.01:32701 (ore:circuitBasic), gregtech:gt.metaitem.02:18019
+  - [提交] OpenComputers:keyboard
+  > 奖励: bq_standard:choice | harvestcraft:colasodaItem | miscutils:itemGenericToken
+
+### [1760] Intelligence is the Ability to Adapt to Change
+This block allows our computer to interact with GT machines and everything else. A must have!
+  - [可选提交] gregtech:gt.metaitem.03:32106, gregtech:gt.blockcasings:1, OpenComputers:cable:32767 x2, OpenComputers:item:24
+  - [提交] OpenComputers:adapter
+  > 奖励: bq_standard:choice | miscutils:itemGenericToken
+
+### [2001] Inventory Relay
+The inventory relay can access the inventory of non-stationary entities, such as minecarts.
+  - [提交] StevesFactoryManager:BlockCableRelayName
+  > 奖励: StevesFactoryManager:BlockCableRelayName x2
+
+### [2010] Item Valve
+The Item Valve allows your factory manager to suck in dropped items from around them in a 3x3x3 cube. Or you can use them to push items out into the world in the direction they are pointing.
+  - [提交] StevesFactoryManager:BlockCableIntakeName x4
+  > 奖励: StevesFactoryManager:BlockCableIntakeName x4
+
+### [-7132625864114193932] It's everytime these Transistors
+Hello fellow achievement hunter.  Looking for the OC Transistor to get one out of all these achievements? Lucky you, because now you can craft it and it's really simple.  Just put one of your first GT Transistors in your 2x2 crafting grid and be happy with its result. Don't forget to change it back the same way.
+  - [提交] gregtech:gt.metaitem.01:32717
+  - [合成] OpenComputers:item:23
+  > 奖励: enhancedlootbags:lootbag:46
+
+### [1989] Machine Inventory Manager
+The core block of Stacy's...er Steve's Factory Manager. SFM is a high tier automation system. While AE2 can handle a lot of different crafting tasks, SFM can handle even more complex crafting. It's not actually needed for the Assembly Line. But still, this is one place where you can go that route.  Inventory Cables connect the MIM to inventories or tanks.  Right now until some Moron figures it out, your best bet is to experiment, ask for help on Discord, and search Google. The interface resembles most GUI based automation systems like LabView.  There have been TPS problems caused by poorly designed SFM setups. Make sure your outputs are properly emptied, and don't get filled.  Inventory cables are the "basic" cable of SFM. They allow the MIM to interact with an inventory, and act as a connector cable to other cables.  mehdi2344 thinks my jokes suck, but he's an idiot, so there.  Thanks to Nori Silverrage for writing up these quests!  [note]BTW, there's a Creative Supplier for creative testing. The Energistics Connector is disabled because it doesn't work correctly.[/note]
+  - [提交] StevesFactoryManager:BlockMachineManagerName, StevesFactoryManager:BlockCableName x24
+  > 奖励: StevesFactoryManager:BlockCableName x40
+
+### [1763] Mounting Your HDD
+Alright, you have your computer, it says "Hello World!" When you start it, and you feel awesome and capable of world domination.  Now let's set up your HDD. Open .shrc again in the editor, and press ENTER to go down a line after the print, and type in 'cd ../' this will move your viewed directory that's being viewed to the absolute base directory.  Now go down another line and type in 'mount HDD C:' because why not, it's Classic; this mounts the file drive into the folder you're in. Go down another line and type cd 'C:/' save and reboot the computer.  You'll now start in C:/ nifty! Try typing 'mkdir programs' and now you have a dedicated directory to put your programs in for the sake of organization. 'cd programs' will then take you to programs, and 'cd ../' will take you back a directory; you can also do things like, let's say you have a folder called apples in C as well but you're in apples, type 'cd ../apples' and it'll take you to apples. '..' essentially just means previous directory and this can be stacked; works with copying files and moving them as well, very useful to know.  But right now we're going to do something functional, come over to the next quest and bring your adapter and cables.
+  - [提交] OpenComputers:adapter, OpenComputers:cable:32767 x16
+
+### [1990] Moving the Manager 
+Ever finished a wonderful program and then realized your Manager needs to move and you have to rewrite the whole thing? Ever need to copy and paste a section of code a bunch of times and been frustrated that you can't? Well we've got you covered with the Manager Duplicator!
+  - [提交] StevesAddons:duplicator
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [1755] My Little Scrench
+A screwdriver and wrench in one. Not really a necessary tool, but has some purposes; I suggest referring to your computer manual.
+  - [合成] OpenComputers:wrench
+  > 奖励: miscutils:itemGenericToken | harvestcraft:chaiteaItem
+
+### [1991] Naming Names
+The Factory Labeler allows you to assign unique names to anything that can be connected to a Manager - making it easy to identify when you are setting up commands.  Type in the text box to set a label or to searched stored labels - click any stored entry to select it, double-click to edit it. Closing the GUI will set the Labeler to whatever was in the text box at that time.  Left-click to set labels, right-click to open the gui. Setting a blank label will remove any existing labels.  [note]May or may not be buggy. Will lose the label in MP when relogging, but works fine in SP. It'll still work until you need to change it though. Have fun![/note]
+  - [提交] StevesAddons:labeler
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [1757] Not Your Average Platter
+We'll need these for our hard drives.
+  - [可选提交] gregtech:gt.metaitem.01:24890 x2, gregtech:gt.metaitem.01:29019 x8 (ore:foilAluminium)
+  - [提交] OpenComputers:item:19 x2
+  > 奖励: OpenComputers:item:19 x2 | miscutils:itemGenericToken
+
+### [1765] Online Shopping - Tier 1
+Hey, a use for bitcoins!
+  - [勾选确认]
+  > 奖励: miscutils:itemGenericToken
+
+### [1771] Purchase Cables
+I'll sell you 16 cables for two bitcoins.
+  - [提交] miscutils:itemGenericToken x2
+  > 奖励: OpenComputers:cable:32767 x16
+
+### [1774] Purchase Floppy Disk
+I'll sell you a Floppy Disk for a Bitcoin.
+  - [提交] miscutils:itemGenericToken
+  > 奖励: OpenComputers:item:4
+
+### [1775] Purchase Keyboard
+I'll sell you a Keyboard for two Bitcoins.
+  - [提交] miscutils:itemGenericToken x2
+  > 奖励: OpenComputers:keyboard
+
+### [1766] Purchase Network Card
+I'll sell you a Network Card for six Bitcoins.
+  - [提交] miscutils:itemGenericToken x6
+  > 奖励: OpenComputers:item:11
+
+### [1769] Purchase Tier 1 Graphics Card
+I'll sell you a Tier 1 Graphics Card for four Bitcoins.
+  - [提交] miscutils:itemGenericToken x4
+  > 奖励: OpenComputers:item:8
+
+### [1773] Purchase Tier 1 Hard Drive
+I'll sell you a Tier 1 Hard Drive for eight Bitcoins.
+  - [提交] miscutils:itemGenericToken x8
+  > 奖励: OpenComputers:item:5
+
+### [1768] Purchase Tier 1 Memory
+I'll sell you a pair of Tier 1 Memory Chips for four Bitcoins.
+  - [提交] miscutils:itemGenericToken x4
+  > 奖励: OpenComputers:item:1 x2
+
+### [1776] Purchase Tier 1 Microchip
+I'll sell you a Tier 1 Microchip for two Bitcoins.
+  - [提交] miscutils:itemGenericToken x2
+  > 奖励: OpenComputers:item:24
+
+### [1772] Purchase Tier 1 Screen
+I'll sell you a Tier 1 Screen for three Bitcoins.
+  - [提交] miscutils:itemGenericToken x3
+  > 奖励: OpenComputers:screen1
+
+### [1767] Purchase Tier 1 Wireless Network Card
+I'll sell you a Tier 1 Wireless Network Card for 12 Bitcoins.
+  - [提交] miscutils:itemGenericToken x12
+  > 奖励: OpenComputers:item:113
+
+### [2011] Rapid Item Valve
+Rapid Item Valves can pick up items in the world without any delays.
+  - [提交] StevesFactoryManager:BlockCableIntakeName:8 x2
+  > 奖励: StevesFactoryManager:BlockCableIntakeName:8 x2
+
+### [1999] Redstone Emitter
+The Redstone Emitter sends redstone signals on each of its 6 faces. The redstone signal strength can be set to any value, add, subtract, and more.
+  - [提交] StevesFactoryManager:BlockCableOutputName
+  > 奖励: StevesFactoryManager:BlockCableOutputName
+
+### [2015] Redstone Receiver
+The Redstone Receiver reads redstone signals on each of its 6 faces.
+  - [提交] StevesFactoryManager:BlockCableInputName
+  > 奖励: StevesFactoryManager:BlockCableInputName
+
+### [2882] RF Node
+The RF Node acts as an I/O point for RF. If you need that, I guess.
+  - [提交] StevesAddons:cable_rf
+  > 奖励: StevesAddons:cable_rf
+
+### [1750] Short Term Memory
+Gotta get more RAM.  Memory, or RAM, is essentially a temporary storage of data on your computer that can be rapidly accessed via your programs.  Hence the name Rapid Access Memory.
+  - [可选提交] gregtech:gt.metaitem.03:32106 x2, gregtech:gt.metaitem.03:32039 x32, OpenComputers:item:24 x4, gregtech:gt.metaitem.01:29303 x32
+  - [提交] OpenComputers:item:1 x2
+  > 奖励: bq_standard:choice | miscutils:itemGenericToken
+
+### [2009] Sign Updater
+The Sign Updater allows your MIM to update an external display of information.
+  - [提交] StevesFactoryManager:BlockCableSignName
+  > 奖励: StevesFactoryManager:BlockCableSignName
+
+### [2019] The Basics of SFM
+Variables - Declaration vs Standard Declaration is simply creating a variable with eligible blocks in it. This allows easy updating of workflows. For instance you could have a variable that contains 2 chests. You use it in a nifty for each loop and later add another chest. Simply update the variable and the for each loop will start using it.  Standard variables are able to be inserted into the middle of a workflow (it has input/output) and thus can be modified on the run.  Please note that for each loop it will require an empty variable to work with. This is listed as "Element" in the loop.  Global vs Local Global will keep changes to a variable that are done in the workflow, whereas local keeps anything done local to that part of the workflow.
+  - [勾选确认]
+  > 奖励: StevesFactoryManager:BlockMachineManagerName
+
+### [1759] Tier 1
+Congratulations, we have the parts to start making a computer!  Let's start with the basics here.
+  - [勾选确认]
+  > 奖励: enhancedlootbags:lootbag:46
+
+### [2003] Transforming Cable Camouflage
+Transforming Cable Camouflage allows you to change the collision box of the cable, so you can turn it into a door or whatever.
+  - [提交] StevesFactoryManager:BlockCableCamouflageName:2 x2
+  > 奖励: StevesFactoryManager:BlockCableCamouflageName:2 x2
+
+### [1745] Welcome to OpenComputers!
+Hello there, my name is Teirdalin and today we shall embark on one of the most exciting and fun mods; OpenComputers! First things first though, you will need some patience to get through this mod, but it will certainly pay off in the end!
+  - [勾选确认]
+  > 奖励: OpenComputers:item:98 | gregtech:gt.metaitem.02:32007
+
+### [1753] What Did the Data Say to the CPU?
+Cache me outside.  Your CPU will essentially be how fast your computer processes data. A stronger CPU = A faster computer.
+  - [可选提交] OpenComputers:item:27 x8, OpenComputers:item:28, gregtech:gt.metaitem.01:32702 (ore:circuitGood), gregtech:gt.metaitem.02:18019
+  - [提交] OpenComputers:item:29
+  > 奖励: bq_standard:choice | miscutils:itemGenericToken x2
+
+### [1751] Woah, Rad Graphics!
+See the digital world.  Your graphics card allows the computer to draw text and other things to the screen.  The better graphics card you use the higher resolution, and better features can be drawn.  You also need a higher tier monitor to display colors or to get touchscreen compatibility, but that's something to worry about for another day.
+  - [可选提交] OpenComputers:item:33, OpenComputers:item:27 x8, OpenComputers:item:28, OpenComputers:item:24, OpenComputers:item:1
+  - [提交] OpenComputers:item:8
+  - [可选提交] gregtech:gt.blockcasings:2 x2, gregtech:gt.metaitem.01:32740 x2, gregtech:gt.metaitem.03:32079 x4 (ore:circuitGood), gregtech:gt.metaitem.01:32717 x4
+  - [提交] OpenComputers:screen1 x2
+  > 奖励: bq_standard:choice | OpenComputers:screen2 x2 | miscutils:itemGenericToken x2
+
+### [1747] Your First Computer
+Place the power converter you got earlier near a cable (you could also power it with RF if you wanted) and connect it with your wire cutters. Now place your computer case by the converter and by the magic of technology it shall fuel the computer case! Now take your hard drive, memory and graphics cards and place them inside, place the disk drive next to the computer and insert the operating system disk. Insert the BIOS we made into the case and turn it on.
+  - [勾选确认]
+  > 奖励: OpenComputers:item:48 | miscutils:itemGenericToken x4
+
+### [1746] Your First Microchip
+Microchips will be used in most things you make, so if possible; I suggest bulk crafting quite a few of these.
+  - [可选提交] gregtech:gt.metaitem.01:29303 x16, gregtech:gt.metaitem.01:32717 x16, gregtech:gt.metaitem.01:32702 x4 (ore:circuitGood), gregtech:gt.metaitem.03:32106 x4
+  - [提交] OpenComputers:item:24 x4
+  > 奖励: enhancedlootbags:lootbag:45 | miscutils:itemGenericToken
+

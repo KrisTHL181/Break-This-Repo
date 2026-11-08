@@ -1,0 +1,323 @@
+CLASS net/minecraft/class_1299 net/minecraft/entity/EntityType
+	FIELD field_6056 saveable Z
+	FIELD field_6072 summonable Z
+	FIELD field_6088 LOGGER Lorg/slf4j/Logger;
+	FIELD field_6092 name Lnet/minecraft/class_2561;
+	FIELD field_6094 spawnGroup Lnet/minecraft/class_1311;
+	FIELD field_6101 factory Lnet/minecraft/class_1299$class_4049;
+	FIELD field_6106 translationKey Ljava/lang/String;
+	FIELD field_16526 lootTableKey Ljava/util/Optional;
+	FIELD field_18070 dimensions Lnet/minecraft/class_4048;
+	FIELD field_18981 fireImmune Z
+	FIELD field_19423 spawnableFarFromPlayer Z
+	FIELD field_24085 maxTrackDistance I
+	FIELD field_24086 trackTickInterval I
+	FIELD field_25355 canSpawnInside Lcom/google/common/collect/ImmutableSet;
+	FIELD field_36398 registryEntry Lnet/minecraft/class_6880$class_6883;
+	FIELD field_40115 requiredFeatures Lnet/minecraft/class_7699;
+	FIELD field_50125 spawnBoxScale F
+	FIELD field_55544 POTENTIALLY_EXECUTES_COMMANDS Ljava/util/Set;
+	FIELD field_57582 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_61222 PACKET_CODEC Lnet/minecraft/class_9139;
+	FIELD field_61223 allowedInPeaceful Z
+	METHOD <init> (Lnet/minecraft/class_1299$class_4049;Lnet/minecraft/class_1311;ZZZZLcom/google/common/collect/ImmutableSet;Lnet/minecraft/class_4048;FIILjava/lang/String;Ljava/util/Optional;Lnet/minecraft/class_7699;Z)V
+		ARG 1 factory
+		ARG 2 spawnGroup
+		ARG 3 saveable
+		ARG 4 summonable
+		ARG 5 fireImmune
+		ARG 6 spawnableFarFromPlayer
+		ARG 7 canSpawnInside
+		ARG 8 dimensions
+		ARG 9 spawnBoxScale
+		ARG 10 maxTrackDistance
+		ARG 11 trackTickInterval
+		ARG 12 translationKey
+		ARG 13 lootTable
+		ARG 14 requiredFeatures
+		ARG 15 allowedInPeaceful
+	METHOD method_5881 loadFromEntityNbt (Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;Lnet/minecraft/class_1297;Lnet/minecraft/class_11580;)V
+		ARG 0 world
+		ARG 1 spawner
+		ARG 2 entity
+		ARG 3 data
+	METHOD method_5882 getTranslationKey ()Ljava/lang/String;
+	METHOD method_5883 create (Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;)Lnet/minecraft/class_1297;
+		ARG 1 world
+		ARG 2 reason
+	METHOD method_5884 getOriginY (Lnet/minecraft/class_4538;Lnet/minecraft/class_2338;ZLnet/minecraft/class_238;)D
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 invertY
+		ARG 3 boundingBox
+	METHOD method_5888 create (Lnet/minecraft/class_3218;Ljava/util/function/Consumer;Lnet/minecraft/class_2338;Lnet/minecraft/class_3730;ZZ)Lnet/minecraft/class_1297;
+		ARG 1 world
+		ARG 2 afterConsumer
+		ARG 3 pos
+		ARG 4 reason
+		ARG 5 alignPosition
+		ARG 6 invertY
+	METHOD method_5890 getId (Lnet/minecraft/class_1299;)Lnet/minecraft/class_2960;
+		ARG 0 type
+	METHOD method_5891 getSpawnGroup ()Lnet/minecraft/class_1311;
+	METHOD method_5892 getEntityFromData (Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;)Ljava/util/Optional;
+		ARG 0 view
+		ARG 1 world
+		ARG 2 reason
+	METHOD method_5893 isSaveable ()Z
+	METHOD method_5894 spawnFromItemStack (Lnet/minecraft/class_3218;Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;Lnet/minecraft/class_2338;Lnet/minecraft/class_3730;ZZ)Lnet/minecraft/class_1297;
+		ARG 1 world
+		ARG 2 stack
+		ARG 3 spawner
+		ARG 4 pos
+		ARG 5 spawnReason
+		ARG 6 alignPosition
+		ARG 7 invertY
+	METHOD method_5895 register (Ljava/lang/String;Lnet/minecraft/class_1299$class_1300;)Lnet/minecraft/class_1299;
+		ARG 0 id
+		ARG 1 type
+	METHOD method_5896 isSummonable ()Z
+	METHOD method_5897 getName ()Lnet/minecraft/class_2561;
+	METHOD method_5898 get (Ljava/lang/String;)Ljava/util/Optional;
+		ARG 0 id
+	METHOD method_5899 spawn (Lnet/minecraft/class_3218;Ljava/util/function/Consumer;Lnet/minecraft/class_2338;Lnet/minecraft/class_3730;ZZ)Lnet/minecraft/class_1297;
+		ARG 1 world
+		ARG 2 afterConsumer
+		ARG 3 pos
+		ARG 4 reason
+		ARG 5 alignPosition
+		ARG 6 invertY
+	METHOD method_16351 getLootTableKey ()Ljava/util/Optional;
+	METHOD method_17684 fromData (Lnet/minecraft/class_11368;)Ljava/util/Optional;
+		ARG 0 view
+	METHOD method_17685 getWidth ()F
+	METHOD method_17686 getHeight ()F
+	METHOD method_17839 (Lnet/minecraft/class_11368;Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_17842 loadEntityWithPassengers (Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_12259;)Lnet/minecraft/class_1297;
+		ARG 0 view
+		ARG 1 world
+		ARG 2 reason
+		ARG 3 processor
+	METHOD method_17843 (Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_12259;Lnet/minecraft/class_1297;)Lnet/minecraft/class_1297;
+		ARG 4 entity
+	METHOD method_17846 (Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_1299;)Lnet/minecraft/class_1297;
+		ARG 2 type
+	METHOD method_17848 loadEntityFromData (Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;)Ljava/util/Optional;
+		ARG 0 view
+		ARG 1 world
+		ARG 2 reason
+	METHOD method_18386 getDimensions ()Lnet/minecraft/class_4048;
+	METHOD method_18387 getMaxTrackDistance ()I
+		COMMENT Returns the tracking distance, <b>in chunks</b>, of this type of entity
+		COMMENT for clients. This will be then modified by the server's tracking
+		COMMENT distance multiplier.
+	METHOD method_18388 getTrackTickInterval ()I
+	METHOD method_18389 alwaysUpdateVelocity ()Z
+	METHOD method_19946 isFireImmune ()Z
+	METHOD method_20210 isIn (Lnet/minecraft/class_6862;)Z
+		ARG 1 tag
+	METHOD method_20814 isSpawnableFarFromPlayer ()Z
+	METHOD method_29496 isInvalidSpawn (Lnet/minecraft/class_2680;)Z
+		COMMENT Returns whether the EntityType can spawn inside the given block.
+		COMMENT
+		COMMENT <p>By default, non-fire-immune mobs can't spawn in/on blocks dealing fire damage.
+		COMMENT Any mob can't spawn in wither roses, sweet berry bush, or cacti.
+		COMMENT
+		COMMENT <p>This can be overwritten via {@link EntityType.Builder#allowSpawningInside(Block[])}
+		ARG 1 state
+	METHOD method_31489 streamFromData (Lnet/minecraft/class_11368$class_11370;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;)Ljava/util/stream/Stream;
+		ARG 0 view
+		ARG 1 world
+		ARG 2 reason
+	METHOD method_35050 getUntranslatedName ()Ljava/lang/String;
+	METHOD method_40124 getRegistryEntry ()Lnet/minecraft/class_6880$class_6883;
+	METHOD method_47821 spawn (Lnet/minecraft/class_3218;Lnet/minecraft/class_2338;Lnet/minecraft/class_3730;)Lnet/minecraft/class_1297;
+		ARG 1 world
+		ARG 2 pos
+		ARG 3 reason
+	METHOD method_47823 (Lnet/minecraft/class_1297;)V
+		ARG 0 entity
+	METHOD method_48008 (Lnet/minecraft/class_1937;Lnet/minecraft/class_1309;Lnet/minecraft/class_11580;Lnet/minecraft/class_1297;)V
+		ARG 3 entity
+	METHOD method_48009 copier (Lnet/minecraft/class_1937;Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)Ljava/util/function/Consumer;
+		ARG 0 world
+		ARG 1 stack
+		ARG 2 spawner
+	METHOD method_48011 nbtCopier (Ljava/util/function/Consumer;Lnet/minecraft/class_1937;Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)Ljava/util/function/Consumer;
+		ARG 0 chained
+		ARG 1 world
+		ARG 2 stack
+		ARG 3 spawner
+	METHOD method_48013 (Lnet/minecraft/class_1297;)V
+		ARG 0 entity
+	METHOD method_48156 copier (Ljava/util/function/Consumer;Lnet/minecraft/class_1937;Lnet/minecraft/class_1799;Lnet/minecraft/class_1309;)Ljava/util/function/Consumer;
+		ARG 0 chained
+		ARG 1 world
+		ARG 2 stack
+		ARG 3 spawner
+	METHOD method_53125 isIn (Lnet/minecraft/class_6885;)Z
+		ARG 1 entityTypeEntryList
+	METHOD method_58629 getSpawnBox (DDD)Lnet/minecraft/class_238;
+		ARG 1 x
+		ARG 3 y
+		ARG 5 z
+	METHOD method_63002 register (Lnet/minecraft/class_5321;Lnet/minecraft/class_1299$class_1300;)Lnet/minecraft/class_1299;
+		ARG 0 key
+		ARG 1 type
+	METHOD method_63003 keyOf (Ljava/lang/String;)Lnet/minecraft/class_5321;
+		ARG 0 id
+	METHOD method_64432 getBoatFactory (Ljava/util/function/Supplier;)Lnet/minecraft/class_1299$class_4049;
+		ARG 0 itemSupplier
+	METHOD method_64433 (Ljava/util/function/Supplier;Lnet/minecraft/class_1299;Lnet/minecraft/class_1937;)Lnet/minecraft/class_10257;
+		ARG 1 type
+		ARG 2 world
+	METHOD method_64434 getChestBoatFactory (Ljava/util/function/Supplier;)Lnet/minecraft/class_1299$class_4049;
+		ARG 0 itemSupplier
+	METHOD method_64435 (Ljava/util/function/Supplier;Lnet/minecraft/class_1299;Lnet/minecraft/class_1937;)Lnet/minecraft/class_10258;
+		ARG 1 type
+		ARG 2 world
+	METHOD method_64436 getRaftFactory (Ljava/util/function/Supplier;)Lnet/minecraft/class_1299$class_4049;
+		ARG 0 itemSupplier
+	METHOD method_64437 (Ljava/util/function/Supplier;Lnet/minecraft/class_1299;Lnet/minecraft/class_1937;)Lnet/minecraft/class_7264;
+		ARG 1 type
+		ARG 2 world
+	METHOD method_64438 getChestRaftFactory (Ljava/util/function/Supplier;)Lnet/minecraft/class_1299$class_4049;
+		ARG 0 itemSupplier
+	METHOD method_64439 (Ljava/util/function/Supplier;Lnet/minecraft/class_1299;Lnet/minecraft/class_1937;)Lnet/minecraft/class_1690;
+		ARG 1 type
+		ARG 2 world
+	METHOD method_65893 canPotentiallyExecuteCommands ()Z
+	METHOD method_66662 (Lnet/minecraft/class_1799;Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_66663 componentsCopier (Ljava/util/function/Consumer;Lnet/minecraft/class_1799;)Ljava/util/function/Consumer;
+		ARG 0 chained
+		ARG 1 stack
+	METHOD method_67636 (Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_11368;Ljava/util/function/Consumer;)V
+		ARG 2 viewx
+		ARG 3 callback
+	METHOD method_67637 (Ljava/util/function/Consumer;Lnet/minecraft/class_1297;)Lnet/minecraft/class_1297;
+		ARG 1 entity
+	METHOD method_71371 loadEntityWithPassengers (Lnet/minecraft/class_2487;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_12259;)Lnet/minecraft/class_1297;
+		ARG 0 nbt
+		ARG 1 world
+		ARG 2 reason
+		ARG 3 processor
+	METHOD method_72383 loadEntityPassengers (Lnet/minecraft/class_1297;Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_12259;)Lnet/minecraft/class_1297;
+		ARG 0 entity
+		ARG 1 view
+		ARG 2 world
+		ARG 3 reason
+		ARG 4 processor
+	METHOD method_72384 getEntityFromData (Lnet/minecraft/class_1299;Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;)Ljava/util/Optional;
+		ARG 0 type
+		ARG 1 readView
+		ARG 2 world
+		ARG 3 spawnReason
+	METHOD method_72385 loadEntityWithPassengers (Lnet/minecraft/class_1299;Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_12259;)Lnet/minecraft/class_1297;
+		ARG 0 type
+		ARG 1 view
+		ARG 2 world
+		ARG 3 reason
+		ARG 4 processor
+	METHOD method_72386 loadEntityWithPassengers (Lnet/minecraft/class_1299;Lnet/minecraft/class_2487;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_12259;)Lnet/minecraft/class_1297;
+		ARG 0 type
+		ARG 1 data
+		ARG 2 world
+		ARG 3 reason
+		ARG 4 processor
+	METHOD method_72387 (Lnet/minecraft/class_11368;Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_72388 (Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;Lnet/minecraft/class_12259;Lnet/minecraft/class_1297;)Lnet/minecraft/class_1297;
+		ARG 4 entity
+	METHOD method_72389 loadEntityFromData (Lnet/minecraft/class_1299;Lnet/minecraft/class_11368;Lnet/minecraft/class_1937;Lnet/minecraft/class_3730;)Ljava/util/Optional;
+		ARG 0 type
+		ARG 1 view
+		ARG 2 world
+		ARG 3 reason
+	METHOD method_72390 isAllowedInPeaceful ()Z
+	CLASS class_1300 Builder
+		FIELD field_6148 factory Lnet/minecraft/class_1299$class_4049;
+		FIELD field_6149 spawnGroup Lnet/minecraft/class_1311;
+		FIELD field_6150 summonable Z
+		FIELD field_6151 saveable Z
+		FIELD field_18071 dimensions Lnet/minecraft/class_4048;
+		FIELD field_18982 fireImmune Z
+		FIELD field_19424 spawnableFarFromPlayer Z
+		FIELD field_24087 maxTrackingRange I
+		FIELD field_24088 trackingTickInterval I
+		FIELD field_25356 canSpawnInside Lcom/google/common/collect/ImmutableSet;
+		FIELD field_40117 requiredFeatures Lnet/minecraft/class_7699;
+		FIELD field_47755 attachments Lnet/minecraft/class_9066$class_9067;
+		FIELD field_50126 spawnBoxScale F
+		FIELD field_53972 lootTable Lnet/minecraft/class_10162;
+		FIELD field_53973 translationKey Lnet/minecraft/class_10162;
+		FIELD field_61224 allowedInPeaceful Z
+		METHOD <init> (Lnet/minecraft/class_1299$class_4049;Lnet/minecraft/class_1311;)V
+			ARG 1 factory
+			ARG 2 spawnGroup
+		METHOD method_5900 (Lnet/minecraft/class_1299;Lnet/minecraft/class_1937;)Lnet/minecraft/class_1297;
+			ARG 0 type
+			ARG 1 world
+		METHOD method_5901 disableSummon ()Lnet/minecraft/class_1299$class_1300;
+		METHOD method_5902 create (Lnet/minecraft/class_1311;)Lnet/minecraft/class_1299$class_1300;
+			ARG 0 spawnGroup
+		METHOD method_5903 create (Lnet/minecraft/class_1299$class_4049;Lnet/minecraft/class_1311;)Lnet/minecraft/class_1299$class_1300;
+			ARG 0 factory
+			ARG 1 spawnGroup
+		METHOD method_5904 disableSaving ()Lnet/minecraft/class_1299$class_1300;
+		METHOD method_5905 build (Lnet/minecraft/class_5321;)Lnet/minecraft/class_1299;
+			ARG 1 registryKey
+		METHOD method_17687 dimensions (FF)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 width
+			ARG 2 height
+		METHOD method_19947 makeFireImmune ()Lnet/minecraft/class_1299$class_1300;
+		METHOD method_20815 spawnableFarFromPlayer ()Lnet/minecraft/class_1299$class_1300;
+		METHOD method_27299 maxTrackingRange (I)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 maxTrackingRange
+		METHOD method_27300 trackingTickInterval (I)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 trackingTickInterval
+		METHOD method_29497 allowSpawningInside ([Lnet/minecraft/class_2248;)Lnet/minecraft/class_1299$class_1300;
+			COMMENT Allows this type of entity to spawn inside the given block, bypassing the default
+			COMMENT wither rose, sweet berry bush, cactus, and fire-damage-dealing blocks for
+			COMMENT non-fire-resistant mobs.
+			COMMENT
+			COMMENT <p>{@code minecraft:prevent_mob_spawning_inside} tag overrides this.
+			COMMENT With this setting, fire resistant mobs can spawn on/in fire damage dealing blocks,
+			COMMENT and wither skeletons can spawn in wither roses. If a block added is not in the default
+			COMMENT blacklist, the addition has no effect.
+			ARG 1 blocks
+		METHOD method_45323 requires ([Lnet/minecraft/class_7696;)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 features
+		METHOD method_55687 eyeHeight (F)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 eyeHeight
+		METHOD method_55688 vehicleAttachment (Lnet/minecraft/class_243;)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 vehicleAttachment
+		METHOD method_55689 passengerAttachments ([F)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 offsetYs
+		METHOD method_55690 passengerAttachments ([Lnet/minecraft/class_243;)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 passengerAttachments
+		METHOD method_55691 vehicleAttachment (F)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 offsetY
+		METHOD method_55692 nameTagAttachment (F)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 offsetY
+		METHOD method_56075 attachment (Lnet/minecraft/class_9064;FFF)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 type
+			ARG 2 offsetX
+			ARG 3 offsetY
+			ARG 4 offsetZ
+		METHOD method_56076 attachment (Lnet/minecraft/class_9064;Lnet/minecraft/class_243;)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 type
+			ARG 2 offset
+		METHOD method_58630 spawnBoxScale (F)Lnet/minecraft/class_1299$class_1300;
+			ARG 1 spawnBoxScale
+		METHOD method_63004 (Lnet/minecraft/class_5321;)Ljava/lang/String;
+			ARG 0 registryKey
+		METHOD method_63005 (Lnet/minecraft/class_5321;)Ljava/util/Optional;
+			ARG 0 registryKey
+		METHOD method_63006 dropsNothing ()Lnet/minecraft/class_1299$class_1300;
+		METHOD method_72391 notAllowedInPeaceful ()Lnet/minecraft/class_1299$class_1300;
+	CLASS class_4049 EntityFactory
+		METHOD create (Lnet/minecraft/class_1299;Lnet/minecraft/class_1937;)Lnet/minecraft/class_1297;
+			ARG 1 type
+			ARG 2 world

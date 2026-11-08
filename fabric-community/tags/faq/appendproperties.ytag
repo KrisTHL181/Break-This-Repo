@@ -1,0 +1,20 @@
+type: text
+
+---
+
+When trying to create a block with block state properties you might come across an error like this: 
+`java.lang.IllegalArgumentException: Cannot set property ... as it does not exist in Block{minecraft:air}`
+
+This happens when you don't (correctly) override the `appendProperties` method in your block class. Overriding this method is necessary to tell minecraft which properties your block has.
+It should look something like this:
+```java
+@Override
+protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+	builder.add(YOUR, PROPERTIES, HERE);
+}
+```
+
+On older versions (before 1.20.5) the method has to be `public` instead of `protected`.
+
+The error refers to your block as `minecraft:air` because it usually hasn't been registered by the time the error is thrown.
+You can usually find which block is having issues by looking for the constructor of it in the stacktrace.

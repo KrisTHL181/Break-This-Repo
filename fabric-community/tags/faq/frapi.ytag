@@ -1,0 +1,6 @@
+type: text
+
+---
+
+FRAPI refers to `fabric-renderer-api-v1`, an API for rendering modded items and blocks.
+This is not to be confused with `fabric-rendering-v1` or Fabric Rendering, a module with useful rendering hooks, registries, and events.

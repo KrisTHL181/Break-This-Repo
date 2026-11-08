@@ -1,0 +1,8 @@
+type: text
+
+---
+
+Cloth Config is a config screen builder api that allows mods to build their own config screens to provide a user friendly way to access the mod's config.
+Note: Cloth Config **should not be used** in future projects; use other config libraries like YACL (`!!yacl`).
+
+https://github.com/shedaniel/cloth-config

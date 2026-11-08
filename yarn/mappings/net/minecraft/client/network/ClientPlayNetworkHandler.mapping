@@ -1,0 +1,216 @@
+CLASS net/minecraft/class_634 net/minecraft/client/network/ClientPlayNetworkHandler
+	FIELD field_3687 random Lnet/minecraft/class_5819;
+	FIELD field_3691 commandSource Lnet/minecraft/class_637;
+	FIELD field_3692 dataQueryHandler Lnet/minecraft/class_300;
+	FIELD field_3693 playerListEntries Ljava/util/Map;
+	FIELD field_3695 LOGGER Lorg/slf4j/Logger;
+	FIELD field_3696 commandDispatcher Lcom/mojang/brigadier/CommandDispatcher;
+	FIELD field_3697 profile Lcom/mojang/authlib/GameProfile;
+	FIELD field_3699 world Lnet/minecraft/class_638;
+	FIELD field_3700 advancementHandler Lnet/minecraft/class_632;
+	FIELD field_16771 sessionId Ljava/util/UUID;
+	FIELD field_19144 chunkLoadDistance I
+	FIELD field_24321 worldProperties Lnet/minecraft/class_638$class_5271;
+	FIELD field_25063 combinedDynamicRegistries Lnet/minecraft/class_5455$class_6890;
+	FIELD field_25273 worldKeys Ljava/util/Set;
+	FIELD field_35164 simulationDistance I
+	FIELD field_39808 messagePacker Lnet/minecraft/class_7610$class_7612;
+	FIELD field_39858 lastSeenMessagesCollector Lnet/minecraft/class_7637;
+	FIELD field_39916 UNSECURE_SERVER_TOAST_TITLE Lnet/minecraft/class_2561;
+	FIELD field_39917 UNSECURE_SERVER_TOAST_TEXT Lnet/minecraft/class_2561;
+	FIELD field_40483 signatureStorage Lnet/minecraft/class_7561;
+	FIELD field_40485 INVALID_PACKET_TEXT Lnet/minecraft/class_2561;
+	FIELD field_40487 ACKNOWLEDGMENT_BATCH_SIZE I
+	FIELD field_40489 listedPlayerListEntries Ljava/util/Set;
+	FIELD field_40799 session Lnet/minecraft/class_7818;
+	FIELD field_45600 enabledFeatures Lnet/minecraft/class_7699;
+	FIELD field_45603 RECONFIGURING_TEXT Lnet/minecraft/class_2561;
+	FIELD field_45945 chunkBatchSizeCalculator Lnet/minecraft/class_8760;
+	FIELD field_45946 pingMeasurer Lnet/minecraft/class_8761;
+	FIELD field_46187 worldCleared Z
+	FIELD field_47878 scoreboard Lnet/minecraft/class_269;
+	FIELD field_48403 secureChatEnforced Z
+	FIELD field_51439 brewingRecipeRegistry Lnet/minecraft/class_1845;
+	FIELD field_51825 searchManager Lnet/minecraft/class_1124;
+	FIELD field_53030 fuelRegistry Lnet/minecraft/class_9895;
+	FIELD field_53031 profileKeyPairFuture Ljava/util/concurrent/CompletableFuture;
+	FIELD field_53032 syncedOptions Lnet/minecraft/class_8791;
+	FIELD field_54850 recipeManager Lnet/minecraft/class_10333;
+	FIELD field_54851 removedPlayerVehicleId Ljava/util/OptionalInt;
+	FIELD field_56354 cachedData Ljava/util/List;
+	FIELD field_58155 componentHasher Lnet/minecraft/class_10936$class_10937;
+	FIELD field_58156 globalChatMessageIndex I
+	FIELD field_58157 BAD_CHAT_INDEX_TEXT Lnet/minecraft/class_2561;
+	FIELD field_59963 waypointHandler Lnet/minecraft/class_11264;
+	FIELD field_60782 restrictedCommandSource Lnet/minecraft/class_637;
+		COMMENT A {@link CommandSource} that always has a permission level of 0.
+	FIELD field_60783 CONFIRM_COMMAND_TITLE_TEXT Lnet/minecraft/class_2561;
+	FIELD field_60784 COMMAND_NODE_FACTORY Lnet/minecraft/class_2641$class_11408;
+	FIELD field_61723 chunkLoadProgress Lnet/minecraft/class_11653;
+	FIELD field_62028 CONFIRM_RUN_COMMAND_TEXT Lnet/minecraft/class_2561;
+	FIELD field_62029 CONFIRM_SUGGEST_COMMAND_TEXT Lnet/minecraft/class_2561;
+	FIELD field_62944 debugSubscriptionManager Lnet/minecraft/class_12036;
+	FIELD field_63565 RESTRICTED_PERMISSION Lnet/minecraft/class_12087;
+	FIELD field_63566 RESTRICTED_PERMISSION_CHECK Lnet/minecraft/class_12090;
+	FIELD field_63567 RESTRICTED_PERMISSION_PREDICATE Lnet/minecraft/class_12096;
+	FIELD field_64674 loaded Z
+	METHOD <init> (Lnet/minecraft/class_310;Lnet/minecraft/class_2535;Lnet/minecraft/class_8675;)V
+		ARG 1 client
+	METHOD method_2869 getAdvancementHandler ()Lnet/minecraft/class_632;
+	METHOD method_2870 updateLighting (IILnet/minecraft/class_3568;Lnet/minecraft/class_1944;Ljava/util/BitSet;Ljava/util/BitSet;Ljava/util/Iterator;Z)V
+		ARG 1 chunkX
+		ARG 2 chunkZ
+		ARG 3 provider
+		ARG 4 type
+		ARG 5 inited
+		ARG 6 uninited
+		ARG 7 nibbles
+		ARG 8 scheduleBlockRenders
+	METHOD method_2871 getPlayerListEntry (Ljava/util/UUID;)Lnet/minecraft/class_640;
+		ARG 1 uuid
+	METHOD method_2874 getPlayerListEntry (Ljava/lang/String;)Lnet/minecraft/class_640;
+		ARG 1 profileName
+	METHOD method_2875 getCommandSource ()Lnet/minecraft/class_637;
+	METHOD method_2876 getDataQueryHandler ()Lnet/minecraft/class_300;
+	METHOD method_2879 getProfile ()Lcom/mojang/authlib/GameProfile;
+	METHOD method_2880 getPlayerList ()Ljava/util/Collection;
+	METHOD method_2886 getCommandDispatcher ()Lcom/mojang/brigadier/CommandDispatcher;
+	METHOD method_2890 getWorld ()Lnet/minecraft/class_638;
+	METHOD method_16690 getSessionId ()Ljava/util/UUID;
+	METHOD method_19691 getActiveDeathProtector (Lnet/minecraft/class_1657;)Lnet/minecraft/class_1799;
+		ARG 0 player
+	METHOD method_29091 getRegistryManager ()Lnet/minecraft/class_5455$class_6890;
+	METHOD method_29356 getWorldKeys ()Ljava/util/Set;
+	METHOD method_31363 getPlayerUuids ()Ljava/util/Collection;
+	METHOD method_34007 (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 pos
+		ARG 2 state
+	METHOD method_34008 (Lnet/minecraft/class_1309;Lcom/mojang/datafixers/util/Pair;)V
+		ARG 1 pair
+	METHOD method_34010 (Lnet/minecraft/class_268;Lnet/minecraft/class_5900$class_5902;)V
+		ARG 1 team
+	METHOD method_38539 loadChunk (IILnet/minecraft/class_6603;)V
+		ARG 1 x
+		ARG 2 z
+		ARG 3 chunkData
+	METHOD method_38541 scheduleRenderChunk (Lnet/minecraft/class_2818;II)V
+		ARG 1 chunk
+		ARG 2 x
+		ARG 3 z
+	METHOD method_38542 (Lnet/minecraft/class_2622;Lnet/minecraft/class_2586;)V
+		ARG 2 blockEntity
+	METHOD method_38543 readLightData (IILnet/minecraft/class_6606;Z)V
+		ARG 1 x
+		ARG 2 z
+		ARG 3 data
+		ARG 4 scheduleBlockRenders
+	METHOD method_43209 playSpawnSound (Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_44940 acknowledge (Lnet/minecraft/class_7469;Z)V
+		ARG 1 signature
+		ARG 2 displayed
+	METHOD method_45720 hasFeature (Lnet/minecraft/class_7699;)Z
+		ARG 1 feature
+	METHOD method_45722 (Ljava/time/Instant;JLnet/minecraft/class_7637$class_7816;Ljava/lang/String;)Lnet/minecraft/class_7469;
+		ARG 5 value
+	METHOD method_45726 handlePlayerListAction (Lnet/minecraft/class_2703$class_5893;Lnet/minecraft/class_2703$class_2705;Lnet/minecraft/class_640;)V
+		ARG 1 action
+		ARG 2 receivedEntry
+		ARG 3 currentEntry
+	METHOD method_45727 setPublicSession (Lnet/minecraft/class_2703$class_2705;Lnet/minecraft/class_640;)V
+		ARG 1 receivedEntry
+		ARG 2 currentEntry
+	METHOD method_45729 sendChatMessage (Ljava/lang/String;)V
+		ARG 1 content
+	METHOD method_45730 sendChatCommand (Ljava/lang/String;)V
+		ARG 1 command
+	METHOD method_45732 getListedPlayerListEntries ()Ljava/util/Collection;
+	METHOD method_45734 getServerInfo ()Lnet/minecraft/class_642;
+	METHOD method_45735 getEnabledFeatures ()Lnet/minecraft/class_7699;
+	METHOD method_45737 sendAcknowledgment ()V
+	METHOD method_46529 isSecureChatEnforced ()Z
+	METHOD method_47657 updateKeyPair (Lnet/minecraft/class_7427;)V
+		ARG 1 keyPair
+	METHOD method_47658 unloadWorld ()V
+	METHOD method_48296 getConnection ()Lnet/minecraft/class_2535;
+	METHOD method_51684 unloadChunk (Lnet/minecraft/class_2666;)V
+		ARG 1 packet
+	METHOD method_52801 warnOnUnknownPayload (Lnet/minecraft/class_8710;)V
+		ARG 1 payload
+	METHOD method_53876 createEntity (Lnet/minecraft/class_2604;)Lnet/minecraft/class_1297;
+		ARG 1 packet
+	METHOD method_54133 startWorldLoading (Lnet/minecraft/class_746;Lnet/minecraft/class_638;Lnet/minecraft/class_3928$class_9678;)V
+		ARG 1 player
+		ARG 2 world
+		ARG 3 reason
+	METHOD method_54134 clearWorld ()V
+	METHOD method_55823 getScoreboard ()Lnet/minecraft/class_269;
+	METHOD method_59754 getBrewingRecipeRegistry ()Lnet/minecraft/class_1845;
+	METHOD method_59842 getWorldEntryReason (ZLnet/minecraft/class_5321;Lnet/minecraft/class_5321;)Lnet/minecraft/class_3928$class_9678;
+		ARG 1 dead
+		ARG 2 from
+		ARG 3 to
+	METHOD method_60346 refreshSearchManager ()V
+	METHOD method_60347 getSearchManager ()Lnet/minecraft/class_1124;
+	METHOD method_62147 getFuelRegistry ()Lnet/minecraft/class_9895;
+	METHOD method_62148 startTagReload (Lnet/minecraft/class_5321;Lnet/minecraft/class_6864$class_5748;)Lnet/minecraft/class_2378$class_10106;
+		ARG 1 registryRef
+		ARG 2 serialized
+	METHOD method_62149 syncOptions (Lnet/minecraft/class_8791;)V
+		ARG 1 syncedOptions
+	METHOD method_62150 (ZLjava/util/List;Lnet/minecraft/class_5321;Lnet/minecraft/class_6864$class_5748;)V
+		ARG 3 registryRef
+		ARG 4 serialized
+	METHOD method_62151 fetchProfileKey ()V
+	METHOD method_64896 (I)V
+		ARG 1 id
+	METHOD method_64897 setPosition (Lnet/minecraft/class_10182;Ljava/util/Set;Lnet/minecraft/class_1297;Z)Z
+		ARG 0 pos
+		ARG 1 flags
+		ARG 2 entity
+	METHOD method_64898 refreshRecipeBook (Lnet/minecraft/class_299;)V
+		ARG 1 recipeBook
+	METHOD method_64899 getRecipeManager ()Lnet/minecraft/class_10286;
+	METHOD method_67268 clearCachedData ()V
+	METHOD method_67269 registerForCleaning (Lnet/minecraft/class_10719;)V
+		ARG 1 dataCache
+	METHOD method_68823 getComponentHasher ()Lnet/minecraft/class_10936$class_10937;
+	METHOD method_68824 (Lnet/minecraft/class_6903;Lnet/minecraft/class_9336;)Ljava/lang/Integer;
+		ARG 1 component
+	METHOD method_68825 (Lnet/minecraft/class_9336;Ljava/lang/String;)Ljava/lang/IllegalArgumentException;
+		ARG 1 error
+	METHOD method_70936 getWaypointHandler ()Lnet/minecraft/class_11264;
+	METHOD method_71925 validate (Lcom/mojang/brigadier/ParseResults;)Z
+		ARG 0 parseResults
+	METHOD method_71926 openConfirmRunCommandScreen (Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/class_437;)V
+		ARG 1 command
+		ARG 2 message
+		ARG 3 screenAfterRun
+	METHOD method_71927 runClickEventCommand (Ljava/lang/String;Lnet/minecraft/class_437;)V
+		ARG 1 command
+		ARG 2 afterActionScreen
+	METHOD method_71929 parseCommand (Ljava/lang/String;)Lnet/minecraft/class_634$class_11503;
+		ARG 1 command
+	METHOD method_72898 setPlayerLoaded ()V
+	METHOD method_73230 (Ljava/lang/Runnable;Lnet/minecraft/class_437;Z)V
+		ARG 3 confirmed
+	METHOD method_73231 openConfirmCommandScreen (Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/class_2561;Ljava/lang/Runnable;)V
+		ARG 1 command
+		ARG 2 message
+		ARG 3 yesText
+		ARG 4 action
+	METHOD method_73233 suggestCommand (Ljava/lang/String;Ljava/lang/String;Lnet/minecraft/class_437;)V
+		ARG 1 command
+		ARG 2 message
+		ARG 3 afterActionScreen
+	METHOD method_73234 getSeenPlayers ()Ljava/util/Map;
+	METHOD method_73471 getCaseInsensitivePlayerInfo (Ljava/lang/String;)Lnet/minecraft/class_640;
+		ARG 1 name
+	METHOD method_74750 getDebugDataStore ()Lnet/minecraft/class_12021;
+	METHOD method_76760 isLoaded ()Z
+	METHOD method_76761 setLoaded (Z)V
+		ARG 1 loaded
+	CLASS 1
+		METHOD method_71930 (Lcom/mojang/brigadier/context/CommandContext;)I
+			ARG 0 context
+	CLASS class_11503 CommandRunResult

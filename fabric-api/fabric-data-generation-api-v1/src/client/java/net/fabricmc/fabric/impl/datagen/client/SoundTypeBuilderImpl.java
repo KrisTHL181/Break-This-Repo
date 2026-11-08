@@ -1,0 +1,228 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.impl.datagen.client;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.jspecify.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.spongepowered.include.com.google.common.base.Preconditions;
+
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
+
+import net.fabricmc.fabric.api.client.datagen.v1.builder.SoundTypeBuilder;
+
+public final class SoundTypeBuilderImpl implements SoundTypeBuilder {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SoundTypeBuilderImpl.class);
+
+	private boolean replace = false;
+	@Nullable
+	private String subtitle;
+	private final List<Entry> sounds = new ArrayList<>();
+
+	public SoundTypeBuilderImpl() { }
+
+	@Override
+	public SoundTypeBuilder replace(boolean replace) {
+		this.replace = replace;
+		return this;
+	}
+
+	@Override
+	public SoundTypeBuilder subtitle(@Nullable String subtitle) {
+		this.subtitle = subtitle;
+		return this;
+	}
+
+	@Override
+	public SoundTypeBuilder sound(RegistrationBuilder sound) {
+		Objects.requireNonNull(sound, "Sound must not be null.");
+		sounds.add(((RegistrationBuilderImpl) sound).build(""));
+		return this;
+	}
+
+	@Override
+	public SoundTypeBuilder sound(RegistrationBuilder sound, int count) {
+		Objects.requireNonNull(sound, "Sound must not be null.");
+		Preconditions.checkArgument(count > 0, "Count must be greater than zero.");
+
+		for (int i = 1; i <= count; i++) {
+			sounds.add(((RegistrationBuilderImpl) sound).build(Integer.toString(i)));
+		}
+
+		return this;
+	}
+
+	public SoundType build() {
+		Preconditions.checkState(!sounds.isEmpty(), "Sound definition must have at least one sound file");
+
+		for (Entry sound : sounds) {
+			if (sound.type() == RegistrationType.SOUND_EVENT) {
+				BuiltInRegistries.SOUND_EVENT.getOptional(sound.name()).orElseThrow(() -> new IllegalStateException("Referenced sound event " + sound.name() + " does not exist"));
+			}
+		}
+
+		return new SoundType(sounds, replace, Optional.ofNullable(subtitle));
+	}
+
+	/**
+	 * Record of the sound event registration class for data generation.
+	 *
+	 * @see net.minecraft.client.resources.sounds.SoundEventRegistration
+	 */
+	public record SoundType(List<Entry> sounds, boolean replace, Optional<String> subtitle) {
+		/**
+		 * @see net.minecraft.client.resources.sounds.SoundEventRegistrationSerializer
+		 */
+		public static final Codec<SoundType> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Entry.CODEC.listOf().fieldOf("sounds").forGetter(SoundType::sounds),
+				Codec.BOOL.optionalFieldOf("replace", false).forGetter(SoundType::replace),
+				Codec.STRING.optionalFieldOf("subtitle").forGetter(SoundType::subtitle)
+		).apply(instance, SoundType::new));
+	}
+
+	/**
+	 * Record of the sound class to use for data generation.
+	 *
+	 * @see net.minecraft.client.resources.sounds.Sound
+	 */
+	public record Entry(Identifier name, RegistrationType type, float volume, float pitch, int weight,
+						int attenuationDistance, boolean stream, boolean preload) {
+		private static final Codec<Entry> MAP_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Identifier.CODEC.fieldOf("name").forGetter(Entry::name),
+				RegistrationType.CODEC.optionalFieldOf("type", RegistrationType.FILE).forGetter(Entry::type),
+				Codec.floatRange(Float.MIN_VALUE, 1.0F).optionalFieldOf("volume", RegistrationBuilder.DEFAULT_VOLUME).forGetter(Entry::volume),
+				Codec.floatRange(0.5F, 2.0F).optionalFieldOf("pitch", RegistrationBuilder.DEFAULT_PITCH).forGetter(Entry::pitch),
+				Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("weight", RegistrationBuilder.DEFAULT_WEIGHT).forGetter(Entry::weight),
+				Codec.INT.optionalFieldOf("attenuation_distance", RegistrationBuilder.DEFAULT_ATTENUATION_DISTANCE).forGetter(Entry::attenuationDistance),
+				Codec.BOOL.optionalFieldOf("stream", false).forGetter(Entry::stream),
+				Codec.BOOL.optionalFieldOf("preload", false).forGetter(Entry::preload)
+		).apply(instance, Entry::new));
+
+		private static final Codec<Entry> STRING_CODEC = Identifier.CODEC.xmap(
+				id -> new Entry(id, RegistrationType.FILE, RegistrationBuilder.DEFAULT_VOLUME, RegistrationBuilder.DEFAULT_PITCH, RegistrationBuilder.DEFAULT_WEIGHT, RegistrationBuilder.DEFAULT_ATTENUATION_DISTANCE, false, false),
+				Entry::name
+		);
+		private static final Codec<Entry> CODEC = Codec.xor(STRING_CODEC, MAP_CODEC).xmap(Either::unwrap, sound -> {
+			if (sound.type() != RegistrationType.FILE
+					|| sound.volume() != RegistrationBuilder.DEFAULT_VOLUME
+					|| sound.pitch() != RegistrationBuilder.DEFAULT_PITCH
+					|| sound.weight() != RegistrationBuilder.DEFAULT_WEIGHT
+					|| sound.attenuationDistance() != RegistrationBuilder.DEFAULT_ATTENUATION_DISTANCE
+					|| sound.stream()
+					|| sound.preload()) {
+				return Either.right(sound);
+			}
+
+			return Either.left(sound);
+		});
+	}
+
+	public static final class RegistrationBuilderImpl implements RegistrationBuilder {
+		private final Identifier id;
+		private final RegistrationType type;
+
+		private float volume = DEFAULT_VOLUME;
+		private float pitch = DEFAULT_PITCH;
+		private int attenuationDistance = DEFAULT_ATTENUATION_DISTANCE;
+		private int weight = DEFAULT_WEIGHT;
+		private boolean stream = false;
+		private boolean preload = false;
+
+		private RegistrationBuilderImpl(RegistrationType type, Identifier id) {
+			this.type = type;
+			this.id = id;
+		}
+
+		public static RegistrationBuilder create(RegistrationType type, Identifier id) {
+			return new RegistrationBuilderImpl(type, id);
+		}
+
+		public static RegistrationBuilder ofFile(Identifier soundFile) {
+			Objects.requireNonNull(soundFile, "Sound file/event id must not be null.");
+
+			if (soundFile.getPath().indexOf('.') != -1) {
+				LOGGER.warn("Sound file \"" + soundFile + "\" should not have a file extension and may result in the sound event not playing.");
+			}
+
+			return create(RegistrationType.FILE, soundFile);
+		}
+
+		public static RegistrationBuilder ofEvent(SoundEvent event) {
+			Objects.requireNonNull(event, "Sound event must not be null.");
+			return create(RegistrationType.SOUND_EVENT, event.location());
+		}
+
+		public static RegistrationBuilder ofEvent(Holder<SoundEvent> event) {
+			Objects.requireNonNull(event, "Sound event key must not be null.");
+			return create(RegistrationType.SOUND_EVENT, event.unwrapKey().orElseThrow(() -> new IllegalArgumentException("Direct (non-registered) sound event cannot be added")).identifier());
+		}
+
+		@Override
+		public RegistrationBuilder volume(float volume) {
+			Preconditions.checkArgument(volume > 0 && volume <= 1, "Sound volume must be greater than 0 and less than or equal to 1.");
+			this.volume = volume;
+			return this;
+		}
+
+		@Override
+		public RegistrationBuilder pitch(float pitch) {
+			Preconditions.checkArgument(pitch >= 0.5F && pitch <= 2, "Sound pitch must be between 0.5 and 2 (inclusive)");
+			this.pitch = pitch;
+			return this;
+		}
+
+		@Override
+		public RegistrationBuilder attenuationDistance(int attenuationDistance) {
+			this.attenuationDistance = attenuationDistance;
+			return this;
+		}
+
+		@Override
+		public RegistrationBuilder weight(int weight) {
+			Preconditions.checkArgument(weight >= 1, "Sound must have a weight of at least 1.");
+			this.weight = weight;
+			return this;
+		}
+
+		@Override
+		public RegistrationBuilder stream(boolean stream) {
+			this.stream = stream;
+			return this;
+		}
+
+		@Override
+		public RegistrationBuilder preload(boolean preload) {
+			this.preload = preload;
+			return this;
+		}
+
+		public Entry build(@Nullable String suffix) {
+			return new Entry(id.withSuffix(suffix == null ? "" : suffix), type, volume, pitch, weight, attenuationDistance, stream, preload);
+		}
+	}
+}

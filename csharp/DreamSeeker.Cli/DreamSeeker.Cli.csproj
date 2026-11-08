@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>DreamSeeker.Cli</AssemblyName>
+    <RootNamespace>DreamSeeker.Cli</RootNamespace>
+    <Description>Runs every Elysia showcase, measures it, and exits non-zero if any claim stops being true.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Elysia.Core\Elysia.Core.csproj" />
+    <ProjectReference Include="..\Elysia.Mirror\Elysia.Mirror.csproj" />
+    <ProjectReference Include="..\Elysia.Numerics\Elysia.Numerics.csproj" />
+    <ProjectReference Include="..\Elysia.Text\Elysia.Text.csproj" />
+    <ProjectReference Include="..\Elysia.Flow\Elysia.Flow.csproj" />
+    <ProjectReference Include="..\pulled\nodatime\NodaTime.csproj" />
+
+    <!-- Both of these arrive THROUGH the repository-root `elysia` symlink. -->
+    <ProjectReference Include="..\..\elysia\src\DreamSeeker.Core\DreamSeeker.Core.csproj" />
+
+    <!--
+      The sample plugin is built but NOT linked: ReferenceOutputAssembly=false keeps it out of the
+      compile-time closure so the host genuinely has to find it at run time, the way a plugin works.
+    -->
+    <ProjectReference Include="..\Elysia.DreamPlugin.Sample\Elysia.DreamPlugin.Sample.csproj"
+                      ReferenceOutputAssembly="false"
+                      Private="false" />
+  </ItemGroup>
+
+  <!--
+    Stage the compiled plugin next to the host under `plugins/`, so that the run-time load path is a
+    real file on disk and not an assembly that happened to get linked in. The second build call is
+    deliberate: a ProjectReference with ReferenceOutputAssembly=false does not promise the artifact
+    will be anywhere findable, so we ask MSBuild for it explicitly.
+  -->
+  <Target Name="StageDreamPlugin" AfterTargets="Build">
+    <MSBuild Projects="$(MSBuildThisFileDirectory)..\Elysia.DreamPlugin.Sample\Elysia.DreamPlugin.Sample.csproj"
+             Targets="Build"
+             Properties="Configuration=$(Configuration)">
+      <Output TaskParameter="TargetOutputs" ItemName="DreamPluginArtifacts" />
+    </MSBuild>
+    <MakeDir Directories="$(OutDir)plugins" />
+    <Copy SourceFiles="@(DreamPluginArtifacts)" DestinationFolder="$(OutDir)plugins" SkipUnchangedFiles="true" />
+    <Message Importance="high" Text="[elysia] staged dream plugin → $(OutDir)plugins\Elysia.DreamPlugin.Sample.dll" />
+  </Target>
+
+</Project>

@@ -1,0 +1,17 @@
+CLASS net/minecraft/class_2573 net/minecraft/block/entity/BannerBlockEntity
+	FIELD field_11772 customName Lnet/minecraft/class_2561;
+	FIELD field_11774 baseColor Lnet/minecraft/class_1767;
+	FIELD field_31296 MAX_PATTERN_COUNT I
+	FIELD field_31297 PATTERNS_KEY Ljava/lang/String;
+	FIELD field_49756 patterns Lnet/minecraft/class_9307;
+	FIELD field_63035 BLOCK_NAME Lnet/minecraft/class_2561;
+	METHOD <init> (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 pos
+		ARG 2 state
+	METHOD <init> (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_1767;)V
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 baseColor
+	METHOD method_10907 getPickStack ()Lnet/minecraft/class_1799;
+	METHOD method_10908 getColorForState ()Lnet/minecraft/class_1767;
+	METHOD method_58122 getPatterns ()Lnet/minecraft/class_9307;

@@ -1,0 +1,220 @@
+CLASS net/minecraft/class_638 net/minecraft/client/world/ClientWorld
+	FIELD field_3727 networkHandler Lnet/minecraft/class_634;
+	FIELD field_3729 client Lnet/minecraft/class_310;
+	FIELD field_17675 mapStates Ljava/util/Map;
+	FIELD field_17780 worldRenderer Lnet/minecraft/class_761;
+	FIELD field_18226 players Ljava/util/List;
+	FIELD field_21526 lightningTicksLeft I
+	FIELD field_21527 colorCache Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;
+	FIELD field_24430 clientWorldProperties Lnet/minecraft/class_638$class_5271;
+	FIELD field_24605 chunkManager Lnet/minecraft/class_631;
+	FIELD field_27733 entityList Lnet/minecraft/class_5574;
+	FIELD field_27734 entityManager Lnet/minecraft/class_5582;
+	FIELD field_32641 PARTICLE_Y_OFFSET D
+		COMMENT A minor offset applied when spawning particles.
+	FIELD field_34804 chunkUpdaters Ljava/util/Deque;
+	FIELD field_35163 simulationDistance I
+	FIELD field_35432 BLOCK_MARKER_ITEMS Ljava/util/Set;
+	FIELD field_37951 pendingUpdateManager Lnet/minecraft/class_7202;
+	FIELD field_37952 LOGGER Lorg/slf4j/Logger;
+	FIELD field_47129 tickManager Lnet/minecraft/class_8921;
+	FIELD field_53028 worldEventHandler Lnet/minecraft/class_9959;
+	FIELD field_53029 seaLevel I
+	FIELD field_54500 shouldTickTimeOfDay Z
+	FIELD field_55125 enderDragonParts Ljava/util/List;
+	FIELD field_60919 blockEntities Ljava/util/Set;
+	FIELD field_61021 QUITTING_MULTIPLAYER_TEXT Lnet/minecraft/class_2561;
+	FIELD field_62026 endLightFlashManager Lnet/minecraft/class_11743;
+	FIELD field_62027 blockParticlesManager Lnet/minecraft/class_11741;
+	FIELD field_62596 worldBorder Lnet/minecraft/class_2784;
+	FIELD field_64444 environmentAttributeAccess Lnet/minecraft/class_12205;
+	METHOD <init> (Lnet/minecraft/class_634;Lnet/minecraft/class_638$class_5271;Lnet/minecraft/class_5321;Lnet/minecraft/class_6880;IILnet/minecraft/class_761;ZJI)V
+		ARG 1 networkHandler
+		ARG 2 properties
+		ARG 3 registryRef
+		ARG 4 dimensionType
+		ARG 5 loadDistance
+		ARG 6 simulationDistance
+		ARG 7 worldRenderer
+		ARG 8 debugWorld
+		ARG 9 seed
+		ARG 11 seaLevel
+	METHOD method_2932 addParticle (DDDDDLnet/minecraft/class_2394;)V
+		ARG 1 minX
+		ARG 3 maxX
+		ARG 5 minZ
+		ARG 7 maxZ
+		ARG 9 y
+		ARG 11 parameters
+	METHOD method_2938 addParticle (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2394;Z)V
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 parameters
+		ARG 4 solidBelow
+	METHOD method_2941 doRandomBlockDisplayTicks (III)V
+		ARG 1 centerX
+		ARG 2 centerY
+		ARG 3 centerZ
+	METHOD method_2943 randomBlockDisplayTick (IIIILnet/minecraft/class_5819;Lnet/minecraft/class_2248;Lnet/minecraft/class_2338$class_2339;)V
+		ARG 1 centerX
+		ARG 2 centerY
+		ARG 3 centerZ
+		ARG 4 radius
+		ARG 5 random
+		ARG 6 block
+		ARG 7 pos
+	METHOD method_2945 removeEntity (ILnet/minecraft/class_1297$class_5529;)V
+		ARG 1 entityId
+		ARG 2 removalReason
+	METHOD method_2948 addParticle (Lnet/minecraft/class_2338;Lnet/minecraft/class_2394;Lnet/minecraft/class_265;D)V
+		ARG 1 pos
+		ARG 2 parameters
+		ARG 3 shape
+		ARG 4 y
+	METHOD method_8441 tick (Ljava/util/function/BooleanSupplier;)V
+		ARG 1 shouldKeepTicking
+	METHOD method_8525 disconnect (Lnet/minecraft/class_2561;)V
+		ARG 1 reasonText
+	METHOD method_18110 unloadBlockEntities (Lnet/minecraft/class_2818;)V
+		ARG 1 chunk
+	METHOD method_18112 getEntities ()Ljava/lang/Iterable;
+	METHOD method_18113 scheduleBlockRenders (III)V
+		ARG 1 x
+		ARG 2 y
+		ARG 3 z
+	METHOD method_18116 tickEntities ()V
+	METHOD method_18120 getRegularEntityCount ()I
+	METHOD method_18646 tickEntity (Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_18647 tickPassenger (Lnet/minecraft/class_1297;Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+		ARG 2 passenger
+	METHOD method_23778 (Lit/unimi/dsi/fastutil/objects/Object2ObjectArrayMap;)V
+		ARG 1 map
+	METHOD method_23779 (Lnet/minecraft/class_6539;Lnet/minecraft/class_4700;)V
+		ARG 0 resolver
+		ARG 1 cache
+	METHOD method_23780 calculateColor (Lnet/minecraft/class_2338;Lnet/minecraft/class_6539;)I
+		ARG 1 pos
+		ARG 2 colorResolver
+	METHOD method_23782 resetChunkColor (Lnet/minecraft/class_1923;)V
+		ARG 1 chunkPos
+	METHOD method_23784 reloadColor ()V
+	METHOD method_23789 getLightningTicksLeft ()I
+	METHOD method_29089 setTime (JJZ)V
+		ARG 1 time
+		ARG 3 timeOfDay
+		ARG 5 shouldTickTimeOfDay
+	METHOD method_29090 tickTime ()V
+	METHOD method_32121 (Lnet/minecraft/class_1923;Lnet/minecraft/class_6539;Lnet/minecraft/class_4700;)V
+		ARG 1 resolver
+		ARG 2 cache
+	METHOD method_32124 (Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_35752 getBlockParticle ()Lnet/minecraft/class_2248;
+	METHOD method_35753 putMapStates (Ljava/util/Map;)V
+		ARG 1 mapStates
+	METHOD method_35754 getMapStates ()Ljava/util/Map;
+	METHOD method_38534 runQueuedChunkUpdates ()V
+	METHOD method_38535 (Lnet/minecraft/class_2338;)I
+		ARG 1 pos
+	METHOD method_38536 enqueueChunkUpdate (Ljava/lang/Runnable;)V
+		ARG 1 updater
+	METHOD method_38537 (Lnet/minecraft/class_2338;)I
+		ARG 1 pos
+	METHOD method_38538 (Lnet/minecraft/class_2338;)I
+		ARG 1 pos
+	METHOD method_39023 setSimulationDistance (I)V
+		ARG 1 simulationDistance
+	METHOD method_39024 getSimulationDistance ()I
+	METHOD method_41925 getPendingUpdateManager ()Lnet/minecraft/class_7202;
+	METHOD method_41926 processPendingUpdate (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_243;)V
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 playerPos
+	METHOD method_41927 handlePlayerActionResponse (I)V
+		ARG 1 sequence
+	METHOD method_41928 handleBlockUpdate (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;I)V
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 flags
+	METHOD method_43207 playSound (DDDLnet/minecraft/class_3414;Lnet/minecraft/class_3419;FFZJ)V
+		ARG 1 x
+		ARG 3 y
+		ARG 5 z
+		ARG 7 event
+		ARG 8 category
+		ARG 9 volume
+		ARG 10 pitch
+		ARG 11 useDistance
+		ARG 12 seed
+	METHOD method_47437 putClientsideMapState (Lnet/minecraft/class_9209;Lnet/minecraft/class_22;)V
+		ARG 1 id
+		ARG 2 state
+	METHOD method_53875 addEntity (Lnet/minecraft/class_1297;)V
+		ARG 1 entity
+	METHOD method_62145 hasEntity (Lnet/minecraft/class_1297;)Z
+		ARG 1 entity
+	METHOD method_62146 scheduleChunkRenders (IIIIII)V
+		ARG 1 minX
+		ARG 2 minY
+		ARG 3 minZ
+		ARG 4 maxX
+		ARG 5 maxY
+		ARG 6 maxZ
+	METHOD method_62895 onChunkUnload (J)V
+		ARG 1 sectionPos
+	METHOD method_68160 (Lnet/minecraft/class_2338;)I
+		ARG 1 pos
+	METHOD method_72019 getBlockEntities ()Ljava/util/Set;
+	METHOD method_73228 addBlockParticleEffects (Lnet/minecraft/class_243;FILnet/minecraft/class_6012;)V
+		ARG 1 center
+		ARG 2 radius
+		ARG 3 blockCount
+		ARG 4 particles
+	METHOD method_73229 getEndLightFlashManager ()Lnet/minecraft/class_11743;
+	METHOD method_74253 (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;DDDDDD)V
+		ARG 3 minX
+		ARG 5 minY
+		ARG 7 minZ
+		ARG 9 maxX
+		ARG 11 maxY
+		ARG 13 maxZ
+	METHOD method_74254 spawnBlockBreakingParticle (Lnet/minecraft/class_2338;Lnet/minecraft/class_2350;)V
+		ARG 1 pos
+		ARG 2 direction
+	METHOD method_74918 getParticlesMode (Z)Lnet/minecraft/class_4066;
+	METHOD method_74919 addParticle (Lnet/minecraft/class_2394;ZZDDDDDD)V
+	METHOD method_76540 (ILjava/lang/Integer;I)Ljava/lang/Integer;
+		ARG 2 color
+		ARG 3 time
+	METHOD method_76541 addClientSideAttributes (Lnet/minecraft/class_12205$class_12314;)Lnet/minecraft/class_12205$class_12314;
+		ARG 1 builder
+	METHOD method_76542 (Ljava/lang/Float;I)Ljava/lang/Float;
+		ARG 1 factor
+		ARG 2 time
+	CLASS class_5271 Properties
+		FIELD field_24433 hardcore Z
+		FIELD field_24438 time J
+		FIELD field_24439 timeOfDay J
+		FIELD field_24440 raining Z
+		FIELD field_24441 difficulty Lnet/minecraft/class_1267;
+		FIELD field_24442 difficultyLocked Z
+		FIELD field_24607 flatWorld Z
+		FIELD field_63066 position Lnet/minecraft/class_5217$class_12064;
+		METHOD <init> (Lnet/minecraft/class_1267;ZZ)V
+			ARG 1 difficulty
+			ARG 2 hardcore
+			ARG 3 flatWorld
+		METHOD method_165 setTimeOfDay (J)V
+			ARG 1 timeOfDay
+		METHOD method_177 setTime (J)V
+			ARG 1 time
+		METHOD method_27875 setDifficulty (Lnet/minecraft/class_1267;)V
+			ARG 1 difficulty
+		METHOD method_27876 setDifficultyLocked (Z)V
+			ARG 1 difficultyLocked
+		METHOD method_28105 getSkyDarknessHeight (Lnet/minecraft/class_5539;)D
+			ARG 1 world
+		METHOD method_71646 getVoidDarknessRange ()F
+	CLASS class_5612 ClientEntityHandler

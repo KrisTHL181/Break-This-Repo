@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "two words.txt"
+Whitespace splitting turns one path into two words.

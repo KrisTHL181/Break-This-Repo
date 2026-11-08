@@ -1,0 +1,84 @@
+.chart-container {
+    width: 65%;
+    max-width: 1000px;
+    overflow-x: auto;
+    /* 横向滚动 */
+    border: 1px solid var(--color-border);
+    margin: 20px auto;
+    position: relative;
+    background: var(--color-chart-bg);
+    /* 背景改深色，更有层次感 */
+    border-radius: 8px;
+    padding: 10px 0;
+}
+
+.chart {
+    position: relative;
+    height: 300px;
+    /* 固定高度 */
+    min-width: 600px;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    /* 给标签预留空间 */
+}
+
+.bar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 13px;
+    height: 100%;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.bar {
+    width: 40px;
+    background: var(--color-chart-bar);
+    /* 渐变蓝色更美观 */
+    height: 0;
+    transition: height 1s ease-out;
+    position: relative;
+    z-index: 2;
+    border-radius: 4px 4px 0 0;
+    /* 圆角柱子顶部 */
+}
+
+.bar-label {
+    margin-top: 5px;
+    font-size: 12px;
+    text-align: center;
+    color: var(--color-fg);
+}
+
+.value-label {
+    bottom: 25px;
+    /* 顶部显示，柱子上方 */
+    font-size: 14px;
+    color: var(--color-fg);
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    z-index: 999;
+    text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    transition: all 1s ease-out;
+}
+
+.avg-line {
+    position: absolute;
+    left: 0;
+    height: 2px;
+    background: #ff6f61;
+    /* 更显眼的平均线颜色 */
+    z-index: 6;
+}
+
+.avg-label {
+    position: absolute;
+    font-size: 12px;
+    background: #ff6f61;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 3px;
+}

@@ -1,0 +1,13 @@
+type: text
+
+---
+
+`modApi` -> Transitive dependency that can be accessed by dependents. Use it for libraries that should be accessible by other mods that add your mod as a dependency, such as jankson.
+
+`modImplementation` -> Transitive dependency that can't be accessed by dependents. Use it for libraries that are used only internally, such as modmenu.
+
+`include` -> Bundle a dependency as a Jar-in-jar non transitive dependency. Does not add the dependency to any classpath. Use it for libraries, such as autoconfig.
+
+`modCompileOnly`/`modRuntime` -> Non transitive dependency that's only accessible on a specific classpath. Use it for mods you'd just like to play with or compile against, such as the REI api and the full REI.
+
+`modCompile` -> Used to be a non transitive `modImplementation` before loom 0.2.2 kicked in, but it's now deprecated.

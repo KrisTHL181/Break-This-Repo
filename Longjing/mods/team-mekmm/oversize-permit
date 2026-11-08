@@ -1,0 +1,3 @@
+应请求，允许 Mekanism: More Machines 构建产物文件超过 10 MiB。
+
+原因：因为 Mekanism 还未正式发布 26.1 且 nightly build 产出速度很快，Mek: MM 目前使用 Jar-in-Jar 一同打包 Mekanism。

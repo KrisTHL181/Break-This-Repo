@@ -1,0 +1,24 @@
+CLASS net/minecraft/class_477 net/minecraft/client/gui/screen/ingame/CommandBlockScreen
+	FIELD field_2865 blockEntity Lnet/minecraft/class_2593;
+	FIELD field_2866 redstoneTriggerButton Lnet/minecraft/class_5676;
+	FIELD field_2867 autoActivate Z
+	FIELD field_2868 conditional Z
+	FIELD field_2869 modeButton Lnet/minecraft/class_5676;
+	FIELD field_2870 mode Lnet/minecraft/class_2593$class_2594;
+	FIELD field_2871 conditionalModeButton Lnet/minecraft/class_5676;
+	METHOD <init> (Lnet/minecraft/class_2593;)V
+		ARG 1 blockEntity
+	METHOD method_2457 updateCommandBlock ()V
+	METHOD method_32647 setButtonsActive (Z)V
+		ARG 1 active
+	METHOD method_73427 (Lnet/minecraft/class_2593$class_2594;)Lnet/minecraft/class_2561;
+		ARG 0 type
+	METHOD method_73428 (Lnet/minecraft/class_5676;Lnet/minecraft/class_2593$class_2594;)V
+		ARG 1 button
+		ARG 2 mode
+	METHOD method_73429 (Lnet/minecraft/class_5676;Ljava/lang/Boolean;)V
+		ARG 1 button
+		ARG 2 autoActivate
+	METHOD method_73430 (Lnet/minecraft/class_5676;Ljava/lang/Boolean;)V
+		ARG 1 button
+		ARG 2 conditional

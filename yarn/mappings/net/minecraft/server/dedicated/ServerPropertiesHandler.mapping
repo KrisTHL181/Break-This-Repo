@@ -1,0 +1,104 @@
+CLASS net/minecraft/class_3806 net/minecraft/server/dedicated/ServerPropertiesHandler
+	FIELD field_16802 broadcastConsoleToOps Z
+	FIELD field_16804 whiteList Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16805 enforceWhitelist Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16807 allowFlight Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16812 maxWorldSize I
+	FIELD field_16813 onlineMode Z
+	FIELD field_16814 maxPlayers Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16815 maxTickTime J
+	FIELD field_16816 spawnProtection Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16817 playerIdleTimeout Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16818 enableRcon Z
+	FIELD field_16819 enableQuery Z
+	FIELD field_16820 levelName Ljava/lang/String;
+	FIELD field_16823 rconPassword Ljava/lang/String;
+	FIELD field_16824 broadcastRconToOps Z
+	FIELD field_16825 motd Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16827 forceGameMode Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16828 rconPort I
+	FIELD field_16829 serverIp Ljava/lang/String;
+	FIELD field_16830 announcePlayerAchievements Ljava/lang/Boolean;
+	FIELD field_16831 queryPort I
+	FIELD field_16832 useNativeTransport Z
+	FIELD field_16837 serverPort I
+	FIELD field_16838 hardcore Z
+	FIELD field_16839 preventProxyConnections Z
+	FIELD field_16840 difficulty Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16841 gameMode Lnet/minecraft/class_3808$class_3809;
+	FIELD field_16842 networkCompressionThreshold I
+	FIELD field_16844 viewDistance Lnet/minecraft/class_3808$class_3809;
+	FIELD field_23785 syncChunkWrites Z
+	FIELD field_24056 enableJmxMonitoring Z
+	FIELD field_24453 enableStatus Lnet/minecraft/class_3808$class_3809;
+	FIELD field_24454 entityBroadcastRangePercentage Lnet/minecraft/class_3808$class_3809;
+	FIELD field_24623 generatorOptions Lnet/minecraft/class_5285;
+	FIELD field_25802 rateLimit I
+	FIELD field_26899 textFilteringConfig Ljava/lang/String;
+	FIELD field_34883 simulationDistance Lnet/minecraft/class_3808$class_3809;
+	FIELD field_35564 hideOnlinePlayers Lnet/minecraft/class_3808$class_3809;
+	FIELD field_37275 maxChainedNeighborUpdates I
+	FIELD field_37276 LOGGER Lorg/slf4j/Logger;
+	FIELD field_39018 enforceSecureProfile Z
+	FIELD field_39093 serverResourcePackProperties Ljava/util/Optional;
+	FIELD field_39094 SHA1_PATTERN Ljava/util/regex/Pattern;
+	FIELD field_39981 dataPackSettings Lnet/minecraft/class_5359;
+	FIELD field_39982 COMMA_SPLITTER Lcom/google/common/base/Splitter;
+	FIELD field_39983 worldGenProperties Lnet/minecraft/class_3806$class_7044;
+	FIELD field_44985 logIps Z
+	FIELD field_48270 acceptsTransfers Lnet/minecraft/class_3808$class_3809;
+	FIELD field_48711 regionFileCompression Ljava/lang/String;
+	FIELD field_51987 bugReportLink Ljava/lang/String;
+	FIELD field_52351 textFilteringVersion I
+	FIELD field_52352 pauseWhenEmptySeconds Lnet/minecraft/class_3808$class_3809;
+	FIELD field_62063 enableCodeOfConduct Z
+	FIELD field_62280 statusHeartbeatInterval Lnet/minecraft/class_3808$class_3809;
+	FIELD field_62281 managementServerEnabled Z
+	FIELD field_62282 managementServerHost Ljava/lang/String;
+	FIELD field_62283 managementServerPort I
+	FIELD field_62793 MANAGEMENT_SERVER_TLS_ENABLED Ljava/lang/String;
+	FIELD field_62794 MANAGEMENT_SERVER_TLS_KEYSTORE Ljava/lang/String;
+	FIELD field_62795 MANAGEMENT_SERVER_TLS_KEYSTORE_PASSWORD Ljava/lang/String;
+	FIELD field_62796 managementServerSecret Ljava/lang/String;
+	FIELD field_62797 managementServerTlsEnabled Z
+	FIELD field_62798 managementServerTlsKeystore Ljava/lang/String;
+	FIELD field_62799 managementServerKeystorePassword Ljava/lang/String;
+	FIELD field_63171 opPermissionLevel Lnet/minecraft/class_3808$class_3809;
+	FIELD field_63172 functionPermissionLevel Lnet/minecraft/class_12086;
+	FIELD field_63666 managementServerAllowedOrigin Ljava/lang/String;
+	METHOD method_16714 load (Ljava/nio/file/Path;)Lnet/minecraft/class_3806;
+		ARG 0 path
+	METHOD method_16715 (Ljava/lang/Integer;)Ljava/lang/Integer;
+		ARG 0 maxWorldSize
+	METHOD method_41005 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 type
+	METHOD method_41186 (Ljava/lang/String;)Lcom/google/gson/JsonObject;
+		ARG 0 generatorSettings
+	METHOD method_43660 getServerResourcePackProperties (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)Ljava/util/Optional;
+		ARG 0 id
+		ARG 1 url
+		ARG 2 sha1
+		ARG 3 hash
+		ARG 4 required
+		ARG 5 prompt
+	METHOD method_43661 parseResourcePackPrompt (Ljava/lang/String;)Lnet/minecraft/class_2561;
+		ARG 0 prompt
+	METHOD method_45157 createDimensionsRegistryHolder (Lnet/minecraft/class_7225$class_7874;)Lnet/minecraft/class_7723;
+		ARG 1 registries
+	METHOD method_45159 parseDataPackSettings (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/class_5359;
+		ARG 0 enabled
+		ARG 1 disabled
+	METHOD method_71329 (Ljava/lang/String;Ljava/lang/String;)V
+		ARG 1 error
+	METHOD method_73603 (Ljava/lang/String;)Ljava/lang/Integer;
+		ARG 0 value
+	METHOD method_74996 permissionLevelToString (Lnet/minecraft/class_12086;)Ljava/lang/String;
+		ARG 0 level
+	METHOD method_74997 parsePermissionLevel (Ljava/lang/String;)Lnet/minecraft/class_12086;
+		ARG 0 value
+	CLASS class_7044 WorldGenProperties
+		FIELD field_37277 LEVEL_TYPE_TO_PRESET_KEY Ljava/util/Map;
+		METHOD method_41242 createDimensionsRegistryHolder (Lnet/minecraft/class_7225$class_7874;)Lnet/minecraft/class_7723;
+			ARG 1 registries
+		METHOD method_41244 (Lnet/minecraft/class_2960;)Lnet/minecraft/class_5321;
+			ARG 0 levelTypeId

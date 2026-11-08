@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICO 生成器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <svg class="header-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <h1 class="title">ICO 生成器 v1.0.0</h1>
+        </header>
+
+        <!-- 工具栏 -->
+        <div class="toolbar" role="toolbar" aria-label="图像操作工具栏">
+            <button class="btn btn-primary" id="btnAddImage" aria-label="添加图像文件">
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <span>添加图像</span>
+            </button>
+            <button class="btn btn-secondary" id="btnAddFolder" aria-label="添加图像目录">
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>添加目录</span>
+            </button>
+            <button class="btn btn-danger" id="btnClearAll" aria-label="清除所有图像">
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    <line x1="10" y1="11" x2="10" y2="17"/>
+                    <line x1="14" y1="11" x2="14" y2="17"/>
+                </svg>
+                <span>全部清除</span>
+            </button>
+            <span class="image-count" aria-live="polite">已添加 <span id="imageCount">0</span> 张图像</span>
+        </div>
+
+        <!-- 拖放区域 -->
+        <div class="drop-zone" id="dropZone" role="region" aria-label="图像拖放区域" tabindex="0">
+            <div class="drop-zone-content">
+                <svg class="drop-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <p class="drop-text">拖放图像到此处，或单击添加</p>
+            </div>
+            <div class="image-preview-list" id="imagePreviewList" role="list" aria-label="已添加图像列表"></div>
+        </div>
+
+        <!-- 预设尺寸选择 -->
+        <section class="section" aria-labelledby="size-section-label">
+            <label class="section-label" id="size-section-label">选择预设尺寸（可多选）</label>
+            <div class="size-actions" role="group" aria-label="尺寸选择快捷操作">
+                <button class="btn btn-small" id="btnSelectAll" aria-label="全选所有尺寸">
+                    <svg class="btn-icon-small" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <span>全选尺寸</span>
+                </button>
+                <button class="btn btn-small" id="btnDeselectAll" aria-label="取消全选尺寸">
+                    <svg class="btn-icon-small" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                    <span>取消全选</span>
+                </button>
+            </div>
+            <div class="size-grid" id="sizeGrid" role="group" aria-label="尺寸选项">
+                <label class="size-checkbox">
+                    <input type="checkbox" value="16" checked aria-label="16x16 像素">
+                    <span class="checkmark">16x16</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="24" checked aria-label="24x24 像素">
+                    <span class="checkmark">24x24</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="32" checked aria-label="32x32 像素">
+                    <span class="checkmark">32x32</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="48" checked aria-label="48x48 像素">
+                    <span class="checkmark">48x48</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="64" aria-label="64x64 像素">
+                    <span class="checkmark">64x64</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="72" aria-label="72x72 像素">
+                    <span class="checkmark">72x72</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="96" aria-label="96x96 像素">
+                    <span class="checkmark">96x96</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="128" aria-label="128x128 像素">
+                    <span class="checkmark">128x128</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="256" checked aria-label="256x256 像素">
+                    <span class="checkmark">256x256</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="512" aria-label="512x512 像素">
+                    <span class="checkmark">512x512</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="768" aria-label="768x768 像素">
+                    <span class="checkmark">768x768</span>
+                </label>
+                <label class="size-checkbox">
+                    <input type="checkbox" value="1024" aria-label="1024x1024 像素">
+                    <span class="checkmark">1024x1024</span>
+                </label>
+            </div>
+        </section>
+
+        <!-- 自定义尺寸和颜色模式 -->
+        <section class="section row-section">
+            <div class="row-item">
+                <label class="section-label" for="customSizes">自定义尺寸（可选）</label>
+                <input type="text" class="custom-size-input" id="customSizes" placeholder="例如: 48,96,192" aria-describedby="custom-sizes-hint">
+                <span class="input-hint" id="custom-sizes-hint">输入逗号分隔的像素值</span>
+            </div>
+            <div class="row-item">
+                <label class="section-label" for="colorMode">颜色模式</label>
+                <select class="color-mode-select" id="colorMode" aria-label="选择颜色模式">
+                    <option value="rgba">RGB/Alpha (32位，带透明)</option>
+                    <option value="rgb">RGB (24位，无透明)</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- 底部按钮 -->
+        <footer class="bottom-actions" role="group" aria-label="主要操作">
+            <button class="btn btn-info" id="btnAbout" aria-label="关于此应用">
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                </svg>
+                <span>关于</span>
+            </button>
+            <button class="btn btn-warning" id="btnPackageZip" disabled aria-label="打包为 ZIP 文件">
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 8v13H3V8"/>
+                    <path d="M1 3h22v5H1z"/>
+                    <path d="M10 12h4"/>
+                </svg>
+                <span>打包 ZIP</span>
+            </button>
+            <button class="btn btn-success" id="btnGenerateIco" disabled aria-label="生成 ICO 文件">
+                <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                <span>生成 ICO</span>
+            </button>
+        </footer>
+    </div>
+
+    <!-- 关于对话框 -->
+    <div class="modal" id="aboutModal" role="dialog" aria-labelledby="about-title" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="about-title">关于</h3>
+                <button class="modal-close" id="btnCloseAbout" aria-label="关闭对话框">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h2>ICO 生成器 v1.0.0</h2>
+                <p>一个简单易用的 ICO 图标生成工具。</p>
+                <p>支持多种预设尺寸和自定义尺寸，可批量生成 ICO 文件。</p>
+                <p>纯前端实现，无需后端服务器。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 结果对话框 -->
+    <div class="modal" id="resultModal" role="dialog" aria-labelledby="result-title" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="result-title">生成完成</h3>
+                <button class="modal-close" id="btnCloseResult" aria-label="关闭对话框">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="resultContent"></div>
+                <div class="result-actions">
+                    <button class="btn btn-primary" id="btnSaveIco" aria-label="保存 ICO 文件">
+                        <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>保存 ICO 文件</span>
+                    </button>
+                    <button class="btn btn-secondary" id="btnDownloadZip" aria-label="下载 ZIP 包">
+                        <svg class="btn-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>下载 ZIP 包</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

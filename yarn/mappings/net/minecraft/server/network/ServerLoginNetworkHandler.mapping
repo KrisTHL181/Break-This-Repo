@@ -1,0 +1,45 @@
+CLASS net/minecraft/class_3248 net/minecraft/server/network/ServerLoginNetworkHandler
+	COMMENT The server login network handler.
+	COMMENT
+	COMMENT <p>It listens to packets on the netty event loop and is ticked on the
+	COMMENT server thread simultaneously.
+	COMMENT
+	COMMENT @implSpec The vanilla implementation is created by a handshake network
+	COMMENT handler. It first receives a hello packet from the client. If it is in
+	COMMENT {@linkplain MinecraftServer#isOnlineMode() online mode}, it goes through
+	COMMENT an additional authentication process. Then it optionally sends a network
+	COMMENT compression packet. Finally, when it can accept the player (no player
+	COMMENT UUID conflicts), it will accept the player by sending a login success
+	COMMENT packet and then transitions the connection's packet listener to a {@link
+	COMMENT ServerPlayNetworkHandler}.
+	FIELD field_14156 loginTicks I
+	FIELD field_14157 NEXT_AUTHENTICATOR_THREAD_ID Ljava/util/concurrent/atomic/AtomicInteger;
+	FIELD field_14158 connection Lnet/minecraft/class_2535;
+	FIELD field_14162 server Lnet/minecraft/server/MinecraftServer;
+	FIELD field_14163 state Lnet/minecraft/class_3248$class_3249;
+	FIELD field_14165 serverId Ljava/lang/String;
+	FIELD field_14166 LOGGER Lorg/slf4j/Logger;
+	FIELD field_14167 nonce [B
+	FIELD field_29779 TIMEOUT_TICKS I
+	FIELD field_45028 profileName Ljava/lang/String;
+	FIELD field_45029 profile Lcom/mojang/authlib/GameProfile;
+	FIELD field_48275 transferred Z
+	FIELD field_63176 activityNotifier Lnet/minecraft/class_12085;
+	METHOD <init> (Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/class_2535;Z)V
+		ARG 1 server
+		ARG 2 connection
+		ARG 3 transferred
+	METHOD method_14380 disconnect (Lnet/minecraft/class_2561;)V
+		ARG 1 reason
+	METHOD method_14383 getConnectionInfo ()Ljava/lang/String;
+	METHOD method_52416 hasPlayerWithId (Lcom/mojang/authlib/GameProfile;)Z
+		ARG 1 profile
+	METHOD method_52417 startVerify (Lcom/mojang/authlib/GameProfile;)V
+		ARG 1 profile
+	METHOD method_52419 tickVerify (Lcom/mojang/authlib/GameProfile;)V
+		ARG 1 profile
+	METHOD method_52420 sendSuccessPacket (Lcom/mojang/authlib/GameProfile;)V
+		ARG 1 profile
+	CLASS 1
+		METHOD method_14386 getClientAddress ()Ljava/net/InetAddress;
+	CLASS class_3249 State

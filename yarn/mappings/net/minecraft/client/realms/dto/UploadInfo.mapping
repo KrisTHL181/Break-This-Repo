@@ -1,0 +1,28 @@
+CLASS net/minecraft/class_4888 net/minecraft/client/realms/dto/UploadInfo
+	FIELD comp_5033 worldClosed Z
+	FIELD comp_5034 token Ljava/lang/String;
+	FIELD comp_5035 uploadEndpoint Ljava/net/URI;
+	FIELD field_22657 LOGGER Lorg/slf4j/Logger;
+	FIELD field_26467 PROTOCOL_PATTERN Ljava/util/regex/Pattern;
+	FIELD field_32116 HTTP_PROTOCOL Ljava/lang/String;
+	FIELD field_32117 PORT I
+	METHOD <init> (ZLjava/lang/String;Ljava/net/URI;)V
+		ARG 1 worldClosed
+		ARG 2 token
+		ARG 3 uploadEndpoint
+	METHOD comp_5033 worldClosed ()Z
+	METHOD comp_5034 token ()Ljava/lang/String;
+	METHOD comp_5035 uploadEndpoint ()Ljava/net/URI;
+	METHOD method_25088 parse (Ljava/lang/String;)Lnet/minecraft/class_4888;
+		ARG 0 json
+	METHOD method_30861 getPort (II)I
+		ARG 0 port
+		ARG 1 urlPort
+	METHOD method_30862 getUrl (Ljava/lang/String;I)Ljava/net/URI;
+		ARG 0 url
+		ARG 1 port
+	METHOD method_30863 getUrlWithProtocol (Ljava/lang/String;Ljava/util/regex/Matcher;)Ljava/lang/String;
+		ARG 0 url
+		ARG 1 matcher
+	METHOD method_30864 createRequestContent (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 token

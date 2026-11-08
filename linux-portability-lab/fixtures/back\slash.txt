@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "back\\slash.txt"
+Backslash is an ordinary filename character on Linux.

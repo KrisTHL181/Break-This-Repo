@@ -1,0 +1,94 @@
+CLASS net/minecraft/class_5602 net/minecraft/client/render/entity/model/EntityModelLayers
+	FIELD field_27557 DROWNED_OUTER Lnet/minecraft/class_5601;
+	FIELD field_27575 PIG_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_27594 SHEEP_WOOL Lnet/minecraft/class_5601;
+	FIELD field_27611 LLAMA_DECOR Lnet/minecraft/class_5601;
+	FIELD field_27630 WITHER_ARMOR Lnet/minecraft/class_5601;
+	FIELD field_27650 LAYERS Ljava/util/Set;
+	FIELD field_27655 SLIME_OUTER Lnet/minecraft/class_5601;
+	FIELD field_27663 STRAY_OUTER Lnet/minecraft/class_5601;
+	FIELD field_27665 STRIDER_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_27670 TROPICAL_FISH_LARGE_PATTERN Lnet/minecraft/class_5601;
+	FIELD field_27672 TROPICAL_FISH_SMALL_PATTERN Lnet/minecraft/class_5601;
+	FIELD field_27687 CAT_COLLAR Lnet/minecraft/class_5601;
+	FIELD field_27695 CONDUIT_EYE Lnet/minecraft/class_5601;
+	FIELD field_27696 CONDUIT_SHELL Lnet/minecraft/class_5601;
+	FIELD field_27697 CONDUIT_WIND Lnet/minecraft/class_5601;
+	FIELD field_27700 CREEPER_ARMOR Lnet/minecraft/class_5601;
+	FIELD field_32582 MAIN Ljava/lang/String;
+	FIELD field_49162 BOGGED_OUTER Lnet/minecraft/class_5601;
+	FIELD field_52153 BREEZE_WIND Lnet/minecraft/class_5601;
+	FIELD field_52956 CAT_BABY_COLLAR Lnet/minecraft/class_5601;
+	FIELD field_52974 DROWNED_BABY_OUTER Lnet/minecraft/class_5601;
+	FIELD field_52979 PLAYER_EARS Lnet/minecraft/class_5601;
+	FIELD field_52980 PLAYER_CAPE Lnet/minecraft/class_5601;
+	FIELD field_52984 LLAMA_BABY_DECOR Lnet/minecraft/class_5601;
+	FIELD field_52989 PIG_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_52996 SHEEP_BABY_WOOL Lnet/minecraft/class_5601;
+	FIELD field_55120 STRIDER_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_55122 STANDING_BANNER_FLAG Lnet/minecraft/class_5601;
+	FIELD field_55124 WALL_BANNER_FLAG Lnet/minecraft/class_5601;
+	FIELD field_56079 CAMEL_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56080 CAMEL_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56081 DONKEY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56082 DONKEY_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56083 MULE_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56084 MULE_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56085 HORSE_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56086 HORSE_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56087 SKELETON_HORSE_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56088 SKELETON_HORSE_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56089 ZOMBIE_HORSE_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_56090 ZOMBIE_HORSE_BABY_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_57102 SHEEP_WOOL_UNDERCOAT Lnet/minecraft/class_5601;
+	FIELD field_57103 SHEEP_BABY_WOOL_UNDERCOAT Lnet/minecraft/class_5601;
+	FIELD field_61684 BOGGED_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61685 BREEZE_EYES Lnet/minecraft/class_5601;
+	FIELD field_61686 DROWNED_BABY_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61687 DROWNED_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61689 COPPER_GOLEM_EYES Lnet/minecraft/class_5601;
+	FIELD field_61693 CREAKING_EYES Lnet/minecraft/class_5601;
+	FIELD field_61694 HUSK_BABY_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61695 HUSK_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61696 GIANT_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61697 PLAYER_SLIM Lnet/minecraft/class_11677;
+	FIELD field_61698 PIGLIN_BABY_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61699 PIGLIN_BRUTE_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61700 PIGLIN_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61701 PLAYER_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61704 WARDEN_BIOLUMINESCENT Lnet/minecraft/class_5601;
+	FIELD field_61705 WARDEN_PULSATING_SPOTS Lnet/minecraft/class_5601;
+	FIELD field_61706 WARDEN_TENDRILS Lnet/minecraft/class_5601;
+	FIELD field_61707 WARDEN_HEART Lnet/minecraft/class_5601;
+	FIELD field_61708 SKELETON_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61709 STRAY_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61710 ZOMBIFIED_PIGLIN_BABY_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61711 ZOMBIFIED_PIGLIN_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61712 WITHER_SKELETON_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61713 ZOMBIE_BABY_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61714 ZOMBIE_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61717 ZOMBIE_VILLAGER_BABY_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61718 ZOMBIE_VILLAGER_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61719 ARMOR_STAND_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_61720 SMALL_ARMOR_STAND_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_63557 NAUTILUS_SADDLE Lnet/minecraft/class_5601;
+	FIELD field_64214 PARCHED_EQUIPMENT Lnet/minecraft/class_11677;
+	FIELD field_64215 PARCHED_OUTER Lnet/minecraft/class_5601;
+	METHOD method_32076 getLayers ()Ljava/util/stream/Stream;
+	METHOD method_32079 registerMain (Ljava/lang/String;)Lnet/minecraft/class_5601;
+		ARG 0 id
+	METHOD method_32080 register (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/class_5601;
+		ARG 0 id
+		ARG 1 layer
+	METHOD method_32082 create (Ljava/lang/String;Ljava/lang/String;)Lnet/minecraft/class_5601;
+		ARG 0 id
+		ARG 1 layer
+	METHOD method_45719 createHangingSign (Lnet/minecraft/class_4719;Lnet/minecraft/class_7761$class_10381;)Lnet/minecraft/class_5601;
+		ARG 0 type
+		ARG 1 attachmentType
+	METHOD method_62130 createStandingSign (Lnet/minecraft/class_4719;)Lnet/minecraft/class_5601;
+		ARG 0 type
+	METHOD method_62131 createWallSign (Lnet/minecraft/class_4719;)Lnet/minecraft/class_5601;
+		ARG 0 type
+	METHOD method_72894 registerEquipment (Ljava/lang/String;)Lnet/minecraft/class_11677;
+		ARG 0 id

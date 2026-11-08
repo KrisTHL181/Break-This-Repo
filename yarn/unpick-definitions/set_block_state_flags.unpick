@@ -1,0 +1,30 @@
+unpick v4
+
+#: Flags used by {@link net.minecraft.world.ModifiableWorld#setBlockState(net.minecraft.util.math.BlockPos, net.minecraft.block.BlockState, int) World.setBlockState}.
+group int set_block_state_flags
+	@flags
+	net.minecraft.block.Block.FORCE_STATE_AND_SKIP_CALLBACKS_AND_DROPS
+	net.minecraft.block.Block.SKIP_REDRAW_AND_BLOCK_ENTITY_REPLACED_CALLBACK
+	net.minecraft.block.Block.NOTIFY_ALL_AND_REDRAW
+	net.minecraft.block.Block.NOTIFY_ALL
+	net.minecraft.block.Block.NOTIFY_NEIGHBORS
+	net.minecraft.block.Block.NOTIFY_LISTENERS
+	net.minecraft.block.Block.NO_REDRAW
+	net.minecraft.block.Block.REDRAW_ON_MAIN_THREAD
+	net.minecraft.block.Block.FORCE_STATE
+	net.minecraft.block.Block.SKIP_DROPS
+	net.minecraft.block.Block.MOVED
+	net.minecraft.block.Block.SKIP_REDSTONE_WIRE_STATE_REPLACEMENT
+	net.minecraft.block.Block.SKIP_BLOCK_ENTITY_REPLACED_CALLBACK
+	net.minecraft.block.Block.SKIP_BLOCK_ADDED_CALLBACK
+
+target_annotation net.minecraft.block.Block$SetBlockStateFlag set_block_state_flags
+
+target_method net.minecraft.world.World updateListeners (Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;I)V
+	param 3 set_block_state_flags
+target_method net.minecraft.world.block.NeighborUpdater replaceWithStateForNeighborUpdate (Lnet/minecraft/util/math/Direction;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;II)V
+	param 4 set_block_state_flags
+target_method net.minecraft.world.ChunkRegion setBlockState (Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z
+	param 2 set_block_state_flags
+target_method net.minecraft.world.chunk.Chunk setBlockState (Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Lnet/minecraft/block/BlockState;
+	param 2 set_block_state_flags

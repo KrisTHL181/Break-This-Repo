@@ -1,0 +1,16 @@
+type: text
+
+---
+
+Whilst LLMs (Large Language Models) like [ChatGPT](<https://chat.openai.com/>) and [Gemini](<https://gemini.google.com/>) are impressive tools, **they are not recommended for first-time Fabric mod developers due to their inconsistency and potential for generating inaccurate code. **
+
+LLMs may generate incorrect code that:
+
+- Targets the wrong Minecraft version, leading to outdated or incompatible features.
+- Uses incorrect mappings, causing errors or unexpected behavior.
+- Is designed for the wrong loader (NeoForge vs. Fabric), resulting in incompatibility.
+- Relies on non-existent Fabric API modules, creating code that references features that don't exist (called LLM hallucinations)
+
+It's crucial to remember that LLMs should be seen as **problem-solving aids**, not code-generating machines. The output they provide often requires significant modification and understanding of Java before it can be implemented as a functional mod. 
+
+**Therefore, learning Java is an absolute necessity before attempting to use any LLM-generated code in your mod.** Knowing how the generated code works is key to using it effectively and fixing any problems that may arise.

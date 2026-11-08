@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="420" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+<title id="title">BTR-001: the repository is looking back</title>
+<desc id="desc">An original fictional anomaly case card. A glowing eye made of circuit nodes watches a tiny repository. Unofficial parody, not an Anthropic research result.</desc>
+<rect width="960" height="420" rx="20" fill="#111b22"/>
+<g stroke="#29434a" stroke-width="1" opacity=".5"><path d="M40 100H920M40 160H920M40 220H920M40 280H920M40 340H920M160 80V370M280 80V370M400 80V370M520 80V370M640 80V370M760 80V370M880 80V370"/></g>
+<g font-family="monospace"><text x="42" y="48" fill="#94edcc" font-size="18">ANOMALY FIELD NOTES / BTR-001</text><text x="718" y="48" fill="#f4c391" font-size="14">UNOFFICIAL PARODY</text>
+<path d="M120 216Q265 62 410 216Q265 370 120 216Z" fill="#172e32" stroke="#94edcc" stroke-width="3"/>
+<circle cx="265" cy="216" r="68" fill="#0c141a" stroke="#94edcc" stroke-dasharray="5 8"/>
+<circle cx="265" cy="216" r="34" fill="#f4c391"/><circle cx="277" cy="207" r="12" fill="#111b22"/>
+<g fill="#94edcc"><circle cx="140" cy="197" r="5"/><circle cx="178" cy="145" r="5"/><circle cx="338" cy="145" r="5"/><circle cx="387" cy="240" r="5"/></g>
+<path d="M410 216H467V167H495M467 216V275H495" fill="none" stroke="#94edcc" stroke-dasharray="4 7"/>
+<rect x="495" y="116" width="407" height="205" rx="10" fill="#16252b" stroke="#506469"/>
+<text x="519" y="156" fill="#f4c391" font-size="22">SUBJECT: Break-This-Repo</text>
+<text x="519" y="193" fill="#e4ede9" font-size="17">Observed feature: CHAOS</text>
+<text x="519" y="225" fill="#e4ede9" font-size="17">Interpretability: needs coffee</text>
+<text x="519" y="257" fill="#94edcc" font-size="17">The README is looking back.</text>
+<text x="519" y="295" fill="#809b9a" font-size="13">EVIDENCE: [REDACTED BY THE CAT]</text>
+<text x="42" y="388" fill="#a8bdbb" font-size="14">FICTIONAL SPECIMEN / REAL READING LIST / ZERO SCIENTIFIC CLAIMS</text></g>
+</svg>

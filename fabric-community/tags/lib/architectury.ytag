@@ -1,0 +1,9 @@
+type: text
+
+---
+
+Architectury allows building multi-platform (Fabric and Forge) mods.
+
+https://github.com/architectury/architectury-templates
+
+Architectury API, an API mod for Architectury mods: <https://github.com/architectury/architectury-api>

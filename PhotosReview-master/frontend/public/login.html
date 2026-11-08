@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login</title>
+    <!-- 引入 Google Fonts 固定字体 -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <!-- 引入 Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <script src="js/theme-init.js?v=0.1"></script>
+    <link rel="stylesheet" href="css/root.css?v=0.7">
+    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body>
+    <div id="loading-overlay">
+    <div>
+        <span data-i18n="loading-1"></span><br>
+        <span data-i18n="loading-2"></span>
+    </div>
+    </div>
+    <!-- 遮罩层 -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <!-- 弹窗内容 -->
+    <div class="modal" id="modal">
+        <div class="modal-header">
+            <h3></h3>
+            <span class="close-btn" id="closeBtn">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <button class="confirm-btn" id="confirmBtn">OK</button>
+        </div>
+    </div>
+
+    <div class="login-container">
+        <div class="logo-placeholder">
+            <!-- 预留logo，可替换为<img src="logo.png" alt="Logo"> -->
+            <img data-config="website_icon" alt="logo"
+                style="width: 100%; height: 100%; border-radius: 50%;">
+        </div>
+        <div class="login-title"></div>
+        <form class="login-form" autocomplete="off">
+            <div class="input-group">
+                <i class="fa-regular fa-user"></i>
+                <input class="login-input" type="text" placeholder="UID" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input class="login-input" type="password" placeholder="Password" data-i18n-placeholder="password" required>
+            </div>
+            <button type="button" class="login-btn" onclick="submit_form()">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                <span data-i18n="sign_in">Sign in</span>
+            </button>
+        </form>
+        <div class="icon-toggle-group">
+            <button class="icon-toggle" id="darkToggle" data-i18n-title="switch_theme">
+                <i class="fa-regular fa-moon" id="darkIcon"></i>
+            </button>
+            <button class="icon-toggle" id="languageSelect" data-i18n-title="switch_language">
+                <i class="fa-solid fa-language"></i>
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="js/url.js"></script>
+<script src="js/view.js?v=0.1"></script>
+<script src="js/utils.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/modal.js"></script>
+<script>
+    // 初始化
+    (async function () {
+        // 判断cookie
+        if (getCookie('review_uid') && getCookie('review_token')) {
+            window.location.href = "./";
+        }
+        await i18n.init();
+        await loadWebsiteInfo();
+    })();
+
+    async function loadWebsiteInfo() {
+        const info = await getApi(url + "/api/system/get_website_info");
+        if (info) {
+            const infoObj = info.data;
+
+            const link = document.createElement("link");
+            link.rel = "icon";
+            link.href = infoObj.website_icon;
+            document.head.appendChild(link);
+
+            document.querySelectorAll("[data-config]").forEach(el => {
+                const key = el.getAttribute("data-config");
+                if (key === "website_icon") {
+                    el.src = infoObj[key];
+                }
+            });
+
+            document.getElementsByTagName("title")[0].innerText = infoObj.website_name + " " + i18n.lookUp("login");
+            document.getElementsByClassName("login-title")[0].innerHTML = infoObj.website_name + " " + i18n.lookUp("login");
+        } else {
+            setTimeout(() => {
+                loadWebsiteInfo()
+            }, 500);
+        }
+    }
+
+    // 登录表单提交
+    async function submit_form() {
+        const loginBtn = document.querySelector('.login-btn');
+        const originalBtnHTML = loginBtn.innerHTML;
+        loginBtn.disabled = true;
+        loginBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ${i18n.lookUp("signing_in")}`;
+        // 获取uid
+        let uid = document.querySelector('.login-input[type="text"]').value.trim();
+        // 获取密码
+        const password = document.querySelector('.login-input[type="password"]').value.trim();
+        // 检查输入
+        if (!uid || !password) {
+            await openModal(
+                i18n.lookUp("modal_content_fail")[11].title,
+                i18n.lookUp("modal_content_fail")[11].message
+            );
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = originalBtnHTML;
+            return
+        }
+
+        uid = parseInt(uid, 10);
+        if (isNaN(uid)) {
+            await openModal(
+                i18n.lookUp("modal_content_fail")[2].title,
+                i18n.lookUp("modal_content_fail")[2].message
+            );
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = originalBtnHTML;
+            return
+        }
+
+        // 提交登录api
+        let result = await postApi(window.location.origin + `/api/user/login`,
+            {
+                uid,
+                password
+            });
+        //判断
+        if (!result.result) {
+            const msg = parseInt(result.message, 10);
+            let modalArr = i18n.lookUp("modal_content_fail")[msg];
+            await openModal(modalArr.title, modalArr.message);
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = originalBtnHTML;
+        }
+        else {
+            openModal(
+                i18n.lookUp("modal_content_success")[1].title,
+                i18n.lookUp("modal_content_success")[1].message
+            )
+            // 添加从cookie
+            setCookie("review_uid", uid, 7)
+            setCookie("review_token", result.data, 7)
+            setTimeout(() => {
+                window.location.href = "./";
+            }, 500);
+        }
+    }
+</script>

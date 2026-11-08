@@ -1,0 +1,59 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "defoko.moc3",
+		"Textures": [
+			"defoko.8192/texture_00.png",
+			"defoko.8192/texture_01.png"
+		],
+		"Physics": "defoko.physics3.json",
+		"DisplayInfo": "defoko.cdi3.json",
+		"Expressions": [
+			{
+				"Name": "expression1",
+				"File": "expression1.exp3.json"
+			},
+			{
+				"Name": "expression2",
+				"File": "expression2.exp3.json"
+			},
+			{
+				"Name": "expression3",
+				"File": "expression3.exp3.json"
+			},
+			{
+				"Name": "expression4",
+				"File": "expression4.exp3.json"
+			},
+			{
+				"Name": "expression5",
+				"File": "expression5.exp3.json"
+			},
+			{
+				"Name": "expression6",
+				"File": "expression6.exp3.json"
+			},
+			{
+				"Name": "expression7",
+				"File": "expression7.exp3.json"
+			},
+			{
+				"Name": "expression8",
+				"File": "expression8.exp3.json"
+			}
+		]
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": []
+		}
+	],
+	"HitAreas": []
+}

@@ -1,0 +1,38 @@
+CLASS net/minecraft/class_2797 net/minecraft/network/packet/c2s/play/ChatMessageC2SPacket
+	COMMENT A packet used to send a chat message to the server.
+	COMMENT
+	COMMENT <p>This truncates the message to at most 256 characters before sending to
+	COMMENT the server on the client. If the server receives the message longer than
+	COMMENT 256 characters, it will reject the message and disconnect the client.
+	COMMENT
+	COMMENT <p>If the message contains an invalid character (see {@link
+	COMMENT net.minecraft.util.StringHelper#isValidChar}) or if the server
+	COMMENT receives the messages in improper order. the server will
+	COMMENT reject the message and disconnect the client.
+	COMMENT
+	COMMENT <p>Messages that took more than {@link
+	COMMENT net.minecraft.network.message.SignedMessage#SERVERBOUND_TIME_TO_LIVE}
+	COMMENT to reach the server are considered expired and log warnings on the server.
+	COMMENT If the message takes more than {@link
+	COMMENT net.minecraft.network.message.SignedMessage#CLIENTBOUND_TIME_TO_LIVE}
+	COMMENT to reach the clients (including the time it took to reach the server), the
+	COMMENT message is not considered secure anymore by the clients, and may be discarded
+	COMMENT depending on the clients' options.
+	COMMENT
+	COMMENT @see net.minecraft.client.network.ClientPlayNetworkHandler#sendChatMessage
+	COMMENT @see net.minecraft.server.network.ServerPlayNetworkHandler#onChatMessage
+	FIELD comp_945 chatMessage Ljava/lang/String;
+	FIELD comp_946 timestamp Ljava/time/Instant;
+	FIELD comp_970 acknowledgment Lnet/minecraft/class_7635$class_7636;
+	FIELD field_48179 CODEC Lnet/minecraft/class_9139;
+	METHOD <init> (Ljava/lang/String;Ljava/time/Instant;JLnet/minecraft/class_7469;Lnet/minecraft/class_7635$class_7636;)V
+		ARG 2 timestamp
+		ARG 3 salt
+		ARG 5 signature
+	METHOD <init> (Lnet/minecraft/class_2540;)V
+		ARG 1 buf
+	METHOD comp_945 chatMessage ()Ljava/lang/String;
+	METHOD comp_946 timestamp ()Ljava/time/Instant;
+	METHOD comp_970 acknowledgment ()Lnet/minecraft/class_7635$class_7636;
+	METHOD method_55965 write (Lnet/minecraft/class_2540;)V
+		ARG 1 buf

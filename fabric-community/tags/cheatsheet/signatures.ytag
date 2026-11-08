@@ -1,0 +1,24 @@
+type: text
+
+---
+
+*Regular Types*
+```
+int -> I
+boolean -> Z
+void/no type -> V
+long -> J
+float -> F
+double -> D
+byte -> B
+char -> C
+short -> S
+```
+*Special Types*
+```
+object -> L<class>;
+array (type) -> [<type>
+```
+When specifying an object type it's important to add the fully qualified class name (which contains the package name) after the `L`, with a semicolon after the class name. For example, `Ljava/lang/String;` is a `String` object.
+
+If you're specifying an array of objects make sure you have the `;` as well, for example `[I` would be an array of `int`s and `[Ljava/lang/String;` would be an array of `String`s.

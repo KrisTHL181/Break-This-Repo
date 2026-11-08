@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>sprite check</title>
+<style>
+  html,body{margin:0;background:#0d0d14;color:#8f8;font:12px monospace}
+  canvas{image-rendering:pixelated;display:block;margin:10px;border:1px solid #333}
+  #out{padding:0 12px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<canvas id="scene" width="384" height="216"></canvas>
+<div id="out">running…</div>
+<script src="../js/scene.js"></script>
+<script>
+  var bad = HD2D.sprites();
+  document.getElementById('out').textContent = bad.length ? ('WIDTH ERRORS: ' + JSON.stringify(bad)) : 'ALL SPRITE WIDTHS OK';
+  document.title = bad.length ? 'BAD' : 'OK';
+</script>
+</body>
+</html>

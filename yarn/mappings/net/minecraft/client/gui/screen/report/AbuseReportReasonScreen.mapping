@@ -1,0 +1,39 @@
+CLASS net/minecraft/class_7551 net/minecraft/client/gui/screen/report/AbuseReportReasonScreen
+	FIELD field_39612 TITLE_TEXT Lnet/minecraft/class_2561;
+	FIELD field_39613 DESCRIPTION_TEXT Lnet/minecraft/class_2561;
+	FIELD field_39615 parent Lnet/minecraft/class_437;
+	FIELD field_39616 reasonList Lnet/minecraft/class_7551$class_7552;
+	FIELD field_39618 reasonConsumer Ljava/util/function/Consumer;
+	FIELD field_39735 TOP_MARGIN I
+	FIELD field_39754 READ_INFO_TEXT Lnet/minecraft/class_2561;
+	FIELD field_39778 reason Lnet/minecraft/class_7573;
+	FIELD field_49548 layout Lnet/minecraft/class_8132;
+	FIELD field_52852 reportType Lnet/minecraft/class_8776;
+	METHOD <init> (Lnet/minecraft/class_437;Lnet/minecraft/class_7573;Lnet/minecraft/class_8776;Ljava/util/function/Consumer;)V
+		ARG 1 parent
+		ARG 2 reason
+		ARG 3 reportType
+		ARG 4 reasonConsumer
+	METHOD method_44520 (Lnet/minecraft/class_4185;)V
+		ARG 1 button
+	METHOD method_44668 getTop ()I
+	METHOD method_44669 getBottom ()I
+	METHOD method_57759 getRight ()I
+	METHOD method_57760 getWidth ()I
+	METHOD method_57761 getHeight ()I
+	METHOD method_57762 getReasonListHeight ()I
+	METHOD method_57763 (Lnet/minecraft/class_7551;Lnet/minecraft/class_364;)V
+		ARG 1 child
+	METHOD method_57764 getLeft ()I
+	CLASS class_7552 ReasonListWidget
+		METHOD <init> (Lnet/minecraft/class_7551;Lnet/minecraft/class_310;)V
+			ARG 2 client
+		METHOD method_44522 getEntry (Lnet/minecraft/class_7573;)Lnet/minecraft/class_7551$class_7552$class_7553;
+			ARG 1 reason
+		METHOD method_44523 (Lnet/minecraft/class_7573;Lnet/minecraft/class_7551$class_7552$class_7553;)Z
+			ARG 1 entry
+		CLASS class_7553 ReasonEntry
+			FIELD field_39621 reason Lnet/minecraft/class_7573;
+			METHOD <init> (Lnet/minecraft/class_7551$class_7552;Lnet/minecraft/class_7573;)V
+				ARG 2 reason
+			METHOD method_44524 getReason ()Lnet/minecraft/class_7573;

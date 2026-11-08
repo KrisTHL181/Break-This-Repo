@@ -1,0 +1,235 @@
+CLASS net/minecraft/class_3324 net/minecraft/server/PlayerManager
+	FIELD field_14343 WHITELIST_FILE Ljava/io/File;
+	FIELD field_14344 bannedProfiles Lnet/minecraft/class_3335;
+	FIELD field_14345 bannedIps Lnet/minecraft/class_3317;
+	FIELD field_14346 advancementTrackers Ljava/util/Map;
+	FIELD field_14348 OPERATORS_FILE Ljava/io/File;
+	FIELD field_14349 LOGGER Lorg/slf4j/Logger;
+	FIELD field_14350 cheatsAllowed Z
+	FIELD field_14351 players Ljava/util/List;
+	FIELD field_14353 ops Lnet/minecraft/class_3326;
+	FIELD field_14354 playerMap Ljava/util/Map;
+	FIELD field_14355 BANNED_PLAYERS_FILE Ljava/io/File;
+	FIELD field_14356 DATE_FORMATTER Ljava/text/SimpleDateFormat;
+	FIELD field_14357 latencyUpdateTimer I
+	FIELD field_14358 saveHandler Lnet/minecraft/class_29;
+	FIELD field_14359 viewDistance I
+	FIELD field_14360 server Lnet/minecraft/server/MinecraftServer;
+	FIELD field_14361 whitelist Lnet/minecraft/class_3337;
+	FIELD field_14362 statisticsMap Ljava/util/Map;
+	FIELD field_14364 BANNED_IPS_FILE Ljava/io/File;
+	FIELD field_24626 registryManager Lnet/minecraft/class_7780;
+	FIELD field_29790 LATENCY_UPDATE_INTERVAL I
+	FIELD field_34895 simulationDistance I
+	FIELD field_39921 FILTERED_FULL_TEXT Lnet/minecraft/class_2561;
+	FIELD field_45061 DUPLICATE_LOGIN_TEXT Lnet/minecraft/class_2561;
+	METHOD <init> (Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/class_7780;Lnet/minecraft/class_29;Lnet/minecraft/class_11871;)V
+		ARG 1 server
+		ARG 2 registryManager
+		ARG 3 saveHandler
+		ARG 4 managementListener
+	METHOD method_14556 respawnPlayer (Lnet/minecraft/class_3222;ZLnet/minecraft/class_1297$class_5529;)Lnet/minecraft/class_3222;
+		ARG 1 player
+		ARG 2 alive
+		ARG 3 removalReason
+	METHOD method_14559 getPlayersByIp (Ljava/lang/String;)Ljava/util/List;
+		ARG 1 ip
+	METHOD method_14560 getWhitelistedNames ()[Ljava/lang/String;
+	METHOD method_14561 getServer ()Lnet/minecraft/server/MinecraftServer;
+	METHOD method_14563 getUserBanList ()Lnet/minecraft/class_3335;
+	METHOD method_14564 sendToTeam (Lnet/minecraft/class_1657;Lnet/minecraft/class_2561;)V
+		ARG 1 source
+		ARG 2 message
+	METHOD method_14565 sendToOtherTeams (Lnet/minecraft/class_1657;Lnet/minecraft/class_2561;)V
+		ARG 1 source
+		ARG 2 message
+	METHOD method_14566 getPlayer (Ljava/lang/String;)Lnet/minecraft/class_3222;
+		ARG 1 name
+	METHOD method_14567 getUserData ()Lnet/minecraft/class_2487;
+		COMMENT Gets the user data of the player hosting the Minecraft server.
+		COMMENT
+		COMMENT @return the user data of the host of the server if the server is an integrated server, otherwise {@code null}
+	METHOD method_14568 getViewDistance ()I
+	METHOD method_14569 isOperator (Lnet/minecraft/class_11560;)Z
+		ARG 1 player
+	METHOD method_14570 onPlayerConnect (Lnet/minecraft/class_2535;Lnet/minecraft/class_3222;Lnet/minecraft/class_8792;)V
+		ARG 1 connection
+		ARG 2 player
+		ARG 3 clientData
+	METHOD method_14571 getPlayerList ()Ljava/util/List;
+		COMMENT Gets a list of all players on a Minecraft server.
+		COMMENT This list should not be modified!
+	METHOD method_14572 onDataPacksReloaded ()V
+	METHOD method_14574 getCurrentPlayerCount ()I
+	METHOD method_14576 sendCommandTree (Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_14577 savePlayerData (Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_14578 getAdvancementTracker (Lnet/minecraft/class_3222;)Lnet/minecraft/class_2985;
+		ARG 1 player
+	METHOD method_14579 areCheatsAllowed ()Z
+	METHOD method_14580 getPlayerNames ()[Ljava/lang/String;
+	METHOD method_14581 sendToAll (Lnet/minecraft/class_2596;)V
+		ARG 1 packet
+	METHOD method_14582 addToOperators (Lnet/minecraft/class_11560;)V
+		ARG 1 player
+	METHOD method_14583 createStatHandler (Lnet/minecraft/class_1657;)Lnet/minecraft/class_3442;
+		ARG 1 player
+	METHOD method_14584 getOpNames ()[Ljava/lang/String;
+	METHOD method_14585 getIpBanList ()Lnet/minecraft/class_3317;
+	METHOD method_14586 checkCanJoin (Ljava/net/SocketAddress;Lnet/minecraft/class_11560;)Lnet/minecraft/class_2561;
+		ARG 1 address
+		ARG 2 configEntry
+	METHOD method_14587 isWhitelisted (Lnet/minecraft/class_11560;)Z
+		ARG 1 player
+	METHOD method_14588 sendScoreboard (Lnet/minecraft/class_2995;Lnet/minecraft/class_3222;)V
+		ARG 1 scoreboard
+		ARG 2 player
+	METHOD method_14589 sendToDimension (Lnet/minecraft/class_2596;Lnet/minecraft/class_5321;)V
+		ARG 1 packet
+		ARG 2 dimension
+	METHOD method_14590 getWhitelist ()Lnet/minecraft/class_3337;
+	METHOD method_14591 setMainWorld (Lnet/minecraft/class_3218;)V
+		ARG 1 world
+	METHOD method_14592 getMaxPlayerCount ()I
+	METHOD method_14594 sendPlayerStatus (Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_14596 sendCommandTree (Lnet/minecraft/class_3222;Lnet/minecraft/class_12086;)V
+		ARG 1 player
+		ARG 2 permissions
+	METHOD method_14597 disconnectAllPlayers ()V
+	METHOD method_14599 reloadWhitelist ()V
+	METHOD method_14600 loadPlayerData (Lnet/minecraft/class_11560;)Ljava/util/Optional;
+		ARG 1 player
+	METHOD method_14601 updatePlayerLatency ()V
+	METHOD method_14602 getPlayer (Ljava/util/UUID;)Lnet/minecraft/class_3222;
+		ARG 1 uuid
+	METHOD method_14603 getOpList ()Lnet/minecraft/class_3326;
+	METHOD method_14604 removeFromOperators (Lnet/minecraft/class_11560;)V
+		ARG 1 player
+	METHOD method_14605 sendToAround (Lnet/minecraft/class_1657;DDDDLnet/minecraft/class_5321;Lnet/minecraft/class_2596;)V
+		ARG 1 player
+		ARG 2 x
+		ARG 4 y
+		ARG 6 z
+		ARG 8 distance
+		ARG 10 worldKey
+		ARG 11 packet
+	METHOD method_14606 sendWorldInfo (Lnet/minecraft/class_3222;Lnet/minecraft/class_3218;)V
+		ARG 1 player
+		ARG 2 world
+	METHOD method_14607 setCheatsAllowed (Z)V
+		ARG 1 cheatsAllowed
+	METHOD method_14608 setViewDistance (I)V
+		ARG 1 viewDistance
+	METHOD method_14609 canBypassPlayerLimit (Lnet/minecraft/class_11560;)Z
+		ARG 1 configEntry
+	METHOD method_14611 remove (Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_14614 isWhitelistEnabled ()Z
+	METHOD method_14617 saveAllPlayerData ()V
+	METHOD method_31441 (Lnet/minecraft/class_1297;)V
+		ARG 0 entity
+	METHOD method_38650 setSimulationDistance (I)V
+		ARG 1 simulationDistance
+	METHOD method_38651 getSimulationDistance ()I
+	METHOD method_43511 (Lnet/minecraft/class_2561;Lnet/minecraft/class_3222;)Lnet/minecraft/class_2561;
+		ARG 1 player
+	METHOD method_43512 broadcast (Lnet/minecraft/class_2561;Ljava/util/function/Function;Z)V
+		COMMENT Broadcasts a message to all players and the server console. A different
+		COMMENT message can be sent to a different player.
+		COMMENT
+		COMMENT @see #broadcast(Text, boolean)
+		COMMENT @see #broadcast(SignedMessage, ServerCommandSource, MessageType.Parameters)
+		COMMENT @see #broadcast(SignedMessage, ServerPlayerEntity, MessageType.Parameters)
+		ARG 1 message
+		ARG 2 playerMessageFactory
+			COMMENT a function that takes the player to send the message to
+			COMMENT and returns either the text to send to them or {@code null}
+			COMMENT to indicate the message should not be sent to them
+		ARG 3 overlay
+	METHOD method_43514 broadcast (Lnet/minecraft/class_2561;Z)V
+		COMMENT Broadcasts a message to all players and the server console.
+		COMMENT
+		COMMENT @apiNote This is used to send general messages such as a death
+		COMMENT message or a join/leave message.
+		COMMENT
+		COMMENT @see #broadcast(Text, Function, boolean)
+		COMMENT @see #broadcast(SignedMessage, ServerCommandSource, MessageType.Parameters)
+		COMMENT @see #broadcast(SignedMessage, ServerPlayerEntity, MessageType.Parameters)
+		ARG 1 message
+		ARG 2 overlay
+	METHOD method_43673 broadcast (Lnet/minecraft/class_7471;Lnet/minecraft/class_3222;Lnet/minecraft/class_2556$class_7602;)V
+		COMMENT Broadcasts a chat message to all players and the server console.
+		COMMENT
+		COMMENT <p>Chat messages have signatures. It is possible to use a bogus signature - such as
+		COMMENT {@link net.minecraft.network.message.SignedMessage#ofUnsigned} - to send a chat
+		COMMENT message; however if the signature is invalid (e.g. because the text's content differs
+		COMMENT from the one sent by the client, or because the passed signature is invalid) the client
+		COMMENT will show a warning and can discard it depending on the client's options.
+		COMMENT
+		COMMENT @apiNote This method is used to broadcast a message sent by a player
+		COMMENT through {@linkplain net.minecraft.client.gui.screen.ChatScreen the chat screen}
+		COMMENT as well as through commands like {@link net.minecraft.server.command.MeCommand} or
+		COMMENT {@link net.minecraft.server.command.SayCommand} .
+		COMMENT
+		COMMENT @see #broadcast(Text, boolean)
+		COMMENT @see #broadcast(Text, Function, boolean)
+		COMMENT @see #broadcast(SignedMessage, ServerCommandSource, MessageType.Parameters)
+		ARG 1 message
+		ARG 2 sender
+		ARG 3 params
+	METHOD method_44166 broadcast (Lnet/minecraft/class_7471;Lnet/minecraft/class_2168;Lnet/minecraft/class_2556$class_7602;)V
+		COMMENT Broadcasts a chat message to all players and the server console.
+		COMMENT
+		COMMENT @apiNote This method is used to broadcast a message sent by  commands like
+		COMMENT {@link net.minecraft.server.command.MeCommand} or
+		COMMENT {@link net.minecraft.server.command.SayCommand} .
+		COMMENT
+		COMMENT @see #broadcast(Text, boolean)
+		COMMENT @see #broadcast(Text, Function, boolean)
+		COMMENT @see #broadcast(SignedMessage, ServerPlayerEntity, MessageType.Parameters)
+		ARG 1 message
+		ARG 2 source
+		ARG 3 params
+	METHOD method_44791 broadcast (Lnet/minecraft/class_7471;Ljava/util/function/Predicate;Lnet/minecraft/class_3222;Lnet/minecraft/class_2556$class_7602;)V
+		COMMENT Broadcasts a chat message to all players and the server console.
+		COMMENT
+		COMMENT <p>Chat messages have signatures. It is possible to use a bogus signature - such as
+		COMMENT {@link net.minecraft.network.message.SignedMessage#ofUnsigned} - to send a chat
+		COMMENT message; however if the signature is invalid (e.g. because the text's content differs
+		COMMENT from the one sent by the client, or because the passed signature is invalid) the client
+		COMMENT will show a warning and can discard it depending on the client's options.
+		COMMENT
+		COMMENT @see #broadcast(Text, boolean)
+		COMMENT @see #broadcast(Text, Function, boolean)
+		COMMENT @see #broadcast(SignedMessage, ServerCommandSource, MessageType.Parameters)
+		COMMENT @see #broadcast(SignedMessage, ServerPlayerEntity, MessageType.Parameters)
+		ARG 1 message
+		ARG 2 shouldSendFiltered
+			COMMENT predicate that determines whether to send the filtered message for the given player
+		ARG 3 sender
+		ARG 4 params
+	METHOD method_44793 verify (Lnet/minecraft/class_7471;)Z
+		COMMENT {@return whether {@code message} is not expired and is verified}
+		COMMENT
+		COMMENT @implNote This only affects the server log. Unverified messages are still broadcast
+		COMMENT to other clients.
+		ARG 1 message
+	METHOD method_52449 disconnectDuplicateLogins (Ljava/util/UUID;)Z
+		ARG 1 uuid
+	METHOD method_60597 sendStatusEffects (Lnet/minecraft/class_1309;Lnet/minecraft/class_3244;)V
+		ARG 1 entity
+		ARG 2 networkHandler
+	METHOD method_60598 sendStatusEffects (Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_74002 addToOperators (Lnet/minecraft/class_11560;Ljava/util/Optional;Ljava/util/Optional;)V
+		ARG 1 player
+		ARG 2 permissionLevel
+		ARG 3 canBypassPlayerLimit
+	METHOD method_74003 isAlreadyConnected (Ljava/lang/String;)Lnet/minecraft/class_3222;
+		ARG 1 playerName
+	METHOD method_76059 locateStatFilePath (Lcom/mojang/authlib/GameProfile;)Ljava/nio/file/Path;
+		ARG 1 profile
+	METHOD method_76060 (Lcom/mojang/authlib/GameProfile;Ljava/util/UUID;)Lnet/minecraft/class_3442;
+		ARG 2 uuid

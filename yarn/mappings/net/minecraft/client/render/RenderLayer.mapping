@@ -1,0 +1,35 @@
+CLASS net/minecraft/class_1921 net/minecraft/client/render/RenderLayer
+	COMMENT Defines settings that should be used when rendering something.
+	COMMENT
+	COMMENT <p>This includes {@linkplain VertexFormat vertex format}, {@linkplain
+	COMMENT VertexFormat.DrawMode draw mode}, {@linkplain
+	COMMENT net.minecraft.client.gl.ShaderProgram shader program}, texture,
+	COMMENT some uniform variables values (such as {@code LineWidth} when using the
+	COMMENT {@link #getLines rendertype_lines} shader
+	COMMENT program), and some GL state values (such as whether to enable depth
+	COMMENT testing).
+	COMMENT
+	COMMENT <p>Before drawing something, a render layer setups these states. After
+	COMMENT drawing something, a render layer resets those states to default.
+	FIELD field_64011 name Ljava/lang/String;
+	FIELD field_64013 renderSetup Lnet/minecraft/class_12247;
+	FIELD field_64014 affectedOutline Ljava/util/Optional;
+	METHOD <init> (Ljava/lang/String;Lnet/minecraft/class_12247;)V
+		ARG 1 name
+		ARG 2 renderSetup
+	METHOD method_22722 getExpectedBufferSize ()I
+	METHOD method_23031 getVertexFormat ()Lcom/mojang/blaze3d/vertex/VertexFormat;
+	METHOD method_23033 getDrawMode ()Lcom/mojang/blaze3d/vertex/VertexFormat$class_5596;
+	METHOD method_23037 hasCrumbling ()Z
+	METHOD method_23289 getAffectedOutline ()Ljava/util/Optional;
+	METHOD method_24295 isOutline ()Z
+	METHOD method_43332 areVerticesNotShared ()Z
+	METHOD method_60894 isTranslucent ()Z
+	METHOD method_60895 draw (Lnet/minecraft/class_9801;)V
+		ARG 1 buffer
+	METHOD method_73243 getRenderPipeline ()Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+	METHOD method_75939 (Lnet/minecraft/class_12247;Lnet/minecraft/class_12247$class_12338;)Lnet/minecraft/class_1921;
+		ARG 1 texture
+	METHOD method_75940 of (Ljava/lang/String;Lnet/minecraft/class_12247;)Lnet/minecraft/class_1921;
+		ARG 0 name
+		ARG 1 renderSetup

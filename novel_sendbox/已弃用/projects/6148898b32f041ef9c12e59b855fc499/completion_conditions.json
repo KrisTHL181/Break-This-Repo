@@ -1,0 +1,28 @@
+{
+  "conditions": [
+    {
+      "id": "cond1",
+      "title": "建立稳定的幸存者社区",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond2",
+      "title": "解开记忆病毒的真相",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond3",
+      "title": "发现自己是病毒传播的关键",
+      "achieved": false,
+      "achieved_chapter": null
+    },
+    {
+      "id": "cond4",
+      "title": "选择牺牲或拯救 humanity",
+      "achieved": false,
+      "achieved_chapter": null
+    }
+  ]
+}

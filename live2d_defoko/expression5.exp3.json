@@ -1,0 +1,65 @@
+{
+	"Type": "Live2D Expression",
+	"Parameters": [
+		{
+			"Id": "Param16",
+			"Value": 1,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param27",
+			"Value": 1,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param22",
+			"Value": 1,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param20",
+			"Value": 1,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param29",
+			"Value": 1,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param23",
+			"Value": 1,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param21",
+			"Value": 1,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param17",
+			"Value": 0,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param18",
+			"Value": 0,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param15",
+			"Value": 0,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param12",
+			"Value": 0,
+			"Blend": "Add"
+		},
+		{
+			"Id": "Param28",
+			"Value": 0,
+			"Blend": "Add"
+		}
+	]
+}

@@ -1,0 +1,35 @@
+CLASS net/minecraft/class_8012 net/minecraft/util/Colors
+	COMMENT Contains constants for commonly used colors in {@code 0xAARRGGBB} format.
+	FIELD field_41758 RED I
+		COMMENT Represents the color red, {@code 0xFFFF0000}.
+	FIELD field_42973 WHITE I
+		COMMENT Represents the color white, {@code 0xFFFFFFFF}.
+	FIELD field_42974 BLACK I
+		COMMENT Represents the color black, {@code 0xFF000000}.
+	FIELD field_44941 GRAY I
+		COMMENT Represents the color gray, {@code 0xFF808080}.
+	FIELD field_45073 LIGHT_GRAY I
+		COMMENT Represents the color light gray, {@code 0xFFA0A0A0}.
+	FIELD field_46652 LIGHT_RED I
+		COMMENT Represents the color light red, {@code 0xFFDF5050}.
+	FIELD field_46767 YELLOW I
+		COMMENT Represents the color yellow, {@code 0xFFFFFF00}.
+	FIELD field_46768 LIGHT_YELLOW I
+		COMMENT Represents the color light yellow, {@code 0xFFFFFF55}.
+	FIELD field_49788 ALTERNATE_WHITE I
+		COMMENT Represents a variant of the color white, used so that the two alternate with
+		COMMENT each other, {@code 0xFFBABABA}.
+	FIELD field_52312 GREEN I
+		COMMENT Represents the color green, {@code 0xFF00FF00}.
+	FIELD field_52313 BLUE I
+		COMMENT Represents the color blue, {@code 0xFF0000FF}.
+	FIELD field_52393 PURPLE I
+		COMMENT Represents the color purple, {@code 0xFF500050}.
+	FIELD field_54557 CYAN I
+		COMMENT Represents the color cyan, {@code 0xFF57FFE1}.
+	FIELD field_60347 DARK_GRAY I
+		COMMENT Represents the color dark gray, {@code FF404040}.
+	FIELD field_60979 LIGHT_PINK I
+		COMMENT Represents the color light pink, {@code 0xFFFFCCCC}.
+	FIELD field_63680 LIGHTER_GRAY I
+		COMMENT Represents the color lighter gray, {@code 0xFFE0E0E0}.

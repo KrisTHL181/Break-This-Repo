@@ -1,0 +1,6 @@
+# Prevent someone accidentially pushing private key
+*.pem
+*.asc
+
+# Private workspace
+private/

@@ -1,0 +1,3 @@
+CLASS net/minecraft/class_1179 net/minecraft/datafixer/fix/ItemBannerColorFix
+	METHOD method_5004 (Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
+		ARG 3 itemStackTyped

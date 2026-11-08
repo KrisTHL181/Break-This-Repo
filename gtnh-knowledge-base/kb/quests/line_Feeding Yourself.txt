@@ -1,0 +1,262 @@
+# 任务线: Feeding Yourself
+### [632] A Fisherman's Friend
+Have you ever tried to catch a fish with your bare hands? It's time to craft a fishing rod and get some fish the easy way. Cast your fishing rod in some water and wait until the bobber dips below the surface. Then reel back in your line and hopefully you caught yourself something nice.
+  - [可选提交] gregtech:gt.metaitem.02:22809 x3, gregtech:gt.metaitem.01:28032, minecraft:string
+  - [合成] minecraft:fishing_rod
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x15 | dreamcraft:CoinFarmer x15
+
+### [-8255771698725672534] A Magical Lunchbox?
+Given sufficient magical prowess, the Thaumaturgist need not waste their time physically consuming food. The Talisman of Nourishment can hold up to 1000 hunger and 1000 saturation points, and will feed you automatically.   You can fill it up by placing food items on your hotbar, the more valuable the food, the more points added.  [note]Careful not to place food items you want to keep in your hotbar while you have it on you![/note]
+  - [提交] ThaumicExploration:talismanFood
+  > 奖励: enhancedlootbags:lootbag:30
+
+### [631] Animal Trapping
+Tired of hunting for cows, zombies or sheep? You can build a trap and hope some animal or monster drops will be caught by the netting inside.
+  - [合成] harvestcraft:animaltrap
+  > 奖励: minecraft:trapdoor | harvestcraft:hamburgerItem | dreamcraft:CoinTechnician x15 | dreamcraft:CoinFarmer x15
+
+### [2725] Barley Time
+It's time to plant some barley to make some bread. If you can't find wheat, barley is a good alternative source to make flour.
+  - [提交] Natura:barleyFood x32 (ore:cropBarley)
+  > 奖励: cropsnh:cropSticks x4 | minecraft:wheat_seeds x8 | dreamcraft:CoinFarmer x15
+
+### [858] Chef Training
+I need some ingredients to help me train since they don't grow well where I am, could you provide some? I'll give you the results in return.  [note]You only need to turn in one set each time you complete the quest.[/note]
+  - [提交] harvestcraft:ryeItem x64, harvestcraft:cornItem x64, harvestcraft:cucumberItem x64, harvestcraft:turnipItem x64, harvestcraft:celeryItem x64, harvestcraft:beetItem x64, harvestcraft:tomatoItem x64, harvestcraft:gingerItem x64
+  > 奖励: enhancedlootbags:lootbag:28
+
+### [2895] Cooking for Blockheads
+Say thanks to mitch for backporting this great mod. You can use it to help you craft new food items. All blocks connected to the kitchen floor (use it as walls too!) are considered part of the same multiblock. Countertops will search up two blocks for cabinets to include.  Items stored in storages like the cabinet (or your inventory) can be used in recipes. All storage spaces for items are the same, so don't bother making a ton of fridges unless you really want to. Supply water to the sink to get water for recipes.  You can store some cooking tools in the oven. You can store the rest on tool racks to auto-use them all in recipes. This includes stuff like the GT soft mallet if you can't make all the Pam's tools yet.  The oven has 3 input slots and 3 output slots, and can work on 9 items at once. It's basically a furnace. You can request items be cooked from the cooking table too.  The Cooking Table will automatically show you all recipes that can be created with the existing ingredients, and you can click on them to craft them. Make all the food, and get all the hearts!  You can use dye to color the kitchen, except for the oven.  Note that the implementation is not finished, so there are some problems. Upgrades like powering the oven with RF/EU are not in yet. And so on. But we finally have a toaster so you can make TOAST!  [note]There is no cow in a jar, it will not come back.[/note]
+  - [提交] cookingforblockheads:white_kitchen_floor x24, cookingforblockheads:counter, cookingforblockheads:countercorner, cookingforblockheads:cabinet, cookingforblockheads:cabinetcorner
+  - [提交] cookingforblockheads:fridge x2, cookingforblockheads:cookingoven, cookingforblockheads:sink, cookingforblockheads:toolrack, cookingforblockheads:cookingtable
+
+### [1487] Cooling Your Marshmallow
+In the next step you cool your Glowing Marshmallow in an EV Vacuum Freezer to make it more stable.  You still get Weakness II and Nausea II.
+  - [可选提交] dreamcraft:GlowingMarshmallow
+  - [提交] dreamcraft:Marshmallow
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [2898] Crispy Rotten Flesh
+Rotten Flesh is not really healthy. It doesn't satisfy your hunger. What if you try to dry it?
+  - [提交] TConstruct:jerky:5 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15
+
+### [1488] Dezil's Marshmallow
+In the last step you need to infuse your Marshmallow with some epic food in the Thaumcraft infusion altar. Before you can do it you need to unlock the research.  Is this worth it? Is there any enemy worthy of using the buffs this gives on? That's up to you.
+  - [可选提交] dreamcraft:Marshmallow
+  - [可选提交] harvestcraft:epicbaconItem, harvestcraft:sausageinbreadItem, harvestcraft:heartybreakfastItem, harvestcraft:meatfeastpizzaItem, harvestcraft:beefwellingtonItem, harvestcraft:deluxechickencurryItem
+  - [提交] DraconicEvolution:dezilsMarshmallow
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII x2
+
+### [637] Do'h!
+Water and flour makes a dough or two... Dough can be used in many different food recipes from Pam's HarvestCraft.  Don't use the terrible NEI recipe, instead drop a stack of flour into a cauldron full of water. Celiacs beware!
+  - [提交] gregtech:gt.metaitem.02:32559 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15
+
+### [1275] Fake Jagermeister
+Jägermeister is a common drink in Germany, why don't you grab a bottle? This one seems to be a cheap fake tho...
+  - [提交] cropsnh:bottledAlcohol:9
+  > 奖励: enhancedlootbags:lootbag:30 | dreamcraft:CoinCookII
+
+### [636] First Handmade Bread
+Baking your dough in a Furnace makes some tasty bread. Your first bread!
+  - [提交] minecraft:bread x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15
+
+### [630] Fish Bait
+Crafting some fish bait for your fish trap.
+  - [合成] harvestcraft:fishtrapbaitItem x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x15
+
+### [633] Fish Trapping
+Fishing can be very boring. Why not automate it with a fish trap?
+  - [合成] harvestcraft:fishtrap
+  > 奖励: minecraft:fishing_rod | minecraft:furnace | minecraft:coal x4 | dreamcraft:CoinTechnician x15 | dreamcraft:CoinFarmer x15
+
+### [1009] Fish Trapping 2.0
+Fishing can be very boring. Why not automate it with a fish trap?  This is fish trap 2.0.
+  - [合成] miscutils:blockFishTrap
+  > 奖励: gregtech:gt.blockmachines:5132 x8 | dreamcraft:SteelBars x4 | IronChest:BlockIronChest:4 | dreamcraft:CoinTechnician x20 | dreamcraft:CoinFarmer x20
+
+### [635] Floury Flurry
+The first step in making bread is to macerate your wheat into flour with a mortar or a macerator.  Flour can be used in many food recipes for different Pam's HarvestCraft foods.
+  - [提交] gregtech:gt.metaitem.01:2881 x16
+  > 奖励: gregtech:gt.metatool.01:24 | minecraft:potato x5 | minecraft:carrot x5 | dreamcraft:CoinFarmer x15
+
+### [1178] Food 2.0
+Forget everything you know about food and values. With your new canning machine you are able to fill tin cans with very nourishing food. This food can be consumed in milliseconds and makes you full and happy. And you can eat as much as you want without getting tired of the food.  Eating before you are starving restores saturation and conserves cans.
+  - [可选提交] gregtech:gt.metaitem.02:18057 x16
+  - [可选提交] IC2:itemTinCan x16
+  - [提交] IC2:itemTinCanFilled x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinCookI x5 | dreamcraft:CoinTechnicianI x5
+
+### [1010] Fresh Water and Milk
+Many cooking recipes need milk and water. Crafting it in the crafting table can be very tedious.  It is much easier using a Forestry worktable. Move all your buckets into the worktable, and shift-click to craft them all at once.
+  - [提交] harvestcraft:freshwaterItem x64, harvestcraft:freshmilkItem x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15 | dreamcraft:CoinTechnician x15
+
+### [1088] Fried Eggs
+So easy, skillet and an egg.... fried egg.
+  - [可选提交] harvestcraft:skilletItem, minecraft:egg x4
+  - [提交] harvestcraft:friedeggItem x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15 | dreamcraft:CoinTechnician x15
+
+### [628] Fruit Bait
+Crafting some tasty fruit bait for your animal trap.
+  - [合成] harvestcraft:fruitbaitItem x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x15
+
+### [1486] Glowing Marshmallow
+Next step is heating up your Marshmallow in an Electric Blast Furnace at 4500K with some noble gas and making it glow.  Now you'll get a Paralysis II effect in addition to the others.
+  - [可选提交] gregtech:gt.metaitem.01:30093, dreamcraft:UncookedSlush
+  - [提交] dreamcraft:GlowingMarshmallow
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinCookII x2
+
+### [627] Grain Bait
+Crafting some nice grain bait for your animal trap.
+  - [合成] harvestcraft:grainbaitItem x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x15
+
+### [1089] Hearty Breakfast
+Now let's combine all the things together and make a healthy and delicious breakfast.  Some cooked meat, potato cakes, toast, fried egg and a tasty juice provide you with a very nourishing meal.  You can use any cooked meat and any fruit juice here.
+  - [可选提交] minecraft:cooked_porkchop (ore:listAllmeatcooked), harvestcraft:potatocakesItem, harvestcraft:friedeggItem, harvestcraft:toastItem, harvestcraft:applejuiceItem (ore:listAlljuice)
+  - [提交] harvestcraft:heartybreakfastItem
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x50
+
+### [1283] Honey for sugar.
+Since honey contains a lot of sugar, it might be a good idea to get some honey.  [note]Just having the fluid in cells or buckets in your inventory lets the quest detect and consume it.[/note]
+  - [流体]  x
+  - [流体]  x
+  > 奖励: Forestry:honeyedSlice x8
+
+### [600] Hunger No More
+The hunger is constantly following you, consuming you, never letting you rest. The world around you is full of nourishing fruits, vegetables and crafted meals. Use them to curb your insatiable hunger.
+  - [提交] harvestcraft:leafygarden x8, harvestcraft:mushroomgarden x8, harvestcraft:stalkgarden x8, harvestcraft:textilegarden x8, harvestcraft:tropicalgarden x8, fether:nether_garden x8, harvestcraft:groundgarden x8, harvestcraft:berrygarden x8, harvestcraft:desertgarden x8, harvestcraft:grassgarden x8, harvestcraft:gourdgarden x8, harvestcraft:herbgarden x8, harvestcraft:watergarden x8
+  - [提交] harvestcraft:firmtofuItem x128, harvestcraft:silkentofuItem x128
+  - [提交] harvestcraft:delightedmealItem x20, harvestcraft:heartybreakfastItem x20, harvestcraft:rainbowcurryItem x20, harvestcraft:supremepizzaItem x20, harvestcraft:sausageinbreadItem x20, harvestcraft:beefwellingtonItem x20
+  > 奖励: ExtraUtilities:defoliageAxe
+
+### [-7205325599072663407] Ice Ice Baby
+GregTech now makes &z&qice creams§r§r. Yes, really.  Somewhere out there is a machine that turns... something... into ice cream. Lots of flavors. Some good, some weird, some questionable.  Go find it and see what you get.
+  - [提交] gregtech:gt.blockmachines:20000
+  - [可选提交] gregtech:gt.metaitem.01:32003 x2
+  > 奖励: bq_standard:choice | gregtech:gt.metaitem.02:32602
+
+### [1855] I Like Big Sandwiches
+Now that you have dough, there are several options for large sandwiches. They offer great saturation restoration and are easy to make.  The veggie and cheese options aren't quite as good and need more work to produce.  There are also normal-sized varieties of these sandwiches if you need more diet choices.
+  - [可选提交] gregtech:gt.metaitem.02:32565 x8, minecraft:cooked_porkchop x8, minecraft:cooked_beef x8
+  - [提交] gregtech:gt.metaitem.02:32244 x4, gregtech:gt.metaitem.02:32243 x4
+  > 奖励: gregtech:gt.metaitem.02:32241 x2 | gregtech:gt.metaitem.02:32242 x2 | dreamcraft:CoinCook x20
+
+### [1086] Juice
+Most of your berries can be extracted to juice form. This is a chance to get more food variants and the nutritional value is higher than eating the fruit directly.
+  - [提交] harvestcraft:applejuiceItem x10 (ore:listAlljuice)
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15
+
+### [1854] Just Like Mom Used to Make
+Jelly sandwiches are a great food source with decent saturation and are easy to make. Almost any fruit can be converted to jelly with sugar and a saucepan. There are a few different nut butters available. Peanuts can be found in Ground Gardens in forest, mountain, or taiga style biomes. Cashews are trees located in jungles or swamps. Chestnuts can be found in warmer forests. Pistachios can be found in jungles. Many of these saplings are also available for trade from villagers. You'll need a mallet or a juicer to turn those nuts into a buttery paste!  To keep all your recipes together, you can use either a Kitchen multiblock if you want to see all recipes available to you, or a Forestry Worktable if you're fine with the limit of nine recipes.  Some sandwiches have better saturation than others, so be sure to check before buying that sapling!
+  - [可选提交] minecraft:apple x4, minecraft:sugar x4, harvestcraft:saucepanItem
+  - [可选提交] harvestcraft:applejellyItem x4, minecraft:bread x4, harvestcraft:peanutbutterItem x4 (ore:listAllnutbutter)
+  - [提交] harvestcraft:applejellysandwichItem x4
+  > 奖励: harvestcraft:cherryjellysandwichItem | harvestcraft:blackberryjellysandwichItem | harvestcraft:raspberryjellysandwichItem | harvestcraft:blueberryjellysandwichItem | harvestcraft:watermelonjellysandwichItem
+
+### [665] Kitchenware
+To cook some healthy food you need a few tools crafted first. Saucepan, pot, rolling pin, mortar, mixing bowl, soft mallet, skillet, knife...
+  - [提交] harvestcraft:saucepanItem, harvestcraft:potItem, gregtech:gt.metatool.01:46, gregtech:gt.metatool.01:24, harvestcraft:mixingbowlItem, gregtech:gt.metatool.01:14, harvestcraft:skilletItem, gregtech:gt.metatool.01:34
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15 | dreamcraft:CoinTechnician x15
+
+### [1836] Kitchenware 2.0
+GregTech tools like the knives get used up when crafting foods. Pam's Tool like the Cutting Board, Juicer or the Bakeware can last forever.  After you reach stainless steel in HV you can make these tools that last forever.
+  - [提交] harvestcraft:juicerItem, harvestcraft:bakewareItem, harvestcraft:mortarandpestleItem, harvestcraft:cuttingboardItem
+  > 奖励: enhancedlootbags:lootbag:30 x2 | dreamcraft:CoinTechnicianI x5 | dreamcraft:CoinCookI x5
+
+### [1276] Korn and Doppelkorn
+Korn is german for wheat. That's why this special alcoholic brew is named like this. Doppelkorn means double-wheat.
+  - [提交] cropsnh:bottledAlcohol:1, cropsnh:bottledAlcohol:2
+  > 奖励: enhancedlootbags:lootbag:29 | dreamcraft:CoinCookI
+
+### [1857] No Chicken Escapes!
+Do you like pies? I sure do! There are many varieties of pies available for you. The chicken pot pie is one of the easiest to make. Just a chicken, potato, carrot, and some dough. The fruit pies are a little simpler, so they don't quite restore as much saturation, but are great for filling tummies while you wait for the best foods to wear off.
+  - [可选提交] minecraft:chicken x4, minecraft:potato x4, minecraft:carrot x4, gregtech:gt.metaitem.02:32559 x8, minecraft:apple x4, minecraft:sugar x4
+  - [提交] harvestcraft:chickenpotpieItem x4, harvestcraft:applepieItem x4
+  > 奖励: harvestcraft:blueberrypieItem | harvestcraft:cherrypieItem | harvestcraft:raspberrypieItem | dreamcraft:CoinCook x15
+
+### [1087] Potato Cakes
+Potatoes, onions, butter and a skillet make very tasty potato cakes.
+  - [可选提交] harvestcraft:skilletItem, minecraft:potato x4, harvestcraft:onionItem x4 (ore:cropOnion), harvestcraft:butterItem x4
+  - [提交] harvestcraft:potatocakesItem x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15
+
+### [2439] Pumpkin Pie
+Pumpkin Pie is a traditional US dessert that is particularly popular for Halloween, Thanksgiving, and Christmas.  1,5 Food Bars for just two Pumpkins and a three sugar. Bon Appétit.
+  - [可选提交] minecraft:pumpkin x20, minecraft:sugar x30
+  - [提交] minecraft:pumpkin_pie x10
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15
+
+### [1483] Really OP Food
+You've heard about Dezil's Marshmallow, a really OP food which can be found from time to time in chests. What about I show you a way to cook this stuff yourself?  After you've mastered the flowing spirit in the dream dimension (witchery), put a bit of flour, sugar, salis mundus and draconium dust in your IV Mixer. The recipe starts when you give flowing spirit to it and gives you malformed slush, a very stinky and disgusting piece of...something.  Be careful, you'll get blindness II when holding it in your hand.
+  - [可选提交] gregtech:gt.metaitem.01:2881 (ore:foodFlour), Thaumcraft:ItemResource:14, minecraft:sugar, DraconicEvolution:draconiumDust (ore:dustDraconium), witchery:bucketspirit
+  - [提交] dreamcraft:MalformedSlush x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinCookII x2 | dreamcraft:CoinChemistII x2
+
+### [1281] Rum
+Rum. Yummy!
+  - [提交] gregtech:gt.metaitem.02:32110 x4
+  > 奖励: enhancedlootbags:lootbag:29 | dreamcraft:CoinCookI
+
+### [1277] Sugarcanes
+Sugarcanes are a source of sugar, and therefore alcohol. If you want some rum or sugar, you'll need these.
+  - [提交] minecraft:reeds x64
+  > 奖励: dreamcraft:CoinAdventure x3
+
+### [1282] Sugar: The Gathering
+Stockpiling sugar might be a good idea if you have a sweet tooth. Or not?
+  - [提交] minecraft:sugar x256
+  > 奖励: harvestcraft:caramelappleItem | dreamcraft:CoinCook x5
+
+### [638] Tasty Toast
+Smelt your bread again and you get some toast! It gives you more nutrition points, and unlocks more culinary potential!
+  - [提交] harvestcraft:toastItem
+  > 奖励: bq_standard:choice | dreamcraft:CoinCook x15
+
+### [1280] The industrial way
+Making rum can be automated, but you need to follow this industrial way for it.
+  - [提交] gregtech:gt.metaitem.02:32109
+  - [流体]  x
+  - [流体]  x
+  > 奖励: enhancedlootbags:lootbag:29 | dreamcraft:CoinCookI
+
+### [1484] Uncooked Slush
+Next step is to form this slush into the right shape. Use a Marshmallow Mold and press it with your IV forming press. Remember to sterilize it after using it.  Be careful, you'll get blindness and hunger II holding it.
+  - [可选提交] dreamcraft:MalformedSlush x2
+  - [可选提交] TConstruct:blankPattern:1
+  - [可选提交] dreamcraft:MarshmallowFormMold, gregtech:gt.metaitem.01:11305 x4
+  - [可选提交] dreamcraft:MarshmallowForm
+  - [提交] dreamcraft:UncookedSlush
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [629] Veggie Bait
+Crafting some veggie bait for your animal trap.
+  - [合成] harvestcraft:veggiebaitItem x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x15
+
+### [1278] Vodka
+Vodka is Russian for "small water". It is a rather high proof alcoholic fluid.
+  - [提交] gregtech:gt.metaitem.02:32105
+  > 奖励: enhancedlootbags:lootbag:29 | dreamcraft:CoinCookI
+
+### [1284] Wasps honey
+Giant wasps can be found in the Nether. Quick! Sneak into their hive and steal some honey!  [note]Just having the fluid in cells or buckets in your inventory lets the quest detect it.[/note]
+  - [流体]  x
+  > 奖励: enhancedlootbags:lootbag:1 | dreamcraft:CoinAdventure x5
+
+### [634] Wheat Time
+It's time to plant some wheat to make some bread or to prepare grain bait for your animal traps.
+  - [提交] minecraft:wheat x32
+  > 奖励: cropsnh:cropSticks x4 | Natura:barley.seed x8 | dreamcraft:CoinFarmer x15
+
+### [1272] Wheaty Juice
+The first step to brew beer or other alcoholic fluids is wheaty juice.
+  - [提交] gregtech:gt.metaitem.02:32115 x4
+  > 奖励: enhancedlootbags:lootbag:29 | dreamcraft:CoinCookI
+

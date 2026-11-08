@@ -1,0 +1,8 @@
+type: text
+
+---
+
+`(({{0}}) (Object) this)`
+This can be used to pass in `this` to a method that requires a `{{0}}` as a parameter.
+
+A `@Shadow` should be used to access methods and fields of `{{0}}`, but `(({{0}}) (Object) this)` can be used to get access to public methods and fields and should be used in limitation.

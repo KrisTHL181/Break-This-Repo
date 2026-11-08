@@ -1,0 +1,2 @@
+CLASS net/minecraft/class_2759 net/minecraft/network/packet/s2c/play/PlayerSpawnPositionS2CPacket
+	FIELD field_47977 CODEC Lnet/minecraft/class_9139;

@@ -1,0 +1,28 @@
+[
+  {
+    "current_emotion": "紧绷而警惕，雨水带来的寒意令他神经紧绷",
+    "current_goal": "追踪并锁定近期雨夜连环杀人案的凶手",
+    "current_location": "旧城区雨夜巷口",
+    "exposure_status": "exposed",
+    "hidden_fields": {},
+    "is_focus": true,
+    "name": "李沉",
+    "personality": "冷静敏锐，寡言少语，对真相有着近乎偏执的追求，习惯在压力下保持绝对理性",
+    "id": "f051debf69674fc7ac21a5497629d4b2",
+    "activation_state": "active",
+    "memory_anchors": []
+  },
+  {
+    "current_emotion": "烦躁但专注，对连绵阴雨影响办案感到无奈",
+    "current_goal": "协助李沉封锁现场并排查周边监控",
+    "current_location": "旧城区雨夜巷口",
+    "exposure_status": "exposed",
+    "hidden_fields": {},
+    "is_focus": false,
+    "name": "老周",
+    "personality": "经验丰富的老刑警，粗中有细，对辖区地形了如指掌，略带疲惫的务实主义者",
+    "id": "7d7151aaa4454480825b347b30d5df7c",
+    "activation_state": "active",
+    "memory_anchors": []
+  }
+]

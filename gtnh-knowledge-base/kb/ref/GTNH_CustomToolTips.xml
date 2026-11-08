@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<CustomToolTips>
+//Misc
+	<ToolTip ItemName="cb4bq:BlockREB" ToolTip="customtooltip.quest_reset_warning" NBT=""/>
+	<ToolTip ItemName="EnderIO:blockFusedQuartz" ToolTip="customtooltip.blast_resistance_warning" FormatArgs="20" NBT=""/>
+	<ToolTip ItemName="EnderIO:blockTravelAnchor" ToolTip="customtooltip.cooldown_seconds" FormatArgs="2" NBT=""/>
+	<ToolTip ItemName="EnderIO:blockCapBank" ToolTip="customtooltip.infinite_energy" NBT="{type:&quot;CREATIVE&quot;,storedEnergyRF:2500000}"/>
+	<ToolTip ItemName="ExtraUtilities:endConstructor" ToolTip="customtooltip.expensive_device" NBT=""/>
+	<ToolTip ItemName="ExtraUtilities:dark_portal" ToolTip="customtooltip.riches_imagination" NBT=""/>
+	<ToolTip ItemName="ExtraUtilities:enderCollector" ToolTip="customtooltip.ender_collector_warning" NBT=""/>
+	<ToolTip ItemName="GalaxySpace:item.JetPack" ToolTip="customtooltip.disabled_item" NBT=""/>
+	<ToolTip ItemName="GalaxySpace:item.JetPack:100" ToolTip="customtooltip.disabled_item" NBT=""/>
+	<ToolTip ItemName="GregsLighting:ic2ElectricFloodlight" ToolTip="customtooltip.max_voltage_eu" FormatArgs="32" NBT=""/>
+	<ToolTip ItemName="IguanaTweaksTConstruct:clayBucketLava" ToolTip="customtooltip.need_gloves" NBT=""/>
+	<ToolTip ItemName="minecraft:lava_bucket" ToolTip="customtooltip.need_gloves" NBT=""/>
+	<ToolTip ItemName="minecraft:ender_chest" ToolTip="customtooltip.personal_use" NBT=""/>
+	<ToolTip ItemName="RIO:item.chip.upgrade:2" ToolTip="customtooltip.disabled_item" NBT=""/>
+	<ToolTip ItemName="Thaumcraft:ItemManaBean" ToolTip="customtooltip.left_click_disabled" NBT=""/>
+	<ToolTip ItemName="Thaumcraft:WandCasting:36" ToolTip="customtooltip.prolonged_use_warning" NBT=""/>
+	<ToolTip ItemName="StevesCarts:CartModule:61" ToolTip="customtooltip.perpetual_locomotion" NBT=""/>
+
+//Chisel
+	<ToolTip ItemName="chisel:chisel" ToolTip="customtooltip.chisel_mod" NBT=""/>
+	<ToolTip ItemName="chisel:diamondChisel" ToolTip="customtooltip.chisel_mod" NBT=""/>
+	<ToolTip ItemName="chisel:obsidianChisel" ToolTip="customtooltip.chisel_mod" NBT=""/>
+
+//Core Mod
+	<ToolTip ItemName="dreamcraft:OvenGlove" ToolTip="customtooltip.oven_gloves_slot" NBT=""/>
+	<ToolTip ItemName="dreamcraft:OvenGlove:1" ToolTip="customtooltip.oven_gloves_slot" NBT=""/>
+	<ToolTip ItemName="dreamcraft:dreamcraft_Pollution_bucket" ToolTip="customtooltip.very_toxic" NBT=""/>
+	<ToolTip ItemName="dreamcraft:NanoScubaHelmet" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:NanoPlatedLeggings" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:NanoChestJetPack" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:NanoRubberBoots" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CarbonPartChestplate" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:QuantumPartHelmetEmpty" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:QuantumPartHelmet" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:QuantumPartLeggings" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:QuantumPartChestplate" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:QuantumPartBoots" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CarbonPartHelmetNightVision" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CarbonPartHelmet" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CarbonPartBoots" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CarbonPartLeggings" ToolTip="customtooltip.cannot_wear" NBT=""/>
+	<ToolTip ItemName="dreamcraft:BloodyThaumium" ToolTip="customtooltip.blood_altar_pillar" FormatArgs="3" NBT=""/>
+	<ToolTip ItemName="dreamcraft:BloodyVoid" ToolTip="customtooltip.blood_altar_pillar" FormatArgs="4" NBT=""/>
+	<ToolTip ItemName="dreamcraft:BloodyIchorium" ToolTip="customtooltip.blood_altar_pillar" FormatArgs="6" NBT=""/>
+	<ToolTip ItemName="dreamcraft:BronzePlatedReinforcedStone" ToolTip="customtooltip.reinforced_stone_stats" FormatArgs="60,200" NBT=""/>
+	<ToolTip ItemName="dreamcraft:SteelPlatedReinforcedStone" ToolTip="customtooltip.reinforced_stone_stats" FormatArgs="150,325" NBT=""/>
+	<ToolTip ItemName="dreamcraft:TitaniumPlatedReinforcedStone" ToolTip="customtooltip.reinforced_stone_stats" FormatArgs="200,450" NBT=""/>
+	<ToolTip ItemName="dreamcraft:TungstensteelPlatedReinforcedStone" ToolTip="customtooltip.reinforced_stone_stats" FormatArgs="250,575" NBT=""/>
+	<ToolTip ItemName="dreamcraft:NaquadahPlatedReinforcedStone" ToolTip="customtooltip.reinforced_stone_stats" FormatArgs="500,700" NBT=""/>
+	<ToolTip ItemName="dreamcraft:NeutroniumPlatedReinforcedStone" ToolTip="customtooltip.reinforced_stone_stats" FormatArgs="750,2000" NBT=""/>
+	<ToolTip ItemName="EnderZoo:enderFragment" ToolTip="customtooltip.chunkloader_ender_fragment" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CoinChunkloaderTierI" ToolTip="customtooltip.chunkloader_coin" FormatArgs="§4,12,24,48" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CoinChunkloaderTierII" ToolTip="customtooltip.chunkloader_coin" FormatArgs="§6,24,48,96" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CoinChunkloaderTierIII" ToolTip="customtooltip.chunkloader_coin" FormatArgs="§2,48,96,192" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CoinChunkloaderTierIV" ToolTip="customtooltip.chunkloader_coin" FormatArgs="§8,96,192,384" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CoinChunkloaderTierV" ToolTip="customtooltip.chunkloader_coin" FormatArgs="§7,192,384,768" NBT=""/>
+	<ToolTip ItemName="minecraft:ender_pearl" ToolTip="customtooltip.ender_pearl_chunkloader" NBT=""/>
+	<ToolTip ItemName="dreamcraft:CoinDonation" ToolTip="customtooltip.donation_servers" NBT=""/>
+
+//Draconic Evolution
+	<ToolTip ItemName="dreamcraft:MalformedSlush" ToolTip="customtooltip.slush_warning" NBT=""/>
+	<ToolTip ItemName="dreamcraft:UncookedSlush" ToolTip="customtooltip.slush_cooking" NBT=""/>
+	<ToolTip ItemName="dreamcraft:GlowingMarshmallow" ToolTip="customtooltip.marshmallow_glow" NBT=""/>
+	<ToolTip ItemName="dreamcraft:Marshmallow" ToolTip="customtooltip.marshmallow_wired" NBT=""/>
+
+//Electro-Magic Tools
+	<ToolTip ItemName="EMT:NanosuitGogglesRevealing" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:NanosuitWing" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:NanoBootsTraveller" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:QuantumGogglesRevealing" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:QuantumWing" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:QuantumBootsTraveller" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:itemArmorQuantumChestplate" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:SuperchargedMjolnir" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:ElectricScribingTools" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:ThaumiumDrill" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:DiamondChainsaw" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:ThaumiumChainsaw" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:Omnitool" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:Diamond Omnitool" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:ThaumiumOmnitool" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:ChainsawStream" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:DrillRockbreaker" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="EMT:ElectricHoeGrowth" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+
+//Graviation Suite
+	<ToolTip ItemName="GraviSuite:graviChestPlate" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:advNanoChestPlate" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:ultimateLappack" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:advLappack" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:advJetpack" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:vajra" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:advDDrill" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:advChainsaw" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:graviTool" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="GraviSuite:relocator" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+
+//Gravitation Suite Neo
+	<ToolTip ItemName="gravisuiteneo:epicLappack" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§aIV" NBT="" MetaStart="1" MetaEnd="27"/>
+
+//Gregtech
+	<ToolTip ItemName="gregtech:gt.blockmachines:108" ToolTip="customtooltip.deprecated_furnace" NBT=""/>
+	<ToolTip ItemName="gregtech:gt.blockmachines:1154" ToolTip="customtooltip.coolant_steam_5x" NBT=""/>
+	<ToolTip ItemName="gregtech:gt.blockmachines:1157" ToolTip="customtooltip.black_gold_rip" NBT=""/>
+	<ToolTip ItemName="gregtech:gt.metaitem.01:8150" ToolTip="customtooltip.crystallized_shards" NBT=""/>
+
+//IC2
+	<ToolTip ItemName="IC2:itemNightvisionGoggles" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorNanoHelmet" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorNanoChestplate" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorNanoLegs" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorNanoBoots" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorQuantumHelmet" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorQuantumChestplate" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorQuantumLegs" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorQuantumBoots" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorJetpackElectric" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemToolDrill" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemToolDDrill" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemToolIridiumDrill" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemToolChainsaw" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemToolChainsaw" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemToolWrenchElectric" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemTreetapElectric" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemToolMiningLaser" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemNanoSaber" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:plasmaLauncher" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:obscurator" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorBatpack" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:obscurator" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorAdvBatpack" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemArmorEnergypack" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemBatRE" ToolTip="customtooltip.battery_tier" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="27"/>
+	<ToolTip ItemName="IC2:itemBatREDischarged" ToolTip="customtooltip.battery_tier" FormatArgs="§7LV" NBT=""/>
+	<ToolTip ItemName="IC2:itemAdvBat" ToolTip="customtooltip.battery_tier" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemBatCrystal" ToolTip="customtooltip.battery_tier" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemBatLamaCrystal" ToolTip="customtooltip.battery_tier" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemBatChargeRE" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§7LV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemBatChargeAdv" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemBatChargeCrystal" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemBatChargeLamaCrystal" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="26"/>
+	<ToolTip ItemName="IC2:itemPartCircuit" ToolTip="customtooltip.battery_tier" FormatArgs="§7LV" NBT=""/>
+	<ToolTip ItemName="IC2:itemPartCircuitAdv" ToolTip="customtooltip.battery_tier" FormatArgs="§eHV" NBT=""/>
+
+//OMT - AddOns
+	<ToolTip ItemName="openmodularturrets:solarPanelAddon" ToolTip="customtooltip.disabled_item" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:redstoneReactorAddon" ToolTip="customtooltip.disabled_item" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:potentiaAddon" ToolTip="customtooltip.disabled_item" NBT=""/>
+
+//OMT - Fences
+	<ToolTip ItemName="openmodularturrets:fenceTierOne" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="10,10" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:fenceTierTwo" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="20,20" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:fenceTierThree" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="30,30" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:fenceTierFour" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="50,50" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:fenceTierFive" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="80,80" NBT=""/>
+
+//OMT - Walls
+	<ToolTip ItemName="openmodularturrets:hardWallTierOne" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="10,10" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:hardWallTierTwo" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="20,20" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:hardWallTierThree" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="30,30" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:hardWallTierFour" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="50,50" NBT=""/>
+	<ToolTip ItemName="openmodularturrets:hardWallTierFive" ToolTip="customtooltip.omt_hardness_resistance" FormatArgs="80,80" NBT=""/>
+
+//Thaumic Boots
+	<ToolTip ItemName="thaumicboots:item.ItemElectricVoid" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemNanoVoid" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemQuantumVoid" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemElectricMeteor" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemNanoMeteor" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemQuantumMeteor" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemElectricComet" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§6MV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemNanoComet" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§eHV" NBT="" MetaStart="1" MetaEnd="325"/>
+	<ToolTip ItemName="thaumicboots:item.ItemQuantumComet" ToolTip="customtooltip.recharge_tier_machine" FormatArgs="§8EV" NBT="" MetaStart="1" MetaEnd="325"/>
+
+//Tinkers Construct
+	<ToolTip ItemName="TConstruct:Smeltery" ToolTip="customtooltip.smeltery_purity_warning" NBT=""/>
+	<ToolTip ItemName="TConstruct:LavaTank" ToolTip="customtooltip.smeltery_purity_warning" NBT=""/>
+	<ToolTip ItemName="TConstruct:SearedBlock" ToolTip="customtooltip.smeltery_purity_warning" NBT=""/>
+	<ToolTip ItemName="TConstruct:SearedBlock:1" ToolTip="customtooltip.smeltery_purity_warning" NBT=""/>
+	<ToolTip ItemName="TConstruct:SearedBlock:2" ToolTip="customtooltip.smeltery_purity_warning" NBT=""/>
+	<ToolTip ItemName="TConstruct:CastingChannel" ToolTip="customtooltip.smeltery_purity_warning" NBT=""/>
+	<ToolTip ItemName="TConstruct:oreBerries" ToolTip="customtooltip.crops_nh_oreberries" NBT="" MetaStart="0" MetaEnd="5"/>
+
+//Cubic Zirconia
+	<ToolTip ItemName="bartworks:gt.bwMetaGenerateddust:4" ToolTip="customtooltip.check_ebf_recipe" NBT=""/>
+	<ToolTip ItemName="bartworks:gt.bwMetaGeneratedgem:4" ToolTip="customtooltip.check_ebf_recipe" NBT=""/>
+
+//Orundum
+	<ToolTip ItemName="bartworks:gt.bwMetaGenerateddust:10023" ToolTip="customtooltip.check_press_recipe" NBT=""/>
+	<ToolTip ItemName="bartworks:gt.bwMetaGeneratedgem:10023" ToolTip="customtooltip.check_press_recipe" NBT=""/>
+	<ToolTip ItemName="bartworks:bw.blockores.01:10023" ToolTip="customtooltip.check_press_recipe" NBT=""/>
+
+//Bee housings
+	<ToolTip ItemName="Forestry:apiculture" ToolTip="customtooltip.bee_apiary" NBT=""/>
+	<ToolTip ItemName="Forestry:apiculture:2" ToolTip="customtooltip.bee_house" NBT=""/>
+	<ToolTip ItemName="Forestry:alveary" ToolTip="customtooltip.bee_alveary" NBT=""/>
+	<ToolTip ItemName="MagicBees:magicApiary" ToolTip="customtooltip.bee_magic_apiary" NBT=""/>
+	<ToolTip ItemName="MagicBees:manaAuraProvider" ToolTip="customtooltip.magic_aura_range" NBT=""/>
+	<ToolTip ItemName="MagicBees:visAuraProvider" ToolTip="customtooltip.magic_aura_range" NBT=""/>
+
+</CustomToolTips>

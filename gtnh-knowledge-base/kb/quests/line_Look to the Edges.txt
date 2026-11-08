@@ -1,0 +1,524 @@
+# 任务线: Look to the Edges
+### [1651] A Dark Path to Travel Down...
+...but a path laden with power beyond imagination. Behold mortal, and be terrified!
+  - [提交] witchery:vampirebook
+  > 奖励: BloodArsenal:vampire_cape | enhancedlootbags:lootbag:54 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinWitchII x2
+
+### [1587] Another Cauldron
+After we have enough coins we can craft the cauldron and transfer it.
+  - [提交] witchery:cauldron, minecraft:bucket x4, minecraft:netherrack, minecraft:flint_and_steel
+  - [到达] 
+  - [提交] dreamcraft:CoinWitchII x5
+  > 奖励: minecraft:flint_and_steel | minecraft:glass_bottle x16 | minecraft:bucket x4 | minecraft:netherrack | witchery:cauldron
+
+### [2421] Are You Grassping What I'm Telling You?
+To make Grasspers, first you need to arrange Grass in the cardinal directions around a Chest above a block of water. Then right-click the Chest with your Mutating Sprig.
+  - [提交] witchery:grassper x4
+  > 奖励: enhancedlootbags:lootbag:53 | dreamcraft:CoinWitchII
+
+### [2341] Arthana
+An Arthana is a ritualistic knife used by witches and warlocks to both collect special ingredients and to perform some rites. It has the same general properties as a golden sword (damage, enchantability, etc.), although it has the durability of an iron sword. It is repaired with a Gold Ingot.  The main purpose of the dagger is to collect specialist ingredients used in witchcraft, and to this end it will dramatically improve the chance of a mob dropping such ingredients (e.g. Wool of Bat, Tongue of Dog, etc.). It also gives a small chance of undead dropping Spectral Dust.  When only using vanilla Minecraft with Witchery (and no other mods), an Arthana dagger is the only way to get a skull to drop when a skeleton is killed, the drop chance is about 5% (the skull is a key upgrade for an altar). The dagger even gives a very small probability for other head drops (from mobs and players). All drop chances are increased with the Looting enchantment.  An Arthana does not change the drop chance for Wither Skeleton Skulls, that will require the Looting enchantment as usual.  Some Circle Magic rites use an Arthana as a focus, the Arthana is not consumed in the process.
+  - [提交] witchery:arthana
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinWitchI x5
+
+### [1568] Attuned Stone
+An attuned stone is a Mana Diamond that has been further infused with natural magic in a fiery medium. Attuned stones can be used to link non-magical devices to the magical currents present in the world, and are one of the main ingredients in crafting distilleries, kettles, altar foci and poppet shelves.  The other main use of attuned stones is to act as a portable power source for circle magic rites, when a nearby altar is not available. To act in such a way, the attuned stone must first be charged with a Rite of Charging.  [note]If you haven't yet obtained a Mana Diamond, checkout the Flower Power tab for more information![/note]
+  - [可选提交] witchery:ingredient:34, Botania:manaResource:2, minecraft:lava_bucket
+  - [提交] witchery:ingredient:10
+  > 奖励: witchery:ingredient:27 x8 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [349] Be a Vampire; Dress Like a Fancy Person
+Sometimes it can be troublesome to get fancy clothing. However, if you prove yourself worthy, you get a set for free.
+  - [提交] witchery:quiverofmog, witchery:gurdleofgulg, witchery:babashat
+  > 奖励: witchery:vampirehat | witchery:vampirecoat | witchery:vampirelegs | witchery:vampireboots | enhancedlootbags:lootbag:54 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinAdventureII x2 | dreamcraft:CoinWitchII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1579] Better Nightmare Protection
+The Charm of Fanciful Thinking is the only way to protect oneself from some of the worst effects a nightmare can throw at you. It just needs to be in a player's inventory for it to function.  A Charm of Fanciful Thinking is crafted using Sticks and Fanciful Thread.
+  - [可选提交] witchery:ingredient:100, minecraft:stick x8
+  - [提交] witchery:ingredient:110
+  > 奖励: witchery:somniancotton x16 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [348] Bloodlust: "Cain" Sword
+Serves 2 purposes: Style. And... ah, yeah... Something useful for vampires.
+  - [击杀] target=witchery.goblinmog n=
+  - [击杀] target=witchery.goblingulg n=
+  > 奖励: witchery:canesword | enhancedlootbags:lootbag:54 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinWitchI x5
+
+### [343] Bloodlust: Ghast Tear
+If you can't pin down a ghast but still want to make refined evil.
+  - [提交] witchery:taglockkit x32, TConstruct:strangeFood:1 x32, witchery:glassgoblet
+  > 奖励: minecraft:ghast_tear | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [344] Bloodlust: Witches Hand
+In case you don't like the infernal witches...
+  - [提交] minecraft:gold_nugget x16, witchery:ingredient:29 x16
+  > 奖励: witchery:witchhand | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [347] Bloodlust: Wool of Bat
+In case you just can't get it to drop.
+  - [击杀] target=witchery.hellhound n=
+  > 奖励: witchery:ingredient:24 | enhancedlootbags:lootbag:54 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1649] Books Are For Nerds...
+...And sexy male librarians. And also smart witches who want to learn their way around. Craft the first group of Witchery books, or find them in a village.
+  - [提交] witchery:ingredient:81, witchery:ingredient:106, witchery:ingredient:127, witchery:ingredient:46, witchery:cauldronbook
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinWitchI x5
+
+### [1584] Brew of Flowing Spirit
+The Brew of Flowing Spirit captures the essence of the Spirit World in liquid form. It can only be brewed in the Spirit World!  The Brew can be thrown at the ground and the liquid will burst out (the source block can later be picked up in a bucket). Standing in the liquid will have a minor healing effect for most creatures. Demonic or undead creatures will be weakened. Nightmares standing in the liquid will lose their invulnerability effect!  Having a pool of flowing spirit near a Dream Weaver of Nightmares will decrease the chance of a nightmare by 10 percent for each source block (up to 3).
+  - [到达] 
+  - [可选提交] witchery:ingredient:100, witchery:spanishmoss, witchery:ingredient:69, witchery:ingredient:22, witchery:glintweed, witchery:ingredient:24
+  - [提交] witchery:ingredient:96 x3
+  > 奖励: witchery:somniancotton x32 | enhancedlootbags:lootbag:55 | dreamcraft:CoinWitchII x5 | dreamcraft:CoinCookII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [1562] Brew of Love
+The Brew of Love is a throwable potion that causes farm animals and villagers to get their luvin' on. When used on animals the effect is the same as if all hit animals were fed and their breeding cooldown is reset.  In the case of villagers, two (or more) must be hit by the same brew.  The Brew of Love may be thrown at a group of two or more enthralled zombies (created with a Brew of Raising or enthralled with the Infernal Infusion power), which will cause pairs of them to produce a baby zombie. It will also cause them to become zombie villagers. Zombie villagers can be turned back to villagers either using the normal method, or by casting a Rite of Fertility.  The Brew of Love is created in a kettle using the recipe found in the book Witchcraft: Brews & Infusions. Into the pot, throw a Rose, a Golden Carrot, Whiff of Magic, a Lily Pad, a Water Artichoke Globe and Cocoa Beans.  Wear a Witches Hat (and/or robes) while brewing to get more brews than just three.
+  - [可选提交] minecraft:red_flower, minecraft:golden_carrot, minecraft:waterlily, witchery:ingredient:69, minecraft:dye:3, witchery:ingredient:34
+  - [提交] witchery:ingredient:75 x3
+  > 奖励: minecraft:glass_bottle x16 | witchery:ingredient:27 x64 | enhancedlootbags:lootbag:53 | dreamcraft:CoinCookI x5 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [334] ...Cauldron Bubble
+The second thing you'll need is a cauldron. It is used to craft most of the basic items, like mutandis. It requires anointing paste, which you will need an MV mixer to make. It is made by placing a regular Cauldron in the world, and then using Anointing Paste on it.  To brew a potion, cast a ritual or create an item, the cauldron must first be filled with water. This can be achieved by using three buckets of water on it, pumping water into it using pipes, or by using a Dispenser containing a Brew of Endless Water.  Once a cauldron is full of water, it must boil. Lighting a fire beneath the cauldron is the only way for this to happen. Using a netherrack block will guarantee the fire does not go out, although if it does go out, it may be set to boil again without any consequences (unlike brewing in a Kettle!).  When the water is boiling, ingredients may be added to the Cauldron (one after another), to create the desired effect. The book, Witches' Brews gives a complete overview of all ingredients and what they can do when added to a brew.
+  - [提交] witchery:ingredient:153, witchery:cauldron
+  > 奖励: minecraft:bucket x4 | enhancedlootbags:lootbag:53 | dreamcraft:CoinCookI x5 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [2340] Chalice
+The chalice is an upgrade for an altar that improves the maximum amount of power an altar can hold. The chalice will increase the maximum power by 1x the base power rate.  The chalice upgrades to the Filled Chalice. Only one chalice upgrade will have an effect on an altar.
+  - [提交] witchery:ingredient:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinWitchI x5
+
+### [2417] Changing Biomes With Witchery
+There are two ways to change biomes with Witchery, the easy way or the hard way, choose which one you want to do (or do them both). Remember that you need a Witchery Distillery first!
+  - [勾选确认]
+
+### [339] Circle Magic
+For circle magic, you need... a circle, obviously. There are 4 types of chalk you can use, and you'll need all of them to proceed.
+  - [提交] witchery:chalkritual, witchery:chalkheart, witchery:chalkinfernal, witchery:chalkotherwhere, witchery:circletalisman
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII | dreamcraft:CoinWitchII
+
+### [2334] Demonic Contract
+A Demonic Contract is written on parchment made from the resurrected flesh of the dead. The contract is signed in the blood of the individual to whom it pertains.  A plain demonic contract is used to make a deal with Flame Imps. The basic contract is crafted with a Taglock Kit containing the blood of the witch (or warlock).  When performing Imp Magic, a plain contract is first crafted with reagents pertaining to the spell effect, and then signed in the blood of the target by crafting it with a Taglock Kit containing the targets blood.
+  - [可选提交] minecraft:paper x4, minecraft:string x4, witchery:ingredient:163
+  - [提交] witchery:ingredient:140
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinWitchI x5
+
+### [1574] Diamond Vapor
+Diamond vapor is an ingredient made by distilling diamond in a distillery according to the recipe in the book, Witchcraft: Distilling, using a Diamond and Oil of Vitriol.
+  - [可选提交] minecraft:diamond x2, witchery:ingredient:30 x2, witchery:ingredient:27 x6
+  - [提交] witchery:ingredient:29 x4
+  > 奖励: witchery:ingredient:27 x16 | enhancedlootbags:lootbag:54 | dreamcraft:CoinCookII | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1580] Digging Faster!
+The Dream Weaver of Iron Arm will add a mining speed boost to a player when they wake up from a good night's sleep. If the dream weaver is corrupted by a nearby Dream Weaver of Nightmares, the weaver will instead add a mining speed slowdown effect to the player.
+  - [可选提交] witchery:ingredient:101, witchery:ingredient:100 x2, minecraft:item_frame, minecraft:feather x2, minecraft:potion:16456, minecraft:potion:16457, witchery:ingredient:29
+  - [提交] witchery:ingredient:4
+  > 奖励: witchery:somniancotton x4 | witchery:ingredient:99 x4 | enhancedlootbags:lootbag:54 | dreamcraft:CoinSurvivorII | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1571] Distillery
+A distillery used by a witch is a construct used for distilling magical ingredients. It is unlike a normal distillery, because it heats itself using energy obtained from a nearby altar. The distillery must be within about 14 - 16 blocks of an altar to draw power from it - a small icon is shown in the interface if no power is available.  One or two ingredients are distilled together and will result in up to four resulting materials. A supply of clay jars is also needed to capture some or all of the distillates.
+  - [提交] witchery:distilleryidle
+  > 奖励: witchery:ingredient:27 x64 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [337] Don't Shake it Too Much
+Unlike nitroglycerin, this stuff doesn't explode. But you still shouldn't shake it too much...
+  - [提交] witchery:brew.fuel
+  > 奖励: witchery:ingredient:22 x3 | witchery:seedsmandrake x3 | enhancedlootbags:lootbag:52 | dreamcraft:CoinChemist x25 | dreamcraft:CoinDarkWizard x25
+
+### [335] Don't Touch the Needle!
+While having not many recipes by itself, the few it has are rather important for your further witchery progression.
+  - [提交] witchery:spinningwheel
+  > 奖励: minecraft:string x20 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1586] Dream Distillery
+You probably want a Distillery too.
+  - [提交] witchery:distilleryidle, witchery:ingredient:27 x64
+  - [到达] 
+  - [提交] dreamcraft:CoinWitchII x5
+  > 奖励: witchery:distilleryidle | witchery:ingredient:27 x64
+
+### [1590] Dreaming Mutandis
+Go and find some chicken and eggs, brew some Exhale of the Horned One in your oven and plant some mandrake. Make a stack of mutandis to get some witchery tree saplings. Gravel hoes are good enough for planting stuff.
+  - [到达] 
+  - [可选提交] minecraft:egg x10, witchery:ingredient:22 x10, witchery:ingredient:31 x10
+  - [提交] witchery:ingredient:14 x60
+  > 奖励: minecraft:glass_bottle x16 | witchery:ingredient:27 x16 | dreamcraft:CoinWitchII x2
+
+### [3271] Dreams of Gold
+Just try to dream of gold.
+  - [提交] witchery:ingredient:102 x4
+  - [到达] 
+  - [提交] dreamcraft:CoinWitchII x5
+  > 奖励: witchery:ingredient:102 x4
+
+### [1566] Early Bird Gets the...Nightmare?
+You woke up very early because of the nightmares following you in the dream world.  You weren't prepared for it, so let's get some stuff together first and enter a second time to get some wispy/disturbed cotton.  If you haven't unlocked your Brewing stand yet, you have to do it first. Look in the Novice Thaumaturge tab for the quest.
+  - [提交] witchery:ingredient:78 x3, minecraft:potion:8198 x3
+  > 奖励: AWWayofTime:alchemyFlask:6 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [2338] Ent Twig
+An Ent Twig is dropped when an Ent is killed, which can be used to craft Mutating Sprigs and Mystic Branches.  Ents will appear occasionally when trees such as Rowan, Hawthorn and Alder are felled in large quantities.  They are rather hard to kill by normal means, but they do have a healthy hatred of certain tools for some reason or another.  They can also drop a Twilight Forest Moss Patch or Biomes O' Plenty Moss.
+  - [提交] witchery:ingredient:82
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinWitchI x5
+
+### [1591] Exhale of the Dreaming Horned One
+For later use do a few Exhale of the Horned One.
+  - [到达] 
+  - [可选提交] minecraft:sapling x64, witchery:ingredient:27 x16
+  - [提交] witchery:ingredient:31 x16
+  > 奖励: witchery:ingredient:27 x8 | dreamcraft:CoinWitchII
+
+### [1554] Exhale of the Horned One
+Exhale of the Horned One is an ingredient used in many recipes. It is acquired with a random chance when burning Oak saplings in an oven.  You'll also get Wood Ash when burning saplings. It's useful, don't toss it.
+  - [可选提交] minecraft:sapling x64, witchery:ingredient:27 x16
+  - [提交] witchery:ingredient:31 x16
+  > 奖励: witchery:ingredient:27 x8 | enhancedlootbags:lootbag:52 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1578] Fanciful Thread
+Fanciful Thread is spun from Wispy Cotton using a Spinning Wheel. It is an ingredient used to make Dream Catchers.  It is made in a Spinning Wheel using Wispy Cotton, String and Odour of Purity.
+  - [可选提交] witchery:ingredient:102 x4, witchery:ingredient:36 x4, witchery:somniancotton x16
+  - [提交] witchery:ingredient:100 x4
+  > 奖励: witchery:somniancotton x8 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1595] Fanciful Thread
+Fanciful Thread is spun from Wispy Cotton using a Spinning Wheel. It is an ingredient used to make the Potion of Flowing Spirit. This can be brewed only in the spirit world.
+  - [可选提交] witchery:ingredient:102 x4, witchery:ingredient:36 x4, witchery:somniancotton x16
+  - [提交] witchery:ingredient:100 x4
+  > 奖励: bq_standard:choice | minecraft:shears
+
+### [2424] Finally Binding a Familiar
+Now that you have Toads and Owls, you can choose between them and Cats to bind. Why didn't we just bind a Cat earlier? Well, you'll need them both soon anyways, and who doesn't love choices? To carry out the Rite of Binding (P6, Circle Magic), you'll need to distill some Demonic Blood. Do that now, and collect the rest of the items needed.  After collecting the items, bind your familiar using them. Make sure you have enough Altar Power. Remember that each has different benefits. See the official wiki for details. You may receive a tiny portion of damage your familiar receives (and vice versa), so park it somewhere safe. Also note that if it dies, so will you (Supposedly). You can resummon it if it dies or was dismissed previously (like if you died). If you're in hardcore mode and don't want to risk having it around, it can be dismissed by right-clicking while sneaking when it's sitting.  Now go murder a few of your new friends and tear of their Owlet's Wings, and cut off their Toe of Frog. Remember to use an Arthana. The next step needs a Seer's Stone.
+  - [提交] witchery:ingredient:37, witchery:ingredient:36, witchery:ingredient:34, minecraft:diamond, witchery:ingredient:80
+  - [击杀] target=witchery.toad n=
+  - [击杀] target=witchery.owl n=
+  > 奖励: enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII
+
+### [332] Fire Burn and...
+In order to get started with your basic witchery needs, you need a Witches Oven.  The Witches Oven is used to get the most basic ingredients for your recipes - Fumes.  The oven is able to capture the by-products produced in the cooking process. Activating the oven to show the interface screen, you will see an additional slot to the right of the fuel slot. Clay jars must be placed in this slot. If there are clay jars present when something is cooked, there is a chance a by-product will be captured in one of the jars. These by-products are important ingredients in other recipes. If there are no clay jars in the oven when something is cooked, no by-products will be produced.  Upgrading an Oven  An oven can be upgraded by placing either a Fume Funnel or a Filtered Fume Funnel to the left and right of it. Each Fume Funnel will increase the cooking speed by an additional 10 percent (over a furnace) and increase the chance of a by-product being produced by an additional 25 percent for a Fume Funnel or 30 percent for a Filtered Fume Funnel.  A fully upgraded oven will therefore cook at 130 percent speed (compared to a furnace) and have a 90 percent chance of producing a by-product.
+  - [提交] witchery:witchesovenidle, witchery:ingredient:27 x20
+  > 奖励: enhancedlootbags:lootbag:52 | minecraft:sapling:2 x30 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [2347] Flame Imp
+Flame Imps are demons strongly associated with fiery magic.  Not as physically strong as their dimmer cousins, Flame Imps are mischievous creatures who are very easily swayed with the promise of personal gain. They may even be bound into the service of a witch (or warlock) if the offer is good enough.  Flame Imps are summoned using a Rite of Summoning, and they are most likely to attack the first person they see. It is advisable to make a deal with them quickly.  Making a deal  To bind a Flame Imp into service, a witch must write the agreement into a Demonic Contract and sign it with their own blood (craft with a Taglock Kit). This contract must then be given to the Flame Imp, who will require a down-payment of Experience Levels (typically 25).  Once a deal is struck, the imp will be bound to the location of the deal, not able to wander too far away. The Imp will attack anyone hostile to its master.  Imps like receiving valuable gifts, once suitably impressed an imp may be prepared to perform various flame related spells at the request of their master.  Spells take the form of contracts describing what must be done and to whom. Simply craft a Demonic Contract with the necessary components and then the resulting contract with a taglock. Then give the contract to the Imp. So long as the creature is in the same dimension, the magic will take hold.  A Flame imp may also occasionally give a gift in return for being given valuable things. These have been known to include the souls of demons that can be consumed to allow a witch to cast demonic spells.  A very well treated Flame Imp may even yield knowledge to summon a Lord of Torment.
+  - [提交] witchery:ingredient:38, witchery:ingredient:80, minecraft:ender_pearl, witchery:ingredient:10
+  - [提交] witchery:ingredient:140, witchery:taglockkit
+  - [提交] minecraft:diamond x16
+  - [提交] witchery:ingredient:141
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinWitchII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [341] Flying OINKment
+You tried, it doesn't fly. And it also doesn't make any OINK sounds, sadly. But there might be some use for it...
+  - [提交] witchery:ingredient:41
+  > 奖励: minecraft:diamond x5 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1575] Foul Fume
+A foul fume (commonly known as sulfur dioxide) is an ingredient used in many recipes. It is acquired with a random chance when cooking vanilla food items (such as bread or raw meats) or jungle saplings in an oven.  [warn]Food and Wood burning in the oven is currently broken, use saplings instead.[/warn]
+  - [可选提交] witchery:ingredient:27 x8
+  - [提交] witchery:ingredient:28 x16
+  > 奖励: witchery:ingredient:27 x8 | enhancedlootbags:lootbag:52 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1650] Going to Need a Big Hat...
+...to fit all this knowledge. Get some more books!
+  - [提交] witchery:ingredient:107, witchery:ingredient:47, witchery:ingredient:48, witchery:ingredient:49
+  > 奖励: bq_standard:choice | dreamcraft:CoinWitchII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2425] Greenhouses on Mountains, Hell on Earth
+You're almost there! To actually use the ritual, you need to recruit a coven first. Find some Coven Witches and complete their quests: The means to control the dead -> Necromantic Stone The beating means to master the infernal dimension -> Demon Heart I must perform many curses, bring me the necessary brew -> Brew of the Grotesquex5 I desire to predict the future -> Crystal Ball Or just fight something.  Once completed, they'll disappear until you need them. They will sometimes appear near your spawn point if you walk by it, so don't position it over lava or something, since they CAN die and reduce the number of your coven. You can have 6, with one extra appearing for Cauldron work. Consider keeping some extras around in a dungeon just in case.  After you recruit your coven, you just need a few things for the ritual itself: Spider Eye, Toe of Frog, Wool of Bat, Tongue of Dog, Owlet's Wing, Attuned Stone, and Attuned Stone (Charged).  To specify the biome, look in the Book of Biomes, and find 1) the type (Forest, Plains, etc.), and 2) the number. Type determines the foci used, and number determines the amount of Glowstone Dust used to get that specific biome. Make sure to pack up a ritual circle into a circle talisman so you don't have to redraw it, and bring some cobblestone to make a flat area (15x15, any height). Try not to do it at night unless you like dealing with infernals.  To actually do the ritual, have the ritual circle on the ground, the items (including the foci and Glowstone) in the circle, and right-click the center with the Seer's Stone.  The area affected is determined by the number of witches in your coven. It's 16 * (size of coven - 3) radius in a circular area, so 16/32/48 if it doesn't fail.  Unfortunately, sometimes after logging out and back in again, you may find that it didn't work correctly in specific chunks, this is (possibly) due to a lack of chunk updates and it not saving the changed biome ID correctly. Just redoing the ritual doesn't really help, you'll just get patches in the same places, however placing water after the ritual and before logging out may help with this. Or use chickens. Lots of chickens.  Also, if you already have crops in the area, they'll disappear until a block update or relog.  [note]PS: To pack your circle back up, you need to bring an extra Charged Attuned stone and an extra piece of glowstone to get it back into the circle talisman, as seen on page 3 of Witchraft: Circle Magic.[/note]
+  - [提交] minecraft:spider_eye, witchery:ingredient:90, witchery:ingredient:24, witchery:ingredient:25, witchery:ingredient:89, witchery:ingredient:10, witchery:ingredient:11
+  > 奖励: enhancedlootbags:lootbag:56 | minecraft:spider_eye x8 | witchery:ingredient:90 x8 | witchery:ingredient:24 x8 | witchery:ingredient:25 x8 | witchery:ingredient:89 x8 | witchery:ingredient:10 x8 | witchery:ingredient:11 x8 | minecraft:glowstone_dust x64 | dreamcraft:CoinWitchII x5
+
+### [2342] Happenstance Oil
+Happenstance Oil is an ingredient used in the production of a Crystal Ball and the Seer Stone.  It's created in a kettle using Redstone Soup, Potion of Night Vision (8:00), Eye of Ender, Golden Carrot, Spider Eye and Mandrake Root.
+  - [可选提交] witchery:ingredient:40, minecraft:ender_eye, minecraft:potion:8262, minecraft:spider_eye, minecraft:golden_carrot, witchery:ingredient:22
+  - [提交] witchery:ingredient:93
+  > 奖励: bq_standard:choice | dreamcraft:CoinCookII | dreamcraft:CoinChemistII | dreamcraft:CoinWitchII
+
+### [1582] Hunger No More!
+The Dream Weaver of Fasting will add a boost to the saturation of a player when they wake up from a good night's sleep, essentially meaning they will not get hungry for the duration of the effect. If the dream weaver is corrupted by a nearby Dream Weaver of Nightmares, the weaver will instead add a hunger effect to the player.
+  - [可选提交] witchery:ingredient:101, witchery:ingredient:100 x2, minecraft:item_frame, minecraft:feather x2, witchery:ingredient:103, minecraft:potion:16421, witchery:ingredient:29
+  - [提交] witchery:ingredient:5
+  > 奖励: witchery:somniancotton x4 | witchery:ingredient:99 x4 | enhancedlootbags:lootbag:54 | dreamcraft:CoinSurvivorII | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1593] Kettle for the Spirit World
+A kettle is needed in the spirit world too.
+  - [提交] minecraft:netherrack, minecraft:flint_and_steel, witchery:kettle
+  - [到达] 
+  - [提交] dreamcraft:CoinWitchII x5
+  > 奖励: witchery:kettle | minecraft:netherrack | minecraft:glass_bottle x16 | minecraft:flint_and_steel
+
+### [1647] Leather Goddess of Robe-us
+To make appropriate witchwear, you'll need to make some impregnated leather with your diamond vapor.
+  - [提交] witchery:ingredient:72 x12
+  > 奖励: witchery:ingredient:72 x4 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2348] Lord of Torment
+A Lord of Torment is a mighty demonic being that is able to create prisons to Torment its victims.  Those foolish enough to summon one of these creatures must prepare for an arduous fight.  A Lord of Torment may only be summoned using the Ritual outlined in a Torment Scroll. These scrolls are hard to come by, but it is rumored that well treated Flame Imps have occasionally given them up.  Consuming the Soul of a Torment Demon grants the ability to Torment others.  If you are very unlucky and the Lord of Torment disappears when entering the Torment dimension, use the Egg and spawn another one.
+  - [提交] witchery:ingredient:141
+  - [到达] 
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinWitchII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [2423] Mad Science is the Best Science
+Next we need to fill our snares up with some critters, specifically Bats and Slimes. For the Bats, just place them beneath you and AFK if your warp is high enough to spawn bats, otherwise...uh, go caving?  For the Slimes, if you can't find any just use the Maze Slimes from the Minoshroom maze in the Twilight Forest for this. After you get them, also go collect a Wolf and an Ocelot (Lassos or Soul Vials are great for this).  Now we'll be creating new life, specifically Toads and Owls. Arrange a Cobweb above a water block with grasspers at the diagonals and one of the two sets of snares in the cardinal directions. Place Attuned Stone (Charged) in one of the Grasspers, and Mutandis Extremis in the other 3. Then place one of the two animals in the center and right-click with your Mutating Sprig like when making the snares. Use the Wolf with the Bats, and the Ocelot with the Slimes. The tamed versions also work.  Congratulations, you've defied the natural order and created new life! Hopefully they didn't run away because you created them outside. :(  Make sure to breed them for the next part. Use Raw Porkchop or Raw Beef for Owls, and Rotten Flesh for Toads to both tame and breed them.
+  - [提交] witchery:crittersnare:1 x4, witchery:crittersnare:3 x4
+  > 奖励: enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII
+
+### [2337] Mandrake Noise Protection
+Where would a Herbologist be without a trusty pair of Earmuffs? As soon as it comes time to harvest a crop of Mandrake, the farmer has two choices, either do it at night (and risk the typical nightly terrors), or don a pair of Earmuffs, and harvest away without fear of the Mandrake's screams. Indeed, Earmuffs are so effective at what they do, the wearer is unlikely to hear pretty much anything. This property may have benefits when dealing with Banshees too.  Earmuffs count as leather armor in terms of protection and durability.
+  - [可选提交] gregtech:gt.metaitem.01:28330 x2, gregtech:gt.metaitem.01:27330 x2, gregtech:gt.metaitem.02:24305, Backpack:tannedLeather x2
+  - [提交] witchery:earmuffs
+  > 奖励: Backpack:tannedLeather x2 | witchery:ingredient:22 x10 | dreamcraft:CoinFarmer x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1583] Mellifluous Hunger
+Mellifluous Hunger is an ingredient used in other recipes. It is dropped when a Nightmare is killed.
+  - [提交] witchery:ingredient:103
+  > 奖励: minecraft:potion:8258 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII | dreamcraft:CoinSurvivorII
+
+### [2420] More Hearts for Valentines
+If you want to get more hearts, you can try trading with the Demon, but they're more likely to shoot fireballs at you than trade. Unless you have this item that is! First, make the Polynesia Charm that allows you to trade with animals (probably not worth it in this pack), then use the demon heart to make the Devil's Tongue Charm. With this, not only are they a lot less likely to attack, they will even sell their brethren's hearts for a little less.  Just remember that it can only be used a limited number of times, OK? It might also be worthwhile to use the Rite of Protection at the same time as summoning a demon. To do so just put down both circles, and meet the item (and Altar Power) requirements of both. If you're not planning on killing the demon, you should probably send it back when you're done with the Rite of Banishing on page 47/48 of the Circle Magic book.
+  - [提交] witchery:devilstonguecharm
+  > 奖励: enhancedlootbags:lootbag:53 | minecraft:gold_ingot x16 | dreamcraft:CoinWitchII
+
+### [1597] More Power Now!
+The Dream Weaver of Intensity has two effects, firstly it will add a very short night vision effect (or blindness if corrupted by a nightmare) to a player when they wake up from a good night's sleep. Secondly, it will intensify all other nearby dream weavers so that they have either a stronger (but shorter lasting) effect or their duration is increased.
+  - [可选提交] witchery:ingredient:101, witchery:ingredient:100 x2, minecraft:item_frame, minecraft:feather x2, witchery:ingredient:96, witchery:ingredient:95, witchery:ingredient:29
+  - [提交] witchery:ingredient:104
+  > 奖励: witchery:somniancotton x8 | witchery:ingredient:99 x8 | enhancedlootbags:lootbag:55 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinWitchII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [1581] Moving Faster!
+The Dream Weaver of Fleet Foot will add a speed boost to a player when they wake up from a good night's sleep.  If the dream weaver is corrupted by a nearby Dream Weaver of Nightmares, the weaver will instead add a slowdown effect to the player.
+  - [可选提交] witchery:ingredient:101, witchery:ingredient:100 x2, minecraft:item_frame, minecraft:feather x2, minecraft:potion:16458, minecraft:potion:16450, witchery:ingredient:29
+  - [提交] witchery:ingredient:3
+  > 奖励: witchery:somniancotton x4 | witchery:ingredient:99 x4 | enhancedlootbags:lootbag:54 | dreamcraft:CoinSurvivorII | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [2336] Mutandis Extremis
+Mutandis Extremis is an upgraded version of Mutandis that is used by witches and warlocks to mutate plants into other species. Mutandis Extremis has all the same properties as basic Mutandis but it can even be used on multi-stage plants like wheat, cactus, etc. and can also mutate cooked meat.  If Mutandis Extremis is used on a Grass block there is a chance it will mutate it into Mycelium and vice versa.  If Mutandis Extremis is used on an underwater dirt block there is a chance it will mutate it (and nearby dirt) into clay blocks.  Mutating plants is the only way to acquire Rowan, Hawthorn and Alder saplings.  Some recipes require Mutandis Extremis as an ingredient.  Mutandis Extremis is crafted using Mutandis and Nether Wart.  [note]Some cauldron recipes require altar power. This is one of them; it requires 8000. Make sure you read the Witches' Brews book for information on Altar requirements.[/note]
+  - [可选提交] minecraft:nether_wart x16, witchery:ingredient:14 x16
+  - [提交] witchery:ingredient:15 x16
+  > 奖励: witchery:ingredient:14 x16 | witchery:ingredient:27 x32 | dreamcraft:CoinCookI x5 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1557] Mutated Saplings
+These saplings can initially be acquired only by using Mutandis on a valid block, such as a sapling, grass, etc.  You can cook them in the oven for unique fume types: Rowan: Whiff of Magic Hawthorn: Odour of Purity Alder: Reek of Misfortune  Rowan trees drop Rowan Berries, and you'll need to get some Alder Wood for your altar.
+  - [提交] witchery:witchsapling, witchery:witchsapling:2, witchery:witchsapling:1
+  > 奖励: witchery:ingredient:14 x16 | witchery:ingredient:27 x16 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1555] Mutate Your Saplings
+Mutandis is a mutagen that is used by witches and warlocks to mutate plants into other species. Simply use Mutandis on small plants, grass, flowers, saplings, etc. and it will be randomly converted to another plant. Mutandis cannot mutate multi-stage plants like wheat and cactus.  Mutating plants is the only way to acquire Rowan, Hawthorn and Alder saplings.  Mutandis has another interesting property when crafted with raw meat. It seems to mutate it into another type of raw meat. It even seems to have an effect on Rotten Flesh.  Some recipes require Mutandis as an ingredient.  Mutandis can be upgraded to Mutandis Extremis to have an effect on a wider variety of plants.  Mutandis is made in a Witches' Cauldron using Mandrake Root, Exhale of the Horned One and an Egg.
+  - [可选提交] minecraft:egg x8, witchery:ingredient:22 x8, witchery:ingredient:31 x8
+  - [提交] witchery:ingredient:14 x48
+  > 奖励: minecraft:glass_bottle x16 | witchery:ingredient:27 x16 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [2387] Mutating Sprig
+The Mutating Sprig brings a degree of order to the chaotic nature of Mutandis, allowing more limited, but also more predictable effects. It is a key tool in the creation of plant-based devices such as the Leech Chest.  The Mutating Sprig is crafted in the Witch's Cauldron using an Ent Twig, Nether Wart and Mutandis Extremis.  Grass - Mutates to Mycelium Mycelium - Mutates to Grass Dirt (under water) - Mutates to Clay  Wheat in a proper configuration should mutate to wormwood, but because of other mods it doesn't work. You can buy wormwood from the Coins tab instead.
+  - [提交] witchery:mutator
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinWitchI x5
+
+### [1572] Nightmare Protection
+The Dream Weaver of Nightmares has two effects, firstly it will add a short weakness effect to a player when they wake up from a good night's sleep. Secondly, it will corrupt all other nearby dream weavers so that they have the opposite effect. If the dream weaver is itself corrupted by another nearby Dream Weaver of Nightmares, it will add a short blindness effect instead of nausea.  The Dream Weaver of Nightmares can also be used to fend off nightmares when a Brew of Sleeping is drunk. Having the Dream Weaver nearby will reduce the chance of a nightmare to 50 percent (this can be decreased further by other means!).
+  - [可选提交] witchery:ingredient:101 x3, minecraft:item_frame, minecraft:feather x2, minecraft:potion:16454, minecraft:potion:16452, witchery:ingredient:29
+  - [提交] witchery:ingredient:6
+  > 奖励: witchery:ingredient:99 x8 | enhancedlootbags:lootbag:54 | dreamcraft:CoinSurvivorII | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1588] Nightmares
+Need more coins? Kill demons for coins. The world is better off without them.
+  - [击杀] target=witchery.demon n=
+  > 奖励: dreamcraft:CoinWitchII
+
+### [342] Nimbus 1999
+Not as good as its successor, the 2000'ish model, but still "somehow" useful...
+  - [提交] witchery:ingredient:9
+  > 奖励: witchery:ingredient:80 x2 | enhancedlootbags:lootbag:54 | dreamcraft:CoinAdventureII x2 | dreamcraft:CoinWitchII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [1645] Now I Feel Bad...
+...that I know creepers have hearts. Extract a few with your Arthana. You might want to add a few levels of Looting to get more drops.
+  - [提交] witchery:ingredient:74
+  > 奖励: minecraft:enchanted_book | enhancedlootbags:lootbag:53 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1559] Odour of Purity
+Odour of Purity is an ingredient used in many recipes. It is acquired with a random chance when burning Hawthorn saplings in an oven.
+  - [可选提交] witchery:witchsapling:2 x8, witchery:ingredient:27 x2
+  - [提交] witchery:ingredient:36 x2
+  > 奖励: witchery:ingredient:27 x2 | enhancedlootbags:lootbag:52 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1596] Odour of Purity in Dreams
+For later use do a few Odour of Purity.
+  - [到达] 
+  - [可选提交] witchery:witchsapling:2 x64, witchery:ingredient:27 x16
+  - [提交] witchery:ingredient:36 x16
+  > 奖励: witchery:ingredient:27 x8 | dreamcraft:CoinWitchII x3
+
+### [333] Offerings
+For all your offering needs. And of course, it looks fancy!  An altar is created by placing six altar blocks in a 2x3 pattern or by placing nine altar blocks in a 3x3 pattern. You will know it's correct when a red cloth appears over the top of the altar.  Right-clicking on it will bring up a screen showing how much power the altar has collected, how much it can collect and its current recharge rate. It is important to check that there is sufficient available power to perform a given rite or use a distillery, or certain kettle or cauldron recipes.  The maximum amount of power available is determined by how many natural items are in the vicinity of the altar: dirt, grass, trees, plants, etc. all contribute; stone and sand do not. The important thing is to have a diverse mix of different plants, trees and crops (plants from other mods are supported to an extent as well).  Certain objects (or foci) placed on the altar boost its focusing capabilities. This can increase the rate at which the altar replenishes focus, the focus capacity, and the focus range. Only one of each type of item (skull, chalice, etc.) has an effect. There may also be other less savory foci that dark magic practitioners could make use of.    [note]P.S. The 3x3 Altar doesn't provide any practical benefits over its 3x2 counterpart, however enjoy the increased ability to center it within your builds.[/note]
+  - [提交] witchery:altar x6
+  - [可选提交] witchery:ingredient
+  > 奖励: bq_standard:choice | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1592] Offerings in Your Dreams
+For all your offerings you'll need an altar too. The spinning wheel needs it also.
+  - [提交] witchery:altar x6, witchery:ingredient
+  - [到达] 
+  - [提交] dreamcraft:CoinWitchII x5
+  > 奖励: witchery:altar x6 | witchery:ingredient | witchery:arthana
+
+### [1573] Oil of Vitriol
+Oil of Vitriol is an ingredient produced in a distillery by using Foul Fume and Quicklime.
+  - [可选提交] witchery:ingredient:28 x16, witchery:ingredient:16 x16, witchery:ingredient:27 x16
+  - [提交] witchery:ingredient:30 x16
+  > 奖励: witchery:ingredient:24 x2 | witchery:ingredient:27 x16 | dreamcraft:CoinCookII | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [2422] PETA Approved*
+To make Critter Snares, first you need to arrange Alder Saplings in the cardinal directions around a Cobweb above a block of water. Then get a zombie to walk onto it and right-click the Cobweb with your Mutating Sprig. This will change the Saplings into the needed Critter Snares. Do this twice.  [note]* May not be PETA approved[/note]
+  - [提交] witchery:crittersnare x8
+  > 奖励: enhancedlootbags:lootbag:53 | dreamcraft:CoinWitchII
+
+### [346] Poppets
+Get a poppet and make the type you like with it to protect you against that thing. We recommend the death protection one.  Consider making the poppet shelf so you don't need to carry a bunch of them around with you. It needs to be chunkloaded to work.
+  - [提交] witchery:poppet
+  > 奖励: witchery:taglockkit x2 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [340] Portable Power Source
+By infusing a stone with fiery magic you can create an "Attuned Stone". These stones can be used to link non-magical devices to the magical currents present...
+  - [提交] witchery:ingredient:11 x5
+  > 奖励: witchery:ingredient:15 x10 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [336] Probably Usable For Soup
+But its main purpose is to brew potions and infusions.  A kettle must be set up in the correct way before it can be used.  Firstly, a fire must be set under the kettle (netherrack is best for this, but wood will do just as well).  Next the kettle must be filled. You can use pipes to automate this.  Thirdly, each of the six ingredients for the brew or infusion must be thrown into the kettle, one at a time (the liquid will change color according to the recipe being used).  Finally, a glass bottle must be used on the kettle to bottle the resulting brew, this must be done multiple times depending on the recipe.  It is important to keep the fire going constantly while the recipe is being prepared, otherwise it will be ruined. Swirls coming from the kettle is a sign all is well, black smoke (and brown liquid) indicates the brew is ruined. When a brew is ruined, the kettle must be emptied with a glass bottle, or just filled with more water, and the whole process repeated.  When a brew is complete, the liquid will be the color of the resulting brew and will splutter (in addition to white swirls).  Some recipes will require magical energy from a nearby Altar before they are bottled. If the brew is bottled when insufficient energy is available, the brew will be ruined. Black swirls coming from the Kettle is a good sign there is not enough power. A kettle must be within 14 (to 16) blocks of an Altar in order to obtain power from it (it can obtain power only from a single altar).
+  - [提交] witchery:kettle
+  > 奖励: enhancedlootbags:lootbag:53 | witchery:ingredient:22 x4 | dreamcraft:CoinCookI x5 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1561] Purified Milk
+Purified Milk is an antidote in a similar way to normal milk, although it only has a chance of working and will only remove a single status effect. It is advantageous because it can stack to 64 items.  Purified Milk is an ingredient in the Brew of Sleeping.
+  - [可选提交] minecraft:milk_bucket, witchery:ingredient:36, witchery:ingredient:27 x3
+  - [提交] witchery:ingredient:105 x3
+  > 奖励: witchery:ingredient:31 x2 | witchery:ingredient:34 x2 | witchery:ingredient:36 x2 | enhancedlootbags:lootbag:52 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [2343] Quartz Sphere
+A Quartz Sphere is a component used in the production of a Crystal Ball and the Seer Stone for summoning coven witches.
+  - [可选提交] gregtech:gt.metaitem.01:24890, gregtech:gt.metaitem.01:17522 x4, gregtech:gt.metaitem.01:17523 x2, gregtech:gt.metaitem.01:17516 x2
+  - [提交] witchery:ingredient:92
+  > 奖励: bq_standard:choice | dreamcraft:CoinCookII | dreamcraft:CoinChemistII | dreamcraft:CoinWitchII
+
+### [2339] Redstone Soup?
+Redstone soup is a witches brew that forms the base for all infusions, although it does have other uses.  Filling a chalice with redstone soup will increase its magical affinity and upgrade it to a filled chalice, doubling its effectiveness.  Drinking redstone soup will boost the health of the drinker for a few minutes.  Redstone Soup is made in a kettle. Into the pot, throw Redstone, Drop of Luck, Wool of Bat, Tongue of Dog, Belladonna and Mandrake Root.
+  - [可选提交] minecraft:redstone, witchery:ingredient:25, witchery:ingredient:22, witchery:ingredient:21, witchery:ingredient:39, witchery:ingredient:24
+  - [提交] witchery:ingredient:40
+  > 奖励: bq_standard:choice | dreamcraft:CoinCookII | dreamcraft:CoinChemistII | dreamcraft:CoinWitchII
+
+### [1569] Reek of Misfortune
+Reek of Misfortune is an ingredient used in many recipes. It is acquired with a random chance when burning Alder saplings in an oven.
+  - [可选提交] witchery:witchsapling:1 x8, witchery:ingredient:27 x2
+  - [提交] witchery:ingredient:35 x2
+  > 奖励: witchery:ingredient:27 x2 | enhancedlootbags:lootbag:52 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1646] Rumplestiltskin!
+Spinning hay into gold sounds like a fairy tale, but with your new magical spinning wheel you too can try tricking a queen into giving you their firstborn child.  You will need three for your witchwear, and can turn extra into gold nuggets in a furnace.
+  - [提交] witchery:ingredient:102 x2
+  > 奖励: witchery:ingredient:102 | enhancedlootbags:lootbag:54 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [345] Seeping Shoes
+Who needs an antidote? Now with free fertilizer!
+  - [提交] witchery:seepingshoes
+  > 奖励: enhancedlootbags:lootbag:54 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [2344] Seer Stone or Summon the Witches
+A Seer Stone is a variation of a Crystal Ball, that allows witches to communicate with one another over great distances. It is mostly used by one witch to summon other members of their coven either to help out in a fight, or to help perform a ritual. The seer stone may also be used on another player to reveal if they are afflicted by a curse.  To summon a coven witch for aid, use the Seer Stone while held. Holding for longer summons more coven members.  If near a Witches' Cauldron, the summoned witches will circle it ready for a ritual.  To call the entire coven to perform a rite, start the rite normally while holding the Seer Stone.  To determine if another player is cursed, to find out if they have a coven or familiar, and how much time they can manifest for, use the Seer Stone on them when they are within 3 blocks distance. Sneak-using the stone will show the same information for the bearer of the Stone.  A Seer Stone is created by infusing a Quartz Sphere with Obsidian and Happenstance Oil using a Rite of Infusion.
+  - [可选提交] witchery:ingredient:92, minecraft:obsidian, witchery:ingredient:93
+  - [提交] witchery:ingredient:94
+  > 奖励: bq_standard:choice | dreamcraft:CoinCookII | dreamcraft:CoinChemistII | dreamcraft:CoinWitchII
+
+### [1563] Sleep Well!
+The Brew of Sleeping is the normal way for a Witch to enter the Spirit World.  Needless to say an unprepared witch will almost always experience a nightmare when they head to the spirit world this way.  The witch must drink the brew and then will fall into a deep sleep, leaving their body and items behind and entering the world of spirits.
+  - [可选提交] witchery:ingredient:75, witchery:ingredient:34, witchery:ingredient:105, witchery:ingredient:78, minecraft:cookie, witchery:ingredient:69
+  - [提交] witchery:ingredient:95
+  > 奖励: minecraft:glass_bottle x16 | witchery:ingredient:14 x16 | enhancedlootbags:lootbag:53 | dreamcraft:CoinCookI x5 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5
+
+### [1594] Spinning Your Dreams
+You need the spinning wheel for the fanciful thread to finally make the Potion of Flowing Spirit.
+  - [提交] witchery:spinningwheel
+  - [到达] 
+  - [提交] dreamcraft:CoinWitchII x5
+  > 奖励: witchery:spinningwheel
+
+### [338] Spirit Coin Transfer
+The Potion of Spirit can only be made in the spirit world. Wondering how you can get your stuff like the Kettle, Spinning Wheel or Cauldron to the spirit world? You can transfer a few coins to the spirit world and buy some stuff.  [warn]Don't claim the coins until you've gone to the other side.[/warn]
+  - [提交] dreamcraft:CoinWitchII x35
+  > 奖励: dreamcraft:CoinWitchII x35
+
+### [2335] Taglock Kit
+Taglock Kits are used to collect taglocks from other players or creatures. Taglocks, such as locks of hair, fingernail clippings or blood, are used in various recipes to create a link between the creature and the magic.  Use a taglock kit on a creature, or the used bed of a player, to collect some taglocks from that being. Repeated use on the same bed will cycle taglocks for each player who has used that bed. The kit can also be used on a Leech Chest to collect taglocks from users who have opened the chest or on a Blood Rose to collect the taglock of the player that walked over it.  Shift-clicking on any bed will fill the kit with the current players taglocks.  Collecting taglocks by using the kit on a player has a chance of failing and informing the other player what you were trying to do. To increase the chance of collecting a taglock from a player, sneak, and prefer approaching from behind.  Taglocks can only be collected from players who are logged into the same world.  Taglock kits are made by crafting a Glass Bottle with a Bone Needle.
+  - [可选提交] witchery:ingredient:7 x16, minecraft:glass_bottle x16
+  - [提交] witchery:taglockkit x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinWitchI x5
+
+### [2418] The Easy Way to Change Biomes
+So you want the easy way? Understandable. The only prerequisite is an altar with at least 5,450 power. Try placing many different crops around the altar and a Dragon Egg on top to boost it. Otherwise, the process is as simple as dropping the following items into the Witch's Cauldron §b[warn]IN ORDER[/warn]§r.    1. Netherwart (+2 Capacity)   2. Tear of the Goddess (+2 Capacity)   3. Diamond Vapor (+2 Capacity)   4. Diamond (+2 Capacity)  §7  5. Optional, Glowstone Dust (+1 Radius)   6. Optional, Blaze Rod (+1 Radius)   7. Optional, Charged Attuned Stone (+1 Radius)§r    8. Book of Biomes Page (Chooses Biome; Any Biome OK)   9. Gunpowder (Add Splash Effect)   10. Collect with Glass Bottle (Requires 5,450 Altar Power)  The maximum radius is 4 blocks, if all three optional ingredients are included. You may get more than one brew if you are wearing your robes/hat, or have a ton of witchery brewing expertise.  You can optionally substitute in a §5Nether Star§r for §5+4 Capacity§r in place of the Tear of the Goddess and the Diamond Vapor if you have the extra resources and want to skip the distillery-produced items.  [note]For more detailed info, check out the Witches' Brews book. Click on Brewing, then go to the Brews: Step-by-step page. That should tell you what you need to know. To learn what each of the brews do, see the Effects page.[/note]
+  - [提交] minecraft:nether_wart, witchery:ingredient:37, witchery:ingredient:29, minecraft:diamond
+  - [可选提交] minecraft:glowstone_dust, minecraft:blaze_rod, witchery:ingredient:11
+  - [提交] witchery:biomenote:32767, minecraft:gunpowder, minecraft:glass_bottle
+  > 奖励: minecraft:nether_wart x8 | witchery:ingredient:37 x8 | witchery:ingredient:29 x8 | minecraft:diamond x8 | enhancedlootbags:lootbag:53 | dreamcraft:CoinWitchII
+
+### [2419] The Hard Way to Change Biomes
+Ok, to have a ritual with a size greater than zero, you need to get Coven Witches to acknowledge you and then agree to help you out. To get them to deign to speak with you, you can either infuse yourself or bind a familiar. In this quest line we'll be covering binding a familiar, but for the people who want to do infusion, you just need to make the appropriate item: Ghost of the Light, Soul of the World, Spirit of Otherwhere, or Infernal Animus, and do the appropriate Rite of Infusion. Be sure to have a Death Protection Poppet to protect you, because the ritual kills you. If playing hardcore, definitely test in a separate world first.  To bind a familiar, first summon a Demon and tear out its heart. No, seriously, go do it. Use an Arthana with Looting III for the best chances. If you don't know how to summon one, refer to page 49/50 of the Circle Magic book for the correct Rite of Summoning.  You'll need a Mutating Sprig for the next part.
+  - [击杀] target=witchery.demon n=
+  - [提交] witchery:ingredient:23
+  > 奖励: enhancedlootbags:lootbag:53 | dreamcraft:CoinWitchII
+
+### [1576] The Spirit World - Dream
+Placing your Dream Weaver of Nightmares close to where you sleep and entering the Dream World again, you have a 50% chance now that it will be Daylight. Try a few times if necessary.
+  - [到达] 
+  > 奖励: witchery:ingredient:78
+
+### [1564] The Spirit World - Nightmare
+The spirit world is an alternate reality that mirrors the Overworld in topography. When people dream they often end up in the spirit world without realizing it (often appearing as one of its many denizens). Powerful witches can create Brews of Sleeping that allow them to pass their still awake consciousness into the Spirit World, leaving their bodies and gear behind.  The Spirit World is the only source of Wispy Cotton, Disturbed Cotton, and Mellifluous Hunger - the materials needed to make Dream Weavers. Also Brews of Flowing Spirit can only be made in the Spirit World.  Very few things can pass into, or return from the Spirit World - keep this in mind when heading there (Icy Needle always stays in the inventory). Wispy Cotton, Disturbed Cotton, Mellifluous Hunger and Brews of Flowing Spirit can pass from the Spirit World to the Real World but not the other way.  Two important things to note: Circle magic does not function in the Spirit World; and Endermen cannot enter the Spirit World.  [note]If you got the Dream version instead of nightmare, collect at least 16 Wispy Cotton for later.[/note]
+  - [到达] 
+  > 奖励: witchery:ingredient:78
+
+### [1648] The Witch is Back...
+...and you're going to be in trouble.  Dress for success in your new Witches Hat and Robes. A girl has to look her best, so I'll give you a nice bag as reward.  Check NEI uses for impregnated leather for other accessories to your outfit.
+  - [可选提交] witchery:ingredient:102 x3, witchery:ingredient:74, minecraft:glowstone_dust, witchery:ingredient:72 x11
+  - [提交] witchery:witchhat, witchery:witchrobe
+  > 奖励: witchery:brewbag | enhancedlootbags:lootbag:53 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1570] Tormented Twine
+Tormented Twine is spun from Disturbed Cotton using a Spinning Wheel. It is an ingredient used to make Dream Catchers.  It is made in a Spinning Wheel using Disturbed Cotton, Blood Burned String and Reek of Misfortune.  [warn]You need a T2 BM Blood Altar to make the string, so go over to the BM tab if you want to continue and haven't done that yet.[/warn]  An Altar must be nearby to power the spinning wheel.
+  - [可选提交] BloodArsenal:blood_burned_string x3, witchery:ingredient:35 x3, witchery:ingredient:99 x12
+  - [提交] witchery:ingredient:101 x3
+  > 奖励: witchery:ingredient:99 x4 | dreamcraft:CoinWitchII | dreamcraft:CoinDarkWizardII
+
+### [1556] Use Some Mouthwash of Olympus!
+The Breath of the Goddess is an ingredient used in many recipes. It is acquired with a random chance when burning Birch saplings in an oven.
+  - [可选提交] minecraft:sapling:2 x64, witchery:ingredient:27 x16
+  - [提交] witchery:ingredient:32 x16
+  > 奖励: witchery:ingredient:27 x8 | enhancedlootbags:lootbag:52 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1577] Wake Me Up Later
+In the daytime you can find a few wispy cotton, which are needed for further progression. There are no mobs in the Dream version, so hang out if you like.  It can be collected and replanted, but will only spread if planted in the Spirit World, on Dirt or Grass that is next to a pool of Flowing Spirit.  Planting Wispy Cotton nearby when using a Brew of Sleeping near to a Dream Weaver of Nightmares will further reduce the chance of a nightmare by 10 percent for each cotton plant (up to 2).  Wispy Cotton will remain in a players inventory when they return from the Spirit World.
+  - [提交] witchery:somniancotton x16
+  > 奖励: minecraft:potion:8229 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinWitchII | dreamcraft:CoinAdventureII
+
+### [1567] Wake Up Early
+Your second visit hopefully went a little better. With night vision and the flight potion you should have found a few disturbed cotton.  Disturbed Cotton can be spun into Tormented Twine. It cannot be replanted.
+  - [提交] witchery:ingredient:99 x8
+  > 奖励: minecraft:potion:8262 | dreamcraft:CoinWitchI x5 | dreamcraft:CoinDarkWizardI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinAdventureI x5
+
+### [1585] We Need Another Oven
+First of all you can't visit any other dim to get materials. Not the Twilight Forest, not the Nether or the End. Let's start with crafting a new oven and a stack of jars to start with some basic ingredients.
+  - [提交] witchery:ingredient:27 x64, witchery:witchesovenidle
+  - [到达] 
+  - [提交] dreamcraft:CoinWitchII x5
+  > 奖励: witchery:ingredient:27 x64 | witchery:witchesovenidle
+
+### [1558] Whiff of Magic
+A Whiff of Magic is an ingredient used in many recipes. It is acquired with a random chance when burning Rowan saplings in an oven.
+  - [可选提交] witchery:witchsapling x8, witchery:ingredient:27 x2
+  - [提交] witchery:ingredient:34 x2
+  > 奖励: witchery:ingredient:27 x2 | enhancedlootbags:lootbag:52 | dreamcraft:CoinCook x25 | dreamcraft:CoinWitch x25 | dreamcraft:CoinDarkWizard x25
+
+### [1589] Wispy Cotton
+Need more coins? Selling wispy cotton for coins.
+  - [提交] witchery:somniancotton x20
+  > 奖励: dreamcraft:CoinWitchII
+
+### [1560] Witchery Seeds
+To get Witchery seeds, use a hoe on grass blocks away from water. To open the rest of the questline, you will need to do Thaumcraft quests and research the Witchery tab in the Thaumonomicon.  According to legend, when the root of the Mandrake plant is dug up it screams and kills all who hear it. This is only partially true. A fully grown Mandrake may scream causing immense discomfort to those around. This is why it is best to harvest the Mandrake root at night when the plant is more likely to be dormant. The fully grown Mandrake can be harvested to obtain more Mandrake seeds and a Mandrake.  Breaking a fully grown Mandrake plant will either yield Mandrake Root or the Mandrake may awaken and cause all sorts of mischief (and pain to the ears!).  Belladonna seeds can be planted and eventually grow into the multistage belladonna plant. The fully grown belladonna plant can be harvested to obtain more Belladonna seeds and a Belladonna flower.  Snowbell seeds can be planted and eventually grow into the multistage snowbell plant. The fully grown snowbell plant can be harvested to obtain more Snowbell seeds, snowballs and occasionally an Icy Needle.  Water Artichoke seeds can be planted and eventually grow into the multistage Water Artichoke plant. The fully grown Water Artichoke plant can be harvested to obtain more Water Artichoke seeds and a Water Artichoke Globe.  Water Artichoke seeds can only be planted on water source blocks.  Garlic is a plantable crop that can be used to make tasty food, and to deal with vampires. It may be planted on tilled farm land, and will grow in five stages. When full grown the plant may be harvested for up to three dropped garlic bulbs. Which may either be replanted, or used in a crafting recipe.  Garlic bulbs can be used to make meaty stew, a particularly nourishing meal. It is also the main ingredient in making a Garlic Garland, a useful tool in warding off vampires. Finally, garlic can be used by witches in a Witches' Cauldron to make a vampire Weakening brew, and by Witch Hunters, to make vampire resistant armor.  Wolfsbane seeds can be planted and eventually grow into the multistage Wolfsbane plant. The fully grown Wolfsbane plant can be harvested to obtain more Wolfsbane seeds and the Wolfsbane flower.
+  - [提交] witchery:seedsmandrake, witchery:seedsbelladonna, witchery:seedssnowbell, witchery:seedsartichoke, witchery:garlic, witchery:seedswolfsbane
+  > 奖励: cropsnh:cropSticks x16 | minecraft:wheat_seeds x16 | dreamcraft:CoinFarmer x15
+

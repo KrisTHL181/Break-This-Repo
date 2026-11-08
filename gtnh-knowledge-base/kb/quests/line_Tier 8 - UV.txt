@@ -1,0 +1,202 @@
+# 任务线: Tier 8 - UV
+### [2714] §2§l§nActually Copying Cultures
+To copy a culture, you'll need:  1) A Sterilized Petri Dish 2) A Plasma Membrane (made from Stemcells, or gotten while making EnzymesSollution) 3) Stemcells 4) A Data Orb with the appropriate data on it 5) Liquid DNA 6) A UV Bio Lab 7) A Clonal Cellular Synthesis Module  You can change out the Data Orb for one with whatever culture you wish to copy. Keep in mind that it might be easier to make a second culture the normal way, and that there's generally an alternative recipe that uses the fluid it produces to make it with a higher chance.  PS: This recipe is the only one in NEI that uses this module, so you can find it if you look, but the number will change, so I can't specify which page.
+  - [可选提交] bartworks:BioLabParts, bartworks:BioLabParts:5, gregtech:gt.metaitem.03:32073 x2, gregtech:gt.metaitem.01:32707, gregtech:gt.metaitem.98:16 x8
+  - [可选提交] bartworks:BioLabModules:4
+  - [提交] bartworks:BioLabParts
+
+### [2614] §2§l§nAdmit it, You Love This Pt 1 in UV
+Are you okay? Playing this much might not be healthy you know?
+  - [提交] gregtech:gt.metaitem.01:32647, gregtech:gt.metaitem.01:32637, gregtech:gt.metaitem.01:32617, gregtech:gt.metaitem.01:32657
+
+### [2615] §2§l§nAdmit it, You Love This Pt 2 in UV
+Try going outside once in a while, it's fun! Unless you have agoraphobia I guess.
+  - [提交] gregtech:gt.metaitem.01:32687, gregtech:gt.metaitem.01:32697
+
+### [-8574346973951287410] §2§l§nAdvanced Crystal SoC Production
+We can process Crystal Processing Units in a Laser Engraver to get the Crystal SoC. But as our demand for circuits gradually increases, this method of production is becoming untenable. We need a more advanced way to mass produce Crystal SoCs!  For that we use a new material, Cerium-doped Lutetium Aluminium Garnet (Ce:LuAG). LuAG has better performance when making Crystal SoCs - in fact it is a laser crystal material.  First, mix Lutetium, Aluminium, Oxygen, and a little Cerium to get the material blend. Then put the blend with Molten Lutetium into an Autoclave to get a regular LuAG gem. If you have already got Oganesson you can also directly use that. As the second step, use the LuAG gem and more of the blend to produce Exquisite LuAG Gems.  After you get the first gem, you can also use your Autoclave to grow crystals. Using the Vacuum Furnace might be a better choice to produce Exquisite LuAG Gems.  Lutetium, Lutetium, it needs a lot of Lutetium. How will you get a lot of Lutetium? Check out the Powerful Nuclear Physics quest tab!
+  - [提交] bartworks:gt.bwMetaGenerateddust:11498, bartworks:gt.bwMetaGeneratedgem:11499
+  - [提交] bartworks:gt.bwMetaGenerateddust:11498, bartworks:gt.bwMetaGeneratedgemExquisite:11499
+
+### [2647] §2§l§nAll Good Things...
+So you've built your T7 rocket. Great, there's only one more left. Until then, the new places you can visit are: Haumea, the Kuiper Belt, Makemake, and Pluto.  Pluto is just before the Kuiper Belt, and Haumea and Makemake are just after.  The new veins are Black Plutonium, Garnet, Red Garnet. The ores are: Black Plutonium, Borax, Chrysotile, Garnet Sand, Nether Star, Realgar, Red Garnet, and Yellow Garnet.  Don't forget the planet blocks!  The last schematic is on Pluto. This is also the last dungeon.
+  - [勾选确认]
+
+### [2041] §2§l§nAmericium Doped Wafers
+These boules are the most efficient when making wafers out of them.
+  - [可选提交] gregtech:gt.metaitem.03:32152
+  - [提交] gregtech:gt.metaitem.03:32153 x128
+
+### [2638] §2§l§nCheaper IV Circuits
+The Crystal SoC will allow you to make Crystal Processors cheaper.
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:32753, bartworks:gt.bwMetaGeneratedItem0:32717, gregtech:gt.blockmachines:1722 x8, gregtech:gt.metaitem.01:26358 x64
+  - [提交] gregtech:gt.metaitem.03:32089 x16
+
+### [2635] §2§l§nCircuits, Assemble!
+To make Wetware Circuits (UHV-Tier Circuits), you need to make either a ZPM Circuit Assembling Machine, or a UV energy hatch for your Circuit Assembly Machine.
+  - [提交] gregtech:gt.blockmachines:1186, gregtech:gt.blockmachines:48
+
+### [2713] §2§l§nData Orbs for Copying Cultures
+After getting your sample you need to encode the information to a Data Orb. Again, many times you'll have to do it repeatedly (the Data Orb is given back if it fails), but in this case it's 100%.  [note]Look at the uses of the eColi DNA Sample to see the recipe.[/note]
+  - [提交] gregtech:gt.metaitem.01:32707
+
+### [2712] §2§l§nDNA Samples for Copying Cultures
+To copy cultures, you'll need to make a DNA sample first. Many of these have low chances, but this one's 100%. I'm sure you can figure it out yourself, but keep in mind that the Modules are not consumed, and that you may wish to use a crop for the Detergent materials.
+  - [提交] bartworks:BioLabParts:1
+
+### [-6587064144546576824] §2§l§nElastic Singularity
+Now that you've created the Neutronium Compressor, you finally have access to the Elastic Singularity for enhancing your §5§lL.A.T.E.X.§r cable coater.  With it, you will receive a §2§l25%§r rubber discount, §2§l2x§r the parallels, and the ability to use multiamp hatches.   You are now truly a cable master.
+  - [提交] universalsingularities:universal.rubber.singularity:5
+
+### [-4661739323824919812] §2§l§nExtract what you want
+Directly dissolve and chlorinate lanthanide ores in Digester to get the concentrated solution of the corresponding ore. Then use the corresponding Extracting Nano Resin to extract the main material in the solution. The rest (Chlorinated Rare Earth Concentrate) is still rich in useful lanthanides.  You can use any type of Extracting Nano Resin to extract the useful things in the rest. What Nano Resin you use, what lanthanide you'll get. Every bucket of Chlorinated Rare Earth Concentrate can do this extraction 3 times. First Concentrate to Enriched Solution, then Enriched Solution to Diluted Solution, then waste liquid.  After extracting, the Nano Resin will be "Filled". Put them "Filled" into Electrolyzer then nanites will transfer the "Particles" out from the resin under the influence of electric field. And you can get the Nano Resins and let them go into the next work round, again and again without breaks.  Yes, Rare Earth will not be Rare. Bless the Nano Tech.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11402, bartworks:gt.bwMetaGeneratedcell:11404, bartworks:gt.bwMetaGeneratedcell:11406, bartworks:gt.bwMetaGeneratedcell:11408, bartworks:gt.bwMetaGeneratedcell:11412, bartworks:gt.bwMetaGeneratedcell:11414, bartworks:gt.bwMetaGeneratedcell:11416, bartworks:gt.bwMetaGeneratedcell:11418, bartworks:gt.bwMetaGeneratedcell:11420, bartworks:gt.bwMetaGeneratedcell:11422, bartworks:gt.bwMetaGeneratedcell:11424, bartworks:gt.bwMetaGeneratedcell:11426, bartworks:gt.bwMetaGeneratedcell:11428, bartworks:gt.bwMetaGeneratedcell:11430
+  - [勾选确认]
+
+### [2711] §2§l§nFluids for Copying Cultures
+Ok, so let's say you've made some kind of culture, but you want more of it? You only need one per Vat, but they're consumed when making DNA Samples, so you should probably learn how.  To start off, you'll need to get an eColi Culture.  Use that to make the eColi Bacteria Fluid. [note](I know the name is completely different, deal with it)[/note]  Centrifuge that to make Liquid DNA.  And combine it with Radon in the Mixer to make FluorecentdDNA.  eColi Bacteria Fluid can also be Centrifuged for Plasma Membranes (10% chance) and EnzymesSollution, so do that as well.  And then Centrifuge the EnzymesSollution again for Polymerase.  You should expect to need a significant amount of eColi Bacteria Fluid if you plan on copying a lot of cultures, or making the hard to make ones.  [note]To search for items related to copying cultures, search for 'culture', 'dna sample', or 'plasmid'. You can't do this for the Data Orbs, you have to check the uses of DNA Samples.[/note]  §5A bunch of the fluids have incorrect spelling, don't blame me for it.
+  - [可选提交] bartworks:BioLabParts
+  - [可选提交] gregtech:gt.metaitem.98:11
+  - [可选提交] gregtech:gt.metaitem.98:16, gregtech:gt.metaitem.98:13
+  - [提交] bartworks:BioLabParts:5, gregtech:gt.metaitem.98:10, gregtech:gt.metaitem.98:17
+
+### [2715] §2§l§nGeneral Purpose Fermenting Bacteria
+So if you looked in NEI and tried to figure out how to make this, you were probably confused by the fact that you use the fluid it produces to make it. This is where NEI is lying to you. Like the previous recipe, NEI doesn't show it correctly (they should be around the same page in NEI, they both also appear to produce Sterilized Petri Dishes, (even if that's not true) and both use unique Modules).  In order to make this, you'll need to make the Rotten Flesh Bacteria culture, get the DNA Sample, and then get the Data Orb. It changes its name to beta-Lactamase, that's normal.  Then, do the same thing for Common Yeast (get the right Yeast!).  Then you need to use the recipe to combine the information from the Data Orbs and get the Common Yeast Plasmid from that.  Lastly, use the Rotten Flesh Bacteria culture, the Common Yeast Plasmid, Penicillin (make it by centrifuging Common Yeast Fluid), and Distilled Water. You want the Transformation Module for this. It's a 100% chance.  You'll want to use the normal recipe to make more cultures, since it also becomes beta-Lactamase once you turn it into a DNA Sample.
+  - [可选提交] bartworks:BioLabParts, bartworks:BioLabParts:1, gregtech:gt.metaitem.01:32707
+  - [可选提交] bartworks:BioLabParts, bartworks:BioLabParts:1, gregtech:gt.metaitem.01:32707
+  - [可选提交] gregtech:gt.metaitem.98:10, bartworks:BioLabParts:2, gregtech:gt.metaitem.01:32707, gregtech:gt.metaitem.01:32707, gregtech:gt.metaitem.98:16
+  - [可选提交] bartworks:BioLabModules:2
+  - [可选提交] bartworks:BioLabParts:2
+  - [可选提交] bartworks:BioLabParts, bartworks:BioLabParts:2, gregtech:gt.metaitem.98:12, IC2:itemCellEmpty:12
+  - [可选提交] bartworks:BioLabModules:3
+  - [提交] bartworks:BioLabParts
+
+### [2652] §2§l§nIntelligent Circuits
+Another component for the Wetware Circuits is NeuroCPUs. To make it you need to use the Assembly Line.
+  - [提交] gregtech:gt.metaitem.03:32072
+
+### [1202] §2§l§nI Put Fusion in Your Fusion so you Can Fusion While You Fusion
+To make Oganesson, you'll need to make Californium. To make that, you'll need Beryllium and Plutonium 239, all in the Fusion Reactor. After the two fusion chains, you'll have the best noble gas in the pack, which is used in several places.  In this tier, you can send it to Void Miners, to increase their ore production speed, or EBFs, to make them run faster. Later on, Oganesson will be used in other places, like the optical circuit line, or to produce Metastable Oganesson, which is needed in much larger quantities later on.
+  - [可选提交] gregtech:gt.metaitem.99:8, gregtech:gt.metaitem.99:100
+  - [可选提交] bartworks:gt.bwMetaGeneratedcellMolten:39, bartworks:gt.bwMetaGeneratedcellMolten:40
+  - [提交] bartworks:gt.bwMetaGeneratedcell:38
+
+### [3282] §2§l§nKevlar
+There is a new material that can be used for some high tier crafts. The production line is long and tedious but you should know how to use NEI by now, right?  [note]Hint: If you don't feel like automating a 52 step chemical line, you could also have a look at the Kevlar bee.[/note]
+  - [提交] gregtech:gt.metaitem.01:17765
+
+### [1840] §2§l§nMaintenance Free At Last!
+You'll never §oever§r need to fix maintenance problems on any multi that has this, nor will it cost parts. Well, except to make it.
+  - [提交] gregtech:gt.blockmachines:15497
+
+### [-4804005527088963644] §2§l§nNano Resin - Particle Extractors
+Arrange Nanites in P-507 and label them with target particle information in the high-energy laser beam environment of a laser engraver. Then we get the Extracting Unit called "Nano Resin".  These Nanites automatically capture the target particles in solution and store them in the resin. It is worth noting that the actual production rate will be limited by the number of Nanites. So if you want to use this method to produce lanthanides in large quantities, you need to prepare more extra Nano Resin.  Here are all 15 types of Extracting Nano Resin.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11401, bartworks:gt.bwMetaGeneratedcell:11403, bartworks:gt.bwMetaGeneratedcell:11405, bartworks:gt.bwMetaGeneratedcell:11407, bartworks:gt.bwMetaGeneratedcell:11413, bartworks:gt.bwMetaGeneratedcell:11415, bartworks:gt.bwMetaGeneratedcell:11417, bartworks:gt.bwMetaGeneratedcell:11419, bartworks:gt.bwMetaGeneratedcell:11421, bartworks:gt.bwMetaGeneratedcell:11423, bartworks:gt.bwMetaGeneratedcell:11425, bartworks:gt.bwMetaGeneratedcell:11427, bartworks:gt.bwMetaGeneratedcell:11429, bartworks:gt.bwMetaGeneratedcell:11411
+  - [勾选确认]
+
+### [2673] §2§l§nNeutrons From Space
+Now let's make Cosmic Neutronium, a material that is used in a lot of late game stuff. Centrifuge Black Plutonium to get a Pile of Neutrons. It can then be compressed to Cosmic Neutronium Nuggets in an Implosion Compressor.  Compress the nuggets again to make a Cosmic Neutronium Ingot.  [note]Avaritia's Neutronium and GT Cosmic Neutronium are oredicted together, it's not the same as normal GT Neutronium. It goes back to being called SpNt if you craft it into something, like a plate.[/note]
+  - [提交] Avaritia:Resource:4
+
+### [2007] §2§l§nQuantum Computer
+The Quantum Computer (QC) is an incredibly complicated machine used to generate computation for the Research Station and a few other multiblocks. There are a few things you need to understand before using one.  §lCONSTRUCTION§r. Much like an assembly line, the QC is built as a series of slices. The first and last slice are the only valid locations for hatches. The slices in between are primarily for computer racks. The Multiblock Structure Hologram Projector shows the minimum length QC, but holding multiple in a single stack will show/build longer versions up to the maximum length of 16. There is also a mandatory air block in front of the computer heat vents.  §lOUTPUT§r. Computation is nothing more than an integer input for certain recipes--much like EU. There may exist a minimum throughput requirement, a threshold to reach, or both (NEI will tell you everything). Computation is generated every second by the QC, transmitted by an Optical Transmission Connector, received by an Optical Reception Connector, and "consumed" by the machine or process that needs it. There is no storing computation and there can only be ONE transmission or reception hatch connected to the same Optical Fiber Cables at a time. If absolutely necessary, the Network Switch with QoS can split/join connections but know that it takes both power and maintenance to run.  Additional QC can be chained together using another set of Optical Transmission and Optical Reception Connectors between machines, but they cannot wallshare the same Optical Transmission Connector.  §lUNCERTAINTY§r. The QC has a unique maintenance requirement that can only be corrected by balancing the Schrödinger Matrix inside an Uncertainty Resolver- an additional hatch that must go on either the first or last slice of the machine. Start with the Uncertainty Resolver X, but know that there is another tier unlocked later on (Uncertainty Resolution) that will solve the puzzle on its own.  The interface of the Uncertainty Resolver X has the Schrödinger Matrix in the middle and two sets of 8 buttons on the left and right. Clicking on one button and then another will switch the states of the two corresponding cells in the matrix. This means switching their shade/color. The goal of the puzzle is to balance the states of the matrix around the glowing LED lights, turning all of them green.  §lPARAMETERS§r. In the GUI of the controller, there are two configurable parameters, overclock and overvolt, that change how computation and heat are generated. Higher overclock values contribute the most to computation and higher overvolt values contribute the most to heat. Alone, this would encourage the player to make overclock as high as possible and overvolt as low as possible, but there is a penalty to computation for large differences between these two parameters. Furthermore, overvolt values <1 will cause the QC to randomly drop computation proportional to its distance from 1. It is highly encouraged to play around with these parameters, as all the best setups do.  See the adjacent quest for more information on computer racks and generating computation.
+  - [可选提交] tectech:gt.blockcasingsTT:2 x6, tectech:gt.blockcasingsTT:1 x17, tectech:gt.blockcasingsTT:3 x10, gregtech:gt.blockmachines:15450 x2
+  - [提交] gregtech:gt.blockmachines:15311, gregtech:gt.blockmachines:15431, gregtech:gt.blockmachines:15441, gregtech:gt.blockmachines:15470
+
+### [2699] §2§l§nQuantum Mechanics is Hot
+The QC has 2-24 computer racks depending on the length of the machine. Each rack has four total slots for either circuits (to generate heat and computation) or vents (to dissipate heat). Although conceptually similar to a nuclear reactor, the location of the components inside does not matter at all. Every rack is also completely independent from every other rack which means it is not possible to have one rack with all circuits and another with all vents.  The computation of a rack is the sum of all the components' individual computation. For example, two APU (Tier 3) and two Cooling Cores have 240 + 240 + 0 + 0 = 480 base computation per second. However, computation changes significantly depending on the values for overclock and overvolt:  [note]Computation = Base * (1+overclock^2) / (1+(overclock-overvolt)^2)[/note]  The heat of a rack is a value between 0 and 10,000 and is reported in the interface of the QC or by using a Portable Scanner on the rack. Every component has a certain heat limit which if exceeded will void that component. Breaking or wrenching a rack while it is hot (>2000) will similarly void the components inside. The QC will explode if the heat exceeds 10,000 but no component has a heat limit greater than that, so don't worry too much about ruining your base.  [note]Heat α HeatConstant * overclock * overvolt^2[/note]  The power consumption of a rack is 1A ZPM regardless of the components inside. This is in addition to the 1A ZPM of the QC itself. However, these EU/t values are directly proportional to overclock and overvolt which should increase as you unlock better circuits. Be sure to turn on the QC before the research station and only when you need it.  [note]EU/t = 131,072 * overclock * overvolt * (racks + 1)[/note]  To get you started, craft 4x APU (Tier 3) and 4x Cooling Cores. Place two of each component in the two racks and the QC will safely produce 1,920 computation/s for just 393,215 EU/t (0.75A UV) which is more than enough for researching the Wetware Mainframe. If you would like to further increase the computation/s at the cost of power, adjust the overclock and overvolt values to 1.44 and 1.03, respectively. This will generate 2,526 computation/s at a cost of 583,217 EU/t (1.11A UV).  If the APUs are too bothersome to craft, try Crystal Mainframes instead but you will need different overclock and overvolt values to get the most out of them. That goes for every unique combination of circuits and vents.
+  - [可选提交] OpenComputers:item:103 x4
+  - [提交] GraviSuite:itemSimpleItem:2 x4
+
+### [2633] §2§l§nQuantum Power ICs
+You need Quantum Power ICs for UEV -> UIV transformers and UHV Hatches and Dynamos.  [note]You'll need a UHV Cutting Machine, or an OC'd multi to actually cut the wafers.[/note]
+  - [提交] gregtech:gt.metaitem.03:32164
+
+### [2008] §2§l§nResearch Station
+Now that you've started building up your precious Quantum Computer, how about the Research Station? Once again, using the Multiblock Structure Hologram Projector will tell you how to build this Multiblock. There should be 3 empty blocks beneath it so you can see the whole blueprint. Once it is nearly assembled, place down an Energy Hatch, an Optical Reception Connector, and a Maintenance Hatch all on the back side and an output hatch on the front side.  Once fully assembled, you can begin operating recipes at any time, so long as the Quantum Computer is also active and connected. The Research Station requires you to put the item to research within the Object Holder, then a data stick in the Multiblock interface. Once the Computation is fully completed, the data stick that houses all the data of the completed item will be inside the Multiblock Interface.  Still confused? Good, that's the spirit of learning! Always make sure to test these things in creative single player if you wish to find exact measurements and such. Don't forget to ALWAYS COLOR THE OPTICAL HATCHES AND FIBERS!  [note]Note that some researches require a significant amount of power, so keep that in mind.[/note]
+  - [可选提交] gregtech:gt.blockmachines:15103, gregtech:gt.blockmachines:15440, gregtech:gt.blockmachines:15451, tectech:gt.blockcasingsTT:1 x52, tectech:gt.blockcasingsTT:3 x23, tectech:gt.blockcasingsTT:2 x14
+  - [提交] gregtech:gt.blockmachines:15331
+  > 奖励: tectech:gt.blockcasingsTT:1 x59
+
+### [3283] §2§l§nSpace Elevator
+The Space Elevator is a modular structure. It can be equipped with Space Elevator modules, which then can take on different tasks.  Initially, your Space Elevator has 6 module slots that can be used. You can later upgrade that to up to 12 with Mk-II and Mk-III motors. The motor tier also determines the module tier that you can use. The I/O is not shared between modules, each module only sees their own I/O slots. Energy is only provided to the central structure of the Space Elevator and then automatically distributed to all modules.  After a module has been inserted and supplied with the right I/O, it can be configured further using parameters.  You can see in NEI which fluids are pumpable with the Space Pumping Module. It consumes 1A UHV to work. The Gas Type and Planet Type are parameters.  NEI also has an overview of all the ores you can obtain with a Space Mining Module. It needs to be supplied with a drone, which will act as catalyst, a set of input items, computation and either Helium, Bismuth or Radon plasma. The plasma will boost both the recipe time and the amount of bonus stacks you get out of a recipe. With its parameters you can adjust parallels, overdrive, and distance. When multiple recipes have the same input and you have the distance set to a value that they share, the module will pick a random one, taking the recipes weights into consideration.  The space elevator also lets you travel to other planets, but it doesn't get you back though so better keep that in mind!  The mining module also got a cycle mode. In static mode it will hold its distance while in cycle mode it will change its distance after each recipe check (and you can configure the range and step size of that).  [note]Teleportation can be accessed though the controller.[/note]
+  - [提交] gregtech:gt.blockmachines:14003
+
+### [2649] §2§l§nSTERILIZE!, STERILIZE!
+Turn your Raw Growth Medium into Sterilized Growth Medium in an IV Fluid Heater, and then you can use it in the Wetware Lifesupport Circuit Boards or the Neuro Processing Unit. But you'll also need to use it to make stemcells, so let's do that first.
+  - [可选提交] gregtech:gt.metaitem.01:30609
+  - [提交] gregtech:gt.metaitem.03:32073 x64
+
+### [2655] §2§l§nSupercomputers and Water
+The Wetware Supercomputer is a UV Circuit.  You'll need a TecTech Research Station and Quantum Computer to make the Wetware Mainframe circuit, so make those before continuing.  [note]If you can't see the quests, go back to ZPM and do the TT ones there you skipped.[/note]
+  - [提交] gregtech:gt.metaitem.03:32094
+
+### [-6507513553367570596] §2§l§nSynthetic Crystal
+Fabricating Crystal SoCs with LuAG is so much faster than directly engraving crystal chips! They can also be used for Raw Advanced Crystal Chip.  Remember to keep some LuAG gems for growing more crystals.
+  - [提交] bartworks:gt.bwMetaGeneratedgemExquisite:11499
+  - [提交] gregtech:gt.metaitem.03:32071
+
+### [2650] §2§l§nThe Board that Keeps Life
+To make Wetware Circuits, you'll need to make a Wetware Lifesupport Circuit Board. Making this board is quite a different process than making all the other Circuit Boards you've made, because making it actually requires materials!  To actually use it in circuits, you need to etch it. I guess by now, you know how to etch a circuit board, so I won't tell you and you have to use NEI :P
+  - [可选提交] gregtech:gt.metaitem.03:32006
+  - [提交] gregtech:gt.metaitem.03:32105
+
+### [2651] §2§l§nThis is Not How You Make Cheese
+In order to make Wetware circuits, you'll need Sterilized Growth Catalyst Medium and Stemcells.  To begin, you will first need Bacteria which you can get through the Bacterial Vat or the Brewing Machine. The vat recipe is more efficient, but you need a culture for it so you need to start with the brewing recipe. The Bacterial Vat needs at least Bismuth rods in the Radio Hatch for the proper Sievert and at least EV-tier glass to make Bacteria. There are also 3 different recipes, so you can use a higher tier one later if you like.  You'll also need Mince Meat and Agar. You'll want a stable supply of meat such as a fish farm, a standard animal farm, or Meatrose/Goldfish farm.  Agar has a more complicated processing chain, but it's nothing compared to Platinum. You'll need even more meat for it.  Use some of the Bacteria to create an Ova Evolutionis culture (15% chance), and then place that in the Bacterial Vat's controller. The Bacterial Vat also needs at least Uranium rods in the Radio Hatch for the proper Sievert and at least IV-tier glass to make Raw Growth Catalyst Medium. There are higher tier recipes for this as well.  [note]Cultures are NOT consumed in the Bacterial Vat.[/note]
+  - [可选提交] gregtech:gt.metaitem.98:15
+  - [可选提交] dreamcraft:GTNHBioItems:2, bartworks:BioLabParts
+  - [提交] gregtech:gt.metaitem.01:30608
+
+### [2613] §2§l§nTier 8 (UV)
+While called Ultimate Voltage, this has become far from the final tier. Instead, the "Ultimate" for all upcoming tiers can be considered an apt description of your future base, given how hard your power and infrastructure is going to scale.
+  - [提交] gregtech:gt.blockmachines:18
+
+### [1203] §2§l§nTime for Another Reactor
+While one reactor is nice and all, why not make another? This time you can use the MK3 americium recipe to make it easier.  Costing just 1 ingot of Plutonium, and 2 cells of hydrogen, this recipe is much easier and faster than the MK2 version. By making americium plasma, then putting it through a turbine, you will get americium in the liquid state. You will need at least 132 plates for the controller and the fusion machine casings.  Plus, free power!
+  - [可选提交] gregtech:gt.metaitem.01:11101 x132, gregtech:gt.metaitem.01:30001 x264
+  - [提交] gregtech:gt.metaitem.01:17103 x132
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x5
+
+### [1198] §2§l§nUpgrading the Reactor
+A MK II is nice, but why not make a MK III? This time you need UV+ energy hatches, as well as the Fusion Machine Casing MK II.  Each energy hatch has an energy capacity of 40M EU and draws up to 32768 EU/t. That means it can handle start costs up to 640M EU and power consumption up to 524288 EU/t.  The MK III reactor also grants 2/2 OC for every machine tier above the minimum recipe tier.
+  - [提交] gregtech:gt.blockmachines:1195, gregtech:gt.blockmachines:32021
+  - [可选提交] gregtech:gt.blockcasings4:8 x108, gregtech:gt.blockcasings4:7 x32, gregtech:gt.blockmachines:48 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x5
+
+### [-5799940466139612122] §2§l§nUse Nano Tech to produce Lanthanides
+After unlocking Carbon Nanites, we can now use it to extract the needed lanthanide resources in large quantities.  Of course you better be ready. It's expensive until you got the Nano Forge.
+  - [提交] gregtech:gt.metaitem.03:4010
+  - [提交] dreamcraft:MysteriousCrystalLens
+
+### [2626] §2§l§nUV Assembling
+Have you made the Large Scale Auto-Assembler yet? If you haven't, you'll have to make the Ultimate Assembly Constructor to progress. And to make the T6 Rocket. You'll also be able to make the next tier of coils.
+  - [勾选确认]
+
+### [2628] §2§l§nUV Energy Hatch
+You'll need this for the next tier of fusion, and to upgrade your multis even further.
+  - [提交] gregtech:gt.blockmachines:48
+
+### [2623] §2§l§nUV Field Generator
+Does anyone else think of Ultra Violet when they see UV? Are these things emitting UV rays at us? There §ois§r an emitter in there after all.
+  - [提交] gregtech:gt.metaitem.01:32677
+
+### [2620] §2§l§nUV Superconductors (524,288 EU/t)
+I wonder what temperature they start superconducting at?
+  - [提交] gregtech:gt.blockmachines:2440 x64
+
+### [2654] §2§l§nWetware Assembly
+The Wetware Assembly is a ZPM Circuit.
+  - [提交] gregtech:gt.metaitem.03:32093
+
+### [2656] §2§l§nWetware Mainframe
+The Wetware Mainframe is the final Wetware Circuit, and it is the first UHV Circuit you can get.  It's made in the Assembly Line, so there's no imprint.
+  - [提交] gregtech:gt.metaitem.03:32095
+
+### [2670] §2§l§nWhich Doctor? THE Doctor
+If you haven't made one before, go check out the quest in MV linked from the Robot Arm about how they work. This one gives the maximum boost, 256x, and uses between 1.5M-3M EU/t, so make sure your power grid can handle it, or dial it down.
+  - [提交] gregtech:gt.blockmachines:11107
+
+### [2653] §2§l§nYour First Wetware Circuit
+The first Wetware LuV circuit.
+  - [提交] gregtech:gt.metaitem.03:32092
+

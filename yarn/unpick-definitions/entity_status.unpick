@@ -1,0 +1,17 @@
+unpick v4
+
+#: Entity statuses. See {@link net.minecraft.entity.Entity#handleStatus(byte) Entity.handleStatus}.
+group int entity_status
+	net.minecraft.entity.EntityStatuses.*
+
+target_method net.minecraft.entity.Entity handleStatus (B)V
+	param 0 entity_status
+
+target_method net.minecraft.world.World sendEntityStatus (Lnet/minecraft/entity/Entity;B)V
+	param 1 entity_status
+	
+target_method net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket <init> (Lnet/minecraft/entity/Entity;B)V
+	param 1 entity_status
+	
+target_method net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket getStatus ()B
+	return entity_status

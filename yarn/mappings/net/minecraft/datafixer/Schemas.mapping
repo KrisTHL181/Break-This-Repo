@@ -1,0 +1,55 @@
+CLASS net/minecraft/class_3551 net/minecraft/datafixer/Schemas
+	FIELD field_15775 EMPTY_IDENTIFIER_NORMALIZE Ljava/util/function/BiFunction;
+	FIELD field_15776 EMPTY Ljava/util/function/BiFunction;
+	FIELD field_15777 FIXER Lcom/mojang/datafixers/DataFixerBuilder$Result;
+	METHOD method_15449 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 id
+	METHOD method_15450 getFixer ()Lcom/mojang/datafixers/DataFixer;
+	METHOD method_15451 build (Lcom/mojang/datafixers/DataFixerBuilder;)V
+		ARG 0 builder
+	METHOD method_15455 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 id
+	METHOD method_15459 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 id
+	METHOD method_15471 create ()Lcom/mojang/datafixers/DataFixerBuilder$Result;
+	METHOD method_30068 replacing (Ljava/lang/String;Ljava/lang/String;)Ljava/util/function/UnaryOperator;
+		ARG 0 old
+		ARG 1 current
+	METHOD method_30069 (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+		ARG 2 string
+	METHOD method_30070 replacing (Ljava/util/Map;)Ljava/util/function/UnaryOperator;
+		ARG 0 replacements
+	METHOD method_30071 (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
+		ARG 1 string
+	METHOD method_43061 (Lit/unimi/dsi/fastutil/ints/Int2ObjectOpenHashMap;)V
+		ARG 0 frogVariants
+	METHOD method_43062 (Lit/unimi/dsi/fastutil/ints/Int2ObjectOpenHashMap;)V
+		ARG 0 catVariants
+	METHOD method_51289 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 id
+	METHOD method_57075 replacingRaw (Ljava/util/Map;)Ljava/util/function/UnaryOperator;
+		ARG 0 replacements
+	METHOD method_57076 (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/String;
+		ARG 1 string
+	METHOD method_60487 optimize (Ljava/util/Set;)Ljava/util/concurrent/CompletableFuture;
+		ARG 0 requiredTypes
+	METHOD method_65952 (D)D
+		ARG 0 followRange
+	METHOD method_65953 (D)D
+		ARG 0 followRange
+	METHOD method_65954 (D)D
+		ARG 0 followRange
+	METHOD method_65955 (D)D
+		ARG 0 followRange
+	METHOD method_65956 (D)D
+		ARG 0 followRange
+	METHOD method_65957 (D)D
+		ARG 0 followRange
+	METHOD method_66036 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 value
+	METHOD method_67100 (Ljava/lang/String;)Ljava/lang/String;
+		ARG 0 value
+	METHOD method_74011 (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
+		ARG 0 dynamic
+	METHOD method_74012 (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
+		ARG 0 dynamic

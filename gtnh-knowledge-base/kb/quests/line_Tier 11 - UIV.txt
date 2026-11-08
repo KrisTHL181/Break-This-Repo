@@ -1,0 +1,207 @@
+# 任务线: Tier 11 - UIV
+### [-7880130124221230423] §9§l§nA Better Coolant for Your Superconductors
+The subzero temperatures of SpaceTime make it an ideal substitute in all of your superconductor crafts.  You won't need billions of Liquid Helium anymore!  [note]The earlier tiers of superconductors are also faster to craft with this.[/note]
+  - [勾选确认]
+
+### [-6646732400330274064] §9§l§nA Diode, But For Condensate
+At this scale, moving condensate is no longer a matter of pressure or pipe capacity. Every connected conduit becomes part of the same quantum network, allowing its contents to be observed and extracted from anywhere. What you need is a way to impose direction upon something that does not particularly care which way it travels.  Like the theoretical demon whose name it bears, the §5§lMaxwell Gate§r separates one state from another. Networks connected to its output may observe and pull condensate from the input, while the input remains blind to everything beyond the gate. A filter in the controller can further restrict this passage to a single type of condensate.  There is one exception: the Entanglement Apparatus sees the gate backwards. It may only push condensate from the output network toward the input network.  [note]The Maxwell Gate is optional. It does not move condensate by itself; it only controls which side may access it.[/note]  [note]The Gate consumes a constant 1A of UIV power whenever active, even when no condensate is passing through it.[/note]
+  - [提交] gregtech:gt.blockmachines:15760, gregtech:gt.blockmachines:15476 x2
+  - [可选提交] gregtech:gt.blockcasings.bec x148, gregtech:gt.blockcasings.bec:3 x92, gregtech:gt.blockcasings.bec:1 x89, gregtech:gt.blockcasings.bec:2 x85, gregtech:gt.blockglass1:9 x70, gregtech:gt.blockcasings.bec:4 x68, gregtech:gt.blockcasings.bec:5 x40, gregtech:gt.blockcasings.bec:6 x24
+
+### [-6770209432224401378] §9§l§nA Fork in The Road
+With the creation of the Black Hole Compressor, three different paths have opened up.  The Top Path: The Bose-Einstein Multiblocks A suite of multiblocks for late game assembly.  [note]This path makes the other two paths faster and cheaper.[/note]  The Middle Path: Antimatter A fancy new power generation method to keep up with rising EU costs.  [note]This path makes the other two paths easier to scale by giving you more power to burn.[/note]  The Bottom Path: The Forge of the Gods The largest multiblock, capable of smelting everything you could ever want.  [note]This path makes the other two paths faster by speeding up ingot smelting.[/note]
+  - [勾选确认]
+
+### [-6067382707378224204] §9§l§nAn Even More Mega EBF
+With the project finally completed, and a new material capable of harnessing the power of a neutron star, you decide the natural first application of this immense power could be used for a far superior Blast Furnace. With a little tinkering, you decide a second may be necessary, since this module could easily be retrofitted into an ordinary Furnace as well.  [note]The first module of the Godforge, Helioflare Power Forge can perform EBF recipes and Furnace recipes in separate running modes, toggleable in the UI. Note that the Furnace mode does NOT contribute towards the Conversion milestone![/note]  [note]Usage of this module requires the START upgrade.[/note]
+  - [提交] gregtech:gt.blockmachines:15412
+  - [可选提交] tectech:gt.godforgecasing x20, tectech:gt.godforgecasing:2 x20, gregtech:gt.blockcasings5:12 x5, tectech:gt.godforgecasing:1 x5, tectech:gt.godforgecasing:4
+
+### [-7374234948579230118] §9§l§nAnother Type of Steel
+Proto-Halkonite Steel is a super stable material, completely indestructible once formed.  You first have to make Proto-Halkonite base, which then you pour into components made out of infinity.  After getting Creon and Mellion, you can make Proto-Halkonite materials cheaper.
+  - [可选提交] gregtech:gt.metaitem.01:30152
+  - [提交] gregtech:gt.metaitem.02:19154 x64
+
+### [-9080536097015359642] §9§l§nAssembling on Steroids
+It has 16 parallels and can utilize advanced superconductors for improved yields in optical part recipes.  [note]You can't create the Ultimate Battery in one step yet-that's much further down the line.[/note]
+  - [提交] gregtech:gt.blockmachines:14005
+
+### [-8464387737179131129] §9§l§nAssembly To The MAX+
+The §5§lObservation Array§r is less an assembler than an enormous quantum router. It draws condensate from every Containment Field visible to its network, supplies power to its linked Teleportation Nodes, and presents those Nodes with the nanites demanded by each stage of their recipes. Up to sixteen Nodes may be linked to one Array, with their combined energy cost paid here.  The nanites are never consumed, but they must be exchanged constantly. Providing a higher tier than requested actually slows processing, while mixing nanite types causes the entire collection to behave as the lowest tier present. Precision, not brute force, is the key.  [warn]More than three unrequested condensates on the network will immediately fail every active recipe. Even fewer contaminants significantly reduce processing speed.[/warn]  [note]Running the same recipe across synchronized Nodes is strongly recommended. Different recipes may request incompatible nanites and contaminate one another's condensate network.[/note]
+  - [提交] gregtech:gt.blockmachines:15756, gregtech:gt.blockmachines:15476, gregtech:gt.blockmachines:15481
+  - [可选提交] gregtech:gt.blockcasings.bec:2 x1700, gregtech:gt.blockcasings.bec x1515, gregtech:gt.blockcasings.bec:1 x1457, gregtech:gt.blockcasings.bec:3 x838, gregtech:gt.blockcasings.bec:4 x790, gregtech:gt.blockglass1:9 x664, gregtech:gt.blockcasings.bec:5 x560, gregtech:gt.blockcasings.bec:6 x464
+
+### [-6426141127926254915] §9§l§nAtto Power ICs
+You need Atto Power ICs for Dyson, UMV -> UXV transformers, UIV Energy/Dynamo Hatches, and Pico Circuits.  [note]You'll need a UIV Cutting Mac- Wait what?[/note]  From now on, your Cutting Machine is not going to cut it, §l§oliterally. §rThose giant sawblades cannot cut up wafers this complex.  Using your HILE is the next best thing, however you seem to burn most of the biological parts off of the wafer, causing you to gain less chips.  [note]Perhaps we could focus these lasers with a new powerful lens.[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32188, gregtech:gt.metaitem.01:2956 x2, gregtech:gt.metaitem.01:2979, dreamcraft:TCetiESeaweedExtract
+  - [可选提交] gregtech:gt.metaitem.03:32268
+  - [提交] gregtech:gt.metaitem.03:32269
+  > 奖励: bartworks:gt.bwMetaGenerateddust:11041 x42
+
+### [-5195393884836375387] §9§l§nBending Space and Time
+So far, cutting Atto Power ICs in the HILE is really terrible, the lasers are just way too powerful to cut them effectively. Fortunately for you, you have the insane crushing power of black holes!  By compressing a Spatially Transcendent Gravitational Lens Block with some Spatially Enlarged Fluid, you can forge a very powerful lens. A lens so effective, it can bend light and even space.  Maybe don't put your eyes up to the glass.  [note]This lens unlocks a 1-2 recipe for Atto Power ICs, don't forget to repattern![/note]
+  - [可选提交] tectech:tile.spatiallyTranscendentGravitationalLens
+  - [提交] gregtech:gt.metaitem.03:32277
+
+### [465] §9§l§nChaotic Core
+In the darkest corners of the End you found a dragon that was different. Raw power streaming out in chaotic fashion, threatening to tear apart reality itself! But even that dragon you defeated. Concentrating that raw power within a core certainly isn't easy but it looks like you found a way.
+  - [提交] kubatech:kubaitems:41
+  - [提交] DraconicEvolution:chaoticCore
+
+### [2701] §9§l§nChaotic Energy
+Finally, Infinite RF! ...But what can I even use that for?
+  - [提交] EnderIO:blockCapBank
+
+### [-8810543536998436147] §9§l§nCrayon and Melon
+The Godforge will require new materials with the correct properties to stabilize a neutron star. With your new Transcendent Plasma Mixer and MK5 Fusion Reactor, you learn of a new material which may be suitable, which you name [note]Creon[/note].  This material is made as a plasma, and must be cooled alongside an extremely sturdy material. You try a curious mixture of dusts, which you decide to name [note]Mellion[/note].  [note]These materials may also be suitable for components you need many of, you may realize UIV components seem to handle these two materials quite well...[/note]
+  - [可选提交] gregtech:gt.metaitem.99:149, gregtech:gt.metaitem.99:148
+  - [勾选确认]
+
+### [-5194484059648570829] §9§l§nEasier Superconductor
+Using the DTPF, you can now craft Superconductor Base directly in molten form without having to mix, blast, cool, and extract the fluid.  This process works for every superconductor past LuV and is well worth it.  [note]Pay attention to the circuit used for LuV Superconductor, as recipe conflicts may occur if you process all of these together.[/note]
+  - [流体]  x
+
+### [-5189103930243078016] §9§l§nFluid^2 Extractor
+Welcome to the BEC Line! It's recommended you read the wiki for full context on these machines: [url]https://wiki.gtnewhorizons.com/wiki/Bose-Einstein_Condensate_Line[/url]  Until now, manufacturing has been a matter of imposing order upon matter: heat it, compress it, shape it, and force its atoms into the arrangement you require. But the materials ahead of you have become too complex for such crude methods. No amount of mechanical precision can control every particle individually.  At temperatures approaching absolute zero, another possibility emerges. As a cloud of bosons loses its thermal motion, the quantum waves describing its particles spread and begin to overlap. Enough of them eventually occupy the same low energy state that the cloud ceases to behave like a collection of independent particles. Instead, it acts as a single coherent quantum system: a Bose-Einstein condensate.  The first step is using the §5§lEntanglement Apparatus§r to convert ordinary fluids into entangled condensate by brute-forcing this delicate state on an industrial scale. It cannot overclock; instead, it expands the experiment across unlimited parallels, processing as much material as the supplied power can sustain. Multi-amp and laser energy hatches will be necessary if you intend to feed the rest of the BEC Line at any meaningful rate.  Different fluids may be entangled simultaneously, although the entire batch runs for the duration of the slowest active conversion.  [note]Insert ordinary fluids through the input hatch at the front. Entangled condensate leaves through the BEC Hatch at the rear and is pushed into the connected Containment Field network.[/note]  [note]The Apparatus does not check whether sufficient storage is available before processing. Use a BEC Detector Hatch to disable it before your Containment Fields overflow and begin voiding condensate.[/note]
+  - [提交] gregtech:gt.blockmachines:15754, gregtech:gt.blockmachines:15476
+  - [可选提交] gregtech:gt.blockcasings.bec:3 x236, gregtech:gt.blockcasings.bec:2 x232, gregtech:gt.blockcasings.bec x216, gregtech:gt.blockcasings.bec:4 x184, gregtech:gt.blockcasings.bec:1 x156, gregtech:gt.blockglass1:9 x148, gregtech:gt.blockcasings.bec:5 x101
+
+### [-5258609888143859259] §9§l§nFuwusion MK5
+After seeing how slow Shirabon is to make, you might want to upgrade your Fusion setup.  Like its predecessor, the MK4, this version also supports 4/4 OC. Hopefully, this will make your Metastable Oganesson issues a bit more manageable.  [note]You can specify the batch amount in the GUI if you don't want it to handle one-tick recipes.[/note]
+  - [提交] gregtech:gt.blockmachines:975, gregtech:gt.blockmachines:32023
+  - [可选提交] miscutils:gtplusplus.blockcasings.6 x108, miscutils:gtplusplus.blockcasings.6:1 x32, gregtech:gt.blockmachines:11300 x16
+
+### [-7423471752612220255] §9§l§nGetting More Out of Your Hypogen
+Once you get your first Hypogen from Fusion, you can easily duplicate it in your DTPF.  It is a loop, though, so be cautious.
+  - [流体]  x
+
+### [-8415680337631262256] §9§l§nHaha, Spinny Ingot
+Transcendent Metal is the primary metal used in UIV components.  This metal is a bit different from the ones you have been processing so far. You need to macerate your tesseracts to get the dust and then blast it at such high temperatures that you'll need a coolant to help manage the heat.  Due to the impossible nature of the tesseract particles, you'll need a medium to enable them to form 3D shapes. Tungsten, for some reason, works very well for this purpose.  The ingot itself is also not very stable; therefore, a coating of titansteel must be applied during the cooling process.  [note]Consider passively generating it. This process is slow.[/note]
+  - [提交] gregtech:gt.metaitem.01:11581
+
+### [-9020796615899025430] §9§l§nHelioflux Melting Core my Beloved
+As usage of the Forge continues, more data on graviton shards is gathered. It has been found that they can stabilize the outputs of the Forge, allowing for the direct extraction of molten material while it is still close to the heart of the star.  [note]The second module of the Godforge, Helioflux Melting Core allows processing EBF recipes by directly outputting molten metal when possible. This may not always be as efficient as other methods, but the time and scaling saved from Vacuum Freezer steps often more than makes up for this.[/note]  [note]Usage of this module requires the FDIM upgrade.[/note]  [warn]Helioflux Melting Core <3[/warn]
+  - [提交] gregtech:gt.blockmachines:15413
+  - [可选提交] tectech:gt.godforgecasing x20, tectech:gt.godforgecasing:2 x20, tectech:gt.godforgecasing:8 x5, tectech:gt.godforgecasing:1 x5, tectech:gt.godforgecasing:4
+
+### [-7880209593223277990] §9§l§nHeliofusion Exoticizer
+Using large quantities of graviton shards creates regions of space so extreme that exotic forms of matter can exist with far greater stability than usual. Unfortunately, this region is so extreme that it is essentially spatially disconnected from the rest of the Forge, unable to utilize existing upgrades to the structure and its other modules.  [note]The fourth and final module of the Godforge, Heliofusion Exoticizer allows for the production of Quark Gluon Plasma and Magmatter. Initially only Quark Gluon Plasma is possible, with Magmatter requiring a much later upgrade. Consult the Godforge Information section of the UI to read how to produce these materials.[/note]  [note]Usage of this module requires the QGPIU upgrade.[/note]
+  - [提交] gregtech:gt.blockmachines:15415
+  - [可选提交] tectech:gt.godforgecasing x20, tectech:gt.godforgecasing:2 x20, tectech:gt.godforgecasing:8 x5, tectech:gt.godforgecasing:1 x5, tectech:gt.godforgecasing:4
+
+### [-5675835535531457502] §9§l§nHeliothermal Plasma Fabricator
+As understanding of graviton shards continues to improve, better control over the materials they manipulate can be achieved. Graviton shards provide an alternative to electromagnetic containment of plasma using spacetime manipulation instead, allowing the Forge to directly output processed materials as plasma.  [note]The third module of the Godforge, Heliothermal Plasma Fabricator can directly convert materials into their plasma form, at the cost of an immense amount of power. This may not be ideal for every plasma, but can save a lot of time on particularly slow ones. Additionally, later upgrades allow the creation of exotic plasmas which cannot be created through other means.[/note]  [note]Usage of this module requires the GPCI upgrade.[/note]
+  - [提交] gregtech:gt.blockmachines:15414
+  - [可选提交] tectech:gt.godforgecasing x20, tectech:gt.godforgecasing:2 x20, tectech:gt.godforgecasing:8 x5, tectech:gt.godforgecasing:1 x5, tectech:gt.godforgecasing:4
+
+### [-5192569748262941714] §9§l§nMaybe I Do Need These
+Once upon a time, these were optional and commonly skipped. Now that UMV CoAL is gated behind BEC, however, it may be worth making a set for cheaper UIV components.  You will also need 20 of them to craft Quantum Circuits in the NAC at UMV.  ...or you could just make extra UMV ones.  [note]The UIV CoAL requires Superdense Transcendent Metal Plates, which can only be crafted in the BHC.[/note]
+  - [提交] GoodGenerator:componentAssemblylineCasing:10 x20
+
+### [-5562896910886444976] §9§l§nNo, it's not a Typo
+Stabilizing the neutron star of the Godforge was successful, but now you need something new to extract the power out of it into something usable. Your experiments lead you to using the newly discovered Mellion with a Transcendent Metal Nanite to create what seems like a crystal seed of some type, which exhibits perfect thermal conductance.  Processing this seed further into a solution, you realize you can grow this crystal into a slurry-like solution, which you decide to name [note]Phonon Transfer Medium[/note]. This incredible material displays exactly the properties you were looking for, and decide that now you can move forward with the second module of the Godforge.
+  - [可选提交] gregtech:gt.metaitem.01:30145
+  - [勾选确认]
+
+### [-7393740599162688725] §9§l§nPrimitive Components
+Condensate is no joke; that stuff can mess you up big time. Your puny Assembly Lines do not meet the requirements to assemble with it.  Primitive Components allow you to assemble complex parts using condensate at much better prices.
+  - [提交] gregtech:gt.metaitem.03:32307, gregtech:gt.metaitem.03:32310, gregtech:gt.metaitem.03:32313, gregtech:gt.metaitem.03:32316, gregtech:gt.metaitem.03:32327, gregtech:gt.metaitem.03:32331, gregtech:gt.metaitem.03:32319, gregtech:gt.metaitem.03:32323
+
+### [-6893323685044150631] §9§l§nProject Godforge
+With your research now complete, you have finally constructed it - the Forge of the Gods.  The Forge of the Gods is an immensely powerful structure constructed around a stabilized neutron star - it is so advanced that its full capabilities are not yet understood. However, through continued use, one can slowly upgrade and expand the range of abilities of the Forge, and learn the power hidden in the most extreme parts of the universe: [note]Graviton Shards[/note].  This esoteric material can only be found where conventional matter and degenerate neutronium crust matter on the surface of a neutron star meet. At this point in space, gravitons are far more common and irradiate this material mixture to create highly unstable graviton shards, which can be used to internally upgrade the Forge. While these shards cannot yet exist outside the extreme conditions of the Forge, with continued research and utilization it may be possible to eventually isolate and extract them outside the Forge - but for what purpose?  [note]Click on the logo in the UI to read more on how to operate the Godforge.[/note]
+  - [提交] gregtech:gt.blockmachines:15411
+  - [可选提交] tectech:gt.godforgecasing:3 x3943, tectech:gt.godforgecasing x2819, tectech:gt.godforgecasing:1 x272, tectech:gt.godforgecasing:2 x130, tectech:tile.spatiallyTranscendentGravitationalLens x9, tectech:gt.godforgecasing:5 x345, tectech:gt.godforgecasing:4 x36
+
+### [-4646567102207181371] §9§l§nPseudostable Black Hole Containment Field
+As the materials around you achieve transcendental properties, you have found that traditional modes of compression like pistons or gases will not be enough to compact them as densely as you require.  The solution? Using the sheer force of gravity. By using extreme amounts of explosive force on your fourth-dimensionally engineered tesseracts, you can tear tiny rifts in the fabric of space, enough to create a seed which can birth a black hole. If you can build a machine which can harness it, it will be able to compress even the strongest materials to the most dense states possible.  Taming a black hole is no easy task - even with all of your precautions, it defies your efforts to stabilize it and attempts to collapse itself constantly. Meaningfully extending the lifespan of the black hole will be extremely difficult. By bending spacetime through carefully aligned glass, you can reverse the flow of hawking radiation back into the black hole and keep it completely stable - problematically, however, the amount of spacetime required to maintain this process increases at an exponential rate.  As the black hole decays, it becomes even more powerful - but be wary, as it will eventually become unstable and you will no longer be able to recover your items from the edge of the event horizon. To safely close the black hole and restart this process, you have engineered a collapser out of the same fourth-dimensional materials.  [note]The Pseudostable Black Hole Containment Field is the most powerful compressor in the game, capable of creating superdense plates out of any material, as well as being able to perform more advanced neutronium compressor recipes that will save incredible amounts of resources.[/note]  [note]You must use programmed circuits in the input buses to determine if the machine will act as a Compressor or Neutronium Compressor![/note]
+  - [提交] gregtech:gt.blockmachines:3008
+  - [可选提交] gregtech:gt.blockcasings10:11 x3667, gregtech:gt.blockcasings10:12 x950, gregtech:gt.blockglass1:4 x64, gregtech:gt.blockframes:325 x144, gregtech:gt.blockmachines:3012
+
+### [-8792952447363574599] §9§l§nQuantum Tank X
+A Bose-Einstein condensate cannot simply be poured into a larger tank. Its particles have surrendered their individual identities, behaving as a single coherent quantum state. Storing it requires continuously forcing that state to remain confined and the moment that force disappears, so does everything you stored.  The §5§lContainment Field§r holds every variety of entangled condensate on its network. Its field strength determines both its capacity and its appetite for power: every unit of strength provides another litre of storage while consuming another EU/t. The contents cannot be partitioned or filtered, so careful monitoring will be essential.  Exceeding the configured capacity does not stop more condensate from entering. Instead, the unstable field begins destroying 11% of every stored condensate each second until it returns below the limit.  [warn]A power failure or manually disabling the machine immediately voids the entire contents of the Containment Field. Keep its power supply exceptionally reliable.[/warn]  [note]A BEC Detector Hatch can monitor total or filtered condensate levels and disable the Entanglement Apparatus before the field overflows.[/note]
+  - [提交] gregtech:gt.blockmachines:15755, gregtech:gt.blockmachines:15476 x2, gregtech:gt.blockmachines:15761
+  - [可选提交] gregtech:gt.blockglass1:9 x1236, gregtech:gt.blockcasings.bec x1045, gregtech:gt.blockcasings.bec:3 x896, gregtech:gt.blockcasings.bec:4 x568, gregtech:gt.blockcasings.bec:6 x508, gregtech:gt.blockcasings.bec:2 x442, gregtech:gt.blockcasings.bec:1 x341, gregtech:gt.blockcasings.bec:5 x292
+
+### [-7538478274087890802] §9§l§nSisters In Arms
+Tairitsu, Shijima, and Churitsu are sister materials, all requiring similarly colored materials to make. A hidden conection between all of them allow some strong protective forces to appear.  Try putting their bond to good use.  [note]Technetium dust is needed Shijima, which can be fused with Fluorine and Selenium. The latter can be obtained with the Selenium line, by processing Platinum Froth, or from Miessite in the Toxic Everglades.[/note]
+  - [提交] bartworks:gt.bwMetaGeneratedingot:10106 x27, gregtech:gt.metaitem.01:11189 x27, gregtech:gt.metaitem.01:11190 x27
+
+### [-7556137922659020256] §9§l§nSix-Phased Copper
+Copper has managed to stay relevant into UIV by refusing to remain in one phase at a time.  You can hold the plates, but be warned: they may not stay in the same phase for long.
+  - [可选提交] gregtech:gt.metaitem.99:147
+  - [勾选确认]
+
+### [-8476538164944458841] §9§l§nSpace Modules Galore
+Better modules will require a more advanced Space Elevator motor to function.  This upgrade will allow you to access 15 modules on your Space Elevator. If you haven't built the expansion yet, now might be a good time.  [note]You can enable the Space Elevator expansion in the GUI.[/note]
+  - [提交] gtnhintergalactic:gt.blockcasingsSEMotor:2
+
+### [-4833019487151132112] §9§l§nSpacetime Splitting
+Spacetime... separates?? Crazy world we're living in.  You will need a lot of both of these for future crafts throughout the rest of the game, so make sure to set up infrastructure that can handle the demand. Luckily for you, you only need a small amount of it for now.  You will eventually be able to use DTPF and QFT recipes to speed the process up significantly, but for now the Spinmatron should be able to handle production just fine.  [note]In addition to being a crafting ingredient, these can later be used to boost the performance of certain multiblocks, like the LNR, SSASS, & Vacuum Freezer.[/note]  [note]To craft these fluids before UMV energy hatches, overclock the Spinmatron with a high power UIV Laser Hatch  Note, Heavy Mode uses a lot of power.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:32415, miscutils:MU-metaitem.01:32105, gregtech:gt.metaitem.99:588 x20
+  - [提交] gregtech:gt.metaitem.01:30587 x10, gregtech:gt.metaitem.01:30106 x10
+
+### [-8332322836118716550] §9§l§nStar Fuel and Dark Matter
+In your research on §b§lProject Godforge§r, you determine that you need a new type of fuel to create a neutron star. Naquadah Fuel possesses some of the properties needed, but isn't enough. Stabilizing this fuel with Exotic Catalyst, and drastically increasing the density of the fuel with other things leads you to something that may just work.  During this synthesis, you realize that this fuel could be used to make [note]Dark Matter[/note], something you previously had only seen on the Mehen Belt in the Amun-Ra System.  [note]Dark Matter Shards can be found in the Mehen Belt and mined manually, if you don't want to synthesize it.[/note]
+  - [提交] Avaritia:Resource:8, GalacticraftAmunRa:item.baseItem:26
+
+### [-4673230765483994634] §9§l§nT2 Exo-Foundry
+Now that you've unlocked the BHC & started Creon / Mellion production you can finally upgrade your §nExo-Foundry§r!  These §6§lEternal Magnetic Chassis§r will allow your Foundry to have a maximum of three modules.  [note]Check out the Wiki if you need ideas on which modules to choose [url]https://wiki.gtnewhorizons.com/wiki/Exo-Foundry[/url][/note]
+  - [提交] gregtech:gt.foundrycasings:2 x260
+
+### [-7501398759330786959] §9§l§nThe Cat is Out of the Box
+After many hours of grind, blood, sweat, tears, and a little bit of transcendent metal... You are now finally able to solve mankind's hardest puzzle ever: clicking boxes randomly.  The §cUncertainty Resolution§r, §oa Dyson user's wet dream§r, will allow you to completely skip that annoying puzzle when you need to set some (probably many) Quantum Computers up.
+  - [提交] gregtech:gt.blockmachines:15510
+  > 奖励: minecraft:spawn_egg:98 | minecraft:fish x32 | minecraft:name_tag
+
+### [2413] §9§l§nThe Darkness of Choice for Edgelords
+ In order to get to the riches you rightfully deserve, you'll first need to make a Raw Portal, then complete it with more materials. You can then access this dimension that should contain every ore imaginable...  [note]Unfortunately, those tasty ores are locked beneath the mantle of the planet. You'll need to use a Void Miner to get them out.[/note]  [note]This should help with the Tartarite problems due to Proto-Halkonite Steel Base.[/note]  [warn]If there is ever an ore that you need but cannot find, it's guaranteed to be gatherable from this dimension.[/warn]
+  - [可选提交] gregtech:gt.blockreinforced:12
+  - [提交] ExtraUtilities:dark_portal
+  > 奖励: minecraft:paper
+
+### [-5355942527641797439] §9§l§nThe Real Planet Eater
+It has 8 parallels and supports higher tiers of drones.  [note]You can obtain pure platinum group metals with this. It would be a nice boost if you haven't made the QFT for it yet.[/note]
+  - [提交] gregtech:gt.blockmachines:14009
+
+### [-5694412901591210156] §9§l§nTier 11 (UIV)
+Now that you've enjoyed your exotic cookies, let's keep going, shall we?  Welcome to Insanely Ultimate Voltage! One of the shortest tiers in NH for now. This tier is mainly about solving your DTPF catalyst problems and getting to Eternal Coils.  There are a few QoL additions introduced, like the Uncertainty Resolver and the Thaumometric Essentia Cell.  You also gain access to the Dyson Swarm, an incredibly powerful power generation option.  [warn]This tier is not fully complete. Expect changes.[/warn]
+  - [提交] gregtech:gt.blockmachines:11231
+
+### [-8023095913103763378] §9§l§nTranscendent Plasma Mixer
+Definitely consider making one.  The Transcendent Plasma Mixer is a powerful asset for all your DTPF catalyst needs.  The base processing time is always 5 seconds. You can specify the number of parallels the machine can run in the GUI.  Each parallel additively increases the power requirement, so you don't lose any efficiency while increasing production!  [note]Most of your power will go here. Consider upgrading your naquadah fuel or creating the Dyson Swarm.[/note]
+  - [提交] gregtech:gt.blockmachines:1006
+
+### [-6207630791095472892] §9§l§nTunnels Of Light
+Despite its name, the §5§lTeleportation Node§r does not send your components elsewhere to be assembled. The entire recipe is processed inside the Node; power, condensate, and nanites are brought to it remotely by the Observation Array.  Once the solid inputs arrive, the Node begins processing immediately, even if the required condensate has not yet been provided. The Observation Array must deliver everything before the recipe completes, or the process fails and the inputs are lost. There is no energy hatch on the Node; its full power cost is paid through the linked Observation Array.  The Line-of-Sight Hatches on the Node and Observation Array must face one another, share the same Y-level, and be no more than 128 blocks apart. No cable is required between them.  [note]Increasing parallels only allows larger batches. Processing speed falls proportionally, so total throughput does not increase. Scale the line by building additional Teleportation Nodes instead.[/note]
+  - [提交] gregtech:gt.blockmachines:15757, gregtech:gt.blockmachines:15481, gregtech:gt.blockmachines:15758, gregtech:gt.blockmachines:15759
+  - [可选提交] gregtech:gt.blockcasings.bec x94, gregtech:gt.blockcasings.bec:3 x88, gregtech:gt.blockglass1:9 x56, gregtech:gt.blockcasings.bec:1 x46, gregtech:gt.blockcasings.bec:2 x44, gregtech:gt.blockcasings.bec:5 x44, gregtech:gt.blockcasings.bec:4 x32, gregtech:gt.blockcasings.bec:6 x20
+
+### [-7565512237463838538] §9§l§nUIV Energy Hatch
+Woah, another Energy Hatch.  You should probably consider upgrading your Assembly Lines and Precise Assemblers first.
+  - [提交] gregtech:gt.blockmachines:11301
+
+### [-8127302345207551228] §9§l§nUIV Field Generator
+A bit expensive, but worth the QoL items you can craft with it.
+  - [提交] gregtech:gt.metaitem.01:32045
+
+### [-6806178318679823136] §9§l§nUIV Superconductors
+Didn't expect the Rhugnor, did you?  As usual, mix your exotic dusts, blast them, form into wires, and superconduct.
+  - [提交] gregtech:gt.blockmachines:2081
+
+### [-4677630017092864794] §9§l§nUltimate Voltages Require Ultimate Lubricant™!
+For your UIV components to work their interdimensional magic, you're going to need some dimensional border easing lubricant to not cause a universal collapse.  [note]Tip: You can use this in place of Lubricant in your Cutting Machine for faster processing![/note]
+  - [可选提交] gregtech:gt.metaitem.01:30151
+  - [勾选确认]
+
+### [3242] §9§l§nUMV Circuits
+Pico circuits, a direct upgrade from Optical Mainframes, these UMV circuits will be required for a lot of future crafts.  [note]You will need a NAC to get started.[/note]  [warn]Rumor has it these circuits may not be around for much longer...[/warn]
+  - [提交] dreamcraft:PikoCircuit
+
+### [3237] §9§l§nYou Know the Drill pt.2
+Hope you have loads of transcendent metal ingots at the ready. :)
+  - [提交] gregtech:gt.metaitem.01:32021, gregtech:gt.metaitem.01:32025, gregtech:gt.metaitem.01:32029, gregtech:gt.metaitem.01:32033, gregtech:gt.metaitem.01:32037, gregtech:gt.metaitem.01:32041
+
+### [-6861911456329097050] §9§l§nYour First SpaceTime
+[note]Hurrah, you can finally move on to the UMV tier![/note]  The residue produced from the DTPFs seems to have an interesting interaction with reality, as if it bends the universe to its will.  What if you combined it with some infinity and hypogen to excite it, and an energized tesseract as a way to fling it back and forth to the 4th Dimension?  Maybe then you could achieve the unachievable, a building block of the entire universe.  [note]The base recipe is horrible, so definitely make the Eternal Coils for your DTPF first.  Congrats on making it this far![/note]
+  - [提交] gregtech:gt.metaitem.01:11588
+

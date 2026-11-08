@@ -1,0 +1,3 @@
+Linux filename fixture. Plain text, not executable.
+Name (JSON escaped): "?.txt"
+The literal question mark resembles a single-character glob.

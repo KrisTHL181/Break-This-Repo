@@ -1,0 +1,229 @@
+CLASS net/minecraft/class_7923 net/minecraft/registry/Registries
+	FIELD field_41128 POINT_OF_INTEREST_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41129 MEMORY_MODULE_TYPE Lnet/minecraft/class_7922;
+	FIELD field_41130 SENSOR_TYPE Lnet/minecraft/class_7922;
+	FIELD field_41132 ACTIVITY Lnet/minecraft/class_2378;
+	FIELD field_41133 LOOT_POOL_ENTRY_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41134 LOOT_FUNCTION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41135 LOOT_CONDITION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41136 LOOT_NUMBER_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41137 LOOT_NBT_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41138 LOOT_SCORE_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41139 FLOAT_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41140 INT_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41141 HEIGHT_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41142 BLOCK_PREDICATE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41143 CARVER Lnet/minecraft/class_2378;
+	FIELD field_41144 FEATURE Lnet/minecraft/class_2378;
+	FIELD field_41145 STRUCTURE_PLACEMENT Lnet/minecraft/class_2378;
+	FIELD field_41146 STRUCTURE_PIECE Lnet/minecraft/class_2378;
+	FIELD field_41147 STRUCTURE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41148 PLACEMENT_MODIFIER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41149 BLOCK_STATE_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41150 FOLIAGE_PLACER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41151 TRUNK_PLACER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41152 ROOT_PLACER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41153 TREE_DECORATOR_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41155 FEATURE_SIZE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41156 BIOME_SOURCE Lnet/minecraft/class_2378;
+	FIELD field_41157 CHUNK_GENERATOR Lnet/minecraft/class_2378;
+	FIELD field_41158 MATERIAL_CONDITION Lnet/minecraft/class_2378;
+	FIELD field_41159 MATERIAL_RULE Lnet/minecraft/class_2378;
+	FIELD field_41160 DENSITY_FUNCTION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41161 STRUCTURE_PROCESSOR Lnet/minecraft/class_2378;
+	FIELD field_41162 STRUCTURE_POOL_ELEMENT Lnet/minecraft/class_2378;
+	FIELD field_41167 REGISTRIES Lnet/minecraft/class_2378;
+	FIELD field_41168 LOGGER Lorg/slf4j/Logger;
+	FIELD field_41169 DEFAULT_ENTRIES Ljava/util/Map;
+	FIELD field_41170 ROOT Lnet/minecraft/class_2385;
+	FIELD field_41171 GAME_EVENT Lnet/minecraft/class_7922;
+	FIELD field_41172 SOUND_EVENT Lnet/minecraft/class_2378;
+	FIELD field_41173 FLUID Lnet/minecraft/class_7922;
+	FIELD field_41174 STATUS_EFFECT Lnet/minecraft/class_2378;
+	FIELD field_41175 BLOCK Lnet/minecraft/class_7922;
+	FIELD field_41177 ENTITY_TYPE Lnet/minecraft/class_7922;
+	FIELD field_41178 ITEM Lnet/minecraft/class_7922;
+	FIELD field_41179 POTION Lnet/minecraft/class_2378;
+	FIELD field_41180 PARTICLE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41181 BLOCK_ENTITY_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41183 CUSTOM_STAT Lnet/minecraft/class_2378;
+	FIELD field_41184 CHUNK_STATUS Lnet/minecraft/class_7922;
+	FIELD field_41185 RULE_TEST Lnet/minecraft/class_2378;
+	FIELD field_41186 POS_RULE_TEST Lnet/minecraft/class_2378;
+	FIELD field_41187 SCREEN_HANDLER Lnet/minecraft/class_2378;
+	FIELD field_41188 RECIPE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41189 RECIPE_SERIALIZER Lnet/minecraft/class_2378;
+	FIELD field_41190 ATTRIBUTE Lnet/minecraft/class_2378;
+	FIELD field_41191 POSITION_SOURCE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41192 COMMAND_ARGUMENT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41193 STAT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_41194 VILLAGER_TYPE Lnet/minecraft/class_7922;
+	FIELD field_41195 VILLAGER_PROFESSION Lnet/minecraft/class_7922;
+	FIELD field_42940 DECORATED_POT_PATTERN Lnet/minecraft/class_2378;
+	FIELD field_43381 RULE_BLOCK_ENTITY_MODIFIER Lnet/minecraft/class_2378;
+	FIELD field_44687 ITEM_GROUP Lnet/minecraft/class_2378;
+	FIELD field_46591 BLOCK_TYPE Lnet/minecraft/class_2378;
+	FIELD field_46912 POOL_ALIAS_BINDING Lnet/minecraft/class_2378;
+	FIELD field_47496 CRITERION Lnet/minecraft/class_2378;
+	FIELD field_47555 NUMBER_FORMAT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_49658 DATA_COMPONENT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_49911 ENTITY_SUB_PREDICATE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_50078 MAP_DECORATION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_51832 ENCHANTMENT_EFFECT_COMPONENT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_51833 ENCHANTMENT_LEVEL_BASED_VALUE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_51834 ENCHANTMENT_ENTITY_EFFECT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_51835 ENCHANTMENT_LOCATION_BASED_EFFECT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_51836 ENCHANTMENT_VALUE_EFFECT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_51837 ENCHANTMENT_PROVIDER_TYPE Lnet/minecraft/class_2378;
+	FIELD field_53967 CONSUME_EFFECT_TYPE Lnet/minecraft/class_2378;
+	FIELD field_54873 SLOT_DISPLAY Lnet/minecraft/class_2378;
+	FIELD field_54874 RECIPE_DISPLAY Lnet/minecraft/class_2378;
+	FIELD field_54927 RECIPE_BOOK_CATEGORY Lnet/minecraft/class_2378;
+	FIELD field_55881 TICKET_TYPE Lnet/minecraft/class_2378;
+	FIELD field_56154 TEST_ENVIRONMENT_DEFINITION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_56155 TEST_INSTANCE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_56156 TEST_FUNCTION Lnet/minecraft/class_2378;
+	FIELD field_56403 SPAWN_CONDITION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_56404 DATA_COMPONENT_PREDICATE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_60812 DIALOG_TYPE Lnet/minecraft/class_2378;
+	FIELD field_60814 INPUT_CONTROL_TYPE Lnet/minecraft/class_2378;
+	FIELD field_60815 DIALOG_BODY_TYPE Lnet/minecraft/class_2378;
+	FIELD field_61038 DIALOG_ACTION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_62490 INCOMING_RPC_METHOD Lnet/minecraft/class_2378;
+	FIELD field_62491 OUTGOING_RPC_METHOD Lnet/minecraft/class_2378;
+	FIELD field_62996 DEBUG_SUBSCRIPTION Lnet/minecraft/class_2378;
+	FIELD field_63643 PERMISSION_TYPE Lnet/minecraft/class_2378;
+	FIELD field_63644 PERMISSION_CHECK_TYPE Lnet/minecraft/class_2378;
+	FIELD field_63925 ENVIRONMENTAL_ATTRIBUTE Lnet/minecraft/class_2378;
+	FIELD field_63926 ATTRIBUTE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_64250 SLOT_SOURCE_TYPE Lnet/minecraft/class_2378;
+	FIELD field_64251 GAME_RULE Lnet/minecraft/class_2378;
+	METHOD method_47452 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47453 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47454 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47455 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47456 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47457 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47459 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47460 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47461 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47462 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47465 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47466 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47467 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47469 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47470 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47471 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47472 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47474 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47475 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47476 bootstrap ()V
+	METHOD method_47478 create (Lnet/minecraft/class_5321;Lnet/minecraft/class_2385;Lnet/minecraft/class_7923$class_6889;)Lnet/minecraft/class_2385;
+		ARG 0 key
+		ARG 1 registry
+		ARG 2 initializer
+	METHOD method_47479 create (Lnet/minecraft/class_5321;Lnet/minecraft/class_7923$class_6889;)Lnet/minecraft/class_2378;
+		ARG 0 key
+		ARG 1 initializer
+	METHOD method_47481 create (Lnet/minecraft/class_5321;Ljava/lang/String;Lnet/minecraft/class_7923$class_6889;)Lnet/minecraft/class_7922;
+		ARG 0 key
+		ARG 1 defaultId
+		ARG 2 initializer
+	METHOD method_47482 (Lnet/minecraft/class_2960;Ljava/util/function/Supplier;)V
+		ARG 0 id
+		ARG 1 initializer
+	METHOD method_47483 validate (Lnet/minecraft/class_2378;)V
+		ARG 0 registries
+	METHOD method_47484 (Lnet/minecraft/class_2378;Lnet/minecraft/class_2378;)V
+		ARG 1 registry
+	METHOD method_47487 init ()V
+	METHOD method_47489 createIntrusive (Lnet/minecraft/class_5321;Ljava/lang/String;Lnet/minecraft/class_7923$class_6889;)Lnet/minecraft/class_7922;
+		ARG 0 key
+		ARG 1 defaultId
+		ARG 2 initializer
+	METHOD method_47491 freezeRegistries ()V
+	METHOD method_47492 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47493 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47494 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47495 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47496 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47497 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47498 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47499 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47500 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47501 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47502 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47503 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47504 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47505 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47506 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47507 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47508 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47509 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47512 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47513 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_47514 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_49927 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_53495 createIntrusive (Lnet/minecraft/class_5321;Lnet/minecraft/class_7923$class_6889;)Lnet/minecraft/class_2378;
+		ARG 0 key
+		ARG 1 initializer
+	METHOD method_60389 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_62715 createEntryLookup (Lnet/minecraft/class_2378;)Lnet/minecraft/class_7871;
+		ARG 0 registry
+	METHOD method_62716 resetTagEntries (Lnet/minecraft/class_2378;)V
+		ARG 0 registry
+	METHOD method_62991 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_66552 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_66903 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_74053 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	METHOD method_76572 (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+		ARG 0 registry
+	CLASS class_6889 Initializer
+		METHOD run (Lnet/minecraft/class_2378;)Ljava/lang/Object;
+			ARG 1 registry

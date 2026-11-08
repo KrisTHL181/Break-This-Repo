@@ -1,0 +1,756 @@
+# 任务线: Tier 5 - IV
+### [1693] §9§l2-Nitrochlorobenzene
+Next step is to mix the nitration mixture with your chlorobenzene in the HV chemical reactor to get 2-nitrochlorobenzene.
+  - [可选提交] gregtech:gt.metaitem.01:30628 x72, gregtech:gt.metaitem.01:30605 x36
+  - [提交] gregtech:gt.metaitem.01:30592 x36
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1695] §9§l3,3 Diaminobenzidine
+Mixing 3,3 Dichlorobenzidine with Ammonia and Zinc in an IV Chemical Reactor gives you 3,3 Diaminobenzidine.
+  - [可选提交] gregtech:gt.metaitem.01:30596 x18, gregtech:gt.metaitem.01:30659 x36, gregtech:gt.metaitem.01:2036 x18
+  - [提交] gregtech:gt.metaitem.01:30597 x18
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1694] §9§l3,3 Dichlorobenzidine
+Mixing 2-nitrochlorobenzene with copper dust gives you 3,3 Dichlorobenzidine in an EV Chemical Reactor.
+  - [可选提交] gregtech:gt.metaitem.01:30592 x36, gregtech:gt.metaitem.01:2035 x2
+  - [提交] gregtech:gt.metaitem.01:30596 x18
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [3055] §9§lA Little Bit of Sifting
+Now you can sift some of the radioactive impurities out.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11020
+  - [提交] bartworks:gt.bwMetaGenerateddust:11021, bartworks:gt.bwMetaGenerateddust:11037
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2327] §9§lAlmost Done With Rhodium
+Place your solution in your Chemical Reactor to heat it while it spins. That way you get a dust out of your Solution, 100% lump free!
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:86 (ore:cellRhodiumFilterCakeSolution)
+  - [提交] bartworks:gt.bwMetaGenerateddust:87 (ore:dustReprecipitatedRhodium)
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2309] §9§lAnother Acid to Worry About!
+Formic Acid, also known as methanoic acid, is an organic acid. We'll need it for the final Palladium step, so don't be shy, make tons of it! The Sodium Sulfate can be recycled.  Make Sodium Formate, then the Formic Acid.
+  - [可选提交] gregtech:gt.metaitem.01:30674 x4 (ore:cellCarbonMonoxide), gregtech:gt.metaitem.01:2685 x12 (ore:dustSodiumHydroxide_GT5U)
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:56 x4 (ore:cellSodiumFormate), gregtech:gt.metaitem.01:30720 x2 (ore:cellSulfuricAcid)
+  - [提交] bartworks:gt.bwMetaGeneratedcell:58 x4 (ore:cellFormicAcid), bartworks:gt.bwMetaGenerateddust:57 x14
+  > 奖励: dreamcraft:CoinChemistII x5 | IC2:itemCellEmpty x16 (ore:cellEmpty)
+
+### [2324] §9§lAnother One Bites the Salt
+Hey, why're you looking at me that way? You ain't finished yet. Get more Chlorine and Salt, to process your Rhodium.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:79 (ore:dustCrudeRhodiumMetal), gregtech:gt.metaitem.01:2817 (ore:dustSalt), gregtech:gt.metaitem.01:30023 (ore:cellChlorine)
+  - [提交] bartworks:gt.bwMetaGenerateddust:80 x3 (ore:dustRhodiumSalt)
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [1666] §9§lArgon
+To process some of the new ingots you will find, you might want some argon. Your first source will come from air, in small amounts. Unlike centrifuging Compressed Air Cells, you'll need to turn the Air into Liquid Air first in a Vacuum Freezer so you can centrifuge it more efficiently.  You can also make the Air Intake Hatch - it's much better than spamming compressors!  Don't bother with the DT recipe unless you need the other fluids from it, it's not nearly as good as centrifuging. You also need the Liquid Air Fluid Hatch (only works with Liquid Air!) and Giant Output Hatch when you want to do that.
+  - [提交] gregtech:gt.metaitem.01:30024 x16
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [3065] §9§lA Sift, a Sift! My Kingdom for a Sift!
+Now to filter the leached concentrate in order to get the cerium out.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11046
+  - [提交] bartworks:gt.bwMetaGenerateddust:11025, bartworks:gt.bwMetaGeneratedcell:11018
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [-8746080893915019949] §9§lA Small Reward: The Infinite Spray Can
+Congratulations! You have completed the Platinum Line. Not many players have the perseverance to accomplish this task. A small reward is in order!  The [note]Infinite Spray Can[/note] never runs out of paint, and contains all sixteen colors (as well as solvent!) Of course, line mode and Ring of Loki support are included. There are also many convenience features. Middle-click to open a color choice GUI. Middle-click a painted block to copy its color to the spray can. Left-click to cycle the active color (sneak to go backwards.) Sneak-middle-click to lock the can; while locked, you can't accidentally change the color. Sneak-middle-click to unlock.  You can also hold it in your offhand to automatically spray any colorable block you place with your main hand.  Naturally, you'll have to craft the infinite spray can yourself. It's a Dire Crafting recipe, so hopefully you have a dire crafting table. It requires a lot of platinum line materials, of course. And, apparently, a rainbow cactus, so a small detour into magic will be necessary. And a bunch of random-looking AE2 parts. And an IV world accelerator. And... a fence?  Is this really a reward?
+  - [提交] gregtech:gt.metaitem.01:32468
+
+### [1685] §9§lASoC - Advanced System on a Chip
+ASoCs. Advanced system on a chip, will be used for a new multiblock, the Precise Assembler.  And just like SoCs, ASoCs will be used to make cheaper HV and EV circuits.  However you'll need to wait until ZPM to make the cheaper EV circuits.
+  - [可选提交] gregtech:gt.metaitem.03:32048
+  - [提交] gregtech:gt.metaitem.03:32049 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [2323] §9§lBut... This is Expensive!
+Gathering Zinc might not have been a pleasant task in the past, but here, it's just used as a catalyst, so you will regain all of it.  When you electrolyze the Zinc Sulfate, you get a Sulfur and 4000L Oxygen back too.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:62 (ore:cellRhodiumSulfateSolution), gregtech:gt.metaitem.01:2036 (ore:dustZinc)
+  - [提交] bartworks:gt.bwMetaGenerateddust:79 (ore:dustCrudeRhodiumMetal), bartworks:gt.bwMetaGenerateddust:84 x6
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1533] §9§lCallisto Trip
+Callisto Ice is a material you need for Tier 4 Rockets. Look for it at Y 40-60. You can also find platinum series and radioactive ores here.  [note]You can also find Mytryl and Ledox here as small ores.[/note]
+  - [提交] gregtech:gt.metaitem.01:5389 x192, gregtech:gt.metaitem.03:5389 x64, gregtech:gt.blockores2:389 x64
+  > 奖励: enhancedlootbags:lootbag:24 | enhancedlootbags:lootbag:8 | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinAdventureII x5
+
+### [1538] §9§lCeres Trip
+You can find the same ores as Callisto minus callisto ice here, but the real goal is the dungeon and the small ores: Naquadah and Quantium.  Naquadah is used for efficient Silicon Wafer, as well as highly advanced components you'll need tons of at ZPM.  Quantium is used for T5 Rocket and item pipe that has the best throughput in GT.  [note]Make sure to bring your MBM to maximize ore yield.[/note]
+  - [提交] gregtech:gt.metaitem.01:5324 x192
+  > 奖励: enhancedlootbags:lootbag:24 | enhancedlootbags:lootbag:8 | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinAdventureII x5
+
+### [1712] §9§lCheaper LV Circuits
+With the EV circuit assembler and SoCs you can now make microprocessors for a reduced price.  Remember that these can't be made into MV circuits.
+  - [可选提交] gregtech:gt.metaitem.03:32106 x16, gregtech:gt.metaitem.03:32047 x16, gregtech:gt.metaitem.02:19035 x32, gregtech:gt.metaitem.01:26035 x32
+  - [提交] gregtech:gt.metaitem.03:32078 x32
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1674] §9§lCheaper MV Circuits
+With the IV circuit assembler and SoCs you can now make integrated processors for a reduced price.
+  - [可选提交] gregtech:gt.metaitem.03:32106 x32, gregtech:gt.metaitem.03:32047 x32, gregtech:gt.metaitem.02:19308 x128, gregtech:gt.metaitem.01:26345 x128
+  - [提交] gregtech:gt.metaitem.03:32080 x32
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [3057] §9§lChemically Bathing!
+Yep, this really is an all-rounder line. Again you'll need some ammonium nitrate. Just another reminder for those who are yet to make a dedicated nitric acid setup :P
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11021 x20, bartworks:gt.bwMetaGeneratedcell:11036 x7
+  - [提交] bartworks:gt.bwMetaGenerateddust:11022 x20
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [1696] §9§lChemical Reactions at IV Level
+High tier chemical recipes need a high tier IV chemical reactor.  Alternatively you can use your Large Chemical Reactor with either two EV energy hatches or one IV energy hatch.  [note]...Which you can make after you finish the platline. Have fun![/note]  §6If you missed it or forgot, hold a stack of the platline dust to skip the quests in between.  You can also skip the PBI chem quests, but you need to hold 128 sheets in your hand.
+  - [勾选确认]
+
+### [1704] §9§lChromium Trioxide
+Chromium Trioxide is made out of chrome and oxygen in two steps. First you make Chromium Dioxide and then Chromium Trioxide.
+  - [可选提交] gregtech:gt.metaitem.01:2030 x2, gregtech:gt.metaitem.01:30013 x6
+  - [可选提交] gregtech:gt.metaitem.01:2361 x6
+  - [提交] gregtech:gt.metaitem.01:2591 x8
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [2315] §9§lClass, Concentrate!
+Your Acidic Osmium solution is way too weak to precipitate out Osmium. Go and distill it in a DT to get a more concentrated variant of it.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:72 x10
+  - [提交] bartworks:gt.bwMetaGeneratedcell:74
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3067] §9§lCompounding With Oxalic Acid
+Combining your cerium chloride with oxalic acid yields you cerium oxalate. This can then be heated (in your EBF(s), of course) to get §oanother §rcerium oxide.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11026 x2, bartworks:gt.bwMetaGeneratedcell:10013 x3
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11027, gregtech:gt.metaitem.01:30683 x6
+  - [提交] bartworks:gt.bwMetaGenerateddust:11028
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [-4993634693115988771] §9§lConcentrated Samarium
+Precipitate samarium ions with oxalic acid. Samarium oxalate is then washed with hydrochloric acid; you get Impure Samarium Chloride as a result. This Samarium chloride dust is the base material for the extraction of samarium.  To actually get Samarium Dust out of this, there are two methods, one is for IV, the other a bit later in LuV.
+  - [提交] bartworks:gt.bwMetaGenerateddust:11464, bartworks:gt.bwMetaGenerateddust:11465
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2884] §9§lCool it Back Down
+You just need to run your Ruthenium Tetroxide through a fluid solidifier in this step to, well, solidify it.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:66 x14
+  - [提交] bartworks:gt.bwMetaGenerateddust:66 x14
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3053] §9§lDilution, Yet Again
+Those sulfates aren't going to dilute themselves!  You get more fluid per piece of monazite, what's not to like?
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11019, IC2:itemCellEmpty:1 x6
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11016 x7
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1701] §9§lDimethylbenzene
+Dimethylbenzene can be distilled from Wood Tar or using Benzene and Methane gas in a Chemical Reactor.
+  - [提交] gregtech:gt.metaitem.01:30593 x18
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1698] §9§lDiphenyl Isophtalate
+Mix Sulfuric Acid, Phthalic acid and Phenol to get Diphenyl Isophtalate. An IV Chemical Reactor is needed.
+  - [可选提交] gregtech:gt.metaitem.01:30720 x18, gregtech:gt.metaitem.01:30595 x18, gregtech:gt.metaitem.01:30687 x36
+  - [提交] gregtech:gt.metaitem.01:30598 x18
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [2316] §9§lDissolve Ir
+Adding Hydrochloric Acid to Iridium Dioxide yields Acidic Iridium Solution.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:73 (ore:dustIridiumDioxide), gregtech:gt.metaitem.01:30683 (ore:cellHydrochloricAcid_GT5U)
+  - [提交] bartworks:gt.bwMetaGeneratedcell:75 (ore:cellAcidicIridiumSolution)
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3062] §9§lDry It Real Good
+Your concentrate is far too damp! You'll need to dry it off in the EBF.  Thankfully the recipe is far from difficult.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11023
+  - [提交] bartworks:gt.bwMetaGenerateddust:11024
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [3049] §9§lEBF Time
+For the next step in the process, just EBF your solution with some magnesium.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11004, gregtech:gt.metaitem.01:2018 x2
+  - [提交] bartworks:gt.bwMetaGenerateddust:11001, gregtech:gt.metaitem.01:2377 x2
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3082] §9§lEuO
+Monazite europium?  Unfortunately you won't be able to process it until you actually have some actual europium, so just hold onto this for now.
+  - [提交] bartworks:gt.bwMetaGenerateddust:11050
+  > 奖励: enhancedlootbags:lootbag:8 x2
+
+### [1534] §9§lEuropa Trip
+Ledox is a material you need for Tier 4 Rockets which can be found on Europa. Look for it at Y 55-65. You can also find Chrome, Molybdenum, Manganese, Tungstate and Rubracium, among others.  [note]You can also get Ledox from small ores on Callisto.[/note]
+  - [提交] gregtech:gt.metaitem.01:5390 x192, gregtech:gt.metaitem.03:5390 x64, gregtech:gt.blockores2:390 x64
+  > 奖励: enhancedlootbags:lootbag:24 | enhancedlootbags:lootbag:8 | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinAdventureII x5
+
+### [2918] §9§lEven Betterer Magnetic Rods
+Like before, you're going to need better rods for your motors next tier. Build this to make your Magnetic Samarium Rods.
+  - [提交] gregtech:gt.blockmachines:555, gregtech:gt.blockmachines:358
+  - [勾选确认]
+  > 奖励: gregtech:gt.metaitem.01:23069 x4 | dreamcraft:CoinTechnicianII x2
+
+### [2319] §9§lEven More Chlorine Needed
+By combining your Acidic Iridium Solution with Ammonia Chloride you'll get some Iridium Chloride, which is rather easy to process into Iridium. You're almost done.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:75 (ore:cellAcidicIridiumSolution), bartworks:gt.bwMetaGeneratedcell:50 x3 (ore:cellAmmoniumChloride)
+  - [提交] bartworks:gt.bwMetaGenerateddust:76 (ore:dustIridiumChloride), gregtech:gt.metaitem.01:30659 x3
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3052] §9§lFinally, Actual Hafnium
+Now that wasn't so hard, was it?  Hafnium is used as a component in making the Sparge tower which is useful if you ventured into the Liquid Fluorine Thorium Fluid Nuclear reactor.  You also get half of your Iodine back with this. Also, keep the runoff. It might become useful later, especially if stuff's suggested §owink wink nudge nudge§r
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11005
+  - [提交] bartworks:gt.bwMetaGeneratedingot:11000
+  > 奖励: bq_standard:choice
+
+### [3088] §9§lFinally, Samarium!
+(And Gadolinium)  Easy, right? Not to worry, there's always the bastnasite line to stay your hunger for complex lines!  Samarium can be used to fuel your ever growing Magnetic Samarium Rods needs from LuV up to UHV while Gadolinium is used in the far lategame in the making of powerful Compact Fusion reactors.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11034 x3
+  - [可选提交] gregtech:gt.metaitem.01:2071
+  - [提交] gregtech:gt.metaitem.01:2069 x2
+  > 奖励: enhancedlootbags:lootbag:8 x4 | enhancedlootbags:lootbag:41
+
+### [2312] §9§lFinal Separation - Iridium & Osmium
+You will need heat and Hydrochloric Acid to separate Iridium and Osmium from the Rarest Metal Residue, but we're getting to the end.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:69 x20, gregtech:gt.metaitem.01:30683 x5
+  - [提交] bartworks:gt.bwMetaGenerateddust:70 x10, bartworks:gt.bwMetaGeneratedcell:72 x10
+  > 奖励: gregtech:gt.metaitem.01:25083 (ore:roundOsmium) | enhancedlootbags:lootbag:8
+
+### [2305] §9§lFirst Separation - Rhodium
+The Platinum Group processing line (AKA Platline) is a multi-step complicated process. Because of its complexity, and how much you need, you should have a processing line running all the time. You should be able to comprehend it better after doing these quests. Or maybe you set it up already, and you're siphoning off some of the results? Either way.  As a first step in getting Rhodium, Ruthenium, Iridium, and Osmium, we will split apart the Rhodium from the other metals in an EBF with the Potassium Disulfate you made previously.  The amounts for this step are pretty annoying, blame Bart for that.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:49 x31, bartworks:gt.bwMetaGeneratedcellMolten:59 x78
+  - [提交] bartworks:gt.bwMetaGenerateddust:60 x31, bartworks:gt.bwMetaGeneratedcell:61 x11
+  > 奖励: dreamcraft:CoinChemistIII | dreamcraft:CoinTechnicianIII
+
+### [2322] §9§lFluid From Sulfur Gas
+Combine the Rhodium Sulfate you got with Water, and you'll get Rhodium Sulfate Solution, as well as some more Leech Residue, and Molten Potassium.  You get just over 13 ingots' worth of Potassium back, you'll want to use the fluid solidifier and then macerate it to use it again.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:61 x11 (ore:cellRhodiumSulfate), IC2:itemCellEmpty:1 x10 (ore:cellWater)
+  - [提交] bartworks:gt.bwMetaGeneratedcell:62 x11 (ore:cellRhodiumSulfateSolution), bartworks:gt.bwMetaGenerateddustTiny:60 x10, gregtech:gt.metaitem.99:25 x13
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [3080] §9§lFreezing Nitrates
+Yep, you're seeing right: A line with a vacuum freezer!  To separate some of the more... tricky elements, extreme cold is needed.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11018
+  - [提交] bartworks:gt.bwMetaGenerateddust:11030
+  > 奖励: dreamcraft:CoinChemistIII x3
+
+### [-6274099661929415720] §9§lGetting Samarium in IV
+Mix Samarium chloride dust with Salt. Electrolyze the result and the Samarium dust will be separated out.  Sodium and chlorine can also be fully recovered.  You also get some additional residue. It does not have any uses currently but might be useful in the future.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11466
+  - [提交] gregtech:gt.metaitem.01:2069, bartworks:gt.bwMetaGenerateddustTiny:11472
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-6160583425153700818] §9§lGetting Samarium in LuV
+Once you get ZPM tier power (2 LuV energy hatches), this method is much better.  Melt the Samarium Chloride and reduce it with Lanthanum in a Distillation Tower. Then recover Lanthanum Chloride by electrolysis.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcellMolten:11465
+  - [提交] bartworks:gt.bwMetaGenerateddust:11467, gregtech:gt.metaitem.99:69
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [3076] §9§lGlowing Matter
+Another way to get Sunnarium! Just throw stacks of Glowing Coral and a tiny bit of UU-Matter in an autoclave and hope for the best.  You can either use crops, or have any type of Glowstone farm and combine it with a GT++ Algae Farm.  A farm for Glowing Coral or Glowstone should also help you mass produce other resources like Gold, Redstone, Mercury, etc.  [note]You may want to check out the Industrial Autoclave for speeding things up, but you will need to be in LuV to build one.[/note]
+  - [提交] BiomesOPlenty:coral1:15 x32
+  - [可选提交] IC2:itemCellEmpty:3
+  - [提交] gregtech:gt.metaitem.01:2318 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [3047] §9§lHafnium Line
+There is a key difference with hafnium here, however. Follow this mini line to hear more.  First off you'll need to react your hafnia with some hydrochloric acid.  And, like with zirconium, you'll need the solution rather than the dust.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11002, gregtech:gt.metaitem.01:30683 x4
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11003
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11004
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2881] §9§lHeat it Up!
+You can make Hot Tetroxide Solution in the fluid heater so get on with it!
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:68 x9
+  - [提交] bartworks:gt.bwMetaGeneratedcell:67 x18
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1665] §9§lHSS-S
+Now that you have HSS-G, it's time to make HSS-S. This new alloy is an important part of a lot of LuV recipes.
+  - [提交] gregtech:gt.metaitem.01:11374 x24
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinTechnicianII x2
+
+### [-6601301260503824958] §9§lIntradimensional Input buses
+This Special bus is rather pricey however it will allow all items that are in the bus to be accessible in all other linked buses in the same dimension.  This would allow multiple machines to work from the same input of items.  While holding a data stick the configuration settings can be copied with a left-click and pasted with a right-click on the bus.
+  - [提交] gregtech:gt.blockmachines:13533
+  > 奖励: gregtech:gt.blockmachines:13533 | enhancedlootbags:lootbag:8
+
+### [2698] §9§lIo Trip
+Any ore veins not on Mercury are on this planet for this tier. The pyrolusite vein can have niobium extracted from it, and samarium can be acquired from mytryl and rubracium. Infused gold is also found here.  [note]Like Venus, you can collect firestone from small ore here.[/note]
+  - [提交] gregtech:gt.metaitem.01:5323 x192, gregtech:gt.metaitem.01:2069 x20, gregtech:gt.metaitem.01:2047 x20
+
+### [2321] §9§lIridium
+Add Calcium to Iridium Chloride to finally get pure Iridium.  You can run the Metallic Sludge through a centrifuge to get nickel and copper, while the Calcium Chloride needs to be solidified in a fluid solidifier before it can be electrolyzed for calcium and chlorine.  BTW, this step is only EV, the only part that is, so you could do it earlier if you really wanted to.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:76, gregtech:gt.metaitem.01:2026 x3 (ore:dustCalcium)
+  - [提交] gregtech:gt.metaitem.01:2084 (ore:dustIridium)
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:77, bartworks:gt.bwMetaGeneratedcell:63 x3
+  > 奖励: gregtech:gt.metaitem.01:2084 (ore:dustIridium)
+
+### [1890] §9§lIV Assembler
+An IV assembler is required to make new coils, or enriched Sunnarium for HV Solar Panels.
+  - [提交] gregtech:gt.blockmachines:215
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1669] §9§lIV Circuit Assembler
+The IV circuit assembler will let you make easier MV circuits, as well as single step EV circuits.
+  - [提交] gregtech:gt.blockmachines:1184
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [2830] §9§lIV Energy Hatch
+You'll need this to increase the power to your multis and progress.  You need some Vanadium-Gallium to make HPIC Wafers for it, and an IV Cutting Machine if you haven't made the multi.  [note]I hope you had fun with the platline, lol.[/note]
+  - [提交] gregtech:gt.blockmachines:45
+  > 奖励: bq_standard:choice | gregtech:gt.metaitem.01:2817 x64 | bartworks:gt.bwMetaGeneratedgemExquisite:20 x16 | gregtech:gt.metaitem.01:2944 x64 | bartworks:gt.bwMetaGeneratedgemExquisite:22 x16 | gregtech:gt.metaitem.01:30692 x64 | dreamcraft:EdibleSalt x16 | minecraft:ghast_tear x16 | dreamcraft:CoinChemistIII | dreamcraft:CoinTechnicianIII
+
+### [-5282439462436342828] §9§lIV Field Generator
+Oh look, the latest and greatest field generator! I wonder what you'll end up using these for... maybe a Tree Growth Simulator? Maybe a new Matter Manipulator?
+  - [提交] gregtech:gt.metaitem.01:32674
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII
+
+### [1410] §9§lIV Mixer
+An IV mixer is required for example to mix HSS-S dust or to make IV superconductors.  You can also check out the Mass Processing tab and make a multiblock mixer out of this one.
+  - [提交] gregtech:gt.blockmachines:585
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1409] §9§lIV Superconductors (8192 EU/t)
+How about lossless 8192 EU Wires? Vanadiumtriindinide is a superconductor wire and will transfer your energy without any loss.  From now on, SCs are not optional, you need to make them to craft stuff.
+  - [可选提交] gregtech:gt.metaitem.01:2029 x3, gregtech:gt.metaitem.01:2056 x9
+  - [可选提交] gregtech:gt.metaitem.01:2990 x12
+  - [可选提交] gregtech:gt.metaitem.01:11990 x12
+  - [可选提交] gregtech:gt.blockmachines:2260 x24
+  - [可选提交] gregtech:gt.blockmachines:2260 x24, gregtech:gt.blockmachines:5180 x16, gregtech:gt.metaitem.01:32614 x2, gregtech:gt.metaitem.01:30004 x16
+  - [提交] gregtech:gt.blockmachines:2380 x24
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinChemistII x2 | dreamcraft:CoinDarkWizardII x2
+
+### [2667] §9§lKeep Soldering On!
+You have been using a very basic soldering alloy for a while now. Time for an upgrade! You will need it in your Assembly Line.
+  - [可选提交] miscutils:itemCellIndalloy140
+  - [勾选确认]
+
+### [3064] §9§lLeach The Concentrate
+Here you have two options: Either you can mix some water with your nitrated mixture for relatively low yield, or you can mix it with the cerium-containing mixture you get from ores for double the amount.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11017
+  - [可选提交] IC2:itemCellEmpty:1
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11029 x3
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11046
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [-6939821207402967394] §9§lLong term planner?
+Well get ready for a processing line.  First you need to react Thorium Dust with Hydrofluoric Acid and eight buckets of Nitric Acid. I hope you have a Nitric Acid setup.  Then react the Thorium Nitrate with Sodium Hydroxide to produce Thorium Hydroxide. Then react with even more Hydrofluoric Acid to get Thorium Tetrafluoride.  Then pump it into a Centrifuge to separate the normal Thorium away from the Thorium 232. Sadly it is still in a liquid form so you will need to blast it with Zinc Chloride and Calcium.  Then finally use your Blast Furnace again for the Zn-Th alloy ingot to separate the Zinc from the Thorium 232 to obtain the Thorium 232 Dust and even get your Zinc back in fluid form.  Well I hope you enjoyed the processing line for Thorium 232 EBF edition.
+  - [提交] bartworks:gt.bwMetaGeneratedingot:10053, bartworks:gt.bwMetaGenerateddust:30
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:10015, bartworks:gt.bwMetaGenerateddust:10017, miscutils:itemCellThoriumTetrafluoride, bartworks:gt.bwMetaGeneratedcell:10021
+
+### [1716] §9§lMercury Trip
+The only interesting ore on this planet is the deep iron from small ores. Grab a ton of it so you can get trinium out of it.
+  - [提交] gregtech:gt.metaitem.01:5829 x192, gregtech:gt.metaitem.01:2868 x20
+  > 奖励: enhancedlootbags:lootbag:24 | enhancedlootbags:lootbag:8 | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinAdventureII x5
+
+### [3043] §9§lMonazite
+Welcome to lanthanide processing! It'll be a fun journey, whether you like it or not :P  First off get some monazite. This is only to get you started, as you're going to need a §oton§r to truly reap the rewards of this line.  You'll then need to combine it with nitric acid in the Digester multiblock, to get its mud form. Yes, this is a §overy§r nitric acid hungry process!  [note]To skip all of the Monazite quests hold a stack of each of these in your hand:  - Zirconium Dust / Ingot - Hafnium Dust / Ingot - Cerium Dust / Ingot - Samarium Dust / Ingot[/note]
+  - [可选提交] gregtech:gt.metaitem.01:5520 x60, gregtech:gt.metaitem.01:30653 x21
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11014 x12
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-7080110298779658056] §9§lMore Samarium!
+If you have a stable Samarium resource acquisition, refining Samarium Ore should be the best way to get Samarium.  As the first step, dissolve some Samarium Ore Concentrate Dust or Crushed Samarium Ore (you probably don't have access to this option yet) in Nitric Acid in a Digester to get Muddy Samarium Rare Earth Solution. Thorium and Phosphate are retained in the form of a solid slag powder.  Then transfer the muddy solution to a Dissolution Tank and continue to soak it in nitric acid. The undissolved powder is then meticulously filtered out, yielding some Cerium.  Then dilute the result with water to adjust the pH.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11461
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11462
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11463
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1670] §9§lNaquadah Doped Monocrystalline Silicon
+To make more advanced wafers, you need to make Naquadah Doped Monocrystalline Silicon first. The process takes 750 seconds and requires Silicon Solar Grade blocks, a Naquadah Ingot, and a Gallium Arsenide Crystal in the Electric Blast Furnace. You can make 64 wafers out of every boule.
+  - [可选提交] gregtech:gt.blockmetal9:1 x64, gregtech:gt.metaitem.01:11324 x4, gregtech:gt.metaitem.03:32190 x4
+  - [提交] gregtech:gt.metaitem.03:32032 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1671] §9§lNaquadah Doped Wafer
+To create some naquadah doped silicon wafers, place the monocrystalline naquadah doped silicon boule in a cutting machine. An HV cutting machine is needed for future advanced wafers and chips.
+  - [提交] gregtech:gt.metaitem.03:32035 x256
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1692] §9§lNitration Mixture
+We also need nitration mixture. We can do it out of nitric acid and sulfuric acid.
+  - [可选提交] gregtech:gt.metaitem.01:30720 x36, gregtech:gt.metaitem.01:30653 x36
+  - [提交] gregtech:gt.metaitem.01:30628 x72
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [3063] §9§lNitration Time... Again
+You'll need to add even more nitric acid to be able to deal with the dust further.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11024 x2, gregtech:gt.metaitem.01:30653
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11017 x2
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [3081] §9§lNot Quite Ferromagnetic...
+...But it's enough to separate with the magnetic separator.  Now you can get both Europium III Oxide and some of the rarer rare earths.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11030
+  - [提交] bartworks:gt.bwMetaGenerateddust:11031
+  > 奖励: dreamcraft:CoinChemistIII x3
+
+### [3054] §9§lNow for Nitration
+For the next step you'll need ammonium nitrate (again with the nitric acid!) and your diluted monazite sulfate. You'll need to do this in an LCR.  The resulting fluid simply vanishes into the void. Best not to worry about it.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11016 x45, bartworks:gt.bwMetaGeneratedcell:11036 x9
+  - [提交] bartworks:gt.bwMetaGenerateddust:11020 x15
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [215] §9§lOn Your Way to Asteroids and Other Rocket Tier 3 DIMs
+There's some good stuff in the asteroids, so you should stop by. Especially for the naquadah.
+  - [勾选确认]
+
+### [1715] §9§lOn Your Way to Tier 4 DIMs
+Tier 4 Planets are Jupiter's Moon Io where you will find the next dungeon, Venus (needs a SpaceSuit) and Mercury.
+  - [勾选确认]
+
+### [2331] §9§lOsmiridium
+Osmiridium is a quite expensive alloy. You'll need it to make Pure Tears to get rid of your Warp if you've been doing Thaumcraft. It's also used in the ZPM emitter and sensor.
+  - [提交] gregtech:gt.metaitem.01:11317 (ore:ingotOsmiridium)
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [2317] §9§lOsmium
+Since you have concentrated your solution, it's now time to gather the solid Osmium from it. Go ahead and mix it with Hydrochloric Acid.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:74 (ore:cellOsmiumSolution), gregtech:gt.metaitem.01:30683 x6 (ore:cellHydrochloricAcid_GT5U)
+  - [提交] gregtech:gt.metaitem.01:2083 (ore:dustOsmium)
+  - [可选提交] gregtech:gt.metaitem.01:30023 x7, IC2:itemCellEmpty:1 x2
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3068] §9§lOxalic Acid
+Oxalic Acid is really only useful for cerium processing. Go ahead and make a bit.  There are a couple options for this so just look through NEI and pick whichever is most suitable for you.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10013 x3
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [2878] §9§lPalladium
+Lastly, add Formic Acid to Reprecipitated Palladium to get pure Palladium, along with other stuff you can reuse.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:54 x4 (ore:dustReprecipitatedPalladium), bartworks:gt.bwMetaGeneratedcell:58 x4 (ore:cellFormicAcid)
+  - [提交] gregtech:gt.metaitem.01:2052 x2 (ore:dustPalladium)
+  - [可选提交] gregtech:gt.metaitem.01:30659 x4, gregtech:gt.metaitem.01:30677, IC2:itemCellEmpty:1
+  > 奖励: TGregworks:tGregToolPartLargePlate:1514 x2
+
+### [2303] §9§lPalladium Processing
+Palladium is a rather useful Platinum Group Metal, necessary to make all machines in LuV.  This questline will help you figure out how to process it properly.  First, process some of your Palladium Enriched Ammonia to Palladium Salt Dust.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:52 x18 (ore:cellPalladiumEnrichedAmmonia)
+  - [提交] bartworks:gt.bwMetaGenerateddust:55 x9 (ore:dustPalladiumSalt)
+  > 奖励: TGregworks:tGregToolPartLargeSwordBlade:1514
+
+### [1699] §9§lPhenol
+You can get Phenol in different ways, but if you don't have any, you can make some using chlorobenzene and some water.
+  - [提交] gregtech:gt.metaitem.01:30687 x36
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1700] §9§lPhthalic Acid
+To get Phthalic Acid you need mix Dimethylbenzene, Potassium Dichromate and Oxygen in an EV Chemical Reactor.
+  - [可选提交] gregtech:gt.metaitem.01:30593 x18, gregtech:gt.metaitem.01:2594 x2, gregtech:gt.metaitem.01:30013 x108
+  - [提交] gregtech:gt.metaitem.01:30595 x18
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [2304] §9§lPlatinum Group Processing - All the Other Metals
+If you've been processing Platinum, you should have a lot of Platinum Residue Dust lying around.  Now you can finally process it and gain all the rest of the delicious rare metals from it. But to do so, we'll need some to make Potassium Disulfate, and then fluid extract it to get the molten version beforehand.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:59 x88
+  - [提交] bartworks:gt.bwMetaGeneratedcellMolten:59 x78
+  > 奖励: dreamcraft:CoinChemistII x5
+
+### [1691] §9§lPolybenzimidazole
+Polybenzimidazole or PBI is a synthetic fiber needed in ZPM Hulls and in high tier solar panels, and can also be used to make some other items more efficiently. It has many steps to produce it. Let's start with chlorobenzene, but keep in mind you'll need to complete the other non-platline IV-tier chemical quests too.  §3Already automated PBI? Hold 128 sheets to skip this questline.
+  - [可选提交] gregtech:gt.metaitem.01:30023 x72, gregtech:gt.metaitem.01:30686 x36
+  - [提交] gregtech:gt.metaitem.01:30605 x36
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1697] §9§lPolybenzimidazole, Finally!
+3,3 Diaminobenzidine and Diphenyl Isophtalate will finally give you molten Polybenzimidazole. Use a plate mold to get plates.
+  - [可选提交] gregtech:gt.metaitem.01:30597 x18, gregtech:gt.metaitem.01:30598 x18
+  - [提交] gregtech:gt.metaitem.01:17599 x125
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1702] §9§lPotassium Dichromate
+Potassium Dichromate is made out of Potassium Nitrate and Chromium Trioxide in an HV Chemical Reactor.
+  - [可选提交] gregtech:gt.metaitem.01:2591 x8, gregtech:gt.metaitem.01:2590 x10
+  - [提交] gregtech:gt.metaitem.01:2594 x11
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1703] §9§lPotassium Nitrate
+Potassium Nitrate is made from Potassium and Nitric Acid. If you have some saltpeter you can use that instead.  Potassium nitrate can only be crafted while saltpeter has many different sources. Pick the one you prefer, only one is needed to complete the quest.
+  - [提交] gregtech:gt.metaitem.01:2590 x10, gregtech:gt.metaitem.01:2836 x10
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1679] §9§lQBit Wafer and Chip
+The Qbit Wafer is made out of a Nano CPU Wafer and either Quantum Eyes and Gallium Arsenide, or IGP and Radon. Cut it for Qbit processor chips.
+  - [可选提交] gregtech:gt.metaitem.03:32056 x2
+  - [提交] gregtech:gt.metaitem.03:32057 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1705] §9§lQuantum Assembly
+Quantum Assembly is an IV Circuit.
+  - [可选提交] gregtech:gt.metaitem.03:32103 x4, gregtech:gt.metaitem.03:32085 x8, gregtech:gt.metaitem.03:32039 x16, gregtech:gt.metaitem.03:32182 x48, gregtech:gt.metaitem.03:32020 x64, gregtech:gt.metaitem.02:19085 x96
+  - [提交] gregtech:gt.metaitem.03:32086 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1707] §9§lQuantum Mainframe
+The Quantum Mainframe is the first ZPM circuit you can make.
+  - [可选提交] gregtech:gt.blockframes:19 x2, gregtech:gt.metaitem.03:32087 x2, gregtech:gt.metaitem.03:32182 x24, gregtech:gt.metaitem.03:32020 x48, gregtech:gt.metaitem.03:32039 x24, gregtech:gt.blockmachines:1380 x48
+  - [提交] gregtech:gt.metaitem.03:32088
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1539] §9§lQuantum Star
+Both the IV emitter and sensor need a Quantum Star to craft them. Hope you automated Radon production.
+  - [可选提交] minecraft:nether_star x2, gregtech:gt.metaitem.01:30093 x3
+  - [提交] gregtech:gt.metaitem.01:32725 x2
+  > 奖励: minecraft:skull:1 x9 | miscutils:dustRadium226 x8 | enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x5
+
+### [1706] §9§lQuantum Supercomputer
+The Quantum Supercomputer is an LuV Circuit.
+  - [可选提交] gregtech:gt.metaitem.03:32103 x2, gregtech:gt.metaitem.03:32086 x4, gregtech:gt.metaitem.03:32043 x8, gregtech:gt.metaitem.03:32039 x32, gregtech:gt.metaitem.03:32016 x16, gregtech:gt.metaitem.02:19085 x96
+  - [提交] gregtech:gt.metaitem.03:32087 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-8885151988130024871] §9§lQuick and dirty
+So you choose the quick two step processing option?  Great choice.  To get started you will need to create a Titanium tier Chemical Plant with §nat least HV tier machine casings.§r It can be HV tier casings as two HV tier energy hatches will overclock the multiblock to EV.  Once completed, place in your Borax Dust. Then in the second step feed in your Thorium Dust with some Distilled Water.  Then you have your Thorium 232 Dust, nice and easy.
+  - [提交] miscutils:boricacid, gregtech:gt.blockmachines:998, bartworks:gt.bwMetaGenerateddust:30
+
+### [2313] §9§lRemoving Sludge From the Iridium
+Separating Iridium from the Sludge is quite easy. Just heat it in the Blast Furnace and you're done with this step. The Sludge can be centrifuged into Gold and SiO2.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:70
+  - [提交] bartworks:gt.bwMetaGenerateddust:73, bartworks:gt.bwMetaGenerateddust:71
+  > 奖励: gregtech:gt.metaitem.01:32008 x64
+
+### [2310] §9§lRepreci... what?
+Reprecipitated! It means you have separated a solid from a solution/suspension, then dissolved it again, and then separated it again.  Combine the original Palladium Enriched Ammonia with Palladium Metallic Powder. This will get you Palladium Salt again, but also Reprecipitated Palladium.  From now on you should skip the first step, it's not necessary anymore as this gives the same thing, but more. You do need to find a way to combine the dusts automatically though.  When/if you run out of Palladium Enriched Ammonia, you can make more by adding Ammonia to Palladium Metallic Powder.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:52 x9, bartworks:gt.bwMetaGenerateddust:53 x9
+  - [提交] bartworks:gt.bwMetaGenerateddustTiny:55 x144, bartworks:gt.bwMetaGenerateddustTiny:54 x18
+  > 奖励: TGregworks:tGregToolPartLargePlate:1514 x2
+
+### [2307] §9§lRe-Solving the Purity Issue
+Hmm, the sifting did well, you lost a lot of impurities, but also, new ones from the sifting grates are there... Time to filter them out with water.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:85 (ore:dustRhodiumFilterCake), IC2:itemCellEmpty:1 (ore:cellWater)
+  - [提交] bartworks:gt.bwMetaGeneratedcell:86 (ore:cellRhodiumFilterCakeSolution)
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2328] §9§lRhodium
+This is the last step for Rhodium. You also get some Chlorine and Ammonia back.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:87 (ore:dustReprecipitatedRhodium), gregtech:gt.metaitem.01:30683 (ore:cellHydrochloricAcid_GT5U)
+  - [提交] bartworks:gt.bwMetaGenerateddust:78 (ore:dustRhodium)
+  - [可选提交] gregtech:gt.metaitem.01:30023, gregtech:gt.metaitem.01:30659
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [2329] §9§lRhodium-Plated Palladium
+Rhodium Plated Palladium is the LuV Tier Hull Material. Now that you know how to make it, you should automate it and make a bunch, you're gonna need it.  Why is it called plated if it's clearly an alloy you ask? I don't know either!
+  - [提交] bartworks:gt.bwMetaGeneratedingot:88 x64 (ore:ingotRhodium-PlatedPalladium)
+  > 奖励: enhancedlootbags:lootbag:8 x2
+
+### [2311] §9§lRoss128b Trip
+Ross128b is a lovely and habitable planet, that does not contain any hostile lifeforms. It offers several new ore veins and, rumors say, there are ruins of ancient civilizations that left quite a few machines there. You can find this planet to the galactic south.
+  - [到达] 
+  > 奖励: dreamcraft:CoinSpaceII x5
+
+### [2330] §9§lRuri... Ruridididi?
+Combining Ruthenium with Iridium yields a very special metal, that is needed for LuV components.  You're gonna need a bunch of it.
+  - [提交] bartworks:gt.bwMetaGeneratedingot:90 x64 (ore:ingotRuridit)
+  > 奖励: enhancedlootbags:lootbag:8 x2
+
+### [2318] §9§lRuthenium
+The final step to get Ruthenium is to react it with Hydrochloric Acid and you're done. You also get some Chlorine and Water.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:66 x14, gregtech:gt.metaitem.01:30683 x84
+  - [提交] bartworks:gt.bwMetaGenerateddust:64 x14
+  - [可选提交] gregtech:gt.metaitem.01:30023 x84, IC2:itemCellEmpty:1 x28
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2879] §9§lSalt Can't be Stored in Water?
+Dissolve the Rhodium Salt in Water in a mixer to get Rhodium Salt Solution.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:80 x5, IC2:itemCellEmpty:1
+  - [提交] bartworks:gt.bwMetaGeneratedcell:81
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2308] §9§lSalty Metals Are the Worst!
+Now that you have Palladium Salt, you need to sift it to get Palladium Metallic Powder. You only have a 95% chance to get a dust.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:55 x9
+  - [提交] bartworks:gt.bwMetaGenerateddust:53 x9
+  > 奖励: TGregworks:tGregToolPartToughRod:1514
+
+### [3083] §9§lSamarium, The Other Way
+Only thing left to do is to centrifuge your concentrated dust to get samarium. You get a little thorianite too so, win.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11129
+  - [提交] gregtech:gt.metaitem.01:2069, bartworks:gt.bwMetaGenerateddust:18
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [3085] §9§lSaturation Needed
+You're nearly done!  Now you need to mix with acetone.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11032, gregtech:gt.metaitem.01:30672
+  - [提交] bartworks:gt.bwMetaGenerateddust:11033
+  > 奖励: dreamcraft:CoinChemistIII x3
+
+### [2306] §9§lSecond Separation - Ruthenium
+For the next step in the process, we will split up the Ruthenium from the Leach Residue. Remember that you can get it from both Platinum Residue and a little bit more from making Rhodium Sulfate Solution.  You'll need Saltpeter and Saltwater for this. You can pump saltwater or make it, and mine saltpeter or make it too. Given how much KNO3 you need, you should probably automate making it.  For the steam, you can just void it.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:60 x40, gregtech:gt.metaitem.01:2836 x40, gregtech:gt.metaitem.01:30692 x4
+  - [提交] bartworks:gt.bwMetaGenerateddust:69 x24, bartworks:gt.bwMetaGenerateddust:65 x12
+  > 奖励: bq_standard:choice
+
+### [3086] §9§lSeparate Those Last Specks
+Now to centrifuge what remains. You get a little chloromethane back too, so what's not to like?
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11033 x4
+  - [提交] bartworks:gt.bwMetaGenerateddust:11034 x3
+  > 奖励: dreamcraft:CoinChemistIII x3
+
+### [3046] §9§lSifting the Goodness Out
+Yes, you're seeing right. A fluid sifting recipe! A lot of the materials here won't be good sources in any way, but they're literally better than nothing.  Monazite Sulfate isn't an actual compound btw, just a term for a collection of rare earth sulfates and other things.  I'll only ask for the primary output as who wants to worry about chances?
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11015
+  - [提交] bartworks:gt.bwMetaGenerateddust:11019
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2326] §9§lSift it Goooood
+Sift Rhodium Nitrate to get Rhodium Filter Cake. You only have a 95% chance to get a dust.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:83 (ore:dustRhodiumNitrate)
+  - [提交] bartworks:gt.bwMetaGenerateddust:85 (ore:dustRhodiumFilterCake)
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1678] §9§lSingle Step EV Circuits
+Quantum Processors are your first chance to make EV circuits in a single craft.
+  - [可选提交] gregtech:gt.metaitem.03:32103 x8, gregtech:gt.metaitem.03:32057 x8, gregtech:gt.metaitem.03:32055 x8, gregtech:gt.metaitem.03:32020 x96, gregtech:gt.metaitem.03:32018 x96, gregtech:gt.metaitem.02:19085 x128
+  - [提交] gregtech:gt.metaitem.03:32085 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1673] §9§lSoC - System on a Chip
+To make cheaper LV and MV circuits you need SoCs. System on a chip.
+  - [可选提交] gregtech:gt.metaitem.03:32046
+  - [提交] gregtech:gt.metaitem.03:32047 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [2880] §9§lSodium Nitrate
+You need Sodium Nitrate to process your Rhodium further.
+  - [可选提交] gregtech:gt.metaitem.01:30653, gregtech:gt.metaitem.01:2017
+  - [提交] bartworks:gt.bwMetaGenerateddust:82 x2 (ore:dustSodiumNitrate)
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3084] §9§lThe Other Part
+Getting tired of all the names yet? Hope so.  Now to chlorinate and heat, in order to separate the whole dust further.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11031, gregtech:gt.metaitem.01:30023
+  - [提交] bartworks:gt.bwMetaGenerateddust:11032
+  > 奖励: dreamcraft:CoinChemistIII x3
+
+### [3087] §9§lThe Other Way
+When you inevitably get Samarium Ore, you'll end up getting a ton of this dust. There are a couple of options here: One includes the monazite line and has a higher yield, the other is simpler but has a lower yield.  We'll look at the latter here.  [note]Eventually you might consider switching entirely to the monazite option, but for now, supplementing it with this can be a good idea.[/note]
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11128 x2, gregtech:gt.metaitem.01:2026 x3
+  - [提交] bartworks:gt.bwMetaGenerateddust:11129, gregtech:gt.metaitem.01:2534
+
+### [2325] §9§lThere's My Salt!
+Combine Rhodium Salt Solution with Sodium Nitrate to get Rhodium Nitrate.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:81, bartworks:gt.bwMetaGenerateddust:82 (ore:dustSodiumNitrate)
+  - [提交] bartworks:gt.bwMetaGenerateddust:83 (ore:dustRhodiumNitrate), gregtech:gt.metaitem.01:2817
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3066] §9§lThe Start of Cerium
+This line will guide you through obtaining elemental cerium.  First, react your cerium dioxide with ammonium chloride for some cerium chloride.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11025, bartworks:gt.bwMetaGeneratedcell:50 x3
+  - [提交] bartworks:gt.bwMetaGenerateddust:11026, gregtech:gt.metaitem.01:30659 x3
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [3056] §9§lThis Is Probably Not Worth It
+You can EBF that thorium-phosphate dust to continue that chain but the yield isn't too great in the end...  Still, if you have the resources, why not?
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11037
+  - [提交] bartworks:gt.bwMetaGenerateddust:11038
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-8869557855426175810] §9§lThorium 232?
+So you were looking at Thorium 232 and wondering how to make it?  You could centrifuge it using a long recipe with a horrible output chance, but there are better ways to obtain it.  There are three processing paths, although the third is not unlocked until after you unlock Fusion and gain access to the Neutron Activator.  The first path requires the Chemical Plant multiblock, which you may not be familiar with. It is the fastest path, requiring only two steps to obtain Thorium 232, but it requires borax. You can obtain borax by mining salt veins (as a byproduct), from bees, or through CropsNH.  The second path is a six-step processing chain that requires Chemical Reactors, a Centrifuge, and an EBF. Although it is longer, it offers a much better conversion ratio (75%, rather than 25% in the Chemical Plant). Instead of borax, it requires 100 L of fluorine per dust; the nitric acid can be fully recycled, so this path scales better than the borax route.
+  - [勾选确认]
+
+### [3058] §9§lThorium and Phosphate
+Now you can thermal centrifuge the dust to get both thorium and phosphate out. Told you the yields weren't great...
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11038
+  - [提交] gregtech:gt.metaitem.01:2096, gregtech:gt.metaitem.01:2833
+  > 奖励: gregtech:gt.metaitem.01:2833 x64
+
+### [213] §9§lTier 5 (IV)
+IV-Level. You will need Tungstensteel for machines. Suggested planets and moons to visit: Mars, Phobos, Deimos.  Make sure to get a set of TPV coils for your EBF.  You should've learned "how to GregTech" by now. If not, go clean up the machine craters in your base...  Many multiblock machines unlock at this tier. Make sure you have an Alloy Blast Smelter ready to go and check the Mass Processing tab.
+  - [提交] gregtech:gt.blockmachines:15
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinAdventureII x5 | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinTechnicianII x5
+
+### [3059] §9§lTo Sift, or Not to Sift?
+The real question is, who came up with all these sifting recipes?  You can get some Uranium out of this so it's not all bad.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11022
+  - [提交] bartworks:gt.bwMetaGenerateddust:11023, bartworks:gt.bwMetaGenerateddust:11039
+  > 奖励: dreamcraft:CoinChemistIII x2
+
+### [-6298089791773258108] §9§lUniversal Pickaxe: Vajra
+This tool can mine blocks instantly, including GregTech blocks or cables.   Using left-click will mine blocks as usual, right-clicking will harvest blocks 1 by 1. Enabling silk touch will work for both.   [note]To enable silk touch mode Shift+Right Click air while holding the Vajra.[/note]
+  - [提交] gregtech:gt.Tool_Vajra
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x2
+
+### [3061] §9§lUranium?
+...And sift it to get the uranium. You §odo§r get some 235 out of it so time not entirely wasted, hopefully?
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11040
+  - [提交] gregtech:gt.metaitem.01:2098, gregtech:gt.metaitem.01:2097
+  > 奖励: dreamcraft:CoinChemistIII x6
+
+### [3060] §9§lUranium Filtrate
+You can process this further with some hydrofluoric acid.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11039
+  - [提交] bartworks:gt.bwMetaGenerateddust:11040
+
+### [1717] §9§lVenus Trip
+Venus has 3 different veins, with quantium and titanium the most important to grab. And Naquadah if you still don't have enough.  [note]You can also get firestone from small ore if you still need it.[/note]  §5Warning! Venus requires a full set of armor with the Spacesuit capability in it or it will kill the player on entering it!!  Check the space race chapter for more information.
+  - [提交] gregtech:gt.metaitem.01:5391 x192, gregtech:gt.metaitem.01:5028 x192, gregtech:gt.metaitem.01:5324 x192
+  > 奖励: enhancedlootbags:lootbag:24 | enhancedlootbags:lootbag:8 | dreamcraft:CoinSpaceII x5 | dreamcraft:CoinAdventureII x5
+
+### [3044] §9§lWatery Mud
+That mud on its own is far too concentrated, so you'll need to dilute it with water in the Dissolution Tank.  Fun fact, the saltpeter in the recipe was only added due to a problem with recipe search!  You also get some Zirconium and Hafnium from this. You'll probably need both later on, so definitely don't void any.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11014 x12, gregtech:gt.metaitem.01:2836 x12
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11015 x132
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3051] §9§lWe Ain't Running a Farm!
+...What's this low-purity hafnium stuff?  Well, because you of course want your hafnium to be of the highest quality, you're going to have to do a little more than just EBF it with a little magnesium.  Go ahead and react it with some Iodine. If you're not too sure where to get Iodine, have a look at Seaweed Ash. (hint: you'll need to look at small piles)
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11001
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11012
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11012 x4
+  - [提交] bartworks:gt.bwMetaGenerateddust:11005
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2314] §9§lWhere's the Salt?
+Add Chlorine to Sodium Ruthenate to get Ruthenium Tetroxide Solution.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:65 x6, gregtech:gt.metaitem.01:30023 x3
+  - [提交] bartworks:gt.bwMetaGeneratedcell:68 x9
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2883] §9§lWhy, Bart, Why?
+Take your Hot Ruthenium Tetroxide Solution and distill it in a DT to get Ruthenium Tetroxide. Also, Salt and Water.  The amounts in this step are quite annoying unfortunately. You need to run it 5 times to get whole cell amounts.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:67 x18
+  - [提交] bartworks:gt.bwMetaGeneratedcell:66 x14, gregtech:gt.metaitem.01:2817 x12, IC2:itemCellEmpty:1 x3
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3079] §9§lYou Can't Be Cerious!
+Punny, right?  You now can electrolyze the cerium oxide to get pure elemental cerium dust.  Oh, and oxygen, but who cares about that anymore?  This handy material is useful in many different multiblock machines that will be unlocked in later tiers such as the Precise Assembler, the Elemental Duplicator and better casings to the Chemical Plant for a new tier of rocket fuel.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11028 x5
+  - [提交] gregtech:gt.metaitem.01:2065 x2
+  > 奖励: enhancedlootbags:lootbag:8 x2
+
+### [1414] §9§lYou're Gonna Hate This 5 and 6 in IV
+Some machines need Emitters and Sensors, like the Scanner or the Circuit Assembler.
+  - [提交] gregtech:gt.metaitem.01:32684, gregtech:gt.metaitem.01:32694
+  > 奖励: gregtech:gt.metaitem.01:2056 x2 | gregtech:gt.metaitem.01:11316 x8 | enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x5
+
+### [1413] §9§lYou're Gonna Hate This 1-4 in IV
+Pumps, pistons, conveyor modules and robot arms are the most needed machine parts in IV. Go and craft one of each.
+  - [提交] gregtech:gt.metaitem.01:32614, gregtech:gt.metaitem.01:32644, gregtech:gt.metaitem.01:32634, gregtech:gt.metaitem.01:32654
+  > 奖励: gregtech:gt.metaitem.01:11028 x32 | gregtech:gt.metaitem.01:11316 x8 | enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x5
+
+### [1667] §9§lYour First Naquadah Ingot
+You may have noticed that you can't get naquadah dust from the naquadah ore, it will only give you the Naquadah Oxide Mixture (NOM) dust, annoying.  The full naquadah processing line is too complex and does not fit in IV. I believe you won't want to set up another line after finishing Platinum, PBI and Lanthanide lines.  Lucky, you can directly smelt the NOM dust into naquadah nuggets in EBF, but it is inefficient and you will lose the byproducts in it.  [note]PS: The Naquadah Oxide Mixture was once called "Naquadah Metal Oxide Mixture" and someone called it Nq-MOM for short.[/note]
+  - [提交] gregtech:gt.metaitem.01:11324
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1718] §9§lYttrium Barium Cuprate
+Yttrium Barium Cuprate becomes more important in LuV Tier. It needs an EV Mixer to mix and an Electric Blast Furnace with TPV heating coils.
+  - [可选提交] gregtech:gt.metaitem.01:2045 x5, gregtech:gt.metaitem.01:2063 x10, gregtech:gt.metaitem.01:2035 x15
+  - [可选提交] gregtech:gt.metaitem.01:2358 x65
+  - [提交] gregtech:gt.metaitem.01:11358 x65
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinTechnicianII x2
+
+### [3045] §9§lZirconia-Hafnia Blend
+This process is a little involved so I'll guide you through it. First, centrifuge the dust you got from the dissolution tank.  Because Hafnium and Zirconium are refractory metals like Titanium, they use a similar process.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11011
+  - [提交] bartworks:gt.bwMetaGenerateddust:11002, bartworks:gt.bwMetaGenerateddust:11008
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [3050] §9§lZirconium Ingots
+Just EBF your zirconium tetrachloride with some magnesium and you're done!  Zirconium is used in many different multiblock machines such as the Industrial mixer and the Alloy blast smelter that you might have already built. It's also used in the creation of High Density rods for an extra boost to your nuclear reactors.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:11010, gregtech:gt.metaitem.01:2018 x2
+  - [提交] bartworks:gt.bwMetaGeneratedingot:3
+  > 奖励: bq_standard:choice
+
+### [3048] §9§lZirconium Line
+To get started, react your zirconia with some hydrochloric acid.  The dust on its own is kinda useless, though... Make it into a solution instead.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11008, gregtech:gt.metaitem.01:30683 x4
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:11009
+  - [提交] bartworks:gt.bwMetaGeneratedcell:11010
+  > 奖励: dreamcraft:CoinChemistIII
+

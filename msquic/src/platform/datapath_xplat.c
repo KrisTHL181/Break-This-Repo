@@ -1,0 +1,596 @@
+/*++
+
+    Copyright (c) Microsoft Corporation.
+    Licensed under the MIT License.
+
+Abstract:
+
+    QUIC Datapath Implementation (User Mode)
+
+--*/
+
+#include "platform_internal.h"
+
+#ifdef QUIC_CLOG
+#include "datapath_xplat.c.clog.h"
+#endif
+
+static
+QUIC_STATUS
+RawOnlyDataPathInitialize(
+    _In_ uint32_t ClientRecvContextLength,
+    _In_ const CXPLAT_UDP_DATAPATH_CALLBACKS* UdpCallbacks,
+    _In_ CXPLAT_WORKER_POOL* WorkerPool,
+    _In_ const CXPLAT_DATAPATH_INIT_CONFIG* InitConfig,
+    _Out_ CXPLAT_DATAPATH** NewDataPath
+    )
+{
+    CXPLAT_DBG_ASSERT(InitConfig->XdpMapConfigs != NULL);
+
+    CXPLAT_DATAPATH* Datapath =
+        CXPLAT_ALLOC_PAGED(sizeof(CXPLAT_DATAPATH), QUIC_POOL_DATAPATH);
+    if (Datapath == NULL) {
+        QuicTraceEvent(
+            AllocFailure,
+            "Allocation of '%s' failed. (%llu bytes)",
+            "CXPLAT_DATAPATH (raw-only)",
+            sizeof(CXPLAT_DATAPATH));
+        return QUIC_STATUS_OUT_OF_MEMORY;
+    }
+    CxPlatZeroMemory(Datapath, sizeof(CXPLAT_DATAPATH));
+    Datapath->UdpHandlers = *UdpCallbacks;
+    Datapath->WorkerPool = WorkerPool;
+
+    RawDataPathInitialize(
+        ClientRecvContextLength,
+        Datapath,
+        WorkerPool,
+        InitConfig,
+        &Datapath->RawDataPath);
+    if (Datapath->RawDataPath == NULL) {
+        QuicTraceLogVerbose(
+            DatapathRawInitFailRawOnly,
+            "[  dp] Raw-only mode: raw datapath required but failed to initialize");
+        CXPLAT_FREE(Datapath, QUIC_POOL_DATAPATH);
+        *NewDataPath = NULL;
+        return QUIC_STATUS_NOT_SUPPORTED;
+    }
+    *NewDataPath = Datapath;
+    return QUIC_STATUS_SUCCESS;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+CxPlatDataPathInitialize(
+    _In_ uint32_t ClientRecvContextLength,
+    _In_opt_ const CXPLAT_UDP_DATAPATH_CALLBACKS* UdpCallbacks,
+    _In_opt_ const CXPLAT_TCP_DATAPATH_CALLBACKS* TcpCallbacks,
+    _In_ CXPLAT_WORKER_POOL* WorkerPool,
+    _In_ CXPLAT_DATAPATH_INIT_CONFIG* InitConfig,
+    _Out_ CXPLAT_DATAPATH** NewDataPath
+    )
+{
+    QUIC_STATUS Status = QUIC_STATUS_SUCCESS;
+    if (NewDataPath == NULL) {
+        Status = QUIC_STATUS_INVALID_PARAMETER;
+        goto Error;
+    }
+
+    if (InitConfig->XdpMapConfigCount > 0) {
+        if (UdpCallbacks == NULL ||
+            UdpCallbacks->Receive == NULL || UdpCallbacks->Unreachable == NULL) {
+            Status = QUIC_STATUS_INVALID_PARAMETER;
+            goto Error;
+        }
+        Status =
+            RawOnlyDataPathInitialize(
+                ClientRecvContextLength,
+                UdpCallbacks,
+                WorkerPool,
+                InitConfig,
+                NewDataPath);
+        if (QUIC_FAILED(Status)) {
+            goto Error;
+        }
+    } else {
+        Status =
+            DataPathInitialize(
+                ClientRecvContextLength,
+                UdpCallbacks,
+                TcpCallbacks,
+                WorkerPool,
+                InitConfig,
+                NewDataPath);
+        if (QUIC_FAILED(Status)) {
+            QuicTraceLogVerbose(
+                DatapathInitFail,
+                "[  dp] Failed to initialize datapath, status:%d", Status);
+            goto Error;
+        }
+
+        //
+        // Best effort try to initialize the raw datapath.
+        //
+        RawDataPathInitialize(
+            ClientRecvContextLength,
+            *NewDataPath,
+            WorkerPool,
+            InitConfig,
+            &((*NewDataPath)->RawDataPath));
+    }
+
+Error:
+
+    return Status;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+CxPlatDataPathUninitialize(
+    _In_ CXPLAT_DATAPATH* Datapath
+    )
+{
+    BOOLEAN IsRawDatapathOnly = CxPlatDpRawIsRawDatapathOnly(Datapath->RawDataPath);
+    if (Datapath->RawDataPath) {
+        RawDataPathUninitialize(Datapath->RawDataPath);
+    }
+    if (IsRawDatapathOnly) {
+        //
+        // The base datapath was not initialized, free directly.
+        //
+        CXPLAT_FREE(Datapath, QUIC_POOL_DATAPATH);
+    } else {
+        DataPathUninitialize(Datapath);
+    }
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+uint32_t
+CxPlatDataPathGetXdpRuleCount(
+    _In_ CXPLAT_DATAPATH* Datapath
+    )
+{
+    if (Datapath->RawDataPath == NULL) {
+        return 0;
+    }
+    return CxPlatDpRawGetTotalRuleCount(Datapath->RawDataPath);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+CxPlatDataPathUpdatePollingIdleTimeout(
+    _In_ CXPLAT_DATAPATH* Datapath,
+    _In_ uint32_t PollingIdleTimeoutUs
+    )
+{
+    DataPathUpdatePollingIdleTimeout(Datapath, PollingIdleTimeoutUs);
+    if (Datapath->RawDataPath) {
+        RawDataPathUpdatePollingIdleTimeout(
+            Datapath->RawDataPath, PollingIdleTimeoutUs);
+    }
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+CXPLAT_DATAPATH_FEATURES
+CxPlatDataPathGetSupportedFeatures(
+    _In_ CXPLAT_DATAPATH* Datapath,
+    _In_ CXPLAT_SOCKET_FLAGS SocketFlags
+    )
+{
+    if (Datapath->RawDataPath && (SocketFlags & CXPLAT_SOCKET_FLAG_XDP)) {
+        return DataPathGetSupportedFeatures(Datapath) |
+               RawDataPathGetSupportedFeatures(Datapath->RawDataPath);
+    }
+    return DataPathGetSupportedFeatures(Datapath);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+BOOLEAN
+CxPlatDataPathIsPaddingPreferred(
+    _In_ CXPLAT_DATAPATH* Datapath,
+    _In_ CXPLAT_SEND_DATA* SendData
+    )
+{
+    CXPLAT_DBG_ASSERT(
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ||
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_RAW);
+    return
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ?
+            DataPathIsPaddingPreferred(Datapath) : RawDataPathIsPaddingPreferred(Datapath);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+CxPlatSocketCreateUdp(
+    _In_ CXPLAT_DATAPATH* Datapath,
+    _In_ const CXPLAT_UDP_CONFIG* Config,
+    _Out_ CXPLAT_SOCKET** NewSocket
+    )
+{
+    QUIC_STATUS Status = QUIC_STATUS_SUCCESS;
+    BOOLEAN IsRawDatapathOnly = CxPlatDpRawIsRawDatapathOnly(Datapath->RawDataPath);
+
+    //
+    // When the raw (XDP) datapath is the only datapath, create raw sockets for all cxplat sockets
+    // and treat any failure as fatal (no fallback to OS sockets, no QTIP TCP port retry).
+    //
+    BOOLEAN CreateRaw = IsRawDatapathOnly || (Config->Flags & CXPLAT_SOCKET_FLAG_XDP);
+
+    //
+    // In a real production (XDP/QTIP+XDP) scenario, we never have to loop more than once
+    // because server admins will ensure whatever port they are binding to is available.
+    // The reason we have this loop is to eliminate test flakiness. The tests treat server
+    // sockets the same as client sockets, in that they bind to some random free UDP port.
+    // However, what's free in UDP may not be free in TCP. So we loop until we find a free port.
+    //
+    for (uint32_t TryCount = 0; TryCount < 1000; TryCount++) {
+        Status =
+            SocketCreateUdp(
+                Datapath,
+                Config,
+                NewSocket);
+        if (QUIC_FAILED(Status)) {
+            QuicTraceLogVerbose(
+                SockCreateFail,
+                "[sock] Failed to create socket, status:%d", Status);
+            goto Error;
+        }
+
+        BOOLEAN RequiresQtip = (Config->Flags & CXPLAT_SOCKET_FLAG_QTIP);
+        BOOLEAN CibirRequested = (Config->CibirIdLength > 0);
+
+        (*NewSocket)->RawSocketAvailable = 0;
+        CXPLAT_DBG_ASSERT(!IsRawDatapathOnly || Datapath->RawDataPath);
+        if (CreateRaw && Datapath->RawDataPath) {
+            Status =
+                RawSocketCreateUdp(
+                    Datapath->RawDataPath,
+                    Config,
+                    CxPlatSocketToRaw(*NewSocket));
+            (*NewSocket)->RawSocketAvailable = QUIC_SUCCEEDED(Status);
+            if (QUIC_FAILED(Status)) {
+                QuicTraceLogVerbose(
+                    RawSockCreateFail,
+                    "[sock] Failed to create raw socket, status:%d", Status);
+
+                if (IsRawDatapathOnly) {
+                    //
+                    // Raw-only mode: no fallback allowed.
+                    //
+                    CxPlatSocketDelete(*NewSocket);
+                    *NewSocket = NULL;
+                    goto Error;
+                }
+
+                BOOLEAN IsServerSocket = !(*NewSocket)->HasFixedRemoteAddress;
+                if (IsServerSocket && RequiresQtip) {
+                    //
+                    // This retry loop is purely for QTIP listener sockets that try to reserve both a UDP/TCP port,
+                    // which may run into a port collision for TCP if the UDP ephemeral port collides with something
+                    // in the TCP pool. So just try it again.
+                    //
+                    CxPlatSocketDelete(*NewSocket);
+                    *NewSocket = NULL;
+                    continue;
+                }
+                if ((!RequiresQtip && !CibirRequested) || (!IsServerSocket && CibirRequested && !RequiresQtip)) {
+                    //
+                    // Allow fallback to OS UDP sockets in these 2 cases only:
+                    //  - XDP with no QTIP and no CIBIR.
+                    //  - Non-QTIP XDP with CIBIR enabled for client sockets only. CIBIR transport parameter
+                    //    negotiation can still work without XDP. Cannot fallback for server sockets because
+                    //    MsQuic skips OS UDP socket creation to allow for CIBIR port sharing across multiple
+                    //    processes.
+                    //
+                    QuicTraceLogWarning(
+                        WarnFallbackToOsSockets,
+                        "[sock] Warning: XDP successfully initialized but failed to plumb XDP rules. Falling back to using normal OS sockets.");
+                    Status = QUIC_STATUS_SUCCESS;
+                } else {
+                    CxPlatSocketDelete(*NewSocket);
+                    *NewSocket = NULL;
+                }
+                goto Error;
+            }
+        } else if (RequiresQtip) {
+            QuicTraceLogError(
+                ErrNoXdpForQtip,
+                "[sock] Error: app requested QTIP but XDP not enabled/available/initialized.");
+            CxPlatSocketDelete(*NewSocket);
+            *NewSocket = NULL;
+            Status = QUIC_STATUS_INVALID_STATE;
+            goto Error;
+        } else if (CibirRequested) {
+            QuicTraceLogWarning(
+                WarnNoXdpForCibirSockets,
+                "[sock] Warning: app requested CIBIR but XDP not enabled/available/initialized. "
+                "Falling back to normal OS sockets to allow for CIBIR transport parameter negotiation.");
+        }
+        break;
+    }
+
+Error:
+    return Status;
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+CxPlatSocketCreateTcp(
+    _In_ CXPLAT_DATAPATH* Datapath,
+    _In_opt_ const QUIC_ADDR* LocalAddress,
+    _In_ const QUIC_ADDR* RemoteAddress,
+    _In_opt_ void* CallbackContext,
+    _Out_ CXPLAT_SOCKET** NewSocket
+    )
+{
+    return SocketCreateTcp(
+        Datapath,
+        LocalAddress,
+        RemoteAddress,
+        CallbackContext,
+        NewSocket);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+CxPlatSocketCreateTcpListener(
+    _In_ CXPLAT_DATAPATH* Datapath,
+    _In_opt_ const QUIC_ADDR* LocalAddress,
+    _In_opt_ void* RecvCallbackContext,
+    _Out_ CXPLAT_SOCKET** NewSocket
+    )
+{
+    return SocketCreateTcpListener(
+        Datapath,
+        LocalAddress,
+        RecvCallbackContext,
+        NewSocket);
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+CxPlatSocketDelete(
+    _In_ CXPLAT_SOCKET* Socket
+    )
+{
+    if (Socket->RawSocketAvailable) {
+        RawSocketDelete(CxPlatSocketToRaw(Socket));
+    }
+    SocketDelete(Socket);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+BOOLEAN
+CxPlatSocketGetQtipEnabled(
+    _In_ CXPLAT_SOCKET* Socket
+    )
+{
+    CXPLAT_DBG_ASSERT(Socket != NULL);
+    return Socket->ReserveAuxTcpSockForQtip;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+uint16_t
+CxPlatSocketGetLocalMtu(
+    _In_ CXPLAT_SOCKET* Socket,
+    _In_ CXPLAT_ROUTE* Route
+    )
+{
+    CXPLAT_DBG_ASSERT(Socket != NULL);
+    if (Route->UseQTIP || (Socket->RawSocketAvailable &&
+        !IS_LOOPBACK(Socket->RemoteAddress))) {
+        return RawSocketGetLocalMtu(Route);
+    }
+    return Socket->Mtu;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+CxPlatSocketGetLocalAddress(
+    _In_ CXPLAT_SOCKET* Socket,
+    _Out_ QUIC_ADDR* Address
+    )
+{
+    CXPLAT_DBG_ASSERT(Socket != NULL);
+    *Address = Socket->LocalAddress;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+CxPlatSocketGetRemoteAddress(
+    _In_ CXPLAT_SOCKET* Socket,
+    _Out_ QUIC_ADDR* Address
+    )
+{
+    CXPLAT_DBG_ASSERT(Socket != NULL);
+    *Address = Socket->RemoteAddress;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+BOOLEAN
+CxPlatSocketRawSocketAvailable(
+    _In_ CXPLAT_SOCKET* Socket
+    )
+{
+    return Socket->RawSocketAvailable;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+CxPlatRecvDataReturn(
+    _In_opt_ CXPLAT_RECV_DATA* RecvDataChain
+    )
+{
+    if (RecvDataChain == NULL) {
+        return;
+    }
+    CXPLAT_DBG_ASSERT(
+        RecvDataChain->DatapathType == CXPLAT_DATAPATH_TYPE_NORMAL ||
+        RecvDataChain->DatapathType == CXPLAT_DATAPATH_TYPE_RAW);
+    RecvDataChain->DatapathType == CXPLAT_DATAPATH_TYPE_NORMAL ?
+        RecvDataReturn(RecvDataChain) : RawRecvDataReturn(RecvDataChain);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+_Success_(return != NULL)
+CXPLAT_SEND_DATA*
+CxPlatSendDataAlloc(
+    _In_ CXPLAT_SOCKET* Socket,
+    _Inout_ CXPLAT_SEND_CONFIG* Config
+    )
+{
+    CXPLAT_SEND_DATA* SendData = NULL;
+    // TODO: fallback?
+    if (Config->Route->DatapathType == CXPLAT_DATAPATH_TYPE_RAW ||
+        (Config->Route->DatapathType == CXPLAT_DATAPATH_TYPE_UNKNOWN &&
+        Socket->RawSocketAvailable && !IS_LOOPBACK(Config->Route->RemoteAddress))) {
+        SendData = RawSendDataAlloc(Config);
+    } else {
+        SendData = SendDataAlloc(Socket, Config);
+    }
+    return SendData;
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+CxPlatSendDataFree(
+    _In_ CXPLAT_SEND_DATA* SendData
+    )
+{
+    CXPLAT_DBG_ASSERT(
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ||
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_RAW);
+    DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ?
+    SendDataFree(SendData) : RawSendDataFree(SendData);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+_Success_(return != NULL)
+QUIC_BUFFER*
+CxPlatSendDataAllocBuffer(
+    _In_ CXPLAT_SEND_DATA* SendData,
+    _In_ uint16_t MaxBufferLength
+    )
+{
+    CXPLAT_DBG_ASSERT(
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ||
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_RAW);
+    return
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ?
+        SendDataAllocBuffer(SendData, MaxBufferLength) : RawSendDataAllocBuffer(SendData, MaxBufferLength);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+CxPlatSendDataFreeBuffer(
+    _In_ CXPLAT_SEND_DATA* SendData,
+    _In_ QUIC_BUFFER* Buffer
+    )
+{
+    CXPLAT_DBG_ASSERT(
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ||
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_RAW);
+    DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ?
+    SendDataFreeBuffer(SendData, Buffer) : RawSendDataFreeBuffer(SendData, Buffer);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+BOOLEAN
+CxPlatSendDataIsFull(
+    _In_ CXPLAT_SEND_DATA* SendData
+    )
+{
+    CXPLAT_DBG_ASSERT(
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ||
+        DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_RAW);
+    return DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL ?
+        SendDataIsFull(SendData) : RawSendDataIsFull(SendData);
+}
+
+_IRQL_requires_max_(DISPATCH_LEVEL)
+void
+CxPlatSocketSend(
+    _In_ CXPLAT_SOCKET* Socket,
+    _In_ const CXPLAT_ROUTE* Route,
+    _In_ CXPLAT_SEND_DATA* SendData
+    )
+{
+    if (DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_NORMAL) {
+        SocketSend(Socket, Route, SendData);
+     } else {
+        CXPLAT_DBG_ASSERT(DatapathType(SendData) == CXPLAT_DATAPATH_TYPE_RAW);
+        RawSocketSend(CxPlatSocketToRaw(Socket), Route, SendData);
+     }
+}
+
+_IRQL_requires_max_(PASSIVE_LEVEL)
+void
+QuicCopyRouteInfo(
+    _Inout_ CXPLAT_ROUTE* DstRoute,
+    _In_ CXPLAT_ROUTE* SrcRoute
+    )
+{
+    if (SrcRoute->DatapathType == CXPLAT_DATAPATH_TYPE_RAW) {
+        CxPlatCopyMemory(DstRoute, SrcRoute, (uint8_t*)&SrcRoute->State - (uint8_t*)SrcRoute);
+        CxPlatUpdateRoute(DstRoute, SrcRoute);
+    } else if (SrcRoute->DatapathType == CXPLAT_DATAPATH_TYPE_NORMAL) {
+        *DstRoute = *SrcRoute;
+    } else {
+        CXPLAT_DBG_ASSERT(FALSE);
+    }
+}
+
+void
+CxPlatResolveRouteComplete(
+    _In_ void* Context,
+    _Inout_ CXPLAT_ROUTE* Route,
+    _In_reads_bytes_(6) const uint8_t* PhysicalAddress,
+    _In_ uint8_t PathId
+    )
+{
+    CXPLAT_DBG_ASSERT(Route->DatapathType != CXPLAT_DATAPATH_TYPE_NORMAL);
+    if (Route->State != RouteResolved) {
+        RawResolveRouteComplete(Context, Route, PhysicalAddress, PathId);
+    }
+}
+
+//
+// Tries to resolve route and neighbor for the given destination address.
+//
+_IRQL_requires_max_(PASSIVE_LEVEL)
+QUIC_STATUS
+CxPlatResolveRoute(
+    _In_ CXPLAT_SOCKET* Socket,
+    _Inout_ CXPLAT_ROUTE* Route,
+    _In_ uint8_t PathId,
+    _In_ void* Context,
+    _In_ CXPLAT_ROUTE_RESOLUTION_CALLBACK_HANDLER Callback
+    )
+{
+    if (Socket->HasFixedRemoteAddress) {
+        //
+        // For clients,
+        // It must be true that Route->UseQTIP == Socket->ReserveAuxTcpSockForQtip because client
+        // connections can only send/recv either UDP or TCP traffic.
+        //
+        // For servers,
+        // It could be the case that Route->UseQTIP != Socket->ReserveAuxTcpSockForQtip. The state of
+        // Socket->ReserveAuxTcpSockForQtip simply determines whether or not we initialize an auxiliary TCP socket
+        // to prevent XDP from hijacking traffic from other processes. Therefore, servers rely
+        // on the receive path to set Route->UseQTIP, depending on the type of XDP traffic it sees.
+        //
+        Route->UseQTIP = Socket->ReserveAuxTcpSockForQtip;
+    }
+
+    #if defined(_KERNEL_MODE) || defined(CX_PLATFORM_LINUX) || defined(CX_PLATFORM_DARWIN)
+    CXPLAT_DBG_ASSERT(Route->UseQTIP == FALSE);
+    #endif
+
+    if (Route->UseQTIP || Route->DatapathType == CXPLAT_DATAPATH_TYPE_RAW ||
+        (Route->DatapathType == CXPLAT_DATAPATH_TYPE_UNKNOWN &&
+        Socket->RawSocketAvailable && !IS_LOOPBACK(Route->RemoteAddress))) {
+        return RawResolveRoute(CxPlatSocketToRaw(Socket), Route, PathId, Context, Callback);
+    }
+    Route->State = RouteResolved;
+    return QUIC_STATUS_SUCCESS;
+}

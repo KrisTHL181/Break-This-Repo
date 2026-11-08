@@ -1,0 +1,29 @@
+# Ignore everything
+/*
+
+# Folders
+!/.github
+!/filament
+!/gradle
+!/src
+!/unpick-definitions
+!/mappings
+
+# Files
+
+!.editorconfig
+!.gitattributes
+!.gitignore
+!annotations.json
+!build.gradle
+!CONTRIBUTING.md
+!enigma_profile.json
+!gradle.properties
+!gradlew
+!gradlew.bat
+!HEADER
+!LICENSE
+!MAINTAINERS
+!README.md
+!settings.gradle
+!unpick-logging.properties

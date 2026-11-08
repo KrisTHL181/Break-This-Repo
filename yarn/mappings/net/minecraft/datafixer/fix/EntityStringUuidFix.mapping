@@ -1,0 +1,5 @@
+CLASS net/minecraft/class_1171 net/minecraft/datafixer/fix/EntityStringUuidFix
+	METHOD method_4986 (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
+		ARG 0 entityDynamic
+	METHOD method_4987 (Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
+		ARG 0 entityTyped

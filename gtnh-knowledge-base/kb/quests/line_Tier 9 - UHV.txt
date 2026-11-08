@@ -1,0 +1,154 @@
+# 任务线: Tier 9 - UHV
+### [-6184321923537677060] §4§l§nA Blast to the Past
+Now that you have the bioware mainframe, you have unlocked the first of the stargate trophies! Yes, there's multiple of them, one for each major iteration of the stargate recipe. These trophies are just that, trophies, and you can try to craft them if you want to compare the costs to today's stargate standards. To complete these quests you have to submit two stargates' worth of materials.  §3Now, let me bestow upon you a short history lesson about this point in GT:NHs past.  The year is 2020. The bio mainframe was pretty much the end of GTNH progression at the time, not much above UHV existed or was craftable. This was also the point in the pack where you'd start scaling for stargate, as that too was tiered at UHV. Technically UEV parts were craftable, but their only uses were singleblocks for PAs (which only held up to 16 UEV machines) and the Deep Dark Portal. UEV-UMV energy hatches were craftable, but their recipes were simple hull + wire crafting table recipes ...and that was about it for UHV+ content. With the recent addition of void miners, the previously thought to be impossible started to seem actually attainable, a set of stargates. Specifically, to §ocraft§3 a set of them, not just find them like others have before.  One group in particular, known as the §aGigaplex§3, gave it their all and actually managed to do it, to prove that crafting stargates is possible with enough determination.  Thus, on the §a16th of February, 2021§3, the first set of crafted stargates had been born.  P.S.: If you want to be as faithful to the challenge as possible, try completing this quest without using any of the modern functionality that didn't exist back then. Here's a non-exhaustive list of major things that didn't exist (in no particular order): -PCB Factory, Space Elevator, Component Assemblyline, AAL, PrAss, EEC, EIG, Compact Fusions, MCR, MABS -Any bee related GT machines -Any UEV or above multis -XL Turbines, Naq fuel, LEG -Sub 1-tick OC, Batch Mode, inbuilt Void Protection on multis -Level Maintainer, AE Fluid Crafting, Stocking Buses/Hatches, Crafting Input Buses, ME Output Buses/Hatches, non-recursive AE component recipes -Shift-clicking recipes into AE patterns (pain) -Early-Midgame QoL such as ghost circuits, visual prospecting, reprogramming circuits with a screwdriver, seeing Assline recipes in NEI before having crafted them, and more  P.P.S: This quest is missing the chaotic capacitors on purpose, because the chaotic core recipe requires spacetime now, but the chaotic capacitor recipe did not change at all since then. All in all the cost for these banks was completely negligible back then and still is today, they only serve as a magic gate for SG.
+  - [提交] dreamcraft:OriginGatePlate x625, dreamcraft:OriginChevron x342, dreamcraft:OriginFramePart x1470, dreamcraft:OriginNanoCircuit x82, dreamcraft:StargateCrystalAncients x2, gregtech:gt.metaitem.01:32647 x436, gregtech:gt.metaitem.01:32697 x138, gregtech:gt.metaitem.01:32687 x10, gregtech:gt.metaitem.01:32677 x736, gregtech:gt.blockcasings:15 x124, gregtech:gt.blockmetal4:13 x1590, gregtech:gt.blockmetal7:9 x1960
+  > 奖励: minecraft:paper:1
+
+### [2636] §4§l§nAssembling Living Circuits
+To make Bioware Boards and Circuits, you need to either make a UV Circuit Assembling Machine or obtain a UHV energy hatch for your circuit assembly machine.
+  - [提交] gregtech:gt.blockmachines:1187, gregtech:gt.blockmachines:49
+
+### [2696] §4§l§nBeyond the Limit
+To make living solder for your UEV components or bio-circuits, you will need a chem plant with Rugged Botmium Casings. These are not easy to make!  You can certainly figure out the rest by now, but the Advanced Nitinol may confuse you. You make it out of blocks of Nitinol 60 with a Quantum Anomaly in a Laser Engraver.
+  - [提交] miscutils:gtplusplus.blockspecialcasings.2:3 x70
+
+### [2663] §4§l§nBio Circuit 2: Biological Boogaloo
+The Bioware Assembly is the second Bio Circuit. It is a UV-Tier circuit.
+  - [提交] gregtech:gt.metaitem.03:32098
+
+### [-5813797741888729661] §4§l§nCheaper LuV Circuits
+The crystal living chips are more efficient and will make your wetware processors cheaper!
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:32750, bartworks:gt.bwMetaGeneratedItem0:32700, gregtech:gt.blockmachines:1762 x8, gregtech:gt.metaitem.01:26982 x64
+  - [提交] gregtech:gt.metaitem.03:32092 x16
+
+### [2676] §4§l§nCollecting Neutrons the Alternate Way
+Now that you have Infinity, you can use the Avaritia Neutron Collector to get Piles of Neutrons. It does not use any power.  [note]Warning: This machine is extremely slow, so you might want to use something to help with that...[/note]
+  - [提交] Avaritia:Neutron_Collector
+  - [提交] Avaritia:Resource:2 x81
+
+### [2674] §4§l§nCompressing the Core of a Star
+The next material is Infinity Catalyst. Infinity Catalyst needs to be compressed with insane amounts of force. The only machine capable of doing that is a Neutronium Compressor. Check out the Neutronium Compressor quest in Multiblock Goals if you haven't made one yet.  To make the Catalyst, go to Vega B to get the dust. Then use the Neutronium Compressor to make Infinity Catalyst with 64 of the dust.  You can also do the insane Avaritia recipe to make the Infinity Catalyst, if you want a challenge :P  [note]The compressor can also be used to make singularities, culminating in the Eternal Singularity, used in the alternate recipe.[/note]  [note]If you want to automate singularity creation you can just click with the middle mouse button to modify the number of items in a pattern beyond the normal limits.[/note]
+  - [提交] gregtech:gt.metaitem.01:2394 x64
+  - [提交] Avaritia:Resource:5
+
+### [464] §4§l§nDraconic Core
+Yes, this schematic is perfect! Whatever alien civilization this belonged to, it is exactly what you needed. Let's make a Draconic Core.  [note]You can find the schematic in a Pluto dungeon.[/note]
+  - [提交] kubatech:kubaitems:38
+  - [提交] DraconicEvolution:draconicCore
+
+### [2618] §4§l§nHarder, Better, Faster, Stronger... Pt 2 in UHV
+Remember to take a break once an hour (lol).
+  - [提交] gregtech:gt.metaitem.01:32688, gregtech:gt.metaitem.01:32698
+
+### [2617] §4§l§nHarder, Better, Faster, Stronger... Pt 1 in UHV
+You can play other games you know?
+  - [提交] gregtech:gt.metaitem.01:32648, gregtech:gt.metaitem.01:32638, gregtech:gt.metaitem.01:32618, gregtech:gt.metaitem.01:32658
+
+### [2659] §4§l§nI'm Telling You, It's Not Mold!
+Now let's make Biocells. To make them, you have to heat up your Raw Bio Medium to make Sterilized Bio Medium.  Then you just have to use a Chemical Reactor to make Biocells.
+  - [可选提交] gregtech:gt.metaitem.01:30604
+  - [提交] gregtech:gt.metaitem.03:32076
+
+### [2681] §4§l§nIndustrial Scale Seaweed Production
+So you probably noticed that the amount of seaweed you'll need to make Bio circuits is kind of...intense. Collecting them yourself is a huge pain, and who wants to program robots? Plus servers. Fortunately, there's now a way to make seaweed.  The first thing you need is...Seaweed! Use that with Unknown Water to make the culture. Expect this to take a while, as the chances are super low. You'll also need a UV Bio Lab.  Once you have the culture you can make Seaweed Broth, by combining it with Unknown Nutrient Agar and some other stuff. This can then be made into seaweed.
+  - [可选提交] gregtech:gt.blockmachines:12704
+  - [可选提交] bartworks:BioLabParts, gregtech:gt.metaitem.98:7
+  - [可选提交] gregtech:gt.metaitem.98:8
+  - [提交] GalaxySpace:tcetiedandelions x64
+
+### [2589] §4§l§nInfinite Oxygen Tank
+Provides infinite oxygen. In the past you could only use it to refill tanks. But now you can just put it in your oxygen slot!
+  - [提交] GalacticraftCore:item.infiniteOxygen
+  > 奖励: bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion | bq_standard:questcompletion
+
+### [2585] §4§l§nInfinite Vis Storage, kinda?
+Provides an absurd quantity of vis storage. It also fills as soon as you pick it up.
+  - [提交] Thaumcraft:WandCasting:9000
+
+### [2582] §4§l§nInfinity Infrastructure
+You will need a lot of infinity going forward. Be prepared for emotional trauma.
+  - [提交] Avaritia:Resource_Block:1 x64
+
+### [2657] §4§l§nIt's Not Going Bad, I Swear!
+To make your next tier of circuits (Bio Circuits), you need to make Raw Bio Medium. There are three ways of making it.  The first one requires Stemcells, Unknown Crystal and T-Ceti Seaweed Extract at LuV voltage and 94 Sievert (Plutonium level) in a Bacterial Vat. It makes Raw Bio Medium at 4:1 ratio.  The second one is basically the first one, but it requires Infinity Catalyst instead of Tritanium at ZPM voltage and 140 Sievert (Enriched Naquadah level) in a Bacterial Vat. It makes Raw Bio Medium at 1:1 ratio.  The third one is the most efficient, but it requires Biocells (which you don't have yet), and 4 dust of Infinity Catalyst at UV voltage and 150 Sievert (Naquadria level) in a Bacterial Vat. It makes Raw Bio Medium at 1:2 ratio.  [note]The second and third ways use a different culture.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:30608
+  - [可选提交] dreamcraft:TCetiESeaweedExtract, bartworks:BioLabParts
+  - [提交] gregtech:gt.metaitem.01:30603
+
+### [2665] §4§l§nMaster of Circuits
+The Bioware Mainframe is the first UEV-Tier Circuit in the game.  This is truly an achievement, well done!
+  - [提交] gregtech:gt.metaitem.03:32120
+
+### [2595] §4§l§nMisc Endgame Goals
+With infinity unlocked, you can start making the first creative items.
+  - [勾选确认]
+
+### [2660] §4§l§nMutations Are...Good, Right?
+Making the Bio Board is pretty much the same process as making a wetware board, just that... oh god that's expensive.  To make the Ultra Bio Mutated Circuit Board, you just need to etch it with neutronium.
+  - [可选提交] gregtech:gt.metaitem.03:32008
+  - [提交] gregtech:gt.metaitem.03:32107
+
+### [2675] §4§l§nOne Ingot, Infinite Power
+Here at Questbook, Inc. we are seriously worried about your health if you got here legitimately. Playing this much might be bad for you. You can always go outside, you know?  By the way, to make the ingot, it's just a simple Dire Crafting Table recipe. Remember that you were the one that chose to be here.  [note]A number of endgame recipes have now opened up. Check the Endgame Goals tab or NEI recipes for the Table to see what they are.[/note]  [note]Something else to note is that there's an automated DCT if you happen to need a lot of these (hint: you will).[/note]
+  - [提交] Avaritia:Resource:6
+
+### [3216] §4§l§nOptical SMDs
+You can now make optical SMDs! They are required for all circuits beyond UEV.  Some of the materials are made in the ABS. Maybe it's time to add a few.
+  - [提交] gregtech:gt.metaitem.03:32181 x64, gregtech:gt.metaitem.03:32179 x64, gregtech:gt.metaitem.03:32178 x64, gregtech:gt.metaitem.03:32180 x64, gregtech:gt.metaitem.03:32184 x64
+
+### [2662] §4§l§nPlease... Don't Let These Circuits Take Over
+The Bioware Processor is the first Bio Circuit you can make. It is a ZPM-Tier circuit.
+  - [提交] gregtech:gt.metaitem.03:32097
+
+### [458] §4§l§nQuantum Anomaly
+All your theoretical knowledge tells you this can't possibly exist. But there it is. Maybe you can find some use for it?  [warn]You will need a Beam Crafter for this if you haven't made one yet.[/warn]
+  - [提交] miscutils:MU-metaitem.01:32105
+
+### [2661] §4§l§nSelf-Aware Circuits
+Make a Bio Processing Unit. It is an important component in making the Bio Circuits.
+  - [提交] gregtech:gt.metaitem.03:32077
+
+### [2679] §4§l§nSoldering's Not Working Anymore
+After all these advancements, it looks like some things just aren't meant to be. Every machine that your Assembly Line has crafted works, but the most advanced ones so far seem to be... a bit rough around the edges. Further inspection revealed that Indalloy just isn't good enough. It seems that Infinity's neverending vibrations destabilize the joints where the soldering happens, your living circuits have been offering resistance to this crude soldering alloy, however that happens...  It's likely that new materials will completely break Indalloy's ability to get pieces soldered together. Because of that, it's about time for a new development in this technology, and the previous rejection by your living circuits has given you an excellent idea. Any new material can have some new behavior that will ruin assembling for you, but what if the solder itself learns about these complications and learns how to adjust to them, mutating for them?  That's right: §aMutated Living Solder§r.  This sort of chemistry is only possible in a full-scale Chemical Plant, equipped with the most advanced casing: Botmium. On top of that, the catalyst you need to use has been consumed so thoroughly that you were forced to use Infinity for it, on top of the mutating Naquadria. Your Infinity will be lost to the crafting, still, unless you manage to put [note]Tungstensteel Pipe Casings[/note] and [warn]Awakened Draconium Coils[/warn] in your Chemical Plant, which prevent the catalyst from losing durability. Any better coils also have the same effect.  The new solder itself is a different story. Wetware technology is too primitive for this, and your Bio Cells have refused to bond with any fluid that would serve as its carrier for soldering. When you tried a mixture of hot Tin and Bismuth, it finally worked, but the soldering didn't actually work. It looked like the Bio Cells hadn't learned how to fulfill their new job, which could be fixed by adding an example material as a test subject, something simpler like Infinity Catalyst... but it seemed impossible to bond the cells to the dust. You need more energy... not just loads of EU, something concentrated, hot, fizzling with energy!  Yes, everything alive died instantly when you decided to add plasmas instead of hot fluids. No surprise there. However, Bio Cells did survive inside hot fluids, so we just need some temperature control here, and some separation between cell and plasma... yes, Gravi Stars can be used for this. We still need to cool down the plasmas, so that the enhanced cells can mix with them in liquid form, and EU alone would be too expensive. Gelid Cryotheum has proven to be surprisingly efficient, perhaps due to its origins, as a component of a living being, the Blizz.  There we go! The Mutated Living Solder is now complete. The highly intelligent Bio Cells are energized by the concentrated heat of the plasmas, while keeping a distance from them due to the Gravi Stars' influence, and they analyze the Infinity Catalyst Dust to learn about material instability. This is a very slow process, but it happens at the same time as the plasmas are slowly cooled, using Cryotheum and EU, until the learning process is complete and the Bio Cells fall into the Tin and Bismuth, now in the liquid form that was shown to work before. Finally, armed with their new knowledge, the cells flow through the Naquadria-based, Infinity-reinforced catalyst so that they can mutate in real-time after researching the material they're soldering.  This should work for any future soldering need, regardless of material. Let's hope so, at least...
+  - [可选提交] miscutils:itemCellMutatedLivingSolder
+  - [勾选确认]
+
+### [2664] §4§l§nSupercomputers... With Cells?
+The Bioware Supercomputer is the third Bio Circuit. It's a UHV-Tier Circuit.
+  - [提交] gregtech:gt.metaitem.03:32099
+
+### [2648] §4§l§nThe Final Frontier?
+The last of the normal rocket progression. After this is there is only the Mothership for the T9 system and the Deep Dark, which has all the ores+more.  Although you get access to six new planets, there's only two new veins. And don't complain that Barnarda should be Barnard, we can't fix it.  The Barnarda system is to the NNW, and you can visit Barnarda C, E, and F. The α Centauri system is to the NE, and you can visit α Centauri Bb (Proxima Centauri is not visitable). [note]Remember to wear your SpaceSuit![/note] The T Ceti system is to the SSW, and you can visit the habitable planet T Ceti E. The Vega System is to the WNW, and you can visit the planet Vega B.  The new veins are Cadmium and Samarium. The ores are Cadmium, Caesium, Cerium, Lanthanum, Neodymium, Samarium, and Tartarite.  You can get Awakened Draconium from small ores on Barnarda E, Barnarda F, T Ceti E, and Vega B. You can get Bedrockium from small ores on Barnarda F. You can get Infinity Catalyst from small ores on Vega B.  In addition to planet ores and blocks, grab some Barnarda C Saplings and Dirt so you can grow some more if you need it for Radox (lol). You can also grab some more Unknown Crystal Shards from the Rainbow Crystals lying around.  More importantly you should collect Seaweed from T Ceti E. You need it to make UEV circuits, and though you can make it as well, you need some to begin with. The unknown liquid to grow these is however found in lakes and underground on Barnarda C.
+  - [勾选确认]
+
+### [2616] §4§l§nTier 9 (UHV)
+Welcome to Highly Ultimate Voltage... you're starting to get near the late game. In this tier you will use Cosmic Neutronium to create strong parts, and eventually start making your very own Infinity. You will gain access to some very powerful Quality-of-Life tools during this chapter.  [note]Oh, and... have fun with Xenoxene![/note]
+  - [提交] gregtech:gt.blockmachines:19
+
+### [2629] §4§l§nUHV Energy Hatch
+If you want to make the T8 Rocket or the mkIV reactor, you'll need this.
+  - [提交] gregtech:gt.blockmachines:49
+
+### [2624] §4§l§nUHV Field Generator
+I wonder if they're circles because they're basically just wrapped wire, there's certainly enough of it in there.
+  - [提交] gregtech:gt.metaitem.01:32678
+
+### [2621] §4§l§nUHV Superconductors (2,097,152 EU/t)
+Above this, there are also UEV, UIV, and UMV superconductors. You can use UHV superconductors, or use a super cheap material and accept some losses to move your power around. Aside from other options like sending it through an AE tunnel or making power on site again.  What, the UHV superconductor? Didn't you already make that?  If you forgot, you get a heat adjustment when using the EBF based on the energy tier. So you can smelt the Base UHV Ingot with Fluxed Coils and UV energy, since you then get 10501K. And no, you can't use a Volcanus.
+  - [提交] gregtech:gt.blockmachines:2020 x24
+
+### [3249] §4§l§nWait, PBI wasn't the last plastic?
+Let's make a brand new plastic! The trees that you found on Barnarda C have very interesting properties. Still, you can't just use the extracted radox substance raw. Some serious refining steps are in order!  §6You'll need it for a ton of stuff like UIV and UMV superconductors, UEV+ hatches, or parts of the Dyson Swarm.§r  Compared to the previous plastics, most of the steps required here are not chemical reactions. They are also very slow, so you might want to use a mega multiblock to help with that. This production line also underlines the necessity of large-scale plasma production. You will only need more going forward.  [note]Super Heavy Radox will be needed for Dimensionally Shifted Superfluid, so store some for later.[/note]  [note]The Heavy Radox you get as a byproduct can be used for MkV Naquadah Fuel.[/note]
+  - [提交] gregtech:gt.metaitem.01:17979
+
+### [462] §4§l§nWyvern Core
+Wyverns are rare dragons that can walk on two legs. More powerful for sure. Researching your Draconic Core, you found a way to improve it. The Wyvern Core.
+  - [提交] kubatech:kubaitems:39
+  - [提交] DraconicEvolution:wyvernCore
+
+### [2717] §4§l§nXenoxene Xenoxsis
+To make the next tier plastic, Radox, or the next tier of SMDs, you will need Xenoxene.  Getting the Xenoxene Xenoxsis culture is a bit tricky. The recipe is similar to the General Purpose one. Remember that all recipes in this chain are low probability recipes.  Your first step is to make the Barnardafis culture, then the DNA Sample, and then the Data Orb. If you didn't grab the saplings and dirt previously (to grow more trees for logs), head back to Barnarda C.  Use the same recipe as for the General Purpose one, but use the Data Orb for Barnardafis instead of Common Yeast. You should get the Barnardafis Plasmid.  Again, it's the same recipe for the next step, but with the TCetiEis Fucus Serratus culture and the Barnardafis Plasmid, this should produce the Xenoxene Xenoxsis culture. It's a 7.5% chance.  You should probably use the normal alternative recipe to make more cultures, since it's easy to fail copying it too.  You should be able to figure out yourself how to make Xenoxene once you have the culture.  [note]After many years, the transformation recipe now even has NEI support![/note]
+  - [可选提交] bartworks:BioLabParts:1
+  - [可选提交] bartworks:BioLabParts:2
+  - [提交] bartworks:BioLabParts
+

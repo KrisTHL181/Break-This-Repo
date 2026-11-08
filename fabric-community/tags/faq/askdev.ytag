@@ -1,0 +1,17 @@
+type: embed
+
+colour: black
+embed:
+    title: How to Ask for Help
+
+---
+
+Want your modding issue solved faster? Check these steps before posting:
+### Search First
+Someone else has probably run into this already. Search the Discord history, Fabric documentation, or GitHub issues and discussions before asking.
+### Be Specific (No "It doesn't work")
+Tell us exactly what is breaking and always include your Minecraft, Fabric Loom, Fabric Loader, and Fabric API versions.
+### Context First, Code Second
+Explain what you're actually trying to make before pasting your failing code. This helps us see if there's an easier way to do what you want (avoiding the XY problem).
+### No Screenshots of Code
+Please don't post screenshots of your code. They're hard to read on mobile and we can't copy-paste them. Sharing your full code in a GitHub repo is best. For short snippets, just use Discord code blocks (` ```java `).

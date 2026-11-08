@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.api.transfer.v1.item.base;
+
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.TransferVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+
+/**
+ * A storage that can store a single item variant at any given time.
+ * Implementors should at least override {@link #getCapacity(TransferVariant) getCapacity(ItemVariant)},
+ * and probably {@link #onFinalCommit} as well for {@code setChanged()} and similar calls.
+ *
+ * <p>This is a convenient specialization of {@link SingleVariantStorage} for items that additionally offers methods
+ * to deserialize the contents of the storage.
+ */
+public abstract class SingleItemStorage extends SingleVariantStorage<ItemVariant> {
+	@Override
+	protected final ItemVariant getBlankVariant() {
+		return ItemVariant.blank();
+	}
+
+	/**
+	 * Simple implementation of reading from {@link ValueInput}, to match what is written by {@link #writeValue}.
+	 * Other formats are allowed, this is just a suggestion.
+	 */
+	public void readValue(ValueInput data) {
+		SingleVariantStorage.readValue(this, ItemVariant.CODEC, ItemVariant::blank, data);
+	}
+
+	/**
+	 * Simple implementation of writing to {@link ValueOutput}. Other formats are allowed, this is just a suggestion.
+	 */
+	public void writeValue(ValueOutput data) {
+		SingleVariantStorage.writeValue(this, ItemVariant.CODEC, data);
+	}
+}

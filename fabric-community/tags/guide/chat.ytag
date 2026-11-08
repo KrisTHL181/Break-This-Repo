@@ -1,0 +1,36 @@
+type: text
+
+---
+
+## Server
+
+To send a system message to all players, we can use a broadcast:
+
+```java
+MinecraftServer server = ...;
+
+server.getPlayerList().broadcastSystemMessage(Component.literal("Hello Fabric World!"), false);
+```
+
+To instead send a message to a specific player:
+
+```java
+ServerPlayer player = ...;
+
+player.sendSystemMessage(Component.literal("This is a direct message"));
+```
+
+## Client
+
+To send a chat message from client to server:
+
+```java
+Minecraft.getInstance().player.connection.sendChat("Hello, World!");
+```
+
+We can also manually add messages to the chat. These messsages will not be sent
+to the server or other players, but will be displayed locally in the hud.
+
+```java
+Minecraft.getInstance().gui.chatListener().handleSystemMessage(Component.literal("This is a virtual message"), false);
+```

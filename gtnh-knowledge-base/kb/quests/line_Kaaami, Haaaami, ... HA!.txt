@@ -1,0 +1,193 @@
+# 任务线: Kaaami, Haaaami, ... HA!
+### [2728] Best Wand
+This is the best non-endgame/creative wand you can make. There's also a Scepter version.
+  - [提交] Thaumcraft:WandCasting:450
+  > 奖励: enhancedlootbags:lootbag:11 | dreamcraft:CoinDarkWizardII x5
+
+### [328] Hold All the Foci
+Hermione's first years bag.
+  - [提交] ThaumicTinkerer:ichorPouch
+  > 奖励: enhancedlootbags:lootbag:12 | dreamcraft:CoinDarkWizardII x5
+
+### [2727] Ichor Caps
+These tie with Shadowmetal, but they look nicer.
+  - [提交] ThaumicTinkerer:kamiResource:4 x2
+  > 奖励: enhancedlootbags:lootbag:11 | dreamcraft:CoinDarkWizardII x5
+
+### [2726] Ichor Core
+You can now make the best wand core, so go ahead and do so.
+  - [提交] ThaumicTinkerer:kamiResource:5
+  > 奖励: enhancedlootbags:lootbag:11 | dreamcraft:CoinDarkWizardII x5
+
+### [320] Ichorium
+By combining ichor with some void metal and osmiridium, the metal turned into something new; Something extremely durable but also soft. Its magic conductivity is incredible!
+  - [提交] ThaumicTinkerer:kamiResource:2 x5 (ore:ingotIchorium)
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [316] Infused Cloth
+By combining ichor with enchanted fabric, you've created something that could be compared to mithril. Light as wool, but durable like steel. Also, it conducts magic energy like nothing else you've seen before. This seems to be an excellent material for a new type of armor.
+  - [提交] ThaumicTinkerer:kamiResource:1 x5
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII x5
+
+### [2410] Journey to the Center of the Earth
+After acquiring your new pickaxe and clearing away a mountain or two, you wonder if maybe you should go...§odeeper§r. After trying it out on some Bedrock, you see a way down into the very depths of the planet. After exploring this new realm you make a note that it is:  A) Seemingly empty of life B) Full of Bedrock you need to clear away with your new pickaxe C) Full of ore veins going up and down D) Some of these ores are strange and §odifferent§r from the ones you are used to E) Since Miners cannot break Bedrock, if you wish to use one, you'll have to do it for it first. F) After leaving you wake up on the surface somewhere nearby, your lack of memories of such is probably due to Oxygen deprivation. §oProbably§r. (After leaving the Bedrock Dim, you'll be thrown out somewhere nearby on what is hopefully the surface, and not inside a block, but no guarantees!)  Among the ore samples you seem to have brought back with you, you find a number of "basic" and "intermediate" ores and gems, as well as a few you don't recognize! Perhaps a return trip is in order?  Also, you seem to smell like cheese for some reason?
+  - [到达] 
+  > 奖励: gregtech:gt.metaitem.01:9032 | gregtech:gt.metaitem.01:9089 | gregtech:gt.metaitem.01:2500 | appliedenergistics2:item.ItemCrystalSeed:600 | GalacticraftCore:item.basicItem:2 | GalacticraftMars:item.null | Automagy:shardSliver:5 | IC2:blockMiningPipe x64 | IC2:blockMiningPipe x64 | IC2:blockMiningPipe x64 | IC2:blockMiningPipe x64
+
+### [-6189309518179514119] Large Essentia Smeltery
+The §5§lLarge Essentia Smeltery§r is the GT version of the Alchemical Furnace which supercedes the Advanced Alchemical Furnace and is extremely fast at melting down items into essentia.  Unlike its predecessor which required centi-vis alone for power, this will also require electricity. The amount of electricity required is specified by the tier of the Essentia Diffusion Cell and the amount of parallels the machine has.  Novice -> EV Adept -> IV Master -> LuV Grandmaster -> ZPM  The amount of parallels made available to the machine is determined by both the Essentia Diffusion Cell tier and the length: §3Parallels = (2^Tier * (Length-1))§r
+  - [提交] gregtech:gt.blockmachines:32024
+  - [可选提交] GoodGenerator:magicCasing x48, GoodGenerator:essentiaCell x12, Thaumcraft:blockCosmeticOpaque:2 x6, GoodGenerator:essentiaFilterCasing x3, thaumicbases:advAlchFurnace x3, gregtech:gt.blockmachines:91 x3
+  > 奖励: dreamcraft:CoinDarkWizardIII
+
+### [-6557824927710480006] Lord of the Rings?
+Finally, a shot at real power!  Using the Primordial Pearl, you can now create Master Rings. These rings grant you a very generous vis discount corresponding to their type.  Rumor has it that they can be combined into a very powerful ring...  [note]The pearl is not consumed when crafting these rings.[/note]
+  - [提交] randomboubles:aerRing:2, randomboubles:terraRing:2, randomboubles:ignisRing:2, randomboubles:aquaRing:2, randomboubles:ordoRing:2, randomboubles:perditioRing:2
+  > 奖励: bq_standard:choice
+
+### [-8993458844340296683] Master Earth Rings
+Remember when I mentioned that these could be used to create a more powerful ring? Well, the rumor is true.  Make 16 of each type of Master Earth Ring to continue down this path, but beware the journey that lies ahead!  [note]If you've already reached the end of this recipe line, just hold the ring and it will skip these quests![/note]
+  - [提交] randomboubles:perditioRing:2 x16, randomboubles:aquaRing:2 x16, randomboubles:terraRing:2 x16
+  - [可选提交] randomboubles:perditioRing:1 x16, randomboubles:aquaRing:1 x16, randomboubles:terraRing:1 x16
+  - [可选提交] ThaumicExploration:discountRing:5 x16, ThaumicExploration:discountRing:3 x16, ThaumicExploration:discountRing:1 x16
+  > 奖励: enhancedlootbags:lootbag:11 | dreamcraft:CoinDarkWizardII x5
+
+### [-6103780161740852904] Master Sky Rings
+Remember when I mentioned that these could be used to create a more powerful ring? Well, the rumor is true.  Make 16 of each type of Master Sky Ring to continue down this path, but beware the journey that lies ahead!  [note]If you've already reached the end of this recipe line, just hold the ring and it will skip these quests![/note]
+  - [提交] randomboubles:ordoRing:2 x16, randomboubles:ignisRing:2 x16, randomboubles:aerRing:2 x16
+  - [可选提交] randomboubles:ordoRing:1 x16, randomboubles:ignisRing:1 x16, randomboubles:aerRing:1 x16
+  - [可选提交] ThaumicExploration:discountRing:4 x16, ThaumicExploration:discountRing:2 x16, ThaumicExploration:discountRing x16
+  > 奖励: enhancedlootbags:lootbag:11 | dreamcraft:CoinDarkWizardII x5
+
+### [1109] Ohhh, Crunchy
+After many, many, hours of doing Thaumcraft research you've found a way to craft pure tears. Ichorium purifies the nether star which sucks all the warp away. Be careful, as this may have a deadly end.
+  - [提交] WarpTheory:item.warptheory.cleanser
+  > 奖励: enhancedlootbags:lootbag:12 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII x5
+
+### [1110] Purge All Your Warp
+Did you ever have a dream where you could purge all your warp with no bad side effects? This purification talisman will let your dreams come true. It gets rid of it a little at a time, so no effects!  Don't forget to wear it.
+  - [提交] WarpTheory:item.warptheory.amulet
+  > 奖励: enhancedlootbags:lootbag:12 | Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII x5
+
+### [-5060667404258932938] Ring of the Earth
+The Ring of the Earth is a very powerful ring. In its highest form, it grants mastery over all three Earth Rings at once, a three-for-one combo!  [note]These infusions are more powerful. They won't destroy your pearl, but they will drain it, requiring a separate infusion to recharge it before it can be reused.[/note]
+  - [提交] randomboubles:combinationRing:5 x4
+  - [可选提交] randomboubles:combinationRing:4 x8
+  - [可选提交] randomboubles:combinationRing:3 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII x5
+
+### [-5036836084780451853] Ring of the Sky
+The Ring of the Sky is a very powerful ring. In its highest form, it grants mastery over all three Sky Rings at once, a three-for-one combo!  [note]These infusions are more powerful. They won't destroy your pearl, but they will drain it, requiring a separate infusion to recharge it before it can be reused.[/note]
+  - [提交] randomboubles:combinationRing:2 x4
+  - [可选提交] randomboubles:combinationRing:1 x8
+  - [可选提交] randomboubles:combinationRing x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizardII x5
+
+### [-6682962415669262463] Runeforged Thaumaturge's Ring
+At last... behold the power of the Runeforged Thaumaturge's Ring.  It grants an unbelievable §5§l10%§r discount on all primal aspects, along with additional runic shielding. Only the most powerful thaumaturges could even hope to wield it.  The shielding is so strong that it naturally blocks the effects of Poison and Wither.  [warn]Unlike before, the pearl will be consumed when crafting these rings.[/warn]
+  - [提交] randomboubles:combinationRing:8
+  - [可选提交] randomboubles:combinationRing:7 x2
+  - [可选提交] randomboubles:combinationRing:6 x4
+  > 奖励: enhancedlootbags:lootbag:12 | Thaumcraft:ItemEldritchObject:3 x4 | dreamcraft:CoinDarkWizardIII x3
+
+### [309] Shards of Opposite Worlds
+This morning, you just wanted to facepalm yourself to death. During your past journeys, you have already seen strangely colored shards. But unlike the primal shards you use every day, these seem to contain the raw essence of their dimension. Heaven and Hell... so to speak. Two opposite worlds.  You think you can use them to make something...powerful.  [note]PS: Yes, I know the pearl isn't actually required for these crafts, just roll with it for story reasons, OK?[/note]
+  - [可选提交] ThaumicTinkerer:kamiResource:6, ThaumicTinkerer:kamiResource:7
+  - [提交] ThaumicTinkerer:kamiResource
+  > 奖励: enhancedlootbags:lootbag:12 | dreamcraft:CoinDarkWizardII x5
+
+### [307] The Power of Gods
+The pearl you've found has some interesting effects on you. Not only are the voices almost gone, somehow it has also expanded your perception. You can "feel" the magic around you. This is definitely worth some further investigation.
+  - [提交] Thaumcraft:ItemEldritchObject:3
+  > 奖励: dreamcraft:CoinDarkWizardIII
+
+### [2887] These Items Will Not 'Be Back'
+One of the more useful things you can do with the pearl is to make a better Alchemical Furnace. You can melt items into essentia way faster with this.  [note]The pearl is not used up, nor does it take durability damage from this craft.[/note]
+  - [提交] Thaumcraft:blockMetalDevice:3 x8, Thaumcraft:blockMetalDevice:9 x4, Thaumcraft:blockMetalDevice:1 x4, Thaumcraft:blockStoneDevice
+  > 奖励: dreamcraft:CoinDarkWizardII x5
+
+### [319] Unbreakable Axe
+An axe made of your new metal will never break and will accept enchantments with ease. Something tells you there must be more...
+  - [提交] ThaumicTinkerer:ichorAxe
+  > 奖励: Thaumcraft:ItemLootBag:2 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [318] Unbreakable Boots
+They will never break. How convenient.
+  - [提交] ThaumicTinkerer:ichorclothBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [311] Unbreakable Cowl
+It will never break. How convenient.
+  - [提交] ThaumicTinkerer:ichorclothHelm
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [313] Unbreakable Leggings
+They will never break. How convenient.
+  - [提交] ThaumicTinkerer:ichorclothLegs
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [322] Unbreakable Pickaxe
+A pickaxe made of your new metal will never break and will accept enchantments with ease. Something tells you there must be more...
+  - [提交] ThaumicTinkerer:ichorPick
+  > 奖励: Thaumcraft:ItemLootBag:2 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [315] Unbreakable Robe
+It will never break. How convenient.
+  - [提交] ThaumicTinkerer:ichorclothChest
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [323] Unbreakable Shovel
+A shovel made of your new metal will never break and will accept enchantments with ease. Something tells you there must be more...
+  - [提交] ThaumicTinkerer:ichorShovel
+  > 奖励: Thaumcraft:ItemLootBag:2 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [321] Unbreakable Sword
+A sword made of your new metal will never break and will accept enchantments with ease. Something tells you there must be more...
+  - [提交] ThaumicTinkerer:ichorSword
+  > 奖励: Thaumcraft:ItemLootBag:2 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [310] Unleashed the Power - Cowl
+To make use of your armor to the fullest extent, you'll have to unleash its hidden power. This is not an easy task; But it's worth the effort!
+  - [提交] ThaumicTinkerer:ichorclothHelmGem
+  > 奖励: enhancedlootbags:lootbag:13 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [312] Unleashed the Power - Leggings
+To make use of your armor to its full extent, you'll have to unleash its hidden power. This is not an easy task; But it's well worth the effort!
+  - [提交] ThaumicTinkerer:ichorclothLegsGem
+  > 奖励: enhancedlootbags:lootbag:13 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [314] Unleashed the Power - Robe
+To make use of your armor to its full extent, you'll have to unleash its hidden power. This is not an easy task; But it's well worth the effort!
+  - [提交] ThaumicTinkerer:ichorclothChestGem
+  > 奖励: enhancedlootbags:lootbag:13 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [317] Unleashed the Power - Boots
+To make use of your armor to its full extent, you'll have to unleash its hidden power. This is not an easy task; But it's well worth the effort!
+  - [提交] ThaumicTinkerer:ichorclothBootsGem
+  > 奖励: enhancedlootbags:lootbag:13 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [324] Unleashed the Power - Sword
+To make use of your tool to its full extent, you'll have to unleash its hidden power. This is not an easy task; But it's well worth the effort!
+  - [提交] ThaumicTinkerer:ichorSwordGem
+  > 奖励: enhancedlootbags:lootbag:12 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [326] Unleashed the Power - Axe
+To make use of your tool to its full extent, you'll have to unleash its hidden power. This is not an easy task; But it's well worth the effort!
+  - [提交] ThaumicTinkerer:ichorAxeGem
+  > 奖励: enhancedlootbags:lootbag:12 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [325] Unleashed the Power - Shovel
+To make use of your tool to its full extent, you'll have to unleash its hidden power. This is not an easy task; But it's well worth the effort!
+  - [提交] ThaumicTinkerer:ichorShovelGem
+  > 奖励: enhancedlootbags:lootbag:12 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [327] Unleashed the Power - Pickaxe
+To make use of your tool to its full extent, you'll have to unleash its hidden power. This is not an easy task; But it's well worth the effort!
+  - [提交] ThaumicTinkerer:ichorPickGem
+  > 奖励: enhancedlootbags:lootbag:12 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [329] Where Do the Items Go?
+It's probably better not to ask...
+  - [提交] ThaumicTinkerer:blockTalisman
+  > 奖励: Thaumcraft:ItemLootBag:2 | dreamcraft:CoinDarkWizardII x5
+

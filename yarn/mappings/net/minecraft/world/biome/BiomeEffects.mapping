@@ -1,0 +1,45 @@
+CLASS net/minecraft/class_4763 net/minecraft/world/biome/BiomeEffects
+	FIELD comp_5170 foliageColor Ljava/util/Optional;
+	FIELD comp_5171 dryFoliageColor Ljava/util/Optional;
+	FIELD comp_5172 grassColor Ljava/util/Optional;
+	FIELD comp_5173 grassColorModifier Lnet/minecraft/class_4763$class_5486;
+	FIELD field_24714 CODEC Lcom/mojang/serialization/Codec;
+	METHOD <init> (ILjava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;Lnet/minecraft/class_4763$class_5486;)V
+		ARG 1 waterColor
+		ARG 2 foliageColor
+		ARG 3 dryFoliageColor
+		ARG 4 grassColor
+		ARG 5 grassColorModifier
+	METHOD comp_5170 foliageColor ()Ljava/util/Optional;
+	METHOD comp_5171 dryFoliageColor ()Ljava/util/Optional;
+	METHOD comp_5172 grassColor ()Ljava/util/Optional;
+	METHOD comp_5173 grassColorModifier ()Lnet/minecraft/class_4763$class_5486;
+	METHOD method_75740 (Lcom/mojang/serialization/codecs/RecordCodecBuilder$Instance;)Lcom/mojang/datafixers/kinds/App;
+		ARG 0 instance
+	CLASS class_4764 Builder
+		FIELD field_22072 waterColor Ljava/util/OptionalInt;
+		FIELD field_26423 foliageColor Ljava/util/Optional;
+		FIELD field_26424 grassColor Ljava/util/Optional;
+		FIELD field_26425 grassColorModifier Lnet/minecraft/class_4763$class_5486;
+		FIELD field_57100 dryFoliageColor Ljava/util/Optional;
+		METHOD method_24391 build ()Lnet/minecraft/class_4763;
+		METHOD method_24395 waterColor (I)Lnet/minecraft/class_4763$class_4764;
+			ARG 1 waterColor
+		METHOD method_30818 grassColorModifier (Lnet/minecraft/class_4763$class_5486;)Lnet/minecraft/class_4763$class_4764;
+			ARG 1 grassColorModifier
+		METHOD method_30821 foliageColor (I)Lnet/minecraft/class_4763$class_4764;
+			ARG 1 foliageColor
+		METHOD method_30822 grassColor (I)Lnet/minecraft/class_4763$class_4764;
+			ARG 1 grassColor
+		METHOD method_68149 dryFoliageColor (I)Lnet/minecraft/class_4763$class_4764;
+			ARG 1 dryFoliageColor
+	CLASS class_5486 GrassColorModifier
+		FIELD field_26429 CODEC Lcom/mojang/serialization/Codec;
+		FIELD field_26430 name Ljava/lang/String;
+		METHOD <init> (Ljava/lang/String;ILjava/lang/String;)V
+			ARG 3 name
+		METHOD method_30823 getModifiedGrassColor (DDI)I
+			ARG 1 x
+			ARG 3 z
+			ARG 5 color
+		METHOD method_30826 getName ()Ljava/lang/String;

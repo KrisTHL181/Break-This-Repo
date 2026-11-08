@@ -1,0 +1,20 @@
+unpick v4
+
+#: Spliterator characteristics. See {@link java.util.Spliterator#characteristics Spliterator.characteristics}.
+group int spliterator_characteristics
+	@flags
+	java.util.Spliterator.ORDERED
+	java.util.Spliterator.DISTINCT
+	java.util.Spliterator.SORTED
+	java.util.Spliterator.SIZED
+	java.util.Spliterator.NONNULL
+	java.util.Spliterator.IMMUTABLE
+	java.util.Spliterator.CONCURRENT
+	java.util.Spliterator.SUBSIZED
+
+target_method java.util.Spliterator characteristics ()I
+	return spliterator_characteristics
+target_method java.util.Spliterator hasCharacteristics (I)Z
+	param 0 spliterator_characteristics
+target_method java.util.Spliterators$AbstractSpliterator <init> (JI)V
+	param 1 spliterator_characteristics

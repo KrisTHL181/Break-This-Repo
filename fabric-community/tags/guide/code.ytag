@@ -1,0 +1,10 @@
+type: text
+
+---
+
+You can use codeblocks in discord as shown below:
+\`\`\`java
+code
+\`\`\`
+
+You can also specify the syntax highlighting to use by specifying the language after the last backtick (`) on the top.

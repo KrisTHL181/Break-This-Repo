@@ -1,0 +1,547 @@
+# 任务线: ...Without Dying
+### [797] Advanced Heat Exchanger
+The night vision goggles need advanced heat exchangers to work.
+  - [可选提交] gregtech:gt.metaitem.01:17526 x4, gregtech:gt.metaitem.01:17500 x2, gregtech:gt.metaitem.01:32704 x4 (ore:circuitData), IC2:reactorHeatSwitch:1 x4
+  - [提交] IC2:reactorHeatSwitchDiamond:1 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [-7993929316091213549] Advanced Mechanical Armor
+Now that you're in IV, you can unlock the next set of upgrades for Mechanical Armor, gaining more slots and new augments.  The quantum energy core will allow your armor to charge at IV voltage and equip tier 2 augments.  The frames in this tier provide 5 augment slots. The adaptive frame uniquely has a §6Pri§asma§dtic§r slot that will accept an augment of any category!
+  - [提交] gregtech:gt.armorcore2
+  - [可选提交] gregtech:gt.armorframenimble, gregtech:gt.armorframeadaptive, gregtech:gt.armorframetough
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [171] §9§lAlmost Like Steel
+Next-gen protection against nasty zombies, creepers and other "stuff".
+  - [提交] openmodularturrets:fenceTierThree x4, openmodularturrets:hardWallTierThree x4
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinTechnicianI x5
+
+### [219] §b§lAlmost Unbreakable
+Probably not required any more, but you've made so many walls already. So why not get the best ones?
+  - [提交] openmodularturrets:fenceTierFive x4, openmodularturrets:hardWallTierFive x4
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinTechnicianII x2
+
+### [-5054324916620002708] Apprentice Striders
+This extremely powerful magical combination augment will grant you increased speed, jump boost, and built-in step assist - normally only accessible in IV. A must-have for any aspiring technomancer.
+  - [提交] gregtech:gt.augmentapprenticestriders
+  > 奖励: enhancedlootbags:lootbag:9
+
+### [-8356368985822588714] Archmage Striders
+The Apprentice Striders are good, but as the name implies, you can do better...
+  - [提交] gregtech:gt.augmentarchmagestriders
+  > 奖励: enhancedlootbags:lootbag:11
+
+### [685] Armor 2.0
+Iron armor is much better than the leather armor. Especially when you have to go outside during the night.
+  - [可选提交] gregtech:gt.metaitem.01:17032 x24 (ore:plateIron)
+  - [合成] minecraft:iron_helmet, minecraft:iron_chestplate, minecraft:iron_leggings, minecraft:iron_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinSurvivor x10
+
+### [691] Armor 2.5
+The steel armor has more durability than the iron/bronze or chainmail armor.
+  - [可选提交] gregtech:gt.metaitem.01:17305 x24 (ore:plateSteel)
+  - [提交] Railcraft:armor.steel.helmet, Railcraft:armor.steel.plate, Railcraft:armor.steel.legs, Railcraft:armor.steel.boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x15
+
+### [3075] Armor Molds
+Why use plates when you can make your armor pieces out of molten metal?
+  - [提交] dreamcraft:MoldHelmet, dreamcraft:MoldChestplate, dreamcraft:MoldLeggings, dreamcraft:MoldBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x15
+
+### [1848] Armor of the Dead
+I've found another use for Ectoplasm - making Spectral Iron. An armor made from it is better than diamond and highly enchantable.  It also will drop healing orbs that will heal the nearest player when picked up.  Unfortunately, a side effect is that you'll become partially transparent. Side effect, I mean bonus feature!
+  - [提交] RandomThings:spectreHelmet, RandomThings:spectreChestplate, RandomThings:spectreLeggings, RandomThings:spectreBoots
+  > 奖励: bq_standard:choice
+
+### [-8558899566109970224] Augmentation
+Now that you have a frame and a core, you can get to work adding new features to your Mechanical Armor. This quest lists all Tier 1 augments.  Some standouts:  -Optical Brightness Adjuster (§dUtility§r, Helmet): Enable toggleable night vision. -Protective Lining (§6Protection§r, Any): Gain full hazmat protection. -Electric Jetpack (§aMovement§r, Chestplate): Jetpack! -Astronaut's Equipment (§6Protection§r, Any): Gain space suit capability.
+  - [提交] gregtech:gt.metaitem.03:32256
+  - [提交] gregtech:gt.augmenthazmat, gregtech:gt.augmentwaterbreathing, gregtech:gt.augmentfallprotection, gregtech:gt.augmentswimspeed, gregtech:gt.augmentjetpack, gregtech:gt.augmentnightvision, gregtech:gt.augmentgogglesofrevealing, gregtech:gt.augmentholoinventory, gregtech:gt.augmentapiarist, gregtech:gt.augmentspacesuit
+  > 奖励: enhancedlootbags:lootbag:6
+
+### [-6650389328785673046] Basic Mechanical Armor
+To turn your mechanical exoskeleton from a hunk of useless metal into a power suit, you'll need a core and a frame.  The basic energy core will allow your armor to charge at HV voltage and equip tier 1 augments.  The first three frames all give 3 augment slots spread among the categories. Choose based on what augments you need to equip!
+  - [提交] gregtech:gt.armorcore1
+  - [可选提交] gregtech:gt.armorframelight, gregtech:gt.armorframemedium, gregtech:gt.armorframeheavy
+  > 奖励: enhancedlootbags:lootbag:6
+
+### [1525] §a§lBest Bolts?
+That meteoric iron you found on the moon, when sent through the EBF, turns into this amazing meteoric steel, able to keep a fine edge. Put some on an Energetic Alloy tool rod to make an awesome bolt. Your next bolt you'll have to figure out yourself.  Use whatever fletching you want.
+  - [可选提交] TGregworks:tGregToolPartToolRod:1635
+  - [可选提交] gregtech:gt.metaitem.01:11341
+  - [提交] TConstruct:BoltPart:1635
+  > 奖励: minecraft:spawn_egg:56 | dreamcraft:CoinSmithII
+
+### [1526] §9§lBest Crossbow?
+Energetic alloy has proven to be an amazing material. Its light weight and high stiffness makes it perfect for a crossbow limb. It is slightly slower to draw but still has amazing stopping power with its very high bolt speed. Durability is much improved over a carbon limb.  The material would also make an excellent bolt body. Perhaps you will find a suitable tip to match?
+  - [提交] TGregworks:tGregToolPartCrossbowLimb:1635
+  > 奖励: minecraft:spawn_egg:54 | minecraft:spawn_egg:51 | minecraft:spawn_egg:52 | enhancedlootbags:lootbag:6 | dreamcraft:CoinSmithI x5
+
+### [1524] §6§lBetter Bolts
+Now that you are in MV and have an EBF, you can make new bolts with vanadiumsteel-tipped magnalium. Your enemies will tremble at your might.  Check "fletching" under NEI for fletching options.  Good hunting!
+  - [可选提交] gregtech:gt.metaitem.01:11371
+  - [可选提交] TGregworks:tGregToolPartToolRod:1602
+  - [提交] TConstruct:BoltPart:1602
+  > 奖励: minecraft:spawn_egg:61 | dreamcraft:CoinSmithI x5
+
+### [661] §5§lBow, Arrows and Quiver
+Wow, your first handmade §oehm§r machine made bow. Now it's time to make a quiver and maybe some arrows.  To place arrows in the quiver, put the quiver and the stack of arrows in a crafting grid. Make sure the Gameplay key Special doesn't conflict with other keybinds. By default, it is Z. When you have the bow selected, use Z to swap arrow slots in the quiver.  While it seems like these might be worthless, these arrows do have special uses. You really want to share a cookie with friends, don't you?  Let's go hunt a bit.
+  - [提交] minecraft:bow
+  - [提交] battlegear2:quiver
+  - [提交] minecraft:arrow x64
+  > 奖励: battlegear2:mb.arrow x10 | battlegear2:mb.arrow:6 x10 | battlegear2:mb.arrow:2 x10 | battlegear2:mb.arrow:5 x10 | battlegear2:mb.arrow:3 x10 | battlegear2:mb.arrow:1 x10 | battlegear2:mb.arrow:4 x10 | dreamcraft:CoinSmith x15 | dreamcraft:CoinSurvivor x15
+
+### [687] Bronze armor
+Bronze armor has the same abilities as iron armor. Same durability, same protection and same enchantment capability.
+  - [可选提交] gregtech:gt.metaitem.01:17300 x24
+  - [合成] IC2:itemArmorBronzeHelmet, IC2:itemArmorBronzeChestplate, IC2:itemArmorBronzeLegs, IC2:itemArmorBronzeBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinSurvivor x10
+
+### [159] §6§lBurn Them. Burn Them All!
+Hmmm, crispy bacon. What would happen if you enable neutral mobs as targeting...?
+  - [提交] openmodularturrets:incendiaryTurret
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinTechnician x25
+
+### [775] Carbon Parts
+These are the first parts you will need for your beloved nano armor.  [note]To actually complete the nano armor, you will need EV circuits and nano crystals (see Storing and Transforming EU).[/note]  [warn]IC2 is slowly being removed from the modpack! Check out the nearby quest "Modular Meddling" for the replacement.[/warn]
+  - [可选提交] IC2:itemPartCarbonPlate x24
+  - [提交] dreamcraft:CarbonPartHelmet, dreamcraft:CarbonPartChestplate, dreamcraft:CarbonPartLeggings, dreamcraft:CarbonPartBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [779] Carbon Skin
+You can stop worrying about some mobs for now. This will help you survive a bit and will give you some of that SWAG. Your journey doesn't stop here traveller, as quantum armor awaits you!  [note]PS: The nano suit also acts as hazmat gear.[/note]
+  - [提交] IC2:itemArmorNanoHelmet:32767, IC2:itemArmorNanoChestplate:32767, IC2:itemArmorNanoLegs:32767, IC2:itemArmorNanoBoots:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithI x5 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinTechnicianI x5
+
+### [692] Composite Vest
+Combining the strength of advanced alloy plates with the steel chestplate makes your vest very hard. Now you have double the durability and increased armor points by 1.5.
+  - [可选提交] IC2:itemPartAlloy x6, minecraft:leather_chestplate, Railcraft:armor.steel.plate
+  - [提交] IC2:itemArmorAlloyChestplate
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x15 | dreamcraft:CoinSurvivor x15
+
+### [1443] Compressed Desh Armor
+The compressed desh armor has more durability than the compressed steel armor.
+  - [可选提交] GalacticraftMars:item.null:5 x24
+  - [提交] GalacticraftMars:item.deshHelmet, GalacticraftMars:item.deshChestplate, GalacticraftMars:item.deshLeggings, GalacticraftMars:item.deshBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII | dreamcraft:CoinSurvivorII
+
+### [1442] Compressed Steel Armor
+The compressed steel armor has more durability than the steel armor.
+  - [可选提交] GalacticraftCore:item.basicItem:9 x24
+  - [合成] GalacticraftCore:item.steel_helmet, GalacticraftCore:item.steel_chestplate, GalacticraftCore:item.steel_leggings, GalacticraftCore:item.steel_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [1444] Compressed Titanium Armor
+The compressed titanium armor has more durability than the compressed steel armor.
+  - [可选提交] GalacticraftMars:item.itemBasicAsteroids:6 x24
+  - [提交] GalacticraftMars:item.titanium_helmet, GalacticraftMars:item.titanium_chestplate, GalacticraftMars:item.titanium_leggings, GalacticraftMars:item.titanium_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithI x5 | dreamcraft:CoinSurvivorI x5
+
+### [2116] Creeper Repellant
+An ocelot backpack will get those creepers running away from you. Nice protection against those drowning creepers! Don't get too close to them or else their repulsion will be overridden and they'll blow up!
+  - [提交] adventurebackpack:adventureBackpack:29
+  > 奖励: harvestcraft:fishandchipsItem x64
+
+### [997] Dark Steel Armor Advanced Upgrades
+Your Dark Steel armor can be upgraded in various ways by combining it with various other items. You will need an anvil and a lot of XP.  Make sure when making the potions to only do three at a time, so the NBT data matches.
+  - [可选提交] EnderIO:itemBasicCapacitor x4, EnderIO:itemBasicCapacitor:1 x4, EnderIO:itemBasicCapacitor:2 x4
+  - [可选提交] Forestry:apiaristHelmet, Forestry:apiaristChest, Forestry:apiaristLegs, Forestry:apiaristBoots
+  - [可选提交] minecraft:potion:8194 x3, minecraft:potion:8198
+  - [可选提交] minecraft:waterlily, minecraft:piston x3
+  - [可选提交] EnderIO:blockSolarPanel, EnderIO:blockSolarPanel:1
+  - [可选提交] Thaumcraft:ItemGoggles, Forestry:naturalistHelmet
+  - [可选提交] EnderIO:itemGliderWing:1, minecraft:noteblock
+  - [提交] EnderIO:item.darkSteel_helmet, EnderIO:item.darkSteel_chestplate, EnderIO:item.darkSteel_leggings, EnderIO:item.darkSteel_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinSmithI x5
+
+### [991] Dark Steel Armor Basic Upgrades
+In order to upgrade one armor item with basic upgrades, you need a vibrant crystal and 10 XP levels. Some upgrades can be applied directly, but more advanced ones will require empowering the armor first.
+  - [可选提交] EnderIO:item.darkSteel_helmet, EnderIO:item.darkSteel_chestplate, EnderIO:item.darkSteel_leggings, EnderIO:item.darkSteel_boots
+  - [可选提交] EnderIO:itemMaterial:6 x4
+  - [提交] EnderIO:item.darkSteel_helmet, EnderIO:item.darkSteel_chestplate, EnderIO:item.darkSteel_leggings, EnderIO:item.darkSteel_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinSmithI x5
+
+### [660] §6§lDiamond Shield
+Your iron shield is old and worn out. With a shield made from diamond plates you can maintain block for up to 5 seconds.
+  - [可选提交] TGregworks:tGregToolPartLargePlate:1594 x2, TGregworks:tGregToolPartToughBind:1594, TGregworks:tGregToolPartToughRod:1594 x2
+  - [合成] battlegear2:shield.diamond
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [659] §6§lDiamond Spear
+At MV Tier you can upgrade your iron spear to a diamond one. Get a diamond arrowhead, two stainless steel screws and a wooden spear.  This spear has superior durability.
+  - [可选提交] TGregworks:tGregToolPartArrowHead:1594, gregtech:gt.metaitem.01:27306 x2, battlegear2:spear.wood
+  - [合成] battlegear2:spear.diamond
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [124] §5§lDon't Play With Your Food!
+Use it to kill zombies instead. Does only a little damage, but hey, who cares?
+  - [提交] openmodularturrets:potatoCannonTurret
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x15 | dreamcraft:CoinTechnician x15
+
+### [799] Don't Try to Dive With It
+Combining a scuba helmet with a nano helmet in an assembling machine will give you a nano scuba helmet. You'd better not try to dive with it because you can't. It is a part of the new quantum suit helmet.
+  - [可选提交] IC2:itemArmorNanoHelmet:32767, IC2:itemArmorHazmatHelmet
+  - [提交] dreamcraft:NanoScubaHelmet
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII | dreamcraft:CoinTechnicianII
+
+### [801] Don't Try to Walk With It
+Combining some rubber boots with nano boots in the Assembler gives you Nano Rubber Boots. Better not try to put them on because you can't. They are part of the new quantum suit boots.
+  - [可选提交] IC2:itemArmorNanoBoots:32767, IC2:itemArmorRubBoots
+  - [提交] dreamcraft:NanoRubberBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII | dreamcraft:CoinTechnicianII
+
+### [-5042745972489073782] Eldritch Striders
+A little faster couldn't hurt, right? This is the final version of the Striders augment.
+  - [提交] gregtech:gt.augmenteldritchstriders
+  > 奖励: enhancedlootbags:lootbag:12
+
+### [1349] Electrogoggles
+As you wander with your Goggles of Revealing you noticed that they tend to break easy. So craft yourself some electric ones that just need to be charged again!
+  - [提交] EMT:ElectricGogglesRevealing:32767
+  > 奖励: enhancedlootbags:lootbag:4 | enhancedlootbags:lootbag:9 | dreamcraft:CoinTechnicianI | dreamcraft:CoinDarkWizardI
+
+### [-5191995791715302243] Even More Augmentation
+There are currently only a few augments available in Tier 3, but they are very powerful.  -Energy Grid Defense (§6Protection§r, Chestplate): Gain a forcefield that can completely block most damage at the cost of a huge amount of EU. -Gravitational Control Module (§aMovement§r, Chestplate): Creative flight.
+  - [提交] gregtech:gt.metaitem.03:32258
+  - [提交] gregtech:gt.augmentforcefield, gregtech:gt.augmentcreativeflight
+  > 奖励: enhancedlootbags:lootbag:42
+
+### [690] Fancy Armor
+Not really better but fancier. The chain mail armor is made out of steel rings.
+  - [可选提交] gregtech:gt.metaitem.01:28305 x24
+  - [合成] minecraft:chainmail_helmet, minecraft:chainmail_chestplate, minecraft:chainmail_leggings, minecraft:chainmail_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x15 | dreamcraft:CoinSurvivor x15
+
+### [175] §9§lFire in the Hole
+Ah, there's nothing like an explosion and the certainty that your enemies have been blasted into tiny pieces.
+  - [提交] openmodularturrets:grenadeTurret
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinTechnicianI x5
+
+### [1352] Goggles > 9000
+This special pair of goggles recharges itself while you wander in sunlight. How convenient.
+  - [提交] EMT:SolarHelmetRevealing:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2 | dreamcraft:CoinDarkWizardII x4
+
+### [155] §6§lHarder, Stronger, Faster
+No, actually not faster. But more durable than tier 1.
+  - [提交] openmodularturrets:fenceTierTwo x4, openmodularturrets:hardWallTierTwo x4
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinTechnician x25
+
+### [2118] Here There be Dragons
+The Dragon backpack gives you Fire Resistance, Strength, Night Vision and Regeneration.  [note]It may be really good, but also uses up a dragon egg, so be sure you want it, or can craft another.[/note]
+  - [提交] adventurebackpack:adventureBackpack:22
+  > 奖励: HardcoreEnderExpansion:music_disk:4
+
+### [802] Iridium Plated
+Plating all your armor parts with iridium alloy casings gives them a better durability. Before you can wear these quantum armor parts you need to activate them with some quantum crystals.
+  - [可选提交] dreamcraft:IridiumAlloyItemCasing x16
+  - [可选提交] dreamcraft:NanoScubaHelmet, dreamcraft:NanoPlatedLeggings, dreamcraft:NanoRubberBoots
+  - [可选提交] dreamcraft:QuantumPartHelmetEmpty, dreamcraft:ReinforcedGlassLense x8
+  - [提交] dreamcraft:QuantumPartHelmet, dreamcraft:QuantumPartLeggings, dreamcraft:QuantumPartBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII x2 | dreamcraft:CoinTechnicianII x2
+
+### [656] §2§lIron Shields
+You've been using your hide shield long enough. After you make your first tools, grab a bit of iron ore and make a nice iron shield.
+  - [可选提交] TConstruct:heavyPlate:2 x2, TConstruct:toughBinding:2, TConstruct:toughRod:2 x2
+  - [合成] battlegear2:shield.iron
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x5 | dreamcraft:CoinSurvivor x5
+
+### [658] §3§lIron Spear
+Upgrade your wooden spear with an iron arrowhead and two steel screws to an iron spear.  The iron spear has better durability than the stone variant.
+  - [可选提交] TConstruct:arrowhead:2, gregtech:gt.metaitem.01:27305 x2, battlegear2:spear.wood
+  - [合成] battlegear2:spear.iron
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinSurvivor x10
+
+### [686] Leather Armor
+Killing some cows will give you enough leather to craft a complete set of leather armor.  Hint: You are able to dye this armor.
+  - [可选提交] minecraft:leather x24
+  - [合成] minecraft:leather_helmet, minecraft:leather_chestplate, minecraft:leather_leggings, minecraft:leather_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x5 | dreamcraft:CoinSurvivor x5
+
+### [139] Luke, I'm Your Father
+With that dark steel you got, you may now craft yourself a new set of armor. While pretty basic at first, it can be upgraded later to unlock powerful features.
+  - [提交] EnderIO:item.darkSteel_helmet, EnderIO:item.darkSteel_chestplate, EnderIO:item.darkSteel_leggings, EnderIO:item.darkSteel_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [209] §a§lMake Love, Not War
+For those who don't want to kill things. Just teleport them away, however this takes a large amount of power.
+  - [提交] openmodularturrets:teleporterTurret
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSurvivorII | dreamcraft:CoinTechnicianII
+
+### [2117] Milk Without the Cow?
+A Cow backpack will generate milk from wheat placed in its inventory. Great for a lazy farmer!
+  - [提交] adventurebackpack:adventureBackpack:1
+  > 奖励: minecraft:wheat x64
+
+### [-8608697205657523381] Mob Repellators
+First available in LV, the Mob Repellator prevents mobs from spawning in its radius. It works without power, but with it has a higher range.  [note]You only need one to complete the quest.[/note]
+  - [提交] gregtech:gt.blockmachines:1146, gregtech:gt.blockmachines:1147, gregtech:gt.blockmachines:1148, gregtech:gt.blockmachines:1149, gregtech:gt.blockmachines:1150, gregtech:gt.blockmachines:1135, gregtech:gt.blockmachines:1136, gregtech:gt.blockmachines:1137
+  > 奖励: dreamcraft:CoinSurvivor x15 | dreamcraft:CoinTechnician x15
+
+### [-6995168762643046700] Modular Meddling
+Interested in powerful, customizable armor that you can modify as you advance? Look no further than §6§r§l&z&zMechanical Armor§r!  In order to begin tinkering, you'll need a workspace for modifying modular equipment along with a set of Mechanical Armor. The armor is essentially useless on its own, but gains additional features through modification. Each piece of armor is composed of three parts:  §nAugments: §rAugments add a wide variety of useful features to the armor. Augments are categorized into one of three types: §6Protection§r, §aMovement§r, and §dUtility§r. Augments can only be inserted into slots corresponding to their category.  §nFrames:§r The armor's frame determines the protection value of the armor along with how many slots it contains for augments.  §nEnergy Cores:§r The energy core determines how much energy the armor stores, its charging tier, and which augments can be equipped.
+  - [提交] gregtech:gt.blockmachines:12071
+  - [提交] gregtech:itemHelmetMech, gregtech:itemChestplateMech, gregtech:itemLeggingsMech, gregtech:itemBootsMech
+  > 奖励: enhancedlootbags:lootbag:6
+
+### [-8440245249871056215] More Augmentation
+A new energy core means more powerful augments. This quest lists all Tier 2 augments.  Some standouts:  -Milk Infusion (§dUtility§r, Helmet): Constantly clear negative status effects. -Vectored Jetpack (§aMovement§r, Chestplate): An upgraded version of the electric jetpack with better flight stats and perfect hover stability. -Heat Dispersion System (§6Protection§r, Leggings): Permanent fire resistance.
+  - [提交] gregtech:gt.metaitem.03:32257
+  - [提交] gregtech:gt.augmentfireimmunity, gregtech:gt.augmentspeedboost, gregtech:gt.augmentjumpboost, gregtech:gt.augmentstepassist, gregtech:gt.augmentomnimovement, gregtech:gt.augmentvectoredjetpack, gregtech:gt.augmentmilkinfusion, gregtech:gt.augmentknockbackresistance, gregtech:gt.augmentinertiacanceling
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [1350] Nano Goggles
+The #1 product for spies and wanna-be-spies. Nano-Goggles. Don't you want one of these too? But they are sold out? Craft some!
+  - [提交] EMT:NanosuitGogglesRevealing:32767
+  > 奖励: enhancedlootbags:lootbag:6 | enhancedlootbags:lootbag:10 | dreamcraft:CoinTechnicianII | dreamcraft:CoinDarkWizardII
+
+### [688] "Nice to Have" Armor
+The gold armor is a "nice to have" armor. The durability is very low but you look expensive when you wear it.
+  - [可选提交] gregtech:gt.metaitem.01:17086 x24
+  - [合成] minecraft:golden_helmet, minecraft:golden_chestplate, minecraft:golden_leggings, minecraft:golden_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinSurvivor x10
+
+### [1839] "Oh, Magic" Armor
+Ironwood Armor is a magic armor with some special enchants. The Helm gives aqua affinity, the shoes feather falling, the plate and the legs extra protection.
+  - [可选提交] gregtech:gt.metaitem.01:17338 x24
+  - [合成] TwilightForest:item.ironwoodHelm, TwilightForest:item.ironwoodPlate, TwilightForest:item.ironwoodLegs, TwilightForest:item.ironwoodBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [2057] "Oh, Magic" Armor II
+Steeleaf armor is the next level in Twilight Forest armor. It can be handy as a defense in the Nether.
+  - [可选提交] gregtech:gt.metaitem.01:17339 x24
+  - [提交] TwilightForest:item.steeleafHelm, TwilightForest:item.steeleafPlate, TwilightForest:item.steeleafLegs, TwilightForest:item.steeleafBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [2058] "Oh, Magic" Armor III
+Knightmetal is the top tier Twilight Forest armor. It doesn't come with any free enchants but it has high durability and high armor rating.
+  - [可选提交] gregtech:gt.metaitem.01:17362 x24
+  - [提交] TwilightForest:item.knightlyHelm, TwilightForest:item.knightlyPlate, TwilightForest:item.knightlyLegs, TwilightForest:item.knightlyBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinDarkWizard x25 | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [2139] Oink!
+While the Pig backpack is useless on its own, it can be turned into a pretty powerful tool with the right... motivation.
+  - [提交] adventurebackpack:adventureBackpack:53
+  > 奖励: harvestcraft:bbqpulledporkItem x64
+
+### [689] "Ooo, Shiny" Armor
+Diamond armor is the best armor in Vanilla Minecraft, but over here there are much better armors available.
+  - [可选提交] gregtech:gt.metaitem.01:17500 x24
+  - [合成] minecraft:diamond_helmet, minecraft:diamond_chestplate, minecraft:diamond_leggings, minecraft:diamond_boots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x10 | dreamcraft:CoinSurvivor x10
+
+### [121] §5§lPassive Defence
+A more "passive" approach to base defense are walls and fences. But seriously, where's the fun in that?
+  - [提交] openmodularturrets:hardWallTierOne x4, openmodularturrets:fenceTierOne x4
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinSurvivor x15 | dreamcraft:CoinTechnician x15
+
+### [-6646277318359727345] Perfected Armor Frame
+Tired of being constrained by augment slots? The constantly shifting properties of Infinity make it an ideal material for a modular frame.  This final frame provides 5 slots of every category, including prismatic.
+  - [提交] gregtech:gt.armorframeinfinity
+
+### [-4962649979263960096] Perfected Energy Core
+Sick of your Mechanical Armor running out of batteries? Try strapping a miniaturized singularity to your chest! It's entirely safe.  This final energy core will provide infinite energy to the Mechanical Armor and allow any augment to be equipped.
+  - [提交] gregtech:gt.armorcore4
+
+### [222] §b§lPewPew!
+Requires no ammo, but still does a ton of damage. All you need to do is feed it power, a lot of power.
+  - [提交] openmodularturrets:laserTurret
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinTechnicianII x2
+
+### [800] Plated Leggings - Better Not Try to Wear It
+Combining stainless steel platings with some nano leggings in the assembler gives you nano plated leggings. Better not try to wear them because you can't. They are part of the new quantum suit leggings.
+  - [可选提交] IC2:itemArmorNanoLegs:32767, gregtech:gt.metaitem.02:18306 x4
+  - [提交] dreamcraft:NanoPlatedLeggings
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII | dreamcraft:CoinTechnicianII
+
+### [208] §a§lProtect Your Base: Tier 4
+The small parts for the powerful turrets.
+  - [提交] openmodularturrets:chamberTierFour x2, openmodularturrets:barrelTierFour x2, openmodularturrets:sensorTierFourItem x2
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII
+
+### [220] §b§lProtect Your Base: Tier 5
+Tough materials, for tough weapons. Railguns, and lasers, and... stuff. I assume you want a lot of those soon.
+  - [提交] openmodularturrets:chamberTierFive x2, openmodularturrets:barrelTierFive x2, openmodularturrets:sensorTierFiveItem x2
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x2
+
+### [120] §5§lProtect Your Base: Tier 1
+One needs proper protection for one's home. So why not get some turrets for safety? At the moment, 2 Turrets are available: "Potato" and "disposable item". I assume you can guess what they do and how they work...
+  - [提交] openmodularturrets:sensorTierOneItem x2, openmodularturrets:barrelTierOne x3, openmodularturrets:chamberTierOne x2
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinTechnician x15
+
+### [156] §6§lProtect Your Base: Tier 2
+Slightly better protection. Now with a real gun. No more wasting food.
+  - [提交] openmodularturrets:chamberTierTwo, openmodularturrets:barrelTierTwo, openmodularturrets:sensorTierTwoItem
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [172] §9§lProtect Your Base: Tier 3
+Now we're talking: Grenades! The next in big badda boom hardware.
+  - [提交] openmodularturrets:chamberTierThree x2, openmodularturrets:barrelTierThree x2, openmodularturrets:sensorTierThreeItem x2
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5
+
+### [803] Quantum Armor
+The quantum armor is a high tier and very durable armor with a lot of features like night vision, fall damage reduction and running very fast.
+  - [可选提交] dreamcraft:QuantumCrystal x3, gregtech:gt.metaitem.01:32706 x6 (ore:circuitMaster), gregtech:gt.blockmachines:1662 x14, gregtech:gt.metaitem.01:32597 x3, gregtech:gt.metaitem.01:32644 x2, gregtech:gt.metaitem.01:32694, gregtech:gt.metaitem.01:32604 x4, gregtech:gt.metaitem.01:32673 x4, gregtech:gt.metaitem.01:27316 x12
+  - [可选提交] dreamcraft:QuantumPartHelmet, dreamcraft:QuantumPartLeggings, dreamcraft:QuantumPartBoots
+  - [提交] IC2:itemArmorQuantumHelmet:32767, IC2:itemArmorQuantumLegs:32767, IC2:itemArmorQuantumBoots:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII x5 | dreamcraft:CoinSurvivorII x5 | dreamcraft:CoinTechnicianII x5
+
+### [3143] Quantum Chestplate
+QuantumSuit Bodyarmor allows for flight just like its predecessor, but when you hold shift+space instead of going down you will go slightly up. The next tier - GraviChestPlate - will get rid of this problem altogether.
+  - [可选提交] GraviSuite:advNanoChestPlate:32767, dreamcraft:IridiumAlloyItemCasing x8
+  - [可选提交] dreamcraft:QuantumPartChestplate, dreamcraft:QuantumCrystal, gregtech:gt.metaitem.01:32706 x2 (ore:circuitMaster), gregtech:gt.blockmachines:1662 x6, gregtech:gt.metaitem.01:32597, gregtech:gt.metaitem.01:32673 x3, gregtech:gt.metaitem.01:32604 x2, gregtech:gt.metaitem.01:27316 x4
+  - [提交] IC2:itemArmorQuantumChestplate:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1351] Quantum Goggles
+As you continue to progress, you notice that your black goggles don't match your nice white and shiny armor. You decide to get a pair of white ones.
+  - [提交] EMT:QuantumGogglesRevealing:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [223] §b§lRailguns, What Else
+Massive power, and a wonderful sound when they fire. I recommend to use upgrades to increase range and damage.
+  - [提交] openmodularturrets:railGunTurret
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII x2 | dreamcraft:CoinTechnicianII x2
+
+### [2437] Seeing Inside Your Chests
+With the Holo Glasses you are able to look into Chests, Barrels and Drawers like a Holographic inventory.  [note]If you lost your free one, you should be capable of making another now.[/note]
+  - [提交] holoinventory:Hologlasses
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x15 | dreamcraft:CoinTechnician x15
+
+### [776] Seeing Things Brighter
+The nano helmet is a bit special. It will provide you with night vision as long as you have energy!  [note]If you got these from a lootbag, hold these in your hand after completing the "Carbon Parts" quest to skip this quest.[/note]
+  - [提交] IC2:itemNightvisionGoggles:32767
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithI x5 | dreamcraft:CoinTechnicianI x5
+
+### [2113] See Like a ... Bat?
+Night vision is a great backpack ability.
+  - [提交] adventurebackpack:adventureBackpack:2
+  > 奖励: harvestcraft:rainbowcurryItem x64
+
+### [796] Sensor Lens
+The night vision goggles need special sensor lenses to work.
+  - [可选提交] gregtech:gt.metaitem.01:28308 x4, IC2:itemPartCircuitAdv x4 (ore:circuitAdvanced), gregtech:gt.metaitem.01:27306 x4, gregtech:gt.metaitem.01:24500 x2, dreamcraft:ReinforcedGlassLense x2
+  - [提交] GalacticraftCore:item.sensorLens x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianI x5
+
+### [158] §6§lSometimes, a Bullet Will Do
+They hit hard. You have been warned.
+  - [提交] openmodularturrets:machineGunTurret
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x25 | dreamcraft:CoinTechnician x25
+
+### [2112] Sometimes Life is Scary and Dark - Bring a Backpack
+Now that you are MV, you can make an Adventure Backpack. This very useful backpack can do many things. It can store 2 tools for quick access, has internal tanks for containing liquids - use the Hose to access them, a built-in crafting table, and storage.  When placed on your back, it can be accessed using the quick-access key; the default is B. Check your controls for details.  When placed on the ground, it can be accessed with a right-click. While on the ground, the bedroll can be deployed and used.  They can also be upgraded to add special abilities. For a full list, visit [url]https://wiki.gtnewhorizons.com/wiki/Adventure_Backpacks[/url].  [note]It uses up the same slot as the Coal Jetpack and the Copterpack, so you'll either need to choose one, or swap them around.[/note]
+  - [提交] adventurebackpack:blockBackpack
+  > 奖励: harvestcraft:beefwellingtonItem x64 | adventurebackpack:backpackHose
+
+### [657] §2§lStone spear
+Upgrade your wooden spear with a stone arrowhead and iron screws to a stone spear. This spear has better durability than the wooden one.
+  - [可选提交] TConstruct:arrowhead:1, gregtech:gt.metaitem.01:27032 x2 (ore:screwIron), battlegear2:spear.wood
+  - [合成] battlegear2:spear.stone
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x5 | dreamcraft:CoinSurvivor x5
+
+### [-7964363962430297176] Supreme Mechanical Armor
+At ZPM, you've almost reached the peak of personal defense technology. New augments await!  The living energy core will allow your armor to charge at ZPM voltage and equip tier 3 augments.  The frames in this tier provide 7 augment slots. Pushing the limits of modularity, every frame now has at least one prismatic slot.
+  - [提交] gregtech:gt.armorcore3
+  - [可选提交] gregtech:gt.armorframelightning, gregtech:gt.armorframemorphic, gregtech:gt.armorframebulwark
+  > 奖励: enhancedlootbags:lootbag:42
+
+### [2114] Swim Like a ... Squid?
+If you need to go deep or explore in the water, this is the backpack for you.
+  - [提交] adventurebackpack:adventureBackpack:62
+  > 奖励: harvestcraft:meatfeastpizzaItem x64
+
+### [174] §9§lThis is Relatively Useful
+For... some things... maybe... At least it's fun to watch?
+  - [提交] openmodularturrets:relativisticTurret
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinSurvivorI x5 | dreamcraft:CoinTechnicianI x5
+
+### [157] §6§lTier 2 Turret Base
+Nothing to see here. Proceed...
+  - [提交] openmodularturrets:baseTierOneBlock x2
+  > 奖励: enhancedlootbags:lootbag:5 | dreamcraft:CoinTechnician x25
+
+### [173] §9§lTier 3 Base
+More storage, more power, and a lot more slots for possible upgrades.
+  - [提交] openmodularturrets:baseTierTwoBlock x2
+  > 奖励: enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5
+
+### [211] §a§lTier 4 Fence and Walls
+Another upgrade for your walls. One more to go!
+  - [提交] openmodularturrets:fenceTierFour x4, openmodularturrets:hardWallTierFour x4
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSurvivorII | dreamcraft:CoinTechnicianII
+
+### [1781] Traveller's Gear
+The goggles, wings, shoes, vest, belt and boots itself are not really special.  You can zoom with the goggles, have an extra inventory hotbar with the belt, step-up assist with the shoes, jump boost with the wings and faster swimming ability with the vest.  You get protection like with normal armor too.  Later on you can upgrade your items to become more powerful ones.
+  - [可选提交] gregtech:gt.metaitem.01:24500 x2, gregtech:gt.metaitem.01:17500 x6, gregtech:gt.metaitem.01:28303 x2, gregtech:gt.metaitem.01:26303, harvestcraft:hardenedleatherItem x17, gregtech:gt.metaitem.01:17804 x3 (ore:plateObsidian), minecraft:diamond_helmet, minecraft:diamond_chestplate, minecraft:diamond_leggings, minecraft:diamond_boots, TConstruct:fletching x4, gregtech:gt.metaitem.01:32642 x2, IC2:itemPartCircuitAdv x6 (ore:circuitAdvanced)
+  - [提交] TConstruct:travelGoggles, TConstruct:travelVest, TConstruct:travelWings, TConstruct:travelBelt, TConstruct:travelGlove, TConstruct:travelBoots
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithI x5 | dreamcraft:CoinSurvivorI x5
+
+### [1785] Traveller's Gloves Upgrades
+Putting redstone on my weapon makes it faster. So why don't I put it on my hands directly! This will increase your mining speed.  Hint: Every Armor part has 3 Slots for modification, aside from gloves, which have 5.
+  - [可选提交] TConstruct:travelGlove, minecraft:redstone x5, minecraft:redstone_block x55
+  - [提交] TConstruct:travelGlove
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [1782] Traveller's Goggles Upgrades
+Nightvision is very useful. If you combine your Goggles with a night vision potion (3:00, make sure to make 3 at a time), a golden carrot, and a flint and steel inside the Tinkers Crafting Station you get Night Vision Goggles. Place the Goggles in the Center of the Crafting Station.  Hint: Autorepair can be added to the goggles as well.  Every Armor has 3 slots for modification.
+  - [提交] TConstruct:travelGoggles, minecraft:flint_and_steel, minecraft:golden_carrot, minecraft:potion:8198
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [1783] Traveller's Vest Upgrades
+Your vest can be equipped with a few modifications like perfect dodge and stealth. Perfect dodge means you're harder to hit and can be stacked up to 3 times. Stealth turns you invisible while sneaking. Place the vest in the center of a Tinker's Crafting Station.  Hint: Autorepair can be added to the vest as well. Every Armor part has 3 Slots for modification.
+  - [提交] TConstruct:travelVest, minecraft:sugar, minecraft:ender_pearl, minecraft:ender_eye
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [1784] Traveller's Wings Upgrades
+Your wings can be equipped with a few modifications such as feather falling and double jump. Place the wings in the center of a Crafting Station.  Feather Fall allows you to glide down slowly in air. Double Jump means you jump while in the air to jump again.  Hint: Autorepair can be added to the wings as well. Every Armor part has 3 Slots for modification.
+  - [提交] TConstruct:travelWings, TConstruct:slime.gel, minecraft:ender_pearl, minecraft:feather x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x25 | dreamcraft:CoinSurvivor x25
+
+### [122] §5§lTurret Base
+Turrets must be placed on top of a turret base. Only the player who initially placed the base can access and configure the turret. So don't worry about people taking your ammunition.
+  - [提交] openmodularturrets:baseTierWood x2
+  > 奖励: enhancedlootbags:lootbag:4 | dreamcraft:CoinTechnician x15
+
+### [207] §a§lTurret Base Tier 4
+Even more range, power and upgrade slots.
+  - [提交] openmodularturrets:baseTierThreeBlock x2
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII
+
+### [221] §b§lTurret Base Tier 5
+The last one, I promise. Used for the most powerful turrets available. You wonder if they might help you take out some more... "Dangerous" enemies?
+  - [提交] openmodularturrets:baseTierFourBlock x2
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII x2
+
+### [125] §5§lUpgrading Intensifies
+Your turrets probably need more space to hold more ammunition, so why not get an upgrade for that?
+  - [提交] openmodularturrets:expanderInvTierOne
+  > 奖励: BuildCraft|Core:engineBlock:2 | dreamcraft:CoinTechnician x15
+
+### [2115] Walk Through Fire
+The Pigman backpack will make the Nether ezpz with fire resistance. You'll have to figure out a way to get struck by lightning while wearing a Pig backpack to get it...
+  - [提交] adventurebackpack:adventureBackpack:51
+  > 奖励: harvestcraft:supremepizzaItem x64
+
+### [683] Wet Dirt Armor?
+If you don't have any armor, "mud armor" is better than nothing. Mud can be found in some wet biomes, or crafted from dirt and water.
+  - [可选提交] BiomesOPlenty:mudball x24
+  - [合成] BiomesOPlenty:helmetMud, BiomesOPlenty:chestplateMud, BiomesOPlenty:leggingsMud, BiomesOPlenty:bootsMud
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x2 | dreamcraft:CoinSurvivor x2
+
+### [123] §5§lWho Needs That Dirt Anyway
+You probably have a ton of items floating around in your base. So why not use them to kill your enemies?
+  - [提交] openmodularturrets:disposeItemTurret
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivor x15 | dreamcraft:CoinTechnician x15
+
+### [210] §a§lWhy Grenades...
+...when you can use rockets? Yes, rockets! They search and destroy, and go off with a huge boom.
+  - [提交] openmodularturrets:rocketTurret
+  > 奖励: bq_standard:choice | dreamcraft:CoinSurvivorII | dreamcraft:CoinTechnicianII
+
+### [684] Wooden Armor
+If you can't find mud you can make very poor armor out of wood. Cutting down a few trees to make a set should do. You will need a soft mallet too, so save a few logs for that.
+  - [可选提交] minecraft:log x24 (ore:logWood)
+  - [合成] TConstruct:helmetWood, TConstruct:chestplateWood, TConstruct:leggingsWood, TConstruct:bootsWood
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmith x2 | dreamcraft:CoinSurvivor x2
+

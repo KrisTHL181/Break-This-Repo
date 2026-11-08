@@ -1,0 +1,20 @@
+type: embed
+
+colour: cyan
+embed:
+    title: Learning Java
+---
+
+To start modding Minecraft with Fabric, a solid understanding of Java is strongly recommended. Minecraft, Fabric API, and mods rely on intermediate-to-advanced Java concepts, like polymorphism, generics, lambdas, and functional interfaces. You will also need general programming skills, such as debugging, reading codebases, and using your IDE effectively.
+
+Without a grasp of these concepts, you will face significant difficulties when modding.
+
+Here are some online tutorials to learn Java:
+* [University of Helsinki: Java Programming MOOC](<https://java-programming.mooc.fi/>)
+* [Java Platform Group at Oracle: Learn Java](<https://dev.java/learn/>)
+* [Codecademy: Learn Java](<https://www.codecademy.com/learn/learn-java>)
+* [Duke University (via Coursera): Java Programming and Software Engineering Fundamentals](<https://www.coursera.org/specializations/java-programming>)
+* [freeCodeCamp (YouTube): Java Programming for Beginners](<https://youtu.be/A74TOX803D0>)
+* [Modern Java (Online textbook)](<https://javabook.mccue.dev/>)
+
+After learning Java, you can begin Minecraft modding. [Fabric developer documentation](<https://docs.fabricmc.net/develop/>) is a good starting point.

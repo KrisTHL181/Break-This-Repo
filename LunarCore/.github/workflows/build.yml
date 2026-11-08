@@ -1,0 +1,45 @@
+name: Build LunarCore
+on:
+  workflow_dispatch: ~
+  push:
+    paths:
+      - "**.java"
+    branches:
+      - main
+      - development
+      - lite
+  pull_request:
+    paths:
+      - "**.java"
+    types:
+      - opened
+      - synchronize
+      - reopened
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout
+          uses: actions/checkout@v6
+        - name: Setup Java
+          uses: actions/setup-java@v5
+          with:
+            distribution: temurin
+            java-version: '21'
+        - name: Cache gradle files
+          uses: actions/cache@v5
+          with:
+            path: |
+              ~/.gradle/caches
+              ~/.gradle/wrapper
+              ./.gradle/loom-cache
+            key: ${{ runner.os }}-gradle-${{ hashFiles('*.gradle', 'gradle.properties', '**/*.accesswidener') }}
+            restore-keys: |
+              ${{ runner.os }}-gradle-
+        - name: Run Gradle
+          run: chmod +x gradlew && ./gradlew && ./gradlew jar
+        - name: Upload build
+          uses: actions/upload-artifact@v6
+          with:
+            name: LunarCore
+            path: LunarCore.jar

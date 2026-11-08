@@ -1,0 +1,137 @@
+name: 'TeaCon 2026 | 卫戍工艺【Garrison Craft】 | YBU·延边大学方块同好会'
+on:
+  push:
+    paths:
+      - '.github/workflows/mod-team-garrison-craft.yaml'
+      - 'mods/team-garrison-craft/HEAD'
+      - 'mods/team-garrison-craft/sentinel'
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: 'The commit hash you wish to build.'
+        required: false
+        type: string
+jobs:
+  publish:
+    name: 'Build 卫戍工艺【Garrison Craft】'
+    environment: Build
+    runs-on: ubuntu-latest
+    env:
+      BILUOCHUN_URL: https://biluochun.teacon.cn
+      CONTEST_SEQ: '4'
+      CONTEST_SLUG: 2026
+      CONTEST_TITLE: 'TeaCon 2026'
+      TEAM_ID: 'garrison-craft'
+      TEAM_SEQ: '508'
+    steps:
+      - name: Checkout Build Environment
+        uses: actions/checkout@v6
+      # Setup Microsoft JDK build. This should be the one used by official Minecraft Launcher.
+      - name: Setup JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'microsoft'
+          java-version: '25'
+      # 因未知原因，构建缓存可能会干扰 Mod 构建，故临时禁用缓存，待问题查清后再考虑恢复。
+      #- name: Apply Cache
+      #  uses: actions/cache@v5
+      #  with:
+      #    path: |
+      #      ~/.gradle/caches
+      #      ~/.gradle/wrapper
+      #    key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+      #    restore-keys:
+      #      ${{ runner.os }}-gradle-
+      # We cannot use action/checkout@v2 because it does not support non-GitHub repositroy.
+      # The clone logic used here is adapted from https://stackoverflow.com/a/3489576 for
+      # sake of a faster build.
+      - name: 'Checkout Repository for Build 卫戍工艺【Garrison Craft】'
+        id: repo_checkout
+        shell: bash
+        run: |
+          mkdir -p build/repo
+          cd build/repo
+          git init
+          git remote add origin `cat ../../mods/team-garrison-craft/remote`
+          git fetch --depth=1 origin `cat ../../mods/team-garrison-craft/HEAD` || { echo '::error::Git 仓库检出失败，请检查仓库是否可公开访问！'; exit -1; }
+          git reset --hard `cat ../../mods/team-garrison-craft/HEAD`
+          git submodule init
+          git submodule update
+          [ -f build.gradle ] || [ -f build.gradle.kts ] || { echo '::error::Git 仓库检出疑似失败，请检查碧螺春中分支名是否正确！'; exit -1; }
+      - name: Check License
+        id: license_check
+        uses: 3TUSK/LicenseChecker@main
+        with:
+          project-path: ./build/repo
+      - name: Validate Gradle Wrapper
+        id: gradle_wrapper_check
+        continue-on-error: true
+        uses: gradle/actions/wrapper-validation@v6
+        with:
+          min-wrapper-count: 1
+      - name: Artifact Building
+        id: building
+        shell: bash
+        env:
+          GRADLE_WRAPPER_CHECK: ${{ steps.gradle_wrapper_check.outcome == 'success' }}
+          GITHUB_USERNAME: 'teacon-bot[bot]'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INFO_DIR: mods/team-garrison-craft
+        run: cd build && ./build.sh
+      # We need at least Python 3.11 to ensure existence of tomllib (see PEP 680)
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11' 
+      - name: Mod Description File Validation
+        id: metadata_validation
+        shell: bash
+        env:
+          LICENSE_REPORT: ${{ steps.license_check.outputs.report-file }}
+        run: ./build/mods_toml.py
+      - name: Prepare for Dedicated Server Launching Test
+        id: dedicated_server_launching_setup
+        shell: bash
+        env:
+          BILUOCHUN_TOKEN: ${{ secrets.BILUOCHUN_TOKEN }}
+        run: cd build && ./pre-server-test.sh
+      - name: Dedicated Server Launching Test
+        id: dedicated_server_launching
+        timeout-minutes: 10
+        uses: teaconmc/dedicated-launch-test@26.1-neoforge
+        with:
+          extra: build/all-deps.json
+          mod: ${{ steps.building.outputs.artifact }}
+      - name: Publish
+        id: publication
+        shell: bash
+        env:
+          CONTEST_ID: 2026
+          BILUOCHUN_TOKEN: ${{ secrets.BILUOCHUN_TOKEN }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_KEY }}
+          # https://github.com/aws/aws-cli/issues/5623
+          AWS_EC2_METADATA_DISABLED: 'true'
+          # 第三方实现的 S3 协议可能会不兼容下述两个事关文件完整性校验的选项。
+          # 在此，根据 AWS SDK 文档禁用此检查，这样我们还能接着让 AWS CLI 用在第三方 S3 实现上。
+          # https://github.com/aws/aws-sdk-go-v2/discussions/2960
+          # https://github.com/siyuan-note/siyuan/issues/14053
+          AWS_REQUEST_CHECKSUM_CALCULATION: 'WHEN_REQUIRED'
+          AWS_RESPONSE_CHECKSUM_VALIDATION: 'WHEN_REQUIRED'
+        run: cd build && ./publish.sh
+      - name: Failure notification
+        id: failure_notification
+        if: failure()
+        shell: bash
+        env: 
+          BILUOCHUN_TOKEN: ${{ secrets.BILUOCHUN_TOKEN }}
+          STEP_REPO_CHECKOUT_OUTCOME: ${{ steps.repo_checkout.outcome }}
+          STEP_LICENSE_CHECK_OUTCOME: ${{ steps.license_check.outcome }}
+          STEP_BUILDING_OUTCOME: ${{ steps.building.outcome }}
+          STEP_METADTA_VALIDATION_OUTCOME: ${{ steps.metadata_validation.outcome }}
+          STEP_PRE_DSLT_OUTCOME: ${{ steps.dedicated_server_launching_setup.outcome }}
+          STEP_DSLT_OUTCOME: ${{ steps.dedicated_server_launching.outcome }}
+          STEP_PUBLISH_OUTCOME: ${{ steps.publication.outcome }}
+        run: cd build && ./failure-callback.sh
+# Change this counter to trigger all mod rebuild 

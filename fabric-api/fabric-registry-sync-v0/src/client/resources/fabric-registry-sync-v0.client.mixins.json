@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.registry.sync.client",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "MinecraftMixin",
+    "ParticleResourcesMixin",
+    "RegistryDataCollectorContentsCollectorAccessor",
+    "RegistryDataCollectorMixin",
+    "WorldOpenFlowsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  },
+  "mixins": [
+    "BackupConfirmScreenAccessor"
+  ]
+}

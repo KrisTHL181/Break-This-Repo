@@ -1,0 +1,57 @@
+CLASS net/minecraft/class_10275 net/minecraft/entity/mob/CreakingEntity
+	FIELD field_54568 attackAnimationState Lnet/minecraft/class_7094;
+	FIELD field_54570 invulnerableAnimationState Lnet/minecraft/class_7094;
+	FIELD field_54571 UNROOTED Lnet/minecraft/class_2940;
+	FIELD field_54572 ACTIVE Lnet/minecraft/class_2940;
+	FIELD field_54575 ATTACK_DAMAGE F
+	FIELD field_54579 attackAnimationTimer I
+	FIELD field_55010 crumblingAnimationState Lnet/minecraft/class_7094;
+	FIELD field_55487 CRUMBLING Lnet/minecraft/class_2940;
+	FIELD field_55489 invulnerableAnimationTimer I
+	FIELD field_55490 glowingEyesWhileCrumbling Z
+	FIELD field_55491 nextEyeFlickerTime I
+	FIELD field_55493 playerIntersectionTimer I
+	FIELD field_55545 HOME_POS Lnet/minecraft/class_2940;
+	METHOD method_64624 tickAttackAnimation ()V
+	METHOD method_64627 createCreakingAttributes ()Lnet/minecraft/class_5132$class_5133;
+	METHOD method_64628 isUnrooted ()Z
+	METHOD method_64629 shouldBeUnrooted ()Z
+	METHOD method_64630 isActive ()Z
+	METHOD method_64631 setActive (Z)V
+		ARG 1 active
+	METHOD method_65117 activate (Lnet/minecraft/class_1657;)V
+		ARG 1 player
+	METHOD method_65118 deactivate ()V
+	METHOD method_65784 isStuckWithPlayer ()Z
+	METHOD method_65785 setCrumbling ()V
+	METHOD method_65786 isCrumbling ()Z
+	METHOD method_65787 hasGlowingEyesWhileCrumbling ()Z
+	METHOD method_65788 updateCrumblingEyeFlicker ()V
+	METHOD method_65789 initHomePos (Lnet/minecraft/class_2338;)V
+		ARG 1 homePos
+	METHOD method_65790 becomeAngryAndGetPlayer (Lnet/minecraft/class_1282;)Lnet/minecraft/class_1657;
+		ARG 1 damageSource
+	METHOD method_65791 killFromHeart (Lnet/minecraft/class_1282;)V
+		ARG 1 damageSource
+	METHOD method_65793 finishCrumbling ()V
+	METHOD method_65900 getHomePos ()Lnet/minecraft/class_2338;
+	METHOD method_65901 setHomePos (Lnet/minecraft/class_2338;)V
+		ARG 1 pos
+	METHOD method_65902 isTransient ()Z
+	CLASS class_10276 CreakingBodyControl
+		METHOD <init> (Lnet/minecraft/class_10275;Lnet/minecraft/class_10275;)V
+			ARG 2 creaking
+	CLASS class_10277 CreakingJumpControl
+		METHOD <init> (Lnet/minecraft/class_10275;Lnet/minecraft/class_10275;)V
+			ARG 2 creaking
+	CLASS class_10278 CreakingLookControl
+		METHOD <init> (Lnet/minecraft/class_10275;Lnet/minecraft/class_10275;)V
+			ARG 2 creaking
+	CLASS class_10279 CreakingMoveControl
+		METHOD <init> (Lnet/minecraft/class_10275;Lnet/minecraft/class_10275;)V
+			ARG 2 creaking
+	CLASS class_10282 CreakingNavigation
+		METHOD <init> (Lnet/minecraft/class_10275;Lnet/minecraft/class_10275;Lnet/minecraft/class_1937;)V
+			ARG 2 creaking
+			ARG 3 world
+	CLASS class_10283 CreakingLandPathNodeMaker

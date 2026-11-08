@@ -1,0 +1,77 @@
+{
+  "build": {
+    "content": [
+      {
+        "files": ["**/**.md", "**/**.yml"],
+        "exclude": [
+          "**/obj/**",
+          "**/includes/**",
+          "README.md",
+          "LICENSE",
+          "LICENSE-CODE",
+          "ThirdPartyNotices"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "**/*.png",
+          "**/*.jpg"
+        ],
+        "exclude": [
+          "**/obj/**",
+          "**/includes/**"
+        ]
+      }
+    ],
+    "overwrite": [],
+    "externalReference": [],
+    "globalMetadata": {
+      "uhfHeaderId": "MSDocsHeader-Windows",
+      "breadcrumb_path": "/virtualization/hyper-v-on-windows/breadcrumbs/toc.json",
+      "extendBreadcrumb": false, 
+      "feedback_system": "Standard"
+    },
+    "fileMetadata": {
+      "ms.service": {
+        "**/*.md": "windows-server"
+      },
+      "ms.subservice": {
+        "**/*.md": "hyper-v"
+      },
+      "ms.topic": {
+        "virtualization/api/hcn/**/*.md": "reference"
+      },
+      "ms.topic": {
+        "virtualization/api/hcs/**/*.md": "reference"
+      },
+      "ms.topic": {
+        "virtualization/api/hypervisor-instruction-emulator/**/*.md": "reference"
+      },
+      "ms.topic": {
+        "virtualization/api/hypervisor-platform/**/*.md": "reference"
+      },
+      "ms.topic": {
+        "tlfs/**/*.md": "reference"
+      },
+      "breadcrumb_path": {
+        "tlfs/hypercalls/**/*.md": "tlfs/hypercalls/breadcrumb/toc.yml",
+        "tlfs/datatypes/**/*.md": "tlfs/datatypes/breadcrumb/toc.yml"          
+      },
+      "ms.topic": {
+        "**/*.md": "article"
+      },
+      "extendBreadcrumb": {
+        "tlfs/hypercalls/**/*.md": false,
+        "tlfs/datatypes/**/*.md": false              
+      },
+      "ms.update-cycle": {
+        "**/*.md": "1095-days",
+        "**/*.yml": "1095-days"
+      }
+    },
+    "template": [],
+    "dest": "virtualization/hyper-v-on-windows"
+  }
+}

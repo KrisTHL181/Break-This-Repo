@@ -1,0 +1,422 @@
+# 任务线: Tier 6 - LuV
+### [202] §d§lAccelerating Things
+If an ender quarry won't satisfy your needs for MOOORE. A speed upgrade is required.
+  - [提交] ExtraUtilities:enderQuarryUpgrade:6
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1682] §d§lAccelerating Things III
+If Speed upgrade II is too slow craft a speed upgrade III.
+  - [提交] ExtraUtilities:enderQuarryUpgrade:8
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1681] §d§lAccelerating Things II
+While the ender quarry on its own with speed upgrade is good, why not speed it up a little bit more?
+  - [提交] ExtraUtilities:enderQuarryUpgrade:7
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinDarkWizardII x2 | dreamcraft:CoinTechnicianII x2
+
+### [2608] §d§lAdvanced SMDs
+To craft circuits from the crystal processor series and beyond, you'll need these.  If you use these to make a circuit tier lower than Crystal, it'll use 1/4 the amount compared to normal SMDs, and half the required time.
+  - [提交] gregtech:gt.metaitem.03:32027 x32, gregtech:gt.metaitem.03:32025 x64, gregtech:gt.metaitem.03:32024 x32, gregtech:gt.metaitem.03:32026 x32, gregtech:gt.metaitem.03:32183 x64
+
+### [2941] §d§lAlmost Success
+Now you only have to subside the naquadah from the solution. Hooray!
+  - [提交] bartworks:gt.bwMetaGenerateddust:10063
+  > 奖励: enhancedlootbags:lootbag:41 x2 | dreamcraft:CoinChemistIII x10
+
+### [2934] §d§lAnother Solvent
+Why does it need seed oil?
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10059
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2922] §d§lAntimony and Chlorine
+Now put the antimony, chlorine and ether in an LCR to get antimony trichloride solution.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10030
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2024] §d§lAssline Quest Updates
+When the pack updates and changes an assembly line recipe, your old data sticks also need to change their recipe. In old versions, you needed to update the sticks by scanning new items, but now they will update automatically if placed in the assembly line, so you don't need to change things manually. If there is some kind of bug with data stick recipes after updating, do let the developers know, either on the Discord server or on GitHub.
+  - [勾选确认]
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [201] §d§lAutomated Mining
+The QED enables you to assemble the most convenient device for mining: The ender quarry.  As 0lafe says, "This small black box is life-changing" and "Sympathy for the amount of dense obsidian plates you need."  Guess you better get compressing!  [warn]NOTE: It's best to place your quarry and markers on ore vein boundaries. This way you start getting ores right away, especially from planets.[/warn]
+  - [提交] ExtraUtilities:enderQuarry
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinDarkWizardII x5 | dreamcraft:CoinTechnicianII x5
+
+### [-8682800239418763402] §d§lBehold: The Netherite Line
+You didn't seriously think you only needed to do the Naquadah line in LuV did you? Well if so; better brace yourself for the Netherite line!  Don't panic, it's a relatively straight-forward line so long as you can wrap your head around minor processing loops and percent based output. Fortunately you have a quest book to guide you through your initial setup.  Be warned- you will need at least §2§lGrade 1 Purified Water§r and§5§l Naquadah Coils§r to make it through this entire line.  §3This questline will start you off with the three primary things you must prepare in order to begin:  §l- Milled Netherrack - Nether Air - Ancient Debris Collection§r  §3For at least one and likely two of those you will need to journey into the nether, so make sure you're prepared equipment wise!§r  [warn]If you already created the line and do not wish to complete the individual quests, hold one of these three item sets in your hand after completing this quest: [/warn]  §4§l- 1 Dense Netherite Plate - 64 Intensely Bonded Netherite Nanoparticles - 16 Netherite Ingots 
+  - [勾选确认]
+
+### [-6315858637026935192] §d§lBrittle Netherite Scrap
+You're so close... just a few more steps.  Now that you've attained the Netherite Scrap Seeds, you can combine them with Poor Nether Waste in a §5§lChemical Bath§r for a §2§l50%§r chance to get 3 §4Brittle Netherite Scraps§r. As a bonus, there's even a §2§l50%§r chance that you get your Netherite Scrap Seed back to run the recipe over again.   [note]Don't worry, this is the last Netherite recipe based on chance.[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32243, gregtech:gt.metaitem.01:30123 x16
+  - [提交] gregtech:gt.metaitem.03:32244
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1684] §d§lCheaper HV circuits
+You can make Nano Processors cheaper than before. You'll need to make an imprint first though.
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:32756 x4, bartworks:gt.bwMetaGeneratedItem0:32730 x4, gregtech:gt.blockmachines:1442 x32, gregtech:gt.metaitem.01:26085 x256
+  - [提交] gregtech:gt.metaitem.03:32082 x64
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1708] §d§lCrystal Assembly
+The Crystal Assembly is a LuV Circuit.
+  - [可选提交] gregtech:gt.metaitem.03:32104 x6, gregtech:gt.metaitem.03:32089 x2, gregtech:gt.metaitem.03:32183 x36, gregtech:gt.metaitem.03:32027 x48, gregtech:gt.metaitem.03:32039 x64, gregtech:gt.metaitem.02:19360 x64
+  - [提交] gregtech:gt.metaitem.03:32096
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:1024
+  - [提交] bartworks:gt.bwMetaGeneratedItem0:24
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1687] §d§lCrystal Chips
+To make these chips you need Europium, as well as an HV Autoclave in the Asteroids dimension (or on your space station) to achieve "low gravity".  [note]Alternatively you can use an Industrial Autoclave.[/note]
+  - [可选提交] gregtech:gt.metaitem.02:30501 x72, gregtech:gt.metaitem.99:70 x8
+  - [可选提交] gregtech:gt.metaitem.03:32069
+  - [可选提交] gregtech:gt.metaitem.01:17501, gregtech:gt.metaitem.03:32069
+  - [可选提交] gregtech:gt.metaitem.01:32713
+  - [提交] gregtech:gt.metaitem.03:32070
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1710] §d§lCrystal Mainframe
+The Crystal Mainframe is the first UV circuit you can make.
+  - [可选提交] gregtech:gt.blockframes:19 x12, gregtech:gt.metaitem.03:32090 x2, gregtech:gt.metaitem.03:32183 x48, gregtech:gt.metaitem.03:32027 x64, gregtech:gt.metaitem.03:32039 x64, gregtech:gt.blockmachines:2400 x64
+  - [提交] gregtech:gt.metaitem.03:32091
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:1026
+  - [提交] bartworks:gt.bwMetaGeneratedItem0:26
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1686] §d§lCrystal Processors
+Now that you're this far into LuV, you can make easier IV circuits, as well as your first UV circuit.  After crafting each circuit, make an imprint of it to reduce the cost of following ones.
+  - [可选提交] gregtech:gt.metaitem.03:32104 x6, gregtech:gt.metaitem.03:32070 x6, gregtech:gt.metaitem.03:32055 x12, gregtech:gt.metaitem.03:32027 x36, gregtech:gt.metaitem.03:32026 x36, gregtech:gt.metaitem.02:19360 x48
+  - [提交] gregtech:gt.metaitem.03:32089
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:1023
+  - [提交] bartworks:gt.bwMetaGeneratedItem0:23
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1709] §d§lCrystal Supercomputer
+The Crystal Supercomputer is a ZPM circuit.
+  - [可选提交] gregtech:gt.metaitem.03:32104 x6, gregtech:gt.metaitem.03:32096 x2, gregtech:gt.metaitem.03:32039 x24, gregtech:gt.metaitem.03:32043 x64, gregtech:gt.metaitem.03:32041 x64, gregtech:gt.metaitem.02:19360 x64
+  - [提交] gregtech:gt.metaitem.03:32090
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:1025
+  - [提交] bartworks:gt.bwMetaGeneratedItem0:25
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [-7628239345660310137] §d§lDense Netherite Plate
+Once you've managed to acquire 36 of these Intensely Bonded Netherite Nanoparticles you can finally create your very first Netherite material: The §4§lDense Netherite Plate§r.  You will need one of these for the §3§lMk1 Fusion Reactor§r, which is required to create the rest of the Netherite materials.
+  - [可选提交] gregtech:gt.metaitem.01:22323 x8, gregtech:gt.metaitem.03:32246 x36, miscutils:pyrotheum x128
+  - [提交] gregtech:gt.metaitem.01:22132
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII | dreamcraft:CoinChemistIII
+
+### [2928] §d§lEBF Time
+Heat the NOM dust with fluoroantimonic acid and it will dissolve the Nq, Ga, Ad, and the titanium will become precipitate.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10056
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [1688] §d§lElite Circuit Board
+A new circuit line, a new board. Also required for the Hi-Computation Station MK-I.
+  - [可选提交] gregtech:gt.metaitem.01:32720 x2, gregtech:gt.metaitem.01:29052 x16
+  - [可选提交] gregtech:gt.metaitem.01:32712, gregtech:gt.metaitem.01:29085 x8
+  - [提交] gregtech:gt.metaitem.03:32104
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [2921] §d§lEther Strike!
+The naquadah is so inert that most acids won't react with it, so you need a more powerful kind of acid to dissolve it.  Let's prepare some necessary organic solvent to make the acid.  [warn]If you have already created the Naquadah line, hold 64 Naquadah Ingot / Dust to skip these quests.[/warn]
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10029 (ore:cellEther)
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistIII
+
+### [2930] §d§lExtraction
+Now, the metal elements have been concentrated in solution.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10061
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2604] §d§lFetching Cubic Zirconia
+For Cubic Zirconia, you'll need to combine Zirconium and Yttrium Oxide in the EBF as well. Fortunately you only need the dusts.  You can get Zirconium from: 1) The Red Zircon ore on Ross128b <- Do this one 2) Sifting Cassiterite, Tin, or Ilmenite <- Do this one if you hate Ross  Oxygen isn't hard to get, but the Yttrium more than makes up for it. You have a couple options: 1) Make Rare Earth (I) out of Rare Earth (see the MV quest) 2) Make Rare Earth (II) out of Rare Earth using a stronger acid and get it from Yttriaite 3) When you have a T6 rocket, you can pick some Yttrium ore up from Triton, making you cry at how much easier it is 4) In ZPM you can try going to the Toxic Everglades to grab weird GT++ ores, some of which have Yttrium in them (Yay RNG ore worldgen!) 5) Process Almandine Ore (found in Twilight Forest) in an Isamill Grinder & Flotation Cell for the froth, then set in a Vacuum Furnace.  To get Rare Earth you §ocan§r use Redstone or Skystone, but you can also get it out of Monazite directly or some other ores as a byproduct. Hopefully you saved it up?
+  - [提交] bartworks:gt.bwMetaGenerateddust:4 x2
+
+### [2605] §d§lFetching Prasiolite
+For Prasiolite you'll want to put Quartzite and Amethyst in an EBF to get Flawed Prasiolite. You'll need to either use the Implosion Compressor or Precision Laser Engraver to up the quality to Exquisite. You'll also need the dust version as well, so don't convert them all.  You can find Amethyst in caves on the Overworld, but for the amount you'll need, you might want to make a stop on Venus.  If you have a T5 rocket, you can get the ore from Ross128ba directly and run it through the sifter.
+  - [提交] bartworks:gt.bwMetaGeneratedgemExquisite:35 x8, bartworks:gt.bwMetaGenerateddust:35 x6
+
+### [2603] §d§lFetching Tellurium
+For Tellurium, you can do it these ways:  1) EBF Crushed Lead Ore for 2 Tellurium Nuggets 2) Make Rare Earth (III) out of Rare Earth using the strongest of acids and get it from Alburnite 3) Toxic Everglades 4) Once you have a Void Miner, you can place it in the Overworld to obtain Tellurium. 5) Process Platinum Ore in an Isamill Grinder & Flotation Cell for the froth, then set in a Vacuum Furnace.
+  - [可选提交] gregtech:gt.metaitem.01:2059 x15
+  - [提交] bartworks:gt.bwMetaGenerateddust:31 x24
+
+### [2600] §d§lFetch Quests
+To make the Circuit Assembly Line imprints you'll need a bunch of new materials.  To start, let's get some raw materials, Prasiolite, Cubic Zirconia, and Tellurium.  You also need some other materials, but I don't need to explain those, do I?  [note]If the materials are too much of a pain, you can replicate some of them once you have one of it.[/note]
+  - [提交] gregtech:gt.metaitem.01:2355 x2, gregtech:gt.metaitem.01:2981 x12, bartworks:gt.bwMetaGenerateddust:33 x36
+
+### [1621] §d§lFluid TP for Magic-Haters
+Hate magic (and fluid P2P), but still want to TP fluids? TT has your back with the Ender Fluid Link Cover!  Place one on a tank and open the GUI. Channel: Covers with the same text will connect.  Public: Links to any of the same color not set to private. Use an internet program to find out what the numbers mean, and get colors you like. Private: Does not link to public version of that color. Meaningless in SP.  Export: Fluid moves from Attached Block -> Cover Network Import: Fluid moves from Cover Network -> Attached Block  You can use multiple as inputs and/or outputs. It runs at 8000L/t.  You can send §ofrom§r an output hatch or §oto§r an input hatch for multis. Probably won't work well for anything with multiple I/O, like a singleblock Chemical Reactor.
+  - [提交] tectech:item.tm.enderfluidlinkcover x2
+
+### [2926] §d§lFracture Chlorine
+The fluorine atom has higher electronegativity, so it will replace the chlorine atom around the antimony.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10033
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2645] §d§lFusion Rocketry
+So you completed your Fusion Reactor and made your rocket, great! Now time to get some new ore! (like that isn't getting old) You don't need your hand held anymore, so I'll just list what's new.  Enceladus, Miranda, Oberon, Ross128ba and Titan are the new planets. Miranda is the 1st moon of Uranus, while Oberon is the last. Enceladus is the 2nd moon of Saturn, while Titan is the second last. Ross128ba is Ross128b's moon in the Ross128 System to the South.  The new veins are Nickel, Tungsten, and Vanadium. The ores are: Chrome, Deep Iron, Iridium, Gold, Magnetite, Nickel, Osmium, Silicon, Shadow Iron, Tungsten, and Vanadium.  You can get Neutronium from small ores on Enceladus, Oberon, and Titan.  And grab some planet blocks while you're at it too.  You can get the schematic for T6 on Enceladus.  [note]I'm sure you can tell by now, but it's not like every planet is required, so go to the ones you want to, and skip the ones you don't want to go to. Use NEI to figure out where you NEED to go.[/note]
+  - [勾选确认]
+
+### [1213] §d§lGetting Europium
+To make a mk2 reactor, ender quarry, T5 rocket, unlock ZPM, or other things, you will need europium. Once you make a t5 rocket you will be able to find this as part of a very rare ore. Until then you need to produce it in the reactor. But it's probably not worth it to look for the ore anyway.  [note]Now that you have produced europium, you can process the Europium III Oxide from your Monaline if you built one.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:30001 x6, gregtech:gt.metaitem.01:11067 x13
+  - [提交] gregtech:gt.blockmetal3:3, gregtech:gt.metaitem.01:17070 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII
+
+### [-7031660740925257993] §d§lHellish Metal
+Regular Netherite Nanoparticles alone don't have enough density to compress into Netherite... they require a strong and somewhat magical binding agent.   §4Hellish Metal§r should be the perfect candidate, you can either fabricate it in the §5§lElectrolyzer§r or §5§lInfuse§r it.  [note]The Infusion recipe is much cheaper, but can only be used by those who have been proactive in their magic infrastructure.[/note]
+  - [可选提交] bartworks:bw.werkstoffblocks.01:78, ThaumicTinkerer:kamiResource:6 x2, gregtech:gt.metaitem.01:11330 x2
+  - [可选提交] bartworks:bw.werkstoffblocks.01:78, ThaumicTinkerer:kamiResource:6 x8, gregtech:gt.metaitem.01:2541 x8, gregtech:gt.metaitem.99:330 x8
+  - [提交] gregtech:gt.blockmetal9:12
+  > 奖励: dreamcraft:CoinSmithIII | dreamcraft:CoinDarkWizardIII
+
+### [-7223099091008597338] §d§lHot Netherite Scrap
+Heating up the Netherite Scrap is a rather quick and cheap process; simply throwing it in the §5§lChemical Bath§r with a little lava ought to do the trick!   Bear in mind though, you will be re-heating this scrap many times over so it's definitely recommended to have a substantial supply of lava to be able to pull from. 
+  - [可选提交] etfuturum:netherite_scrap x2, IC2:itemCellEmpty:2
+  - [提交] gregtech:gt.metaitem.03:32247 x2
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2602] §d§lImprints, They're Important
+Now that you've finally gotten all the materials to make your imprints, you can make them as you get your new circuits. You'll need to slice the circuits for the imprint in a Cutting Machine using a Slicer Blade.  To use the imprints, place them in the CAL controller's item slot. The CAL will be imprinted once you turn it on. You can see what it's imprinted with by using a portable scanner on the controller. You can also swap out controllers if you're too lazy to make more CALs.  [note]If you already have an imprint for an earlier version of a recipe, you don't need to make another, it works with both recipes.[/note]
+  - [提交] bartworks:gt.bwMetaGeneratedgemExquisite:35 x8, bartworks:gt.bwMetaGeneratedItem0:3 x8, gregtech:gt.metaitem.01:32398
+
+### [2606] §d§lImprint Supporting Boards
+Once you've collected all the materials, you'll need to make Magneto Resonatic Dust and Circuit Compound Mk3 in a Mixer.  Combine these in the Forming Press to make Raw Imprint Supporting Boards.  Then, in a Cleanroom, use a Laser Engraver and Soldering Alloy to craft them into Imprint Supporting Boards.
+  - [可选提交] gregtech:gt.metaitem.01:2355, bartworks:gt.bwMetaGenerateddust:4, bartworks:gt.bwMetaGenerateddust:35 x3, bartworks:gt.bwMetaGenerateddust:31 x4, bartworks:gt.bwMetaGenerateddust:36 x8
+  - [可选提交] gregtech:gt.metaitem.01:2981 x6, bartworks:gt.bwMetaGenerateddust:31 x12, bartworks:gt.bwMetaGenerateddust:33 x18, bartworks:gt.bwMetaGenerateddust:34 x32
+  - [可选提交] bartworks:gt.bwMetaGeneratedItem0:2 x8
+  - [提交] bartworks:gt.bwMetaGeneratedItem0:3 x8
+
+### [-5888372301926931463] §d§lIntensely Bonded Netherite Nanoparticles
+At long last... the final ingredient needed before making Netherite materials.  Through the combination of the Netherite Nanoparticles and Hellish Metal in the §5§lEBF§r, you can create §4Intensely Bonded Netherite Nanoparticles.§r As an added bonus for those who have invested in bees, using the combs from a Netherite Queen, will reward you with §2§l2x§r the product.  These are not only the primary pre-requisite ingredients for the Dense Netherite Plate that you need for the §3§lFusion Reactor§r, but also the pre-requisite material for making the rest of the Netherite parts after you have created one; so be sure to stockpile and manufacture as many of these nanoparticles as you can.   [note]Keep in mind this recipe does require Naquadah coils![/note]
+  - [可选提交] gregtech:gt.metaitem.03:32245, gregtech:gt.metaitem.99:125
+  - [可选提交] gregtech:gt.metaitem.03:32245, gregtech:gt.comb:169 x32, gregtech:gt.metaitem.99:125
+  - [提交] gregtech:gt.metaitem.03:32246
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII | dreamcraft:CoinChemistIII | dreamcraft:CoinSmithIII
+
+### [2927] §d§lKing of Acid
+This is the fluoroantimonic acid, the strongest acid in the world currently. It can dissolve almost everything on earth, so it is the best choice to dissolve our NOM dust.  Of course there are some things the fluoroantimonic acid can't deal with, like the "Empty Cell". x)
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10034
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinChemistIII
+
+### [1722] §d§lLuV Assembler
+The LuV assembler is needed for IV Solar Panels and other high tier stuff. Let's build one.
+  - [提交] gregtech:gt.blockmachines:10780
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII
+
+### [1683] §d§lLuV Circuit Assembler
+You may have noticed that the circuits you're thinking of crafting cost way more, 6x more. This is intended for circuits needing LuV+ voltage. You now need to craft your circuits in the Circuit Assembly Line or CAL if you don't want to pay out the ears in materials. You'll still need to craft your first ones using the normal Circuit Assembler though.  Once you've done that, you can make an imprint for use in the CAL to set it to make that (and only that) type of circuit.
+  - [提交] gregtech:gt.blockmachines:1185
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII
+
+### [2599] §d§lLuV Energy Hatch
+If you want to upgrade your multis (and make the Fusion Reactor) you'll need to make these. You'll need a ton of wafers for Fusion, so step up your Indium game if you haven't already.  You need an LuV Cutting Machine, or an OC'd multi.
+  - [可选提交] gregtech:gt.metaitem.03:32052, gregtech:gt.metaitem.01:2981 x8
+  - [可选提交] gregtech:gt.metaitem.03:32058, gregtech:gt.metaitem.03:32059 x2
+  - [提交] gregtech:gt.blockmachines:46
+
+### [1689] §d§lLuV Laser Engraver
+The LuV laser engraver is an important part of lategame circuit production. You need to make crystal CPU's for both the crystal processor series of circuits, and later on for the wetware series.  [note]If you've made the Hyper-Intensity Laser Engraver, you can just upgrade that instead.[/note]
+  - [勾选确认]
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [1711] §d§lLuV Superconductors (32,768 EU/t)
+How about lossless 32768 EU Wires? Tetraindiumditindibariumtitaniumheptacoppertetrakaidekaoxide is a superconductor wire and will transfer your energy without any loss.
+  - [可选提交] gregtech:gt.metaitem.01:2056 x8, gregtech:gt.metaitem.01:2057 x4, gregtech:gt.metaitem.01:2063 x4, gregtech:gt.metaitem.01:2028 x2, gregtech:gt.metaitem.01:2035 x14, gregtech:gt.metaitem.01:30013 x28
+  - [提交] gregtech:gt.blockmachines:2400 x60
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinSmithII x5 | dreamcraft:CoinChemistII x5 | dreamcraft:CoinDarkWizardII x5
+
+### [3077] §d§lMolecular Transformer, finally!
+If you're reading this before LuV and want to know how to make Sunnarium, check out EV or IV quests.  [note]Yes, this multi is somewhat buggy.[/note]
+  - [提交] gregtech:gt.blockmachines:15558
+  - [可选提交] gregtech:gt.blockcasings8:10 x104, GoodGenerator:speedingPipe x35, bartworks:BW_TieredGlass x30, gregtech:gt.blockcasings8:7 x14, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianIII
+
+### [2924] §d§lMore Chlorine
+Oh god, why can't I get it in one step.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10031
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2680] §d§lMutating Things is Cool
+When making Raw Crystal Chips, you have two other options if using Europium constantly is too expensive for you: Bacterial Sludge, and Mutagen.  Mutagen is obviously better than the sludge, but how do you get it? I'll teach you how.  First, get the Bacterial Sludge you got from Mars, and run it through a Brewery along with some U-238 to get Enriched Bacterial Sludge. Then Ferment it to get Fermented Bacterial Sludge. And finally you Distill it to get Mutagen.  But is a single bucket enough for you? Hardly! But now that we have some, we can make more with the vat. Use the Mutagen you got along with some of that Mysterious Crystal Dust to make a culture. Unfortunately the chances are pretty low, so you'll almost certainly have to do it several times.  Once you have your culture you can use it in the vat along with some of the dust again to make more. You'll need LuV-tier glass, and Plutonium rods.  If you want to get more Bacterial Sludge more easily, you can use the vat to make that too! The culture is much easier to make.  [note]Mutagen is also used for Gendustry, so if you want to do that, make a bunch.[/note]
+  - [可选提交] gregtech:gt.metaitem.98:1 x105, gregtech:gt.metaitem.01:2098 x140
+  - [可选提交] gregtech:gt.metaitem.98:2, gregtech:gt.metaitem.01:2398 x16
+  - [可选提交] bartworks:BioLabParts
+  - [提交] gregtech:gt.metaitem.98:2 x10
+
+### [2609] §d§lMysterious...
+If you want some of this highly mysterious material, you'll need to go to Enceladus and collect some of those crystals lying around everywhere and macerate them. Or grab some Ice with a shovel and get the Dust out of it. You can also turn the dust back into Unknown Crystal Shards with an Autoclave if you need those.
+  - [到达] 
+  - [提交] gregtech:gt.metaitem.01:2398 x64
+
+### [2607] §d§lNaquadah Alloy
+In order to make a Fusion Reactor you're going to need some Naquadah Alloy.  First, pop on by Mercury and collect some Deep Iron from small ores if you haven't already, and get Trinium out of it.  You'll also need Naquadah coils, and LuV Energy Hatches.
+  - [可选提交] gregtech:gt.metaitem.01:2324 x18, gregtech:gt.metaitem.01:2868 x9, gregtech:gt.metaitem.01:2010 x9
+  - [可选提交] gregtech:gt.metaitem.01:2325 x36
+  - [提交] gregtech:gt.metaitem.01:11325 x36
+
+### [2942] §d§lNaquadah Dust
+You can directly get naquadah dust in a chemical reactor.
+  - [提交] gregtech:gt.metaitem.01:2324
+  > 奖励: gregtech:gt.metaitem.01:2324
+
+### [2943] §d§lNaquadah Ingot
+If you want ingots, you can smelt it in EBF with carbon.
+  - [提交] gregtech:gt.metaitem.01:11324
+  > 奖励: gregtech:gt.metaitem.01:11324
+
+### [-7479578175990039290] §d§lNefarious Oil
+Using purified water, you can use an §5§lOil Cracker§r to convert the Nefarious Gas from the previous step into §4Nefarious Oil§r.  [note]If you are proactive and setup grade 2 water production, you unlock a recipe that produces much more oil, with much less water, in much less time. §[[/note]
+  - [可选提交] gregtech:gt.metaitem.01:30555, gregtech:gt.metaitem.01:30120 x16
+  - [可选提交] gregtech:gt.metaitem.01:30554 x4, gregtech:gt.metaitem.01:30120 x16
+  - [提交] gregtech:gt.metaitem.01:30122 x12
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-7518403751933312267] §d§lNefarious Production
+Now that you're producing Nether Semifluid§r, you can run it through a §5§lDistillation Tower§r to start extracting the nefarious products. You will need the §4Heavy Hellish Mud§r later in the line, and you'll need the §4Nefarious Gas§r for the next step.  [note]Don't neglect the byproducts! There are a lot of useful bonus resources to be collected.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:30119 x100
+  - [提交] gregtech:gt.metaitem.03:32242 x8, gregtech:gt.metaitem.01:30120 x8
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinChemistIII
+
+### [-8616244885351402047] §d§lNether Air & Semifluid
+Ever take a deep breath while roaming the nether and start to feel lightheaded or dizzy? Turns out that's from the highly toxic air. There may be no saving our lungs, but at least we can take advantage of this dense air for our own material gain!  If you haven't already been taking advantage of the Nether Air for it's sulfurous properties, (talking to you, Nitrobenzene lovers) you'll need to take advantage of it now for making §4Nether Semifluid§r.  Setup a §5§lVacuum Freezer§r in the nether and attach an§2§l Air Intake Hatch§r to start collecting the Nether Air. You can move onto the next step once you've started Semifluid production. 
+  - [可选提交] gregtech:gt.blockmachines:861, gregtech:gt.metaitem.01:30118 x1000
+  - [提交] gregtech:gt.metaitem.01:30119 x100
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinChemistIII
+
+### [-8284474244884064236] §d§lNetherite Materials
+Now that you've completed the Netherite line and successfully set up your Mk1 Fusion Reactor, you finally have access to §5§lBoron Plasma§r, which is necessary for creating all of the different §4§lNetherite materials§r.   These will be important for the rest of the game and are used often in a variety of items and materials, so it's important to make upgrades to your line both in terms of power and recipe usage as you continue to progress through the tiers.  [note]UHV power and the QFT are the biggest milestones in terms of recipe upgrades for the line.[/note]
+  - [提交] gregtech:gt.metaitem.01:31009
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianIII x10
+
+### [-7135739436701952877] §d§lNetherite Nanoparticles
+§4Netherite Nanoparticles§r can be made from §5§lMacerating§r your newly attained Brittle Netherite Scraps.  [note]Almost seems too easy doesn't it?[/note]
+  - [可选提交] gregtech:gt.metaitem.03:32244
+  - [提交] gregtech:gt.metaitem.03:32245
+  > 奖励: dreamcraft:CoinTechnicianIII
+
+### [-7883545633909764694] §d§lNetherite Scrap
+Netherite Scrap is an integral part of the Netherite refinement process and fortunately you don't need very much of it. Technically you §nonly need two§r pieces of scrap, as they will constantly cycle from hot to cool while never actually being used up in the process §3(though, having more scrap handy could improve your setup efficiency).§r  You can obtain Netherite Scrap by either §5smelting§r Ancient Debris or using a §5§lForge Hammer§r on it. Though considering the forge hammer offers a §2§l25%§r chance at gaining an additional scrap, you would be a little crazy to choose the former.  If you're wondering where you can find Ancient Debris, try scouring the Nether. It's more likely to spawn lower near the lava, and is found sporadically like small ores are rather than being in large veins like usual GT ores. §3Miners can also collect it!§r  [warn]If you don't feel like leaving home, or are lacking blocks within your nether dimension, there is also a §lmeteor§r that can alleviate your Ancient Debris woes.[/warn]
+  - [可选提交] etfuturum:ancient_debris
+  - [提交] etfuturum:netherite_scrap x2
+  > 奖励: enhancedlootbags:lootbag:41 | dreamcraft:CoinAdventureIII
+
+### [-8480210258690868044] §d§lNetherite Scrap Seed
+Finally, we can start putting some of that Netherite Scrap to use!  Combine the Hot Netherite Scrap and some Rich Nether Waste in an §5§lAutoclave§r for a §2§l10%§r chance at getting a §4Netherite Scrap Seed§r.   Notably, as mentioned before, the Netherite Scrap gets recycled during this recipe so it only really costs Rich Nether Waste to create. Given the low probability, you want the recipe to be running as often as possible.
+  - [可选提交] gregtech:gt.metaitem.03:32247 x2, gregtech:gt.metaitem.01:30124 x2
+  - [提交] gregtech:gt.metaitem.03:32243
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistIII | dreamcraft:CoinTechnicianIII
+
+### [-5079329377019678961] §d§lNetherrack Froth
+To get §4Netherrack Froth§r, you can combine your milling products with your Nefarious Oil in a §5§lFlotation Cell§r.   [note]It would be wise to make a robust setup for this.[/note]
+  - [可选提交] miscutils:milledNetherrack x256, gregtech:gt.metaitem.01:30122 x8
+  - [提交] miscutils:FrothNetherrackflotation x8
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [-6508425876028650542] §d§lNetherrack Milling
+With the Netherite line comes the first mandatory usage of the §5§lIsamill Grinding Machine§r, which you will need to create§4 Milled Netherrack§r. You will require a lot of this so be prudent in keeping up with your netherrack and milling ball production.   For netherrack, the best methods of production are through the rock breaker using glowstone dust, or through compressing netherrack dust that you may have obtained a stash of through mining.  For the milling balls, you have two options:  §2§l- Soapstone ->§r§2 Cheaper, 50% as effective as Alumina §3§l- Alumina ->§r§3 More Expensive, 2x as effective as Soapstone
+  - [可选提交] minecraft:netherrack x2048, miscutils:item.BasicGenericChemItem:7
+  - [可选提交] minecraft:netherrack x4096, miscutils:item.BasicGenericChemItem:8
+  - [提交] miscutils:milledNetherrack x256
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII
+
+### [2929] §d§lNeutralization
+The solution is acidic now. Gallium will be separated when 8 < pH < 10.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10058
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2677] §d§lNo, It Won't Repair Your Car
+The Auto Maintenance Hatch will correct maintenance problems immediately at the cost of some materials. Invaluable if you want to make sure your cleanroom machines won't void stuff. Or you could just use a howler and do it yourself I guess.
+  - [提交] gregtech:gt.blockmachines:111
+  - [可选提交] gregtech:gt.metaitem.01:32764 x4, gregtech:gt.metaitem.01:30724 x2, gregtech:gt.metaitem.01:27305 x4, gregtech:gt.metaitem.03:32082 x2
+
+### [1490] §d§lNow You're Really Gonna Hate This 5 and 6 in LuV
+Some machines need Emitters and Sensors, like the Scanner or the Circuit Assembler.
+  - [提交] gregtech:gt.metaitem.01:32685, gregtech:gt.metaitem.01:32695
+  > 奖励: gregtech:gt.metaitem.01:11083 x8 | bartworks:gt.bwMetaGeneratedingot:88 x4 | enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianIII
+
+### [1489] §d§lNow You're Really Gonna Hate This 1-4 in LuV
+Pumps, pistons, conveyor modules and robot arms are the most needed machine parts in LuV. Go and craft one of each with your new Assembly Line.
+  - [提交] gregtech:gt.metaitem.01:32615, gregtech:gt.metaitem.01:32645, gregtech:gt.metaitem.01:32635, gregtech:gt.metaitem.01:32655
+  > 奖励: gregtech:gt.metaitem.01:11316 x32 | bartworks:gt.bwMetaGeneratedingot:88 x8 | enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianIII
+
+### [2935] §d§lP-507
+This solvent can be 100% recycled in the naquadah process line, so don't make a line for it.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10060
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2071] §d§lPanning For Gold is For Chumps
+Now that you've reached LuV you can make the god-tier prospector - The Electric Prospector. This handheld machine can provide detailed information on ores in the area, and return maps of how much UG fluid and what type is in each chunk.  Note that the range is determined by the tier and material (the durability seems to not matter). You can select an ore from the list to show only that ore, or double-click to switch dark/light mode.
+  - [提交] gregtech:gt.detrav.metatool.01:100
+  > 奖励: dreamcraft:CoinTechnicianII x5
+
+### [-7668518413732747417] §d§lPoor Nether Waste
+Once you've gathered enough froth, it can run through a §5§lVacuum Furnace§r to get a number of useful resources. Most importantly though, this is where we extract §4Poor Nether Waste§r; a quite valuable fluid to the Netherite line.
+  - [可选提交] miscutils:FrothNetherrackflotation x3
+  - [提交] gregtech:gt.metaitem.01:30123 x16
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2923] §d§lRecycle Fluorine
+Fluorine is one of the most important resources. You can recycle most fluorine from it.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10064
+
+### [2933] §d§lRecycle Gallium
+You have two options to deal with it.  1) React with Sodium Dust in a chemical reactor.  2) Mix it with Indium Phosphate Dust in a mixer.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10057
+
+### [2932] §d§lRecycle Titanium
+As to titanium trifluoride, you can recycle titanium and some hydrofluoric acid in EBF.
+  - [提交] bartworks:gt.bwMetaGenerateddust:10055
+
+### [2931] §d§lRecycle Waste Water
+The 'Waste Water' is still very useful to some extent and you can get something interesting from it.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10065
+
+### [-8274215243329909479] §d§lRelentless Glue
+Ethyl Cyanoacrylate, commonly known as Super Glue is the best glue there is. But with great power comes... great complexity. It's not needed now and probably for the next few tiers, but it will make your recipes more efficient and will be necessary in the lategame.  [note]Technically this line is available in IV, but only optional. Show your true skills by searching the recipes in NEI yourself![/note]
+  - [提交] miscutils:itemCellEthylCyanoacrylateSuperGlue x8
+  > 奖励: enhancedlootbags:lootbag:41 x3 | dreamcraft:CoinChemistIII x3 | dreamcraft:CoinTechnicianIII x3
+
+### [-6169558524259359740] §d§lRich Nether Waste
+§nOne§r of the ways you will be using the Poor Nether Waste is to combine it with the Hellish Mud you obtained earlier in the §5§lMixer§r to create §4Rich Nether Waste§r.   We will be using the Rich Nether Waste for the next step, and it will continue to be valuable for a while, though it does eventually become unnecessary to the line when you reach §4§lUHV.
+  - [可选提交] gregtech:gt.metaitem.03:32242 x32, gregtech:gt.metaitem.01:30123 x16
+  - [提交] gregtech:gt.metaitem.01:30124 x16
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2925] §d§lSeparate Solvent
+Distill the antimony pentachloride solution to get the pure antimony pentachloride liquid. You can recycle §6ALL§r of the ether.
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10032
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2940] §d§lSeparation
+IT COMES BACK AGAINNNNN? ! ! !  [note]You can find out more about the Neutron Activator and the Precise Assembler in the Multiblock tab.[/note]
+  - [提交] bartworks:gt.bwMetaGeneratedcell:10062
+  > 奖励: dreamcraft:CoinChemistIII
+
+### [2944] §d§lSilicon Boule
+You can also use naquadahine dust directly to make a Silicon Boule in the EBF. It takes less time than with naquadah ingots.
+  - [提交] gregtech:gt.metaitem.03:32032
+  > 奖励: gregtech:gt.metaitem.03:32035 x8
+
+### [1212] §d§lStarting Fusion
+Nuclear fusion is the next major step in your progression, and to accomplish it you will need a Fusion Reactor Mark I. You will unlock new materials across the next few tiers with fusion, making this a required multiblock. Europium is what you will need first to make it to ZPM.  At the same time, fusion can generate power for you, primarily via Helium Plasma in this first tier. The speed of the reactor can make for significant EU/t, but actually consuming this plasma fast enough at this early stage is difficult. You will have Large Plasma Turbines, which can run a buffered dynamo for 4 output amps. This might require a lot of spam compared to powergen setups you might be using, such as UCFE, vac nukes or other options. Later, you will unlock XL turbines and a fusion line for them.   For your first reactor, you will need a controller, 1-16 fluid input hatches, 1-16 fluid output hatches, and 16 LuV+ energy hatches. Each energy hatch has an energy capacity of 10M EU and draws up to 2048 EU/t.  That means you can do any fusion recipe with a start cost of 160M EU or less, and takes 32768 EU/t or less. Using more fluid hatches means you need less fusion casings. While this doesn't matter as much for the mk1 reactor, this principle helps tremendously with the higher reactor tiers.  [note]You'll notice that there is an option to create a Compact Fusion Reactor MKI instead of the normal size. This is available as an option for every tier of Fusion Reactor. They are not required by any means, but they are demonstrably quicker if you're willing to spend extra resources.[/note]
+  - [提交] gregtech:gt.blockmachines:1193, gregtech:gt.blockmachines:32019
+  - [可选提交] gregtech:gt.blockcasings:6 x108, gregtech:gt.blockcasings:15 x32, gregtech:gt.blockmachines:46 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII
+
+### [3091] §d§lSun Fusion
+Alternative way to mass produce Sunnarium.
+  - [可选提交] gregtech:gt.metaitem.01:31004, gregtech:gt.metaitem.99:811
+  - [提交] gregtech:gt.metaitem.99:318
+
+### [1680] §d§lThought Emitters Were Bad Enough?
+Field generators are a big part of lategame crafts. And yes, they always suck to make.
+  - [提交] gregtech:gt.metaitem.01:32675
+  > 奖励: gregtech:gt.metaitem.01:11083 x8 | bartworks:gt.bwMetaGeneratedingot:88 x4 | enhancedlootbags:lootbag:41 | dreamcraft:CoinTechnicianII x5
+
+### [1493] §d§lTier 6 (LuV)
+LuV-Level. You will need Rhodium-Plated Palladium for machines. Suggested planets and moons to visit: Jupiter's Moon Io, Venus and Mercury. Machine parts will now require an Assembly Line - Check Multiblock Goals for details.
+  - [提交] gregtech:gt.blockmachines:16
+  > 奖励: enhancedlootbags:lootbag:41 x2 | dreamcraft:CoinAdventureIII | dreamcraft:CoinSpaceIII | dreamcraft:CoinTechnicianIII
+

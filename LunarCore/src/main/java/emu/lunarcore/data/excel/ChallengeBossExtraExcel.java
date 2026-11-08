@@ -1,0 +1,30 @@
+package emu.lunarcore.data.excel;
+
+import emu.lunarcore.data.GameData;
+import emu.lunarcore.data.resource.GameResource;
+import emu.lunarcore.data.resource.ResourceType;
+import emu.lunarcore.data.resource.ResourceType.LoadPriority;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import lombok.Getter;
+
+@Getter
+@ResourceType(name = {"ChallengeBossMazeExtra.json"}, loadPriority = LoadPriority.LOW)
+public class ChallengeBossExtraExcel extends GameResource {
+    private int ID;
+    private int TurnLimit;
+    private int ClearScore;
+    private IntArrayList BattleTargetID;
+
+    @Override
+    public int getId() {
+        return ID;
+    }
+
+    @Override
+    public void onLoad() {
+        var challengeExcel = GameData.getChallengeExcelMap().get(this.getId());
+        if (challengeExcel != null) {
+            challengeExcel.setBossExcel(this);
+        }
+    }
+}

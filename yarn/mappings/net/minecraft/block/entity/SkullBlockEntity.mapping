@@ -1,0 +1,21 @@
+CLASS net/minecraft/class_2631 net/minecraft/block/entity/SkullBlockEntity
+	FIELD field_12087 owner Lnet/minecraft/class_9296;
+	FIELD field_41315 poweredTicks I
+	FIELD field_41316 powered Z
+	FIELD field_41602 NOTE_BLOCK_SOUND_NBT_KEY Ljava/lang/String;
+	FIELD field_41603 noteBlockSound Lnet/minecraft/class_2960;
+	FIELD field_49762 PROFILE_NBT_KEY Ljava/lang/String;
+	FIELD field_49763 CUSTOM_NAME_NBT_KEY Ljava/lang/String;
+	FIELD field_49765 customName Lnet/minecraft/class_2561;
+	METHOD <init> (Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)V
+		ARG 1 pos
+		ARG 2 state
+	METHOD method_11334 getOwner ()Lnet/minecraft/class_9296;
+	METHOD method_47588 getPoweredTicks (F)F
+		ARG 1 tickProgress
+	METHOD method_47589 tick (Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2631;)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 blockEntity
+	METHOD method_47888 getNoteBlockSound ()Lnet/minecraft/class_2960;

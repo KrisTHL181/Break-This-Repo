@@ -1,0 +1,5 @@
+CLASS net/minecraft/class_10331 net/minecraft/client/recipebook/RecipeBookType
+	FIELD field_54841 categories Ljava/util/List;
+	METHOD <init> (Ljava/lang/String;I[Lnet/minecraft/class_10355;)V
+		ARG 3 categories
+	METHOD method_64888 getCategories ()Ljava/util/List;

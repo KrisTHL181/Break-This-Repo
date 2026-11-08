@@ -1,0 +1,18 @@
+type: embed
+
+colour: blurple
+embed:
+    title: How to post your logs to get help
+
+---
+
+For support with crashes or other errors, provide the relevant logs:
+
+**Logs**: Located in the `logs` folder in your game directory. The latest log is a text file called `latest` or `latest.log`.
+**Crash reports**: Located in the `crash-reports` folder in your game directory. If generated, share the newest one.
+
+To make it easier for others to read, **do not copy-and-paste, screenshot, or significantly alter your logs**. 
+
+Upload logs to a paste site and share the link so others do not have to download it. Type `!!paste` for a list of sites. 
+
+-# For more information see [Fabric Documentation: Uploading Logs](<https://docs.fabricmc.net/players/troubleshooting/uploading-logs>)

@@ -1,0 +1,7 @@
+CLASS net/minecraft/class_3755 net/minecraft/datafixer/fix/ChunkLightRemoveFix
+	METHOD method_16440 (Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;
+		ARG 0 levelDynamic
+	METHOD method_16441 (Lcom/mojang/datafixers/OpticFinder;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
+		ARG 1 chunkTyped
+	METHOD method_16442 (Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;
+		ARG 0 levelTyped

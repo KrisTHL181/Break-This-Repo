@@ -1,0 +1,69 @@
+CLASS net/minecraft/class_2609 net/minecraft/block/entity/AbstractFurnaceBlockEntity
+	FIELD field_11982 BOTTOM_SLOTS [I
+	FIELD field_11983 SIDE_SLOTS [I
+	FIELD field_11984 inventory Lnet/minecraft/class_2371;
+	FIELD field_11986 recipesUsed Lit/unimi/dsi/fastutil/objects/Reference2IntOpenHashMap;
+	FIELD field_11987 TOP_SLOTS [I
+	FIELD field_11988 cookingTotalTime I
+	FIELD field_17374 propertyDelegate Lnet/minecraft/class_3913;
+	FIELD field_31286 INPUT_SLOT_INDEX I
+	FIELD field_31287 FUEL_SLOT_INDEX I
+	FIELD field_31288 OUTPUT_SLOT_INDEX I
+	FIELD field_31289 BURN_TIME_PROPERTY_INDEX I
+	FIELD field_31290 FUEL_TIME_PROPERTY_INDEX I
+	FIELD field_31291 COOK_TIME_PROPERTY_INDEX I
+	FIELD field_31292 COOK_TIME_TOTAL_PROPERTY_INDEX I
+	FIELD field_31293 PROPERTY_COUNT I
+	FIELD field_31294 DEFAULT_COOK_TIME I
+	FIELD field_38234 matchGetter Lnet/minecraft/class_1863$class_7266;
+	FIELD field_55574 litTimeRemaining I
+	FIELD field_55575 litTotalTime I
+	FIELD field_55576 cookingTimeSpent I
+	FIELD field_56671 CODEC Lcom/mojang/serialization/Codec;
+	FIELD field_57764 DEFAULT_LIT_TIME_REMAINING S
+	FIELD field_57765 DEFAULT_LIT_TOTAL_TIME S
+	FIELD field_57766 DEFAULT_COOKING_TIME_SPENT S
+	FIELD field_57767 DEFAULT_COOKING_TOTAL_TIME S
+	METHOD <init> (Lnet/minecraft/class_2591;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_3956;)V
+		ARG 1 blockEntityType
+		ARG 2 pos
+		ARG 3 state
+		ARG 4 recipeType
+	METHOD method_11192 canAcceptRecipeOutput (Lnet/minecraft/class_5455;Lnet/minecraft/class_8786;Lnet/minecraft/class_9696;Lnet/minecraft/class_2371;I)Z
+		ARG 0 dynamicRegistryManager
+		ARG 1 recipe
+		ARG 2 input
+		ARG 3 inventory
+		ARG 4 maxCount
+	METHOD method_11200 getFuelTime (Lnet/minecraft/class_9895;Lnet/minecraft/class_1799;)I
+		ARG 1 fuelRegistry
+		ARG 2 stack
+	METHOD method_11201 isBurning ()Z
+	METHOD method_11203 craftRecipe (Lnet/minecraft/class_5455;Lnet/minecraft/class_8786;Lnet/minecraft/class_9696;Lnet/minecraft/class_2371;I)Z
+		ARG 0 dynamicRegistryManager
+		ARG 1 recipe
+		ARG 2 input
+		ARG 3 inventory
+		ARG 4 maxCount
+	METHOD method_17029 getCookTime (Lnet/minecraft/class_3218;Lnet/minecraft/class_2609;)I
+		ARG 0 world
+		ARG 1 furnace
+	METHOD method_17760 dropExperience (Lnet/minecraft/class_3218;Lnet/minecraft/class_243;IF)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 multiplier
+		ARG 3 experience
+	METHOD method_17761 (Ljava/util/List;Lnet/minecraft/class_3218;Lnet/minecraft/class_243;Lit/unimi/dsi/fastutil/objects/Reference2IntMap$Entry;Lnet/minecraft/class_8786;)V
+		ARG 4 recipe
+	METHOD method_17763 dropExperienceForRecipesUsed (Lnet/minecraft/class_3222;)V
+		ARG 1 player
+	METHOD method_27354 getRecipesUsedAndDropExperience (Lnet/minecraft/class_3218;Lnet/minecraft/class_243;)Ljava/util/List;
+		ARG 1 world
+		ARG 2 pos
+	METHOD method_31651 tick (Lnet/minecraft/class_3218;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2609;)V
+		ARG 0 world
+		ARG 1 pos
+		ARG 2 state
+		ARG 3 blockEntity
+	METHOD method_53790 (Lnet/minecraft/class_8786;)Ljava/lang/Integer;
+		ARG 0 recipe

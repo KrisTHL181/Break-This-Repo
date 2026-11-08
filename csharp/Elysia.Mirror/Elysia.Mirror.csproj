@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>Elysia.Mirror</AssemblyName>
+    <RootNamespace>Elysia.Mirror</RootNamespace>
+    <Description>Runtime code generation and unloadable plugin hosting for the dream graph.</Description>
+  </PropertyGroup>
+
+  <!--
+    This is the load-bearing reference. `elysia` is a SYMLINK at the repository root that points
+    at the `submodules/dream-seeker-core` git submodule, and the build resolves the plugin
+    contract THROUGH that symlink. Delete the symlink, or forget to initialise the submodule,
+    and this project stops compiling.
+
+    That is deliberate. A symlink nobody resolves is decoration; this one is a build input.
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\elysia\src\DreamSeeker.Core\DreamSeeker.Core.csproj" />
+  </ItemGroup>
+
+</Project>

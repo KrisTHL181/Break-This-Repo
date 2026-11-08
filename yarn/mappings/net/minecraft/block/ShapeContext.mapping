@@ -1,0 +1,29 @@
+CLASS net/minecraft/class_3726 net/minecraft/block/ShapeContext
+	METHOD method_16192 isAbove (Lnet/minecraft/class_265;Lnet/minecraft/class_2338;Z)Z
+		ARG 1 shape
+		ARG 2 pos
+		ARG 3 defaultValue
+	METHOD method_16193 isDescending ()Z
+	METHOD method_16194 absent ()Lnet/minecraft/class_3726;
+	METHOD method_16195 of (Lnet/minecraft/class_1297;)Lnet/minecraft/class_3726;
+		ARG 0 entity
+	METHOD method_17785 isHolding (Lnet/minecraft/class_1792;)Z
+		ARG 1 item
+	METHOD method_27866 canWalkOnFluid (Lnet/minecraft/class_3610;Lnet/minecraft/class_3610;)Z
+		ARG 1 stateAbove
+		ARG 2 state
+	METHOD method_61893 of (Lnet/minecraft/class_1297;Z)Lnet/minecraft/class_3726;
+		ARG 0 entity
+		ARG 1 shouldTreatFluidAsCube
+	METHOD method_62878 getCollisionShape (Lnet/minecraft/class_2680;Lnet/minecraft/class_1941;Lnet/minecraft/class_2338;)Lnet/minecraft/class_265;
+		ARG 1 state
+		ARG 2 world
+		ARG 3 pos
+	METHOD method_67715 ofPlacement (Lnet/minecraft/class_1657;)Lnet/minecraft/class_3726;
+		ARG 0 player
+	METHOD method_67716 isPlacement ()Z
+	METHOD method_71491 ofCollision (Lnet/minecraft/class_1297;D)Lnet/minecraft/class_3726;
+		ARG 0 entity
+		ARG 1 y
+	METHOD method_73328 shouldTreatFluidAsCube ()Z
+	METHOD method_74169 absentTreatingFluidAsCube ()Lnet/minecraft/class_3726;

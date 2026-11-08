@@ -1,0 +1,388 @@
+# 任务线: Forestry and Multifarms
+### [2051] Another Path to Ethanol
+Using a fermenter with excess saplings or other garbage will give you Forestry biomass. Higher Sappiness trait on your trees will get you better results.
+  - [提交] Forestry:factory:3
+  > 奖励: enhancedlootbags:lootbag:19
+
+### [581] A Series of Tubes
+Before you can craft your first farm block you need apatite tubes. Make some apatite rods first with a lathe, then use a forge hammer to join them into long apatite rods. You need golden bolts and a red alloy plate.  Put some glass or sand into your thermionic fabricator and make your first tubes.  [note]You can also use the circuit assembler for a better output. Why did we have you make the TF again?[/note]
+  - [可选提交] gregtech:gt.metaitem.02:22530 x2, gregtech:gt.metaitem.01:26086 x2, gregtech:gt.metaitem.01:17308, gregtech:gt.metaitem.02:19035 x2, minecraft:glass x2
+  - [提交] Forestry:thermionicTubes:10 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestry x25
+
+### [2867] Aspen
+You can breed an Aspen by combining Common Alder and Common Beech.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2126] Balsa
+Balsa has some pretty wood. Breed it by mating Teak and Acacia.  §eHigh Fertility Get!
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2055] Better Fermenter Outputs
+With a Squeezer you can boost the output from your fermenter, saving on Fertilizer or Mulch and getting more per sapling. There's a variety of crops you can use to make fruit juice, so have fun breeding.
+  - [提交] Forestry:factory:5
+  > 奖励: enhancedlootbags:lootbag:19
+
+### [2121] Better Grafter Through Technology
+The GT Branch Cutter is much better than the forestry grafters. It can have much higher durability based upon which material you use to create it.
+  - [提交] gregtech:gt.metatool.01:30
+  > 奖励: Forestry:fruits:3 x64
+
+### [1215] Bio Gas Engine
+Producing RF power with lava is possible with the help of the biogas engine. You need water, fruit juice, liquid honey, milk, seed oil, or forestry biomass in the other slot. After a brief warmup time, the engine outputs up to 50 RF/t depending on the fluid used.  The possible fluids give the following power:  Water: 10 RF/t for 1k ticks Fruit juice: 10 RF/t for 2.5k ticks Liquid honey: 20 RF/t for 2.5k ticks Milk: 10 RF/t for 10k ticks Seed oil: 30 RF/t for 2.5k ticks Biomass: 50 RF/t for 2.5k ticks
+  - [可选提交] gregtech:gt.metaitem.01:17300 x2, gregtech:gt.metaitem.01:17526, gregtech:gt.metaitem.02:24300 x2, gregtech:gt.metaitem.02:31300 x2, Forestry:sturdyMachine, minecraft:piston (ore:craftingPiston)
+  - [提交] Forestry:engine:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15 | dreamcraft:CoinForestry x15
+
+### [1220] Blazing, Ender, Emerald Tubes
+Electron tubes are used to set farms to a special kind of crop and can be used in engines, alvearies and some crafting recipes.  Use a soldering iron to attach an electron tube to a circuit board.
+  - [可选提交] gregtech:gt.metaitem.02:22801 x2, gregtech:gt.metaitem.02:22533 x2, gregtech:gt.metaitem.02:22501 x2, gregtech:gt.metaitem.01:26086 x6, gregtech:gt.metaitem.01:17308 x3, gregtech:gt.metaitem.02:19035 x6, minecraft:glass x6
+  - [提交] Forestry:thermionicTubes:7 x2, Forestry:thermionicTubes:12 x2, Forestry:thermionicTubes:9 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestryI x5
+
+### [2135] Blue Mahoe
+The Blue Mahoe has the most sappiness of any tree. It will vastly increase the efficiency of your biomass production with Fermenters. Breed it by mating Balsa with Desert Acacia.  §6High Sappiness Get!
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [2256] Brazil Nut
+Brazil Nuts don't give you much in the way of important attributes. Breed them from Common Beech and Jungle.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2130] Bull Pine
+You can breed a Bull Pine by combining Red Spruce and Mundane Larch.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [584] Changing Your Foresty Circuit Configuration
+The (forestry) soldering iron is a tool used for attaching electron tubes to circuit boards in order to manipulate how an electrical engine works or to program multifarms, as well as upgrading the squeezer or centrifuge. Honestly, you'll probably only use it for the multifarm though.  Once electron tubes have been attached to a circuit board they cannot be removed, only replaced. The circuit board is automatically crafted as soon as the basic recipe requirements are met, so it's best practice to first place your electron tubes and then add the circuit board.  The soldering iron can also be used to remove the circuit board from electrical engines, multifarms, squeezers and centrifuges by opening the machine's GUI and left-clicking with the soldering iron on the circuit board slot.
+  - [可选提交] gregtech:gt.metaitem.01:23305 x2, gregtech:gt.metaitem.01:26305, IC2:itemRecipePart:3
+  - [提交] Forestry:solderingIron
+  > 奖励: Forestry:thermionicTubes:1 x4 | Forestry:thermionicTubes x4 | Forestry:thermionicTubes:2 x4 | enhancedlootbags:lootbag:19 | dreamcraft:CoinTechnician x25 | dreamcraft:CoinForestry x25
+
+### [1214] Clockwork Engine
+Producing RF Power by hand is a good idea for making one or two recipes in the Forestry machines. The turrets can be charged with it too.
+  - [可选提交] gregtech:gt.metaitem.01:17086 x2, gregtech:gt.metaitem.01:17526, gregtech:gt.metaitem.02:24304 x2, gregtech:gt.metaitem.02:31304 x2, Forestry:sturdyMachine, minecraft:piston (ore:craftingPiston)
+  - [提交] Forestry:engine:4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15 | dreamcraft:CoinForestry x15
+
+### [2862] Coast Sequoia
+You can breed a Coast Sequoia by combining Mundane Larch and Bull Pine.  [warn]Fireproof Wood Get! If you care.[/warn]
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling x9
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2134] Cocobolo
+The Cocobolo is a nice tall tree, perfect for mating into your other trees to maximize their yield. Breed it by mating Desert Acacia with Dark Oak.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [2257] Coconut
+Coconut is King for seed oil production - 300L per nut. Breed them from Brazil Nut and Balsa.  §eCoconut and Seed Oil Get!
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2084] Collecting the Hybrids
+If you got lucky and found some bees in a village, put them in their houses next to some trees. Over time the bees will slowly pollinate the leaves of the trees. Using a grafter you can break the leaf blocks to retrieve a sapling 100%, useful for getting the forestry saplings. This doesn't seem to work with magical trees though. You can trade with villagers to get proven grafters that have a longer lifetime. Also investigate magic, you have heard rumors of long lasting grafters available to magicians.  GregTech also offers a really nice tool, the Branch Cutter.
+  - [提交] Forestry:grafter
+  > 奖励: enhancedlootbags:lootbag:19 | Forestry:grafterProven | dreamcraft:CoinForestry x15
+
+### [2859] Combustion Engine
+The combustion engine combusts things for power like a car engine does. You need water in it if it's over 100 degrees, or it will explode. Don't run out of water! You turn it on with a redstone signal.  Your options for fuel are: Oil @30RF/t for a total of 150K Ethanol @40RF/t for a total of 360K Diesel @60RF/t for a total of 1,500K  [note]Make sure to use Oil, not raw, light, medium, or heavy oil.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:17302 x2, gregtech:gt.metaitem.01:17526, gregtech:gt.metaitem.02:24302 x2, gregtech:gt.metaitem.02:31302 x2, Forestry:sturdyMachine, minecraft:piston
+  - [提交] BuildCraft|Core:engineBlock:2
+  > 奖励: IC2:itemCellEmpty:1 x16 | bq_standard:choice | dreamcraft:CoinTechnician x15 | dreamcraft:CoinForestry x15
+
+### [2866] Common Alder
+You can breed a Common Alder by combining Silver Birch and Common Beech.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestryI | enhancedlootbags:lootbag:19
+
+### [2127] Common Beech
+Common Beech gives you access to the Faster maturity attribute. Breed them from Silver Birch and Apple Oak.  Note: For all tree breeding quests, the required tree must be a pure species, not a hybrid, and must be scanned.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [1217] Copper, Tin, Bronze Tubes
+Electron tubes are used to set farms to a special kind of crop and can be used in engines, alvearies and some crafting recipes.  Use a soldering iron to attach an electron tube to a circuit board.
+  - [可选提交] gregtech:gt.metaitem.02:22035 x6, gregtech:gt.metaitem.02:22057 x6, gregtech:gt.metaitem.02:22300 x6, gregtech:gt.metaitem.01:26086 x18, gregtech:gt.metaitem.01:17308 x9, gregtech:gt.metaitem.02:19035 x18, minecraft:glass x18
+  - [提交] Forestry:thermionicTubes x6, Forestry:thermionicTubes:1 x6, Forestry:thermionicTubes:2 x6
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestry x25
+
+### [2133] Desert Acacia
+Desert Acacia. Another step on the road. Breed it by mating Teak with Balsa.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2868] Elderberry
+You can breed an Elderberry by combining Common Alder and Aspen.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [593] Enhanced Farm Logic
+This circuit allows you to configure 2/4 areas of your farm.
+  - [可选提交] gregtech:gt.metaitem.03:32100, IC2:itemPartCircuit x2 (ore:circuitBasic), gregtech:gt.metaitem.01:27300 x4, gregtech:gt.metaitem.01:29300 x2, gregtech:gt.metaitem.02:19300
+  - [提交] Forestry:chipsets:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25 | dreamcraft:CoinForestry x25
+
+### [583] Farm Logic
+This chip allows you to select the farm type (when combined with the right electron tubes), and not use the default of growing trees. Unless that's what you want, in which case you don't need it.  For each circuit tier, you can configure 1/4 more of your farm.
+  - [可选提交] gregtech:gt.metaitem.03:32100, gregtech:gt.metaitem.01:32700 x2 (ore:circuitPrimitive), gregtech:gt.metaitem.01:27032 x4, gregtech:gt.metaitem.01:29032 x2, gregtech:gt.metaitem.02:19032
+  - [提交] Forestry:chipsets
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x25 | dreamcraft:CoinForestry x25
+
+### [588] Finding Apatite
+It's now time to search for some ores. Apatite is the most important material in Forestry. You can make fertilizer, farm blocks and other things with it. The vein is found between Y 40-60.
+  - [提交] gregtech:gt.blockores2:530 x64 (ore:oreApatite), gregtech:gt.blockores2:534 x16 (ore:orePhosphorite), gregtech:gt.blockores2:607 x16
+  - [提交] gregtech:gt.metaitem.03:5530 x64, gregtech:gt.metaitem.03:5534 x16, gregtech:gt.metaitem.03:5607 x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinAdventure x25 | dreamcraft:CoinFarmer x25
+
+### [577] Forestry Core Block
+This sturdy casing is the basis for almost all machines in Forestry, essentially being the Forestry equivalent of a machine casing.
+  - [可选提交] gregtech:gt.metaitem.02:18300 x8, gregtech:gt.metaitem.01:27305 x8, gregtech:gt.blockcasings:1 x2
+  - [提交] Forestry:sturdyMachine x2
+  > 奖励: Forestry:apiculture:2 x2 | bq_standard:choice | dreamcraft:CoinForestry x15
+
+### [-6114805307354858601] Forestry Core Block #2
+The upgraded casing for Forestry, used in multiple recipes for endgame Gendustry items and the Rainmaker. 
+  - [提交] Forestry:hardenedMachine
+  > 奖励: enhancedlootbags:lootbag:19
+
+### [2865] Giant Sequoia
+You can get Giant Sequoia by combining Coast Sequoia and Grandidier's Baobab.  §dBoth Height and §bGirth, Get!§r  [note]PS: If this doesn't work (NEI says yes, internet says no) you should also be able to trade a forestry villager for it.[/note]
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling x16
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [2873] Golden Raspberry
+You can get Golden Raspberry by combining Raspberry and Orange.  [warn]Fastest Maturity Get![/warn]  [note]That probably took forever, huh? BTW, it probably would've been faster to make more multifarms or farming stations instead.[/note]  [note]Also, you still gotta create the ultimate hybrid, too.[/note]
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [2864] Grandidier's Baobab
+You can get Grandidier's Baobab by combining Wenge and Balsa.  §eAbility to grow trees on sand, Get! Like you care.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling x9
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [585] Heating Coils
+Your thermionic fabricator needs heating coils to function. So combine some magnetized (requires polarizer) steel rods with some copper wire and make some.  [note]Why is this a separate quest again?[/note]
+  - [可选提交] gregtech:gt.metaitem.01:23355 x2, gregtech:gt.blockmachines:1360 x32
+  - [提交] IC2:itemRecipePart x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15
+
+### [2128] Hill Cherry
+Hill Cherry is a key tree for breeding purposes. Breed it by mating Silver Lime with Apple Oak or Silver Birch.
+  - [可选提交] Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2263] Industrial Grafter
+If you're tired of constantly replacing branch cutters, this Industrial Grafter is rechargeable.  [note]Or you could just make better ones.[/note]
+  - [提交] gendustry:IndustrialGrafter:100
+  > 奖励: enhancedlootbags:lootbag:19 x3
+
+### [595] Intricate Farm Logic
+This circuit allows you to configure 4/4 areas of your farm. Honestly, you should probably just skip the others.
+  - [提交] Forestry:chipsets:3
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x35 | dreamcraft:CoinForestry x35
+
+### [1218] Iron, Golden, Diamantine Tubes
+Electron tubes are used to set farms to a special kind of crop and can be used in engines, alvearies and some crafting recipes.  Use a soldering iron to attach an electron tube to a circuit board.
+  - [可选提交] gregtech:gt.metaitem.02:22032 x2, gregtech:gt.metaitem.02:22086 x2, gregtech:gt.metaitem.02:22500 x2, gregtech:gt.metaitem.01:26086 x6, gregtech:gt.metaitem.01:17308 x3, gregtech:gt.metaitem.02:19035 x6, minecraft:glass x6
+  - [提交] Forestry:thermionicTubes:3 x2, Forestry:thermionicTubes:4 x2, Forestry:thermionicTubes:5 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestry x25
+
+### [2107] Keeping Track of All Those Trees
+This device will keep track of all the trees you have discovered.
+  - [提交] ExtraTrees:database
+  > 奖励: Forestry:sapling
+
+### [2860] Kinesis Pipes
+To transfer RF power more than 1 block, you'll want some kinesis pipes. Use a wooden one first to connect to the pipe network, then other types to transfer it. That said, they seem to be lossy somewhat, so conduits are better, if more expensive. Also, you need capacitors to store the RF anyway.
+  - [提交] BuildCraft|Transport:item.buildcraftPipe.pipepowerwood, BuildCraft|Transport:item.buildcraftPipe.pipepowercobblestone
+  > 奖励: BuildCraft|Transport:item.buildcraftPipe.pipepowercobblestone x4 | dreamcraft:CoinTechnician x10 | dreamcraft:CoinForestry x10
+
+### [2131] Lemon
+Lemon trees are great for maximum fruit juice production. Breed it by mating Hill Cherry with Silver Lime.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2871] Manderine
+You can get Manderine by combining Pomelo and Hill Cherry.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [591] Multifarm: Control
+You can control which fields of your farm work by applying a redstone signal to the control block. You can either shut down the whole farm by applying a redstone signal from top or below or you can disable a specific side by applying a redstone signal on the matching side of the control block.
+  - [可选提交] Forestry:ffarm x2, IC2:itemPartCircuit x2 (ore:circuitBasic), gregtech:gt.metaitem.01:32600, gregtech:gt.blockmachines:1246, gregtech:gt.metaitem.02:31305, Forestry:thermionicTubes:4 x4
+  - [提交] Forestry:ffarm:5 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x25
+
+### [592] Multifarm: Gearbox
+To power your farm and have it automatically harvest crops, you will need at least one farm gearbox to supply power. You can use either RF or EU. If you use EU, make sure to use a cable to allow conversion. Farm operations can be hastened with additional gearboxes.  Testing has shown that splitting the amps to 4 gearboxes (4A ULV) works better than sending 1A LV to 4 gearboxes.  A max sized CropsNH Crop farm (5x4x5) using all space possible with max stat seeds (31/31/31) on a fast crop needs only 6A ULV to keep up.  Similarly, a max sized small farm (3x4x3) using all space possible with max stat seeds (31/31/31) on a high tier, moderate speed crop needs only 4A ULV.  Sending more power to the same gearbox doesn't work. If it can get to max RF capacity but your farm can't keep up, sending more power won't help, so add more gearboxes.  In addition, you lose 2 EU from the energy emitting device for every Amp of ULV (which is only 8 to begin with), so it's not nearly as efficient as using LV or higher. Just keep in mind that more A to more gearboxes is better than to the same one.  Of course, if you mix your slower crops with your faster ones, you aren't likely to need to min-max to this extent.
+  - [可选提交] Forestry:ffarm, gregtech:gt.metaitem.02:31305 x4, Forestry:thermionicTubes:2 x4, gregtech:gt.metaitem.01:32600
+  - [提交] Forestry:ffarm:2 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x25
+
+### [589] Multifarm: Hatch
+You can supply and extract items from the farm by using farm hatches that are connected to pipe systems.  Supplying items The farm hatch is clever enough to know which item goes where. If an item isn't appropriate for the farm's configuration, the hatch will simply reject it.  Extracting items Any item that is harvested by the Multifarm is automatically ejected by the farm hatches into inventories or pipes. Pipes can be used to extract from other sides. You may need more than one, or a better conveyor if it isn't extracting fast enough for you.
+  - [可选提交] Forestry:ffarm, gregtech:gt.metaitem.01:32630 x2, gregtech:gt.metaitem.01:32600, minecraft:hopper, gregtech:gt.metaitem.02:31305, Forestry:thermionicTubes:1 x4
+  - [提交] Forestry:ffarm:3 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x25
+
+### [590] Multifarm: Valve
+Most farms require water for hydration purposes. Although you can do it manually by supplying it through liquid containers (such as cans), you can also automate the process by using farm valves.  By connecting fluid pipes into the farm valve and supplying water, you can automatically fill the farm's water tank.  If it hasn't rained for a while, the required water will go up, up to 1500%. Use an Everfull Urn, or Reservoir (RIO) for serious water needs.
+  - [可选提交] Forestry:ffarm, gregtech:gt.metaitem.01:32610 x2, gregtech:gt.metaitem.01:32600, gregtech:gt.metaitem.01:28880, Forestry:thermionicTubes:11 x4, gregtech:gt.metaitem.02:31305
+  - [提交] Forestry:ffarm:4 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinFarmer x25
+
+### [2129] Mundane Larch
+You can breed a Mundane Larch by combining Red Spruce and Silver Birch or Apple Oak. You also need to do these to get Sequoias.  Note: For all tree breeding quests, the required tree must be a pure species, not a hybrid, and must be scanned.
+  - [可选提交] Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2872] Orange
+You can get Orange by combining Pomelo and Manderine.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [2101] Orchard Apple
+The Orchard Apple tree has a couple of nice traits. The Faster maturity trait means it will turn from sapling to tree quickly. The Higher yield is the best yield from any Forestry tree. Breed the Orchard Apple from an Apple Oak and Hill Cherry.  If you want Fastest maturity for quick tree farms, you can breed Golden Raspberry. Try and figure out the breeding chain yourself.  Higher Yield Get!
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2592] Papaya
+The Papaya tree produces Papayas, which produce the most Fruit Juice. Sluuuurp!  §aPapaya and Fruit Juice Get!
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [1216] Peat Fired Engine
+Peat fired engines use Peat or Bituminous Peat to run. Peat burns for 5000 ticks and produces 10 RF every tick, 1 peat makes 0.66 Ash, so you get 2 Ash for burning 3 peat. Bituminous Peat burns for 6000 ticks and produces 20 RF/tick.  Peat Farms can be set up by using a managed farm with tin electron tubes. It is possible with a manual farm too.
+  - [可选提交] gregtech:gt.metaitem.01:17032 x2, gregtech:gt.metaitem.01:17526, gregtech:gt.metaitem.02:24032 x2, gregtech:gt.metaitem.02:31032 x2, Forestry:sturdyMachine, minecraft:piston (ore:craftingPiston)
+  - [提交] Forestry:engine:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15 | dreamcraft:CoinForestry x15
+
+### [2132] Plum
+The Plum is a great multipurpose tree. It has High yield and its fruit produces mulch with the highest chance. It also has decent sappiness for biomass production. Breed it by mating Hill Cherry with Lemon.  §dPlum and Mulch Get!
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2870] Pomelo
+You can breed a Pomelo by combining Hill Cherry and Lemon.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [2869] Raspberry
+You can breed Raspberry by combining Hill Cherry and Elderberry.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [594] Refined Farm Logic
+This circuit allows you to configure 3/4 areas of your farm.
+  - [可选提交] gregtech:gt.metaitem.03:32101, gregtech:gt.metaitem.01:32702 x2 (ore:circuitGood), gregtech:gt.metaitem.01:27305 x4, gregtech:gt.metaitem.01:29305 x2, gregtech:gt.metaitem.02:19305
+  - [提交] Forestry:chipsets:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x30 | dreamcraft:CoinForestry x30
+
+### [1219] Rubberised, Obsidian, Lapis Tubes
+Electron tubes are used to set farms to a special kind of crop and can be used in engines, alvearies and some crafting recipes.  Use a soldering iron to attach an electron tube to a circuit board.
+  - [可选提交] gregtech:gt.metaitem.02:22880 x2, dreamcraft:LongObsidianRod x2, gregtech:gt.metaitem.02:22526 x2, gregtech:gt.metaitem.01:26086 x6, gregtech:gt.metaitem.01:17308 x3, gregtech:gt.metaitem.02:19035 x6, minecraft:glass x6
+  - [提交] Forestry:thermionicTubes:8 x2, Forestry:thermionicTubes:6 x2, Forestry:thermionicTubes:11 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinForestry x25
+
+### [2085] Seeing the Fruits of Your Labor
+It can be difficult to see which leafy blocks are pollinated. Craft a pair of spectacles to get a better view.
+  - [提交] Forestry:naturalistHelmet
+  > 奖励: Forestry:grafterProven
+
+### [2124] Silver Lime
+Silver Lime, a basic tree breed. Breed it by mating Silver Birch with Apple Oak.  Note: For all tree breeding quests, the required tree must be a pure species, not a hybrid, and must be scanned.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestryI | enhancedlootbags:lootbag:19
+
+### [2122] Speak For the Trees
+You'll need to find a bunch of vanilla trees to start your breeding program. To convert them directly to Forestry trees, you can use a Treealyzer - but you'll need a carpenter and aluminium from MV for that. Alternatively, you can just grow a bunch of vanilla trees and surround them by good pollination bees in bee housing. Spectacles will help you see the fertilized leaves to harvest with your Grafter or Branch Cutter.  Completing the quests will require scanned trees, but you can progress on breeding while waiting for your GT Scanner or Treealyzer to be made.
+  - [提交] Forestry:sapling x4, Forestry:sapling x4, Forestry:sapling x4, Forestry:sapling x4, Forestry:sapling x4, Forestry:sapling x4
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [2083] Such Pretty Leaves...
+Now that you have entered MV you can begin breeding Forestry trees the smart way. Start by getting a Treealyzer, and scan the vanilla trees. They will transform into the forestry versions. You will need to gather honey or honeydew drops from bee combs to power the Treealyzer.  If you want to bulk scan saplings, you can feed them through a GT scanner filled with honey.  You can also try the Genetics mod to modify them. It's on the first bee tab.
+  - [提交] Forestry:treealyzer
+  > 奖励: enhancedlootbags:lootbag:19 | Forestry:honeyDrop x64 | dreamcraft:CoinForestry x15
+
+### [2125] Teak
+Teak is the first step to Giant Sequoia, a true giant. Breed it by mating Dark Oak and Jungle.  Note: For all tree breeding quests, the required tree must be a pure species, not a hybrid, and must be scanned.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling
+  > 奖励: dreamcraft:CoinForestry x15 | enhancedlootbags:lootbag:19
+
+### [578] The Carpenter
+The carpenter is similar to an automatic crafting table. It has an item input slot and a storage slot for the recipes. Some recipes need an additional fluid like water, creosote, honey or molten redstone. With the carpenter you can make farmblocks, woven backpacks, bee and tree analyzers and many more.  The carpenter needs power to work. You can use a GT cable or a battery box to connect to the machine or make some forestry, railcraft or buildcraft RF engines.  [note]PS: Yes it's a pain in the ass to automate, just make one for each thing you want to make.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:17310 x2, gregtech:gt.metaitem.01:32650 x2, gregtech:gt.metaitem.01:32600, gregtech:gt.metaitem.02:20305 x2, BuildCraft|Factory:tankBlock, Forestry:sturdyMachine
+  - [提交] Forestry:factory:1
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15 | dreamcraft:CoinForestry x15
+
+### [994] The Centrifuge
+The Forestry Centrifuge is able to centrifuge up to 9 items out of bee combs. It uses RF energy.  Latter bee combs need the GT one though, so keep that in mind.
+  - [可选提交] gregtech:gt.metaitem.01:17310 x2, gregtech:gt.metaitem.01:32600 x2, dreamcraft:SteelBars x2, gregtech:gt.metaitem.02:20305 x2, Forestry:sturdyMachine
+  - [提交] Forestry:factory:2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x15 | dreamcraft:CoinBees x15 | dreamcraft:CoinForestry x15
+
+### [582] The Multifarm
+The smallest farm you can build requires 36 farm blocks (3x4x3 - the largest is 5x4x5 or 100 farm blocks). Place the underlying blocks corresponding to the farm type you built. In this case, Stone Bricks. You can place these blocks beside or under the multi structure, but not the layer above. It will search 6 blocks above these for dirt/farmland/sand/soul sand/humus depending on farm type, with the appropriate crops, saplings, etc. on top of that.  You can use different modes to collect different crops. Arboretum for trees, infernal for nether wart and so on. You can even mix and match modes on the same farm - cutting trees down for wood in part, and collecting fruit from trees without destroying it in another, for example. So long as they're on different sides, at least.  You may need to experiment a bit to see what works, but [url]https://wiki.gtnewhorizons.com/wiki/Multifarm[/url] has a decent list, though it doesn't specify cotton for managed crop farms for example. It might be a GTNH change, I dunno. A number of crops have an added CropsNH crop version as well, so you may prefer those for the higher yield if you level them up. Orchard mode works with Pam's, and Witchery, just to save you some time. Pam's nether crops however don't seem to work at all though.
+  - [可选提交] minecraft:stonebrick x9, gregtech:gt.metaitem.02:18035 x36, gregtech:gt.metaitem.01:27305 x36, Forestry:thermionicTubes:10 x9
+  - [提交] Forestry:ffarm x36
+  > 奖励: gregtech:gt.metaitem.01:11305 x9 | gregtech:gt.metaitem.01:11035 x9 | dreamcraft:CoinTechnician x25 | dreamcraft:CoinFarmer x25 | dreamcraft:CoinForestry x25
+
+### [-5708915228904413980] THE RAINMAKER
+The Rainmaker is a Forestry block capable of stopping/producing rain & creating thunderstorms.  The Rainmaker has no GUI, but can be right clicked with §a3§r different capsules:  §cIodine Capsule:§r Produces Rain  §cPhosphoric Iodine Capsule:§r Produces a Thunderstorm  §cDissipation Charge:§r Stops Rain  The Rainmaker requires around ~30 seconds after activation for the §9rain§r and §9thunderstorm§r to start.  The dissipation charge will stop the rain after a few seconds until the next activation. 
+  - [可选提交] Forestry:iodineCapsule, Forestry:phosphoricIodineCapsule, Forestry:craftingMaterial:4
+  - [提交] Forestry:factory:7
+  > 奖励: enhancedlootbags:lootbag:20
+
+### [580] Thermionic Fabricator
+The thermionic fabricator is used to craft electron tubes and stained glass. It requires redstone flux (RF) energy to run.  It is your first machine made in the carpenter. Once warmed up, it needs to maintain a certain heat level to operate. The amount of power supplied will determine how much heat will be generated. If you do not supply enough power to maintain the current temperature it will slowly drop. It will continuously draw power, so disconnect it if you don't need it.
+  - [可选提交] IC2:itemRecipePart x2, gregtech:gt.metaitem.01:32600, BuildCraft|Factory:tankBlock, gregtech:gt.metaitem.01:27305 x4, Forestry:sturdyMachine, Forestry:factory2:2
+  - [提交] Forestry:factory2
+  > 奖励: minecraft:glass x16 | gregtech:gt.metaitem.01:8530 x16 | minecraft:dye:4 x16 | dreamcraft:CoinTechnician x25 | dreamcraft:CoinForestry x15
+
+### [2771] U-238 Tu-Wait, Seriously?
+If you want CropsNH crops to work with the multifarm, you now need this. Get the U-238 from thorium, and the endereyes from either your crops, villagers, or the normal way in HV. It also only searches 6 blocks above the farm structure block to prevent lag. So goodbye MF stacking, you always looked dumb, and didn't make any sense.  The largest size supports ~1100 crops, while the smallest supports ~600 depending on your layout if you use it for crops. This is because it will look for crops up to 5 blocks out further than normal in this mode (In the cardinal directions, it's further out in the corners. Just try it out, it's hard to describe). They're the same size as in previous versions, so you don't need to rejigger them.
+  - [提交] Forestry:thermionicTubes:13 x4
+  > 奖励: Forestry:thermionicTubes:13 x4 | enhancedlootbags:lootbag:6 | dreamcraft:CoinForestryII
+
+### [2863] Wenge
+You can get Wenge by combining Balsa and Cocobolo.
+  - [可选提交] Forestry:sapling, Forestry:sapling
+  - [提交] Forestry:sapling x4
+  > 奖励: dreamcraft:CoinForestry x30 | enhancedlootbags:lootbag:19
+
+### [2052] Why No, This is Not Fit For Human Consumption
+Taking the biomass from the Fermenter and using it in a still will give you Ethanol. Not really worth it for power, but useful if you want to turn it into ethylene. You could set it up on an old steam setup with nothing better to do to get a more useful power source out of it, or use the Ethanol to power the setup and the forestry farm.
+  - [提交] Forestry:factory:6
+  > 奖励: IC2:itemFuelPlantBall x64 | enhancedlootbags:lootbag:19
+

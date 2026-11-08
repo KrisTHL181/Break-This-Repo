@@ -1,0 +1,43 @@
+CLASS net/minecraft/class_7280 net/minecraft/client/render/entity/model/WardenEntityModel
+	FIELD field_38315 bone Lnet/minecraft/class_630;
+	FIELD field_38316 body Lnet/minecraft/class_630;
+	FIELD field_38317 head Lnet/minecraft/class_630;
+	FIELD field_38318 rightTendril Lnet/minecraft/class_630;
+	FIELD field_38319 leftTendril Lnet/minecraft/class_630;
+	FIELD field_38320 leftLeg Lnet/minecraft/class_630;
+	FIELD field_38321 leftArm Lnet/minecraft/class_630;
+	FIELD field_38322 rightArm Lnet/minecraft/class_630;
+	FIELD field_38323 rightLeg Lnet/minecraft/class_630;
+	FIELD field_38449 leftRibcage Lnet/minecraft/class_630;
+	FIELD field_38450 rightRibcage Lnet/minecraft/class_630;
+	FIELD field_60912 attackingAnimation Lnet/minecraft/class_11509;
+	FIELD field_60913 chargingSonicBoomAnimation Lnet/minecraft/class_11509;
+	FIELD field_60914 diggingAnimation Lnet/minecraft/class_11509;
+	FIELD field_60915 emergingAnimation Lnet/minecraft/class_11509;
+	FIELD field_60916 roaringAnimation Lnet/minecraft/class_11509;
+	FIELD field_60917 sniffingAnimation Lnet/minecraft/class_11509;
+	METHOD method_42578 getTexturedModelData ()Lnet/minecraft/class_5607;
+	METHOD method_42734 setHeadAndBodyAngles (F)V
+		ARG 1 animationProgress
+	METHOD method_42735 setHeadAngle (FF)V
+		ARG 1 yaw
+		ARG 2 pitch
+	METHOD method_42736 setTendrilPitches (Lnet/minecraft/class_10081;F)V
+		ARG 1 state
+		ARG 2 animationProgress
+	METHOD method_42737 setLimbAngles (FF)V
+		ARG 1 angle
+		ARG 2 distance
+	METHOD method_42742 setArmPivots ()V
+	METHOD method_72869 (Lnet/minecraft/class_5609;)Lnet/minecraft/class_5609;
+		ARG 0 modelData
+	METHOD method_72870 getTendrilsTexturedModelData ()Lnet/minecraft/class_5607;
+	METHOD method_72871 (Lnet/minecraft/class_5609;)Lnet/minecraft/class_5609;
+		ARG 0 modelData
+	METHOD method_72872 getHeartTexturedModelData ()Lnet/minecraft/class_5607;
+	METHOD method_72873 (Lnet/minecraft/class_5609;)Lnet/minecraft/class_5609;
+		ARG 0 modelData
+	METHOD method_72874 getBioluminescentTexturedModelData ()Lnet/minecraft/class_5607;
+	METHOD method_72875 (Lnet/minecraft/class_5609;)Lnet/minecraft/class_5609;
+		ARG 0 modelData
+	METHOD method_72876 getPulsatingSpotsTexturedModelData ()Lnet/minecraft/class_5607;

@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Nullable>enable</Nullable>
+    <RootNamespace>QuicTrace</RootNamespace>
+    <NoWarn>1701;1702;CA1036;CA1815;CA1720;CA1008;CA1711;CA1028;CA1014;CA1002</NoWarn>
+    <Authors>Microsoft</Authors>
+    <Company>Microsoft Corporation</Company>
+    <Copyright>Microsoft Corporation</Copyright>
+    <PackageProjectUrl>https://github.com/microsoft/msquic</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/microsoft/msquic.git</RepositoryUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" />
+    <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent.SupportFiles" />
+    <PackageReference Include="Microsoft.Performance.SDK" IncludeAssets="compile" />
+    <PackageReference Include="Microsoft.Performance.Toolkit.Plugins.LTTngPlugin" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(SolutionDir)..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="pluginManifest.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

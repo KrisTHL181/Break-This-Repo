@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.gamerule.client",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "AbstractGameRulesScreenAccessor",
+    "AbstractGameRulesScreenRuleListAccessor",
+    "RuleListEntryTypeVisitorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

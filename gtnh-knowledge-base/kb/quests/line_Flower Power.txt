@@ -1,0 +1,233 @@
+# 任务线: Flower Power
+### [3258] A Botanist's Best Friend
+Functional flowers are a large part of Botania. Most of them have nuances to how they operate, and these are generally best explained in the Lexica Botania: a codex of all Botania knowledge. This questline will explain the basics, but be sure to keep a copy of the Lexica Botania on hand so you can easily reference the details.  Besides being a repository of useful information, the Lexica Botania has another function: if, while holding it, you look at any Botania block in the world, you can shift-right-click on that block to open up the relevant page.  Something else you'll want for functional flowers is a handful of redstone roots. Flowers which have a redstone root in their recipe have the ability to toggle whether they are active by applying a redstone signal. Make a few before you move on.
+  - [提交] Botania:lexicon
+  - [提交] Botania:manaResource:6 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinFlowerI x5 | Botania:manaResource:6 x2
+
+### [3270] According To All Known Laws Of Mana Generation...
+...there is no way a bee should be able to produce mana. The beegonia doesn't know this, and will gladly eat up all of your spare drones to help with filling your mana pools.
+  - [提交] Botania:specialFlower
+  > 奖励: dreamcraft:CoinBeesI x15 | dreamcraft:CoinFlowerI x15
+
+### [3232] A Deal With Alfar Industries
+So the rumors about the elves are true. Well, §owere§r true. Some are still true. And what isn't true used to be true.  Turns out they have since been talking to a mysterious individual they call the §oDream Master§r. Apparently that sparked an industrial revolution among the Alfar. Sadly, that means that they now insist on receiving the latest fashion in machinery to fuel their ever-expanding factories, in exchange for the elven materials that are now rapidly going out of fashion.  Someone needs to have a word with this guy...
+  - [提交] Botania:manaResource:8 (ore:elvenPixieDust), Botania:manaResource:9 (ore:elvenDragonstone), Botania:dreamwood, Botania:manaResource:7 (ore:ingotElvenElementium), Botania:elfGlass, Botania:quartz:5 (ore:quartzElven)
+  > 奖励: dreamcraft:CoinFlowerIII x5
+
+### [3227] A Glimpse Into A Watery Future
+The next step is to make some catalysts. The Alchemical catalyst can use mana to change one item or block into a related item or block.  Put it under a filled mana pool, then try it out by making some prismarine.  The recipe will need to be researched in the Thaumonomicon.
+  - [提交] Botania:alchemyCatalyst
+  - [提交] Botania:manaResource:10 x4 (ore:shardPrismarine)
+  > 奖励: dreamcraft:CoinFlowerII x5
+
+### [3230] Alfheim
+Legends speak of a portal to a different realm filled with green energy.
+  - [提交] Botania:pylon:1 x2, Botania:livingwood:5 x3, Botania:alfheimPortal, Botania:livingwood x8, Botania:pool x2
+  > 奖励: dreamcraft:CoinFlowerIII x2
+
+### [3259] Anti-Magnetism
+If you've made a ring of magnetization, you may be getting tired of having to take it off around various Botania systems that require items to be on the ground in order to interact with flowers. The solegnolia is your solution to that. Simply place one down anywhere you don't want items to be automatically put in your inventory, and the ring of magnetization will be disabled while you're in the vicinity of the solegnolia. It doesn't even require mana!
+  - [提交] Botania:specialFlower
+  > 奖励: Botania:mushroom:12 | dreamcraft:CoinFlowerI x10
+
+### [-7392996829794634546] Asgardandelion
+A passive mana generating flower that can produce a never-ending torrent of mana.
+  - [提交] Botania:specialFlower
+  > 奖励: Botania:tinyPotato x64 | dreamcraft:CoinFlowerIV x2
+
+### [3263] Better Generating Flowers
+If you want anything better than an endoflame, you'll need a runic altar. Fortunately, most runes are easily crafted as soon as you can make the runic altar. Sinful runes, however, require titanium to make. For now, just make one of each of the elemental runes; that'll be enough to get you started.
+  - [提交] Botania:rune, Botania:rune:1, Botania:rune:2, Botania:rune:3
+  > 奖励: Botania:manaResource x16 | dreamcraft:CoinFlowerII x10
+
+### [3228] Botanic Infusion
+The infusion altar will allow you to make runes, which in turn gives you access to progressively more advanced flowers.  To operate the altar, drop the ingredients on top, whack it with a wand of the forest, and when it's done drop a livingrock block on top to complete the craft. You will additionally need a mana source, such as a mana spreader pointing at it.
+  - [提交] Botania:runeAltar
+  > 奖励: dreamcraft:CoinFlowerII x10
+
+### [3269] Chickenization
+The soarleander generates mana by consuming anything chicken-related, including entire chickens.
+  - [提交] Botania:specialFlower
+  > 奖励: OpenBlocks:trophy | dreamcraft:CoinFlowerII x5
+
+### [3256] Dark Energy
+Perhaps not the kind of "dark energy" you're familiar with, the nightshade produces mana at night. Like other passive generating flowers, it dies after an hour.
+  - [提交] Botania:specialFlower
+  > 奖励: Botania:specialFlower | dreamcraft:CoinFlowerI x5
+
+### [3265] Experienced Botanist
+The Rosa Arcana transmutes experience into mana. A player standing near it will have their experience drained for this purpose. This process is unfortunately not very practical to automate, as the experience can only be extracted directly from a player or from orbs on the ground. It might be wise to place it somewhere you spend a lot of time.
+  - [提交] Botania:specialFlower
+  > 奖励: minecraft:experience_bottle x8 | dreamcraft:CoinFlowerII x5
+
+### [3221] Flower Grafting
+The first item you want to make is the Petal Apothecary. A mushroom is needed to anoint it and give it its restorative properties.  To operate it, fill it with a bucket of water to keep the plants hydrated. After that you can add the ingredients by dropping them on top.  Each craft requires some magical ingredients, but also one or more regular flowers from the world that can function as a stable base. Once you've added all the ingredients, finish the craft by adding a seed. Any vanilla seed will do.
+  - [可选提交] gregtech:gt.metaitem.01:17305 x2 (ore:plateSteel), gregtech:gt.metaitem.01:27305 x2, minecraft:cauldron, minecraft:stone x2, gregtech:gt.blockmetal6:10 (ore:blockSilver)
+  - [提交] Botania:altar
+  > 奖励: dreamcraft:CoinFlowerI x5
+
+### [3267] Flower!!! Unlimited Flower!!!
+The jaded amaranthus causes mystical flowers to grow all around it. Their vibrant petals can be used for magic, so you no longer have to go foraging for mushrooms.  There §ois§r another way of getting these, but you'll have to figure that one out for yourself.
+  - [提交] Botania:specialFlower
+  - [提交] Botania:flower x4, Botania:flower:1 x4, Botania:flower:2 x4, Botania:flower:3 x4, Botania:flower:4 x4, Botania:flower:5 x4, Botania:flower:6 x4, Botania:flower:7 x4, Botania:flower:8 x4, Botania:flower:9 x4, Botania:flower:10 x4, Botania:flower:11 x4, Botania:flower:12 x4, Botania:flower:13 x4, Botania:flower:14 x4, Botania:flower:15 x4
+  > 奖励: Botania:rune:8 x2 | dreamcraft:CoinFlowerII x20
+
+### [-6702648857746689045] Fountain Of Alchemy
+The Fountain of Alchemy as you may guess, is functionally just like the Mana Fountain, except it can handle the recipes that you would typically need an Alchemy Rune underneath a Mana Pool for.  If you need any further details about its functionality, check out the Mana Fountain quest or the Lexica Botania.  [warn]This cannot do regular Mana Pool recipes, only Alchemy recipes.[/warn]  [note]If, for whatever reason, you needed an abundance of prismarine in the future... perhaps a quad Fountain of Alchemy would be an excellent aid in obtaining that.[/note]
+  - [可选提交] Botania:livingrock x26, Botania:quartzTypeSunny:1 x9, Botania:quartzSlabSunnyHalf x2, Botania:pool
+  - [提交] botanichorizons:automatedAlchemyPool
+  > 奖励: bq_standard:choice | dreamcraft:CoinFlowerIII | dreamcraft:CoinTechnicianII x2
+
+### [-7243693864692384265] Fountain Of Conjuration
+The Fountain of Conjuration, as I'm sincerely hoping you can guess at this point, functions exactly like the Mana Fountain and the Fountain of Alchemy, except it handles §nexclusively§r recipes that are typically done with a Conjuration Catalyst underneath a Mana Pool.  If you need any further details about its functionality, check out the Mana Fountain quest or the Lexica Botania.  [note]Reminder that this can also wall-share with any type of Mana Fountain you may currently have.[/note]
+  - [可选提交] Botania:livingrock x26, Botania:quartzTypeElf:1 x9, Botania:quartzSlabElfHalf x2, Botania:pool
+  - [提交] botanichorizons:automatedConjurationPool
+  > 奖励: bq_standard:choice | dreamcraft:CoinFlowerIII x3 | dreamcraft:CoinTechnicianII x5
+
+### [3255] Hydrobotanic Energy
+Mana is blue. Water is also blue. There's a correlation there, and the hydroangea turns that correlation into causation. Place a water source block nearby, and the hydroangea will consume it to produce mana - until it dies after an hour.  This one can be a bit tricky to automate given the lack of naturally-regenerating source blocks.
+  - [提交] Botania:specialFlower
+  > 奖励: Botania:specialFlower | dreamcraft:CoinFlowerI x10
+
+### [3257] Is This A Combustion Generator?
+The endoflame burns combustible materials in order to produce mana. It can efficiently consume fuels with a burn time of up to 64000 per item (equivalent to four blocks of coal); any burn time beyond this will be wasted. Endoflames don't die like passive flowers do, and are simple to use, so it's a good idea to make several of them.
+  - [提交] Botania:specialFlower x2
+  > 奖励: Railcraft:cube x4 | dreamcraft:CoinFlowerI x20
+
+### [-5190000451783132175] Laputa I
+The item when used will raise a sphere of land into the air, centered on the selected block. The radius of the sphere and the height elevated are determined by the Shard Power. The process is not instant, and instead will move each block at a time until every block within a radius is moved. Blocks that rely on walls or floors, such as torches and crops, will drop in the process, as the required support is not moved alongside.  You can also use this to summon a meteor that contains Gaia blocks if you prefer to automate the production of Gaia spirit rather than fighting the boss over and over.
+  - [提交] Botania:laputaShard
+  > 奖励: dreamcraft:CoinFlowerIII x2
+
+### [-8292298142465967897] LAPUTA XX
+The most powerful version of the Laputa shard. Using its power you can raise entire islands at a whim!
+  - [提交] Botania:laputaShard:19
+  > 奖励: dreamcraft:CoinFlowerIV x10 | gregtech:gt.metaitem.01:9205
+
+### [-5237970507635708994] Loonium
+This flower uses mana to randomly produce dungeon loot that would be found in chests in your world. This loot drops as items. It can be disabled at will by applying a redstone signal.  [note]Here you have a list of all possible drops[/note]  [url]https://docs.google.com/spreadsheets/d/1EzFQYnL53GdzXxs6H2lVM2QJEgNEAUG1vSS-15DPPSM/edit?gid=0#gid=0[/url]
+  - [提交] Botania:specialFlower
+  > 奖励: EMT:TaintedMjolnir | dreamcraft:CoinFlowerII x5
+
+### [-6537114218531802289] Magical Techno-Glass
+After obtaining your first mana, you can craft mana glass. It can be used as a cheaper substitute for EV glass in multiblock machines, recipes, and general construction.  [note]Alfglass unlocks later, at the EV+ tier and can, in turn, be used as IV-tier glass.[/note]
+  - [提交] Botania:manaGlass x16
+  - [可选提交] Botania:elfGlass x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinFlowerI x5 | dreamcraft:CoinTechnicianI x5
+
+### [3262] Magic Blue Dust
+You'll need mana powder to proceed. Make four to start out with.
+  - [提交] Botania:manaResource:23 x4
+  > 奖励: minecraft:glowstone_dust x16 | dreamcraft:CoinFlowerI x10
+
+### [3226] Mana Diamonds
+Mana diamonds are magically enhanced diamonds, and they require more or less energy depending on the quality of the gem you're trying to enchant.  A completely full diluted pool is barely able to make a mana diamond out of an exquisite diamond. Once you upgrade the pool you can use regular diamonds - be it at a higher mana cost.
+  - [可选提交] gregtech:gt.metaitem.02:30500 (ore:gemExquisiteDiamond)
+  - [可选提交] minecraft:diamond
+  - [提交] Botania:manaResource:2
+  > 奖励: dreamcraft:CoinFlowerI x10
+
+### [-9054185358983654723] Mana Fountain
+The Mana Fountain allows for quick and seamless automation of Mana Pool recipes.  You can assemble the multiblock as specified in the Lexica Botania / NEI. After it's assembled, right clicking it using the Wand of the Forest will show you whether it's complete and the amount of internally stored mana.  You can send the controller mana directly by either using a spreader or a spark much like a Mana Pool. Technically you don't have to use the Mana Pool in the center of the multiblock for it to function, but it is placed conveniently so that you can (plus, it doesn't hurt to have an extra buffer).  Items are allowed to input from any side of the controller, but can only output from the bottom. For early automation, it's recommended to just use hoppers. Once you unlock AE2 however you can simply place an interface underneath the controller with the appropriate patterns and it should push and pull items automatically.  [warn]You cannot craft Alchemy or Conjuration recipes using this multiblock, those are separate multiblocks that you will unlock with more advanced robot arm technology.[/warn]  [note]This structure can absolutely wall-share. It has the perfect design to be able to share 4 different Mana Fountains between the center pool.[/note]
+  - [可选提交] Botania:livingrock x26, Botania:quartzTypeMana:1 x9, Botania:quartzSlabManaHalf x2, Botania:pool
+  - [提交] botanichorizons:automatedCraftingPool
+  > 奖励: bq_standard:choice | dreamcraft:CoinFlowerII x5 | dreamcraft:CoinTechnicianII
+
+### [3266] Mmmmmm, Slimy!
+Have you ever seen a slime and thought "I'd love to eat that"? The narslimmus has.  It needs to be planted somewhere slimes can naturally appear, but if you can find a good place for a narslimmus it'll consume those slimes and give you a good amount of mana in return.
+  - [提交] Botania:specialFlower
+  > 奖励: dreamcraft:CoinFlowerII x5 | TConstruct:slime.gel:2 x64
+
+### [3253] Moron's Manual For Mana Manufacture And Manipulation
+To use the power of magical flowers, you must understand how to generate and manipulate mana. This ethereal blue-ish substance is produced by generating flowers, when their requirements are met. Mana is not easily quantified, so you will have to do a lot of estimating if you want to use it efficiently.  Once you have chosen which flower you want to use to generate mana, you must plant it near a mana spreader. When the flower's conditions are fulfilled, it will begin to produce mana, and store it in the internal buffer of the nearest mana spreader. The mana spreader itself will automatically emit any mana it contains, provided it is aimed at a valid destination (such as a mana pool). You'll need a lot of these devices, so craft a pair for now.  Mana spreaders will aim towards you when you place them down. To change their direction, use a wand of the forest: while holding the wand, shift-right-click on the mana spreader, and then shift-right-click on the block you want it to aim at. This method of binding also works for other things, such as binding a flower to a specific mana spreader.
+  - [提交] Botania:spreader x2
+  - [提交] Botania:twigWand:32767
+  > 奖励: gregtech:gt.metaitem.01:28086 x2 | dreamcraft:CoinFlowerI x10
+
+### [3268] Obligatory Lava Power
+The thermalily consumes lava, but it's not quite as simple as just constantly replenishing a lava pool. There's a cooldown that you'll have to account for. Even so, it's a fairly easy flower to automate if you have a good lava source.
+  - [提交] Botania:specialFlower
+  > 奖励: IC2:itemCellEmpty:2 x12 | dreamcraft:CoinFlowerII x5
+
+### [3225] Pollination Buddies
+Some flowers are everywhere, and some are limited to specific biomes. If you don't want to walk long distances from home, you can call in some help.  Bees with the flower trait will slowly generate new flowers in its working area, including plenty that have been brought in from distant pastures.
+  - [提交] Forestry:beeQueenGE
+  > 奖励: dreamcraft:CoinBeesI x5
+
+### [3222] Pure Daisy
+The first magical flower you are able to make is the Pure Daisy. This flower can slowly enchant nearby stone and logs into their special Botania variants, which are used commonly as ingredients.  After placing the flower down, you can place down stone and/or wood in the 8 tiles horizontally surrounding it, and after some time they will be converted.
+  - [可选提交] Botania:mushroom, minecraft:red_flower:6 x3 (ore:flowerWhite)
+  - [提交] Botania:specialFlower
+  - [提交] Botania:livingrock x8, Botania:livingwood x8
+  > 奖励: dreamcraft:CoinFlowerI x5 | dreamcraft:CoinAdventureI x5
+
+### [3261] Roses Are Blood-Red
+The bellethorne is a delightful little flower with an [warn]insatiable thirst for blood[/warn], though fortunately your blood doesn't count. When provided with a supply of mana, it will inflict damage on any living entities near it, with the exception of players. It's a good extra layer of defense to place at the entrances to your early-game bamboo fortress.
+  - [提交] Botania:specialFlower
+  > 奖励: Botania:mushroom:14 | dreamcraft:CoinFlowerI x10
+
+### [3231] Round One... FIGHT!
+Put the 4 pylons down and shift-right-click the terrasteel ingot on the beacon to summon the Gaia Guardian.
+  - [可选提交] Botania:pylon:2 x4, minecraft:beacon, Botania:manaResource:4
+  - [提交] Botania:manaResource:5 (ore:eternalLifeEssence)
+  > 奖励: dreamcraft:CoinFlowerIII x10
+
+### [3241] Round Two... FIGHT!
+Now craft a Gaia Spirit ingot with your new Gaia Spirit from killing the Gaia guardian.  Put the 4 pylons down and shift-right-click the Gaia Spirit ingot on the beacon to summon a harder version of Gaia Guardian.
+  - [可选提交] Botania:pylon:2 x4, minecraft:beacon, Botania:manaResource:14
+  - [提交] Botania:dice
+  > 奖励: dreamcraft:CoinFlowerIII x15
+
+### [3246] Runes
+Craft some runes, because why not?
+  - [提交] Botania:rune x4, Botania:rune:1 x4, Botania:rune:2 x4, Botania:rune:3 x4, Botania:rune:4 x4, Botania:rune:5 x4, Botania:rune:6 x4, Botania:rune:7 x4, Botania:rune:8 x4, Botania:rune:9 x4, Botania:rune:10 x4, Botania:rune:11 x4, Botania:rune:12 x4, Botania:rune:13 x4, Botania:rune:14 x4, Botania:rune:15 x4
+  > 奖励: dreamcraft:CoinFlowerIII
+
+### [3264] Shut Down Your Canning Machine
+Some flowers eat bees. Some eat leaves. Some eat slimes. This one eats everything (everything you can eat, anyway). The gourmaryllis is happiest when provided with a good variety of delicious meals, so I hope the HV-tier diet of canned sludge hasn't made you forget how to cook.
+  - [提交] Botania:specialFlower
+  > 奖励: dreamcraft:CoinFlowerII x5 | harvestcraft:porklomeinItem x2 | harvestcraft:pistachiobakedsalmonItem x2 | harvestcraft:peachesandcreamoatmealItem x2
+
+### [3254] Solar Power: Floral Edition
+The daybloom is an extremely simple generating flower. All you have to do is place it down, and it'll produce mana for free during the day. The downside of this arrangement is that dayblooms die after only an hour.  You can find Goldenrod flowers in Prairie biomes.  Make one, and I'll give you another.
+  - [提交] Botania:specialFlower
+  > 奖励: Botania:specialFlower | dreamcraft:CoinFlowerI x5
+
+### [-5732897673112409281] Synthetic Elven Gateway
+The Synthetic Elven Gateway is an advanced and easily automatable version of the normal Elven Gateway. As a result it is much quicker, less TPS intensive, and AE2 compatible.  Much like the Mana Fountain, the controller can be given mana via a mana spreader or spark & item input can happen from any face, while item output is restricted to the bottom.  [note]While running, this uses more mana passively than a normal Elven Gateway does, so be sure you have adequate mana production![/note]
+  - [可选提交] Botania:livingwood x68, Botania:livingwood:5 x12, Botania:pylon:1 x5
+  - [提交] botanichorizons:automatedAlfPortal
+  > 奖励: bq_standard:choice | dreamcraft:CoinFlowerIII x5 | dreamcraft:CoinTechnicianIII
+
+### [3229] Terrasteel
+To get some advanced tools and equipment you will need some terrasteel. This is done using a dedicated machine.  You'll need to lay out the blocks underneath the plate as described in the Lexica Botania. Then place a spark on top of the plate nearby a mana pool with a large stockpile of mana. Lastly you'll place a mana diamond, mana pearl, and mana steel onto the plate to begin the transformation.
+  - [提交] Botania:terraPlate, Botania:livingrock x5, minecraft:lapis_block x4
+  - [提交] Botania:manaResource:4 (ore:ingotTerrasteel)
+  > 奖励: dreamcraft:CoinFlowerII x15
+
+### [3220] The Roots of Magic
+If you're familiar with Botania, you will notice that the overworld is noticeably void of magical flowers and mushrooms. Such pretty expressions of magic sadly require you to have leveled up on your magical skills. For now you will have to make do with what the world has to offer.  Look in deep caves in the Twilight Forest at low Y-levels for glimmering mushrooms. These are your starting ingredient and can be used instead of flower petals. Beware, unlike flowers you can't grow more just yet, so be careful what you use them for.
+  - [提交] Botania:mushroom (ore:listMagicMushroom)
+  > 奖励: dreamcraft:CoinFlowerI x5 | dreamcraft:CoinAdventureI x5 | bq_standard:choice
+
+### [3224] Upgrading Your Mana Pool
+Now that you have discovered the power of the magically enchanted crucible, you can use that technology to make a better mana pool.
+  - [提交] Botania:pool
+  > 奖励: dreamcraft:CoinFlowerI x20
+
+### [3260] Violence Is Blue
+The dreadthorne is similar to the bellethorne, but it only kills adult animals. This is helpful for farming livestock, though it's only one aspect of a successful farm.
+  - [提交] Botania:specialFlower
+  > 奖励: Botania:mushroom:15 | dreamcraft:CoinFlowerI x10
+
+### [3252] What Are All These Flowers Even For?
+If you've never used Botania before, you may be wondering about the purpose of all this effort. This isn't a simple question to answer, but one thing you can do that's quite useful right now is making yourself some manasteel.  Among its many uses, manasteel has one of the best, if not simply §othe§o §rbest, durabilities of materials available at LV, so it's perfect for all of your crafting tools.  If you have a particular dislike of Tinker's Construct, manasteel is a great material to make a Botania pickaxe out of too.
+  - [提交] Botania:manaResource x16
+  > 奖励: bq_standard:choice | dreamcraft:CoinFlowerI x15 | Botania:manaResource x4
+
+### [3223] Your First Mana Pool
+Now that you have livingrock, create your first mana pool. Chop some pieces into slabs with a saw to make the bottom, then stick them together with plates for the sides.  You lack the knowledge to make it effective, so sadly it won't be able to craft a lot as a result.
+  - [提交] Botania:pool:2
+  > 奖励: dreamcraft:CoinFlowerI x10
+

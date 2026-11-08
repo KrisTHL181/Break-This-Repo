@@ -1,0 +1,14 @@
+*
+!CMakeLists.txt
+!scripts
+!src
+!cmake
+!submodules/clog
+!submodules/quictls
+!submodules/openssl
+!submodules/CMakeLists.txt
+submodules/quictls/pyca-cryptography
+submodules/quictls/boringssl
+**/*.o
+**/*.a
+**/*.d

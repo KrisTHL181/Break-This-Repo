@@ -1,0 +1,13 @@
+{
+  "gamerule.cardinalDirection": "Random Cardinal Direction Very Long Title",
+  "gamerule.cardinalDirection.description": "A cardinal direction. Should never be up or down",
+  "gamerule.cardinalDirection.east": "Eastbound",
+  "gamerule.cardinalDirection.north": "Northbound",
+  "gamerule.cardinalDirection.south": "Southbound",
+  "gamerule.cardinalDirection.west": "Westbound",
+  "gamerule.redEnum": "Which one's the best?",
+  "gamerule.redEnum.description": "We'll finally know which one is the all-time winner!",
+  "gamerule.redEnum.paper": "Paper",
+  "gamerule.redEnum.rock": "Rock",
+  "gamerule.redEnum.scissors": "Scissors"
+}

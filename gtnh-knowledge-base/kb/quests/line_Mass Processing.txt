@@ -1,0 +1,379 @@
+# 任务线: Mass Processing
+### [-5847927107856321162] §d§lAdvanced Assembly Line
+This is the advanced assembly line from §6GigaGram§rFab.  It supports item pipelining. That is, it will mimic a real assembly line by consuming ingredients one by one instead of all at start. In effect, it offers a parallelism up to however many item inputs this recipe requires. You can think of an advanced assembly line as a collection of slices which are capable of processing each step independently from other slices. It will start processing once the input bus contents align with any stored data stick. The first slice will consume the input in Bus #1. After (recipe time/number of inputs) time, the first slice's work is concluded and will start the second slice. At the same time, first slice will look for input in input bus #1. If there are still enough input there slice #1 will start working again.  The terminal slice (the n-th slice, where n is number of item input in recipe) will put the recipe output in output bus when it has concluded its work. Whenever a non-terminal slice finished its work, it will try to pass the work onto next slice. If the next slice cannot find the materials in its input bus, the just-finished slice will remain in [warn]STUCK[/warn] state and hang the assembly line. To help locate these [warn]STUCK[/warn] assembly lines, the controller's front face will have its status light turned orange.  The EU/t cost of this machine is number of slices active multiplied by the original recipe EU/t. [warn]STUCK[/warn] slices do not consume power. It will use the worst energy supplying hatch's input voltage for recipe tier calculation and normal 2/4 OC. With exotic energy hatches, it can overclock beyond usual voltage tier, but will consume even more power than usual 2/4 OC. Every §2laser overclock§r will add 0.3 to the power exponent. 1 §2laser overclock§r will have 50% recipe time and use 430% power. 2 §2laser overclocks§r will have 25% recipe time and use 1978% power. Will not overclock beyond 1 tick. Machine first tries to parallelize, then normal 2/4 OC, then §2laser overclock§r.
+  - [提交] gregtech:gt.blockmachines:13532
+
+### [-6902980861914057189] §d§lAdvanced Autoclaving
+In LuV, you can make the Industrial Autoclave. This is a huge multiblock with many scaling factors - it is also extremely powerful. You'll definitely want to pick one of these up to process crystal chips quickly for the crystal circuit line.  [note]Coils, pipe casings, and item pipe casings are all extremely important to this multi's scaling. Use the best ones you have![/note]
+  - [提交] gregtech:gt.blockmachines:687
+  - [可选提交] gregtech:gt.blockcasings10:3 x146, gregtech:gt.blockframes:473 x42, bartworks:BW_TieredGlass x42, gregtech:gt.blockcasings2:12 x14, gregtech:gt.blockcasings5 x7, gregtech:gt.blockcasings11 x7
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [-6915086947092752744] §9§lAn End To Deforestation
+This multiblock is the perfect solution to high-speed tree farming. Do you need wood for charcoal or benzene power? Nuts for seed oil? Leaf blocks for decoration? Look no further!  The Tree Growth Simulator can farm almost any tree in the game, and produces all the items you would get by chopping it down normally. It does all this in a compact area, without any lag from growing a real tree.  First, place any sapling in the controller slot of the multiblock. Then, insert tools appropriate for the part of the tree you want to harvest in an input bus. Give the machine power, turn it on, and be ready to get flooded by the outputs.  Different tools are required to gather different parts of the tree:  - Saw for logs  - Branch Cutter for saplings  - Shears for leaves  - Knife for fruit Better versions of the tools (Chainsaw, Grafter, ...) will increase the yield! Check the tooltip of the controller block for details.  You can even use multiple different tools together, and the machine will harvest several different products at the same time!  Note that the tools used will slowly lose durability, so for long-term operation you might want to set up an automatic replacement system.  [note]You can optionally use grass in place of the dirt blocks during construction.[/note]  [warn]While this machine only requires IV, it is quite expensive to make early in the tier. You will need 16 ZPM circuits and some fancy alloys.[/warn]
+  - [提交] gregtech:gt.blockmachines:15541
+  - [可选提交] gregtech:gt.blockframes:305 x60, bartworks:BW_TieredGlass x57, miscutils:gtplusplus.blockcasings.2:15 x53, minecraft:dirt x25, minecraft:leaves x5, minecraft:log x3, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8 | dreamcraft:CoinTechnicianII | dreamcraft:CoinForestryII | harvestcraft:pamlemonSapling
+
+### [3210] §d§lAnother Chemical Multiblock?
+You probably have built a lot of Large Chemical Reactors by now. With the powerful 4/4 OC it is one of the strongest multiblocks there is. But what if even that is not enough to satisfy your chemical needs? You can't make it faster after using your best energy hatches available.  Fear not, we have a solution for you: The Mega Chemical Reactor. It lets you do 256 parallels for your LCR recipes! And you can still overclock after that if you provide enough power.  It only unlocks in LuV as it needs 7 Fusion Coil Blocks. Check with your hologram projector to see how it is built and what you need.  The glass tier limits the energy hatch tier that you can use. You can even use multiamp hatches from TecTech! If you want to use laser hatches however you need at least UV glass.
+  - [提交] gregtech:gt.blockmachines:15515
+  - [可选提交] gregtech:gt.blockcasings8 x77, bartworks:BW_TieredGlass x64, gregtech:gt.blockcasings8:1 x28, gregtech:gt.blockcasings4:7 x7
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [-8361079222456284577] §c§lA Steam-Powered Whirl!
+How does one centrifuge rare materials in the Steam Age? The answer is by building and using the Steam Separator, of course! By using steam to create a spinning force, this Multiblock can separate different materials quickly and easily.  If you think separation is taking forever, the Steam Separator will speed things up!  §3This Multiblock can process recipes up to LV Tier, and does accept an Output Hatch for recipes. But if you are looking to use recipes which require Fluid Inputs, you might have to build an LV Centrifuge in the future.
+  - [提交] gregtech:gt.blockmachines:31080
+  - [可选提交] gregtech:gt.blockcasings:10 x65, gregtech:gt.blockcasings2:2 x8, gregtech:gt.blockcasings2:12 x4, gregtech:gt.blockcasings3:13 x3, gregtech:gt.blockmachines:31046, gregtech:gt.blockmachines:31047, gregtech:gt.blockmachines:60, gregtech:gt.blockmachines:31040
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x50
+
+### [389] §9§lA Volcano For Your Base.
+The ultimate machine for cobblestone production. Or maybe to turn redstone into obsidian on a large scale for a renewable production of Silicon, Magnesium, Iron, and Oxygen.  The §5§lBoldarnator§r boasts a §2§l3x§r speed boost, §3§l25%§r EU discount, and offers §6§l8§r parallels per voltage tier compared to the Rock Breaker.
+  - [提交] gregtech:gt.blockmachines:15556
+  - [可选提交] miscutils:gtplusplus.blockcasings.2 x53, gregtech:gt.blockframes:81 x36, gregtech:gt.blocktintedglass x12, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [2029] §9§lBask In The Currents
+§r[warn]This multiblock always runs recipes at the same tier as the energy hatches in the structure. If the machine does not have enough power supplied, it won't turn on.[/warn]  Although this multiblock is available in IV, we recommend building one §nafter finishing the Naqline§r.   This multiblock has 3 different modes: §3Normal§r, §4EBF§r, and §6Ore§r.   In §3Normal§r mode, this multiblock §3processes normal arc furnace recipes§r.  In §4EBF§r mode, this multiblock can process §4every EBF recipe regardless of coil tier requirement§r. This feature comes at the cost of §lbase recipe voltage being increased by 2 tiers§r.  In §6Ore§r mode, this machine can only process ores and raw ores that can be smelted in a normal furnace, giving molten metal directly.   In addition to the modes, this machine has 3 different processing phases.  §lStartup:§r The machine ignites its arc for 6 seconds before it can process recipes. Startup power depends on the installed electrode's stats: §6maximum parallels§r * §2EU Modifier§r * (1 + §4Startup Penalty§r). The required amperage is shown as §lStartup Amperage§r in the electrode tooltip.  §lProcessing:§r During this phase, the machine processes recipes using the Speed, Parallels, OC, and EU Modifier statistics of the installed electrode. If the machine fails to find a recipe that it can use, it goes into the shutdown phase.  §lShutdown:§r The machine enters a 6-second phase during which it does not process any recipes and does not use any power. After the shutdown phase, it needs to go through startup again before processing recipes.   Electrodes also have durability and may provide unique special effects. Some electrodes can modify the normal Startup, Processing, or Shutdown behavior, so always check the electrode's tooltip.  Below §c25% remaining durability§r, every processing attempt has a §c5% chance§r to cause a random arc surge, forcing the machine to go through Startup again.
+  - [提交] gregtech:gt.blockmachines:15548
+  - [可选提交] gregtech:gt.blockframes:305 x175, gregtech:gt.blockcasings2 x168, gregtech:gt.blockcasings2:13 x101, bartworks:bw.werkstoffblockscasing.01:32090 x72, gregtech:gt.blockcasings5 x30, miscutils:miscutils.blockcasings:14 x17, gregtech:gt.blockcasings13:4 x15, gregtech:gt.blockcasings13:2 x12, miscutils:miscutils.blockcasings:3 x12
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [2030] §9§lBate Bate Chocolate
+Abuela, will you teach us the chocolate song? Con mucho gusto Will you sing the chocolate song with us? Great, sing along with Abuela!  Bate bate chocolate Bate bate chocolate Bate bate chocolate Bate bate chocolate  Mix your chocolate, chocolate Mix your chocolate, chocolate Bate bate chocolate Bate bate chocolate  Aside from mixing chocolate, the Industrial Mixing Machine offers §6§l8§r parallels per voltage tier and an additional §2§l100%§r speed boost per tier of Item Pipe Casing.  [note]Eventually, when you unlock §9UIV§r tiered glass, this can be given multi-amp hatches![/note]
+  - [提交] gregtech:gt.blockmachines:15566
+  - [可选提交] gregtech:gt.blockcasings12:13 x43, bartworks:BW_TieredGlass x30, gregtech:gt.sheetmetal:81 x24, gregtech:gt.blockcasings11 x10, gregtech:gt.blockcasings4:11 x5, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8 | gregtech:gt.metaitem.02:32213 x64
+
+### [2038] §8§lBender, More Bending!
+When you need plates by the thousands you use the §5§lIndustrial Bending Machine§r. It grants §2§l6x§r the speed and §6§l6§r parallels per voltage tier compared to the singleblock.
+  - [提交] gregtech:gt.blockmachines:15553
+  - [可选提交] miscutils:miscutils.blockcasings:4 x15, gregtech:gt.blockcasings12:14 x9, gregtech:gt.blockframes:28 x6, gregtech:gt.blockcasings2:4 x3, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [2032] §9§lBest Thing Since Sliced Bread
+When all you have is a machine full of knives, everything starts looking like bread.  In order for the §5§lIndustrial Cutting Factory§r to function, it will need to have a sawblade put into it. The performance of the machine is directly correlated with the quality of the sawblade put in.  The first type of sawblade available to craft is the §lTungsten Titanium Carbide Sawblade§r. It gives you §6§l2§r parallels per voltage tier, a §2§l2.5x§r speed boost, and a §3§l10%§r EU discount.
+  - [提交] gregtech:gt.blockmachines:15540
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:13 x35, miscutils:blockFrameGtTantalumCarbide x18, bartworks:BW_TieredGlass x16, gregtech:gt.sheetmetal:334 x13
+  - [可选提交] gregtech:gt.metaitem.01:32102, gregtech:gt.metaitem.01:32103, gregtech:gt.metaitem.01:32104, gregtech:gt.metaitem.01:32105
+  > 奖励: enhancedlootbags:lootbag:8 | minecraft:bread x64
+
+### [2039] §9§lBezos Would Be Proud
+The §5§lAmazon Warehousing Depot§r is the ultimate multiblock for all your packing needs. Got tiny and small dusts coming out of your ears? This is the machine for you.  The AWD offers a very generous §6§l16§r parallels per voltage tier, as well as a §2§l2-8x§r speed bonus (depending on item pipe casing tier) and a §3§l25%§r EU discount on all recipes.  [note]Glass tier is irrelevant; use what works best for you![/note]
+  - [提交] gregtech:gt.blockmachines:15513
+  - [可选提交] miscutils:gtplusplus.blockcasings.3:9 x15, bartworks:BW_TieredGlass x3, gregtech:gt.blockcasings11 x3, gregtech:gt.blockframes:32 x2, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-9206706300448087195] §5§lBig Beautiful Brewery
+Start your own local brewery with the BBB! You can use it to make tons of potions, obscure alcoholic drinks, or, more likely, industrial quantities of lubricant.
+  - [提交] gregtech:gt.blockmachines:3011
+  - [可选提交] gregtech:gt.blockcasings10:15 x21, bartworks:BW_TieredGlass x6, gregtech:gt.blockframes:305 x4
+  > 奖励: enhancedlootbags:lootbag:6
+
+### [876] §5§lBring Me My Vat of Polyethylene!
+Tired of using small cells to process chemicals? Build a Large Chemical Reactor and you can just pipe in and out fluids. Or use the glorious large fluid cells to deliver and remove fluids from the hatches.  You can decide if the reactor should void any extra products when the outputs are full or not by toggling the void mode in the GUI!  There are also recipes specific to only the LCR, sometimes even allowing you to skip a step, so keep your eyes open for that.  Additionally, as a multiblock, LCR also counts as a cleanroom for any cleanroom recipes.  You will also need: 1 Maintenance Hatch 1-2 Energy Hatches 0+ Input Bus (if a recipe has an item input. For full automation, you should probably use 1 for each material) 0-1 Output Bus (if a recipe has an item output) 2+ Input Hatch (use 1 for every fluid) 1+ Output Hatch (same as above)  You can use a screwdriver on an output hatch to cycle through its modes. Use shift-right-click to go directly to specific fluid mode, then lock the fluid with a cell for easier automation. This works on more than just the LCR.  [note]You can use any type of coil to form the structure, but there is no benefit accrued from using higher tiers.[/note]
+  - [提交] gregtech:gt.blockmachines:1169
+  - [可选提交] gregtech:gt.blockcasings8 x18, gregtech:gt.blockcasings8:1, gregtech:gt.blockcasings5
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-5201462720540834507] §5§lCan It!
+If you've ever needed to wait on a Canning Machine to fill up your supply of tin cans, or to make mountains of coolant, consider the TurboCan Pro. This multiblock performs both operations with significant bonuses.
+  - [提交] gregtech:gt.blockmachines:360
+  - [可选提交] gregtech:gt.blockcasings2 x91, gregtech:gt.blockcasings2:13 x24
+  > 奖励: enhancedlootbags:lootbag:6
+
+### [2601] §d§lCircuit Assembly Line
+You'll need all of this to create 4 CALs, enough for a single series of circuits. If you only want one (for the microprocessors for example), just divide by 4.  Assuming you got the necessary imprints on the LuV tab, you can now craft the CALs for the crystal processor series. We're starting with 4 since you'll need one per circuit, the imprint is not removable. And yes this means you need one for every circuit type you want to make with the CAL.  As an Assembly Line, it generally works like the normal one, with different items in each bus, but since it's only one item per CAL, it's far easier to use, and the recipe is cheaper too.  The CAL uses 'wraps' to make 16 of a circuit at a time (aside from ULV and LV circuits), saving you time, EU, and Soldering Alloy (or Indalloy). You make the wraps in an Assembler with 16 of the item and Polyethylene.  [note]BTW you can change out the Hatches and Buses for better ones, but you still need to keep ingredient order. Also, CAL grants 4/4 OC.[/note]
+  - [提交] gregtech:gt.blockmachines:12735 x4
+  - [可选提交] gregtech:gt.blockcasings3:10 x76, gregtech:gt.blockcasings2:5 x28, gregtech:gt.blockglass1:10 x56, gregtech:gt.blockcasings2 x52, gregtech:gt.blockmachines:70 x24, gregtech:gt.blockmachines:80 x4, gregtech:gt.blockmachines:51 x4, gregtech:gt.blockmachines:90 x4, gregtech:gt.blockmachines:46 x4
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [-7261433663633078124] §4§l§nClean Implosions?!
+Introducing the bigger (and better) Implosion Compressor, the Electric Implosion Compressor.  The §5§lElectric Implosion Compressor§r does not need any explosive and only needs electricity, isn't that very nice!  Furthermore it gains extra parallels §6§l4^(Tier - 1)§r based on the containment block used in the middle.  Tier 1: Neutronium Block Tier 2: Infinity Block Tier 3: transcendent Metal Block Tier 4: Spacetime Block Tier 5: Universium Block  [note]The minimum allowed energy hatch tier is one tier below the recipe tier, so you'll want to start with at least 2 UHV energy hatches for now.[/note]
+  - [提交] gregtech:gt.blockmachines:15563
+  - [可选提交] gregtech:gt.blockreinforced:10 x245, gregtech:gt.blockcasings4 x36, gregtech:gt.blockmetal5:2 x24, bartworks:BW_TieredGlass x22, gregtech:gt.blockcasings8:1 x10, gregtech:gt.blockframes:324 x2
+
+### [2757] §9§lCool Guys Don't Look At Explosions
+They automate them instead.  Compared to a regular Implosion Compressor, the §5§lDensity^2§r has §2§l2x§r the speed, and gives §6§l1 + (Tier/2)§r parallels.  [note]This multi is IV, but uses platline materials and ZPM circuits.[/note]
+  - [提交] gregtech:gt.blockmachines:15547
+  - [可选提交] gregtech:gt.blockcasings13:4 x80, gregtech:gt.blockcasings4 x60, gregtech:gt.blockframes:316 x24, gregtech:gt.sheetmetal:86 x4, gregtech:gt.blockframes:86 x4, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-7508677545920872020] §6§lCracking the World
+How much oil do you need? Maybe you're after Naquadah Fuel or Radox. Either way, this massive structure can handle it, boasting §6§l256§r parallels.
+  - [提交] gregtech:gt.blockmachines:15569
+  - [可选提交] bartworks:BW_TieredGlass x162, gregtech:gt.blockcasings14:5 x151, gregtech:gt.blockcasings4:1 x84, gregtech:gt.blockcasings5 x77, gregtech:gt.sheetmetal:324 x15, gregtech:gt.blockcasings2:13 x9
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [1423] §8§lDancing In Circles
+Spinning around, getting hot - sounds like a dance. Or a thermal centrifuge. Build a §5§lLarge Thermal Refinery§r to get the most out of your ores.  Unlike with the singleblock, you get a base §2§l2.5x§r speed bonus and a §3§l20%§r EU discount on all recipes. You unlock an extra §n§l5%§r increase to both speed and EU discount per coil tier.  As a bonus, the LTR provides §6§l8§r parallels per voltage tier, and §6§l2§r additional parallels per tier of solenoid on top of that.  [note]Glass tier is irrelevant; use what works best for you![/note]
+  - [提交] gregtech:gt.blockmachines:15538
+  - [可选提交] miscutils:gtplusplus.blockcasings.2 x92, gregtech:gt.blockframes:348 x20, gregtech:gt.blockcasings5 x16, gregtech:gt.blockcasings.cyclotron_coils x6, bartworks:BW_TieredGlass x6, gregtech:gt.blockcasings:11 x4, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:7 | gregtech:gt.blockores2:34 x64 | dreamcraft:CoinTechnicianII
+
+### [2053] §9§lEmpty The Oceans
+If you stuck with fish for bio diesel this long, you can now make the §5§lZhuhai Fishing Port§r to get cartloads of fish and other byproducts.
+  - [提交] gregtech:gt.blockmachines:15544
+  - [可选提交] miscutils:gtplusplus.blockcasings.3 x165, gregtech:gt.sheetmetal:306 x12, gregtech:gt.blockframes:306 x12, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-9206015034842694688] §9§lEngraving With Style
+Sick of having to swap out lenses or make tens of laser engravers for your cleanroom? The Hyper-Intensity Laser Engraver is here for you. This multiblock can handle all of your engraving needs.  By using more powerful §lLaser Source Hatches§r in the structure, you can gain more parallels and run higher tier recipes.  [note]Laser source hatches are usually used for power transmission, but not here! No matter what laser hatch you use, it will NOT change the power input of HILE - it is determined by the standard energy hatch as usual.[/note]
+  - [提交] gregtech:gt.blockmachines:3004
+  - [可选提交] gregtech:gt.blockcasings10:1 x56, gregtech:gt.blockframes:316 x9, bartworks:BW_TieredGlass x3, gregtech:gt.laserplate, gregtech:gt.blockmachines:15230
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-7251013088481099277] §8§lExtraction Point
+Nothing turns solids to liquids faster than the Large Fluid Extractor - not yet, anyways. You'll need to make both Heating and Solenoid Coils for this multiblock.  [note]This multiblock is technically EV, but it will demand a lot of tungstensteel.[/note]
+  - [提交] gregtech:gt.blockmachines:2730
+  - [可选提交] gregtech:gt.blockcasings4 x52, bartworks:BW_TieredGlass x36, gregtech:gt.blockcasings5 x24, gregtech:gt.blockframes:334 x24, gregtech:gt.blockcasings.cyclotron_coils x7
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [-8959971444972358643] §8§lExtreme Voltage Multiblocks
+You might already have a Steam Multiblock or the Large Sifter. But in EV, IV, and the following tiers you unlock multiblocks for (almost) every GT machine. And some more on top of that!  Most of them are made to do the same GT processing as the singleblock machines you've been using, but much faster. The multis can have up to three bonuses: energy savings, faster recipe time and parallels, which mean that a single recipe cycle can craft multiple items at once, if the power provided is enough to sustain it.  The variety of structures and intricacies of these new multis can go far beyond simpler multis like the EBF, LCR or VF. While some are simple cuboids, others come with more diverse mechanics and conditions to work properly. In return, they can be extremely powerful, so keep an eye out for them!
+  - [勾选确认]
+
+### [-5744442785667642528] §9§lFits The Mold
+Making machines for every mold sounds tiring... fortunately, the Mass Solidifier multiblock can handle any number of molds by using §lSolidifier Hatches§r.  [note]The Mass Solidifier also speeds up as it is running, making it more efficient to do large batches.[/note]
+  - [提交] gregtech:gt.blockmachines:368
+  - [可选提交] gregtech:gt.blockcasings10:13 x72, bartworks:BW_TieredGlass x42, gregtech:gt.blockcasings10:14 x34, gregtech:gt.blockcasings:11 x13, gregtech:gt.blockcasings4:1 x7, gregtech:gt.blockcasings2:13 x3
+  - [可选提交] gregtech:gt.blockmachines:31781, gregtech:gt.blockmachines:31782, gregtech:gt.blockmachines:31783, gregtech:gt.blockmachines:31784
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [2045] §b§lFrostbite!
+The §5§lEndothermic Fridge§r can process up to §6§l256§r parallels! You can also optionally provide §9§l250L/s§r of Cryotheum to the machine to give it a §2§l5x§r speed boost.  [note]Eventually, you will be able to upgrade this to its T2 variant.[/note]
+  - [提交] gregtech:gt.blockmachines:15518
+  - [可选提交] gregtech:gt.blockcasings14:4 x777, gregtech:gt.blockcasings2:1 x351, gregtech:gt.blockreinforced:3 x148, gregtech:gt.blockcasings2:15 x148, gregtech:gt.blockframes:389 x146, gregtech:gt.blockcasings4 x135, gregtech:gt.blockcasings10:9 x51, gregtech:gt.sheetmetal:390 x40, bartworks:BW_TieredGlass x18
+  > 奖励: enhancedlootbags:lootbag:42
+
+### [2035] §9§lFrozen Stiff
+The Cryogenic Freezer is a direct upgrade to the §5§lVacuum Freezer§r. It allows for §6§l16§r parallels, operates at §2§l3x§r the speed, and offers a §3§l10%§r EU discount.  Similar to the Volcanus, it has a running cost. It will consume §c§l10L§r of cryotheum per second while in operation. It must be supplied with Cryotheum via a Cryotheum Cooling Hatch
+  - [提交] gregtech:gt.blockmachines:15565
+  - [可选提交] miscutils:gtplusplus.blockcasings.3:10 x55, miscutils:blockFrameGtGrisium x24, gregtech:gt.blockmachines:967, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8 | gregtech:gt.metaitem.01:2898 x64
+
+### [2036] §9§lHephaestus' EBF
+The Volcanus Advanced EBF will process items faster than you can believe. You'll need a constant supply of Pyrotheum to use it. And coils.  [note]This multi is IV, but uses 2 ZPM circuits.[/note]
+  - [提交] gregtech:gt.blockmachines:963
+  - [可选提交] gregtech:gt.blockcasings5 x16, miscutils:gtplusplus.blockcasings.3:11 x9, gregtech:gt.blockmachines:968, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8 | gregtech:gt.metaitem.01:2843 x64
+
+### [-6615881702968461094] §5§lHigh Voltage Multiblocks
+Time to scale up production! In HV, a handful of new powerful multiblocks are available to you. In particular, take a look at the §lLarge Chemical Reactor§r, which always perfectly overclocks, as well as the §lDistillation Tower§r, which will allow you to get all byproducts from distillation instead of targeting just one.
+  - [勾选确认]
+
+### [1421] §8§lHulk Smash!
+Mass destruction! Or at least, lots and lots of crushed ores. Build an §5§lIndustrial Maceration Stack§r to keep up with all the ores you are getting.  This processes items at §2§l1.6x§r the speed and with up to §6§l2§r parallels per voltage tier.  [note]In IV you can upgrade the multi with an upgrade chip and better casings.[/note]
+  - [提交] gregtech:gt.blockmachines:15539
+  - [可选提交] gregtech:gt.blockcasings4:2 x44, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [386] §9§lIndustrial Sledgehammer
+The §5§lIndustrial Sledgehammer§r is a multiblock Forge Hammer. By default it processes recipes at §2§l2x§r the speed.   The tier of solenoid you use in the machine has a direct impact on how many parallels it has.  §6§lParallels§r = §9Solenoid Tier§r * §cVoltage Tier§r * 6
+  - [提交] gregtech:gt.blockmachines:15555
+  - [可选提交] miscutils:gtplusplus.blockcasings.5:6 x27, bartworks:bw.werkstoffblockscasingadvanced.01:32100 x20, gregtech:gt.blockcasings.cyclotron_coils x3, gregtech:gt.blockcasings13:4 x2, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-6208773058821867190] §9§lInsane Voltage Multiblocks
+Upon reaching the land of IV machinery, you can put together even more multis and speed up your automation!  Many of the multiblocks from IV tier onwards use special alloys, which either need to be cooked like any ingots you've used before (in a Furnace or EBF), but there are also alloys which have to be made in the Alloy Blast Smelter (ABS), as a fluid, which then needs to be solidified.  The multis that need ABS alloys are further down. To unlock their quests, you will first need to craft the ABS itself. However, there is a large assortment of machines you can craft without it, just by having the respective IV singleblock equivalent and some other resources.  Those will be here... but you might be able to find some more, if you look closely through NEI. Good luck!
+  - [勾选确认]
+
+### [2028] §8§lI Think I'm Going to be Sick
+The §5§lIndustrial Centrifuge§r is the best solution for handling the thousands of ores being produced by the multiblock ore drill. You will eventually want to have an array of these running, though one or two is fine to start.  This multiblock gives you §6§l4-8§r parallels per voltage tier, operates at §2§l2-3x§r the speed, and grants a §3§l10%§r EU discount. This makes it a far better alternative to both singleblock Centrifuges and the Steam Separator.  The parallel and speed modifiers start at their minimums and increase to their maximums as the Centrifuge gains momentum.  The Centrifuge will gain 1% momentum every 10 ticks while running §3 (50s to go from 0% -> 100%)§r  On the other hand, it will lose 2% momentum every 5 ticks while idle §3(12.5s to go from 100% -> 0%)§r
+  - [提交] gregtech:gt.blockmachines:15512
+  - [可选提交] miscutils:miscutils.blockcasings x30, miscutils:blockFrameGtEglinSteel x24, miscutils:gtplusplus.blockcasings.2:6 x18, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [2759] §9§lI Want SOLIDS Not LIQUIDS!
+For when your ABS isn't the right machine. Also uses coils.  Note that this is a multiblock version of the alloy smelter, not a solid version of the alloy blast smelter.
+  - [提交] gregtech:gt.blockmachines:31023
+  - [可选提交] gregtech:gt.blockcasings5 x16, miscutils:gtplusplus.blockcasings.3:1 x12, miscutils:gtplusplus.blocktieredcasings.1:4 x8, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-8583153493522094705] §5§lL.A.T.E.X. Cable Coater
+The §5L§raminated §5A§rpplication and §5T§rhermal §5E§rnclosure e§5X§rocoater (§5L.A.T.E.X.§r) is a multiblock dedicated to coating cables.  You will be making a LOT of cables during your playthrough... Why bog down your assembler when you can use the LATEX instead? The LATEX gives §2§l2x§r the speed with a §3§l15%§r EU discount, and generously offers §6§l8§r parallels per voltage tier.  If that's not convincing enough, you also get an additive §2§l6.25%§r rubber discount per Item Pipe Casing tier.  [note]Once you eventually reach UV, you will be able to create an Elastic Singularity for additional perks![/note]
+  - [提交] gregtech:gt.blockmachines:15752
+  - [可选提交] gregtech:gt.blockcasings8 x36, bartworks:BW_TieredGlass x32, gregtech:gt.blockframes:649 x16, gregtech:gt.blockcasings11 x6
+  > 奖励: enhancedlootbags:lootbag:6
+
+### [2758] §b§lLet Me Fabricate a New Universe...
+This multi is dedicated to producing UUM and Scrap. It is one of the hardest GT++ multis to craft, but you will be able to replicate many things if you get it working.  [note]This multi is traditionally UV but can technically be made in ZPM.[/note]
+  - [提交] gregtech:gt.blockmachines:799
+  - [可选提交] miscutils:miscutils.blockcasings:9 x41, miscutils:gtplusplus.blockcasings.3:15 x24, miscutils:miscutils.blockcasings:8 x9, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:42
+
+### [3285] §2§l§nMABS
+This unholy union between Mega and GT++ must be the work of some madman. It is the ultimate metallurgical furnace to make your alloys with up to 256 parallels. Using better coils and glass also boosts its speed and reduces energy costs!  The glass tier limits both the energy hatch tier and the recipe tier. As with other multis, UEV glass unlocks all tiers and UV glass is needed for lasers.  Glass tiers gate recipe tiers, for example UHV recipes need UHV glass.
+  - [提交] gregtech:gt.blockmachines:31150
+  - [可选提交] gregtech:gt.blockcasings5 x360, bartworks:BW_TieredGlass x339, miscutils:miscutils.blockcasings:15 x218, miscutils:miscutils.blockcasings:14 x56, gregtech:gt.blockmachines:91
+
+### [-6920448601063607174] §2§l§nMass Processing at UV and Beyond!
+Now that you've reached UV, you're going to start unlocking some extremely powerful processing multis. You'll want to create them as soon as possible because things are about to start getting very expensive...
+  - [勾选确认]
+
+### [-8199803816494517045] §d§lMass Processing in LuV
+As you enter LuV, fewer mass processing multiblocks are available as you replace old setups with new systems and scale up the multiblocks you've already built - there are still some important upgrades in these higher tiers, though.  Definitely don't miss out on the Circuit Assembly Line or you'll be kicking yourself later.
+  - [勾选确认]
+
+### [2044] §b§lMega is Betta
+For someone who needs to blast a truly §lridiculous§r amount of stuff, the §5§lExothermic Hearth§r is the machine for you. This monster machine can handle up to §6§l256§r parallel recipes at a time.  If allowed to heat up fully, the machine will run with §6§l2x§r as many parallels (though that takes around 30 minutes). You can optionally provide it §c§l250L/s§r of Pyrotheum to speed up this process by §2§l6x§r.  The glass tier limits the energy hatch tier that you can use. You can even use multiamp hatches from TecTech! If you want to use laser hatches, however, you need at least §2§nUV§r glass.
+  - [提交] gregtech:gt.blockmachines:15517
+  - [可选提交] gregtech:gt.blockcasings14:3 x1918, gregtech:gt.blockcasings:11 x925, gregtech:gt.blockcasings5 x864, miscutils:gtplusplus.blockcasings.2:11 x780, gregtech:gt.blockcasings8:10 x426, bartworks:BW_TieredGlass x332, gregtech:gt.blockcasings11:7 x308, miscutils:miscutils.blockcasings:14 x280, gregtech:gt.blockcasings2:15 x131, gregtech:gt.blockframes:163 x56, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:42
+
+### [-5848306241697509763] §b§lMegalomania
+In ZPM, you now have the ability to construct very powerful mega machines. These absolute titans will boost your production to levels never-before-seen, at a price.  [note]To get real benefit from these multis, you will want to use lots of power and take advantage of their extreme parallelization.[/note]
+  - [勾选确认]
+
+### [-5991978432068446918] §c§lMore Steam, More Pressure!
+How do you compress things in the Steam Age? Simple, putting a lot of steam in one place, under high pressure, can apply a force to compress things...  Let's just make it bigger. With the Steam Squasher, you can have a Compressor in a much larger scale, similarly to the other Steam Multiblocks. If you feel like compressing recipes are taking too long, which they probably are, this is a good solution to your problems.  Once the multi forms, provide lots of steam to get lots of compressed items.
+  - [提交] gregtech:gt.blockmachines:31078
+  - [可选提交] gregtech:gt.blockcasings:10 x27, gregtech:gt.blockcasings2:12 x10, minecraft:iron_block x6, gregtech:gt.blockmachines:31040, gregtech:gt.blockmachines:31047, gregtech:gt.blockmachines:31046
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x50
+
+### [2031] §9§lPlay-Doh For Big Girls and Boys
+I never wanna grow up, I wanna play with my §5§lIndustrial Extrusion Machine§r. This machine offers a §2§l3.5x§r speed boost and §6§l6§r parallels per voltage tier.  You can use multiple input buses with a different extruder shape in each and then throw the items to extrude into the bus with the appropriate shape.  Alternatively, you can also use an Extrusion Bus. These are more expensive but come pre-loaded with all of the extruder shapes so you can manually set them without needing to create one.
+  - [提交] gregtech:gt.blockmachines:15549
+  - [可选提交] gregtech:gt.blockcasings10:3 x33, gregtech:gt.blockcasings8 x24, gregtech:gt.blockcasings12:14 x20, gregtech:gt.blockcasings4:1 x4, gregtech:gt.blockmachines:91
+  - [可选提交] gregtech:gt.blockmachines:31785, gregtech:gt.blockmachines:31786, gregtech:gt.blockmachines:31787, gregtech:gt.blockmachines:31788
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-8419867822017820934] §c§lPressure Washing!
+If you have been processing the ores you have gathered until now, you will have come across a variety of crushed ores. Since these are quite dirty, you will have to clean them up to get certain byproducts. But how do you clean up this multitude of crushed ores? By using a Steam Purifier, of course! With a steady flow of Steam and a bit of Water, you can wash away impurities and get Purified Crushed Ores in no time.  If you're tired of waiting forever for your ores to clean up, this is your fix!  §3This Multiblock has two modes, the default Washer Mode and a Simple Washer Mode. Simple Washers process ores considerably faster, but they do not give byproducts. Like other Multiblocks, the mode can be toggled by the respective button inside the GUI or by right-clicking the Controller with a Screwdriver. Since all ore washing recipes are LV, this Multiblock can run all of them.
+  - [提交] gregtech:gt.blockmachines:31082
+  - [可选提交] gregtech:gt.blockcasings:10 x59, minecraft:glass x24, gregtech:gt.blockcasings2:12 x12, gregtech:gt.blockcasings2:2 x8, gregtech:gt.blockmachines:31046, gregtech:gt.blockmachines:31047, gregtech:gt.blockmachines:50, gregtech:gt.blockmachines:31040
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x50
+
+### [2054] §b§lPutting All Those Workers Out of Jobs
+The large scale auto-assembler will put things together for you, in volume. This multi is available in ZPM.  [note]While it unlocks much later, has much fewer parallels, and has no TT energy hatch support in contrast to the Precise Assembler, it has one upside: If you use two energy hatches you can craft items of the next tier.[/note]
+  - [提交] gregtech:gt.blockmachines:876
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:12 x19, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:42
+
+### [-6585475866071969942] §8§lSee You Lather
+Just in time for the huge number of crystal rods you'll need to get your Applied Energistics system up and running, the Industrial Precision Lathe!  The number of recipes that can be processed in parallel by the IPL depends on the item pipe casing. §9(Parallel = Item Pipe Casing Tier * 8)§r  Additionally, it has 4x the speed on all recipes compared to the singleblock of that voltage and only consumes 80% of the EU/t normally required
+  - [提交] gregtech:gt.blockmachines:686
+  - [可选提交] gregtech:gt.blockcasings2 x55, bartworks:BW_TieredGlass x32, gregtech:gt.blockcasings3:10 x9, gregtech:gt.blockcasings11 x4
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [85] §5§lSmelt All The Things Stack-Wise...
+...with this great invention! Upgrade power and coils to smelt absolutely ridiculous amounts of items.
+  - [提交] gregtech:gt.blockmachines:1003
+  - [可选提交] gregtech:gt.blockcasings:11 x12, gregtech:gt.blockcasings5 x8, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:5 x2 | dreamcraft:CoinTechnicianI x5
+
+### [-8222665240642675552] §b§lSpinmatron-2737
+Tired of spamming Centrifuges already?   Alas, with your newfound ZPM technology you can finally fabricate a Centrifuge with some real power; §5§lThe Spinmatron-2737§r!  The Spinmatron§r comes with a litany of advantages compared to the regular centrifuge multiblock, including a §2§l3x§r Speed boost, a §2§l30%§r reduction in EU usage, and a malleable number of parallels.  Unlike the generic turbine that comes stock in a normal Centrifuge, the Spinmatron§r graciously allows you to choose the quality of the turbines that go into the machine. You can add between §9§l2-8§r turbines depending on the machine tier, each turbine will increase the parallel amount by [§94 * Turbine Material Tier§r]. §3(You'll want to avoid using smaller, non-huge turbines!)§r  This efficiency comes at a cost however, and will require [§9Recipe Tier * 10§r] L/s of §5Kerosene§r in order to run. This can optionally be switched out with §5Biocatalyzed Propulsion Fluid§r for a §2§l1.25x§r parallel multiplier once you've reached §4UEV§r.  Additionally there are three modes that come unique to the Spinmatron:  - §dLight§r -> Gives increased speed in exchange for only being able to process [§9Voltage Tier - 3§r] recipes  - §6Normal§r -> No changes  - §aHeavy§r -> Grants the ability to craft Heavy Mode dependent recipes in exchange for reducing your parallels by §c§l32x§r and consuming §5Biocatalyzed Propulsion Fluid§r.  [note]Checkout the tooltip for more information![/note]  [warn]Use the GUI for adding turbines; don't add them to the rotor assemblies.[/warn]
+  - [提交] gregtech:gt.blockmachines:1033
+  - [可选提交] gregtech:gt.blockcasings12:9 x709, GoodGenerator:supercriticalFluidTurbineCasing x264, gregtech:gt.blockcasings9 x160, gregtech:gt.blockglass1:6 x144, bartworks:BW_TieredGlass x81, gregtech:gt.blockmetal4:13 x56, miscutils:gtplusplus.blockcasings.5:2 x54, miscutils:gtplusplus.blockspecialcasings.1 x24, miscutils:blockFrameGtPikyonium64B x9, gregtech:gt.blockmachines:30010 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianIII x3
+
+### [2037] §9§lSpools and Spools
+Need enough wire to go around the world? Here you go.  The §5§lIndustrial Wire Factory§r is the only Wiremill multiblock, delivering §6§l4§r parallels per voltage tier, a §3§l25%§r EU discount, and a scalable speed bonus of §2§l+50%§r per Item Pipe Casing tier, ranging from §2§l1.5x§r speed while using Tin to an impressive §2§l5x§r speed while using Black Plutonium.  [note]Glass tier is irrelevant; use what works best for you![/note]
+  - [提交] gregtech:gt.blockmachines:15511
+  - [可选提交] miscutils:miscutils.blockcasings:6 x35, bartworks:BW_TieredGlass x15, gregtech:gt.blockcasings11 x3, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-5681445710078694276] §c§lSteam Blender?
+Why use fancy wiring and circuitry to blend dusts together when you can do the same thing with steam and pistons? The Steam Blender is the largest of these Steam Multiblocks and can handle your mixing needs for a while, having more parallel than an LV singleblock Mixer.  [note]This Multiblock can only process recipes up to LV tier.[/note]
+  - [提交] gregtech:gt.blockmachines:31084
+  - [可选提交] gregtech:gt.blockcasings:10 x35, gregtech:gt.blockframes:300 x4, gregtech:gt.blockcasings2:2 x2, gregtech:gt.blockcasings2:12, gregtech:gt.blockmachines:31040, gregtech:gt.blockmachines:31046, gregtech:gt.blockmachines:31047
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x50
+
+### [-8548775180619194411] §c§lSteam Fusing?
+Singleblock Alloy Smelters not fast enough for you? Look no further than the Steam Fuser. This will make light work of your alloy smelter tasks at a fraction of the steam cost and a much faster speed.  (Check out the tooltip for more info!)  While the NEI requirements show borosilicate glass, you can substitute any HV tier glass in its place like warded glass, quite clear glass, or fused quartz. If you end up using borosilicate; boron can be obtained from electrolyzing borax.  [note]Will only process up to LV tier recipes[/note]
+  - [提交] gregtech:gt.blockmachines:31086
+  - [可选提交] gregtech:gt.blockcasings:10 x30, bartworks:BW_TieredGlass x4 (ore:blockGlassHV), gregtech:gt.blockmachines:31040, gregtech:gt.blockcasings2:12 x2, gregtech:gt.blockmachines:31047, gregtech:gt.blockmachines:31046
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x50
+
+### [-6003979525766501212] §c§lSTEAM-POWERED BREAKTHROUGH
+You should have quite the collection of single block Steam machines by now. While these may have gotten you through processing small amounts of materials, there will be a time when you will have to process a multitude of items. This is where Multiblocks come in.  While these Multiblocks have a material cost that is way higher than their single block counterparts, they have certain bonuses: they use less Steam, and they can process recipes in parallel, which means that a single recipe cycle can craft multiple items at once, if the Steam provided is enough to sustain it.  They do however have some quirks that need to be taken care of:  -These Multiblocks require §4§lvery specific§r I/O blocks, use only those that are part of the quest -They process up to 8 items, where the Basic Tier is made of Bronze and High Pressure Tier is made of Steel (checkout the Multiblock Preview in NEI which will show you different levels of tiers) -The Tier and amount of parallel processing can be seen via WAILA if you are looking at the Controller Block  [note]With this quest, you have started your journey with Mass Processing. However, don't get too excited quite yet. While there are some Multiblocks accessible in the Steam Age, most of them only unlock in EV or later, including better versions of these Multiblocks.[/note]
+  - [勾选确认]
+
+### [-7512596816828408986] §c§lSteam Stomping!
+While the Forge Hammer is quite fast already, why not build this upscaled version and make it even faster? With the Steam Presser, you can unleash the full force of steam on whatever material you feed it. Watch blocks break apart and rods get smashed together faster than ever-at least until you gain access to more advanced technology.  §3The Steam Presser can only process recipes up to LV Tier.
+  - [提交] gregtech:gt.blockmachines:31083
+  - [可选提交] gregtech:gt.blockcasings:10 x39, gregtech:gt.blockcasings2:12 x2, minecraft:iron_block x2, gregtech:gt.blockmachines:31046, gregtech:gt.blockmachines:31047, gregtech:gt.blockmachines:31040
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x50
+
+### [2764] §c§lSteamy Mincer
+This is an upgraded version of your trusty ol' Steam Macerator. As a 3x3 Multiblock, it might seem expensive if you're in the Steam Age. However, the processing time per ore is so low that you can sustain your beginner's ore processing system with it!  The main reason to switch from this is the HV Macerator, which unlocks a slot for additional byproducts gained from the macerating step of ore processing. The Steam Grinder, in comparison, will only return the first item shown in the recipe output. However, this will do just fine until HV!  §3The Steam Grinder can only process recipes up to LV Tier.
+  - [提交] gregtech:gt.blockmachines:31041
+  - [可选提交] gregtech:gt.blockcasings:10 x17, gregtech:gt.blockframes:300 x8, gregtech:gt.blockcasings2:2, gregtech:gt.blockmachines:31046, gregtech:gt.blockmachines:31047, gregtech:gt.blockmachines:31040
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnician x50
+
+### [-7288053330851601378] §9§lT2 Maceration Stack 
+Upgrade your Maceration Stack by replacing all the casings with Maceration Stack Casings and then placing the Upgrade Chip into the slot in the controller.  The §5§lTier 2§r Maceration stack has §2§l4x§r the speed and §6§l4x§r the parallels compared to the T1!
+  - [提交] miscutils:MU-metaitem.01:32152
+  - [可选提交] miscutils:miscutils.blockcasings:7 x87, gregtech:gt.blockframes:372 x20, gregtech:gt.blockcasings2:3 x18, gregtech:gt.blocktintedglass x8, gregtech:gt.blockcasings3:10 x6, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [-8917357558952918000] §5§lTaking Things Apart
+You probably haven't thought about the extractor in a while. Is your steam extractor still collecting dust somewhere? Well, if you do find yourself needing to extract things quick, (processing industrial quantities of flowers, maybe?) pick up the Dissection Apparatus.  [note]This multi gets additional parallels based on tier of item pipe casing, so use the best one you can get![/note]
+  - [提交] gregtech:gt.blockmachines:3010
+  - [可选提交] gregtech:gt.blockcasings4:1 x57, gregtech:gt.blockcasings11 x19, bartworks:BW_TieredGlass x8
+  > 奖励: enhancedlootbags:lootbag:6
+
+### [-5096507854432432801] §8§lThe Form of the Former Former: Reformed
+Should you require a formidable former, for formatively forming formal forms, you'll want to create an §5§lIndustrial Forming Press§r. It grants §2§l6x§r the speed and §6§l6§r parallels per voltage tier compared to the singleblock.
+  - [提交] gregtech:gt.blockmachines:15552
+  - [可选提交] miscutils:miscutils.blockcasings:4 x19, gregtech:gt.blockframes:28 x6, gregtech:gt.blockcasings2:13 x6, gregtech:gt.blockcasings12:14 x5, gregtech:gt.blockcasings2:4, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [-6802078268978097834] §9§lThermic Heating Device
+The §5§lThermic Heating Device§r is the multiblock edition of the Fluid Heater, offering §6§l8§r parallels per voltage tier at over §2§l2x§r the speed and for only §3§l90%§r of the EU cost.  This can be useful now for Bauxite and Ruthenium processing but if you choose not to use it then definitely keep it in mind for later as you will eventually want it for Growth Catalyst!
+  - [提交] gregtech:gt.blockmachines:31077
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:11 x47, miscutils:gtplusplus.blockcasings.3:2 x35, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [1422] §8§lThe Rocks In The Washer...
+...go round and round, all the live long day. A large ore washing plant gets your rocks nice and clean.   The §5§lOre Washing Plant§r gives a §2§l5x§r speed boost and §6§l4§r parallels per voltage tier compared to its singleblock counterpart.
+  - [提交] gregtech:gt.blockmachines:15550
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:4 x84, gregtech:gt.blockframes:305 x15, gregtech:gt.blockcasings2:3 x7, gregtech:gt.blockmachines:91
+  - [可选提交] gregtech:gt.blockmachines:31071
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [-8415056029440111651] §9§lThis Kinda Burns...
+The §5§lIndustrial Chemical Bath§r will significantly increase the efficiency of your ore processing. It grants a §2§l5x§r speed boost and §6§l4§r parallels per voltage tier compared to its singleblock counterpart.
+  - [提交] gregtech:gt.blockmachines:15551
+  - [可选提交] miscutils:gtplusplus.blockcasings.2:4 x37, miscutils:blockFrameGtWatertightSteel x20, gregtech:gt.blockcasings8 x4, gregtech:gt.blockmetal8:6 x2, gregtech:gt.blockmetal2:7 x2, gregtech:gt.blockmachines:91
+  - [可选提交] gregtech:gt.blockmachines:31071
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [2320] §d§lTower of Babylon
+Well, what might happen if you combine 64 Distillation Towers in one...? You know... you get a 54-block-tall Multiblock.  This can handle up to §6§l256§r Recipes at once and provides a different set of bonuses depending on which distillation mode is active.
+  - [提交] gregtech:gt.blockmachines:15516
+  - [可选提交] gregtech:gt.blockcasings4:1 x361, miscutils:gtplusplus.blockspecialcasings.2 x215, gregtech:gt.sheetmetal:324 x179, gregtech:gt.blockcasings14:5 x163, gregtech:gt.blockframes:306 x99, gregtech:gt.blockcasings2:12 x80, gregtech:gt.blockcasings2:13 x43, gregtech:gt.blockcasings2 x41
+  > 奖励: enhancedlootbags:lootbag:41
+
+### [-7108514021348170205] §8§lUnder Pressure
+Bigger, better, faster. The Large Electric Compressor does about what you would expect.
+  - [提交] gregtech:gt.blockmachines:3005
+  - [可选提交] gregtech:gt.blockcasings10:4 x103, gregtech:gt.blockcasings10:5 x60, bartworks:BW_TieredGlass x6
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [-7992749153415472519] §b§l...With The Power of Science!
+This multiblock will allow you to use all that UU-Matter that your Matter Fabricator makes, not that you don't have anything else to do with it...  [note]This multi is traditionally UV, but can technically be made in ZPM.[/note]
+  - [提交] gregtech:gt.blockmachines:31050
+  - [可选提交] miscutils:gtplusplus.blockcasings.5:3 x138, miscutils:miscutils.blockcasings:9 x24, miscutils:gtplusplus.blockspecialcasings.1:13 x24, miscutils:miscutils.blockcasings:8 x24, miscutils:gtplusplus.blockspecialcasings.3:2 x24, miscutils:gtplusplus.blockspecialcasings.1:12 x20, miscutils:gtplusplus.blockspecialcasings.3:6 x16, gregtech:gt.blockmachines:31051, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:42
+
+### [768] §5§lYou Smell Like a Distillery!
+This bad boy will tremendously boost the byproducts of your cracked fuel or pyrolyse oven. This way you can make industrial TNT, polyethylene, polytetrafluoroethylene and other plastics more efficiently. You'll also need this for the platline.  You'll need to make EV circuits in a cleanroom to build this machine.  For hatches, you can choose your own tier. 1 MV energy hatch is enough for most of the useful recipes. 2 MV energy hatches or 1 HV energy hatch will cover almost all the rest. You will also need 1 input hatch, and at least 5 output hatches. An output bus will capture any solid outputs.  NEI is not great for determining which cracked fuel option is the best. Instead, visit the Oil Cracking Unit wiki page linked below for a complete list of all the fractions in a nice, convenient format!  [url]https://wiki.gtnewhorizons.com/wiki/Oil_Cracking_Unit[/url]
+  - [提交] gregtech:gt.blockmachines:1126
+  - [可选提交] gregtech:gt.blockcasings4:1 x39, gregtech:gt.blockmachines:60 x5, gregtech:gt.blockmachines:50, gregtech:gt.blockmachines:80
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-9064898237805017210] §9§lYou've Gotta Keep 'Em Separated
+When you need to polarize magnets or separate magnetic materials, look to the MFE! This multiblock requires an electromagnet to be inserted into its housing - better magnets, better bonuses. In IV, you'll be stuck with an Iron Electromagnet, though.  [note]At the final tier of electromagnet, you can use TecTech multi-amp hatches. Might be good to remember when you're processing a certain magnetic material...[/note]
+  - [提交] gregtech:gt.blockmachines:358
+  - [可选提交] gregtech:gt.blockcasings10 x73, gregtech:gt.blockframes:356 x37, bartworks:BW_TieredGlass x12, gregtech:gt.blockmachines:359
+  - [可选提交] gregtech:gt.metaitem.01:32345, gregtech:gt.metaitem.01:32346, gregtech:gt.metaitem.01:32347, gregtech:gt.metaitem.01:32348, gregtech:gt.metaitem.01:32349
+  > 奖励: enhancedlootbags:lootbag:8
+
+### [2034] §9§lZzzZZZzzzZtt
+Need lots of oxygen or hydrogen? Maybe you just want to rip apart materials for tons of aluminium? Both are perfect tasks for this multiblock.  The §5§lIndustrial Electrolyzer§r is much more effective than its singleblock variant. It offers §6§l4§r parallels per voltage tier, a §2§l2.8x§r speed increase, and a §3§l10%§r EU discount on all recipes. Sounds like a good deal to me!
+  - [提交] gregtech:gt.blockmachines:15514
+  - [可选提交] miscutils:miscutils.blockcasings:5 x41, miscutils:blockFrameGtPotin x12, gregtech:gt.blockcasings11:1 x4, gregtech:gt.blockcasings11 x4, gregtech:gt.blockmachines:91
+  > 奖励: enhancedlootbags:lootbag:8
+

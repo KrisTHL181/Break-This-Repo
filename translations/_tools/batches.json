@@ -1,0 +1,939 @@
+[
+  {
+    "name": "北欧与波罗的",
+    "codes": [
+      "kl",
+      "se"
+    ],
+    "langs": [
+      {
+        "code": "kl",
+        "native": "kalaallisut",
+        "en": "Kalaallisut"
+      },
+      {
+        "code": "se",
+        "native": "Davvisámegiella",
+        "en": "Northern Sami"
+      }
+    ]
+  },
+  {
+    "name": "斯拉夫语族（西/南） + 斯拉夫语族（东）",
+    "codes": [
+      "bs",
+      "mk",
+      "cu",
+      "be",
+      "bg"
+    ],
+    "langs": [
+      {
+        "code": "bs",
+        "native": "bosanski jezik",
+        "en": "Bosnian"
+      },
+      {
+        "code": "mk",
+        "native": "македонски јазик",
+        "en": "Macedonian"
+      },
+      {
+        "code": "cu",
+        "native": "ѩзыкъ словѣньскъ",
+        "en": "Church Slavic"
+      },
+      {
+        "code": "be",
+        "native": "беларуская мова",
+        "en": "Belarusian"
+      },
+      {
+        "code": "bg",
+        "native": "български език",
+        "en": "Bulgarian"
+      }
+    ]
+  },
+  {
+    "name": "乌拉尔与阿尔泰",
+    "codes": [
+      "mn",
+      "az",
+      "kk",
+      "ky",
+      "uz",
+      "tk"
+    ],
+    "langs": [
+      {
+        "code": "mn",
+        "native": "Монгол хэл",
+        "en": "Mongolian"
+      },
+      {
+        "code": "az",
+        "native": "azərbaycan dili",
+        "en": "Azerbaijani"
+      },
+      {
+        "code": "kk",
+        "native": "қазақ тілі",
+        "en": "Kazakh"
+      },
+      {
+        "code": "ky",
+        "native": "Кыргызча",
+        "en": "Kirghiz"
+      },
+      {
+        "code": "uz",
+        "native": "Oʻzbek",
+        "en": "Uzbek"
+      },
+      {
+        "code": "tk",
+        "native": "Türkmençe",
+        "en": "Turkmen"
+      }
+    ]
+  },
+  {
+    "name": "高加索与伊朗",
+    "codes": [
+      "ka",
+      "hy",
+      "os",
+      "ce",
+      "cv",
+      "ba",
+      "tt",
+      "kv"
+    ],
+    "langs": [
+      {
+        "code": "ka",
+        "native": "ქართული",
+        "en": "Georgian"
+      },
+      {
+        "code": "hy",
+        "native": "Հայերեն",
+        "en": "Armenian"
+      },
+      {
+        "code": "os",
+        "native": "ирон æвзаг",
+        "en": "Ossetian"
+      },
+      {
+        "code": "ce",
+        "native": "нохчийн мотт",
+        "en": "Chechen"
+      },
+      {
+        "code": "cv",
+        "native": "чӑваш чӗлхи",
+        "en": "Chuvash"
+      },
+      {
+        "code": "ba",
+        "native": "башҡорт теле",
+        "en": "Bashkir"
+      },
+      {
+        "code": "tt",
+        "native": "татар теле",
+        "en": "Tatar"
+      },
+      {
+        "code": "kv",
+        "native": "коми кыв",
+        "en": "Komi"
+      }
+    ]
+  },
+  {
+    "name": "中东与中亚",
+    "codes": [
+      "fa",
+      "ps",
+      "ku",
+      "tg",
+      "ur",
+      "sd",
+      "ks",
+      "dv"
+    ],
+    "langs": [
+      {
+        "code": "fa",
+        "native": "فارسی",
+        "en": "Persian"
+      },
+      {
+        "code": "ps",
+        "native": "پښتو",
+        "en": "Pashto"
+      },
+      {
+        "code": "ku",
+        "native": "Kurdî",
+        "en": "Kurdish"
+      },
+      {
+        "code": "tg",
+        "native": "тоҷикӣ",
+        "en": "Tajik"
+      },
+      {
+        "code": "ur",
+        "native": "اردو",
+        "en": "Urdu"
+      },
+      {
+        "code": "sd",
+        "native": "सिन्धी",
+        "en": "Sindhi"
+      },
+      {
+        "code": "ks",
+        "native": "कॉशुर",
+        "en": "Kashmiri"
+      },
+      {
+        "code": "dv",
+        "native": "ދިވެހި",
+        "en": "Divehi"
+      }
+    ]
+  },
+  {
+    "name": "印度（北）",
+    "codes": [
+      "bn",
+      "pa",
+      "gu",
+      "mr",
+      "ne",
+      "or",
+      "as"
+    ],
+    "langs": [
+      {
+        "code": "bn",
+        "native": "বাংলা",
+        "en": "Bengali"
+      },
+      {
+        "code": "pa",
+        "native": "ਪੰਜਾਬੀ",
+        "en": "Panjabi"
+      },
+      {
+        "code": "gu",
+        "native": "ગુજરાતી",
+        "en": "Gujarati"
+      },
+      {
+        "code": "mr",
+        "native": "मराठी",
+        "en": "Marathi"
+      },
+      {
+        "code": "ne",
+        "native": "नेपाली",
+        "en": "Nepali"
+      },
+      {
+        "code": "or",
+        "native": "ଓଡ଼ିଆ",
+        "en": "Oriya"
+      },
+      {
+        "code": "as",
+        "native": "অসমীয়া",
+        "en": "Assamese"
+      }
+    ]
+  },
+  {
+    "name": "印度（南）与斯里兰卡",
+    "codes": [
+      "ta",
+      "te",
+      "kn",
+      "ml",
+      "si"
+    ],
+    "langs": [
+      {
+        "code": "ta",
+        "native": "தமிழ்",
+        "en": "Tamil"
+      },
+      {
+        "code": "te",
+        "native": "తెలుగు",
+        "en": "Telugu"
+      },
+      {
+        "code": "kn",
+        "native": "ಕನ್ನಡ",
+        "en": "Kannada"
+      },
+      {
+        "code": "ml",
+        "native": "മലയാളം",
+        "en": "Malayalam"
+      },
+      {
+        "code": "si",
+        "native": "සිංහල",
+        "en": "Sinhala"
+      }
+    ]
+  },
+  {
+    "name": "古典与南岛（东南亚）",
+    "codes": [
+      "sa",
+      "pi",
+      "id",
+      "ms",
+      "jv",
+      "su",
+      "tl",
+      "mg"
+    ],
+    "langs": [
+      {
+        "code": "sa",
+        "native": "संस्कृतम्",
+        "en": "Sanskrit"
+      },
+      {
+        "code": "pi",
+        "native": "पाऴि",
+        "en": "Pali"
+      },
+      {
+        "code": "id",
+        "native": "Bahasa Indonesia",
+        "en": "Indonesian"
+      },
+      {
+        "code": "ms",
+        "native": "Bahasa Melayu",
+        "en": "Malay"
+      },
+      {
+        "code": "jv",
+        "native": "basa Jawa",
+        "en": "Javanese"
+      },
+      {
+        "code": "su",
+        "native": "Basa Sunda",
+        "en": "Sundanese"
+      },
+      {
+        "code": "tl",
+        "native": "Wikang Tagalog",
+        "en": "Tagalog"
+      },
+      {
+        "code": "mg",
+        "native": "fiteny malagasy",
+        "en": "Malagasy"
+      }
+    ]
+  },
+  {
+    "name": "东南亚大陆",
+    "codes": [
+      "vi",
+      "km",
+      "lo",
+      "my",
+      "bo",
+      "dz"
+    ],
+    "langs": [
+      {
+        "code": "vi",
+        "native": "Tiếng Việt",
+        "en": "Vietnamese"
+      },
+      {
+        "code": "km",
+        "native": "ខេមរភាសា",
+        "en": "Khmer"
+      },
+      {
+        "code": "lo",
+        "native": "ພາສາລາວ",
+        "en": "Lao"
+      },
+      {
+        "code": "my",
+        "native": "ဗမာစာ",
+        "en": "Burmese"
+      },
+      {
+        "code": "bo",
+        "native": "བོད་ཡིག",
+        "en": "Tibetan"
+      },
+      {
+        "code": "dz",
+        "native": "རྫོང་ཁ",
+        "en": "Dzongkha"
+      }
+    ]
+  },
+  {
+    "name": "东亚与文字",
+    "codes": [
+      "zh",
+      "ii",
+      "za",
+      "ug"
+    ],
+    "langs": [
+      {
+        "code": "zh",
+        "native": "中文",
+        "en": "Chinese"
+      },
+      {
+        "code": "ii",
+        "native": "ꆈꌠꉙ",
+        "en": "Sichuan Yi"
+      },
+      {
+        "code": "za",
+        "native": "Vahcuengh",
+        "en": "Zhuang"
+      },
+      {
+        "code": "ug",
+        "native": "ئۇيغۇرچە",
+        "en": "Uighur"
+      }
+    ]
+  },
+  {
+    "name": "中欧与东南欧",
+    "codes": [
+      "sq",
+      "ro",
+      "eo",
+      "ia",
+      "ie",
+      "io",
+      "la"
+    ],
+    "langs": [
+      {
+        "code": "sq",
+        "native": "Shqip",
+        "en": "Albanian"
+      },
+      {
+        "code": "ro",
+        "native": "Română",
+        "en": "Romanian"
+      },
+      {
+        "code": "eo",
+        "native": "Esperanto",
+        "en": "Esperanto"
+      },
+      {
+        "code": "ia",
+        "native": "Interlingua",
+        "en": "Interlingua"
+      },
+      {
+        "code": "ie",
+        "native": "Interlingue",
+        "en": "Interlingue"
+      },
+      {
+        "code": "io",
+        "native": "Ido",
+        "en": "Ido"
+      },
+      {
+        "code": "la",
+        "native": "latine",
+        "en": "Latin"
+      }
+    ]
+  },
+  {
+    "name": "非洲（东）",
+    "codes": [
+      "sw",
+      "am",
+      "ti",
+      "so",
+      "om",
+      "rw",
+      "rn",
+      "lg"
+    ],
+    "langs": [
+      {
+        "code": "sw",
+        "native": "Kiswahili",
+        "en": "Swahili"
+      },
+      {
+        "code": "am",
+        "native": "አማርኛ",
+        "en": "Amharic"
+      },
+      {
+        "code": "ti",
+        "native": "ትግርኛ",
+        "en": "Tigrinya"
+      },
+      {
+        "code": "so",
+        "native": "Soomaaliga",
+        "en": "Somali"
+      },
+      {
+        "code": "om",
+        "native": "Afaan Oromoo",
+        "en": "Oromo"
+      },
+      {
+        "code": "rw",
+        "native": "Ikinyarwanda",
+        "en": "Kinyarwanda"
+      },
+      {
+        "code": "rn",
+        "native": "Ikirundi",
+        "en": "Rundi"
+      },
+      {
+        "code": "lg",
+        "native": "Luganda",
+        "en": "Ganda"
+      }
+    ]
+  },
+  {
+    "name": "非洲（西）",
+    "codes": [
+      "ha",
+      "ig",
+      "yo",
+      "wo",
+      "ff",
+      "bm",
+      "ak",
+      "ee",
+      "tw"
+    ],
+    "langs": [
+      {
+        "code": "ha",
+        "native": "Hausa",
+        "en": "Hausa"
+      },
+      {
+        "code": "ig",
+        "native": "Asụsụ Igbo",
+        "en": "Igbo"
+      },
+      {
+        "code": "yo",
+        "native": "Yorùbá",
+        "en": "Yoruba"
+      },
+      {
+        "code": "wo",
+        "native": "Wollof",
+        "en": "Wolof"
+      },
+      {
+        "code": "ff",
+        "native": "Fulfulde",
+        "en": "Fulah"
+      },
+      {
+        "code": "bm",
+        "native": "bamanankan",
+        "en": "Bambara"
+      },
+      {
+        "code": "ak",
+        "native": "Akan",
+        "en": "Akan"
+      },
+      {
+        "code": "ee",
+        "native": "Eʋegbe",
+        "en": "Ewe"
+      },
+      {
+        "code": "tw",
+        "native": "Twi",
+        "en": "Twi"
+      }
+    ]
+  },
+  {
+    "name": "非洲（中南）",
+    "codes": [
+      "zu",
+      "xh",
+      "st",
+      "tn",
+      "ts",
+      "ss",
+      "nr",
+      "nd",
+      "sn",
+      "ny",
+      "kj",
+      "ng",
+      "hz",
+      "ve",
+      "kg",
+      "lu",
+      "kr"
+    ],
+    "langs": [
+      {
+        "code": "zu",
+        "native": "isiZulu",
+        "en": "Zulu"
+      },
+      {
+        "code": "xh",
+        "native": "isiXhosa",
+        "en": "Xhosa"
+      },
+      {
+        "code": "st",
+        "native": "Sesotho",
+        "en": "Southern Sotho"
+      },
+      {
+        "code": "tn",
+        "native": "Setswana",
+        "en": "Tswana"
+      },
+      {
+        "code": "ts",
+        "native": "Xitsonga",
+        "en": "Tsonga"
+      },
+      {
+        "code": "ss",
+        "native": "SiSwati",
+        "en": "Swati"
+      },
+      {
+        "code": "nr",
+        "native": "isiNdebele",
+        "en": "South Ndebele"
+      },
+      {
+        "code": "nd",
+        "native": "isiNdebele",
+        "en": "North Ndebele"
+      },
+      {
+        "code": "sn",
+        "native": "chiShona",
+        "en": "Shona"
+      },
+      {
+        "code": "ny",
+        "native": "chiCheŵa",
+        "en": "Chichewa"
+      },
+      {
+        "code": "kj",
+        "native": "Kuanyama",
+        "en": "Kuanyama"
+      },
+      {
+        "code": "ng",
+        "native": "Owambo",
+        "en": "Ndonga"
+      },
+      {
+        "code": "hz",
+        "native": "Otjiherero",
+        "en": "Herero"
+      },
+      {
+        "code": "ve",
+        "native": "Tshivenḓa",
+        "en": "Venda"
+      },
+      {
+        "code": "kg",
+        "native": "Kikongo",
+        "en": "Kongo"
+      },
+      {
+        "code": "lu",
+        "native": "Kiluba",
+        "en": "Luba-Katanga"
+      },
+      {
+        "code": "kr",
+        "native": "Kanuri",
+        "en": "Kanuri"
+      }
+    ]
+  },
+  {
+    "name": "太平洋",
+    "codes": [
+      "mi",
+      "fj",
+      "sm",
+      "to",
+      "ty",
+      "ho",
+      "na",
+      "bi",
+      "mh",
+      "sg"
+    ],
+    "langs": [
+      {
+        "code": "mi",
+        "native": "te reo Māori",
+        "en": "Maori"
+      },
+      {
+        "code": "fj",
+        "native": "vosa Vakaviti",
+        "en": "Fijian"
+      },
+      {
+        "code": "sm",
+        "native": "gagana fa'a Samoa",
+        "en": "Samoan"
+      },
+      {
+        "code": "to",
+        "native": "faka Tonga",
+        "en": "Tonga"
+      },
+      {
+        "code": "ty",
+        "native": "Reo Tahiti",
+        "en": "Tahitian"
+      },
+      {
+        "code": "ho",
+        "native": "Hiri Motu",
+        "en": "Hiri Motu"
+      },
+      {
+        "code": "na",
+        "native": "Dorerin Naoero",
+        "en": "Nauru"
+      },
+      {
+        "code": "bi",
+        "native": "Bislama",
+        "en": "Bislama"
+      },
+      {
+        "code": "mh",
+        "native": "Kajin M̧ajeļ",
+        "en": "Marshallese"
+      },
+      {
+        "code": "sg",
+        "native": "yângâ tî sängö",
+        "en": "Sango"
+      }
+    ]
+  },
+  {
+    "name": "美洲原住民",
+    "codes": [
+      "qu",
+      "ay",
+      "gn",
+      "nv",
+      "iu",
+      "ik",
+      "cr",
+      "oj"
+    ],
+    "langs": [
+      {
+        "code": "qu",
+        "native": "Runa Simi",
+        "en": "Quechua"
+      },
+      {
+        "code": "ay",
+        "native": "aymar aru",
+        "en": "Aymara"
+      },
+      {
+        "code": "gn",
+        "native": "Avañe'ẽ",
+        "en": "Guarani"
+      },
+      {
+        "code": "nv",
+        "native": "Diné bizaad",
+        "en": "Navajo"
+      },
+      {
+        "code": "iu",
+        "native": "ᐃᓄᒃᑎᑐᑦ",
+        "en": "Inuktitut"
+      },
+      {
+        "code": "ik",
+        "native": "Iñupiaq",
+        "en": "Inupiaq"
+      },
+      {
+        "code": "cr",
+        "native": "ᓀᐦᐃᔭᐍᐏᐣ",
+        "en": "Cree"
+      },
+      {
+        "code": "oj",
+        "native": "ᐊᓂᔑᓈᐯᒧᐎᓐ",
+        "en": "Ojibwa"
+      }
+    ]
+  },
+  {
+    "name": "凯尔特与其它",
+    "codes": [
+      "cy",
+      "ga",
+      "gd",
+      "gv",
+      "kw",
+      "br",
+      "eu",
+      "mt",
+      "ht"
+    ],
+    "langs": [
+      {
+        "code": "cy",
+        "native": "Cymraeg",
+        "en": "Welsh"
+      },
+      {
+        "code": "ga",
+        "native": "Gaeilge",
+        "en": "Irish"
+      },
+      {
+        "code": "gd",
+        "native": "Gàidhlig",
+        "en": "Scottish Gaelic"
+      },
+      {
+        "code": "gv",
+        "native": "Gaelg",
+        "en": "Manx"
+      },
+      {
+        "code": "kw",
+        "native": "Kernewek",
+        "en": "Cornish"
+      },
+      {
+        "code": "br",
+        "native": "brezhoneg",
+        "en": "Breton"
+      },
+      {
+        "code": "eu",
+        "native": "euskara",
+        "en": "Basque"
+      },
+      {
+        "code": "mt",
+        "native": "Malti",
+        "en": "Maltese"
+      },
+      {
+        "code": "ht",
+        "native": "Kreyòl ayisyen",
+        "en": "Haitian"
+      }
+    ]
+  },
+  {
+    "name": "小语种 F–N",
+    "codes": [
+      "li"
+    ],
+    "langs": [
+      {
+        "code": "li",
+        "native": "Limburgs",
+        "en": "Limburgan"
+      }
+    ]
+  },
+  {
+    "name": "小语种 O–Z + 补充批次 1",
+    "codes": [
+      "sc",
+      "vo",
+      "wa",
+      "yi",
+      "ki",
+      "ln"
+    ],
+    "langs": [
+      {
+        "code": "sc",
+        "native": "sardu",
+        "en": "Sardinian"
+      },
+      {
+        "code": "vo",
+        "native": "Volapük",
+        "en": "Volapük"
+      },
+      {
+        "code": "wa",
+        "native": "walon",
+        "en": "Walloon"
+      },
+      {
+        "code": "yi",
+        "native": "ייִדיש",
+        "en": "Yiddish"
+      },
+      {
+        "code": "ki",
+        "native": "Gĩkũyũ",
+        "en": "Kikuyu"
+      },
+      {
+        "code": "ln",
+        "native": "Lingála",
+        "en": "Lingala"
+      }
+    ]
+  }
+]

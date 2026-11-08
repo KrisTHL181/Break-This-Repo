@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-events-interaction-v0-testmod",
+  "name": "Fabric Events Interaction (v0) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-events-interaction-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.event.interaction.AttackBlockTests",
+      "net.fabricmc.fabric.test.event.interaction.PlayerBreakBlockTests",
+      "net.fabricmc.fabric.test.event.interaction.PlayerPickItemTests",
+      "net.fabricmc.fabric.test.event.interaction.UseBlockTests",
+      "net.fabricmc.fabric.test.event.interaction.UseEntityTests",
+      "net.fabricmc.fabric.test.event.interaction.UseItemTests"
+    ],
+    "fabric-gametest": [
+      "net.fabricmc.fabric.test.event.interaction.FakePlayerTests"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.client.event.interaction.ClientPreAttackTests",
+      "net.fabricmc.fabric.test.client.event.interaction.ClientPlayerBlockBreakTests"
+    ],
+    "fabric-client-gametest": [
+	    "net.fabricmc.fabric.test.client.event.interaction.ClientHotbarScrollEventsTests"
+    ]
+  }
+}

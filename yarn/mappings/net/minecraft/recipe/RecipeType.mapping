@@ -1,0 +1,7 @@
+CLASS net/minecraft/class_3956 net/minecraft/recipe/RecipeType
+	COMMENT The recipe type allows matching recipes more efficiently by only checking
+	COMMENT recipes under a given type.
+	COMMENT
+	COMMENT @param <T> the common supertype of recipes within a recipe type
+	METHOD method_17726 register (Ljava/lang/String;)Lnet/minecraft/class_3956;
+		ARG 0 id

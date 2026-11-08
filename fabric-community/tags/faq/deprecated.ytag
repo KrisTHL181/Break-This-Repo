@@ -1,0 +1,15 @@
+type: text
+
+---
+
+In Minecraft code, `@Deprecated` usually does not actually mean `@Deprecated`. However why the methods are deprecated can mean different things depending on the context.
+
+Before 1.20.5, in `AbstractBlock` (and its subclass `Block`) deprecated methods meant "override, not call". This was because there is a corresponding method in `BlockState` you should call instead. **Overriding is fine - that is expected.** Newer versions use `protected` instead.
+
+In `ChunkRegion`, the deprecated `ServerWorld getWorld()` method means, "do not modify chunks there". This is because chunk modifications should be done to the `Chunk`s in the `ChunkRegion`. Modifying chunks on the `ServerWorld` here can cause the game to deadlock.
+
+Other common `@Deprecated` things that are actually deprecated:
+- `ThreadSafeRandom` and `Random.createThreadSafe`: Deprecated due to its indeterministic nature. Randoms should never be used across threads.
+- Intrusive registry entry and `getRegistryEntry`: Deprecated as they are for compatibility purposes only.
+- `SharedConstants` fields: Replaced with `SharedConstants.getGameVersion()`.
+- `WorldView.getSeaLevel` (~1.21.1): Deprecated because the value is hard-coded. Query from `ChunkGenerator` instead.

@@ -1,0 +1,51 @@
+CLASS net/minecraft/class_521 net/minecraft/client/gui/screen/pack/PackListWidget
+	FIELD field_18978 title Lnet/minecraft/class_2561;
+	FIELD field_19126 INCOMPATIBLE Lnet/minecraft/class_2561;
+	FIELD field_19127 INCOMPATIBLE_CONFIRM Lnet/minecraft/class_2561;
+	FIELD field_41715 screen Lnet/minecraft/class_5375;
+	FIELD field_45532 SELECT_HIGHLIGHTED_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45533 SELECT_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45534 UNSELECT_HIGHLIGHTED_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45535 UNSELECT_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45536 MOVE_UP_HIGHLIGHTED_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45537 MOVE_UP_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45538 MOVE_DOWN_HIGHLIGHTED_TEXTURE Lnet/minecraft/class_2960;
+	FIELD field_45539 MOVE_DOWN_TEXTURE Lnet/minecraft/class_2960;
+	METHOD <init> (Lnet/minecraft/class_310;Lnet/minecraft/class_5375;IILnet/minecraft/class_2561;)V
+		ARG 1 client
+		ARG 2 screen
+		ARG 3 width
+		ARG 4 height
+		ARG 5 title
+	METHOD method_73444 (Lnet/minecraft/class_5369$class_5372;Lnet/minecraft/class_5369$class_5371;)V
+		ARG 2 pack
+	METHOD method_73445 set (Ljava/util/stream/Stream;Lnet/minecraft/class_5369$class_5372;)V
+		ARG 1 packs
+		ARG 2 focused
+	CLASS class_4271 ResourcePackEntry
+		FIELD field_19128 client Lnet/minecraft/class_310;
+		FIELD field_19129 pack Lnet/minecraft/class_5369$class_5371;
+		FIELD field_19130 widget Lnet/minecraft/class_521;
+		FIELD field_64205 nameWidget Lnet/minecraft/class_7842;
+		FIELD field_64206 descriptionWidget Lnet/minecraft/class_7940;
+		METHOD <init> (Lnet/minecraft/class_521;Lnet/minecraft/class_310;Lnet/minecraft/class_521;Lnet/minecraft/class_5369$class_5371;)V
+			ARG 2 client
+			ARG 3 widget
+			ARG 4 pack
+		METHOD method_20152 isSelectable ()Z
+		METHOD method_48280 toggle ()V
+		METHOD method_48281 moveTowardStart ()V
+		METHOD method_48282 moveTowardEnd ()V
+		METHOD method_48477 (Z)V
+			ARG 1 confirmed
+		METHOD method_48478 enable ()V
+		METHOD method_73446 (Lnet/minecraft/class_521$class_11778;)Z
+			ARG 1 entry
+	CLASS class_11778 Entry
+		METHOD method_48279 getName ()Ljava/lang/String;
+	CLASS class_11779 HeaderEntry
+		FIELD field_62182 textRenderer Lnet/minecraft/class_327;
+		FIELD field_62183 text Lnet/minecraft/class_2561;
+		METHOD <init> (Lnet/minecraft/class_521;Lnet/minecraft/class_327;Lnet/minecraft/class_2561;)V
+			ARG 2 textRenderer
+			ARG 3 text

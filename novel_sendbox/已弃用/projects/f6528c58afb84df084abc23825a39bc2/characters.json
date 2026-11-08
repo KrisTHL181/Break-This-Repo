@@ -1,0 +1,12 @@
+[
+  {
+    "name": "张三",
+    "current_location": "酒馆",
+    "activation_state": "active"
+  },
+  {
+    "name": "李四",
+    "current_location": "森林",
+    "activation_state": "active"
+  }
+]

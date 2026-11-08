@@ -1,0 +1,42 @@
+/* 一键快进按钮：宽高、行高、图标缩放与悬停提亮全部沿用B站原生的
+   .bpx-player-ctrl-btn / .bpx-player-ctrl-btn-icon / .bpx-common-svg-icon 体系，
+   本文件刻意不覆盖任何几何属性——B站的
+   `.bpx-player-container[data-screen="full"] .bpx-player-ctrl-btn{height:43px;width:54px}`
+   优先级(0,3,0)高于自定义单类(0,1,0)，自定高度在全屏下必然失效并下沉。
+   这里只补充图标位放不下文字时所需的悬浮提示。 */
+
+/* 与B站 `.bpx-player-ctrl-btn{fill:#fff}` 同值：仅在其样式表尚未注入的短暂
+   窗口里兜底，避免图标渲染成纯黑大块；取值一致故不存在覆盖顺序问题 */
+.bff-ctrl-btn {
+  fill: #fff;
+}
+
+.bff-ctrl-btn .bff-btn-tip {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  margin-bottom: 6px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  background: var(--bpx-tooltip-bgcolor, rgba(0, 0, 0, 0.85));
+  color: var(--bpx-tooltip-color, #fff);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.2s ease-out 0.1s, transform 0.2s ease-out 0.1s;
+}
+
+.bff-ctrl-btn:hover .bff-btn-tip {
+  opacity: 1;
+  transform: translate(-50%, -4px);
+}
+
+/* 全屏下整条控制栏字号变大，提示气泡同步 */
+.bpx-player-container[data-screen='full'] .bff-ctrl-btn .bff-btn-tip,
+.bpx-player-container[data-screen='web'] .bff-ctrl-btn .bff-btn-tip {
+  padding: 7px 10px;
+  font-size: 14px;
+}

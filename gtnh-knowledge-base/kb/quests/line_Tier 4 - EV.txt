@@ -1,0 +1,509 @@
+# 任务线: Tier 4 - EV
+### [459] §8§lAdvanced Glue
+Combine that with Acetone or Methyl Acetate to obtain Advanced Glue.
+  - [提交] gregtech:gt.metaitem.01:30567
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII
+
+### [2562] §8§lAdvanced Ilmenite Processing
+Get the most out of your Ilmenite by putting the crushed ore into an EV Chemical Bath with Sulfuric Acid. The acid can even be fully recycled.
+  - [提交] gregtech:gt.metaitem.01:5918, gregtech:gt.metaitem.01:30720
+  - [提交] gregtech:gt.metaitem.01:2375, gregtech:gt.metaitem.01:2414
+  - [提交] gregtech:gt.metaitem.01:2032, gregtech:gt.metaitem.01:2047, gregtech:gt.metaitem.01:2080, gregtech:gt.metaitem.01:2031, gregtech:gt.metaitem.01:2018
+  > 奖励: gregtech:gt.metaitem.01:5918 x16
+
+### [200] §8§lAdvanced Mob Protection
+Like the chandelier, the magnum torch prevents monsters from spawning. However, its range is quite big, so a single one might be enough for your entire base. The range is 64 blocks horizontally in each direction, and 32 up and down.  [warn]Don't forget, monsters can still follow you home![/warn]
+  - [提交] ExtraUtilities:magnumTorch
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinTechnicianII
+
+### [2302] §8§lBack to Step 1
+The Refined Platinum Salt can be heated to evaporate the last remaining impurities. Now you are left with PMP again, which you can use back in the first step again.  [note]Add an output hatch to the bottom layer of your EBF to capture the Chlorine for reuse.[/note]
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:46
+  - [提交] bartworks:gt.bwMetaGenerateddust:47
+  > 奖励: gregtech:gt.metaitem.01:32477
+
+### [2391] §8§lBigger Drums
+Now that you have drums, you want them larger? Already??  Well, in that case, you better start collecting or making cobblestone, by the tens of thousands. And making explosives too.  Compress the cobblestone in an assembler first using circuit 9, then run them through the Implosion Compressor until you get Quadruple Compressed Cobblestone. Do that four times, and then another pass through the assembler with a diamond block, and there you have it - one bedrockium ingot.  Now do that 5 more times, and you can make yourself a bedrockium drum.  64k buckets of portable fluid. Perfect for your new Ore drill!  [note]There's also a Bedrockium ore much later on if you're lazy. By then you probably won't want the drums though.[/note]
+  - [提交] ExtraUtilities:drum:1
+  > 奖励: ExtraUtilities:bedrockiumIngot x3
+
+### [1230] §8§lBisphenol A
+The next step towards Epoxid is to get Bisphenol A. You will need to combine Phenol, Acetone and HCl in a chemical reactor.
+  - [可选提交] gregtech:gt.metaitem.01:30672 x18, gregtech:gt.metaitem.01:30683 x18, gregtech:gt.metaitem.01:30687 x36
+  - [提交] gregtech:gt.metaitem.01:30669 x18
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x2
+
+### [1263] §8§lBlue Steel
+Sunnarium batteries are made out of blue steel: a mixture of steel, black steel, brass and rose gold.
+  - [可选提交] gregtech:gt.metaitem.01:2305 x2, gregtech:gt.metaitem.01:2334 x4, gregtech:gt.metaitem.01:2301, gregtech:gt.metaitem.01:2351
+  - [提交] gregtech:gt.metaitem.01:11349 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII
+
+### [1879] §8§lCreate New Materials Out of Pure Energy
+Using the scanner, you can scan certain items (check the replicator's NEI recipes) to store the information of the item to a data orb so you can make copies of them with the replicator. This process uses a varying amount of UUM and time, depending on the item. Scanning also takes forever.  Some items you might want to replicate include: Indium Platline metals like Iridium and Osmium Neon, Krypton, Xenon from liquid air distilling Oganesson  For some things (Oganesson), this might be considered the only reasonable way of getting a decent amount.
+  - [提交] gregtech:gt.metaitem.01:32707
+  - [提交] gregtech:gt.blockmachines:482
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1891] §8§lCritical Materials
+For more tungsten and tungstensteel, you'll want scheelite and tungstate. But the most important is desh, found only as small ore elsewhere, and used for the next rocket. Check Y 5-40.  [note]Since there's a good chance you have the MBM by now, you can do the crushed ore task instead of the ore one. This holds for other, similar quests.[/note]
+  - [提交] gregtech:gt.metaitem.01:5884 x192, gregtech:gt.metaitem.01:5910 x96, gregtech:gt.metaitem.01:5841 x48
+  - [提交] gregtech:gt.metaitem.03:5884 x64, gregtech:gt.metaitem.03:5910 x32, gregtech:gt.metaitem.03:5841 x16
+  - [提交] gregtech:gt.blockores2:4884 x64, gregtech:gt.blockores2:4910 x32, gregtech:gt.blockores2:4841 x16
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinAdventureII x2
+
+### [2018] §8§lCutting Up Stuff at EV
+Now that you've reached EV you're going to need a more advanced cutting machine. Better get one built.
+  - [提交] gregtech:gt.blockmachines:254
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII
+
+### [1878] §8§lData Orbs
+Data Orbs are high tier data sticks to replicate materials or used as data storages.   Additionally, similar to how a Data Stick can copy the configuration of a singular multiblock hatch, the Data Orb can copy the configuration of multiple hatches on a multiblock and paste to another that is laid out in a similar fashion by clicking it on the controller.
+  - [可选提交] gregtech:gt.metaitem.03:32102 x4, gregtech:gt.metaitem.03:32082 x8, gregtech:gt.metaitem.03:32039 x16, gregtech:gt.metaitem.03:32043 x128, gregtech:gt.metaitem.03:32041 x256, gregtech:gt.metaitem.02:19085 x128
+  - [提交] gregtech:gt.metaitem.01:32707 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [2210] §8§lDealing with Radiation
+Nuclear materials cause two types of radiation effects. One is a large number of standard debuffs. These can be removed the normal ways, with milk or Gaia Wart or other methods that imitate them.  The other effect is a special Radiation unique debuff. This gets applied the longer you hold onto the radioactive item. Severely radioactive items can apply minutes of this deadly debuff. Regeneration might delay the inevitable death, but most regeneration sources aren't fast enough or long enough to keep you alive. You can try using an Amulet of Remedium to get rid of the effects. You should have one from your Moon trip, if not you'll have to dive into Thaumcraft to make one.
+  - [勾选确认]
+
+### [2448] §8§lDichlorobenzene
+To make higher tier cables, you'll have to use Polyphenylene Sulfide to coat them. Let's start with Dichlorobenzene.  §6Already automated Polyphenylene Sulfide? Hold 128 sheets to skip this questline.
+  - [可选提交] gregtech:gt.metaitem.01:30023 x48, gregtech:gt.metaitem.01:30686 x12
+  - [提交] gregtech:gt.metaitem.01:30632 x12
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII
+
+### [188] §8§lDimensional Goal: Deimos
+You can actually get the ores you want from the other two, but visit if you like?
+  - [提交] GalaxySpace:deimosblocks x8, GalaxySpace:deimosblocks:1 x8
+  > 奖励: enhancedlootbags:lootbag:23 | enhancedlootbags:lootbag:7 | dreamcraft:CoinAdventureII x2 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [186] §8§lDimensional Goal: Mars
+Mars has a few new ores you need to find like tungsten, uranium and desh. You can centrifuge uranium-238 for U-235 and plutonium-239, which can also be centrifuged to get Pu-241 if you happen to need it.
+  - [提交] GalacticraftMars:tile.mars:5 x8, GalacticraftMars:tile.mars:6 x8, GalacticraftMars:tile.mars:4 x8
+  > 奖励: enhancedlootbags:lootbag:23 | enhancedlootbags:lootbag:7 | dreamcraft:CoinAdventureII x2 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinTechnicianII x2
+
+### [187] §8§lDimensional Goal: Phobos
+Phobos has new ores, go get them!  [note]Honestly, aside from the dungeon, Phobos has all the ores you need.[/note]
+  - [提交] GalaxySpace:phobosblocks x8, GalaxySpace:phobosblocks:1 x8, GalaxySpace:phobosblocks:2 x8
+  > 奖励: enhancedlootbags:lootbag:23 | enhancedlootbags:lootbag:7 | dreamcraft:CoinAdventureII | dreamcraft:CoinSpaceII | dreamcraft:CoinTechnicianII
+
+### [1658] §8§lDraconium Egg
+The next step is to add draconium and ender goo to the ender egg to get a draconium egg.
+  - [可选提交] dreamcraft:EnderEgg, DraconicEvolution:draconiumDust x64 (ore:dustDraconium), gregtech:gt.metaitem.98:4
+  - [提交] dreamcraft:DraconiumEgg
+  > 奖励: minecraft:spawn_egg:301 | minecraft:spawn_egg:25 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII | dreamcraft:CoinChemistII
+
+### [1659] §8§lDragon Egg Omlet
+The last step to create a dragon egg is to add enderium using a dragon heart as a catalyst. It's not used up.
+  - [可选提交] dreamcraft:DraconiumEgg, DraconicEvolution:dragonHeart, gregtech:gt.metaitem.99:321 x7
+  - [提交] minecraft:dragon_egg
+  > 奖励: HardcoreEnderExpansion:essence x64 | DraconicEvolution:draconiumDust x64 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII | dreamcraft:CoinChemistII
+
+### [1656] §8§lEgg Mutation
+After you've gotten some mutagen try soaking your Big Egg in it along with some U-238.
+  - [可选提交] dreamcraft:TheBigEgg, IC2:itemUran238 x64, gregtech:gt.metaitem.98:2
+  - [提交] dreamcraft:MutatedEgg
+  > 奖励: minecraft:spawn_egg:61 | minecraft:spawn_egg:56 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII | dreamcraft:CoinChemistII
+
+### [1234] §8§lEmpty Epoxid Board
+Epoxid circuit boards require an epoxid plate, gold foil and sulfuric acid to make an empty board. By adding electrum foil and Iron(III) Chloride or Sodium Persulfate you can craft an Advanced Circuit Board.  [note]If you used IC2 Scrap Boxes to obtain the empty boards instead of using epoxy, hold 64 Advanced Circuit Boards in your hand to unlock this quest.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:17470, gregtech:gt.metaitem.01:29086 x8
+  - [可选提交] gregtech:gt.metaitem.01:29303 x8, gregtech:gt.metaitem.01:32711
+  - [提交] gregtech:gt.metaitem.03:32102
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x2 | dreamcraft:CoinTechnicianII x2
+
+### [1677] §8§lEmpty Fiber Reinforced Glass Board
+Fiber Reinforced circuit boards require fiber-reinforced epoxid resin sheets, aluminium foil, and sulfuric acid to make an empty board. By adding energetic alloy foil and Iron(III) Chloride or Sodium Persulfate you can craft a More Advanced Circuit Board.  [note]With these new boards you can make Lapotronic Energy Orbs. You could use them to upgrade your LSC. The boards are also used in IV for the next circuit line.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:17610 x15, gregtech:gt.metaitem.01:29019 x180
+  - [可选提交] gregtech:gt.metaitem.01:29366 x180, gregtech:gt.metaitem.01:32720 x15
+  - [提交] gregtech:gt.metaitem.03:32103 x15
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x5 | dreamcraft:CoinTechnicianII x5
+
+### [1657] §8§lEnder Egg
+Next, we need to start infusing it with the essence of The End. Start with endium dust and molten ender to get an ender egg.
+  - [可选提交] dreamcraft:MutatedEgg, gregtech:gt.metaitem.01:2770 x64, gregtech:gt.metaitem.98:3
+  - [提交] dreamcraft:EnderEgg
+  > 奖励: minecraft:spawn_egg:58 | HardcoreEnderExpansion:spawn_eggs:1 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII | dreamcraft:CoinChemistII
+
+### [1228] §8§lEpichlorohydrin
+Epichlorohydrin is another product needed in your epoxid production. By now you should be experienced enough to figure out which path is best for your setup using NEI.
+  - [提交] gregtech:gt.metaitem.01:30648 x36
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x2
+
+### [1224] §8§lEpoxid
+Epoxid is needed for Advanced Circuits boards. You need Sodium Hydroxide, Epichlorohydrin and Bisphenol A to make it.  You can also use the molten form for some other things you might want to check out.  [note]Using a Large Chemical Reactor? You might be able to skip some steps, look around NEI to find out more.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:2685 x108, gregtech:gt.metaitem.01:30648 x36, gregtech:gt.metaitem.01:30669 x18
+  - [提交] gregtech:gt.metaitem.01:17470 x125
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1406] §8§lEV Assembler
+An EV assembler is required to make lapotron crystals, coils, and other stuff.
+  - [提交] gregtech:gt.blockmachines:214
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1252] §8§lEV Chemical Bath
+An HV chemical bath or better is needed for the quantum eye. If you make an EV one you can also process Ilmenite better.
+  - [提交] gregtech:gt.blockmachines:544, gregtech:gt.blockmachines:543
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1242] §8§lEV Chemical Reactor
+An EV chemical reactor is required to get some indium or make your radon production much faster. If you already made a large chemical reactor use that instead.  [note]Either reactor will complete the quest.[/note]
+  - [提交] gregtech:gt.blockmachines:424, gregtech:gt.blockmachines:1169
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1223] §8§lEV Circuit Assembler
+An EV circuit assembler requires IV Circuits to craft. With this assembler you can make higher tier circuits.
+  - [提交] gregtech:gt.blockmachines:1183
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-5984592636755449553] §8§lEV Field Generator
+With Field Generators you can make your first Quantum Chests or Quantum Tanks. But the first two should be for your T2 rocket.  [note]Note that the Assembler recipe is more resource efficient.[/note]
+  - [提交] gregtech:gt.metaitem.01:32673 x2
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x2
+
+### [1407] §8§lEV Laser Engraver
+An EV precision laser is required to make quantum crystals.
+  - [提交] gregtech:gt.blockmachines:594
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1408] §8§lEV Superconductors (2048 EU/t)
+How about lossless 2048 EU Wires? Uraniumtriplatinide is a superconductor wire and will transfer your energy without any loss.  You'll need TPV Coils.  [note]Whether these are worth it to save a little power or not is up to you of course.[/note]
+  - [可选提交] gregtech:gt.metaitem.01:2098 x3, gregtech:gt.metaitem.01:2085 x9
+  - [可选提交] gregtech:gt.metaitem.01:2989 x12
+  - [可选提交] gregtech:gt.metaitem.01:11989 x12
+  - [可选提交] gregtech:gt.blockmachines:2240 x18
+  - [可选提交] gregtech:gt.blockmachines:2240 x18, gregtech:gt.blockmachines:5160 x12, gregtech:gt.metaitem.01:32613 x2, gregtech:gt.metaitem.01:30004 x12
+  - [提交] gregtech:gt.blockmachines:2360 x18
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSmithII | dreamcraft:CoinChemistII | dreamcraft:CoinDarkWizardII
+
+### [-8426991409753954133] §8§lEXTREME MIXING
+Well, maybe it's not as extreme as the quest name suggests, but it gets the job done.  You'll need one anyway so why not make one now and save some time on the mixing?
+  - [提交] gregtech:gt.blockmachines:584
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [1676] §8§lFiber Reinforced Epoxid Sheet
+Fiber Reinforced Epoxid Sheets are needed for More Advanced Circuit Boards. Mix glass fiber or carbon fiber with epoxid to get your sheets.
+  - [可选提交] gregtech:gt.metaitem.03:32021 x15, gregtech:gt.metaitem.99:470 x15
+  - [可选提交] IC2:itemPartCarbonFibre x15, gregtech:gt.metaitem.99:470 x15
+  - [提交] gregtech:gt.metaitem.01:17610 x15
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x5
+
+### [-7598566101277288092] §8§lFour fluids in the one Hatch!
+Now that you're in EV tier you now have access to the Quadruple input hatches. These hatches can hold four different fluids in the one hatch which saves valuable spots in your multiblocks.  Perfect to be placed in your EBFs.
+  - [提交] gregtech:gt.blockmachines:200
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [1675] §8§lGlass Fiber
+Glass Fiber is used in Fiber Reinforced Boards for circuits. [note]For next tier. Go left for this tier's circuits.[/note]  Borax can be extracted out of Salt ores. Electrolyze it to get Boron and mix it with Glass dust to get Borosilicate Glass Dust.  The ingots can be turned into glass fiber in the wiremill or extruder.  You can also use borosilicate to make higher tier glass for higher tier SB recipes, or for the blocks for the multis that need it.
+  - [可选提交] gregtech:gt.metaitem.01:2941 x23
+  - [可选提交] gregtech:gt.metaitem.01:2009, gregtech:gt.metaitem.01:2890 x7
+  - [可选提交] gregtech:gt.metaitem.01:2611 x8
+  - [可选提交] gregtech:gt.metaitem.01:11611 x2
+  - [提交] gregtech:gt.metaitem.03:32021 x16
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII x2 | dreamcraft:CoinTechnicianII x2
+
+### [394] §8§lGraphene
+Graphene is a material that is only one atom thick and has favorable electrical properties. To produce it, a strong adhesive can be used to peel single atomic layers from graphite. The stronger the glue used, the more efficient the production becomes.
+  - [可选提交] gregtech:gt.metaitem.01:2865 x128, gregtech:gt.metaitem.03:32034 x64, gregtech:gt.metaitem.01:30567
+  - [提交] gregtech:gt.metaitem.01:2819 x128
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII x2
+
+### [189] §8§lHEV Mark III Protective System
+Some items will give you a Radiation debuff without protection. How long it lasts depends on the item. Some items will give you an enormous or unlimited time debuff timer, which effectively kills you because there's no way to get rid of it.  Other items will give you a general sickness with many debuffs, but not Radiation. That can be removed the normal ways, Milk, Terrawart, Aqua bees, etc.  If you wear a Hazmat suit (and rubber boots!) you are not affected by radioactive effects at all. Same for some other armors that list hazmat protection.
+  - [提交] IC2:itemArmorHazmatHelmet, IC2:itemArmorHazmatChestplate, IC2:itemArmorHazmatLeggings
+  > 奖励: IC2:itemArmorRubBoots x2 | dreamcraft:CoinTechnicianII x2
+
+### [2450] §8§lHigher Tier Cables
+Now you can use Polyphenylene Sulfide Foils and Silicone or Styrene-Butadiene Rubber to coat higher tier cables. You'll need both Tungsten and Platinum in IV-tier.
+  - [可选提交] gregtech:gt.blockmachines:1680 x2, gregtech:gt.blockmachines:1640 x2, gregtech:gt.metaitem.01:29631 x4, gregtech:gt.metaitem.99:471 x2
+  - [可选提交] gregtech:gt.blockmachines:1680 x2, gregtech:gt.blockmachines:1640 x2, gregtech:gt.metaitem.01:29631 x4, gregtech:gt.metaitem.99:635, gregtech:gt.metaitem.01:2649
+  - [提交] gregtech:gt.blockmachines:1686 x2, gregtech:gt.blockmachines:1646 x2
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII | dreamcraft:CoinChemistII
+
+### [1491] §8§lHSS-G
+After you craft an IV assembler, upgrade your Electric Blast Furnace with new Coils out of HSS-G Ingots. This ingot becomes even more important in LuV tier. But right now both of these are still far away. Just make a bit that you need for the next rocket.  To find a Molybdenum Vein, you probably want to make a high quality Prospector's Scanner with a good range.
+  - [可选提交] gregtech:gt.metaitem.01:2316 x5, gregtech:gt.metaitem.01:2030, gregtech:gt.metaitem.01:2048 x2, gregtech:gt.metaitem.01:2029
+  - [可选提交] gregtech:gt.metaitem.01:2372 x8
+  - [提交] gregtech:gt.metaitem.01:11372 x8
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSmithII x2
+
+### [-6179797011077510906] §8§lHV Field Generator
+The HV Field Generator isn't used frequently, but it does have something to offer for those who prefer upgraded Super Chests or Super Tanks. It can also be used to make the Grandmaster Magic Energy Absorber if you're deep enough into Thaumcraft.  [note]Don't forget to look closely at NEI when choosing your recipe.[/note]
+  - [提交] gregtech:gt.metaitem.01:32672
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x2
+
+### [859] §8§lHypochlorous Acid
+You'll need this for epichlorohydrin.
+  - [可选提交] gregtech:gt.metaitem.01:30023, IC2:itemCellEmpty:1, gregtech:gt.metaitem.01:30087
+  - [提交] gregtech:gt.metaitem.01:30684
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistI x5
+
+### [1005] §8§lIndium
+At EV you're able to make Indium. Indium cannot be found in Ore form [note](except in super small amounts on Ross)[/note].  First you need to make Indium concentrate out of purified galena and sphalerite ore, then mix in some aluminium to get Indium. Indium is used in large amounts later on, automate this ASAP.  You also get lead, zinc, silver, sulfur, and water back from the lead-zinc solution. So it's not like you don't get the materials from the ores at all, just less of them.
+  - [可选提交] gregtech:gt.metaitem.01:6839 x9, gregtech:gt.metaitem.01:6830 x27, gregtech:gt.metaitem.01:30720 x36
+  - [可选提交] gregtech:gt.metaitem.01:2019 x36
+  - [提交] gregtech:gt.metaitem.01:2056
+  > 奖励: miscutils:MU-metaitem.01:32054 | enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII | dreamcraft:CoinTechnicianII
+
+### [2390] §8§lJust Enough Tungstensteel For Your Rocket
+OK, now you can:  1) Turn the Tungsten Trioxide into Hot Tungsten Ingots in the EBF with some Carbon 2) Keep going for TS  We want TS, so put some Hydrogen along with the Tungsten Trioxide in your EBF to get rid of the Oxygen.  Combine your pure Tungsten with Steel in a mixer to get Tungstensteel. Then EBF and then freeze it to get the Tungstensteel ingot.  Some of Tungstensteel Dust you don't need to smelt as you will want to use it for HSS-G!  [note]Note that Tungsten Trioxide to Tungsten Ingot has reduced smelt time. This does not apply to the pure version. You're gonna need a bunch of it in IV as well as the TS, so keep this in mind.[/note]
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:29901 x24, gregtech:gt.metaitem.01:30001 x36
+  - [可选提交] gregtech:gt.metaitem.01:2081 x6
+  - [可选提交] gregtech:gt.metaitem.01:2081 x6, gregtech:gt.metaitem.01:2305 x6
+  - [提交] gregtech:gt.metaitem.01:11316 x6, gregtech:gt.metaitem.01:2316 x6
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinTechnicianII x2
+
+### [805] §8§lLapotron Dust
+Lapotron crystals require you to mix your energium dust with some lapis dust. You should check out the Storing and Transforming EU tab for the lapotron crystal and the Lapotronic Supercapacitor Multiblock.
+  - [可选提交] gregtech:gt.metaitem.01:2526 x48, IC2:itemDust2:2 x72
+  - [提交] dreamcraft:LapotronDust x120
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII | dreamcraft:CoinTechnicianII
+
+### [2023] §8§lMore Power Needed, Sir!
+EBF and LCR recipes are going to need even more power. You'll need to craft EV energy hatches to supply them and keep them running.
+  - [提交] gregtech:gt.blockmachines:44
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [1250] §8§lNano Assembly
+The Nano Assembly is an EV circuit.
+  - [可选提交] gregtech:gt.metaitem.03:32102, gregtech:gt.metaitem.03:32082 x2, gregtech:gt.metaitem.03:32182 x8, gregtech:gt.metaitem.03:32020 x8, gregtech:gt.metaitem.03:32039 x8, gregtech:gt.metaitem.02:19303 x16
+  - [提交] gregtech:gt.metaitem.03:32083
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1249] §8§lNanoCPU Wafer and Chip
+The NanoCPU Wafer is made out of a CPU Wafer with raw carbon fiber and molten glowstone in an EV chemical reactor. Cut it for nano CPU chips.
+  - [可选提交] gregtech:gt.metaitem.03:32054
+  - [提交] gregtech:gt.metaitem.03:32055 x8
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1261] §8§lNano Mainframe
+The Nano Mainframe is the first LuV Circuit, and the end of this circuit line produced in EV. To craft the Tier 2 Rocket and reach Mars, Phobos and Deimos, you need to reach this circuit and make 8 of it.  After that, you will be able to progress into IV much more easily, but you will need two more circuits to make the IV Circuit Assembling Machine.
+  - [可选提交] gregtech:gt.blockframes:19 x2, gregtech:gt.metaitem.03:32084 x2, gregtech:gt.metaitem.03:32182 x16, gregtech:gt.metaitem.03:32020 x32, gregtech:gt.metaitem.03:32039 x16, gregtech:gt.blockmachines:1380 x32
+  - [提交] gregtech:gt.metaitem.01:32706
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1248] §8§lNano Processor
+This is the Nano Processor circuit line. Similar to the previous circuit line, these are four circuits. The §onano§r circuits go all the way to the LuV-tier Nano Mainframe.
+  - [可选提交] gregtech:gt.metaitem.03:32102, gregtech:gt.metaitem.03:32055, gregtech:gt.metaitem.03:32011 x8, gregtech:gt.metaitem.03:32020 x8, gregtech:gt.metaitem.03:32018 x8, gregtech:gt.metaitem.02:19303 x8
+  - [提交] gregtech:gt.metaitem.03:32082
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1251] §8§lNano Supercomputer
+The Nano Supercomputer is an IV circuit.
+  - [可选提交] gregtech:gt.metaitem.03:32102, gregtech:gt.metaitem.03:32083 x2, gregtech:gt.metaitem.03:32016 x8, gregtech:gt.metaitem.03:32043 x4, gregtech:gt.metaitem.03:32039 x16, gregtech:gt.metaitem.02:19303 x16
+  - [提交] gregtech:gt.metaitem.03:32084
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-7530896342613904850] §8§lNiobium-Titanium
+Niobium-Titanium isn't used for much, but it can be used to make a decent LuV-capable cable. You'll also need it later to craft the IV Superconductor, the HV Field Generator, and a variety of other components.
+  - [可选提交] gregtech:gt.metaitem.01:2047 x2, gregtech:gt.metaitem.01:2028 x2
+  - [可选提交] gregtech:gt.metaitem.01:2360 x4
+  - [提交] gregtech:gt.metaitem.01:11360 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinSmithII | dreamcraft:CoinTechnicianII
+
+### [1655] §8§lOne Dragon Egg is Not Enough Mr Bond
+Dragon eggs are very rare and only drop after a dragon's death. How about I show you a way to recreate this powerful item out of a monster spawn egg?  Let's start with step one. Using a mob spawn egg (any work, you can purchase one from the Vending Machine if you do not have one), growth medium, and bacteria to create a bigger egg. This process needs one hour.
+  - [可选提交] Genetics:misc:4 x64, gregtech:gt.metaitem.98:15
+  - [提交] dreamcraft:TheBigEgg
+  > 奖励: minecraft:spawn_egg:50 | minecraft:spawn_egg:51 | enhancedlootbags:lootbag:6 | dreamcraft:CoinTechnicianI x5 | dreamcraft:CoinChemistI x5
+
+### [1244] §8§lOther Ores
+You can find several other ores on these planets (some of which actually don't have a use, honestly), but the most useful right now are probably the ones on the right. There's also Draconium, Jade, Mirabilite, Tanzanite, Vinteum, and Vyroxes.
+  - [提交] gregtech:gt.metaitem.01:5058 x48, gregtech:gt.metaitem.01:5039 x48, gregtech:gt.metaitem.01:5090 x48, gregtech:gt.metaitem.01:5812 x160, gregtech:gt.metaitem.01:5006 x48, gregtech:gt.metaitem.01:5393 x48
+  - [提交] gregtech:gt.metaitem.03:5058 x16, gregtech:gt.metaitem.03:5039 x16, gregtech:gt.metaitem.03:5090 x16, gregtech:gt.metaitem.03:5812 x16, gregtech:gt.metaitem.03:5006 x16, gregtech:gt.metaitem.03:5393 x16
+  - [提交] gregtech:gt.blockores2:58 x16, gregtech:gt.blockores2:39 x16, gregtech:gt.blockores2:90 x16, gregtech:gt.blockores2:812 x16, gregtech:gt.blockores2:6 x16, gregtech:gt.blockores2:393 x16
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinAdventureII x2
+
+### [1229] §8§lPhenol
+The next circuit line requires Epoxid. To start, let's get some Phenol.  The easiest way is to get phenol out of heavy fuel. There are other ways, like getting it out of wood tar from a pyrolyse oven, isopropylbenzene and oxygen, or chlorobenzene and water.  §3Already automated Epoxid? Hold 128 sheets to skip this questline.
+  - [提交] gregtech:gt.metaitem.01:30687 x36
+  > 奖励: bq_standard:choice | dreamcraft:CoinChemistII x2
+
+### [2300] §8§lPlatinum Processing, Step 1
+Aqua Regia, the water of the Kings, is a chemical that will dissolve Platinum. The perfect solvent for Platinum processing. Get a few Cells of it.  §6Don't wanna do all these cell quests because you already automated it? Hold a stack of any platline dust to skip to the end of that chain.
+  - [可选提交] gregtech:gt.metaitem.01:30683 x27, gregtech:gt.metaitem.01:30653 x9 (ore:cellNitricAcid)
+  - [提交] bartworks:gt.bwMetaGeneratedcell:48 x36 (ore:cellAquaRegia)
+  > 奖励: dreamcraft:CoinChemistII
+
+### [2301] §8§lPlatinum Processing, Step 2a
+Ammonium Chloride is used to precipitate the dissolved Platinum into a purer form, you'll need some of this.
+  - [可选提交] gregtech:gt.metaitem.01:30683 x4, gregtech:gt.metaitem.01:30659 x4
+  - [提交] bartworks:gt.bwMetaGeneratedcell:50 x4
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:50 x5 (ore:cellAmmoniumChloride) | dreamcraft:CoinChemistII
+
+### [2296] §8§lPlatinum Processing, Step 4
+Platinum Chloride? You were promised Pure Platinum Metal at a much higher efficiency than just smelting it! No worries, just react the Platinum Chloride with Calcium and you're done. The Calcium and Chlorine can be recycled as well!
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:51 x4, gregtech:gt.metaitem.01:2026
+  - [提交] gregtech:gt.metaitem.01:2085 x2
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:63 x3
+  > 奖励: TConstruct:frypan
+
+### [2297] §8§lPlatinum Processing, Step 3
+Hooray! All my Platinum Metal is now a fluid.... Time to add the second chemical to recrystallize the dust.  You do different things with each of the results:  Reprecipitated Platinum: Go to step 4, the last step. Platinum Salt: Go to the recycling step. Palladium Enriched Ammonia: Keep it like the Platinum Residue until IV. Or process it now if you like, but you don't §oneed§r it until later. Others: Can be reused.
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:44 x36, bartworks:gt.bwMetaGeneratedcell:50 x4
+  - [提交] bartworks:gt.bwMetaGenerateddust:45 x16, bartworks:gt.bwMetaGenerateddust:51 x4, bartworks:gt.bwMetaGeneratedcell:52 x3, gregtech:gt.metaitem.01:30683 x27, gregtech:gt.metaitem.01:30717 x9
+  > 奖励: dreamcraft:CoinChemistII x3
+
+### [2299] §8§lPlatinum Processing, Step 2b
+Now, start with dissolving all the PMP into the Aqua Regia. You will also gain some Platinum Residue Dust. This highly concentrated dust contains a lot of even Rarer Metals, like Rhodium, Ruthenium, Osmium, and Iridium. You will need this at IV and higher, so stockpile it!
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:47 x18, bartworks:gt.bwMetaGeneratedcell:48 x36
+  - [提交] bartworks:gt.bwMetaGeneratedcell:44 x36, bartworks:gt.bwMetaGenerateddust:49 x2
+  > 奖励: bartworks:gt.bwMetaGeneratedcell:44 x5 (ore:cellPlatinumConcentrate) | dreamcraft:CoinChemistII x2
+
+### [2298] §8§lPlatinum Salt Recycling
+What, recycling? That's lame. I just wanna void this stuff! - is what you might think right now, but be aware that Platinum Salt still holds a high concentration of Platinum. We can recycle it to get even more Platinum out of it!  You need to sift it to get Refined Platinum Salt. You only have a 95% chance to get a dust.
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:45
+  - [提交] bartworks:gt.bwMetaGenerateddust:46
+  > 奖励: IC2:itemScrapbox x3
+
+### [2980] §8§lPlaying With Dust in EV
+The EV Autoclave is needed to process tungsten and other high tier materials.
+  - [提交] gregtech:gt.blockmachines:574
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII | bq_standard:questcompletion
+
+### [2449] §8§lPolyphenylene Sulfide
+Combine Dichlorobenzene with Sodium Sulfide and Oxygen to get Polyphenylene Sulfide.
+  - [可选提交] gregtech:gt.metaitem.01:30632 x12, gregtech:gt.metaitem.01:2719 x36, gregtech:gt.metaitem.01:30013 x96
+  - [提交] gregtech:gt.metaitem.01:17631 x125
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII x2
+
+### [460] §8§lPolyvinyl Acetate
+You know how polymerization works by now. Use Air or Oxygen and optionally Titaniumtetrachloride to obtain Polyvinyl Acetate.
+  - [提交] gregtech:gt.metaitem.01:30680
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII
+
+### [1847] §8§lPortable Hole? How About Portable Chunk!
+With further research, I've discovered a key made of spectral iron can open a portal into a pocket dimension. It's only one chunk wide, but perfect for storing stuff I might need while exploring faraway planets, or as a quiet refuge after a difficult battle. Using it as a teleportation hub might also be an idea...
+  - [提交] RandomThings:spectreKey
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x2
+
+### [3074] §8§lPower of the Sun from Nuclear
+Your good old singleblock Molecular Transformer is gone. So, how do you obtain Sunnarium? Well, there are a couple of ways, but at EV you'll need to radiate Glowstone and convert it to Sunnarium.  The Glowstone rod will slowly charge up if you put it next to any fuel rod in your IC2 reactor. The exact charging speed is (number of rods adjacent) * (floor(hull temperature/3000) + 1) per second. A dual rod counts as 2 rods, and a quad fuel rod counts as 4 rods for this purpose. The Glowstone rod will neither emit heat, nor cause other components to emit more heat. You can treat this rod as reactor plating in the IC2 Reactor Planner.  As you can see, the speed is directly proportional to hull temperature and adjacent rods. At the very extreme, you can fully charge up a Glowstone rod in less than half a minute and output one Sunnarium every 10 seconds (on average, since cells aren't charged at the same speed due to their different positions), but that requires a very considerable amount of resources to set up. It also involves a vacuum freezer to cool down the coolant cells and running the reactor at 66000+ hull temperature. Balance your needs and your resource situation wisely.  The wiki has good advice for reactor planning: [url]https://wiki.gtnewhorizons.com/wiki/Nuclear_Reactors[/url]  Replace the Containment Reactor Plating with actual Glowstone rods and you should be good to go. You can also use fewer reactor chambers by using less plating. Enjoy!
+  - [提交] gregtech:gt.rodGlowstone
+  - [提交] gregtech:gt.depletedRodGlowstone
+  - [提交] gregtech:gt.metaitem.01:2318
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII
+
+### [212] §8§lPulverize the Planet
+Literally. You can grind the rock of most planets, to get a chance for...stuff. It depends on the planet. Does consume quite a bit of power, but can really help you out.  For Tungstate, you can centrifuge previously macerated moon dust, macerate end stone with an HV+ macerator and then centrifuge it, or centrifuge endergoo (found all over the end, does not give back buckets).  If you want to make your rocket, you need to get at least a little before you can get to a planet with the ore. However, keep in mind that you'll need an EBF with TPV Coils to smelt Tungstensteel Dust into the ingot!  [note]Do one of the tasks.[/note]
+  - [提交] dreamcraft:MoonStoneDust x16
+  - [提交] minecraft:end_stone x16, gregtech:gt.metaitem.01:2808 x16
+  - [提交] gregtech:gt.metaitem.98:4 x16
+  > 奖励: bartworks:gt.bwMetaGenerateddust:47 x8 | gregtech:gt.metaitem.98:4 x8 | dreamcraft:CoinAdventureII
+
+### [1415] §8§lPure Uranium Ores
+If you want pure uranium ores for your nuke, you'll need to visit Deimos or Phobos to fetch them. They're at Y 20-30.
+  - [提交] gregtech:gt.blockores2:922 x64, gregtech:gt.blockores2:98 x48
+  - [提交] gregtech:gt.metaitem.03:5922 x64, gregtech:gt.metaitem.03:5098 x48
+  - [提交] gregtech:gt.metaitem.01:5922 x192, gregtech:gt.metaitem.01:5098 x144
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinAdventureII x2
+
+### [1247] §8§lQuantum Eye
+Quantum eyes are required in EV emitters and sensors. Just infuse your ender eye with radon to get one.
+  - [可选提交] minecraft:ender_eye x4, gregtech:gt.metaitem.01:30093
+  - [提交] gregtech:gt.metaitem.01:32724 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [199] §8§lQuit Exhaling Dusts
+The QED is used to make only a few things, so I'll just list them here:  Magnum Torch: Prevent mob spawns. Ender Quarry, and the Ender-Markers that go with it: Quarry up the landscape, so you can get planet blocks, dirt, etc., unlike miners. Ender-Thermic Pump: For nether lava pumping with less lag. Transfer Node Energy/Hyper-Energy: Transfers RF, so useless.
+  - [提交] ExtraUtilities:endConstructor, ExtraUtilities:endConstructor:2 x3
+  > 奖励: ExtraUtilities:endConstructor:2 | dreamcraft:CoinDarkWizardII | dreamcraft:CoinTechnicianII
+
+### [1480] §8§lRadon Decay
+Radon is needed for EV Emitters and Sensors.  You can get Radium-226 from sifting Thorium, Pitchblende, Uraninite, or Uranium 238. It needs 4500 seconds, or 75 mins, to decay, and it will debuff you unless you have complete hazmat protection. It's a good idea to make a Lead-Lined Box and let the Radium decay there.  Thorium can be obtained from the Nether, whereas the other 3 ores are locked after the Tier 2 Rocket. However, Thorium gives a much smaller chance of getting Radium, so you'll need a good amount of it to continue.  After it decays, you can electrolyze Radon out of it and progress into the next circuit line. However, you will not be able to do the Radon loop here, that can only be done with Plutonium 239.  [note]You only need to fulfill one of the listed material requirements.[/note]
+  - [提交] gregtech:gt.metaitem.01:6873 x64, gregtech:gt.metaitem.01:6922 x64, gregtech:gt.metaitem.01:6098 x64, gregtech:gt.metaitem.01:6096 x128
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [1241] §8§lRadon Loop
+Radon is needed for EV emitters and sensors.  If you can get some Plutonium 239 and Uranium 238, you can use the chemical reactor recipe and keep cycling the Plutonium around to get more.  Using the LCR recipe is recommended, as it is more efficient and faster due to the LCR being able to perform 4/4 OC.
+  - [可选提交] gregtech:gt.metaitem.01:11100 x64, gregtech:gt.metaitem.01:2098 x5, IC2:itemCellEmpty:5 x20
+  - [提交] gregtech:gt.metaitem.01:30093 x4
+  > 奖励: bq_standard:choice | dreamcraft:CoinTechnicianII x2
+
+### [-8516599160743502345] §8§lRaw Carbon Fiber
+Alternatively, you can use Raw Carbon Fiber for your Reinforced Circuit Boards.  [note]You can use Epoxid to get a better yield on it![/note]
+  - [可选提交] gregtech:gt.metaitem.01:2010 x64, gregtech:gt.metaitem.99:470
+  - [提交] IC2:itemPartCarbonFibre x64
+  > 奖励: dreamcraft:CoinChemistII | dreamcraft:CoinTechnicianII
+
+### [1243] §8§lReactor Fuels
+For impure radioactive ores for your nuclear reactor, you can look for pitchblende and uraninite. You can find them on Mars and Phobos at Y 30-60.
+  - [提交] gregtech:gt.metaitem.01:5873 x192, gregtech:gt.metaitem.01:5922 x144
+  - [提交] gregtech:gt.metaitem.03:5873 x64, gregtech:gt.metaitem.03:5922 x48
+  - [提交] gregtech:gt.blockores2:873 x64, gregtech:gt.blockores2:922 x48
+  - [提交] gregtech:gt.blockores2:4873 x64, gregtech:gt.blockores2:4922 x48
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinSpaceII x2 | dreamcraft:CoinAdventureII x2
+
+### [1652] §8§lSodium Sulfide
+Combine Sodium and Sulfur to get Sodium Sulfide.
+  - [可选提交] gregtech:gt.metaitem.01:2017 x24, gregtech:gt.metaitem.01:2022 x12
+  - [提交] gregtech:gt.metaitem.01:2719 x36
+  > 奖励: bartworks:gt.bwMetaGeneratedgemExquisite:20 x10 | dreamcraft:CoinChemistII
+
+### [-7880854746900516763] §8§lThe Redstone Sniffer
+Ever wonder where your redstone transmitters are? Or wish they were labeled? Maybe your teammate placed one down, didn't tell you, and now you're stuck wondering what private frequency they placed it on?  Now, you have a way to do all of that.  Introducing the §6Redstone Sniffer§r!  For §cregular wireless redstone§r, the sniffer will list all currently used frequencies, tell you whether that frequency is private, and give you an option to label it.  For §cadvanced wireless covers§r, the sniffer will additionally tell you where that cover is currently located, including in other dimensions, and offer you the option to highlight it (and teleport to it if you have OP).
+  - [提交] gregtech:gt.Item_Redstone_Sniffer
+  > 奖励: enhancedlootbags:lootbag:7
+
+### [176] §8§lTier 4 (EV)
+The main goal here is to get a tier 2 rocket and reach Mars. You also might want to rethink your power setup, as more and more machines will be upgraded. This quest set will teach you about a couple of options you have regarding power production, but it's recommended that you check out the §nHow to Generate Power§r tab for more options and information.  §nMultiblock Goals§r will also have newly unlocked quests for multiblocks like the Ore Drilling Plant.
+  - [提交] gregtech:gt.blockmachines:14
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x2
+
+### [2890] §8§lTungstate Processing - Step 2
+Next up is Tungsten Trioxide. Note that you got back all of the Calcium Chloride. If you process Scheelite ore at all, you'll want to set up an electrolyzer.
+  - [可选提交] gregtech:gt.metaitem.01:2910 x36, gregtech:gt.metaitem.01:30683 x12
+  - [可选提交] bartworks:gt.bwMetaGenerateddust:29900 x42, bartworks:gt.bwMetaGenerateddust:63 x18 (ore:dustCalciumChloride)
+  - [提交] bartworks:gt.bwMetaGenerateddust:29901 x24
+  > 奖励: dreamcraft:CoinChemistII
+
+### [2889] §8§lTungstate Processing - Step 1
+First, let's turn our Tungstate into Scheelite. When you can get Scheelite ore, you can just skip this step.  Note that if you're processing Huebnerite or Ferberite from ross128b or 128ba, the first step is slightly different.
+  - [可选提交] gregtech:gt.metaitem.01:2841 x42, gregtech:gt.metaitem.01:2017 x12, IC2:itemCellEmpty:1 x24
+  - [可选提交] gregtech:gt.metaitem.01:2006 x12, bartworks:gt.bwMetaGeneratedcell:29904 x6
+  - [可选提交] bartworks:gt.bwMetaGeneratedcell:29904 x6, bartworks:gt.bwMetaGenerateddust:63 x18 (ore:dustCalciumChloride)
+  - [提交] gregtech:gt.metaitem.01:2910 x36, gregtech:gt.metaitem.01:2817 x24
+  > 奖励: dreamcraft:CoinChemistII
+
+### [861] §8§lTungstensteel
+Tungstensteel is needed in all machines for the next tier. Can you get enough to advance?
+  - [提交] gregtech:gt.metaitem.01:11316 x64
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII x2 | dreamcraft:CoinSmithII x2 | dreamcraft:CoinTechnicianII x2
+
+### [461] §8§lVinyl Acetate
+Graphene is required for IV motors. This organic compound is just a stepping stone.  §3Already automated Graphene? Hold 128 dust to complete this questline.
+  - [可选提交] gregtech:gt.metaitem.01:30670, gregtech:gt.metaitem.01:30677, gregtech:gt.metaitem.01:30013
+  - [提交] gregtech:gt.metaitem.01:30679
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII
+
+### [1474] §8§lWant to Join a Band?
+Or at least play with drums? If you have extra Meteoric Iron after building your rocket and making your thermal padding, turn it into Meteoric Steel and use it to make some drums. These drums can hold 256 buckets even after breaking.  And did you know you can use them as cells? Try loading or unloading a supertank!
+  - [可选提交] gregtech:gt.metaitem.01:17305 x12 (ore:plateSteel), gregtech:gt.metaitem.01:28341 x4, gregtech:gt.blockmachines:5134 x2
+  - [提交] ExtraUtilities:drum x2
+  > 奖励: ExtraUtilities:drum x2 | enhancedlootbags:lootbag:7 | dreamcraft:CoinSmithII
+
+### [2722] §8§lWater, Fast
+The Remote IO Water Reservoir works like the Everfull Urn in that you can pull water out as fast as you need. Additionally, you can pull water from any side of the block.  You can further upgrade it into a reservoir hatch, which can be used as an input hatch directly. Producing massive amounts of distilled water with a DT has never been easier!  §3Maybe those massive amounts of water could be condensed into something useful...
+  - [提交] RIO:tile.machine
+  - [可选提交] gregtech:gt.blockmachines:31071
+  > 奖励: gregtech:gt.metaitem.01:32613 | dreamcraft:CoinChemistII | dreamcraft:CoinTechnicianII
+
+### [1925] §8§lWhat's in the Box?
+Wondering how to make your Radium decay? With a §5Lead-Lined Box§r you can safely leave your Radium in it and it'll decay while you do real work.  [note]Pipes work with it, but you can not use a WA.[/note]  Additionally, you can also choose to use the §5Decay Warehouse§r for this task; it's more efficient but comes at a much higher cost. (More info in Multiblock Goals tab)
+  - [可选提交] miscutils:blockDecayablesChest, gregtech:gt.blockmachines:15751
+  - [可选提交] miscutils:dustRadium226 x15
+  - [提交] miscutils:itemDustDecayedRadium226 x15
+  - [提交] gregtech:gt.metaitem.01:30093 x2
+  > 奖励: enhancedlootbags:lootbag:7 | dreamcraft:CoinChemistII
+
+### [1246] §8§lYou're Gonna Hate This 5 and 6 in EV
+Some machines need Emitters and Sensors, like the Scanner or the Circuit Assembler.
+  - [提交] gregtech:gt.metaitem.01:32683, gregtech:gt.metaitem.01:32693
+  > 奖励: gregtech:gt.metaitem.01:30093 x4 | gregtech:gt.metaitem.01:11028 x8 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x2
+
+### [1245] §8§lYou're Gonna Hate This 1-4 in EV
+Pumps, pistons, conveyor modules and robot arms are the most needed machine parts in EV. Go and craft one of each.
+  - [提交] gregtech:gt.metaitem.01:32613, gregtech:gt.metaitem.01:32643, gregtech:gt.metaitem.01:32633, gregtech:gt.metaitem.01:32653
+  > 奖励: gregtech:gt.metaitem.01:11306 x32 | gregtech:gt.metaitem.01:11028 x8 | enhancedlootbags:lootbag:7 | dreamcraft:CoinTechnicianII x2
+
