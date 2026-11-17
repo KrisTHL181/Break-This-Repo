@@ -1,0 +1,241 @@
+/* HDSL-web legacy surface stylesheet — the HMCL look without flex or variables.
+ *
+ * IE11-safe on purpose: tables for layout (its flexbox is broken), solid and
+ * rgba() colors (no custom properties), border-radius / box-shadow / background-size
+ * (all IE9+). The palette follows HMCL's blue theme tokens: primary #4352A5,
+ * surface #FBF8FF, on-surface #1B1B21, secondary-container #D0D5FD.
+ * The wallpaper itself is injected inline by the servlet because its URL
+ * carries the mount point; this file only styles the shell that sits on it.
+ * w3m ignores all of it and renders the same markup as a readable text grid.
+ */
+body {
+  margin: 0;
+  padding: 0;
+  color: #1B1B21;
+  font-family: "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei",
+    "PingFang SC", "Segoe UI", Tahoma, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  background-color: #1B1B21;
+}
+
+/* two-column shell: nav card + content card over the wallpaper */
+table.shell {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 14px;
+  table-layout: fixed;
+}
+td.shell-nav {
+  width: 11rem;
+  vertical-align: top;
+  background: #F5F2FA;
+  background: rgba(245, 242, 250, 0.80);
+  border-radius: 4px;
+  box-shadow: -1px 2px 10px rgba(0, 0, 0, 0.26);
+  padding: 8px;
+}
+td.shell-main {
+  vertical-align: top;
+  background: #F5F2FA;
+  background: rgba(245, 242, 250, 0.80);
+  border-radius: 4px;
+  box-shadow: -1px 2px 10px rgba(0, 0, 0, 0.26);
+  padding: 12px 16px 16px;
+}
+
+/* login / error / too-old: a compact centred HDSL login card, not a full-width panel */
+.shell-single {
+  padding: 24px 12px;
+  text-align: center;
+}
+table.shell-card {
+  width: 420px;
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: left;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+/* left navigation, HMCL's list style */
+.navlist strong {
+  display: block;
+  padding: 6px 8px 10px;
+  font-size: 1.05rem;
+  color: #1B1B21;
+  border-bottom: 2px solid #4352A5;
+  margin-bottom: 6px;
+}
+.navlist a {
+  display: block;
+  padding: 7px 9px;
+  margin: 2px 0;
+  color: #4352A5;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.navlist a:hover {
+  background: #D0D5FD;
+  color: #1B1B21;
+}
+.navlist form {
+  margin: 8px 0 0;
+}
+.navlist button, .navlist input[type="submit"] {
+  width: 100%;
+}
+
+/* content */
+h1 {
+  font-size: 1.35rem;
+  color: #1B1B21;
+  border-bottom: 2px solid #4352A5;
+  padding-bottom: 6px;
+  margin: 4px 0 12px;
+}
+h2 {
+  font-size: 1.1rem;
+  color: #1B1B21;
+  margin: 16px 0 8px;
+}
+a { color: #4352A5; }
+a:hover { color: #5C6BC0; }
+.toolbar {
+  margin: 0 0 8px;
+}
+.toolbar a {
+  display: inline-block;
+  margin-right: 12px;
+  padding: 3px 10px;
+  border: 1px solid #C6C5D3;
+  border-radius: 4px;
+  background: #FBF8FF;
+  text-decoration: none;
+  font-size: .9rem;
+}
+.toolbar a:hover { background: #D0D5FD; color: #1B1B21; }
+.toolbar form { display: inline; }
+.modelform { display: inline-block; margin: 0 0 10px; }
+.modelform select { max-width: 32rem; }
+.toolbar input[type="submit"] {
+  padding: 3px 10px;
+  font-size: .9rem;
+}
+
+/* data tables as cards */
+table:not(.shell):not(.shell-card) {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  background: #FBF8FF;
+  border: 1px solid #C6C5D3;
+  border-radius: 4px;
+  overflow: hidden;
+}
+th, td {
+  padding: .4rem .6rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #E3E1E9;
+}
+th {
+  background: #EFEDF5;
+  color: #1B1B21;
+  font-weight: 600;
+}
+tr:last-child td { border-bottom: 0; }
+
+/* message and code cards */
+pre.msg, pre.chat-code-body {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: #FFFFFF;
+  border: 1px solid #C6C5D3;
+  border-left: 4px solid #4352A5;
+  border-radius: 4px;
+  padding: .6rem .8rem;
+  margin: .25rem 0 .75rem;
+  color: #1B1B21;
+}
+.chat-code { margin: .5rem 0; }
+.chat-code-head {
+  background: #EFEDF5;
+  border: 1px solid #C6C5D3;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  padding: .2rem .6rem;
+  font-size: .85rem;
+  color: #454651;
+}
+.chat-code-head .chat-code-lang { font-weight: 600; }
+.chat-code-head .chat-code-lines { float: right; }
+.chat-code-body {
+  margin-top: 0;
+  border-radius: 0 0 4px 4px;
+  border-left-width: 1px;
+}
+
+/* forms */
+textarea, input[type="text"], input[type="password"], select {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 8px;
+  background: #E3E1E9;
+  color: #1B1B21;
+}
+textarea:focus, input[type="text"]:focus, input[type="password"]:focus, select:focus {
+  border-color: #4352A5;
+}
+input[type="text"], input[type="password"], select { width: 90%; max-width: 360px; }
+textarea { width: 98%; min-height: 6rem; }
+button, input[type="submit"] {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  background: #4352A5;
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 4px;
+  height: 36px;
+  line-height: 36px;
+  padding: 0 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+  cursor: pointer;
+}
+button:hover, input[type="submit"]:hover {
+  background: #4352A5;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+button:active, input[type="submit"]:active { background: #2F3F92; }
+button:disabled, input[type="submit"]:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.muted { color: #454651; }
+.error { color: #BA1A1A; font-weight: 600; }
+.row { display: block; margin: .5rem 0; }
+
+/* server-rendered markdown */
+.legacy-md h1, .legacy-md h2, .legacy-md h3 { line-height: 1.25; }
+.legacy-md table { width: auto; }
+.legacy-md th, .legacy-md td { border: 1px solid #C6C5D3; border-bottom: 1px solid #C6C5D3; }
+.legacy-md blockquote {
+  margin: .5rem 0;
+  padding: .25rem .75rem;
+  border-left: 3px solid #C6C5D3;
+  color: #454651;
+}
+
+/* highlight.js token subset */
+.hljs-comment { color: #008000; }
+.hljs-keyword, .hljs-type { color: #0000FF; }
+.hljs-string, .hljs-regexp { color: #A31515; }
+.hljs-number, .hljs-literal { color: #098658; }
+.hljs-title, .hljs-function .hljs-title { color: #795E26; }
+.hljs-variable, .hljs-attr, .hljs-attribute { color: #001080; }
+.hljs-meta, .hljs-symbol, .hljs-bullet { color: #267F99; }
