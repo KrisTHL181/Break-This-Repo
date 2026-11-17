@@ -1,0 +1,314 @@
+HDSL
+Copyright (C) 2026  HDSL contributors
+
+This program is a modified version of Hello Minecraft! Launcher (HMCL).
+
+    Hello Minecraft! Launcher
+    Copyright (C) 2020  huangyuhui <huanghongxun2008@126.com> and contributors
+
+HMCL is free software: you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.
+
+HMCL is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with
+this program.  If not, see <https://www.gnu.org/licenses/>.
+
+--------------------------------------------------------------------------------
+
+STATEMENT OF CHANGES  (GNU GPL v3, section 5(a) and section 7)
+
+The original work has been modified as follows:
+
+1.  Renamed.  The software is distributed under the name "HDSL", not
+    "HMCL" or "Hello Minecraft! Launcher", as required by the additional
+    terms attached to HMCL under GNU GPL v3 section 7(c).
+
+2.  Scope.  All functionality related to launching, installing or managing
+    Minecraft has been removed, together with the corresponding source
+    packages (game, download, auth, modpack, addon, schematic, nbt, java,
+    launch, upgrade, terracotta, countly) and the associated user-interface
+    pages.
+
+3.  Purpose.  The application now launches and manages DeepSeek Harness
+    (`dsh`) profiles and versions, which is implemented in the new
+    `org.jackhuang.hmcl.dsh` package and the new user-interface pages under
+    `org.jackhuang.hmcl.ui.dsh`.
+
+4.  Retained.  The presentation layer -- the JavaFX window decorator, the
+    component library, the animation helpers, the theme engine, the image
+    pipeline, the asynchronous task engine, the localization framework and
+    the general-purpose utilities -- is carried over from HMCL, keeping its
+    original package names and its original copyright headers, which are
+    preserved in full as required by GNU GPL v3 section 7(b).
+
+5.  Removed.  The self-update mechanism (which used HMCL's own update server
+    and signing key), the crash-reporting submission path, the Countly
+    package name, the Terracotta integration and every hard-coded reference
+    to HMCL's servers, documentation, community links and branding have been
+    removed or replaced.
+
+6.  Platform.  Linux, macOS and Windows are supported.  The Windows support
+    covers running `java -jar hdsl-web.jar` directly on the host: detecting a
+    Node.js installed there, installing and running DeepSeek Harness versions
+    and plugins, installing the third-party brand tools, installing a
+    panel-managed Node.js runtime, and building ZCode from the panel.  Two
+    things are deliberately not available there and say so when asked for:
+    the per-instance terminal (it opens a POSIX shell through a Linux terminal
+    emulator) and observation of DeepSeek Harness's `flock(2)` session leases
+    (the command that reads them is util-linux's).  POSIX `0600` has no NTFS
+    equivalent, so the credential file may be readable by other accounts on a
+    multi-user Windows machine.
+
+The full source code of this modified version is available from the project
+repository in which this notice is distributed.
+
+--------------------------------------------------------------------------------
+
+TRADEMARKS
+
+"Hello Minecraft! Launcher", "HMCL" and their logos are the property of their
+respective owners.  They are used in this file only to give credit and to
+satisfy the attribution requirements of the GNU General Public License.  Their
+use does not imply any endorsement of HDSL by the HMCL project.
+
+"DeepSeek", "DeepSeek Harness" and "dsh" are the property of their respective
+owners.  HDSL is an independent, unofficial launcher and is not affiliated
+with or endorsed by the DeepSeek Harness project.
+
+The panel's brand-instance section shows the logos of the third-party tools it
+manages, and its own dsh category uses the DeepSeek whale instead of the HMCL
+grass-block default.  Each mark is used unaltered, only to identify the tool
+being managed; no affiliation, sponsorship, endorsement or partnership is
+implied.
+
+  dsh — "DeepSeek", "DeepSeek Harness" and "dsh" are the property of their
+  respective owners.  assets/img/brand-dsh.svg is the DeepSeek whale mark
+  distributed by the Simple Icons project (the file is CC0 1.0; the mark itself
+  is DeepSeek's, drawn from its official logo at https://www.deepseek.com).
+
+  Kimi Code — "Kimi", "Kimi Code" and "Moonshot AI" are trademarks of
+  Moonshot AI.  assets/img/brand-kimi.svg is taken unmodified from the
+  MoonshotAI/kimi-code repository (apps/vscode/resources/kimi-icon.svg), which
+  that project publishes under the MIT License, Copyright (c) 2026 Moonshot AI.
+
+  OpenCode — "OpenCode" is a trademark of the OpenCode project.
+  assets/img/brand-opencode.svg is taken unmodified from the
+  anomalyco/opencode repository (packages/identity/mark.svg; the repository
+  moved there from sst/opencode), published under the MIT License,
+  Copyright (c) 2025 opencode.
+
+  ZCode — "ZCode" and "Z.ai" are trademarks of Z.ai.  assets/img/brand-zcode.svg
+  is the Z.ai mark distributed by the Simple Icons project (the file is
+  CC0 1.0; the mark itself is Z.ai's, drawn from its official logo at
+  https://z-cdn.chatglm.cn/z-ai/static/logo.svg).  The copy inside the
+  zai-org/ZCode repository is deliberately not used: that repository's NOTICE
+  reserves the terms of "icons" generically, so the clearly-licensed file wins.
+
+  Octop — "Octop" and "Tencent Cloud" are trademarks of Tencent.  The panel
+  ships **no** Octop/Tencent mark: the upstream repository
+  (TencentCloud/Octop) is MIT-licensed, but that licence covers its code, not
+  its trademarks, so the section is labelled with text and the neutral icon.
+
+  Claude Web — "Claude", "Claude Code" and "Anthropic" are trademarks of
+  Anthropic PBC.  The Claude Web section manages the community project
+  ypyik0669/claude-web (an unofficial workbench around the Claude Code CLI that
+  is unaffiliated with Anthropic) and therefore ships **no** Anthropic mark:
+  Anthropic's trademark guidelines require prior written permission and forbid
+  any alteration.  The section is labelled with text only.
+
+If a rights holder objects to any of these uses, please open an issue: the mark
+will be removed or replaced with a neutral icon.
+
+--------------------------------------------------------------------------------
+
+THIRD-PARTY COMPONENTS
+
+This program includes or depends on third-party software, including JFoenix,
+OpenJFX, Gson, JNA, kala-compress, commonmark, jsoup, NanoHTTPD, MonetFX,
+weburl, webp, uuid-tools, pci-ids, simple-png-javafx and fxsvgimage.  The
+licenses and attributions of those components are listed in
+`src/main/resources/assets/about/deps.json` and in `assets/about/thanks.json`.
+
+HDSL-web
+Copyright (C) 2026  HDSL-web contributors
+
+HDSL-web is a web-server derivative of HDSL: its domain layer (dsh/,
+setting/, util/) is copied from HDSL and de-JavaFX-ed, and it ships as a
+single executable jar serving a browser management panel.
+
+--------------------------------------------------------------------------------
+
+HDSL-web THIRD-PARTY COMPONENTS
+
+HDSL-web ships as a single executable jar that bundles its runtime
+dependencies.  The components below are the ones bundled into that jar; the
+desktop-only components named in the section above (JFoenix, OpenJFX, jsoup,
+commonmark, NanoHTTPD, MonetFX, webp, pci-ids, ...) are not part of
+HDSL-web.  JNA is the one component from that list that HDSL-web does bundle:
+it backs the PTY glue of the web terminal, and nothing else.
+
+  dsh-TUI startup whale
+      The startup banner's pixel whale is frame 0 of the README logo from
+      ccch1mneyyy/dsh-TUI (MIT License), with the SVG's original palette
+      (#142660 / #4e6fff / #bee1ff / #ffffff).  dsh-TUI credits its 22-frame
+      whale to lhh010/dsh-ui-whale (BSD-3-Clause); only the static frame is
+      reproduced here.
+      https://github.com/ccch1mneyyy/dsh-TUI
+
+  Octop (TencentCloud/Octop)
+      The panel bundles a patched build of the Octop dashboard
+      (src/main/resources/octop/octop-dashboard-<version>.zip) for its
+      brand-instance integration.  Octop is Copyright (c) Tencent and
+      contributors and is distributed under the MIT License.
+      https://github.com/TencentCloud/Octop
+
+      The portable runtime archive is downloaded at install time from the
+      project's GitHub Releases; it bundles CPython (PSF License) and the
+      Python packages listed in Octop's own distribution metadata.
+
+  Eclipse Jetty (jetty-server, jetty-http, jetty-io, jetty-util, jetty-client,
+  jetty-security, jetty-session, jetty-alpn-client, jetty-xml, jetty-jndi,
+  jetty-plus, jetty-ee, the org.eclipse.jetty.ee10 / .ee10.websocket servlet
+  and WebSocket modules, and the org.eclipse.jetty.websocket core and jetty
+  modules)
+      Dual licensed under the Eclipse Public License 2.0 or the Apache
+      License 2.0.
+      https://eclipse.dev/jetty/
+
+  Jakarta EE APIs (jakarta.servlet-api, jakarta.websocket-api,
+  jakarta.websocket-client-api, jakarta.annotation-api, jakarta.el-api,
+  jakarta.enterprise.cdi-api, jakarta.enterprise.lang-model,
+  jakarta.inject-api, jakarta.interceptor-api, jakarta.transaction-api)
+      Eclipse Public License 2.0 or GPL-2.0 with the Classpath Exception.
+      https://jakarta.ee/
+
+  Bouncy Castle (org.bouncycastle:bcpkix-jdk18on, bcprov-jdk18on,
+  bcutil-jdk18on)
+      The Bouncy Castle Licence (MIT-style).
+      https://www.bouncycastle.org/licence.html
+
+  snakeyaml-engine (org.snakeyaml:snakeyaml-engine)
+      Apache License 2.0.
+      https://bitbucket.org/snakeyaml/snakeyaml-engine
+
+  Gson (com.google.code.gson:gson) and error_prone_annotations
+      Apache License 2.0.
+      https://github.com/google/gson
+
+  JNA (net.java.dev.jna:jna)
+      Dual licensed under the Apache License 2.0 or the LGPL 2.1; this
+      distribution relies on the Apache 2.0 arm.  Used only by the PTY glue
+      of the web terminal (docs/web-shell.md).
+      https://github.com/java-native-access/jna
+
+  SLF4J (org.slf4j:slf4j-api, org.slf4j:slf4j-jdk14)
+      MIT License.
+      https://www.slf4j.org/license.html
+
+  SQLite JDBC (org.xerial:sqlite-jdbc)
+      Apache License 2.0.  The jar bundles the SQLite native libraries for
+      each supported platform (SQLite itself is in the public domain); they are
+      unpacked to a temporary directory when the driver first loads.
+      Copyright Xerial and contributors.
+      https://github.com/xerial/sqlite-jdbc
+
+  Apache PDFBox (org.apache.pdfbox:pdfbox, org.apache.pdfbox:fontbox,
+  org.apache.pdfbox:pdfbox-io)
+      Apache License 2.0.  Used only to extract text from uploaded PDF
+      attachments in the panel chat (docs/chat.md).
+      Copyright The Apache Software Foundation.
+      https://pdfbox.apache.org/
+
+  Apache POI (org.apache.poi:poi, org.apache.poi:poi-ooxml,
+  org.apache.poi:poi-ooxml-lite, org.apache.poi:poi-scratchpad) and
+  Apache XMLBeans (org.apache.xmlbeans:xmlbeans)
+      Apache License 2.0.  Used only to extract text from uploaded Office
+      attachments in the panel chat.
+      Copyright The Apache Software Foundation.
+      https://poi.apache.org/  https://xmlbeans.apache.org/
+
+  curvesapi (com.github.virtuald:curvesapi), pulled in by POI
+      BSD 3-Clause License.
+      https://github.com/virtuald/curvesapi
+
+  SparseBitSet (com.zaxxer:SparseBitSet), pulled in by POI
+      Apache License 2.0.
+      https://github.com/brettwooldridge/SparseBitSet
+
+  Apache Commons (commons-io:commons-io, commons-codec:commons-codec,
+  commons-compress:commons-compress, commons-collections4,
+  commons-lang3, commons-math3, commons-logging:commons-logging) and
+  Log4j API (org.apache.logging.log4j:log4j-api), pulled in by the chat
+  attachment extractors
+      Apache License 2.0.
+      Copyright The Apache Software Foundation.
+      https://commons.apache.org/  https://logging.apache.org/log4j/
+
+  JetBrains annotations (org.jetbrains:annotations) and IntelliJ language
+  annotations (org.intellij:annotations)
+      Apache License 2.0.
+      https://github.com/JetBrains/java-annotations
+
+  kala-compress (org.glavo.kala:kala-compress-base and -archivers-zip /
+  -archivers-tar / -archivers-ar)
+      Apache License 2.0.
+      https://github.com/Glavo/kala-compress
+
+  ASM (org.ow2.asm:asm and asm-commons, pulled in transitively)
+      BSD 3-Clause License.
+      https://asm.ow2.io/
+
+  XZ for Java (org.tukaani:xz)
+      0BSD.
+      https://tukaani.org/xz/java.html
+
+  weburl (org.glavo:weburl)
+      Apache License 2.0.
+      https://github.com/Glavo/weburl
+
+  kala-encoding-detector (org.glavo:kala-encoding-detector) and
+  uuid-tools (org.glavo:uuid-tools)
+      Mozilla Public License 2.0.
+      https://www.mozilla.org/en-US/MPL/2.0/
+
+  JUnit 5 (org.junit.jupiter:junit-jupiter and the JUnit Platform launcher)
+      Eclipse Public License 2.0.
+      Used by the test suite only; not bundled into the shipped jar.
+      https://junit.org/
+
+  The panel SPA under web/ is built with React, react-router-dom, Vite and
+  TypeScript (React and react-router-dom under the MIT License, Vite under the
+  MIT License, TypeScript under the Apache License 2.0).  The licence texts are
+  the ones published with those packages.
+
+  The terminal client under client/hdsl-tui (the Go binary `hdsl-tui`) vendors
+  its dependencies into the repository under client/hdsl-tui/vendor/, so it
+  builds offline.  Those vendored sources are:
+
+    gorilla/websocket (github.com/gorilla/websocket)
+        BSD 3-Clause License.
+        https://github.com/gorilla/websocket
+
+    golang.org/x/term and golang.org/x/sys
+        BSD 3-Clause License.
+        https://cs.opensource.google/go/x/term
+        https://cs.opensource.google/go/x/sys
+
+  Each vendored package keeps its own LICENSE file next to its sources.
+
+--------------------------------------------------------------------------------
+
+CONTAINER IMAGE
+
+The published container image is a Debian GNU/Linux system carrying the jar
+above, an OpenJDK 21 runtime, Node.js and pnpm.  Debian and the packages
+installed from its archive (ca-certificates, curl, git, tini, zstd, xz-utils,
+util-linux and the rest) carry their own copyright and licences, recorded under
+/usr/share/doc/<package>/copyright inside the image.  Node.js and pnpm are
+distributed under the MIT License.  HDSL-web is not affiliated with, or
+endorsed by, any of these projects.

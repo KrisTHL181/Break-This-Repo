@@ -1,0 +1,65 @@
+# Dependency versions for HDSL-web.
+#
+# Domain-layer libraries are aligned with the HDSL desktop build this source
+# was copied from (see HDSL/gradle/libs.versions.toml); everything the desktop
+# UI needed (JavaFX, JFoenix, jsoup, nanohttpd, commonmark, ...) is
+# deliberately absent. JNA is the one native bridge this build keeps: the web
+# terminal's PTY glue (docs/web-shell.md) is written against it directly.
+
+[versions]
+junit = "6.1.3"
+jetbrains-annotations = "26.1.0"
+gson = "2.14.0"
+errorprone = "2.41.0"
+kala-compress = "1.27.1-5"
+kala-encoding-detector = "0.1.0"
+xz = "1.12"
+weburl = "0.2.0"
+uuid-tools = "0.2.0"
+jetty = "12.0.39"
+snakeyaml-engine = "2.9"
+bouncycastle = "1.86"
+slf4j = "2.0.20"
+# JNA is used only by the web terminal's PTY glue (docs/web-shell.md).
+# Dual-licensed LGPL-2.1 / Apache-2.0; this build relies on the Apache-2.0 arm,
+# which is GPL-3.0 compatible.
+jna = "5.19.1"
+# 聊天模块（docs/chat.md）：SQLite 是会话与消息的唯一持久化；PDFBox / POI 只做附件文本抽取。
+sqlite-jdbc = "3.54.1.0"
+pdfbox = "3.0.5"
+poi = "5.4.1"
+
+[libraries]
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
+jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+errorprone-annotations = { module = "com.google.errorprone:error_prone_annotations", version.ref = "errorprone" }
+kala-compress-zip = { module = "org.glavo.kala:kala-compress-archivers-zip", version.ref = "kala-compress" }
+kala-compress-tar = { module = "org.glavo.kala:kala-compress-archivers-tar", version.ref = "kala-compress" }
+kala-compress-ar = { module = "org.glavo.kala:kala-compress-archivers-ar", version.ref = "kala-compress" }
+kala-encoding-detector = { module = "org.glavo:kala-encoding-detector", version.ref = "kala-encoding-detector" }
+xz = { module = "org.tukaani:xz", version.ref = "xz" }
+weburl = { module = "org.glavo:weburl", version.ref = "weburl" }
+uuid-tools = { module = "org.glavo:uuid-tools", version.ref = "uuid-tools" }
+jetty-server = { module = "org.eclipse.jetty:jetty-server", version.ref = "jetty" }
+# Since Jetty 12.0.x the EE10 (Jakarta Servlet 6) modules live under their own
+# groupId `org.eclipse.jetty.ee10`, not `org.eclipse.jetty`.
+jetty-ee10-servlet = { module = "org.eclipse.jetty.ee10:jetty-ee10-servlet", version.ref = "jetty" }
+# The jakarta WebSocket server for EE10 lives under `org.eclipse.jetty.ee10.websocket`.
+jetty-ee10-websocket-jakarta-server = { module = "org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server", version.ref = "jetty" }
+# Core WebSocket server (glob path mappings, used by the /i/* upgrade relay) and client.
+jetty-websocket-jetty-server = { module = "org.eclipse.jetty.websocket:jetty-websocket-jetty-server", version.ref = "jetty" }
+jetty-websocket-jetty-client = { module = "org.eclipse.jetty.websocket:jetty-websocket-jetty-client", version.ref = "jetty" }
+snakeyaml-engine = { module = "org.snakeyaml:snakeyaml-engine", version.ref = "snakeyaml-engine" }
+bcpkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncycastle" }
+slf4j-jdk14 = { module = "org.slf4j:slf4j-jdk14", version.ref = "slf4j" }
+# The web terminal's PTY glue (docs/web-shell.md). Apache-2.0 arm only.
+jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
+pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfbox" }
+poi-ooxml = { module = "org.apache.poi:poi-ooxml", version.ref = "poi" }
+poi-scratchpad = { module = "org.apache.poi:poi-scratchpad", version.ref = "poi" }
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version = "9.6.1" }

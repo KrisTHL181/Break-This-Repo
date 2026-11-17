@@ -1,0 +1,61 @@
+{
+  "name": "@nas200-timmy/dsh-inproc-tui",
+  "version": "0.2.3",
+  "description": "HDSL-web's in-process terminal interface for DeepSeek Harness 0.2.x: a mode bundle over dsh-base with token-level streaming, live reasoning, approvals and in-session model switching.",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "dsh-bundle",
+    "deepseek-harness",
+    "terminal",
+    "tui",
+    "hdsl"
+  ],
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "shared",
+    "cordis.patch.yml",
+    "README.md",
+    "NOTICE",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.20"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node --test"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.5",
+    "@deepseek-ai/dsh-agent": "^0.2.0-rc.1",
+    "@deepseek-ai/dsh-llm": "^0.2.0-rc.1",
+    "@deepseek-ai/dsh-user-questions": "^0.2.0-rc.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-agent": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-llm": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-user-questions": {
+      "optional": true
+    }
+  }
+}

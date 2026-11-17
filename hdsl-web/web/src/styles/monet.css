@@ -1,0 +1,180 @@
+/* ---------------------------------------------------------------------------
+ * Monet 主题变量。
+ * 浅色（:root）：逐字照抄桌面版 assets/css/blue.css（种子 #5C6BC0）。
+ * 暗色（[data-theme="dark"]）：@material/material-color-utilities 以同种子、
+ * FIDELITY 风格、Contrast 0、Spec 2025 生成的结果（src/theme.ts 启动时会重新生成覆盖）。
+ * -fixed-*：桌面版 brightness-light/dark.css 中的固定色（日志窗、渠道图标等）。
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --monet-primary: #4352A5;
+  --monet-on-primary: #FFFFFF;
+  --monet-primary-container: #5C6BC0;
+  --monet-on-primary-container: #F8F6FF;
+  --monet-primary-fixed: #DEE0FF;
+  --monet-primary-fixed-dim: #BAC3FF;
+  --monet-on-primary-fixed: #00105B;
+  --monet-on-primary-fixed-variant: #2F3F92;
+  --monet-secondary: #575C7F;
+  --monet-on-secondary: #FFFFFF;
+  --monet-secondary-container: #D0D5FD;
+  --monet-on-secondary-container: #565B7D;
+  --monet-secondary-fixed: #DEE0FF;
+  --monet-secondary-fixed-dim: #BFC4EC;
+  --monet-on-secondary-fixed: #141938;
+  --monet-on-secondary-fixed-variant: #3F4566;
+  --monet-tertiary: #775200;
+  --monet-on-tertiary: #FFFFFF;
+  --monet-tertiary-container: #976900;
+  --monet-on-tertiary-container: #FFF6EE;
+  --monet-tertiary-fixed: #FFDEAC;
+  --monet-tertiary-fixed-dim: #F6BD58;
+  --monet-on-tertiary-fixed: #281900;
+  --monet-on-tertiary-fixed-variant: #5F4100;
+  --monet-error: #BA1A1A;
+  --monet-on-error: #FFFFFF;
+  --monet-error-container: #FFDAD6;
+  --monet-on-error-container: #93000A;
+  --monet-surface: #FBF8FF;
+  --monet-on-surface: #1B1B21;
+  --monet-surface-dim: #DBD9E1;
+  --monet-surface-bright: #FBF8FF;
+  --monet-surface-container-lowest: #FFFFFF;
+  --monet-surface-container-low: #F5F2FA;
+  --monet-surface-container: #EFEDF5;
+  --monet-surface-container-high: #E9E7EF;
+  --monet-surface-container-highest: #E3E1E9;
+  --monet-surface-variant: #E2E1EF;
+  --monet-on-surface-variant: #454651;
+  --monet-background: #FBF8FF;
+  --monet-on-background: #1B1B21;
+  --monet-outline: #767683;
+  --monet-outline-variant: #C6C5D3;
+  --monet-shadow: #000000;
+  --monet-scrim: #000000;
+  --monet-inverse-surface: #303036;
+  --monet-inverse-on-surface: #F2EFF7;
+  --monet-inverse-primary: #BAC3FF;
+  --monet-surface-tint: #4858AB;
+  --monet-primary-seed: #5C6BC0;
+
+  /* 透明派生（规则：后缀 50 = 8 进制 80，80 = CC，38 = 61） */
+  --monet-primary-transparent-50: #4352A580;
+  --monet-primary-transparent-80: #4352A5CC;
+  --monet-secondary-container-transparent-50: #D0D5FD80;
+  --monet-secondary-container-transparent-80: #D0D5FDCC;
+  --monet-surface-transparent-50: #FBF8FF80;
+  --monet-surface-transparent-80: #FBF8FFCC;
+  --monet-surface-container-low-transparent-80: #F5F2FACC;
+  --monet-inverse-surface-transparent-80: #303036CC;
+  --monet-on-surface-variant-transparent-38: #45465161;
+
+  /* brightness-light.css 固定色 */
+  --fixed-warning-tag-background: #F1AEB5;
+  --fixed-log-background: #FFFFFF;
+  --fixed-log-toggle-selected: #000000;
+  --fixed-log-toggle-unselected: #6C757D;
+  --fixed-log-text-fill: #1F1F1F;
+  --fixed-log-trace-background: #EEE9E0;
+  --fixed-log-debug-background: #EEE9E0;
+  --fixed-log-info-background: #FFFFFF;
+  --fixed-log-warn-background: #FEF6D5;
+  --fixed-log-warn-text-fill: #3E2F00;
+  --fixed-log-error-background: #FCEBEB;
+  --fixed-log-error-text-fill: #410E0B;
+  --fixed-log-fatal-background: #F7A699;
+  --fixed-log-selected: #F2F2F2;
+  --fixed-channel-alpha: #CB2245;
+  --fixed-channel-beta: #E08325;
+  --fixed-channel-release: #00AF5C;
+
+  /* 滚动条（root.css 固定值，两种亮度通用） */
+  --fixed-scrollbar-track: #F1F1F1;
+  --fixed-scrollbar-thumb: #BCBCBC;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --monet-primary: #BAC3FF;
+  --monet-on-primary: #15267B;
+  --monet-primary-container: #5C6BC0;
+  --monet-on-primary-container: #F8F6FF;
+  --monet-primary-fixed: #DEE0FF;
+  --monet-primary-fixed-dim: #BAC3FF;
+  --monet-on-primary-fixed: #00105B;
+  --monet-on-primary-fixed-variant: #2F3F92;
+  --monet-secondary: #BFC4EC;
+  --monet-on-secondary: #292E4E;
+  --monet-secondary-container: #3F4566;
+  --monet-on-secondary-container: #AEB3DA;
+  --monet-secondary-fixed: #DEE0FF;
+  --monet-secondary-fixed-dim: #BFC4EC;
+  --monet-on-secondary-fixed: #141938;
+  --monet-on-secondary-fixed-variant: #3F4566;
+  --monet-tertiary: #F6BD58;
+  --monet-on-tertiary: #432C00;
+  --monet-tertiary-container: #976900;
+  --monet-on-tertiary-container: #FFF6EE;
+  --monet-tertiary-fixed: #FFDEAC;
+  --monet-tertiary-fixed-dim: #F6BD58;
+  --monet-on-tertiary-fixed: #281900;
+  --monet-on-tertiary-fixed-variant: #5F4100;
+  --monet-error: #FFB4AB;
+  --monet-on-error: #690005;
+  --monet-error-container: #93000A;
+  --monet-on-error-container: #FFDAD6;
+  --monet-surface: #121318;
+  --monet-on-surface: #E3E1E9;
+  --monet-surface-dim: #121318;
+  --monet-surface-bright: #39393F;
+  --monet-surface-container-lowest: #0D0E13;
+  --monet-surface-container-low: #1B1B21;
+  --monet-surface-container: #1F1F25;
+  --monet-surface-container-high: #29292F;
+  --monet-surface-container-highest: #34343A;
+  --monet-surface-variant: #454651;
+  --monet-on-surface-variant: #C6C5D3;
+  --monet-background: #121318;
+  --monet-on-background: #E3E1E9;
+  --monet-outline: #8F909D;
+  --monet-outline-variant: #454651;
+  --monet-shadow: #000000;
+  --monet-scrim: #000000;
+  --monet-inverse-surface: #E3E1E9;
+  --monet-inverse-on-surface: #303036;
+  --monet-inverse-primary: #4858AB;
+  --monet-surface-tint: #BAC3FF;
+  --monet-primary-seed: #5C6BC0;
+
+  --monet-primary-transparent-50: #BAC3FF80;
+  --monet-primary-transparent-80: #BAC3FFCC;
+  --monet-secondary-container-transparent-50: #3F456680;
+  --monet-secondary-container-transparent-80: #3F4566CC;
+  --monet-surface-transparent-50: #12131880;
+  --monet-surface-transparent-80: #121318CC;
+  --monet-surface-container-low-transparent-80: #1B1B21CC;
+  --monet-inverse-surface-transparent-80: #E3E1E9CC;
+  --monet-on-surface-variant-transparent-38: #C6C5D361;
+
+  /* brightness-dark.css 固定色 */
+  --fixed-warning-tag-background: #2C0B0E;
+  --fixed-log-background: #282828;
+  --fixed-log-toggle-selected: #DEE2E6;
+  --fixed-log-toggle-unselected: #6C757D;
+  --fixed-log-text-fill: #E3E3E3;
+  --fixed-log-trace-background: #495057;
+  --fixed-log-debug-background: #343A40;
+  --fixed-log-info-background: #212529;
+  --fixed-log-warn-background: #413C26;
+  --fixed-log-warn-text-fill: #FDF3AA;
+  --fixed-log-error-background: #4E3534;
+  --fixed-log-error-text-fill: #F9DEDC;
+  --fixed-log-fatal-background: #842029;
+  --fixed-log-selected: #3E3E3E;
+  --fixed-channel-alpha: #FF496E;
+  --fixed-channel-beta: #FFA347;
+  --fixed-channel-release: #1BD96A;
+
+  color-scheme: dark;
+}

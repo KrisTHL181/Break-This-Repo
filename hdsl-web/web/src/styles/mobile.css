@@ -1,0 +1,498 @@
+/* ---------------------------------------------------------------------------
+ * 移动端适配（手机浏览器远程启停 dsh 用）。
+ *
+ * 判定条件**只有两处**，这一份与 web/src/hooks.ts 的 MOBILE_QUERY 必须逐字一致：
+ *   移动版式：(max-width: 760px), (max-height: 520px)
+ *             —— 后者覆盖横屏手机（如 844×390：宽度够但高度极小）
+ *   触摸优化：(hover: none) and (pointer: coarse)
+ *             —— 与尺寸无关，平板也受益
+ *
+ * 桌面端零变化：本文件全部规则都在上面两个媒体查询内。
+ * ------------------------------------------------------------------------- */
+
+@media (max-width: 760px), (max-height: 520px) {
+  /* ---------------- 外壳：动态视口高度 + 顶部安全区 ---------------- */
+
+  /* 手机浏览器地址栏会吃掉 100vh 的一部分；dvh 跟随实际可视高度。
+     不认识 dvh 的浏览器会忽略第二行，保留 100vh 的行为。 */
+  .decorator {
+    height: 100vh;
+    height: 100dvh;
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .titlebar {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  /* ---------------- 主导航侧栏 → 抽屉 ---------------- */
+
+  .sidebar-main {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(78vw, 300px);
+    min-width: 0;
+    padding-top: calc(12px + env(safe-area-inset-top));
+    padding-left: env(safe-area-inset-left);
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform 200ms var(--ease);
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.3);
+    /* 抽屉是半透明板，手机上没有壁纸透出反而更难读 —— 用不透明底 */
+    background: var(--monet-surface);
+  }
+
+  .sidebar-main.open {
+    transform: none;
+  }
+
+  .sidebar-scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 35;
+    animation: scrim-in 150ms var(--ease);
+  }
+
+  @keyframes scrim-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* 内容页：子侧栏 → 顶部横向标签条。
+     实例页的外层是手写的 `nav.sidebar-sub.sidebar-stack`，它把「启动/浏览/管理」
+     操作框和真正的标签条装在一列里，所以把它排除在外，单独在上方留一行（见下）。 */
+  .page-with-sidebar {
+    flex-direction: column;
+  }
+
+  .sidebar-sub:not(.sidebar-stack) {
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    width: 100%;
+    min-width: 0;
+    flex: none;
+    height: 46px;
+    padding: 0 4px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: var(--monet-surface-transparent-50);
+    scrollbar-width: none;
+    /* 横向意图要说清楚：斜着划的时候，浏览器要决定这个手势算谁的——`pan-x` 把它钉在这条
+       标签条上，不让页面纵向滚动把它抢走。原先这里是 `-webkit-overflow-scrolling: touch`，
+       那是 iOS 13 之前的老开关，现在已被移除，留着反而会和原生惯性滚动打架。
+       `overscroll-behavior-x: contain` 再挡住横向滚到头之后往父级冒泡（某些平台上那一冒泡
+       会触发浏览器的返回/刷新手势）；Safari 16 以下不认识它，会直接忽略，没有副作用。 */
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+  }
+
+  .sidebar-sub:not(.sidebar-stack)::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 标签条里不出现分区标题、撑高占位与底部操作区，副标题也不显示（chip 只占一行） */
+  .sidebar-sub:not(.sidebar-stack) .side-category,
+  .sidebar-sub:not(.sidebar-stack) .sidebar-spacer,
+  .sidebar-sub:not(.sidebar-stack) .side-actions,
+  .sidebar-sub:not(.sidebar-stack) .side-subtitle {
+    display: none;
+  }
+
+  /* 分区在 DOM 里是外层 div（标题 + 条目），横排时它也得是横排，
+     否则条目会各自竖着堆在分区里。分区之间给一条浅分隔线。 */
+  .sidebar-sub:not(.sidebar-stack) > div {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex: none;
+  }
+
+  .sidebar-sub:not(.sidebar-stack) > div + div {
+    margin-left: 4px;
+    padding-left: 4px;
+    border-left: 1px solid var(--monet-outline-variant);
+  }
+
+  /* 实例页的外层：操作框一整行 + 标签条一整行 */
+  .sidebar-sub.sidebar-stack {
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 6px 6px 0;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .sidebar-sub.sidebar-stack > .instance-actions-box {
+    margin: 0;
+  }
+
+  /* 调用方给的底部插槽（如「新建」按钮）在标签条里排在最后 */
+  .sidebar-sub .side-strip-tail {
+    display: flex;
+    align-items: center;
+    flex: none;
+    padding: 0 4px;
+  }
+
+  /* 条目变紧凑 chip：图标与文字同一行、不换行、可横向滑动 */
+  .sidebar-sub .side-item {
+    width: auto;
+    flex: none;
+    padding: 8px 12px;
+    gap: 6px;
+    border-radius: 18px;
+  }
+
+  .sidebar-sub .side-item .side-text {
+    padding-left: 0;
+  }
+
+  .sidebar-sub .side-item .side-title {
+    white-space: nowrap;
+  }
+
+  .page-content {
+    margin: 6px;
+    border-radius: 6px;
+    /* 贴底操作栏的高度，别让最后一行被压住 */
+    margin-bottom: calc(74px + env(safe-area-inset-bottom));
+  }
+
+  /* ---------------- 启动面板 → 贴底整条操作栏 ---------------- */
+
+  .launch-pane {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    align-items: stretch;
+    padding: 8px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    padding-left: calc(8px + env(safe-area-inset-left));
+    padding-right: calc(8px + env(safe-area-inset-right));
+    background: linear-gradient(to top, var(--monet-surface) 60%, transparent);
+  }
+
+  .launch-main {
+    flex: 1;
+    width: auto;
+    height: 56px;
+  }
+
+  .launch-menu-btn {
+    width: 48px;
+    height: 56px;
+    border-radius: 4px;
+  }
+
+  /* 进度/运行浮层 → 操作栏上方的底部卡片 */
+  .launch-progress {
+    position: fixed;
+    left: 8px;
+    right: 8px;
+    bottom: calc(74px + env(safe-area-inset-bottom));
+    width: auto;
+    max-height: 56dvh;
+    overflow-y: auto;
+  }
+
+  /* 主页内容区：给贴底栏留位置，并让手机上的当前实例卡片可滚动 */
+  .main-page {
+    padding-bottom: calc(74px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+  }
+
+  .mobile-home {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 6px;
+  }
+
+  /* ---------------- 弹窗与弹出菜单 ---------------- */
+
+  .dialog {
+    /* min-width: 320 会在 360px 屏上顶出边界 */
+    min-width: 0;
+    width: calc(100vw - 24px);
+    max-width: none;
+    max-height: calc(100dvh - 32px);
+    padding: 16px 16px 12px;
+  }
+
+  .dialog.wide {
+    width: calc(100vw - 24px);
+  }
+
+  .popup-menu {
+    max-width: calc(100vw - 16px);
+    max-height: 60dvh;
+  }
+
+  /* 供应商选择：搜索行整行占满、按钮与计数换到第二行；网格给弹窗留出高度 */
+  .vendor-toolbar {
+    flex-wrap: wrap;
+  }
+
+  .vendor-toolbar .input {
+    flex: 1 1 100%;
+  }
+
+  .vendor-grid {
+    max-height: 46dvh;
+  }
+
+  /* 认证页（登录/初始化）卡片：内联 minWidth 340 在窄屏必然溢出，宽度交给这里 */
+  .auth-card {
+    width: min(380px, calc(100vw - 32px));
+    min-width: 0;
+  }
+
+  /* ---------------- 长说明降级（CollapsibleNote）：一行摘要 + 详情按钮 ---------------- */
+
+  .note-collapse {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .note-collapse-text {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * 触摸环境：把可点区域抬到 36-42px（Material/Apple 建议 44px，但手机上照那个值
+ * 做，一屏放不下两个控件，内容全被推到折叠线以下），输入框 16px（iOS 聚焦时不会
+ * 自动缩放页面），并去掉移动端点击高亮。
+ * 与视口宽度无关，所以单独成块：平板横屏（宽 >760）也适用。
+ * ------------------------------------------------------------------------- */
+
+@media (hover: none) and (pointer: coarse) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  .side-item,
+  .tlli,
+  .popup-item {
+    touch-action: manipulation;
+  }
+
+  .side-item {
+    min-height: 40px;
+  }
+
+  /* 触摸目标：44px 是 Material/Apple 的建议值，但一屏五个控件就把内容挤没了。
+   * 这里压到 36-40：仍是可点区域、不重叠，内容密度优先。
+   * 输入框保持 16px 字号（iOS 小于 16 会在聚焦时放大页面），只收高度。 */
+  .btn {
+    height: auto;
+    min-height: 38px;
+  }
+
+  .tool-btn {
+    height: auto;
+    min-height: 36px;
+    font-size: 13px;
+  }
+
+  .tlli {
+    min-height: 42px;
+  }
+
+  .popup-item {
+    min-height: 40px;
+    font-size: 14px;
+  }
+
+  /* 模型下拉的两行项：行高按触摸标准（44px）再加一点，名称放大到 14px */
+  .model-menu .popup-item {
+    min-height: 48px;
+  }
+
+  .model-option .model-option-name {
+    font-size: 14px;
+  }
+
+  .input,
+  select.input {
+    min-height: 40px;
+    font-size: 16px;
+  }
+
+  /* 设置行在手机上改为上下两行：140px 的标签列会把值挤成一条缝，下拉框的
+     选项文字随之被裁掉。 */
+  .comp-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .comp-row .comp-label {
+    width: auto;
+  }
+
+  /* Node 页的三个下拉：窄屏占满整行，选项才有地方显示 */
+  .node-select,
+  .node-consumer-select,
+  .node-source-select {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .input-check input {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* 顶部工具行在窄屏不再挤压换行，改为横向滑动 */
+  .toolbar-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .filter-bar .input {
+    min-width: 120px;
+  }
+
+  /* 列表行右侧的按钮组保持一行，行本身可滑动 */
+  .row-actions {
+    flex: none;
+  }
+
+}
+
+/* -------------------------------------------------------------------------
+ * 品牌实例：窄屏不要把标题、版本选择器和四个按钮挤成一片。
+ * 手机上（以及窄窗口、触摸设备）把操作组折到第二行并按需横向滑动；
+ * 标题/副标题允许多行，长 url 用 anywhere 断行，避免撑破卡片。
+ * ------------------------------------------------------------------------- */
+
+@media (max-width: 760px), (max-height: 520px), (hover: none) and (pointer: coarse) {
+  .brand-instance-list .tlli {
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 6px;
+  }
+
+  /* 选择点跟标题行对齐，不再飘在文字上方 */
+  .brand-instance-list .tlli .input-check {
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  /* basis 0：文字块永远跟选择点共享第一行，不会自己挤到第二行 */
+  .brand-instance-list .tlli .tlli-text {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .brand-instance-list .tlli .tlli-title {
+    flex-wrap: wrap;
+    white-space: normal;
+    row-gap: 4px;
+  }
+
+  .brand-instance-list .tlli .tlli-subtitle {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+
+  /* 操作组单独占一行：版本选择靠左、图标按钮靠右。
+   * 这一行空间充裕，选择器拉长到能正常显示「2.2.0 已装」。 */
+  .brand-instance-list .row-actions {
+    flex: 1 1 100%;
+    gap: 2px;
+  }
+
+  .brand-instance-list .row-actions > .icon-btn:first-of-type {
+    margin-left: auto;
+  }
+
+  .brand-instance-list .row-actions .input {
+    min-height: 32px;
+    height: 32px;
+    padding: 0 6px;
+    min-width: 104px;
+  }
+
+  /* 行与行之间一条细分界线：标出每行的点击范围，也当视觉分栏 */
+  .brand-instance-list > div:not(:last-child) .tlli {
+    border-bottom: 1px solid var(--monet-outline-variant);
+  }
+
+  /* 新建实例那一行：控件宽度由 JSX 按窄屏/宽屏给（内联样式压过 CSS），
+   * 这里只负责允许换行兜底 */
+  .brand-instance-toolbar {
+    flex-wrap: wrap;
+  }
+}
+
+/* -------------------------------------------------------------------------
+ * 品牌页签行（Z Code / Kimi / OpenCode / Claude Web / Octop）。
+ *
+ * 触摸设备：单行排列、横向滑动，页签保持自然宽度。
+ * 不设 flex:none 时，overflow-x:auto 会把 flex 项的自动最小尺寸清零，
+ * 页签被压缩到刚好放下、没有溢出，于是「看起来挤在一起、又滑不动」。
+ *
+ * 鼠标环境（窄窗口）故意不接管：退回 .toolbar-row 的 flex-wrap:wrap，
+ * 页签折行，谁也不会被裁在卡片外面——鼠标没有「拖动滑动」这件事，
+ * 留一条看不见的横向滚动等于把后面的页签藏起来。
+ * ------------------------------------------------------------------------- */
+@media (hover: none) and (pointer: coarse) {
+  .brand-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    /* 手机上把卡片内边距收紧，多让几像素给页签 */
+    padding: 4px;
+  }
+
+  .brand-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .brand-tabs .tool-btn {
+    flex: none;
+    /* 页签这一行是纯切换，比通用 .tool-btn 再收一档 */
+    height: 34px;
+    min-height: 34px;
+    padding: 0 7px;
+    gap: 4px;
+    font-size: 12px;
+  }
+
+  .brand-tabs .tool-btn .tag {
+    font-size: 10px;
+    padding: 0 3px;
+  }
+}

@@ -1,0 +1,39 @@
+# Build context exclusions for HDSL-web's Dockerfile.
+# The context is the repository root; each stage copies only what it needs.
+
+# ---------------------------------------------------------------- Gradle -----
+# The image builds from source, so local build output never belongs in it.
+build/
+.gradle/
+**/build/
+
+# ------------------------------------------------------------------- web -----
+# The web stage runs `npm ci` and `npm run build` itself; a local node_modules
+# or dist would only shadow the fresh ones.
+web/node_modules/
+web/dist/
+
+# --------------------------------------------------------------- repo noise --
+.git/
+.github/
+.gitattributes
+.gitignore
+docs/
+scripts/
+.idea/
+.vscode/
+.DS_Store
+*.log
+
+# A data directory someone bind-mounted while following the README, and the
+# upload staging directory the server creates at runtime.
+data/
+tmp/
+
+# docker-install.sh 的答案（含口令）与它默认建的数据目录：都不该进构建上下文
+.docker-install.state
+.docker-install.env
+hdsl-web-data/
+
+# 本机 .env（宿主路径/口令），永远不进构建上下文
+.env

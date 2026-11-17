@@ -1,0 +1,17 @@
+# The two names one supplier answers to, as `the launcher's id|models.dev's id`.
+#
+# Kept here rather than inside a Java class for the reason the provider catalogue beside it is:
+# checking a line again is a diff of one data file.
+#
+# Most suppliers need no line at all. DshModelCatalog.match finds them by id, and the ones whose
+# ids differ but whose addresses agree — `fireworks` and `fireworks-ai`, `kimi-coding` and
+# `kimi-code-plan-cn`, `qwen-token-plan` and `alibaba-token-plan` — it finds by host. The three
+# below are the rest: models.dev publishes no address for them, or publishes another one.
+#
+# vercel-ai-gateway|vercel         the directory calls the gateway by its company's name
+# together|togetherai              the same, and it states no address of its own
+# zai-coding-cn|zai-coding-plan    one coding plan sold on two hosts (open.bigmodel.cn here,
+#                                  api.z.ai there); the models behind it are the same ones
+vercel-ai-gateway|vercel
+together|togetherai
+zai-coding-cn|zai-coding-plan

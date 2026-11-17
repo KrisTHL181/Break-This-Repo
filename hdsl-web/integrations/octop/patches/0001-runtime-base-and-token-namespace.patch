@@ -1,0 +1,469 @@
+diff --git a/dashboard/src/api/modules/wsChat.ts b/dashboard/src/api/modules/wsChat.ts
+index e75ad72..ec1fa5a 100644
+--- a/dashboard/src/api/modules/wsChat.ts
++++ b/dashboard/src/api/modules/wsChat.ts
+@@ -1,10 +1,12 @@
++import { getWsUrl } from "../config";
+ import { getAuthToken } from "../request";
+ 
+ export function buildDashboardChatWsUrl(agentId: string): string {
+   const token = getAuthToken();
+-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+   const encoded = encodeURIComponent(agentId);
+-  const base = `${protocol}://${window.location.host}/api/agents/${encoded}/chat/ws`;
++  // getWsUrl honours the mount (`/i/<token>/`) that the panel proxies this instance under;
++  // a hand-built `ws://host/api/...` lands on the panel's own API and the upgrade fails.
++  const base = getWsUrl(`/agents/${encoded}/chat/ws`);
+   const params = new URLSearchParams();
+   if (token) params.set("token", token);
+   return params.toString() ? `${base}?${params.toString()}` : base;
+diff --git a/dashboard/src/api/request.ts b/dashboard/src/api/request.ts
+index 7afb709..9fd9f1d 100644
+--- a/dashboard/src/api/request.ts
++++ b/dashboard/src/api/request.ts
+@@ -1,10 +1,18 @@
+ import { getApiUrl } from "./config";
+ import i18n from "../i18n";
++import { publicUrl, routerBasename } from "../utils/publicUrl";
+ import { markNavigatingAway } from "../utils/reloadOnStaleChunk";
+ 
+-const AUTH_TOKEN_KEY = "auth_token";
++/** Storage keys are scoped to the mount: several Octop instances can share one
++ *  origin (the panel proxies each under `/i/<token>/`), and an unscoped
++ *  `auth_token` would make logging into one instance sign the others out. */
++function scopedKey(name: string): string {
++  return `octop:${routerBasename() || "/"}:${name}`;
++}
++
++const AUTH_TOKEN_KEY = scopedKey("auth_token");
+ /** sessionStorage handoff for SSO redirects / popups (default = remember). */
+-const AUTH_REMEMBER_PREF_KEY = "auth_remember_pref";
++const AUTH_REMEMBER_PREF_KEY = scopedKey("auth_remember_pref");
+ 
+ /**
+  * Fired when the session is no longer valid. Cancelable: a listener inside the
+@@ -96,7 +104,7 @@ export function clearAuthToken() {
+   localStorage.removeItem(AUTH_TOKEN_KEY);
+   sessionStorage.removeItem(AUTH_TOKEN_KEY);
+   sessionStorage.removeItem(AUTH_REMEMBER_PREF_KEY);
+-  localStorage.removeItem("octop:active-agent");
++  localStorage.removeItem(scopedKey("active-agent"));
+   setActiveAgentId(null);
+ }
+ 
+@@ -128,8 +136,8 @@ function handleSetupRequired(): void {
+     return;
+   }
+   _redirectingToSetup = true;
+-  // Full reload drops any in-flight React state.
+-  window.location.replace("/setup");
++  // Full reload drops any in-flight React state. Stay inside the panel mount.
++  window.location.replace(publicUrl("setup"));
+ }
+ 
+ /** Wizard endpoints stay reachable while lockdown is active. */
+@@ -326,7 +334,7 @@ function handleUnauthorized(): void {
+   if (takenOver) return;
+ 
+   markNavigatingAway();
+-  window.location.replace("/login");
++  window.location.replace(publicUrl("login"));
+ }
+ 
+ /**
+diff --git a/dashboard/src/assets/mascot.ts b/dashboard/src/assets/mascot.ts
+index d8ae9a9..321d062 100644
+--- a/dashboard/src/assets/mascot.ts
++++ b/dashboard/src/assets/mascot.ts
+@@ -2,4 +2,6 @@
+  * Shared empty-state mascot (served from ``dashboard/public``).
+  * Prefer ``OctopEmptyMascot`` / ``EmptyState variant="mascot"`` over hardcoding.
+  */
+-export const OCTOP_EMPTY_MASCOT_SRC = "/octop-mascot-empty.png";
++import { publicUrl } from "../utils/publicUrl";
++
++export const OCTOP_EMPTY_MASCOT_SRC = publicUrl("octop-mascot-empty.png");
+diff --git a/dashboard/src/components/AvatarPicker/presets/expert.ts b/dashboard/src/components/AvatarPicker/presets/expert.ts
+index 5a7199b..999e997 100644
+--- a/dashboard/src/components/AvatarPicker/presets/expert.ts
++++ b/dashboard/src/components/AvatarPicker/presets/expert.ts
+@@ -1,4 +1,5 @@
+ import type { AvatarPreset } from "../types";
++import { publicUrl } from "../../../utils/publicUrl";
+ 
+ /** Bundled expert cartoon stems under ``public/experts/avatars/``. */
+ const EXPERT_PORTRAIT_IDS = [
+@@ -24,7 +25,7 @@ const EXPERT_PORTRAIT_IDS = [
+ ] as const;
+ 
+ export function expertPresetSrc(id: string): string {
+-  return `/experts/avatars/${id}.svg`;
++  return publicUrl(`experts/avatars/${id}.svg`);
+ }
+ 
+ /** Prefabricated expert portraits; first tile is the bundled default portrait. */
+diff --git a/dashboard/src/components/AvatarPicker/url.ts b/dashboard/src/components/AvatarPicker/url.ts
+index 34a3f7d..5ec5c99 100644
+--- a/dashboard/src/components/AvatarPicker/url.ts
++++ b/dashboard/src/components/AvatarPicker/url.ts
+@@ -1,3 +1,5 @@
++import { routerBasename } from "../../utils/publicUrl";
++
+ /** True when ``url`` points at an uploaded Octop avatar API resource. */
+ export function isUploadedAvatarUrl(url?: string | null): boolean {
+   const text = (url || "").trim().split("?")[0];
+@@ -12,7 +14,11 @@ export function isUploadedAvatarUrl(url?: string | null): boolean {
+ export function presetIdFromExpertAvatarUrl(
+   url?: string | null,
+ ): string | null {
+-  const text = (url || "").trim().split("?")[0];
++  let text = (url || "").trim().split("?")[0];
++  const base = routerBasename();
++  if (base && text.startsWith(`${base}/`)) {
++    text = text.slice(base.length);
++  }
+   const match = /^\/experts\/avatars\/([^/]+)\.svg$/i.exec(text);
+   return match?.[1] ?? null;
+ }
+diff --git a/dashboard/src/components/ErrorBoundary/index.tsx b/dashboard/src/components/ErrorBoundary/index.tsx
+index 1560803..b565d4d 100644
+--- a/dashboard/src/components/ErrorBoundary/index.tsx
++++ b/dashboard/src/components/ErrorBoundary/index.tsx
+@@ -1,6 +1,7 @@
+ import { Component, type ReactNode } from "react";
+ import { Result, Button, Space } from "antd";
+ import i18n from "../../i18n";
++import { publicUrl } from "../../utils/publicUrl";
+ import {
+   isChunkLoadError,
+   tryReloadOnStaleChunk,
+@@ -56,7 +57,7 @@ export default class GlobalErrorBoundary extends Component<Props, State> {
+   };
+ 
+   handleHome = () => {
+-    window.location.href = "/chat";
++    window.location.href = publicUrl("chat");
+   };
+ 
+   handleReload = () => {
+diff --git a/dashboard/src/context/AgentContext.tsx b/dashboard/src/context/AgentContext.tsx
+index 32202c7..826894f 100644
+--- a/dashboard/src/context/AgentContext.tsx
++++ b/dashboard/src/context/AgentContext.tsx
+@@ -13,6 +13,7 @@ import {
+   retainDisconnectedBridgeAgents,
+   toBridgeShadowAgentId,
+ } from "../utils/remoteExpert";
++import { routerBasename } from "../utils/publicUrl";
+ 
+ /**
+  * Multi-Agent navigation state.
+@@ -114,7 +115,7 @@ export interface EnabledExpertsOptions {
+   pinActive?: boolean;
+ }
+ 
+-const STORAGE_KEY = "octop:active-agent";
++const STORAGE_KEY = `octop:${routerBasename() || "/"}:active-agent`;
+ 
+ /**
+  * Pure helper: narrow ``agents`` down to those that are "enabled" for the
+diff --git a/dashboard/src/hooks/useBrowserStream.ts b/dashboard/src/hooks/useBrowserStream.ts
+index 1f4f96b..de31a75 100644
+--- a/dashboard/src/hooks/useBrowserStream.ts
++++ b/dashboard/src/hooks/useBrowserStream.ts
+@@ -1,4 +1,5 @@
+ import { useState, useRef, useCallback, useEffect } from "react";
++import { getWsUrl } from "../api/config";
+ import { getAuthToken } from "../api/request";
+ import { normalizeUrl } from "../utils/normalizeUrl";
+ import {
+@@ -46,8 +47,7 @@ function buildWsUrl(
+         bridgeConnectionId,
+       )}/browser-stream/ws`
+     : "/browser-stream/ws";
+-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+-  const base = `${protocol}://${window.location.host}/api${path}`;
++  const base = getWsUrl(path);
+   const params = new URLSearchParams({
+     width: String(width),
+     height: String(height),
+diff --git a/dashboard/src/hooks/useDesktopStream.ts b/dashboard/src/hooks/useDesktopStream.ts
+index 94d1668..1934eef 100644
+--- a/dashboard/src/hooks/useDesktopStream.ts
++++ b/dashboard/src/hooks/useDesktopStream.ts
+@@ -1,4 +1,5 @@
+ import { useCallback, useEffect, useRef, useState } from "react";
++import { getWsUrl } from "../api/config";
+ import { getAuthToken } from "../api/request";
+ 
+ export type DesktopStreamState =
+@@ -37,8 +38,7 @@ const MAX_RECONNECT_ATTEMPTS = 5;
+ const RECONNECT_BASE_MS = 1000;
+ 
+ function buildWsUrl(): string {
+-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+-  return `${protocol}://${window.location.host}/api/desktop-stream/ws`;
++  return getWsUrl("/desktop-stream/ws");
+ }
+ 
+ function closeSocket(ws: WebSocket): Promise<void> {
+diff --git a/dashboard/src/hooks/useMobileStream.ts b/dashboard/src/hooks/useMobileStream.ts
+index d31c918..796953a 100644
+--- a/dashboard/src/hooks/useMobileStream.ts
++++ b/dashboard/src/hooks/useMobileStream.ts
+@@ -1,4 +1,5 @@
+ import { useCallback, useRef, useState } from "react";
++import { getWsUrl } from "../api/config";
+ import { getAuthToken } from "../api/request";
+ import { H264CanvasDecoder, parseVideoInit } from "../utils/h264CanvasDecoder";
+ 
+@@ -20,8 +21,7 @@ export interface MobileStreamOptions {
+ }
+ 
+ function buildWsUrl(): string {
+-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+-  return `${protocol}://${window.location.host}/api/mobile-stream/ws`;
++  return getWsUrl("/mobile-stream/ws");
+ }
+ 
+ export function useMobileStream() {
+diff --git a/dashboard/src/layouts/Sidebar.tsx b/dashboard/src/layouts/Sidebar.tsx
+index e11f753..233cb42 100644
+--- a/dashboard/src/layouts/Sidebar.tsx
++++ b/dashboard/src/layouts/Sidebar.tsx
+@@ -510,7 +510,7 @@ export default function Sidebar({
+   const brandInner = (
+     <>
+       <img
+-        src={isRailCollapsed ? "/pwa-192.png" : wordmarkSrc}
++        src={isRailCollapsed ? publicUrl("pwa-192.png") : wordmarkSrc}
+         alt="Octop"
+         style={{
+           height: isRailCollapsed ? 32 : isMobile ? 38 : 36,
+diff --git a/dashboard/src/pages/Chat/components/WelcomeScreen.tsx b/dashboard/src/pages/Chat/components/WelcomeScreen.tsx
+index 00e07a0..fb95d93 100644
+--- a/dashboard/src/pages/Chat/components/WelcomeScreen.tsx
++++ b/dashboard/src/pages/Chat/components/WelcomeScreen.tsx
+@@ -3,10 +3,11 @@ import { useTranslation } from "react-i18next";
+ import { useWelcomeQuickCardsLayout } from "../hooks/useWelcomeQuickCardsLayout";
+ import WelcomeQuickCards, { WelcomeQuickCardProbe } from "./WelcomeQuickCards";
+ import styles from "../index.module.less";
++import { publicUrl } from "../../../utils/publicUrl";
+ 
+ // Animated WebP keeps alpha on Safari; VP9 WebM alpha is unreliable there.
+-const MASCOT_PEEK = "/octop-mascot-peek.webp";
+-const MASCOT_TYPE = "/octop-mascot-type.webp";
++const MASCOT_PEEK = publicUrl("octop-mascot-peek.webp");
++const MASCOT_TYPE = publicUrl("octop-mascot-type.webp");
+ const MASCOT_IMAGES = [MASCOT_PEEK, MASCOT_TYPE];
+ 
+ function getRandomMascot(current?: string): string {
+diff --git a/dashboard/src/pages/Control/RemoteAndroid/useAdbShell.ts b/dashboard/src/pages/Control/RemoteAndroid/useAdbShell.ts
+index 17f5977..4beba94 100644
+--- a/dashboard/src/pages/Control/RemoteAndroid/useAdbShell.ts
++++ b/dashboard/src/pages/Control/RemoteAndroid/useAdbShell.ts
+@@ -1,4 +1,5 @@
+ import { useCallback, useEffect, useRef, useState } from "react";
++import { getWsUrl } from "../../../api/config";
+ import { getAuthToken } from "../../../api/request";
+ 
+ export type AdbShellState = "idle" | "connecting" | "connected" | "error";
+@@ -10,10 +11,7 @@ function buildWsUrl(serial: string, cols: number, rows: number): string {
+   params.set("serial", serial);
+   params.set("cols", String(cols));
+   params.set("rows", String(rows));
+-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+-  return `${protocol}://${
+-    window.location.host
+-  }/api/mobile/adb/shell/ws?${params.toString()}`;
++  return `${getWsUrl("/mobile/adb/shell/ws")}?${params.toString()}`;
+ }
+ 
+ export function useAdbShell() {
+diff --git a/dashboard/src/pages/Control/Terminal/useTerminal.ts b/dashboard/src/pages/Control/Terminal/useTerminal.ts
+index aabf256..683b336 100644
+--- a/dashboard/src/pages/Control/Terminal/useTerminal.ts
++++ b/dashboard/src/pages/Control/Terminal/useTerminal.ts
+@@ -7,6 +7,7 @@
+  * Output is multi-cast to every registered UI listener.
+  */
+ import { useCallback, useEffect, useSyncExternalStore } from "react";
++import { getWsUrl } from "../../../api/config";
+ import { getAuthToken } from "../../../api/request";
+ 
+ // ─── Types ────────────────────────────────────────────────────────────────────
+@@ -103,10 +104,7 @@ function generateId(): string {
+ 
+ function buildWsUrl(agentId: string, sessionId: string): string {
+   const token = getAuthToken();
+-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+-  const base = `${protocol}://${
+-    window.location.host
+-  }/api/agents/${encodeURIComponent(agentId)}/terminal/ws`;
++  const base = getWsUrl(`/agents/${encodeURIComponent(agentId)}/terminal/ws`);
+   const params = new URLSearchParams();
+   if (token) params.set("token", token);
+   // Same id re-attaches to the backend shell.
+diff --git a/dashboard/src/pages/Experts/components/CreateFromExpertDrawer.tsx b/dashboard/src/pages/Experts/components/CreateFromExpertDrawer.tsx
+index 7962174..0f9e41d 100644
+--- a/dashboard/src/pages/Experts/components/CreateFromExpertDrawer.tsx
++++ b/dashboard/src/pages/Experts/components/CreateFromExpertDrawer.tsx
+@@ -1,6 +1,7 @@
+ // dashboard/src/pages/Experts/components/CreateFromExpertDrawer.tsx
+ import { useEffect, useMemo, useRef, useState } from "react";
+ import { useTranslation } from "react-i18next";
++import { Link } from "react-router-dom";
+ import {
+   Alert,
+   Button,
+@@ -672,9 +673,9 @@ export default function CreateFromExpertDrawer({
+           showIcon
+           message={t("experts.noModelsWarning")}
+           action={
+-            <a href="/admin/models" style={{ whiteSpace: "nowrap" }}>
++            <Link to="/admin/models" style={{ whiteSpace: "nowrap" }}>
+               {t("experts.goToAdmin")}
+-            </a>
++            </Link>
+           }
+           style={{ marginBottom: 16 }}
+         />
+diff --git a/dashboard/src/pages/Experts/components/TeamDrawer.tsx b/dashboard/src/pages/Experts/components/TeamDrawer.tsx
+index cc136df..3c44358 100644
+--- a/dashboard/src/pages/Experts/components/TeamDrawer.tsx
++++ b/dashboard/src/pages/Experts/components/TeamDrawer.tsx
+@@ -1,5 +1,6 @@
+ import { useEffect, useMemo, useState } from "react";
+ import { useTranslation } from "react-i18next";
++import { Link } from "react-router-dom";
+ import { Alert, Collapse, Drawer, Form, Input, Select, Spin } from "antd";
+ import { message } from "@/utils/antdMessage";
+ 
+@@ -245,9 +246,9 @@ export default function TeamDrawer({
+           showIcon
+           message={t("experts.noModelsWarning")}
+           action={
+-            <a href="/admin/models" style={{ whiteSpace: "nowrap" }}>
++            <Link to="/admin/models" style={{ whiteSpace: "nowrap" }}>
+               {t("experts.goToAdmin")}
+-            </a>
++            </Link>
+           }
+           style={{ marginBottom: 16 }}
+         />
+diff --git a/dashboard/src/pages/Login/index.tsx b/dashboard/src/pages/Login/index.tsx
+index a8ead51..63e7409 100644
+--- a/dashboard/src/pages/Login/index.tsx
++++ b/dashboard/src/pages/Login/index.tsx
+@@ -174,7 +174,12 @@ export default function LoginPage() {
+       if (event.data.access_token) {
+         setAuthToken(event.data.access_token, event.data.remember ?? true);
+       }
+-      window.location.replace(event.data.redirect || "/chat");
++      // The redirect may be a path inside the mount or a full external URL (SSO). Prefix the
++      // former, leave the latter alone — a bare "/chat" used to leave /i/<token>/ entirely.
++      const redirect = event.data.redirect as string | undefined;
++      const target =
++        redirect && redirect.startsWith("/") ? publicUrl(redirect) : redirect || publicUrl("chat");
++      window.location.replace(target);
+     };
+     window.addEventListener("message", onMessage);
+     return () => window.removeEventListener("message", onMessage);
+diff --git a/dashboard/src/utils/publicUrl.ts b/dashboard/src/utils/publicUrl.ts
+index 3ada3ca..31acbf9 100644
+--- a/dashboard/src/utils/publicUrl.ts
++++ b/dashboard/src/utils/publicUrl.ts
+@@ -1,18 +1,48 @@
+ /**
+- * Resolve a path under the Vite-configured public base (``import.meta.env.BASE_URL``).
++ * The mount this build is served under.
++ *
++ * A panel-mounted instance gets a ``<base href="/i/<token>/">`` injected by the
++ * reverse proxy (or ``window.__OCTOP_BASE__`` from an embedding host). Both
++ * change per instance, so the value must be read at runtime: baking the mount
++ * into the bundle is what used to make one build usable for exactly one mount.
++ * Falls back to the Vite build base when the app is opened directly.
++ */
++function runtimeBase(): string {
++  const injected =
++    typeof window !== "undefined"
++      ? (window as unknown as { __OCTOP_BASE__?: string }).__OCTOP_BASE__
++      : undefined;
++  const tag =
++    typeof document !== "undefined"
++      ? document.querySelector("base")?.getAttribute("href")
++      : null;
++  const raw = injected || tag || "";
++  if (raw) {
++    try {
++      const path = new URL(raw, window.location.origin).pathname;
++      return path.endsWith("/") ? path : `${path}/`;
++    } catch {
++      // A malformed base is not worth crashing the app for; use the build base.
++    }
++  }
++  const base = import.meta.env.BASE_URL || "/";
++  return base.endsWith("/") ? base : `${base}/`;
++}
++
++/**
++ * Resolve a path under the runtime mount.
+  * Use for static assets and SW registration when the app may be hosted under a subpath.
+  */
+ export function publicUrl(path: string): string {
+-  const base = import.meta.env.BASE_URL || "/";
++  const base = runtimeBase();
+   const cleaned = path.replace(/^\//, "");
+   if (base === "/") return `/${cleaned}`;
+-  const prefix = base.endsWith("/") ? base : `${base}/`;
+-  return `${prefix}${cleaned}`;
++  return `${base}${cleaned}`;
+ }
+ 
+ /** Router basename: no trailing slash; ``undefined`` when served from domain root. */
+ export function routerBasename(): string | undefined {
+-  const base = import.meta.env.BASE_URL || "/";
++  const base = runtimeBase();
+   if (base === "/") return undefined;
+   return base.replace(/\/$/, "") || undefined;
+ }
+diff --git a/dashboard/src/utils/teamAgent.ts b/dashboard/src/utils/teamAgent.ts
+index f82d4f7..ea45d99 100644
+--- a/dashboard/src/utils/teamAgent.ts
++++ b/dashboard/src/utils/teamAgent.ts
+@@ -1,8 +1,10 @@
++import { publicUrl } from "./publicUrl";
++
+ /** Lucide fallback when the cartoon portrait is missing. */
+ export const TEAM_ICON_NAME = "users";
+ 
+ /** Bundled cartoon portrait, same style as expert avatars. */
+-export const TEAM_AVATAR_URL = "/experts/avatars/team-host.svg";
++export const TEAM_AVATAR_URL = publicUrl("experts/avatars/team-host.svg");
+ 
+ /** True when this agent is a team host (group chat), not a solo expert. */
+ export function isTeamAgent(
+@@ -26,7 +28,8 @@ export function isTeamHostSpeaker(
+ /** Team card / chat portrait; falls back to the bundled cartoon. */
+ export function teamPortraitUrl(iconUrl?: string | null): string {
+   const url = iconUrl?.trim() || "";
+-  if (!url || url === "/experts/avatars/multi-agent-orchestrator.svg") {
++  if (!url || url === "/experts/avatars/multi-agent-orchestrator.svg"
++      || url === publicUrl("experts/avatars/multi-agent-orchestrator.svg")) {
+     return TEAM_AVATAR_URL;
+   }
+   return url;
+diff --git a/dashboard/vite.config.ts b/dashboard/vite.config.ts
+index 7cad0df..462a7a3 100644
+--- a/dashboard/vite.config.ts
++++ b/dashboard/vite.config.ts
+@@ -54,6 +54,9 @@ function suppressViteDisconnectReload(): Plugin {
+ 
+ function normalizeViteBase(raw: string | undefined): string {
+   const value = (raw || "/").trim() || "/";
++  // Relative base: the panel injects a per-instance <base href>, so the same
++  // build serves any /i/<token>/ mount.
++  if (value === "." || value === "./") return "./";
+   if (value === "/") return "/";
+   const withLeading = value.startsWith("/") ? value : `/${value}`;
+   return withLeading.endsWith("/") ? withLeading : `${withLeading}/`;

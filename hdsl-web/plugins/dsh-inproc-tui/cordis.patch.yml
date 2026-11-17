@@ -1,0 +1,33 @@
+# The dsh-inproc-tui bundle patch: an interactive terminal mode over dsh-base.
+#
+# A terminal interface is an app plugin, so it goes in a profile of its own and
+# never shares `web`. The profile lists this package as a bundle; installing it
+# appends the row below to the profile's bundle list, and booting
+# `dsh --profile dsh-inproc-tui` composes dsh-base, this patch, and then the terminal.
+#
+# There is no Host, no HTTP server, no browser plugin here: the terminal is the
+# whole application, and it drives the harness's own agent, tools, approval and
+# question services in-process. That is also why this plugin is 0.2.x-only —
+# those are internal seams, not the ACP contract the other terminal uses.
+
+# The coding-agent persona, model-interpolated by the harness.
+- id: system-prompt
+  config:
+    personaPrefix: You are a coding agent powered by the {{model}} model.
+
+# Module-reload redraws would fight the terminal, but there is no `hmr` row to
+# disable in the 0.2.x composition (the dsh-TUI reference has none either), and
+# a patch row targeting a missing id only logs `patch: entry "hmr" not found`
+# on every boot. A reload teardown disposes this plugin, whose dispose effect
+# restores the screen — that is the fallback the reference relies on too.
+
+- insert:
+    - id: dsh-inproc-tui
+      name: '@nas200-timmy/dsh-inproc-tui'
+      # Row-level (loader) inject: ordering only. `agentDefaultModel` and
+      # `sessions` are optional in 0.2.x, so they must not sit in the plugin's
+      # code-level inject — a missing service there parks the plugin forever,
+      # with no error and no terminal (see `src/index.js`). dsh-tui keeps its
+      # optional extension services in the entry-level inject for the same
+      # reason.
+      inject: [agentDefaultModel, sessions]

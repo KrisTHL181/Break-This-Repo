@@ -1,0 +1,1262 @@
+/* ---------------------------------------------------------------------------
+ * 组件：卡片、按钮、输入框、徽章、弹窗、弹出菜单、snackbar、工具栏按钮、
+ * 两行列表项、向导选项卡、账户卡、日志视图、ACP 气泡等。
+ * 数值来源：桌面版 root.css / brightness-*.css（见 ui-spec.md 第 8 节）。
+ * ------------------------------------------------------------------------- */
+
+/* ---------------- 卡片 .card（surface-container-low-80、圆角 4、depth-1） ---------------- */
+
+.card {
+  background: var(--monet-surface-container-low-transparent-80);
+  border-radius: 4px;
+  padding: 8px;
+  box-shadow: -1px 2px 10px rgba(0, 0, 0, 0.26);
+}
+
+.card-opaque {
+  background: var(--monet-surface-container-low);
+  border-radius: 4px;
+  padding: 8px;
+  box-shadow: -1px 2px 5px rgba(0, 0, 0, 0.18);
+}
+
+/* ---------------- 按钮 ---------------- */
+
+/* 实心按钮 .jfx-button-raised：bg primary、文字 on-primary、14px */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  user-select: none;
+  transition: background-color 120ms var(--ease), box-shadow 120ms var(--ease),
+    color 120ms var(--ease);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-raised {
+  background: var(--monet-primary);
+  color: var(--monet-on-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.btn-raised:not(:disabled):hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* 危险动作（终端「停止」）：实心红、药丸形，和普通动作明显区分 */
+.btn-raised.danger {
+  background: var(--monet-error);
+  color: var(--monet-on-error);
+  border-radius: 999px;
+  padding: 0 18px;
+}
+
+.btn-raised.danger:not(:disabled):hover {
+  box-shadow: 0 2px 8px rgba(186, 26, 26, 0.45);
+}
+
+/* 描边按钮 .jfx-button-border：透明底、outline 0.2px、圆角 5、文字 primary */
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--monet-outline);
+  border-radius: 5px;
+  color: var(--monet-primary);
+  padding: 0 12px;
+}
+
+/* 文字按钮（弹窗动作区）：确认 = primary 文字、取消 = on-surface-variant 文字 */
+.btn-text {
+  height: 32px;
+  padding: 0 12px;
+  color: var(--monet-primary);
+  font-weight: 500;
+}
+
+.btn-text.dim {
+  color: var(--monet-on-surface-variant);
+}
+
+.btn-text.danger {
+  color: var(--monet-error);
+}
+
+/* 工具栏按钮 .jfx-tool-bar-button：高 37、圆角 5、透明底、图标 20px + 文字 14px */
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 37px;
+  padding: 0 10px;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--monet-on-surface);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.tool-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.tool-btn:not(:disabled):hover {
+  background: var(--monet-on-surface-variant-transparent-38);
+}
+
+/* 圆形图标按钮 .toggle-icon4：30×30 */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--monet-primary);
+}
+
+.icon-btn.on-variant {
+  color: var(--monet-on-surface-variant);
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.icon-btn:not(:disabled):hover {
+  background: var(--monet-on-surface-variant-transparent-38);
+}
+
+/* ---------------- 输入框：bg surface-container-highest、粗体、focus 边 primary、padding 8 ---------------- */
+
+.input {
+  background: var(--monet-surface-container-highest);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--monet-on-surface);
+  outline: none;
+  min-width: 0;
+}
+
+.input::placeholder {
+  color: var(--monet-on-surface-variant);
+  font-weight: 400;
+}
+
+.input:focus {
+  border-color: var(--monet-primary);
+}
+
+.input:disabled {
+  opacity: 0.5;
+}
+
+select.input {
+  appearance: none;
+  padding-right: 26px;
+  /* A select with a fixed inline height clips its own text on Firefox and
+     sits a pixel low on Chrome: let the text decide the line box, and keep
+     the height a minimum instead of a ceiling. */
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  background-image: linear-gradient(45deg, transparent 50%, var(--monet-on-surface-variant) 50%),
+    linear-gradient(135deg, var(--monet-on-surface-variant) 50%, transparent 50%);
+  background-position: calc(100% - 14px) 55%, calc(100% - 9px) 55%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.select-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* 复选框 / 单选：选中 primary */
+.input-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.input-check input[type="checkbox"],
+.input-check input[type="radio"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--monet-on-surface-variant);
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  flex: none;
+}
+
+.input-check input[type="checkbox"] {
+  border-radius: 2px;
+}
+
+.input-check input[type="radio"] {
+  border-radius: 50%;
+}
+
+.input-check input[type="checkbox"]:checked,
+.input-check input[type="radio"]:checked {
+  border-color: var(--monet-primary);
+  background: var(--monet-primary);
+}
+
+.input-check input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--monet-on-primary);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.input-check input[type="radio"]:checked::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--monet-on-primary);
+}
+
+/* 开关 .jfx-toggle-button 风格 */
+.switch {
+  position: relative;
+  width: 34px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--monet-surface-variant);
+  transition: background-color 150ms var(--ease);
+  flex: none;
+  cursor: pointer;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--monet-on-surface-variant);
+  transition: transform 150ms var(--ease), background-color 150ms var(--ease);
+}
+
+.switch.on {
+  background: var(--monet-primary);
+}
+
+.switch.on::after {
+  transform: translateX(16px);
+  background: var(--monet-on-primary);
+}
+
+/* 聊天设置这类宽卡片里用的大号开关：44×24，滑块 18px */
+.switch.switch-lg {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+}
+
+.switch.switch-lg::after {
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+}
+
+.switch.switch-lg.on::after {
+  transform: translateX(20px);
+}
+
+/* ---------------- 进度条：track secondary-container、bar primary ---------------- */
+
+.progress {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--monet-secondary-container);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress > .bar {
+  height: 100%;
+  background: var(--monet-primary);
+  border-radius: 2px;
+  transition: width 200ms var(--ease);
+}
+
+.progress.indeterminate > .bar {
+  width: 40%;
+  animation: progress-slide 1.2s var(--ease) infinite;
+}
+
+@keyframes progress-slide {
+  0% {
+    margin-left: -40%;
+  }
+  100% {
+    margin-left: 100%;
+  }
+}
+
+/* ---------------- 徽章 tag：bg secondary-container、圆角 2、padding 2、12px ---------------- */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--monet-secondary-container);
+  color: var(--monet-on-secondary-container);
+  border-radius: 2px;
+  padding: 2px 4px;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.tag.plain {
+  background: var(--monet-surface-container);
+  color: var(--monet-on-surface-variant);
+}
+
+.tag.error {
+  background: var(--fixed-warning-tag-background);
+  color: var(--monet-on-error-container);
+}
+
+.tag.running {
+  background: #e6f4ea;
+  color: #1e7e34;
+}
+
+[data-theme="dark"] .tag.running {
+  background: #12351c;
+  color: #5dd879;
+}
+
+.tag.failed {
+  background: var(--monet-error-container);
+  color: var(--monet-on-error-container);
+}
+
+.tag.warn {
+  background: var(--monet-tertiary-fixed);
+  color: var(--monet-on-tertiary-fixed);
+}
+
+/* ---------------- 提示条 .hint：圆角 5 padding 6 ---------------- */
+
+.hint {
+  border-radius: 5px;
+  padding: 6px 8px;
+  font-size: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  line-height: 1.5;
+}
+
+.hint.info {
+  background: var(--monet-primary-fixed-dim);
+  color: var(--monet-on-primary-fixed);
+}
+
+.hint.error {
+  background: var(--monet-error-container);
+  color: var(--monet-on-error-container);
+}
+
+.hint.warning {
+  background: var(--monet-tertiary-fixed-dim);
+  color: var(--monet-on-tertiary-fixed);
+}
+
+/* ---------------- 弹窗（jfx-dialog-layout）：遮罩 rgba(0,0,0,0.1)、surface-container-high、圆角 4、padding 24 24 16 24 ---------------- */
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 900;
+}
+
+.dialog {
+  background: var(--monet-surface-container-high);
+  border-radius: 4px;
+  padding: 24px 24px 16px;
+  min-width: 320px;
+  max-width: min(560px, calc(100vw - 64px));
+  max-height: calc(100vh - 96px);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+  animation: dialog-in 200ms var(--ease);
+}
+
+.dialog.wide {
+  width: 560px;
+}
+
+/* 认证页（登录 / 首次初始化）卡片：原来是内联 minWidth 340 / width 380，
+   在 360px 手机上必然溢出，所以挪到这里，窄屏由 mobile.css 收窄。 */
+.auth-card {
+  width: 380px;
+  min-width: 340px;
+}
+
+.dialog-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--monet-on-surface);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+}
+
+.dialog-body {
+  font-size: 14px;
+  color: var(--monet-on-surface);
+  overflow-y: auto;
+  margin-top: 8px;
+  flex: 1;
+  /* A flex child will not shrink below its content unless this is 0; without
+     it a long dialog grows past `.dialog`'s max-height and the last rows are
+     simply cut off — the wizard's footer looked "covered" rather than scrolled.
+     The horizontal counterpart kept wide grids from shrinking, which showed up
+     as a horizontally scrolled provider list. */
+  min-height: 0;
+  min-width: 0;
+}
+
+/* jfx-layout-body：正文 pref 400 */
+.dialog:not(.wide) .dialog-body {
+  max-width: 400px;
+}
+
+.dialog-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  flex-wrap: wrap;
+}
+
+.dialog-hint {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+  line-height: 1.6;
+}
+
+.dialog-field {
+  display: block;
+  margin: 10px 0;
+}
+
+.dialog-field > span {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+}
+
+.dialog-field .input {
+  width: 100%;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+  padding-top: 10px;
+}
+
+/* ---------------- 弹出菜单（jfx-popup）：bg surface、圆角 4 ---------------- */
+
+.popup-menu {
+  position: fixed;
+  background: var(--monet-surface);
+  border-radius: 4px;
+  min-width: 150px;
+  padding: 4px 0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.32);
+  z-index: 950;
+  animation: dialog-in 150ms var(--ease);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.popup-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--monet-on-surface);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.popup-item:hover {
+  background: var(--monet-secondary-container-transparent-50);
+}
+
+.popup-item.danger {
+  color: var(--monet-error);
+}
+
+.popup-sep {
+  height: 1px;
+  background: var(--monet-outline-variant);
+  margin: 4px 0;
+}
+
+/* ---------------- Snackbar（inverse-surface 底、底部居中） ---------------- */
+
+.snackbar-host {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 980;
+  pointer-events: none;
+}
+
+.snackbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--monet-inverse-surface);
+  color: var(--monet-inverse-on-surface);
+  border-radius: 4px;
+  padding: 6px 16px;
+  font-size: 13px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+  animation: snackbar-in 200ms var(--ease);
+  pointer-events: auto;
+  max-width: 70vw;
+}
+
+.snackbar .snackbar-close {
+  display: inline-flex;
+  color: var(--monet-inverse-on-surface);
+  opacity: 0.7;
+}
+
+/* ---------------- 两行列表项（two-line-list-item） ---------------- */
+
+.tlli {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  padding: 8px;
+  position: relative;
+}
+
+.tlli .tlli-graphic {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tlli .tlli-text {
+  flex: 1;
+  min-width: 0;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tlli .tlli-title {
+  font-size: 15px;
+  color: var(--monet-on-surface);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tlli .tlli-subtitle {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.divider {
+  height: 1px;
+  background: var(--monet-outline-variant);
+  margin-left: 8px;
+}
+
+/* ---------------- 向导选项卡（max-width 400、间距 8、右箭头） ---------------- */
+
+.wizard-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.wizard-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: var(--monet-surface-container-low-transparent-80);
+  border-radius: 4px;
+  padding: 12px;
+  box-shadow: -1px 2px 10px rgba(0, 0, 0, 0.26);
+  transition: background-color 120ms var(--ease);
+}
+
+.wizard-card:hover {
+  background: var(--monet-surface-container-high);
+}
+
+.wizard-card .wizard-card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.wizard-card .wizard-card-title {
+  font-size: 15px;
+  color: var(--monet-on-surface);
+}
+
+.wizard-card .wizard-card-subtitle {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.wizard-card .wizard-card-arrow {
+  color: var(--monet-on-surface-variant);
+  flex: none;
+}
+
+/* ---------------- 账户卡 dsh-account-card ---------------- */
+
+.account-card {
+  background: var(--monet-surface-container-low-transparent-80);
+  border-radius: 4px;
+  box-shadow: -1px 2px 10px rgba(0, 0, 0, 0.26);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 16px;
+  background: var(--monet-primary-container);
+  color: var(--monet-on-primary-container);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  flex: none;
+  overflow: hidden;
+}
+
+.account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------------- 供应商选择（账户弹窗）：搜索行 + 自适应卡片网格 ---------------- */
+
+.vendor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.vendor-toolbar .input {
+  flex: 1;
+}
+
+.vendor-count {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+  white-space: nowrap;
+}
+
+.vendor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.vendor-grid .wizard-card:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.vendor-grid .wizard-card:disabled:hover {
+  background: var(--monet-surface-container-low-transparent-80);
+}
+
+.vendor-grid .wizard-card-subtitle {
+  word-break: break-all;
+}
+
+.vendor-empty {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+/* ---------------- 模型下拉（ModelSelect）：两行项 ---------------- */
+
+.model-select {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.model-menu {
+  min-width: min(320px, calc(100vw - 24px));
+  max-width: min(480px, calc(100vw - 24px));
+}
+
+.model-option {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  width: 100%;
+}
+
+.model-option .model-option-name {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.model-option .model-option-meta {
+  font-size: 11px;
+  color: var(--monet-on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.model-select-hint {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+  line-height: 1.5;
+}
+
+/* ---------------- 日志视图（等宽 11px，log-window 配色） ---------------- */
+
+.log-view {
+  background: var(--fixed-log-background);
+  color: var(--fixed-log-text-fill);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.log-view .log-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--monet-outline-variant);
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+
+.log-view .log-toolbar .spacer {
+  flex: 1;
+}
+
+.log-view .log-body {
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.log-line {
+  display: flex;
+  gap: 8px;
+  padding: 1px 8px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  border-bottom: 1px solid color-mix(in srgb, var(--monet-outline-variant) 40%, transparent);
+}
+
+.log-line .log-time {
+  opacity: 0.55;
+  flex: none;
+}
+
+.log-line .log-level {
+  flex: none;
+  width: 44px;
+}
+
+.log-line.log-error {
+  background: var(--fixed-log-error-background);
+  color: var(--fixed-log-error-text-fill);
+}
+
+.log-line.log-warn {
+  background: var(--fixed-log-warn-background);
+  color: var(--fixed-log-warn-text-fill);
+}
+
+.log-line.log-debug {
+  background: var(--fixed-log-debug-background);
+}
+
+.log-line.log-ready {
+  color: var(--fixed-channel-release);
+}
+
+.log-empty {
+  padding: 16px;
+  text-align: center;
+  opacity: 0.6;
+}
+
+/* ---------------- ACP 气泡：inverse-surface-80 底、圆角 2 ---------------- */
+
+.bubble {
+  background: var(--monet-inverse-surface-transparent-80);
+  color: var(--monet-inverse-on-surface);
+  border-radius: 2px;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  max-width: 82%;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* ---------------- 表单行 ---------------- */
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.form-label {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+}
+
+.form-error {
+  font-size: 12px;
+  color: var(--monet-error);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 设置页"小标题"：16px 帮助图标 + 文字，padding 8 0 0 0 */
+.section-caption {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--monet-on-surface);
+  padding: 8px 0 0;
+  margin-bottom: 4px;
+}
+
+/* 设置项行（ComponentList 风格） */
+.comp-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--monet-outline-variant);
+  font-size: 13px;
+}
+
+.comp-row:last-child {
+  border-bottom: none;
+}
+
+.comp-row .comp-label {
+  width: 140px;
+  flex: none;
+  color: var(--monet-on-surface-variant);
+}
+
+.comp-row .comp-value {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 长地址单行截断（主页品牌卡的 /i/<id>/ 行）：不换行裸奔，省略号 + 复制按钮兜底 */
+.comp-row .comp-value.url-ellipsis {
+  flex-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.comp-row .comp-value.mono {
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* 文件拖拽框 */
+.filedrop {
+  border: 1.5px dashed var(--monet-outline);
+  border-radius: 4px;
+  padding: 18px 12px;
+  text-align: center;
+  color: var(--monet-on-surface-variant);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 120ms var(--ease), background-color 120ms var(--ease);
+  display: block;
+  width: 100%;
+}
+
+.filedrop:hover,
+.filedrop.dragging {
+  border-color: var(--monet-primary);
+  background: var(--monet-secondary-container-transparent-50);
+}
+
+.filedrop .filedrop-name {
+  color: var(--monet-on-surface);
+  font-weight: 600;
+}
+
+/* 空态：居中 20px 灰字 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--monet-on-surface-variant);
+  font-size: 20px;
+  flex: 1;
+}
+
+.empty-state .empty-sub {
+  font-size: 13px;
+  opacity: 0.8;
+  max-width: 420px;
+  line-height: 1.6;
+}
+
+/* 版本列表图标：亮 = black 版，暗 = white 版 */
+.version-list-icon .for-dark {
+  display: none;
+}
+
+[data-theme="dark"] .version-list-icon .for-light {
+  display: none;
+}
+
+[data-theme="dark"] .version-list-icon .for-dark {
+  display: block;
+}
+
+/* ---------------- 外观：种子色与壁纸选择器 ---------------- */
+
+/* 取色器：原生 input[type=color] 只留色块，边框与圆角跟旁边的 swatch 一致 */
+.seed-swatch {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--monet-outline-variant);
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+  flex: none;
+}
+
+.seed-swatch::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.seed-swatch::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.seed-hex {
+  width: 96px;
+  max-width: 96px;
+  font-family: var(--mono, monospace);
+  text-transform: uppercase;
+}
+
+.wallpaper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 8px;
+}
+
+.wallpaper-cell {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  min-height: 60px;
+}
+
+/* 缩略图即按钮：点一下就换背景，选中的一圈描边 */
+.wallpaper-pick {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  padding: 0;
+  border: 1px solid var(--monet-outline-variant);
+  border-radius: 6px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.wallpaper-cell.selected .wallpaper-pick {
+  border: 2px solid var(--monet-primary);
+}
+
+.wallpaper-name {
+  display: block;
+  width: 100%;
+  padding: 2px 6px;
+  font-size: 11px;
+  text-align: left;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wallpaper-del {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  cursor: pointer;
+}
+
+.wallpaper-del:hover {
+  background: var(--monet-error);
+}
+
+/* 上传：整格是个 label，真正的 file input 铺满并透明 */
+.wallpaper-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px dashed var(--monet-outline-variant);
+  border-radius: 6px;
+  color: var(--monet-on-surface-variant);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.wallpaper-add .wallpaper-name {
+  display: inline;
+  width: auto;
+  padding: 0;
+  background: none;
+  color: inherit;
+  text-align: center;
+}
+
+.wallpaper-add input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.wallpaper-add.busy {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.wallpaper-add.busy input[type="file"] {
+  cursor: default;
+}
+
+/* ---------------- 系统资源（任务管理器式性能页） ---------------- */
+
+.perf-tabs {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--monet-outline-variant);
+  margin: 0 0 6px;
+  padding: 0 4px;
+}
+
+.perf-tab {
+  height: 34px;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: var(--monet-on-surface-variant);
+  font-size: 13px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.perf-tab.active {
+  color: var(--monet-primary);
+  border-bottom-color: var(--monet-primary);
+  font-weight: 600;
+}
+
+.perf-layout {
+  display: flex;
+  gap: 14px;
+  padding: 4px 6px 8px;
+  flex-wrap: wrap;
+}
+
+.perf-main {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.perf-side {
+  flex: 0 0 220px;
+  display: grid;
+  gap: 2px;
+  align-content: start;
+}
+
+.perf-big {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.perf-label {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+}
+
+.perf-legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  padding: 2px 0 6px;
+}
+
+.perf-legend .chip {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 5px;
+  vertical-align: -1px;
+}
+
+@media (max-width: 760px), (max-height: 520px) {
+  .perf-side {
+    flex-basis: 100%;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.mem-bar {
+  display: flex;
+  height: 20px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--monet-surface-container-high);
+  border: 1px solid var(--monet-outline-variant);
+}
+
+.mem-bar > div {
+  height: 100%;
+  transition: width 200ms var(--ease);
+}

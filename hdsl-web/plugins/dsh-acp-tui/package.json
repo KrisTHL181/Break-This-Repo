@@ -1,0 +1,46 @@
+{
+  "name": "@nas200-timmy/dsh-acp-tui",
+  "version": "0.2.1",
+  "description": "HDSL-web's portable ACP terminal for DeepSeek Harness: the absolute compatibility option, usable as the high-version fallback.",
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "terminal",
+    "tui",
+    "acp",
+    "hdsl"
+  ],
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "bin": {
+    "dsh-acp-tui": "./bin/dsh-acp-tui.js"
+  },
+  "main": "./src/main.js",
+  "exports": {
+    ".": "./src/main.js",
+    "./ui/render": "./shared/ui/render.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "bin",
+    "src",
+    "shared",
+    "README.md",
+    "NOTICE",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.20"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node --test test/*.test.js"
+  },
+  "dsh": {
+    "tui": {
+      "profile": "dsh-acp-tui",
+      "protocol": "acp"
+    }
+  }
+}

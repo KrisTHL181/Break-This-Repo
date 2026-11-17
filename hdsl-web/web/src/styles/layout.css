@@ -1,0 +1,661 @@
+/* ---------------------------------------------------------------------------
+ * 布局：浏览器内窗口外框（Decorator）、标题栏、主导航侧栏、子侧栏、内容区、启动面板。
+ * 数值来源：ui-spec.md 第 1/2/3/4 节，MainWindowPane.java / MainPage.java / root.css。
+ * ------------------------------------------------------------------------- */
+
+/* ---------------- 应用外框：整页铺满视口（网页化适配，无仿真窗口） ---------------- */
+
+.decorator {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--monet-surface);
+}
+
+/* 极窄视口：内容区允许内部滚动，避免内容被裁掉。
+   条件与 web/src/hooks.ts 的 MOBILE_QUERY、mobile.css 顶部的布局查询逐字一致——
+   这里曾是 800px/490px 的孤儿断点，760–800px 窗口里 JS 认为桌面、CSS 认为极窄，
+   判定方向都不一致。 */
+@media (max-width: 760px), (max-height: 520px) {
+  .decorator-content {
+    overflow: auto;
+  }
+}
+
+/* ---------------- 标题栏：高 40，bg primary-container，文字 on-primary-container ---------------- */
+
+.titlebar {
+  height: 40px;
+  min-height: 40px;
+  background: var(--monet-primary-container);
+  color: var(--monet-on-primary-container);
+  display: flex;
+  align-items: center;
+  padding: 0 4px 0 0;
+  user-select: none;
+  z-index: 20;
+}
+
+.titlebar-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.titlebar-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--monet-on-primary-container);
+  flex: none;
+}
+
+.titlebar-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.titlebar-btn:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.titlebar-icon {
+  width: 24px;
+  height: 24px;
+  margin: 0 4px 0 8px;
+  flex: none;
+}
+
+.titlebar-icon img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 图标现在是个按钮（点它回主界面）：观感保持 24×24，只加一点可点反馈 */
+button.titlebar-icon {
+  padding: 0;
+  border-radius: 6px;
+}
+
+button.titlebar-icon:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.titlebar-title {
+  font-size: 14px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---------------- 内容根：标题栏之下整片（壁纸或页面背景） ---------------- */
+
+.decorator-content {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+}
+
+.wallpaper-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+.page-root {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  animation: page-in 200ms var(--ease);
+}
+
+.page-root.forward {
+  animation: page-in-forward 200ms var(--ease);
+}
+
+/* 旧页退出动画（ui-spec §11）：整页快照在 View Transition 中淡出+左移 30px，
+   新页快照沿用 page-in 入场。不认识 startViewTransition 的浏览器
+   （Firefox 115 在列）根本没有这两个伪元素，维持原状。 */
+::view-transition-old(root) {
+  animation: page-out 100ms var(--ease) both;
+}
+
+::view-transition-new(root) {
+  animation: page-in 200ms var(--ease) both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+/* 浏览器网络断开提示条（OfflineBanner）：贴顶、压在一切内容之上。 */
+.offline-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  padding: 8px 16px;
+  text-align: center;
+  background: var(--monet-error);
+  color: #fff;
+  font-size: 14px;
+}
+
+/* 子页面骨架：左 200px 子侧栏（半透明） + 右内容区（盖 surface-transparent-50 遮罩） */
+.page-with-sidebar {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.page-content {
+  flex: 1;
+  min-width: 0;
+  margin: 10px;
+  border-radius: 4px;
+  background: var(--monet-surface-transparent-50);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.page-content.scroll {
+  overflow-y: auto;
+}
+
+/* ---------------- 主导航侧栏（宽 200，padding 12 0 0 0，半透明板透出壁纸） ---------------- */
+
+.sidebar-main {
+  width: 200px;
+  min-width: 200px;
+  padding-top: 12px;
+  padding-bottom: 8px;
+  background: var(--monet-surface-transparent-50);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+/* 把底部固定项（退出登录）推到侧栏末尾；内容超高时它自己收缩成 8px 间距 */
+.sidebar-main .side-spacer {
+  flex: 1 1 auto;
+  min-height: 8px;
+}
+
+/* 子侧栏同款（内容页左栏） */
+.sidebar-sub {
+  width: 200px;
+  min-width: 200px;
+  padding-top: 12px;
+  background: var(--monet-surface-transparent-50);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+/* 分区标题：12px 大写、padding 8 16、下 1px 分隔线 */
+.side-category {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--monet-on-surface);
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--monet-outline-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 条目容器 padding 10 16；图标 20px（图形 32px）；文字区 padding-left 10；标题 13 / 副标题 10 */
+.side-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  color: var(--monet-on-surface);
+  position: relative;
+  overflow: hidden;
+}
+
+.side-item .side-graphic {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--monet-on-surface-variant);
+}
+
+.side-item .side-graphic.lg {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--monet-surface-container);
+}
+
+.side-item .side-graphic.lg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+
+.side-item .side-text {
+  flex: 1;
+  min-width: 0;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.side-item .side-title {
+  font-size: 13px;
+  color: var(--monet-on-surface);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.side-item .side-subtitle {
+  font-size: 10px;
+  color: var(--monet-on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 选中态：背景 secondary-container-50，标题/图标 on-secondary-container 加粗 */
+.side-item.selected {
+  background: var(--monet-secondary-container-transparent-50);
+}
+
+.side-item.selected .side-title {
+  color: var(--monet-on-secondary-container);
+  font-weight: bold;
+}
+
+.side-item.selected .side-graphic {
+  color: var(--monet-on-secondary-container);
+}
+
+.side-item:not(.selected):hover {
+  background: var(--monet-on-surface-variant-transparent-38);
+}
+
+/* 底部操作框（限高 144） */
+.side-actions {
+  max-height: 144px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+/* ---------------- 启动面板（右下 margin 20，整 pane 230×57） ---------------- */
+
+.launch-pane {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  width: 230px;
+  height: 57px;
+  display: flex;
+  align-items: flex-end;
+  z-index: 10;
+}
+
+.launch-main {
+  width: 200px;
+  height: 55px;
+  border-radius: 4px 0 0 4px;
+  background: var(--monet-primary-container);
+  color: var(--monet-on-primary-container);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  overflow: hidden;
+  position: relative;
+}
+
+.launch-main .launch-action {
+  font-size: 16px;
+  line-height: 1.2;
+  max-width: 100%;
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.launch-main .launch-target {
+  font-size: 12px;
+  opacity: 0.92;
+  max-width: 100%;
+  padding: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.launch-menu-btn {
+  width: 27px;
+  height: 55px;
+  border-radius: 0 4px 4px 0;
+  background: var(--monet-primary-container);
+  color: var(--monet-on-primary-container);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 中间 3px 竖直渐变分隔线 */
+  border-left: 3px solid transparent;
+  background-image: linear-gradient(var(--monet-primary-container), var(--monet-primary-container)),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 20%,
+      var(--monet-on-surface-variant) 20%,
+      var(--monet-on-surface-variant) 80%,
+      transparent 80%,
+      transparent 100%
+    );
+  background-origin: border-box, padding-box;
+  background-clip: padding-box, padding-box;
+}
+
+/* ---------------- 主页面内容区 ---------------- */
+
+.main-page {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+/* 启动进度浮层（安装中/启动中），叠在启动面板上方 */
+.launch-progress {
+  position: absolute;
+  right: 20px;
+  bottom: 87px;
+  width: 340px;
+  z-index: 11;
+}
+
+.launch-progress .card {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.launch-progress .progress-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--monet-on-surface);
+}
+
+.launch-progress .progress-msg {
+  font-size: 12px;
+  color: var(--monet-on-surface-variant);
+  word-break: break-all;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.launch-progress .progress-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+/* ---------------- 实例行 / 下载行 右侧按钮组 ---------------- */
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: none;
+}
+
+/* 工具栏行 */
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  flex-wrap: wrap;
+}
+
+.toolbar-row .spacer {
+  flex: 1;
+}
+
+/* 过滤卡片（下载页） */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-bar .filter-label {
+  font-size: 13px;
+  color: var(--monet-on-surface);
+}
+
+.filter-bar .input {
+  flex: 1;
+  min-width: 140px;
+}
+
+.filter-bar select.input {
+  flex: none;
+  max-width: 150px;
+}
+
+/* 列表容器（卡片内） */
+.list-body {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* 实例详情顶部操作框（启动/停止 + 浏览 + 管理） */
+.instance-actions-box {
+  margin: 0 8px 8px;
+}
+
+/* 终端窗口（docs/web-shell.md）：原地覆盖层，不跳路由 */
+.terminal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.5);
+}
+.terminal-window {
+  display: flex;
+  flex-direction: column;
+  width: min(980px, 96vw);
+  height: min(72vh, 760px);
+  overflow: hidden;
+  border-radius: 14px;
+  background: #1b1b1f;
+  color: #e6e1e5;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.45);
+}
+.terminal-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #242329;
+  font-size: 13px;
+}
+.terminal-title {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.terminal-state {
+  font-size: 11px;
+  opacity: 0.8;
+}
+.terminal-state-running {
+  color: #8bd5a0;
+}
+.terminal-state-error {
+  color: #f2b8b5;
+}
+/* 提权剩余时间倒计时：纯提示。提权过期不杀已连接的终端（它只 gate
+   开新终端/重连），所以「已过期」也只是提醒重连时要再验证一次。 */
+.terminal-elevation {
+  font-size: 11px;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+.terminal-elevation-soon {
+  color: #f2b8b5;
+  opacity: 1;
+}
+.terminal-elevation-expired {
+  color: #f2b8b5;
+  opacity: 1;
+}
+.terminal-body {
+  flex: 1;
+  min-height: 0;
+  padding: 8px;
+}
+.terminal-body .xterm {
+  height: 100%;
+}
+.terminal-password {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 14px;
+  background: #242329;
+}
+.terminal-password-title {
+  width: 100%;
+  font-size: 12px;
+  opacity: 0.85;
+}
+.terminal-password .input {
+  max-width: 260px;
+}
+.terminal-note {
+  padding: 10px 14px;
+  font-size: 12px;
+  opacity: 0.85;
+}
+.terminal-note.error {
+  color: #f2b8b5;
+}
+.terminal-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #242329;
+}
+/* 功能键条（Esc / Ctrl+C / 方向键…）：桌面不占高度，手机与触屏才显示
+   （见文件尾部的媒体查询）。横向可滚动，装不下的键划一下就到。 */
+.terminal-keys {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  overflow-x: auto;
+  background: #242329;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.terminal-key {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #3d3a44;
+  border-radius: 8px;
+  background: #2b292f;
+  color: #e6e1e5;
+  font-size: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  cursor: pointer;
+  /* 连点不触发双击缩放，长按不选中文字 */
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.terminal-key:active {
+  background: #4a4458;
+}
+@media (max-width: 720px), (pointer: coarse) {
+  .terminal-keys {
+    display: flex;
+  }
+}
+@media (max-width: 720px) {
+  .terminal-overlay {
+    padding: 0;
+    /* 滚动终端回滚不触发整页下拉刷新 */
+    overscroll-behavior: none;
+  }
+  .terminal-window {
+    width: 100vw;
+    height: 100vh;
+    /* 手机浏览器地址栏/软键盘会吃掉 100vh 的一部分；dvh 跟随实际可视高度。
+       不认识 dvh 的浏览器忽略第二行，保留 100vh；JS 同时把高度钉在
+       visualViewport 上（软键盘起落只改 visualViewport，iOS 尤其）。 */
+    height: 100dvh;
+    border-radius: 0;
+    padding-bottom: 0;
+    /* 底部手势条 / Home 指示器不压住功能键条与底栏（viewport-fit=cover） */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .terminal-head {
+    /* 刘海屏状态栏不压住标题行（viewport-fit=cover 时 env() 才有值） */
+    padding-top: calc(10px + env(safe-area-inset-top));
+  }
+  .terminal-body {
+    padding: 4px;
+  }
+}

@@ -1,0 +1,161 @@
+name: client
+
+# hdsl-tui —— 终端客户端：测试、交叉编译、把产物作为 Release 附件。
+#
+# 触发：
+#   - 打 v* 标签：跑测试 + 交叉编译 + 生成源码包与校验和，并尝试上传到同名 Release
+#   - PR 改到 client/** 或安装脚本：只跑测试
+#
+# 依赖已 vendor 进仓库，构建全程不联网取模块（GOPROXY=off），CI 里专门有一条
+# "离线构建" 步骤来证明这一点。
+
+on:
+  push:
+    tags: [ 'v*' ]
+  pull_request:
+    paths:
+      - 'client/**'
+      - 'scripts/install-hdsl-tui.sh'
+      - 'scripts/install-hdsl-tui.ps1'
+      - '.github/workflows/client.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  # 仓库里带了 vendor/：只用本地源码，永远不联网取模块
+  GOFLAGS: -mod=vendor
+  GOPROXY: 'off'
+
+jobs:
+  test:
+    name: test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+    defaults:
+      run:
+        working-directory: client/hdsl-tui
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: client/hdsl-tui/go.mod
+          cache: false
+
+      # go.mod/go.sum/vendor 三者一致才编得过；这一步就是"离线可编译"的证明
+      - name: Offline build
+        run: go build ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test ./...
+
+  build:
+    name: build ${{ matrix.goos }}/${{ matrix.goarch }}
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { goos: linux,   goarch: amd64 }
+          - { goos: linux,   goarch: arm64 }
+          - { goos: darwin,  goarch: amd64 }
+          - { goos: darwin,  goarch: arm64 }
+          - { goos: windows, goarch: amd64 }
+    defaults:
+      run:
+        working-directory: client/hdsl-tui
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: client/hdsl-tui/go.mod
+          cache: false
+
+      - name: Resolve version
+        id: ver
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build
+        env:
+          CGO_ENABLED: '0'
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          VERSION: ${{ steps.ver.outputs.value }}
+        run: |
+          suffix=""
+          if [ "$GOOS" = windows ]; then suffix=".exe"; fi
+          mkdir -p out
+          go build -trimpath \
+            -ldflags "-s -w -X main.version=$VERSION" \
+            -o "out/hdsl-tui-$VERSION-$GOOS-$GOARCH$suffix" ./cmd/hdsl-tui
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: client/hdsl-tui/out/*
+          if-no-files-found: error
+
+  release-assets:
+    name: release assets
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: ver
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: client-*
+          merge-multiple: true
+          path: dist
+
+      - name: Source archive (vendor included)
+        run: |
+          VERSION="${{ steps.ver.outputs.value }}"
+          tar -czf "dist/hdsl-tui-$VERSION-src.tar.gz" -C client hdsl-tui
+
+      - name: Installers
+        run: |
+          cp scripts/install-hdsl-tui.sh scripts/install-hdsl-tui.ps1 dist/
+
+      - name: Checksums
+        run: |
+          cd dist
+          sha256sum hdsl-tui-* > SHA256SUMS-client.txt
+          cat SHA256SUMS-client.txt
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: client-release-assets
+          path: dist/*
+          if-no-files-found: error
+
+      # Release 目前是发布流程里手动创建的；先上传 artifact 兜底，
+      # 若同名 Release 已存在就顺手挂上去（幂等，可重复跑）。
+      - name: Upload to the GitHub Release when it exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" dist/* --clobber
+            echo "::notice::client assets uploaded to $GITHUB_REF_NAME"
+          else
+            echo "::notice::$GITHUB_REF_NAME has no Release yet; assets are in the workflow artifact"
+          fi

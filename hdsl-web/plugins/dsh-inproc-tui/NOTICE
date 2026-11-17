@@ -1,0 +1,11 @@
+hdsl-web terminal plugin
+Copyright (C) 2026  HDSL-web contributors
+Licensed under GPL-3.0-or-later (see LICENSE).
+
+The startup banner's pixel whale is frame 0 of the README logo from
+ccch1mneyyy/dsh-TUI (MIT License), reproduced with that project's palette
+(#142660 / #4e6fff / #bee1ff / #ffffff). dsh-TUI credits its 22-frame whale to
+lhh010/dsh-ui-whale (BSD-3-Clause); only the static frame is used here.
+https://github.com/ccch1mneyyy/dsh-TUI
+
+The full attribution list for HDSL-web ships in the repository's NOTICE file.

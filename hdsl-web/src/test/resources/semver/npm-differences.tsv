@@ -1,0 +1,62 @@
+# Where this launcher answers a range differently from npm, and why.
+#
+# Every line is a case npm answers one way and this launcher answers the other, from the two files
+# named in npm-satisfies.tsv. They are all **decisions** — differences made on purpose, with the
+# reason above each group — and none is a gap: the syntax gaps this file once listed, whitespace
+# between an operator and its version, ~>, build metadata, a wildcard inside a comparator and a
+# partial version above a bound, were fixed when the corpus found them.
+#
+# The test that reads this file fails if the list changes in either direction: a case that starts
+# agreeing has to be struck off, and one that stops agreeing is a difference nobody wrote down.
+#
+# Each line is: which way it is wrong, the range, the version.
+#
+# node-semver is under the ISC licence:
+#
+#   Copyright (c) Isaac Z. Schlueter and Contributors
+#
+#   Permission to use, copy, modify, and/or distribute this software for any purpose with or
+#   without fee is hereby granted, provided that the above copyright notice and this permission
+#   notice appear in all copies.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+#   SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE
+#   AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+#   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+#   NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE
+#   OF THIS SOFTWARE.
+
+#
+# DECISIONS — differences made on purpose.
+#
+#   an empty requirement is refused
+#     npm resolves an empty string to *, everything. This launcher reads it as a requirement nothing
+#     fits: a plugin with an empty entry says nothing about the harness rather than asking for all of
+#     it.
+missed		1.0.0
+#
+#   a pre-release fits a range that does not name one
+#     The harness installs a plugin by asking npm with includePrerelease, so a bound that names no
+#     pre-release is about the numbers alone. Reading npm's default rule instead turned away every
+#     plugin declaring >=0.1.0-rc.0 <0.2.0, the commonest range of all. npm's own fixtures answer the
+#     same way wherever they mark an entry includePrerelease.
+wrongly fits	1.2.3+asdf - 2.4.3+asdf	1.2.3-pre.2
+wrongly fits	1.2.3+asdf - 2.4.3+asdf	2.4.3-alpha
+wrongly fits	^1.2	1.2.0-pre
+wrongly fits	>1.2	1.3.0-beta
+wrongly fits	<=1.2.3	1.2.3-beta
+wrongly fits	<=0.7.x	0.7.0-asdf
+wrongly fits	<1.2.3	1.2.3-beta
+wrongly fits	1 - 2	2.0.0-pre
+wrongly fits	1 - 2	1.0.0-pre
+wrongly fits	1.0 - 2	1.0.0-pre
+wrongly fits	1.1.x	1.1.0-a
+wrongly fits	1.x	1.0.0-a
+wrongly fits	1.x	1.1.0-a
+wrongly fits	1.x	1.2.0-a
+wrongly fits	>=1.0.0 <1.1.0	1.1.0-pre
+#
+#   the version compared against is always a version
+#     An invalid version fits nothing, not even *. What this launcher compares against is read from
+#     the instance's own installation, so the case cannot arise rather than being handled.
+wrongly fits	*	not a version

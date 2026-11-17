@@ -1,0 +1,225 @@
+/* ---------------------------------------------------------------------------
+ * 基础：重置、字体、滚动条、动画曲线、点击涟漪、全屏态。
+ * 动画曲线（Motion.java 的 CSS 映射）：
+ *   EASE = cubic-bezier(0.25, 0.1, 0.25, 1)
+ *   EASE_IN_OUT_CUBIC_EMPHASIZED ≈ cubic-bezier(0.2, 0, 1)
+ * ------------------------------------------------------------------------- */
+
+:root {
+  --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --emphasized: cubic-bezier(0.2, 0, 1);
+  --font-sans: "Noto Sans CJK SC", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei",
+    "PingFang SC", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Mono", Consolas, "Sarasa Mono SC", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--monet-on-surface);
+  background: #0b0b0e;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--monet-primary);
+  text-decoration: none;
+}
+
+code,
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 4px;
+}
+*:hover::-webkit-scrollbar-thumb,
+.scroll-hover:hover::-webkit-scrollbar-thumb {
+  background: var(--fixed-scrollbar-thumb);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* ---------------- 点击涟漪（JFXRippler 圆形扩散的 CSS 实现） ---------------- */
+
+.ripple-host {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.22;
+  transform: scale(0);
+  animation: ripple-expand 0.45s var(--ease) forwards;
+  pointer-events: none;
+}
+
+@keyframes ripple-expand {
+  to {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* ---------------- 页面导航 / Tab 切换动画 ---------------- */
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes page-in-forward {
+  from {
+    opacity: 0;
+    transform: translateX(20%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-up-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes snackbar-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--monet-secondary-container);
+  border-top-color: var(--monet-primary);
+  animation: spinner-rotate 0.8s linear infinite;
+}
+
+.spinner.small {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+/* ---------------- 全屏态（启动画面 / 连接错误） ---------------- */
+
+.screen-full {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #0b0b0e;
+  color: var(--monet-on-surface);
+  z-index: 1000;
+}
+
+.screen-full .screen-title {
+  font-size: 15px;
+}
+
+.screen-error-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 40px;
+  border-radius: 4px;
+  background: var(--monet-surface-container-high);
+  box-shadow: -1px 2px 10px rgba(0, 0, 0, 0.26);
+  max-width: 420px;
+  text-align: center;
+}
+
+.screen-error-card h2 {
+  font-size: 20px;
+}
+
+.screen-error-card p {
+  color: var(--monet-on-surface-variant);
+  font-size: 13px;
+}

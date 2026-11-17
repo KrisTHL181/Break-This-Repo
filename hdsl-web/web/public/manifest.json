@@ -1,0 +1,19 @@
+{
+  "name": "Hello DeepSeek! Launcher 面板",
+  "short_name": "HDSL 面板",
+  "description": "在手机上远程启动/停止 dsh 实例并进入它的网页界面",
+  "lang": "zh-CN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0b0b0e",
+  "theme_color": "#5C6BC0",
+  "icons": [
+    {
+      "src": "/assets-img/icon.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
