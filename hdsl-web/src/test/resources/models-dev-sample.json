@@ -1,0 +1,97 @@
+{
+  "updated": "2026-10-01",
+  "deepseek": {
+    "id": "deepseek",
+    "name": "DeepSeek",
+    "api": "https://api.deepseek.com",
+    "env": ["DEEPSEEK_API_KEY"],
+    "npm": "@ai-sdk/openai-compatible",
+    "doc": "https://api-docs.deepseek.com",
+    "models": {
+      "deepseek-chat": {
+        "id": "deepseek-chat",
+        "name": "DeepSeek Chat",
+        "limit": {"context": 128000, "output": 8192},
+        "reasoning": false,
+        "tool_call": true,
+        "attachment": true,
+        "cost": {"input": 0.27, "output": 1.1},
+        "status": "beta"
+      },
+      "deepseek-reasoner": {
+        "name": "DeepSeek Reasoner",
+        "limit": "the directory wrote a sentence where a number belongs",
+        "reasoning": true,
+        "reasoning_options": [
+          {"type": "toggle"},
+          {"type": "effort", "values": ["low", "", "high"], "default": "low"}
+        ],
+        "tool_call": "yes",
+        "cost": {"input": "cheap"}
+      },
+      "deepseek-vl": "not a model"
+    }
+  },
+  "fireworks-ai": {
+    "name": "Fireworks AI",
+    "api": "https://api.fireworks.ai/inference/v1",
+    "env": ["FIREWORKS_API_KEY"],
+    "npm": "@ai-sdk/openai-compatible",
+    "models": {
+      "accounts/fireworks/models/llama-v3p1-70b-instruct": {
+        "id": "accounts/fireworks/models/llama-v3p1-70b-instruct",
+        "name": "Llama 3.1 70B Instruct",
+        "limit": {"context": 131072}
+      }
+    }
+  },
+  "vercel": {
+    "id": "vercel",
+    "name": "Vercel",
+    "api": "https://api.vercel.com/v1",
+    "env": ["AI_GATEWAY_API_KEY"],
+    "npm": "ai-gateway-provider",
+    "doc": "https://vercel.com/docs/ai-gateway",
+    "models": {
+      "openai/gpt-5": {
+        "id": "openai/gpt-5",
+        "name": "GPT-5",
+        "limit": {"context": 400000, "output": 128000},
+        "reasoning": true,
+        "reasoning_options": [
+          {"type": "effort", "values": ["minimal", "low", "medium", "high"]}
+        ],
+        "tool_call": true,
+        "attachment": true,
+        "cost": {"input": 1.25, "output": 10.0}
+      }
+    }
+  },
+  "togetherai": {
+    "id": "togetherai",
+    "name": "Together AI",
+    "env": "TOGETHER_API_KEY",
+    "npm": "@ai-sdk/togetherai",
+    "doc": {"url": "https://docs.together.ai"},
+    "models": {}
+  },
+  "azure": {
+    "id": "azure",
+    "name": "Azure OpenAI",
+    "api": "https://example.openai.azure.com",
+    "env": ["AZURE_OPENAI_API_KEY"],
+    "npm": "@ai-sdk/azure",
+    "doc": "https://learn.microsoft.com/azure/ai-services/openai/",
+    "models": {
+      "gpt-4o": {
+        "id": "gpt-4o",
+        "name": "GPT-4o",
+        "limit": {"context": 128000, "output": 16384},
+        "reasoning": false,
+        "tool_call": true,
+        "attachment": true,
+        "cost": {"input": 2.5, "output": 10.0}
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+# HDSL-web — 单容器部署示例。
+#
+#   docker compose build
+#   HDSL_ADMIN_PASSWORD='改成你的口令' docker compose up -d
+#
+# 首次启动：若未设置 HDSL_ADMIN_PASSWORD，服务器保持"待初始化"状态，打开网页会
+# 自动进入初始化引导页，创建第一个管理员账号后直接使用。默认是纯 HTTP；要启用 HTTPS，
+# 见 README「声明式 HTTPS」与 docs/deployment.md。
+
+services:
+  hdsl-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # npm 源：国内网络慢时改成 https://registry.npmmirror.com/
+        NPM_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org/}
+        # 发布构建可传 -PreleaseVersion 的值；留空即开发版
+        RELEASE_VERSION: ${RELEASE_VERSION:-}
+        # Node 官方 dist 基址：国内直连 nodejs.org 会 TLS 失败，默认走腾讯镜像（与官方一致，仍校验官方 SHASUMS256）
+        NODE_DIST_MIRROR: ${NODE_DIST_MIRROR:-https://mirrors.cloud.tencent.com/nodejs-release}
+    image: hdsl-web:latest
+    container_name: hdsl-web
+    restart: unless-stopped
+
+    # SIGTERM 后 JVM 的 shutdown hook 会优雅停 Jetty（最多约 30s 排水）并停掉所有
+    # 运行中的 dsh 实例；给足时间，别让 Docker 提前 SIGKILL（默认只有 10s）。
+    stop_grace_period: 40s
+
+    # 面板端口。HTTPS 开启时同一端口直接说 TLS，不需要改这里。
+    # 改端口：在宿主机或 .env 里设 HDSL_PORT，下面三处（ports/environment/healthcheck）会一起跟着变。
+    ports:
+      - "${HDSL_PORT:-3080}:${HDSL_PORT:-3080}"
+      # Minecraft：**默认不发布**任何游戏端口。要对外开服时按实例逐个加一行，
+      # 且「宿主端口:容器端口」里的容器端口必须等于该实例的 `server-port`
+      # （面板里分配/可改，范围见 mc.port_start / mc.port_end）。多实例就是多行。
+      # - "25565:25565"
+      # 可选：同时启用 80 做 HTTP→HTTPS 跳转
+      # - "80:80"
+
+    environment:
+      # 数据目录（镜像内已固定为 /data，此处显式写出便于阅读）
+      HDSL_DATA: /data
+      HDSL_PORT: "${HDSL_PORT:-3080}"
+      # 转码媒体根：容器内固定 /home/hdsl/video，宿主目录由 HDSL_VIDEO_DIR 决定
+      HDSL_MEDIA_ROOT: /home/hdsl/video
+      # 首次启动的管理员口令；留空则打开网页走初始化引导创建账号
+      HDSL_ADMIN_PASSWORD: ${HDSL_ADMIN_PASSWORD:-}
+      # 下载源。npm 读这个环境变量；入口脚本会把它写进 pnpm 的全局 config.yaml，
+      # 并导出给 corepack（下载 pnpm 本体用），所以国内设成 npmmirror 就能全链路加速。
+      NPM_CONFIG_REGISTRY: ${NPM_REGISTRY:-https://registry.npmjs.org/}
+      # 额外 JVM 参数（例如限制堆上限）
+      JAVA_OPTS: ${JAVA_OPTS:--Xmx1g}
+      # 可选：pnpm 共享仓库位置（默认 /data/pnpm-store，在卷里，便于硬链接复用）
+      # PNPM_STORE_DIR: /data/pnpm-store
+      # 工作区：dsh 会话读写文件的地方，也是 dsh 进程的工作目录。
+      # 默认就是 /home/hdsl/workspace（见下面的挂载）；要换成别的已挂载路径时设这个。
+      # HDSL_WORKSPACE: /home/hdsl/workspace
+
+    # 挂载点：
+    #   1) /data                 面板自己的数据——**必须持久化**（口令、配置、证书、实例、pnpm store）
+    #   2) /home/hdsl/workspace  工作区——dsh 要一个工作区，就放在它的 home 下面。
+    #      这个目录一直存在（镜像里就建好、启动时也保证在），挂不挂都行：
+    #        不挂 → 它就是容器内的目录，重建容器时里面的文件跟着没；
+    #        挂了 → 挂什么就是什么（宿主目录 = 直接编辑你的文件；命名卷 = 持久保存）。
+    volumes:
+      # ── 1. 面板数据（必挂）────────────────────────────────────────────────
+      # <卷>/server.yaml      面板配置（端口、TLS、认证开关、public_base_url …）
+      # <卷>/auth/users.json  管理员口令（PBKDF2 哈希 + 盐）+ 会话
+      # <卷>/certs/           证书与私钥（面板上传的 PKCS#12 / PEM）
+      # <卷>/hdsl/instances/  每个实例：instance.json、dsh/（该实例的 dsh 安装）、home/（DSH_HOME：会话、凭证、profile）
+      # <卷>/pnpm-store/      pnpm 共享仓库（多实例硬链接复用，别删）
+      # <卷>/exports/         面板导出的整合包 / 会话包
+      - hdsl-data:/data
+
+      # ── 2. 工作区（可选：要持久化或要直接编辑宿主机文件时，取消注释挑一行）──
+      # 宿主目录：dsh 直接编辑你的真实文件（目录要让 uid/gid 1000 能读写）
+      # - /srv/dsh-workspace:/home/hdsl/workspace
+      # 命名卷：留在容器外持久保存，重建/升级都不丢
+      # - hdsl-workspace:/home/hdsl/workspace
+
+      # ── 3. Minecraft 服务器（可选，装上就会用到）──────────────────────────
+      # 默认用命名卷 hdsl-mc：数据在 Docker 卷里，重建容器不丢。
+      # 要改用宿主目录（承接已有服务端/存档），在本机 .env 里设（.env 已被
+      # .gitignore/.dockerignore 排除，不会进仓库，也不会进构建上下文）：
+      #   HDSL_MC_DIR=/path/to/mc-server
+      # 容器内固定是 /home/hdsl/mc。宿主目录必须让 uid/gid 1000 能读写，否则
+      # Docker 会替你建一个 root 拥有的目录，面板启动服务器时会写不进去：
+      #   sudo mkdir -p /path/to/mc-server && sudo chown 1000:1000 /path/to/mc-server
+      - "${HDSL_MC_DIR:-hdsl-mc}:/home/hdsl/mc"
+
+      # ── 4. 转码媒体库（可选；启用转码功能后使用）────────────────────────
+      # 容器内固定 /home/hdsl/video。NAS 上把 HDSL_VIDEO_DIR 指到真实视频目录：
+      #   HDSL_VIDEO_DIR=/volume1/video
+      # 不设置时用命名卷 hdsl-video（重建容器不丢，但不在 NAS 共享里）。
+      # 宿主目录必须让 uid/gid 1000 能读写；只读时只能读入，输出要另选可写目录。
+      - "${HDSL_VIDEO_DIR:-hdsl-video}:/home/hdsl/video"
+
+    # 硬件编码直通（可选）：基础 compose 不写 devices，没设备时才能正常启动。
+    # Intel/AMD VAAPI/QSV：宿主机有 /dev/dri 时加下面两行；renderD128 的 GID 由
+    # 入口脚本自动识别并加入 hdsl 用户，所以通常不需要手写 group_add。
+    # devices:
+    #   - /dev/dri:/dev/dri
+    # NVIDIA NVENC：需要宿主机装 nvidia-container-toolkit，然后加：
+    #   deploy:
+    #     resources:
+    #       reservations:
+    #         devices:
+    #           - driver: nvidia
+    #             count: all
+    #             capabilities: [gpu]
+    # 也可用 `docker run --gpus all` 或安装脚本的 --hw nvidia。
+
+    # $$ 让变量交给容器内的 shell 解析，取的是上面 environment 里的 HDSL_PORT
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          curl -fsSk "https://127.0.0.1:$${HDSL_PORT:-3080}/api/health" >/dev/null 2>&1
+          || curl -fsS "http://127.0.0.1:$${HDSL_PORT:-3080}/api/health" >/dev/null 2>&1
+          || exit 1
+      interval: 30s
+      timeout: 5s
+      start_period: 30s
+      retries: 3
+
+volumes:
+  # 面板数据（口令 / 配置 / 证书 / 实例 / pnpm store）
+  hdsl-data:
+  # Minecraft 世界存档 + 服务端程序（/home/hdsl/mc）
+  # HDSL_MC_DIR 未设置时用它；宿主目录 bind 见上面的说明。
+  hdsl-mc:
+  # 转码媒体库（/home/hdsl/video）；HDSL_VIDEO_DIR 指向宿主目录时不使用它。
+  hdsl-video:
+  # 工作区默认不建卷：不挂时就是容器内目录。要用命名卷保存工作区时，
+  # 把上面 volumes 里那行取消注释，并在这里加：
+  # hdsl-workspace:

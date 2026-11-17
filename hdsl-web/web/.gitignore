@@ -1,0 +1,6 @@
+node_modules/
+*.log
+.DS_Store
+
+# 由 scripts/sync-assets.mjs 生成（predev/prebuild 自动同步）
+public/assets-img/

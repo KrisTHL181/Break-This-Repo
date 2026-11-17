@@ -1,0 +1,6 @@
+#!/bin/sh
+# The POSIX entry point of the ZcodeBuilder fake pnpm. The stub itself is
+# pnpm.mjs beside this file — one implementation, wrapped for each platform, so
+# that `pnpm` and `pnpm.cmd` cannot drift apart. See pnpm.mjs for what it does.
+here=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec node "$here/pnpm.mjs" "$@"

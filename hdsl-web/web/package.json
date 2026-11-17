@@ -1,0 +1,47 @@
+{
+  "name": "hdsl-web-panel",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/sync-assets.mjs",
+    "dev": "vite dev",
+    "prebuild": "node scripts/sync-assets.mjs",
+    "build": "vite build && npm run build:ssr",
+    "build:ssr": "esbuild scripts/render-markdown.mjs --bundle --platform=node --format=cjs --target=node18 --outfile=dist-ssr/render-markdown.cjs",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "compat": "node scripts/compat-check.mjs && es-check es2020 'dist/assets/*.js' --module && es-check es5 ../src/main/resources/web-legacy/poll.js"
+  },
+  "browserslist": [
+    "Firefox >= 115",
+    "Chrome >= 109",
+    "Edge >= 109",
+    "Safari >= 15.6",
+    "iOS >= 15.6"
+  ],
+  "dependencies": {
+    "@material/material-color-utilities": "^0.4.0",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "highlight.js": "^11.12.0",
+    "katex": "^0.19.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.1.0",
+    "react-router-dom": "^6.30.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-katex": "^7.0.1",
+    "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "es-check": "^9.0.0",
+    "typescript": "~5.6.3",
+    "vite": "^6.3.5"
+  }
+}

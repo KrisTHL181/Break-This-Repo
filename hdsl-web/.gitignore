@@ -1,0 +1,42 @@
+.gradle/
+**/.gradle/
+**/build/
+build/
+.pnpm-store/
+**/node_modules/
+web/dist/
+web/.cache/
+.idea/
+.vscode/
+*.iml
+*.class
+.DS_Store
+Thumbs.db
+
+# 构建产物：由 web/dist 经 syncWebDist 生成（Docker/CI/本地构建时重建）
+/src/main/resources/web/
+web/dist-ssr/
+
+# 构建产物：由 web/dist-ssr 经 syncWebLegacySsr 生成（legacy 表面的服务端 markdown 渲染器）
+/src/main/resources/web-legacy/ssr/
+
+# 构建产物：KaTeX 样式与字体（node_modules → jar）
+/src/main/resources/web-legacy/katex/
+
+# Gradle home (local cache, not source)
+.ghome/
+
+# Load test scripts (not shipped)
+bench/
+
+# docker-install.sh 的产物：上次的答案（含口令）与默认数据目录
+.docker-install.state
+.docker-install.env
+hdsl-web-data/
+
+# 本机环境变量（宿主路径、口令等）；只在部署机上存在
+.env
+
+# Python bytecode (smoke scripts are run, not imported)
+__pycache__/
+*.pyc

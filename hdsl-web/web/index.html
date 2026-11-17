@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <!-- 开发服务器（vite）不像打包后的服务端那样注入 <base href> 与 window.__HDSL_BASE__：
+        SPA 里有相对路径的资源与 API（`assets-img/…`、`fetch("api/…")`），没有 <base> 时它们
+        按当前地址解析——两级深链（/instances/<id>）会把 `api/…` 变成 `/instances/api/…`，落到
+        SPA 兜底页（200 text/html），body 解析不成 JSON，读登录态拿到 null，整页被错误边界接住
+        （「无法连接服务器」）。这里给开发环境补一条根挂载的 <base>。
+
+        打包时服务端仍会注入自己的那条（插在 <head> 之后），而**文档里排在前面的 <base> 生效**，
+        所以子路径挂载（HDSL_BASE_PATH=/panel）用的仍是服务端注入的那条，这一条不会破坏它。
+        window.__HDSL_BASE__ 不在这里补：子路径挂载靠服务端注入的值，开发环境缺省即为根挂载。 -->
+    <base href="/" />
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover：让 env(safe-area-inset-*) 在刘海屏/手势条上生效（见 styles/mobile.css） -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#5C6BC0" />
+    <!-- 加到手机主屏幕后按独立应用打开（面板是单页应用，没有离线需求，故不注册 service worker） -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="HDSL 面板" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Hello DeepSeek! Launcher</title>
+    <!-- 能力闸门：现代聊天页要 fetch + WebSocket + flex。缺任何一项就直接去纯文本版，
+         不再先加载 2.8 MB 的 bundle 再白屏。脚本刻意写成 ES3 语法，IE6/IE11 也能执行。 -->
+    <script>
+      (function () {
+        var ok = window.fetch && window.WebSocket && window.Promise
+          && window.CSS && window.CSS.supports
+          && window.CSS.supports("display", "flex");
+        if (ok) return;
+        var base = document.getElementsByTagName("base")[0];
+        var href = base ? base.getAttribute("href") : "/";
+        if (!href) href = "/";
+        if (href.charAt(href.length - 1) !== "/") href += "/";
+        location.replace(href + "plain/old");
+      })();
+    </script>
+    <noscript><meta http-equiv="refresh" content="0;url=plain"></noscript>
+    <link rel="icon" href="/assets-img/icon.png" />
+    <link rel="apple-touch-icon" href="/assets-img/icon.png" />
+  </head>
+  <body>
+    <noscript><p><a href="plain">进入纯文本版（不需要 JavaScript）</a></p></noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
